@@ -32,6 +32,8 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
     private String validationQuery = "SELECT 1";
+    private int threadCount = 20;
+    private int loopCount = 5;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -56,8 +58,8 @@ public class Case1 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(true);
 
-        for (int i = 0; i < 10; ++i) {
-            p0(dataSource, "druid", 2);
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "druid", threadCount);
         }
         System.out.println();
     }
@@ -78,8 +80,8 @@ public class Case1 extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setTestOnBorrow(true);
 
-        for (int i = 0; i < 10; ++i) {
-            p0(dataSource, "dbcp", 2);
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "dbcp", threadCount);
         }
         System.out.println();
     }
