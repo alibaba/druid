@@ -1,0 +1,101 @@
+package com.alibaba.druid.sql.mysql.bvt;
+
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+public class EncryptionAndCompressionFunctionsTest extends TestCase {
+    public void test_0() throws Exception {
+        String sql = "INSERT INTO t VALUES (1,AES_ENCRYPT('text','password'))";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("INSERT INTO t VALUES (1, AES_ENCRYPT('text', 'password'));", text);
+    }
+
+    public void test_1() throws Exception {
+        String sql = "SELECT LENGTH(COMPRESS(REPEAT('a',1000)))";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 1000)));", text);
+    }
+
+    public void test_2() throws Exception {
+        String sql = "SELECT LENGTH(COMPRESS(REPEAT('a',16)))";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT LENGTH(COMPRESS(REPEAT('a', 16)));", text);
+    }
+
+    public void test_3() throws Exception {
+        String sql = "SELECT MD5('testing')";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT MD5('testing');", text);
+    }
+
+    public void test_4() throws Exception {
+        String sql = "SELECT SHA1('abc')";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT SHA1('abc');", text);
+    }
+
+    public void test_5() throws Exception {
+        String sql = "SELECT SHA2('abc')";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT SHA2('abc');", text);
+    }
+
+    public void test_6() throws Exception {
+        String sql = "SELECT PASSWORD('badpwd')";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT PASSWORD('badpwd');", text);
+    }
+
+    private String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(new MySqlOutputVisitor(out));
+            out.append(";");
+        }
+
+        return out.toString();
+    }
+}

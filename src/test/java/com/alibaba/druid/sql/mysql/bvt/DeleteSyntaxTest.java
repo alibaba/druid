@@ -1,0 +1,79 @@
+package com.alibaba.druid.sql.mysql.bvt;
+
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+public class DeleteSyntaxTest extends TestCase {
+    public void test_0() throws Exception {
+        String sql = "DELETE FROM somelog WHERE user = 'jcole' ORDER BY timestamp_column LIMIT 1;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("DELETE FROM somelog\nWHERE user = 'jcole'\nORDER BY timestamp_column\nLIMIT 1;", text);
+    }
+
+    public void test_1() throws Exception {
+        String sql = "DELETE t1 FROM t1 LEFT JOIN t2 ON t1.id=t2.id WHERE t2.id IS NULL;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("DELETE t1\nFROM t1 LEFT JOIN t2 ON t1.id = t2.id\nWHERE t2.id IS NULL;", text);
+    }
+
+    public void test_2() throws Exception {
+        String sql = "DELETE a1, a2 FROM t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("DELETE a1, a2\nFROM t1 a1 INNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
+    }
+
+    public void test_3() throws Exception {
+        String sql = "DELETE FROM a1, a2 USING t1 AS a1 INNER JOIN t2 AS a2 WHERE a1.id=a2.id";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("DELETE FROM a1, a2\nUSING t1 a1 INNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
+    }
+
+    public void test_4() throws Exception {
+        String sql = "DELETE LOW_PRIORITY QUICK IGNORE FROM T";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("DELETE LOW_PRIORITY QUICK IGNORE FROM T;", text);
+    }
+
+    private String output(List<SQLStatement> stmtList) {
+        StringBuilder out = new StringBuilder();
+
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(new MySqlOutputVisitor(out));
+            out.append(";");
+        }
+
+        return out.toString();
+    }
+}

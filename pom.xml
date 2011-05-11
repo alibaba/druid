@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.alibaba</groupId>
+		<artifactId>pampas</artifactId>
+		<version>4</version>
+	</parent>
+
+	<groupId>com.alibaba.platform.shared</groupId>
+	<artifactId>druid</artifactId>
+	<version>0.2-SNAPSHOT</version>
+	<name>druid</name>
+
+	<build>
+		<plugins>
+			<!-- 配置源码编译要求JDK 1.6 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- 配置 build的时候run testcase的规则 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/bvt/**/*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>java.servlet</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jakarta.commons.logging</artifactId>
+			<version>1.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>sourceforge.spring</artifactId>
+			<version>2.5.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jakarta.log4j</artifactId>
+			<version>1.2.16</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>test.junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>apache.derby</artifactId>
+			<version>10.5.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jdbc.mysql.mysql-connector</artifactId>
+			<version>5.1.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jdbc.oracle</artifactId>
+			<version>11.2.0.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>test.easymock</artifactId>
+			<version>2.5.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jakarta.commons.dbcp</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

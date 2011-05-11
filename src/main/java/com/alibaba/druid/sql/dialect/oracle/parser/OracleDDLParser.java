@@ -1,0 +1,262 @@
+package com.alibaba.druid.sql.dialect.oracle.parser;
+
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableColumn;
+import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
+
+public abstract class OracleDDLParser extends SQLStatementParser {
+    public OracleDDLParser(String sql) throws ParserException {
+        super(sql);
+    }
+
+    public OracleDDLParser(Lexer lexer) {
+        super(lexer);
+    }
+
+    protected boolean parseConstaint(List<OracleConstraint> constaints) throws ParserException {
+        String constaintName = null;
+        if (lexer.token() == Token.CONSTRAINT) {
+            lexer.nextToken();
+            if (lexer.token() == Token.IDENTIFIER) {
+                constaintName = lexer.stringVal();
+                lexer.nextToken();
+            }
+        }
+
+        if (lexer.token() == (Token.CHECK)) {
+            lexer.nextToken();
+            OracleCheck check = new OracleCheck();
+            check.setName(constaintName);
+            accept(Token.LPAREN);
+            check.setCondition(this.exprParser.expr());
+            accept(Token.RPAREN);
+
+            check.setState(parseConstraintState());
+
+            constaints.add(check);
+
+            return true;
+        }
+        OracleConstraintNull nullable;
+        if (lexer.token() == (Token.NOT)) {
+            lexer.nextToken();
+            accept(Token.NULL);
+
+            nullable = new OracleConstraintNull();
+            nullable.setName(constaintName);
+            nullable.setNullable(false);
+
+            nullable.setState(parseConstraintState());
+
+            constaints.add(nullable);
+            return true;
+        }
+
+        if (lexer.token() == (Token.NULL)) {
+            lexer.nextToken();
+
+            nullable = new OracleConstraintNull();
+            nullable.setName(constaintName);
+            nullable.setNullable(true);
+
+            nullable.setState(parseConstraintState());
+
+            constaints.add(nullable);
+            return true;
+        }
+
+        if (lexer.token() == (Token.UNIQUE)) {
+            throw new ParserException("TODO");
+        }
+
+        if (lexer.token() == (Token.REFERENCE)) {
+            throw new ParserException("TODO");
+        }
+
+        if (lexer.token() == (Token.FOREIGN)) {
+            lexer.nextToken();
+            accept(Token.KEY);
+
+            OracleForeignKey foreignKey = new OracleForeignKey();
+
+            foreignKey.setName(constaintName);
+
+            accept(Token.LPAREN);
+            this.exprParser.names(foreignKey.getColumns());
+            accept(Token.RPAREN);
+
+            accept(Token.REFERENCE);
+            foreignKey.setRefObject(this.exprParser.name());
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                this.exprParser.names(foreignKey.getRefColumns());
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.token() == (Token.ON)) {
+                lexer.nextToken();
+                accept(Token.DELETE);
+
+                if (identifierEquals("CASCADE")) {
+                    throw new RuntimeException("TODO");
+                } else {
+                    throw new RuntimeException("TODO");
+                }
+            }
+
+            foreignKey.setState(parseConstraintState());
+
+            constaints.add(foreignKey);
+            return true;
+        }
+
+        if (lexer.token() == (Token.SCHEMA)) {
+            throw new ParserException("TODO");
+        }
+
+        if (lexer.token() == (Token.PRIMARY)) {
+            lexer.nextToken();
+            accept(Token.KEY);
+
+            OraclePrimaryKey primaryKey = new OraclePrimaryKey();
+            primaryKey.setName(constaintName);
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                this.exprParser.names(primaryKey.getColumns());
+                accept(Token.RPAREN);
+            }
+
+            primaryKey.setState(parseConstraintState());
+
+            constaints.add(primaryKey);
+
+            return true;
+        }
+
+        if (identifierEquals("SCOPE")) {
+            lexer.nextToken();
+
+            if (lexer.token() == (Token.IS)) {
+                throw new RuntimeException("TODO");
+            }
+            if (identifierEquals("FOR")) {
+                throw new ParserException("TODO");
+            }
+            throw new ParserException("TODO");
+        }
+
+        if (identifierEquals("REF")) {
+            throw new ParserException("TODO");
+        }
+
+        if (identifierEquals("References")) {
+            lexer.nextToken();
+            OracleReferencesConstaint ref = new OracleReferencesConstaint();
+            ref.setRefObject(this.exprParser.name());
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                this.exprParser.names(ref.getRefColumns());
+                accept(Token.RPAREN);
+            }
+
+            if (lexer.token() == (Token.ON)) {
+                lexer.nextToken();
+                accept(Token.DELETE);
+
+                if (identifierEquals("CASCADE")) {
+                    throw new RuntimeException("TODO");
+                } else {
+                    throw new RuntimeException("TODO");
+                }
+            }
+            constaints.add(ref);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected OracleConstraintState parseConstraintState() throws ParserException {
+        OracleConstraintState state = null;
+        while (true) {
+            if (identifierEquals("DEFERRABLE")) {
+                throw new ParserException("TODO");
+            }
+
+            if (identifierEquals("INITIALY")) throw new ParserException("TODO");
+            if (identifierEquals("RELY")) throw new ParserException("TODO");
+            if (identifierEquals("NORELY")) throw new ParserException("TODO");
+            if (identifierEquals("USING")) throw new ParserException("TODO");
+            if (identifierEquals("ENABLE")) throw new ParserException("TODO");
+            if (identifierEquals("DISABLE")) break;
+            if (state == null) {
+                state = new OracleConstraintState();
+            }
+
+            lexer.nextToken();
+            if (identifierEquals("CASCADE")) {
+                lexer.nextToken();
+                state.getStates().add(new SQLIdentifierExpr("DISABLE CASCADE"));
+            }
+            state.getStates().add(new SQLIdentifierExpr("DISABLE"));
+        }
+
+        if (identifierEquals("VALIDATE")) throw new ParserException("TODO");
+        if (identifierEquals("NOVALIDATE")) throw new ParserException("TODO");
+        if (identifierEquals("EXCEPTIONS")) {
+            throw new ParserException("TODO");
+        }
+
+        return state;
+    }
+
+    protected void parsePhysicalAttributesClause() throws ParserException {
+        if (identifierEquals("PCTREE")) throw new ParserException("TODO");
+        if (identifierEquals("PCTUSED")) throw new ParserException("TODO");
+        if (identifierEquals("INITRANS")) throw new ParserException("TODO");
+        if (identifierEquals("STORAGE")) throw new ParserException("TODO");
+    }
+
+    protected OracleTableColumn parseColumn() throws ParserException {
+        OracleTableColumn column = new OracleTableColumn();
+
+        if (lexer.token() != Token.IDENTIFIER) {
+            throw new ParserException("syntax error");
+        }
+
+        column.setName(lexer.stringVal());
+        lexer.nextToken();
+        column.setDataType(this.exprParser.parseDataType());
+
+        if (identifierEquals("SORT")) {
+            lexer.nextToken();
+            column.setSort(true);
+        }
+
+        if (identifierEquals("DEFAULT")) {
+            lexer.nextToken();
+            column.setDefaultValue(this.exprParser.expr());
+        }
+
+        if (identifierEquals("ENCTRYPT")) {
+            throw new ParserException("TODO");
+        }
+        return column;
+    }
+}

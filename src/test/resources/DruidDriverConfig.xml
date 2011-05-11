@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filters>
+	<filter name="encoding"
+		class="com.alibaba.druid.proxy.filter.encoding.EncodingConvertFilter"
+		configClass="com.alibaba.druid.proxy.config.EncodingDruidFilterConfig">
+		<prop name="ClientEncoding" value="gbk" />
+		<prop name="ServerEncoding" value="utf8" />
+	</filter>
+	<filter name="stat" class="com.alibaba.druid.proxy.filter.stat.StatFilter" />
+	<filter name="log4j"
+		class="com.alibaba.druid.proxy.filter.logging.Log4jFilter" />
+	<filter name="commonLogging"
+		class="com.alibaba.druid.proxy.filter.logging.CommonsLogFilter" />
+</filters>

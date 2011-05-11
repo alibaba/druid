@@ -1,0 +1,128 @@
+package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+public class MySqlDeleteStatement extends SQLDeleteStatement {
+    private static final long serialVersionUID = 1L;
+
+    private boolean lowPriority = false;
+    private boolean quick = false;
+    private boolean ignore = false;
+
+    private SQLTableSource from;
+    private SQLTableSource using;
+    private SQLOrderBy orderBy;
+    private Limit limit;
+    private final List<SQLName> tableNames = new ArrayList<SQLName>();
+
+    public boolean isLowPriority() {
+        return lowPriority;
+    }
+
+    public void setLowPriority(boolean lowPriority) {
+        this.lowPriority = lowPriority;
+    }
+
+    public boolean isQuick() {
+        return quick;
+    }
+
+    public void setQuick(boolean quick) {
+        this.quick = quick;
+    }
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
+
+    public SQLTableSource getFrom() {
+        return from;
+    }
+
+    public SQLTableSource getUsing() {
+        return using;
+    }
+
+    public void setUsing(SQLTableSource using) {
+        this.using = using;
+    }
+
+    public SQLName getTableName() {
+        if (tableNames.size() == 0) {
+            return null;
+        }
+        return tableNames.get(0);
+    }
+
+    public void setTableName(SQLName tableName) {
+        if (tableNames.size() == 0) {
+            tableNames.add(tableName);
+        } else {
+            tableNames.set(0, tableName);
+        }
+    }
+
+    public List<SQLName> getTableNames() {
+        return tableNames;
+    }
+
+    public void setFrom(SQLTableSource from) {
+        this.from = from;
+    }
+
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public Limit getLimit() {
+        return limit;
+    }
+
+    public void setLimit(Limit limit) {
+        this.limit = limit;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+
+    public void output(StringBuffer buf) {
+        new MySqlOutputVisitor(buf).visit(this);
+    }
+
+    protected void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, getTableNames());
+            acceptChild(visitor, getWhere());
+            acceptChild(visitor, getFrom());
+            acceptChild(visitor, getUsing());
+            acceptChild(visitor, orderBy);
+            acceptChild(visitor, limit);
+        }
+
+        visitor.endVisit(this);
+    }
+}
