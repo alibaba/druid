@@ -74,7 +74,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         }
 
         try {
-            int maxWaitThreadCount = getMaxWaitThreadCount();
+            final int maxWaitThreadCount = getMaxWaitThreadCount();
             if (maxWaitThreadCount > 0) {
                 if (lock.getQueueLength() > maxWaitThreadCount) {
                     throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
