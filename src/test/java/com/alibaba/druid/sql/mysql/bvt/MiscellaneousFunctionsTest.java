@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.mysql.bvt;
 
@@ -26,6 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class MiscellaneousFunctionsTest extends TestCase {
+
     public void test_0() throws Exception {
         String sql = "UPDATE t SET i = DEFAULT(i)+1 WHERE id < 100;";
 
@@ -72,9 +66,10 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
 
         for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(out));
+            stmt.accept(visitor);
             out.append(";");
         }
 
