@@ -9,8 +9,8 @@
 package com.alibaba.druid.pool.benckmark;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.concurrent.CountDownLatch;
 
 import javax.sql.DataSource;
 
@@ -21,7 +21,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class Case0 extends TestCase {
+public class Case1 extends TestCase {
 
     private String jdbcUrl;
     private String user;
@@ -31,7 +31,7 @@ public class Case0 extends TestCase {
     private int    minPoolSize     = 1;
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
-    private String validationQuery = null;
+    private String validationQuery = "SELECT 1";
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -57,7 +57,7 @@ public class Case0 extends TestCase {
         dataSource.setTestOnBorrow(true);
 
         for (int i = 0; i < 10; ++i) {
-            p0(dataSource, "druid");
+            p0(dataSource, "druid", 2);
         }
         System.out.println();
     }
@@ -79,26 +79,45 @@ public class Case0 extends TestCase {
         dataSource.setTestOnBorrow(true);
 
         for (int i = 0; i < 10; ++i) {
-            p0(dataSource, "dbcp");
+            p0(dataSource, "dbcp", 2);
         }
         System.out.println();
     }
 
-    private void p0(DataSource dataSource, String name) throws SQLException {
+    private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
+
+        final CountDownLatch startLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(1);
+        for (int i = 0; i < threadCount; ++i) {
+            Thread thread = new Thread() {
+
+                public void run() {
+                    try {
+                        startLatch.await();
+                        final int COUNT = 1000 * 1000;
+                        for (int i = 0; i < COUNT; ++i) {
+                            Connection conn = dataSource.getConnection();
+                            conn.close();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    endLatch.countDown();
+                }
+            };
+            thread.start();
+        }
         long startMillis = System.currentTimeMillis();
         long startYGC = TestUtil.getYoungGC();
         long startFullGC = TestUtil.getFullGC();
+        startLatch.countDown();
+        endLatch.await();
 
-        final int COUNT = 1000 * 1000;
-        for (int i = 0; i < COUNT; ++i) {
-            Connection conn = dataSource.getConnection();
-            conn.close();
-        }
         long millis = System.currentTimeMillis() - startMillis;
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println(name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC "
-                           + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }
