@@ -13,17 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.proxy.jdbc;
-
-import java.sql.Clob;
-
-
-/**
- * 
- * @author shaojin.wensj
- *
- */
-public interface ClobProxy extends Clob {
-	ConnectionProxy getConnectionWrapper();
-	Clob getRawClob();
-}
