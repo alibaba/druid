@@ -44,6 +44,8 @@ public class Case0 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
+        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setTestOnBorrow(true);
 
         for (int i = 0; i < 10; ++i) {
             p0(dataSource, "druid");
@@ -64,6 +66,8 @@ public class Case0 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
+        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setTestOnBorrow(true);
 
         for (int i = 0; i < 10; ++i) {
             p0(dataSource, "dbcp");

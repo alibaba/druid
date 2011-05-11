@@ -329,7 +329,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         this.jdbcUrl = jdbcUrl;
     }
 
-    public String getDriverClass() {
+    public String getDriverClassName() {
         return driverClass;
     }
 

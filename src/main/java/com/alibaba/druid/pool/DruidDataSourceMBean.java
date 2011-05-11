@@ -21,7 +21,7 @@ public interface DruidDataSourceMBean {
 
     String getUrl();
 
-    String getDriverClass();
+    String getDriverClassName();
 
     long getConnectCount();
 
