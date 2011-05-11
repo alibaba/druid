@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.proxy.jdbc;
 
@@ -26,99 +19,97 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 
 /**
- * 
  * @author wenshao<szujobs@hotmail.com>
- *
  */
 public class ClobProxyImpl implements ClobProxy {
-	private final Clob clob;
-	private final ConnectionProxy connection;
-	
-	private final DataSourceProxy dataSource;
 
-	public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob) {
-		this.dataSource = dataSource;
-		this.connection = connection;
-		this.clob = clob;
-	}
-	
-	public FilterChain createChain() {
-		return new FilterChainImpl(dataSource);
-	}
-	
-	public ConnectionProxy getConnectionWrapper() {
-		return this.connection;
-	}
+    private final Clob            clob;
+    private final ConnectionProxy connection;
 
-	@Override
-	public Clob getRawClob() {
-		return clob;
-	}
+    private final DataSourceProxy dataSource;
 
-	@Override
-	public void free() throws SQLException {
-		createChain().clob_free(this);
-	}
+    public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob){
+        this.dataSource = dataSource;
+        this.connection = connection;
+        this.clob = clob;
+    }
 
-	@Override
-	public InputStream getAsciiStream() throws SQLException {
-		return createChain().clob_getAsciiStream(this);
-	}
+    public FilterChain createChain() {
+        return new FilterChainImpl(dataSource);
+    }
 
-	@Override
-	public Reader getCharacterStream() throws SQLException {
-		return createChain().clob_getCharacterStream(this);
-	}
+    public ConnectionProxy getConnectionWrapper() {
+        return this.connection;
+    }
 
-	@Override
-	public Reader getCharacterStream(long pos, long length) throws SQLException {
-		return createChain().clob_getCharacterStream(this, pos, length);
-	}
+    @Override
+    public Clob getRawClob() {
+        return clob;
+    }
 
-	@Override
-	public String getSubString(long pos, int length) throws SQLException {
-		return createChain().clob_getSubString(this, pos, length);
-	}
+    @Override
+    public void free() throws SQLException {
+        createChain().clob_free(this);
+    }
 
-	@Override
-	public long length() throws SQLException {
-		return createChain().clob_length(this);
-	}
+    @Override
+    public InputStream getAsciiStream() throws SQLException {
+        return createChain().clob_getAsciiStream(this);
+    }
 
-	@Override
-	public long position(String searchstr, long start) throws SQLException {
-		return createChain().clob_position(this, searchstr, start);
-	}
+    @Override
+    public Reader getCharacterStream() throws SQLException {
+        return createChain().clob_getCharacterStream(this);
+    }
 
-	@Override
-	public long position(Clob searchstr, long start) throws SQLException {
-		return createChain().clob_position(this, searchstr, start);
-	}
+    @Override
+    public Reader getCharacterStream(long pos, long length) throws SQLException {
+        return createChain().clob_getCharacterStream(this, pos, length);
+    }
 
-	@Override
-	public OutputStream setAsciiStream(long pos) throws SQLException {
-		return createChain().clob_setAsciiStream(this, pos);
-	}
+    @Override
+    public String getSubString(long pos, int length) throws SQLException {
+        return createChain().clob_getSubString(this, pos, length);
+    }
 
-	@Override
-	public Writer setCharacterStream(long pos) throws SQLException {
-		return createChain().clob_setCharacterStream(this, pos);
-	}
+    @Override
+    public long length() throws SQLException {
+        return createChain().clob_length(this);
+    }
 
-	@Override
-	public int setString(long pos, String str) throws SQLException {
-		return createChain().clob_setString(this, pos, str);
-	}
+    @Override
+    public long position(String searchstr, long start) throws SQLException {
+        return createChain().clob_position(this, searchstr, start);
+    }
 
-	@Override
-	public int setString(long pos, String str, int offset, int len)
-			throws SQLException {
-		return createChain().clob_setString(this, pos, str, offset, len);
-	}
+    @Override
+    public long position(Clob searchstr, long start) throws SQLException {
+        return createChain().clob_position(this, searchstr, start);
+    }
 
-	@Override
-	public void truncate(long len) throws SQLException {
-		createChain().clob_truncate(this, len);
-	}
+    @Override
+    public OutputStream setAsciiStream(long pos) throws SQLException {
+        return createChain().clob_setAsciiStream(this, pos);
+    }
+
+    @Override
+    public Writer setCharacterStream(long pos) throws SQLException {
+        return createChain().clob_setCharacterStream(this, pos);
+    }
+
+    @Override
+    public int setString(long pos, String str) throws SQLException {
+        return createChain().clob_setString(this, pos, str);
+    }
+
+    @Override
+    public int setString(long pos, String str, int offset, int len) throws SQLException {
+        return createChain().clob_setString(this, pos, str, offset, len);
+    }
+
+    @Override
+    public void truncate(long len) throws SQLException {
+        createChain().clob_truncate(this, len);
+    }
 
 }

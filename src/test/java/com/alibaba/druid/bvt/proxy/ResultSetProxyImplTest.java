@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.bvt.proxy;
 
@@ -30,61 +23,62 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 
 public class ResultSetProxyImplTest extends TestCase {
-	String sql = "SELECT * FROM PATROL";
 
-	public void test_resultset() throws Exception {
+    String sql = "SELECT * FROM PATROL";
 
-		MockDriver driver = new MockDriver();
-		DataSourceProxyConfig config = new DataSourceProxyConfig();
-		config.setUrl("");
-		DataSourceProxyImpl dataSource = new DataSourceProxyImpl(driver, config);
+    public void test_resultset() throws Exception {
 
-		{
-			StatFilter filter = new StatFilter();
-			filter.init(dataSource);
-			config.getFilters().add(filter);
-		}
-		{
-			Log4jFilter filter = new Log4jFilter();
-			filter.init(dataSource);
-			config.getFilters().add(filter);
-		}
+        MockDriver driver = new MockDriver();
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+        config.setUrl("");
+        DataSourceProxyImpl dataSource = new DataSourceProxyImpl(driver, config);
 
-		Connection conn = dataSource.connect(null);
-		
-		conn.setClientInfo("name", null);
+        {
+            StatFilter filter = new StatFilter();
+            filter.init(dataSource);
+            config.getFilters().add(filter);
+        }
+        {
+            Log4jFilter filter = new Log4jFilter();
+            filter.init(dataSource);
+            config.getFilters().add(filter);
+        }
 
-		Statement stmt = conn.createStatement();
-		ResultSetProxy rs = (ResultSetProxy) stmt.executeQuery(sql);
+        Connection conn = dataSource.connect(null);
 
-		rs.insertRow();
-		rs.refreshRow();
-		rs.moveToInsertRow();
-		rs.moveToCurrentRow();
+        conn.setClientInfo("name", null);
 
-		rs.getArray(1);
-		rs.updateRef(1, null);
-		rs.updateArray(1, null);
-		rs.updateRowId(1, null);
-		rs.updateNString(1, null);
-		rs.updateNClob(1, (NClob) null);
-		rs.updateNClob(1, (Reader) null);
-		rs.updateNClob(1, (Reader) null, 0);
-		rs.updateSQLXML(1, null);
-		rs.updateNCharacterStream(1, null);
-		rs.updateNCharacterStream(1, null, 0);
+        Statement stmt = conn.createStatement();
+        ResultSetProxy rs = (ResultSetProxy) stmt.executeQuery(sql);
 
-		rs.getArray("1");
-		rs.updateRef("1", null);
-		rs.updateArray("1", null);
-		rs.updateRowId("1", null);
-		rs.updateNString("1", null);
-		rs.updateNClob("1", (NClob) null);
-		rs.updateNClob("1", (Reader) null);
-		rs.updateNClob("1", (Reader) null, 0);
-		rs.updateSQLXML("1", null);
-		rs.updateNCharacterStream("1", null);
-		rs.updateNCharacterStream("1", null, 0);
-	}
+        rs.insertRow();
+        rs.refreshRow();
+        rs.moveToInsertRow();
+        rs.moveToCurrentRow();
+
+        rs.getArray(1);
+        rs.updateRef(1, null);
+        rs.updateArray(1, null);
+        rs.updateRowId(1, null);
+        rs.updateNString(1, null);
+        rs.updateNClob(1, (NClob) null);
+        rs.updateNClob(1, (Reader) null);
+        rs.updateNClob(1, (Reader) null, 0);
+        rs.updateSQLXML(1, null);
+        rs.updateNCharacterStream(1, null);
+        rs.updateNCharacterStream(1, null, 0);
+
+        rs.getArray("1");
+        rs.updateRef("1", null);
+        rs.updateArray("1", null);
+        rs.updateRowId("1", null);
+        rs.updateNString("1", null);
+        rs.updateNClob("1", (NClob) null);
+        rs.updateNClob("1", (Reader) null);
+        rs.updateNClob("1", (Reader) null, 0);
+        rs.updateSQLXML("1", null);
+        rs.updateNCharacterStream("1", null);
+        rs.updateNCharacterStream("1", null, 0);
+    }
 
 }

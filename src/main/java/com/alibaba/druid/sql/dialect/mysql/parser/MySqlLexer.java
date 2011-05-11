@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
@@ -26,169 +19,169 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlLexer extends Lexer {
 
-	public MySqlLexer(char[] input, int inputLength) {
-		super(input, inputLength);
-	}
+    public MySqlLexer(char[] input, int inputLength){
+        super(input, inputLength);
+    }
 
-	public MySqlLexer(String input) {
-		super(input);
-	}
+    public MySqlLexer(String input){
+        super(input);
+    }
 
-	public void scanIdentifier() {
-		final char first = ch;
+    public void scanIdentifier() {
+        final char first = ch;
 
-		if (ch == '`') {
-			int hash = first;
+        if (ch == '`') {
+            int hash = first;
 
-			offsetCache = curIndex;
-			sizeCache = 1;
-			char ch;
-			for (;;) {
-				ch = sql[++curIndex];
+            offsetCache = curIndex;
+            sizeCache = 1;
+            char ch;
+            for (;;) {
+                ch = sql[++curIndex];
 
-				if (ch == '`') {
-					sizeCache++;
-					ch = sql[++curIndex];
-					break;
-				} else if (ch == EOI) {
-					throw new SQLParseException("illegal identifier");
-				}
+                if (ch == '`') {
+                    sizeCache++;
+                    ch = sql[++curIndex];
+                    break;
+                } else if (ch == EOI) {
+                    throw new SQLParseException("illegal identifier");
+                }
 
-				hash = 31 * hash + ch;
+                hash = 31 * hash + ch;
 
-				sizeCache++;
-				continue;
-			}
+                sizeCache++;
+                continue;
+            }
 
-			this.ch = sql[curIndex];
+            this.ch = sql[curIndex];
 
-			stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
-			Token tok = keywods.getKeyword(stringVal);
-			if (tok != null) {
-				token = tok;
-			} else {
-				token = Token.IDENTIFIER;
-			}
-		} else {
+            stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
+            Token tok = keywods.getKeyword(stringVal);
+            if (tok != null) {
+                token = tok;
+            } else {
+                token = Token.IDENTIFIER;
+            }
+        } else {
 
-			final boolean firstFlag = isFirstIdentifierChar(first);
-			if (!firstFlag) {
-				throw new SQLParseException("illegal identifier");
-			}
+            final boolean firstFlag = isFirstIdentifierChar(first);
+            if (!firstFlag) {
+                throw new SQLParseException("illegal identifier");
+            }
 
-			int hash = first;
+            int hash = first;
 
-			offsetCache = curIndex;
-			sizeCache = 1;
-			char ch;
-			for (;;) {
-				ch = sql[++curIndex];
+            offsetCache = curIndex;
+            sizeCache = 1;
+            char ch;
+            for (;;) {
+                ch = sql[++curIndex];
 
-				if (!isIdentifierChar(ch)) {
-					break;
-				}
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
 
-				hash = 31 * hash + ch;
+                hash = 31 * hash + ch;
 
-				sizeCache++;
-				continue;
-			}
+                sizeCache++;
+                continue;
+            }
 
-			this.ch = sql[curIndex];
+            this.ch = sql[curIndex];
 
-			stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
-			Token tok = keywods.getKeyword(stringVal);
-			if (tok != null) {
-				token = tok;
-			} else {
-				token = Token.IDENTIFIER;
-			}
-		}
-	}
+            stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
+            Token tok = keywods.getKeyword(stringVal);
+            if (tok != null) {
+                token = tok;
+            } else {
+                token = Token.IDENTIFIER;
+            }
+        }
+    }
 
-	protected void scanString() {
-		offsetCache = curIndex;
-		boolean hasSpecial = false;
+    protected void scanString() {
+        offsetCache = curIndex;
+        boolean hasSpecial = false;
 
-		for (;;) {
-			if (curIndex >= sqlLength) {
-				lexError(tokenPos, "unclosed.str.lit");
-				return;
-			}
+        for (;;) {
+            if (curIndex >= sqlLength) {
+                lexError(tokenPos, "unclosed.str.lit");
+                return;
+            }
 
-			ch = sql[++curIndex];
+            ch = sql[++curIndex];
 
-			if (ch == '\\') {
-				scanChar();
-				if (!hasSpecial) {
-					System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
-					hasSpecial = true;
-				}
+            if (ch == '\\') {
+                scanChar();
+                if (!hasSpecial) {
+                    System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
+                    hasSpecial = true;
+                }
 
-				switch (ch) {
-				case '\0':
-					putChar('\0');
-					break;
-				case '\'':
-					putChar('\'');
-					break;
-				case '"':
-					putChar('"');
-					break;
-				case 'b':
-					putChar('\b');
-					break;
-				case 'n':
-					putChar('\n');
-					break;
-				case 'r':
-					putChar('\r');
-					break;
-				case 't':
-					putChar('\t');
-					break;
-				case '\\':
-					putChar('\\');
-					break;
-				case 'Z':
-					putChar((char) 0x1A); // ctrl + Z
-					break;
-				default:
-					putChar(ch);
-					break;
-				}
-				scanChar();
-			}
+                switch (ch) {
+                    case '\0':
+                        putChar('\0');
+                        break;
+                    case '\'':
+                        putChar('\'');
+                        break;
+                    case '"':
+                        putChar('"');
+                        break;
+                    case 'b':
+                        putChar('\b');
+                        break;
+                    case 'n':
+                        putChar('\n');
+                        break;
+                    case 'r':
+                        putChar('\r');
+                        break;
+                    case 't':
+                        putChar('\t');
+                        break;
+                    case '\\':
+                        putChar('\\');
+                        break;
+                    case 'Z':
+                        putChar((char) 0x1A); // ctrl + Z
+                        break;
+                    default:
+                        putChar(ch);
+                        break;
+                }
+                scanChar();
+            }
 
-			if (ch == '\'') {
-				scanChar();
-				if (ch != '\'') {
-					token = LITERAL_CHARS;
-					break;
-				} else {
-					System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
-					hasSpecial = true;
-					putChar('\'');
-					continue;
-				}
-			}
+            if (ch == '\'') {
+                scanChar();
+                if (ch != '\'') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
+                    hasSpecial = true;
+                    putChar('\'');
+                    continue;
+                }
+            }
 
-			if (!hasSpecial) {
-				sizeCache++;
-				continue;
-			}
+            if (!hasSpecial) {
+                sizeCache++;
+                continue;
+            }
 
-			if (sizeCache == sbuf.length) {
-				putChar(ch);
-			} else {
-				sbuf[sizeCache++] = ch;
-			}
-		}
+            if (sizeCache == sbuf.length) {
+                putChar(ch);
+            } else {
+                sbuf[sizeCache++] = ch;
+            }
+        }
 
-		if (!hasSpecial) {
-			stringVal = new String(sql, offsetCache + 1, sizeCache);
-		} else {
-			stringVal = new String(sbuf, 0, sizeCache);
-		}
-	}
+        if (!hasSpecial) {
+            stringVal = new String(sql, offsetCache + 1, sizeCache);
+        } else {
+            stringVal = new String(sbuf, 0, sizeCache);
+        }
+    }
 }

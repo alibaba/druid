@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.bvt.proxy;
 
@@ -46,311 +39,318 @@ import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 
 public class LogFilterTest extends TestCase {
 
-	public void test_logFilter_0() throws Exception {
-		DataSourceProxyConfig config = new DataSourceProxyConfig();
-		DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
+    public void test_logFilter_0() throws Exception {
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+        DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
-		Log4jFilter log4jFilter = new Log4jFilter();
-		log4jFilter.init(dataSource);
-		config.getFilters().add(log4jFilter);
-		setLogDisableAll(log4jFilter, true);
+        Log4jFilter log4jFilter = new Log4jFilter();
+        log4jFilter.init(dataSource);
+        config.getFilters().add(log4jFilter);
+        setLogDisableAll(log4jFilter, true);
 
-		CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
-			@Override
-			public boolean isDataSourceLogEnabled() {
-				return true;
-			}
+        CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
 
-			@Override
-			public boolean isConnectionLogEnabled() {
-				return true;
-			}
+            @Override
+            public boolean isDataSourceLogEnabled() {
+                return true;
+            }
 
-			@Override
-			public boolean isStatementLogEnabled() {
-				return true;
-			}
+            @Override
+            public boolean isConnectionLogEnabled() {
+                return true;
+            }
 
-			@Override
-			public boolean isResultSetLogEnabled() {
-				return true;
-			}
+            @Override
+            public boolean isStatementLogEnabled() {
+                return true;
+            }
 
-			@Override
-			public boolean isResultSetLogErrorEnabled() {
-				return true;
-			}
+            @Override
+            public boolean isResultSetLogEnabled() {
+                return true;
+            }
 
-			@Override
-			public boolean isResultSetNextAfterLogEnabled() {
-				return true;
-			}
-		};
-		commonLogFilter.init(dataSource);
-		config.getFilters().add(commonLogFilter);
+            @Override
+            public boolean isResultSetLogErrorEnabled() {
+                return true;
+            }
 
-		setLogDisableAll(commonLogFilter, false);
-		executeSQL(dataSource);
-	}
+            @Override
+            public boolean isResultSetNextAfterLogEnabled() {
+                return true;
+            }
+        };
+        commonLogFilter.init(dataSource);
+        config.getFilters().add(commonLogFilter);
 
-	public void test_logFilter_1() throws Exception {
-		DataSourceProxyConfig config = new DataSourceProxyConfig();
-		DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
+        setLogDisableAll(commonLogFilter, false);
+        executeSQL(dataSource);
+    }
 
-		Log4jFilter log4jFilter = new Log4jFilter();
-		log4jFilter.init(dataSource);
-		config.getFilters().add(log4jFilter);
-		setLogDisableAll(log4jFilter, true);
+    public void test_logFilter_1() throws Exception {
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+        DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
-		CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
-			@Override
-			public boolean isDataSourceLogEnabled() {
-				return false;
-			}
+        Log4jFilter log4jFilter = new Log4jFilter();
+        log4jFilter.init(dataSource);
+        config.getFilters().add(log4jFilter);
+        setLogDisableAll(log4jFilter, true);
 
-			@Override
-			public boolean isConnectionLogEnabled() {
-				return false;
-			}
+        CommonsLogFilter commonLogFilter = new CommonsLogFilter() {
 
-			@Override
-			public boolean isStatementLogEnabled() {
-				return false;
-			}
+            @Override
+            public boolean isDataSourceLogEnabled() {
+                return false;
+            }
 
-			@Override
-			public boolean isResultSetLogEnabled() {
-				return false;
-			}
+            @Override
+            public boolean isConnectionLogEnabled() {
+                return false;
+            }
 
-			@Override
-			public boolean isResultSetLogErrorEnabled() {
-				return false;
-			}
+            @Override
+            public boolean isStatementLogEnabled() {
+                return false;
+            }
 
-			@Override
-			public boolean isResultSetNextAfterLogEnabled() {
-				return false;
-			}
-		};
-		commonLogFilter.init(dataSource);
-		config.getFilters().add(commonLogFilter);
+            @Override
+            public boolean isResultSetLogEnabled() {
+                return false;
+            }
 
-		setLogDisableAll(commonLogFilter, true);
-		executeSQL(dataSource);
-	}
+            @Override
+            public boolean isResultSetLogErrorEnabled() {
+                return false;
+            }
 
-	public void test_logFilter_2() throws Exception {
-		DataSourceProxyConfig config = new DataSourceProxyConfig();
-		DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
+            @Override
+            public boolean isResultSetNextAfterLogEnabled() {
+                return false;
+            }
+        };
+        commonLogFilter.init(dataSource);
+        config.getFilters().add(commonLogFilter);
 
-		Log4jFilter log4jFilter = new Log4jFilter();
-		{
-			log4jFilter.init(dataSource);
-			setLogDisableAll(log4jFilter, true);
-			config.getFilters().add(log4jFilter);
-		}
+        setLogDisableAll(commonLogFilter, true);
+        executeSQL(dataSource);
+    }
 
-		CommonsLogFilter logFilter = new CommonsLogFilter();
-		{
-			logFilter.init(dataSource);
-			setLogDisableAll(logFilter, true);
-			config.getFilters().add(logFilter);
-		}
+    public void test_logFilter_2() throws Exception {
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+        DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
-		final MockResultSetMetaData rsMeta = new MockResultSetMetaData() {
-			private int[] types = new int[] { Types.BLOB, Types.CLOB, Types.NCLOB, Types.BINARY, Types.OTHER };
+        Log4jFilter log4jFilter = new Log4jFilter();
+        {
+            log4jFilter.init(dataSource);
+            setLogDisableAll(log4jFilter, true);
+            config.getFilters().add(log4jFilter);
+        }
 
-			@Override
-			public int getColumnCount() throws SQLException {
-				return types.length;
-			}
+        CommonsLogFilter logFilter = new CommonsLogFilter();
+        {
+            logFilter.init(dataSource);
+            setLogDisableAll(logFilter, true);
+            config.getFilters().add(logFilter);
+        }
 
-			@Override
-			public int getColumnType(int column) throws SQLException {
-				return types[column - 1];
-			}
+        final MockResultSetMetaData rsMeta = new MockResultSetMetaData() {
 
-		};
+            private int[] types = new int[] { Types.BLOB, Types.CLOB, Types.NCLOB, Types.BINARY, Types.OTHER };
 
-		ConnectionProxy conn = (ConnectionProxy) dataSource.connect(new Properties());
+            @Override
+            public int getColumnCount() throws SQLException {
+                return types.length;
+            }
 
-		{
-			StatementProxy stmt = (StatementProxy) conn.createStatement();
-			MockResultSet rs = new MockResultSet(null) {
-				@Override
-				public ResultSetMetaData getMetaData() throws SQLException {
-					return rsMeta;
-				}
+            @Override
+            public int getColumnType(int column) throws SQLException {
+                return types[column - 1];
+            }
 
-				@Override
-				public boolean next() throws SQLException {
-					return true;
-				}
+        };
 
-				@Override
-				public Object getObject(int columnIndex) throws SQLException {
-					if (columnIndex == 5) {
-						throw new SQLException();
-					}
-					return null;
-				}
-			};
+        ConnectionProxy conn = (ConnectionProxy) dataSource.connect(new Properties());
 
-			FilterChainImpl chain = new FilterChainImpl(dataSource);
-			chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
-		}
-		{
-			final MockResultSet rs = new MockResultSet(null) {
-				@Override
-				public ResultSetMetaData getMetaData() throws SQLException {
-					throw new SQLException();
-				}
-			};
+        {
+            StatementProxy stmt = (StatementProxy) conn.createStatement();
+            MockResultSet rs = new MockResultSet(null) {
 
-			StatementProxy stmt = new StatementProxyImpl(conn, new MockStatement(conn) {
-				public ResultSet getResultSet() throws SQLException {
-					return rs;
-				}
-			}, 0);
+                @Override
+                public ResultSetMetaData getMetaData() throws SQLException {
+                    return rsMeta;
+                }
 
-			FilterChainImpl chain = new FilterChainImpl(dataSource);
-			chain.statement_getResultSet(stmt);
-		}
-		{
-			StatementProxy stmt = (StatementProxy) conn.createStatement();
-			MockResultSet rs = new MockResultSet(null) {
-				@Override
-				public ResultSetMetaData getMetaData() throws SQLException {
-					return rsMeta;
-				}
+                @Override
+                public boolean next() throws SQLException {
+                    return true;
+                }
 
-				@Override
-				public boolean next() throws SQLException {
-					return true;
-				}
+                @Override
+                public Object getObject(int columnIndex) throws SQLException {
+                    if (columnIndex == 5) {
+                        throw new SQLException();
+                    }
+                    return null;
+                }
+            };
 
-				@Override
-				public Object getObject(int columnIndex) throws SQLException {
-					if (columnIndex == 5) {
-						throw new SQLException();
-					}
-					return null;
-				}
-			};
+            FilterChainImpl chain = new FilterChainImpl(dataSource);
+            chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
+        }
+        {
+            final MockResultSet rs = new MockResultSet(null) {
 
-			{
-				logFilter.setResultSetLogEnabled(false);
-				FilterChainImpl chain = new FilterChainImpl(dataSource);
-				chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
-			}
-			{
-				logFilter.setResultSetNextAfterLogEnabled(false);
-				FilterChainImpl chain = new FilterChainImpl(dataSource);
-				chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
-			}
-		}
-	}
+                @Override
+                public ResultSetMetaData getMetaData() throws SQLException {
+                    throw new SQLException();
+                }
+            };
 
-	@SuppressWarnings("deprecation")
-	private void executeSQL(DataSourceProxyImpl dataSource) throws SQLException {
-		String sql = "SELECT * FROM PATROL";
+            StatementProxy stmt = new StatementProxyImpl(conn, new MockStatement(conn) {
 
-		Connection conn = dataSource.connect(new Properties());
-		conn.commit();
-		conn.rollback();
+                public ResultSet getResultSet() throws SQLException {
+                    return rs;
+                }
+            }, 0);
 
-		Statement stmt = conn.createStatement();
-		stmt.execute(sql);
-		stmt.addBatch(sql);
-		stmt.executeBatch();
-		stmt.executeQuery(sql);
-		stmt.executeUpdate(sql);
-		stmt.cancel();
-		stmt.close();
+            FilterChainImpl chain = new FilterChainImpl(dataSource);
+            chain.statement_getResultSet(stmt);
+        }
+        {
+            StatementProxy stmt = (StatementProxy) conn.createStatement();
+            MockResultSet rs = new MockResultSet(null) {
 
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setArray(1, null);
-		pstmt.setAsciiStream(2, null);
-		pstmt.setBigDecimal(3, null);
-		pstmt.setBinaryStream(4, null);
-		pstmt.setBlob(5, conn.createBlob());
-		pstmt.setByte(6, (byte) 1);
-		pstmt.setBytes(7, new byte[1]);
-		pstmt.setCharacterStream(8, null);
-		pstmt.setClob(9, conn.createClob());
-		pstmt.setDate(10, null);
-		pstmt.setFloat(11, 1F);
-		pstmt.setInt(12, 1);
-		pstmt.setLong(13, 1L);
-		pstmt.setNCharacterStream(14, null);
-		pstmt.setNClob(15, conn.createNClob());
-		pstmt.setNString(16, null);
-		pstmt.setNull(17, Types.VARCHAR);
-		pstmt.setObject(18, null);
-		pstmt.setRef(19, new MockRef());
-		pstmt.setRowId(20, new MockRowId());
-		pstmt.setShort(21, (short) 1);
-		pstmt.setSQLXML(22, conn.createSQLXML());
-		pstmt.setString(23, "");
-		pstmt.setTime(24, null);
-		pstmt.setTimestamp(25, null);
-		pstmt.setUnicodeStream(26, null, 0);
-		pstmt.setURL(27, null);
+                @Override
+                public ResultSetMetaData getMetaData() throws SQLException {
+                    return rsMeta;
+                }
 
-		pstmt.execute();
-		pstmt.addBatch();
-		pstmt.executeBatch();
-		pstmt.executeQuery();
-		pstmt.executeUpdate();
-		pstmt.close();
+                @Override
+                public boolean next() throws SQLException {
+                    return true;
+                }
 
-		conn.prepareCall(sql);
+                @Override
+                public Object getObject(int columnIndex) throws SQLException {
+                    if (columnIndex == 5) {
+                        throw new SQLException();
+                    }
+                    return null;
+                }
+            };
 
-		ResultSet rs = stmt.executeQuery(sql);
-		rs.next();
-		rs.close();
+            {
+                logFilter.setResultSetLogEnabled(false);
+                FilterChainImpl chain = new FilterChainImpl(dataSource);
+                chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
+            }
+            {
+                logFilter.setResultSetNextAfterLogEnabled(false);
+                FilterChainImpl chain = new FilterChainImpl(dataSource);
+                chain.resultSet_next(new ResultSetProxyImpl(stmt, rs, 1001, null));
+            }
+        }
+    }
 
-		{
-			Exception error = null;
-			try {
-				stmt.execute(MockStatement.ERROR_SQL);
-			} catch (SQLException ex) {
-				error = ex;
-			}
-			Assert.assertNotNull(error);
-		}
+    @SuppressWarnings("deprecation")
+    private void executeSQL(DataSourceProxyImpl dataSource) throws SQLException {
+        String sql = "SELECT * FROM PATROL";
 
-		conn.close();
-	}
+        Connection conn = dataSource.connect(new Properties());
+        conn.commit();
+        conn.rollback();
 
-	private void setLogDisableAll(LogFilter logFilter, boolean enable) {
-		logFilter.setDataSourceLogEnabled(enable);
+        Statement stmt = conn.createStatement();
+        stmt.execute(sql);
+        stmt.addBatch(sql);
+        stmt.executeBatch();
+        stmt.executeQuery(sql);
+        stmt.executeUpdate(sql);
+        stmt.cancel();
+        stmt.close();
 
-		logFilter.setConnectionLogErrorEnabled(enable);
-		logFilter.setConnectionRollbackAfterLogEnabled(enable);
-		logFilter.setConnectionConnectBeforeLogEnabled(enable);
-		logFilter.setConnectionConnectAfterLogEnabled(enable);
-		logFilter.setConnectionCommitAfterLogEnabled(enable);
-		logFilter.setConnectionCloseAfterLogEnabled(enable);
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setArray(1, null);
+        pstmt.setAsciiStream(2, null);
+        pstmt.setBigDecimal(3, null);
+        pstmt.setBinaryStream(4, null);
+        pstmt.setBlob(5, conn.createBlob());
+        pstmt.setByte(6, (byte) 1);
+        pstmt.setBytes(7, new byte[1]);
+        pstmt.setCharacterStream(8, null);
+        pstmt.setClob(9, conn.createClob());
+        pstmt.setDate(10, null);
+        pstmt.setFloat(11, 1F);
+        pstmt.setInt(12, 1);
+        pstmt.setLong(13, 1L);
+        pstmt.setNCharacterStream(14, null);
+        pstmt.setNClob(15, conn.createNClob());
+        pstmt.setNString(16, null);
+        pstmt.setNull(17, Types.VARCHAR);
+        pstmt.setObject(18, null);
+        pstmt.setRef(19, new MockRef());
+        pstmt.setRowId(20, new MockRowId());
+        pstmt.setShort(21, (short) 1);
+        pstmt.setSQLXML(22, conn.createSQLXML());
+        pstmt.setString(23, "");
+        pstmt.setTime(24, null);
+        pstmt.setTimestamp(25, null);
+        pstmt.setUnicodeStream(26, null, 0);
+        pstmt.setURL(27, null);
 
-		logFilter.setStatementLogEnabled(enable);
-		logFilter.setStatementLogErrorEnabled(enable);
-		logFilter.setStatementCreateAfterLogEnabled(enable);
-		logFilter.setStatementExecuteAfterLogEnabled(enable);
-		logFilter.setStatementExecuteBatchAfterLogEnabled(enable);
-		logFilter.setStatementExecuteQueryAfterLogEnabled(enable);
-		logFilter.setStatementExecuteUpdateAfterLogEnabled(enable);
-		logFilter.setStatementPrepareCallAfterLogEnabled(enable);
-		logFilter.setStatementPrepareAfterLogEnabled(enable);
-		logFilter.setStatementCloseAfterLogEnabled(enable);
-		logFilter.setStatementParameterSetLogEnabled(enable);	
+        pstmt.execute();
+        pstmt.addBatch();
+        pstmt.executeBatch();
+        pstmt.executeQuery();
+        pstmt.executeUpdate();
+        pstmt.close();
 
-		logFilter.setResultSetLogEnabled(enable);
-		logFilter.setResultSetOpenAfterLogEnabled(enable);
-		logFilter.setResultSetNextAfterLogEnabled(enable);
-		logFilter.setResultSetLogErrorEnabled(enable);
-		logFilter.setResultSetCloseAfterLogEnabled(enable);
-	}
+        conn.prepareCall(sql);
+
+        ResultSet rs = stmt.executeQuery(sql);
+        rs.next();
+        rs.close();
+
+        {
+            Exception error = null;
+            try {
+                stmt.execute(MockStatement.ERROR_SQL);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        conn.close();
+    }
+
+    private void setLogDisableAll(LogFilter logFilter, boolean enable) {
+        logFilter.setDataSourceLogEnabled(enable);
+
+        logFilter.setConnectionLogErrorEnabled(enable);
+        logFilter.setConnectionRollbackAfterLogEnabled(enable);
+        logFilter.setConnectionConnectBeforeLogEnabled(enable);
+        logFilter.setConnectionConnectAfterLogEnabled(enable);
+        logFilter.setConnectionCommitAfterLogEnabled(enable);
+        logFilter.setConnectionCloseAfterLogEnabled(enable);
+
+        logFilter.setStatementLogEnabled(enable);
+        logFilter.setStatementLogErrorEnabled(enable);
+        logFilter.setStatementCreateAfterLogEnabled(enable);
+        logFilter.setStatementExecuteAfterLogEnabled(enable);
+        logFilter.setStatementExecuteBatchAfterLogEnabled(enable);
+        logFilter.setStatementExecuteQueryAfterLogEnabled(enable);
+        logFilter.setStatementExecuteUpdateAfterLogEnabled(enable);
+        logFilter.setStatementPrepareCallAfterLogEnabled(enable);
+        logFilter.setStatementPrepareAfterLogEnabled(enable);
+        logFilter.setStatementCloseAfterLogEnabled(enable);
+        logFilter.setStatementParameterSetLogEnabled(enable);
+
+        logFilter.setResultSetLogEnabled(enable);
+        logFilter.setResultSetOpenAfterLogEnabled(enable);
+        logFilter.setResultSetNextAfterLogEnabled(enable);
+        logFilter.setResultSetLogErrorEnabled(enable);
+        logFilter.setResultSetCloseAfterLogEnabled(enable);
+    }
 
 }

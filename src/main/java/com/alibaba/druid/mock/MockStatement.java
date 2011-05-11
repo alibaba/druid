@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.mock;
 
@@ -22,262 +15,258 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 
 public class MockStatement implements Statement {
-	public final static String ERROR_SQL = "THROW ERROR";
 
-	private Connection connection;
-	protected MockConnection fakeConnection;
+    public final static String ERROR_SQL = "THROW ERROR";
 
-	public MockStatement(Connection connection) {
-		super();
-		this.connection = connection;
+    private Connection         connection;
+    protected MockConnection   fakeConnection;
 
-		if (connection instanceof MockConnection) {
-			fakeConnection = (MockConnection) connection;
-		}
-	}
+    public MockStatement(Connection connection){
+        super();
+        this.connection = connection;
 
-	public MockConnection getFakeConnection() {
-		return fakeConnection;
-	}
+        if (connection instanceof MockConnection) {
+            fakeConnection = (MockConnection) connection;
+        }
+    }
 
-	public void setFakeConnection(MockConnection fakeConnection) {
-		this.fakeConnection = fakeConnection;
-		this.connection = fakeConnection;
-	}
+    public MockConnection getFakeConnection() {
+        return fakeConnection;
+    }
 
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return null;
-	}
+    public void setFakeConnection(MockConnection fakeConnection) {
+        this.fakeConnection = fakeConnection;
+        this.connection = fakeConnection;
+    }
 
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return false;
-	}
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 
-	@Override
-	public ResultSet executeQuery(String sql) throws SQLException {
-		if (fakeConnection != null && fakeConnection.getDriver() != null) {
-			return fakeConnection.getDriver().createResultSet(this, sql);
-		}
-		
-		return new MockResultSet(this);
-	}
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
 
-	@Override
-	public int executeUpdate(String sql) throws SQLException {
-		return 0;
-	}
+    @Override
+    public ResultSet executeQuery(String sql) throws SQLException {
+        if (fakeConnection != null && fakeConnection.getDriver() != null) {
+            return fakeConnection.getDriver().createResultSet(this, sql);
+        }
 
-	@Override
-	public void close() throws SQLException {
+        return new MockResultSet(this);
+    }
 
-	}
+    @Override
+    public int executeUpdate(String sql) throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public int getMaxFieldSize() throws SQLException {
-		return 0;
-	}
+    @Override
+    public void close() throws SQLException {
 
-	@Override
-	public void setMaxFieldSize(int max) throws SQLException {
-	}
+    }
 
-	@Override
-	public int getMaxRows() throws SQLException {
-		return 0;
-	}
+    @Override
+    public int getMaxFieldSize() throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public void setMaxRows(int max) throws SQLException {
+    @Override
+    public void setMaxFieldSize(int max) throws SQLException {
+    }
 
-	}
+    @Override
+    public int getMaxRows() throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public void setEscapeProcessing(boolean enable) throws SQLException {
+    @Override
+    public void setMaxRows(int max) throws SQLException {
 
-	}
+    }
 
-	@Override
-	public int getQueryTimeout() throws SQLException {
-		return 0;
-	}
+    @Override
+    public void setEscapeProcessing(boolean enable) throws SQLException {
 
-	@Override
-	public void setQueryTimeout(int seconds) throws SQLException {
+    }
 
-	}
+    @Override
+    public int getQueryTimeout() throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public void cancel() throws SQLException {
+    @Override
+    public void setQueryTimeout(int seconds) throws SQLException {
 
-	}
+    }
 
-	@Override
-	public SQLWarning getWarnings() throws SQLException {
-		return null;
-	}
+    @Override
+    public void cancel() throws SQLException {
 
-	@Override
-	public void clearWarnings() throws SQLException {
+    }
 
-	}
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        return null;
+    }
 
-	@Override
-	public void setCursorName(String name) throws SQLException {
+    @Override
+    public void clearWarnings() throws SQLException {
 
-	}
+    }
 
-	@Override
-	public boolean execute(String sql) throws SQLException {
-		if (ERROR_SQL.equals(sql)) {
-			throw new SQLException();
-		}
+    @Override
+    public void setCursorName(String name) throws SQLException {
 
-		return false;
-	}
+    }
 
-	@Override
-	public ResultSet getResultSet() throws SQLException {
-		return new MockResultSet(this);
-	}
+    @Override
+    public boolean execute(String sql) throws SQLException {
+        if (ERROR_SQL.equals(sql)) {
+            throw new SQLException();
+        }
 
-	@Override
-	public int getUpdateCount() throws SQLException {
+        return false;
+    }
 
-		return 0;
-	}
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        return new MockResultSet(this);
+    }
 
-	@Override
-	public boolean getMoreResults() throws SQLException {
+    @Override
+    public int getUpdateCount() throws SQLException {
 
-		return false;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setFetchDirection(int direction) throws SQLException {
+    @Override
+    public boolean getMoreResults() throws SQLException {
 
-	}
+        return false;
+    }
 
-	@Override
-	public int getFetchDirection() throws SQLException {
-		return 0;
-	}
+    @Override
+    public void setFetchDirection(int direction) throws SQLException {
 
-	@Override
-	public void setFetchSize(int rows) throws SQLException {
+    }
 
-	}
+    @Override
+    public int getFetchDirection() throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public int getFetchSize() throws SQLException {
-		return 0;
-	}
+    @Override
+    public void setFetchSize(int rows) throws SQLException {
 
-	@Override
-	public int getResultSetConcurrency() throws SQLException {
-		return 0;
-	}
+    }
 
-	@Override
-	public int getResultSetType() throws SQLException {
+    @Override
+    public int getFetchSize() throws SQLException {
+        return 0;
+    }
 
-		return 0;
-	}
+    @Override
+    public int getResultSetConcurrency() throws SQLException {
+        return 0;
+    }
 
-	@Override
-	public void addBatch(String sql) throws SQLException {
+    @Override
+    public int getResultSetType() throws SQLException {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void clearBatch() throws SQLException {
+    @Override
+    public void addBatch(String sql) throws SQLException {
 
-	}
+    }
 
-	@Override
-	public int[] executeBatch() throws SQLException {
-		return new int[0];
-	}
+    @Override
+    public void clearBatch() throws SQLException {
 
-	@Override
-	public Connection getConnection() throws SQLException {
-		return connection;
-	}
+    }
 
-	@Override
-	public boolean getMoreResults(int current) throws SQLException {
+    @Override
+    public int[] executeBatch() throws SQLException {
+        return new int[0];
+    }
 
-		return false;
-	}
+    @Override
+    public Connection getConnection() throws SQLException {
+        return connection;
+    }
 
-	@Override
-	public ResultSet getGeneratedKeys() throws SQLException {
-		return new MockResultSet(this);
-	}
+    @Override
+    public boolean getMoreResults(int current) throws SQLException {
 
-	@Override
-	public int executeUpdate(String sql, int autoGeneratedKeys)
-			throws SQLException {
+        return false;
+    }
 
-		return 0;
-	}
+    @Override
+    public ResultSet getGeneratedKeys() throws SQLException {
+        return new MockResultSet(this);
+    }
 
-	@Override
-	public int executeUpdate(String sql, int[] columnIndexes)
-			throws SQLException {
+    @Override
+    public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public int executeUpdate(String sql, String[] columnNames)
-			throws SQLException {
+    @Override
+    public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public boolean execute(String sql, int autoGeneratedKeys)
-			throws SQLException {
+    @Override
+    public int executeUpdate(String sql, String[] columnNames) throws SQLException {
 
-		return false;
-	}
+        return 0;
+    }
 
-	@Override
-	public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+    @Override
+    public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean execute(String sql, String[] columnNames)
-			throws SQLException {
+    @Override
+    public boolean execute(String sql, int[] columnIndexes) throws SQLException {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public int getResultSetHoldability() throws SQLException {
+    @Override
+    public boolean execute(String sql, String[] columnNames) throws SQLException {
 
-		return 0;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isClosed() throws SQLException {
+    @Override
+    public int getResultSetHoldability() throws SQLException {
 
-		return false;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setPoolable(boolean poolable) throws SQLException {
+    @Override
+    public boolean isClosed() throws SQLException {
 
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isPoolable() throws SQLException {
+    @Override
+    public void setPoolable(boolean poolable) throws SQLException {
 
-		return false;
-	}
+    }
+
+    @Override
+    public boolean isPoolable() throws SQLException {
+
+        return false;
+    }
 
 }

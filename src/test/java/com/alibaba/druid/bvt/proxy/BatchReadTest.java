@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.bvt.proxy;
 
@@ -30,148 +23,149 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class BatchReadTest extends TestCase {
-	private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=batchReadTest:jdbc:derby:memory:batchDB;create=true";
 
-	protected void setUp() throws Exception {
-		Class.forName("com.alibaba.druid.proxy.DruidDriver");
+    private static String create_url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=batchReadTest:jdbc:derby:memory:batchDB;create=true";
 
-		Connection conn = DriverManager.getConnection(create_url);
-		
-		JdbcStatManager.getInstance();
-		
-		createTable();
+    protected void setUp() throws Exception {
+        Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
-		conn.close();
-	}
+        Connection conn = DriverManager.getConnection(create_url);
 
-	private void createTable() throws SQLException {
-		Connection conn = DriverManager.getConnection(create_url);
-		Statement stmt = conn.createStatement();
-		stmt.execute("CREATE TABLE T_USER (ID INTEGER, NAME VARCHAR(50), BIRTHDATE TIMESTAMP)");
-		stmt.close();
-		conn.close();
-	}
+        JdbcStatManager.getInstance();
 
-	private void dropTable() throws SQLException {
-		Connection conn = DriverManager.getConnection(create_url);
-		Statement stmt = conn.createStatement();
-		stmt.execute("DROP TABLE T_USER");
-		stmt.close();
-		conn.close();
-	}
+        createTable();
 
-	protected void tearDown() throws Exception {
-		dropTable();
-	}
+        conn.close();
+    }
 
-	public void test_stmt_batch() throws Exception {
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+    private void createTable() throws SQLException {
+        Connection conn = DriverManager.getConnection(create_url);
+        Statement stmt = conn.createStatement();
+        stmt.execute("CREATE TABLE T_USER (ID INTEGER, NAME VARCHAR(50), BIRTHDATE TIMESTAMP)");
+        stmt.close();
+        conn.close();
+    }
 
-		try {
-			conn = DriverManager.getConnection(create_url);
+    private void dropTable() throws SQLException {
+        Connection conn = DriverManager.getConnection(create_url);
+        Statement stmt = conn.createStatement();
+        stmt.execute("DROP TABLE T_USER");
+        stmt.close();
+        conn.close();
+    }
 
-			stmt = conn.createStatement();
+    protected void tearDown() throws Exception {
+        dropTable();
+    }
 
-			stmt.isClosed();
-			stmt.isPoolable();
+    public void test_stmt_batch() throws Exception {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
 
-			stmt.addBatch("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (1, 'A', NULL)");
-			stmt.addBatch("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (2, 'B', NULL)");
-			stmt.executeBatch();
+        try {
+            conn = DriverManager.getConnection(create_url);
 
-			for (;;) {
-				boolean moreResults = stmt.getMoreResults();
+            stmt = conn.createStatement();
 
-				if (moreResults) {
-					rs = stmt.getResultSet();
-					JdbcUtils.printResultSet(rs, System.out);
-					JdbcUtils.close(rs);
-					continue;
-				}
+            stmt.isClosed();
+            stmt.isPoolable();
 
-				int updateCount = stmt.getUpdateCount();
-				if (updateCount == -1) {
-					break;
-				}
-			}
+            stmt.addBatch("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (1, 'A', NULL)");
+            stmt.addBatch("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (2, 'B', NULL)");
+            stmt.executeBatch();
 
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(stmt);
-			JdbcUtils.close(conn);
-		}
-	}
+            for (;;) {
+                boolean moreResults = stmt.getMoreResults();
 
-	public void test_pstmt_batch() throws Exception {
+                if (moreResults) {
+                    rs = stmt.getResultSet();
+                    JdbcUtils.printResultSet(rs, System.out);
+                    JdbcUtils.close(rs);
+                    continue;
+                }
 
-		Connection conn = null;
-		Statement stmt = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+                int updateCount = stmt.getUpdateCount();
+                if (updateCount == -1) {
+                    break;
+                }
+            }
 
-		try {
-			conn = DriverManager.getConnection(create_url);
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(conn);
+        }
+    }
 
-			stmt = conn.createStatement();
+    public void test_pstmt_batch() throws Exception {
 
-			pstmt = conn.prepareStatement("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (?, ?, ?)");
+        Connection conn = null;
+        Statement stmt = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-			pstmt.setInt(1, 1);
-			pstmt.setString(2, "A");
-			pstmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
-			pstmt.addBatch();
+        try {
+            conn = DriverManager.getConnection(create_url);
 
-			pstmt.setInt(1, 2);
-			pstmt.setString(2, "B");
-			pstmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
-			pstmt.addBatch();
+            stmt = conn.createStatement();
 
-			int[] updateCounts = pstmt.executeBatch();
-			
-			Assert.assertArrayEquals(new int[] {1, 1}, updateCounts);
-			
-			pstmt.setFetchDirection(stmt.getFetchDirection());
-			pstmt.setFetchSize(pstmt.getFetchSize());
-			ResultSet keys = stmt.getGeneratedKeys();
-			JdbcUtils.close(keys);
-			
-			// just call
-			stmt.getConnection();
-			stmt.setMaxFieldSize(stmt.getMaxFieldSize());
-			stmt.setMaxRows(stmt.getMaxRows());
-			stmt.getQueryTimeout();
-			stmt.getResultSetConcurrency();
-			stmt.getResultSetHoldability();
-			stmt.getResultSetType();
-			stmt.setPoolable(true);
-			stmt.getWarnings();
-			
-			pstmt.getMetaData();
-			pstmt.getParameterMetaData();
-			pstmt.getWarnings();
-			
-			stmt.execute("SELECT * FROM T_USER");
-			for (;;) {
-				rs = stmt.getResultSet();
-				
-				rs.getWarnings();
-				
-				if (rs != null) {
-					JdbcUtils.printResultSet(rs, System.out);
-					JdbcUtils.close(rs);
-				}
+            pstmt = conn.prepareStatement("INSERT INTO T_USER (ID, NAME, BIRTHDATE) VALUES (?, ?, ?)");
 
-				if ((stmt.getMoreResults() == false) && (stmt.getUpdateCount() == -1)) {
-					break;
-				}
-			}
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(stmt);
-			JdbcUtils.close(pstmt);
-			JdbcUtils.close(conn);
-		}
-	}
+            pstmt.setInt(1, 1);
+            pstmt.setString(2, "A");
+            pstmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+            pstmt.addBatch();
+
+            pstmt.setInt(1, 2);
+            pstmt.setString(2, "B");
+            pstmt.setTimestamp(3, new java.sql.Timestamp(System.currentTimeMillis()));
+            pstmt.addBatch();
+
+            int[] updateCounts = pstmt.executeBatch();
+
+            Assert.assertArrayEquals(new int[] { 1, 1 }, updateCounts);
+
+            pstmt.setFetchDirection(stmt.getFetchDirection());
+            pstmt.setFetchSize(pstmt.getFetchSize());
+            ResultSet keys = stmt.getGeneratedKeys();
+            JdbcUtils.close(keys);
+
+            // just call
+            stmt.getConnection();
+            stmt.setMaxFieldSize(stmt.getMaxFieldSize());
+            stmt.setMaxRows(stmt.getMaxRows());
+            stmt.getQueryTimeout();
+            stmt.getResultSetConcurrency();
+            stmt.getResultSetHoldability();
+            stmt.getResultSetType();
+            stmt.setPoolable(true);
+            stmt.getWarnings();
+
+            pstmt.getMetaData();
+            pstmt.getParameterMetaData();
+            pstmt.getWarnings();
+
+            stmt.execute("SELECT * FROM T_USER");
+            for (;;) {
+                rs = stmt.getResultSet();
+
+                rs.getWarnings();
+
+                if (rs != null) {
+                    JdbcUtils.printResultSet(rs, System.out);
+                    JdbcUtils.close(rs);
+                }
+
+                if ((stmt.getMoreResults() == false) && (stmt.getUpdateCount() == -1)) {
+                    break;
+                }
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+            JdbcUtils.close(pstmt);
+            JdbcUtils.close(conn);
+        }
+    }
 }

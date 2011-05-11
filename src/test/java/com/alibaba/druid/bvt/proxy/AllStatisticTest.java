@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.bvt.proxy;
 
@@ -33,113 +26,111 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class AllStatisticTest extends TestCase {
-	String url = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statTest:jdbc:derby:classpath:petstore-db";
 
-	private AtomicLong fetchRowCout = new AtomicLong();
+    String             url              = "jdbc:wrap-jdbc:filters=default,commonLogging,log4j:name=statTest:jdbc:derby:classpath:petstore-db";
 
-	Connection globalConnection = null;
+    private AtomicLong fetchRowCout     = new AtomicLong();
 
-	protected void setUp() throws Exception {
-		JdbcStatManager stat = JdbcStatManager.getInstance();
-		
-		stat.reset();
-		
-		Class.forName("com.alibaba.druid.proxy.DruidDriver");
+    Connection         globalConnection = null;
 
-		Connection conn = DriverManager.getConnection(url);
-		
-		int size = stat.getConnectionList().size();
-		Assert.assertTrue(size >= 1);
-		conn.close();
+    protected void setUp() throws Exception {
+        JdbcStatManager stat = JdbcStatManager.getInstance();
 
-		TabularData connectionList = stat.getConnectionList();
+        stat.reset();
 
-		Assert.assertEquals(connectionList.size(), size - 1);
+        Class.forName("com.alibaba.druid.proxy.DruidDriver");
 
-		stat.reset();
-		
-		globalConnection = DriverManager.getConnection(url);
-	}
-	
-	protected void tearDown() throws Exception {
-		JdbcUtils.close(globalConnection);
-	}
-	
-	public void test_stmt() throws Exception {
+        Connection conn = DriverManager.getConnection(url);
 
-		// ////////////////////////
+        int size = stat.getConnectionList().size();
+        Assert.assertTrue(size >= 1);
+        conn.close();
 
-	
-		f1();
-		f2();
-		f3();
+        TabularData connectionList = stat.getConnectionList();
 
+        Assert.assertEquals(connectionList.size(), size - 1);
 
+        stat.reset();
 
-	}
+        globalConnection = DriverManager.getConnection(url);
+    }
 
-	public void f1() throws Exception {
+    protected void tearDown() throws Exception {
+        JdbcUtils.close(globalConnection);
+    }
 
-		Statement pstmt = null;
-		ResultSet rs = null;
+    public void test_stmt() throws Exception {
 
-		try {
+        // ////////////////////////
 
-			pstmt = globalConnection.createStatement();
-			rs = pstmt.executeQuery("SELECT * FROM ITEM WHERE LISTPRICE > 10");
-			while (rs.next()) {
-				fetchRowCout.incrementAndGet();
-				rs.getObject(1);
-			}
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(pstmt);
-		}
-	}
+        f1();
+        f2();
+        f3();
 
-	public void f2() throws Exception {
+    }
 
-		Connection conn = null;
-		Statement pstmt = null;
-		ResultSet rs = null;
+    public void f1() throws Exception {
 
-		try {
-			conn = DriverManager.getConnection(url);
+        Statement pstmt = null;
+        ResultSet rs = null;
 
-			pstmt = conn.createStatement();
-			rs = pstmt.executeQuery("SELECT * FROM ITxEM WHERE LISTPRICE > 10");
-			while (rs.next()) {
-				fetchRowCout.incrementAndGet();
-				rs.getObject(1);
-			}
-		} catch (SQLException ex) {
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(pstmt);
-			JdbcUtils.close(conn);
-		}
-	}
+        try {
 
-	public void f3() throws Exception {
+            pstmt = globalConnection.createStatement();
+            rs = pstmt.executeQuery("SELECT * FROM ITEM WHERE LISTPRICE > 10");
+            while (rs.next()) {
+                fetchRowCout.incrementAndGet();
+                rs.getObject(1);
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(pstmt);
+        }
+    }
 
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
+    public void f2() throws Exception {
 
-		try {
-			conn = DriverManager.getConnection(url);
+        Connection conn = null;
+        Statement pstmt = null;
+        ResultSet rs = null;
 
-			pstmt = conn.prepareStatement("SELECT * FROM ITEM WHERE LISTPRICE > ?");
-			pstmt.setBigDecimal(1, new BigDecimal(10));
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				fetchRowCout.incrementAndGet();
-				rs.getObject(1);
-			}
-		} finally {
-			JdbcUtils.close(rs);
-			JdbcUtils.close(pstmt);
-			JdbcUtils.close(conn);
-		}
-	}
+        try {
+            conn = DriverManager.getConnection(url);
+
+            pstmt = conn.createStatement();
+            rs = pstmt.executeQuery("SELECT * FROM ITxEM WHERE LISTPRICE > 10");
+            while (rs.next()) {
+                fetchRowCout.incrementAndGet();
+                rs.getObject(1);
+            }
+        } catch (SQLException ex) {
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(pstmt);
+            JdbcUtils.close(conn);
+        }
+    }
+
+    public void f3() throws Exception {
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DriverManager.getConnection(url);
+
+            pstmt = conn.prepareStatement("SELECT * FROM ITEM WHERE LISTPRICE > ?");
+            pstmt.setBigDecimal(1, new BigDecimal(10));
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                fetchRowCout.incrementAndGet();
+                rs.getObject(1);
+            }
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(pstmt);
+            JdbcUtils.close(conn);
+        }
+    }
 }

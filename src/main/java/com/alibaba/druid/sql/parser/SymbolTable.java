@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.parser;
 
@@ -28,24 +21,24 @@ public class SymbolTable {
     public static final int DEFAULT_TABLE_SIZE = 128;
 
     /** Buckets. */
-    private final Entry[] buckets;
-    private final String[] symbols;
-    private final char[][] symbols_char;
+    private final Entry[]   buckets;
+    private final String[]  symbols;
+    private final char[][]  symbols_char;
 
     // actual table size
-    private final int indexMask;
+    private final int       indexMask;
 
     //
     // Constructors
     //
 
     /** Constructs a symbol table with a default number of buckets. */
-    public SymbolTable() {
+    public SymbolTable(){
         this(DEFAULT_TABLE_SIZE);
     }
 
     /** Constructs a symbol table with a specified number of buckets. */
-    public SymbolTable(int tableSize) {
+    public SymbolTable(int tableSize){
         this.indexMask = tableSize - 1;
         this.buckets = new Entry[tableSize];
         this.symbols = new String[tableSize];
@@ -57,10 +50,9 @@ public class SymbolTable {
     //
 
     /**
-     * Adds the specified symbol to the symbol table and returns a reference to
-     * the unique symbol. If the symbol already exists, the previous symbol
-     * reference is returned instead, in order guarantee that symbol references
-     * remain unique.
+     * Adds the specified symbol to the symbol table and returns a reference to the unique symbol. If the symbol already
+     * exists, the previous symbol reference is returned instead, in order guarantee that symbol references remain
+     * unique.
      * 
      * @param symbol The new symbol.
      */
@@ -79,10 +71,9 @@ public class SymbolTable {
     }
 
     /**
-     * Adds the specified symbol to the symbol table and returns a reference to
-     * the unique symbol. If the symbol already exists, the previous symbol
-     * reference is returned instead, in order guarantee that symbol references
-     * remain unique.
+     * Adds the specified symbol to the symbol table and returns a reference to the unique symbol. If the symbol already
+     * exists, the previous symbol reference is returned instead, in order guarantee that symbol references remain
+     * unique.
      * 
      * @param buffer The buffer containing the new symbol.
      * @param offset The offset into the buffer of the new symbol.
@@ -130,7 +121,7 @@ public class SymbolTable {
 
         // add new entry
         Entry entry = new Entry(buffer, offset, len, hash, buckets[bucket]);
-        buckets[bucket] = entry; 
+        buckets[bucket] = entry;
         if (match) {
             symbols[bucket] = entry.symbol;
             symbols_char[bucket] = entry.characters;
@@ -159,27 +150,26 @@ public class SymbolTable {
     //
 
     /**
-     * This class is a symbol table entry. Each entry acts as a node in a linked
-     * list.
+     * This class is a symbol table entry. Each entry acts as a node in a linked list.
      */
     protected static final class Entry {
+
         public final String symbol;
-        public final int hashCode;
+        public final int    hashCode;
 
         public final char[] characters;
 
         /** The next entry. */
-        public Entry next;
+        public Entry        next;
 
         //
         // Constructors
         //
 
         /**
-         * Constructs a new entry from the specified symbol information and next
-         * entry reference.
+         * Constructs a new entry from the specified symbol information and next entry reference.
          */
-        public Entry(char[] ch, int offset, int length, int hash, Entry next) {
+        public Entry(char[] ch, int offset, int length, int hash, Entry next){
             characters = new char[length];
             System.arraycopy(ch, offset, characters, 0, length);
             symbol = new String(characters).intern();

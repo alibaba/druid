@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.stat;
 
@@ -30,147 +23,148 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 
 public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
-	private final String name;
-	private final String url;
 
-	private final JdbcConnectionStat connectionStat = new JdbcConnectionStat();
-	private final JdbcResultSetStat resultSetStat = new JdbcResultSetStat();
-	private final JdbcStatementStat statementStat = new JdbcStatementStat();
+    private final String                                        name;
+    private final String                                        url;
 
-	private final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = new ConcurrentHashMap<String, JdbcSqlStat>();
+    private final JdbcConnectionStat                            connectionStat = new JdbcConnectionStat();
+    private final JdbcResultSetStat                             resultSetStat  = new JdbcResultSetStat();
+    private final JdbcStatementStat                             statementStat  = new JdbcStatementStat();
 
-	private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
+    private final ConcurrentMap<String, JdbcSqlStat>            sqlStatMap     = new ConcurrentHashMap<String, JdbcSqlStat>();
 
-	public JdbcDataSourceStat(String name, String url) {
-		this.name = name;
-		this.url = url;
-	}
+    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections    = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
-	public void reset() {
-		connectionStat.reset();
-		statementStat.reset();
-		resultSetStat.reset();
-		
-		for (JdbcSqlStat sqlStat : sqlStatMap.values()) {
-			if (sqlStat.getExecuteCount() == 0) {
-				continue;
-			}
-			
-			sqlStat.reset();
-		}
-		sqlStatMap.clear();
-		
-		for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
-			connectionStat.reset();
-		}
-		// connections.clear();
-	}
+    public JdbcDataSourceStat(String name, String url){
+        this.name = name;
+        this.url = url;
+    }
 
-	public JdbcConnectionStat getConnectionStat() {
-		return connectionStat;
-	}
+    public void reset() {
+        connectionStat.reset();
+        statementStat.reset();
+        resultSetStat.reset();
 
-	public JdbcResultSetStat getResultSetStat() {
-		return resultSetStat;
-	}
+        for (JdbcSqlStat sqlStat : sqlStatMap.values()) {
+            if (sqlStat.getExecuteCount() == 0) {
+                continue;
+            }
 
-	public JdbcStatementStat getStatementStat() {
-		return statementStat;
-	}
+            sqlStat.reset();
+        }
+        sqlStatMap.clear();
 
-	@Override
-	public String getConnectionUrl() {
-		return url;
-	}
+        for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
+            connectionStat.reset();
+        }
+        // connections.clear();
+    }
 
-	public JdbcSqlStat getSqlCounter(String sql) {
-		return this.sqlStatMap.get(sql);
-	}
+    public JdbcConnectionStat getConnectionStat() {
+        return connectionStat;
+    }
 
-	public ConcurrentMap<String, JdbcSqlStat> getSqlStatisticMap() {
-		return this.sqlStatMap;
-	}
+    public JdbcResultSetStat getResultSetStat() {
+        return resultSetStat;
+    }
 
-	@Override
-	public TabularData getSqlList() throws JMException {
-		CompositeType rowType = JdbcSqlStat.getCompositeType();
-		String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+    public JdbcStatementStat getStatementStat() {
+        return statementStat;
+    }
 
-		TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
-		TabularData data = new TabularDataSupport(tabularType);
+    @Override
+    public String getConnectionUrl() {
+        return url;
+    }
 
-		for (Map.Entry<String, JdbcSqlStat> entry : sqlStatMap.entrySet()) {
-			data.put(entry.getValue().getCompositeData());
-		}
+    public JdbcSqlStat getSqlCounter(String sql) {
+        return this.sqlStatMap.get(sql);
+    }
 
-		return data;
-	}
+    public ConcurrentMap<String, JdbcSqlStat> getSqlStatisticMap() {
+        return this.sqlStatMap;
+    }
 
-	public static StatFilter getCounterFilter(DataSourceProxy dataSource) {
-		for (Filter filter : dataSource.getFilters()) {
-			if (filter instanceof StatFilter) {
-				return (StatFilter) filter;
-			}
-		}
+    @Override
+    public TabularData getSqlList() throws JMException {
+        CompositeType rowType = JdbcSqlStat.getCompositeType();
+        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
 
-		return null;
-	}
+        TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
+        TabularData data = new TabularDataSupport(tabularType);
 
-	public JdbcSqlStat getSqlCounter(long id) {
-		for (Map.Entry<String, JdbcSqlStat> entry : this.sqlStatMap.entrySet()) {
-			if (entry.getValue().getId() == id) {
-				return entry.getValue();
-			}
-		}
+        for (Map.Entry<String, JdbcSqlStat> entry : sqlStatMap.entrySet()) {
+            data.put(entry.getValue().getCompositeData());
+        }
 
-		return null;
-	}
+        return data;
+    }
 
-	public final ConcurrentMap<Long, JdbcConnectionStat.Entry> getConnections() {
-		return connections;
-	}
+    public static StatFilter getCounterFilter(DataSourceProxy dataSource) {
+        for (Filter filter : dataSource.getFilters()) {
+            if (filter instanceof StatFilter) {
+                return (StatFilter) filter;
+            }
+        }
 
-	@Override
-	public TabularData getConnectionList() throws JMException {
-		CompositeType rowType = JdbcConnectionStat.Entry.getCompositeType();
-		String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
+        return null;
+    }
 
-		TabularType tabularType = new TabularType("ConnectionListStatistic", "ConnectionListStatistic", rowType,
-				indexNames);
-		TabularData data = new TabularDataSupport(tabularType);
+    public JdbcSqlStat getSqlCounter(long id) {
+        for (Map.Entry<String, JdbcSqlStat> entry : this.sqlStatMap.entrySet()) {
+            if (entry.getValue().getId() == id) {
+                return entry.getValue();
+            }
+        }
 
-		for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : getConnections().entrySet()) {
-			data.put(entry.getValue().getCompositeData());
-		}
+        return null;
+    }
 
-		return data;
-	}
+    public final ConcurrentMap<Long, JdbcConnectionStat.Entry> getConnections() {
+        return connections;
+    }
 
-	public String getName() {
-		return name;
-	}
+    @Override
+    public TabularData getConnectionList() throws JMException {
+        CompositeType rowType = JdbcConnectionStat.Entry.getCompositeType();
+        String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
 
-	public String getUrl() {
-		return url;
-	}
+        TabularType tabularType = new TabularType("ConnectionListStatistic", "ConnectionListStatistic", rowType,
+                                                  indexNames);
+        TabularData data = new TabularDataSupport(tabularType);
 
-	public ConcurrentMap<String, JdbcSqlStat> getSqlStatMap() {
-		return sqlStatMap;
-	}
+        for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : getConnections().entrySet()) {
+            data.put(entry.getValue().getCompositeData());
+        }
 
-	@Override
-	public long getConnectionActiveCount() {
-		return this.connections.size();
-	}
+        return data;
+    }
 
-	@Override
-	public long getConnectionConnectAliveMillis() {
-		long nowNano = System.nanoTime();
-		long aliveNanoSpan = this.getConnectionStat().getNanoTotal();
+    public String getName() {
+        return name;
+    }
 
-		for (JdbcConnectionStat.Entry connection : connections.values()) {
-			aliveNanoSpan += nowNano - connection.getEstablishNano();
-		}
-		return aliveNanoSpan / (1000 * 1000);
-	}
+    public String getUrl() {
+        return url;
+    }
+
+    public ConcurrentMap<String, JdbcSqlStat> getSqlStatMap() {
+        return sqlStatMap;
+    }
+
+    @Override
+    public long getConnectionActiveCount() {
+        return this.connections.size();
+    }
+
+    @Override
+    public long getConnectionConnectAliveMillis() {
+        long nowNano = System.nanoTime();
+        long aliveNanoSpan = this.getConnectionStat().getNanoTotal();
+
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            aliveNanoSpan += nowNano - connection.getEstablishNano();
+        }
+        return aliveNanoSpan / (1000 * 1000);
+    }
 }

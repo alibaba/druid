@@ -26,7 +26,8 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 public class DruidDataSourceFactory implements ObjectFactory {
-    static final int UNKNOWN_TRANSACTIONISOLATION = -1;
+
+    static final int              UNKNOWN_TRANSACTIONISOLATION             = -1;
 
     private final static String   PROP_DEFAULTAUTOCOMMIT                   = "defaultAutoCommit";
     private final static String   PROP_DEFAULTREADONLY                     = "defaultReadOnly";

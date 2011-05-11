@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.filter.stat;
 
@@ -22,69 +15,67 @@ import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
 /**
- * 
  * @author wenshao<szujobs@hotmail.com>
- * 
  */
 public interface StatFilterMBean {
 
-	void reset();
+    void reset();
 
-	boolean isConnectionStackTraceEnable();
+    boolean isConnectionStackTraceEnable();
 
-	void setConnectionStackTraceEnable(boolean connectionStackTraceEnable);
+    void setConnectionStackTraceEnable(boolean connectionStackTraceEnable);
 
-	String getConnectionUrl();
+    String getConnectionUrl();
 
-	long getConnectionConnectCount();
+    long getConnectionConnectCount();
 
-	long getConnectionCloseCount();
+    long getConnectionCloseCount();
 
-	long getConnectionActiveCount();
+    long getConnectionActiveCount();
 
-	long getConnectionActiveCountMax();
+    long getConnectionActiveCountMax();
 
-	long getConnectionCommitCount();
+    long getConnectionCommitCount();
 
-	long getConnectionRollbackCount();
+    long getConnectionRollbackCount();
 
-	long getConnectionConnectMillis();
+    long getConnectionConnectMillis();
 
-	long getConnectionConnectAliveMillis();
+    long getConnectionConnectAliveMillis();
 
-	long getConnectionConnectErrorCount();
+    long getConnectionConnectErrorCount();
 
-	Date getConnectionConnectLastTime();
+    Date getConnectionConnectLastTime();
 
-	long getStatementCreateCount();
+    long getStatementCreateCount();
 
-	long getStatementPrepareCount();
+    long getStatementPrepareCount();
 
-	long getStatementPrepareCallCount();
+    long getStatementPrepareCallCount();
 
-	long getStatementCloseCount();
+    long getStatementCloseCount();
 
-	long getStatementExecuteMillisTotal();
+    long getStatementExecuteMillisTotal();
 
-	long getStatementExecuteSuccessCount();
+    long getStatementExecuteSuccessCount();
 
-	long getStatementExecuteErrorCount();
+    long getStatementExecuteErrorCount();
 
-	Date getStatementExecuteErrorLastTime();
+    Date getStatementExecuteErrorLastTime();
 
-	CompositeData getStatementExecuteLastError() throws JMException;
+    CompositeData getStatementExecuteLastError() throws JMException;
 
-	Date getStatementExecuteLastTime();
+    Date getStatementExecuteLastTime();
 
-	long getResultSetHoldMillisTotal();
+    long getResultSetHoldMillisTotal();
 
-	long getResultSetFetchRowCount();
+    long getResultSetFetchRowCount();
 
-	long getResultSetOpenCount();
+    long getResultSetOpenCount();
 
-	long getResultSetCloseCount();
+    long getResultSetCloseCount();
 
-	TabularData getSqlList() throws JMException;
+    TabularData getSqlList() throws JMException;
 
-	TabularData getConnectionList() throws JMException;
+    TabularData getConnectionList() throws JMException;
 }

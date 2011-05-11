@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
@@ -26,12 +19,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleInsertStatement extends SQLStatementImpl {
-    private static final long serialVersionUID = 1L;
 
-    private final List<OracleHint> hints = new ArrayList<OracleHint>();
-    private Insert insert;
+    private static final long      serialVersionUID = 1L;
 
-    public OracleInsertStatement() {
+    private final List<OracleHint> hints            = new ArrayList<OracleHint>();
+    private Insert                 insert;
+
+    public OracleInsertStatement(){
 
     }
 
@@ -53,7 +47,7 @@ public class OracleInsertStatement extends SQLStatementImpl {
         visitor.endVisit(this);
     }
 
-    public OracleInsertStatement(Insert insert) {
+    public OracleInsertStatement(Insert insert){
 
         this.insert = insert;
     }
@@ -71,9 +65,10 @@ public class OracleInsertStatement extends SQLStatementImpl {
     }
 
     public static class IntoSubQuery extends OracleInsertStatement.InsertSource {
+
         private static final long serialVersionUID = 1L;
 
-        public IntoSubQuery() {
+        public IntoSubQuery(){
 
         }
 
@@ -90,11 +85,12 @@ public class OracleInsertStatement extends SQLStatementImpl {
     }
 
     public static class IntoValues extends OracleInsertStatement.InsertSource {
-        private static final long serialVersionUID = 1L;
 
-        private final List<SQLExpr> values = new ArrayList<SQLExpr>();
+        private static final long   serialVersionUID = 1L;
 
-        public IntoValues() {
+        private final List<SQLExpr> values           = new ArrayList<SQLExpr>();
+
+        public IntoValues(){
 
         }
 
@@ -117,21 +113,23 @@ public class OracleInsertStatement extends SQLStatementImpl {
     }
 
     public static abstract class InsertSource extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        public InsertSource() {
+        public InsertSource(){
 
         }
     }
 
     public static class Into extends SQLObjectImpl {
-        private static final long serialVersionUID = 1L;
 
-        private SQLExpr target;
-        private String alias;
-        private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
+        private static final long   serialVersionUID = 1L;
 
-        public Into() {
+        private SQLExpr             target;
+        private String              alias;
+        private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+
+        public Into(){
 
         }
 
@@ -174,12 +172,13 @@ public class OracleInsertStatement extends SQLStatementImpl {
     }
 
     public static class SigleTableInert extends OracleInsertStatement.Insert {
-        private static final long serialVersionUID = 1L;
 
-        private OracleInsertStatement.Into into;
+        private static final long                  serialVersionUID = 1L;
+
+        private OracleInsertStatement.Into         into;
         private OracleInsertStatement.InsertSource source;
 
-        public SigleTableInert() {
+        public SigleTableInert(){
 
         }
 
@@ -215,9 +214,10 @@ public class OracleInsertStatement extends SQLStatementImpl {
     }
 
     public static abstract class Insert extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        public Insert() {
+        public Insert(){
 
         }
     }

@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
@@ -60,7 +53,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTVisitor {
-    public MySqlOutputVisitor(Appendable appender) {
+
+    public MySqlOutputVisitor(Appendable appender){
         super(appender);
     }
 
@@ -128,8 +122,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(select.getOutFileCharset());
             }
 
-            if (select.getOutFileColumnsTerminatedBy() != null
-                || select.getOutFileColumnsEnclosedBy() != null
+            if (select.getOutFileColumnsTerminatedBy() != null || select.getOutFileColumnsEnclosedBy() != null
                 || select.getOutFileColumnsEscaped() != null) {
                 print(" COLUMNS");
                 if (select.getOutFileColumnsTerminatedBy() != null) {

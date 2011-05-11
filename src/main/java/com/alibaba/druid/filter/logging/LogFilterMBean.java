@@ -1,139 +1,129 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.filter.logging;
 
 /**
- * 
  * @author wenshao<szujobs@hotmail.com>
- *
  */
 public interface LogFilterMBean {
-	String getDataSourceLoggerName();
 
-	void setDataSourceLoggerName(String loggerName);
-	
-	boolean isDataSourceLogEnabled();
+    String getDataSourceLoggerName();
 
-	void setDataSourceLogEnabled(boolean dataSourceLogEnabled);
+    void setDataSourceLoggerName(String loggerName);
 
-	// //////////////
+    boolean isDataSourceLogEnabled();
 
-	String getConnectionLoggerName();
+    void setDataSourceLogEnabled(boolean dataSourceLogEnabled);
 
-	void setConnectionLoggerName(String loggerName);
-	
-	boolean isConnectionLogEnabled();
+    // //////////////
 
-	void setConnectionLogEnabled(boolean connectionLogEnabled);
+    String getConnectionLoggerName();
 
-	boolean isConnectionLogErrorEnabled();
+    void setConnectionLoggerName(String loggerName);
 
-	void setConnectionLogErrorEnabled(boolean connectionLogErrorEnabled);
+    boolean isConnectionLogEnabled();
 
-	boolean isConnectionConnectBeforeLogEnabled();
+    void setConnectionLogEnabled(boolean connectionLogEnabled);
 
-	void setConnectionConnectBeforeLogEnabled(boolean beforeConnectionConnectLogEnable);
-	
-	boolean isConnectionConnectAfterLogEnabled();
+    boolean isConnectionLogErrorEnabled();
 
-	void setConnectionConnectAfterLogEnabled(boolean afterConnectionConnectLogEnable);
+    void setConnectionLogErrorEnabled(boolean connectionLogErrorEnabled);
 
-	boolean isConnectionCloseAfterLogEnabled();
+    boolean isConnectionConnectBeforeLogEnabled();
 
-	void setConnectionCloseAfterLogEnabled(boolean afterConnectionCloseLogEnable);
+    void setConnectionConnectBeforeLogEnabled(boolean beforeConnectionConnectLogEnable);
 
-	boolean isConnectionCommitAfterLogEnabled();
+    boolean isConnectionConnectAfterLogEnabled();
 
-	void setConnectionCommitAfterLogEnabled(boolean afterConnectionCommitLogEnable);
+    void setConnectionConnectAfterLogEnabled(boolean afterConnectionConnectLogEnable);
 
+    boolean isConnectionCloseAfterLogEnabled();
 
+    void setConnectionCloseAfterLogEnabled(boolean afterConnectionCloseLogEnable);
 
-	// ////////////
+    boolean isConnectionCommitAfterLogEnabled();
 
-	String getStatementLoggerName();
+    void setConnectionCommitAfterLogEnabled(boolean afterConnectionCommitLogEnable);
 
-	void setStatementLoggerName(String loggerName);
+    // ////////////
 
-	boolean isStatementLogEnabled();
+    String getStatementLoggerName();
 
-	void setStatementLogEnabled(boolean statementLogEnabled);
+    void setStatementLoggerName(String loggerName);
 
-	boolean isStatementCloseAfterLogEnabled();
+    boolean isStatementLogEnabled();
 
-	void setStatementCloseAfterLogEnabled(boolean afterStatementCloseLogEnable);
+    void setStatementLogEnabled(boolean statementLogEnabled);
 
-	boolean isStatementCreateAfterLogEnabled();
+    boolean isStatementCloseAfterLogEnabled();
 
-	void setStatementCreateAfterLogEnabled(boolean afterStatementCreateLogEnable);
+    void setStatementCloseAfterLogEnabled(boolean afterStatementCloseLogEnable);
 
-	boolean isStatementExecuteBatchAfterLogEnabled();
+    boolean isStatementCreateAfterLogEnabled();
 
-	void setStatementExecuteBatchAfterLogEnabled(boolean afterStatementExecuteBatchLogEnable);
+    void setStatementCreateAfterLogEnabled(boolean afterStatementCreateLogEnable);
 
-	boolean isStatementExecuteAfterLogEnabled();
+    boolean isStatementExecuteBatchAfterLogEnabled();
 
-	void setStatementExecuteAfterLogEnabled(boolean afterStatementExecuteLogEnable);
+    void setStatementExecuteBatchAfterLogEnabled(boolean afterStatementExecuteBatchLogEnable);
 
-	boolean isStatementExecuteQueryAfterLogEnabled();
+    boolean isStatementExecuteAfterLogEnabled();
 
-	void setStatementExecuteQueryAfterLogEnabled(boolean afterStatementExecuteQueryLogEnable);
+    void setStatementExecuteAfterLogEnabled(boolean afterStatementExecuteLogEnable);
 
-	boolean isStatementExecuteUpdateAfterLogEnabled();
+    boolean isStatementExecuteQueryAfterLogEnabled();
 
-	void setStatementExecuteUpdateAfterLogEnabled(boolean afterStatementExecuteUpdateLogEnable);
+    void setStatementExecuteQueryAfterLogEnabled(boolean afterStatementExecuteQueryLogEnable);
 
-	boolean isStatementPrepareCallAfterLogEnabled();
+    boolean isStatementExecuteUpdateAfterLogEnabled();
 
-	void setStatementPrepareCallAfterLogEnabled(boolean afterStatementPrepareCallLogEnable);
+    void setStatementExecuteUpdateAfterLogEnabled(boolean afterStatementExecuteUpdateLogEnable);
 
-	boolean isStatementPrepareAfterLogEnabled();
+    boolean isStatementPrepareCallAfterLogEnabled();
 
-	void setStatementPrepareAfterLogEnabled(boolean afterStatementPrepareLogEnable);
+    void setStatementPrepareCallAfterLogEnabled(boolean afterStatementPrepareCallLogEnable);
 
-	boolean isStatementLogErrorEnabled();
+    boolean isStatementPrepareAfterLogEnabled();
 
-	void setStatementLogErrorEnabled(boolean statementLogErrorEnabled);
+    void setStatementPrepareAfterLogEnabled(boolean afterStatementPrepareLogEnable);
 
-	boolean isStatementParameterSetLogEnabled();
+    boolean isStatementLogErrorEnabled();
 
-	void setStatementParameterSetLogEnabled(boolean statementParameterSetLogEnable);
+    void setStatementLogErrorEnabled(boolean statementLogErrorEnabled);
 
-	// //////////////
+    boolean isStatementParameterSetLogEnabled();
 
-	String getResultSetLoggerName();
+    void setStatementParameterSetLogEnabled(boolean statementParameterSetLogEnable);
 
-	void setResultSetLoggerName(String loggerName);
-	
-	boolean isResultSetLogEnabled();
+    // //////////////
 
-	void setResultSetLogEnabled(boolean resultSetLogEnabled);
+    String getResultSetLoggerName();
 
-	boolean isResultSetNextAfterLogEnabled();
+    void setResultSetLoggerName(String loggerName);
 
-	void setResultSetNextAfterLogEnabled(boolean afterResultSetNextLogEnable);
+    boolean isResultSetLogEnabled();
 
-	boolean isResultSetOpenAfterLogEnabled();
+    void setResultSetLogEnabled(boolean resultSetLogEnabled);
 
-	void setResultSetOpenAfterLogEnabled(boolean afterResultSetOpenLogEnable);
+    boolean isResultSetNextAfterLogEnabled();
 
-	boolean isResultSetLogErrorEnabled();
+    void setResultSetNextAfterLogEnabled(boolean afterResultSetNextLogEnable);
 
-	void setResultSetLogErrorEnabled(boolean resultSetLogErrorEnabled);
+    boolean isResultSetOpenAfterLogEnabled();
 
-	boolean isResultSetCloseAfterLogEnabled();
+    void setResultSetOpenAfterLogEnabled(boolean afterResultSetOpenLogEnable);
 
-	void setResultSetCloseAfterLogEnabled(boolean resultSetCloseAfterLogEnable);
+    boolean isResultSetLogErrorEnabled();
+
+    void setResultSetLogErrorEnabled(boolean resultSetLogErrorEnabled);
+
+    boolean isResultSetCloseAfterLogEnabled();
+
+    void setResultSetCloseAfterLogEnabled(boolean resultSetCloseAfterLogEnable);
 }

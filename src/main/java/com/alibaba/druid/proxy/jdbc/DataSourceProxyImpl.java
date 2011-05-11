@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.proxy.jdbc;
 
@@ -38,184 +31,172 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 
 /**
- * 
  * @author wenshao<szujobs@hotmail.com>
- *
  */
 public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImplMBean {
-	private final Driver rawDriver;
 
-	private final DataSourceProxyConfig config;
+    private final Driver                rawDriver;
 
-	private long id;
-	
-	private final long createdTimeMillis = System.currentTimeMillis();
-	
-	private Properties properties;
+    private final DataSourceProxyConfig config;
 
-	public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config) {
-		super();
-		this.rawDriver = rawDriver;
-		this.config = config;
-	}
+    private long                        id;
 
-	public Driver getRawDriver() {
-		return this.rawDriver;
-	}
+    private final long                  createdTimeMillis = System.currentTimeMillis();
 
-	public String getRawUrl() {
-		return config.getRawUrl();
-	}
+    private Properties                  properties;
 
-	public ConnectionProxy connect(Properties info) throws SQLException {
-		this.properties = info;
-		
-		PasswordCallback passwordCallback = this.config.getPasswordCallback();
-		
-		if (passwordCallback != null) {
-			char[] chars = passwordCallback.getPassword();
-			String password = new String(chars);
-			info.put("password", password);
-		}
-		
-		NameCallback userCallback = this.config.getUserCallback();
-		if (userCallback != null) {
-			String user = userCallback.getName();
-			info.put("user", user);
-		}
-		
-		FilterChain chain = new FilterChainImpl(this);
-		return chain.connection_connect(info);
-	}
+    public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
+        super();
+        this.rawDriver = rawDriver;
+        this.config = config;
+    }
 
-	public DataSourceProxyConfig getConfig() {
-		return config;
-	}
+    public Driver getRawDriver() {
+        return this.rawDriver;
+    }
 
-	public long getId() {
-		return id;
-	}
+    public String getRawUrl() {
+        return config.getRawUrl();
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public ConnectionProxy connect(Properties info) throws SQLException {
+        this.properties = info;
 
-	@Override
-	public String getName() {
-		return this.config.getName();
-	}
-	
-	@Override
-	public String getUrl() {
-		return config.getUrl();
-	}
+        PasswordCallback passwordCallback = this.config.getPasswordCallback();
 
-	public List<Filter> getFilters() {
-		return config.getFilters();
-	}
+        if (passwordCallback != null) {
+            char[] chars = passwordCallback.getPassword();
+            String password = new String(chars);
+            info.put("password", password);
+        }
 
-	@Override
-	public String[] getFilterClasses() {
-		List<Filter> filterConfigList = config.getFilters();
+        NameCallback userCallback = this.config.getUserCallback();
+        if (userCallback != null) {
+            String user = userCallback.getName();
+            info.put("user", user);
+        }
 
-		List<String> classes = new ArrayList<String>();
-		for (Filter filter : filterConfigList) {
-			classes.add(filter.getClass().getName());
-		}
+        FilterChain chain = new FilterChainImpl(this);
+        return chain.connection_connect(info);
+    }
 
-		return classes.toArray(new String[classes.size()]);
-	}
+    public DataSourceProxyConfig getConfig() {
+        return config;
+    }
 
-	@Override
-	public String getRawDriverClassName() {
-		return config.getRawDriverClassName();
-	}
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public Date getCreatedTime() {
-		return new Date(createdTimeMillis);
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
+    @Override
+    public String getName() {
+        return this.config.getName();
+    }
 
-	@Override
-	public int getRawDriverMajorVersion() {
-		return rawDriver.getMajorVersion();
-	}
+    @Override
+    public String getUrl() {
+        return config.getUrl();
+    }
 
-	@Override
-	public int getRawDriverMinorVersion() {
-		return rawDriver.getMinorVersion();
-	}
-	
-	public String getDataSourceMBeanDomain() {
-		String name = this.config.getName();
-		if (name != null && name.length() != 0) {
-			return name;
-		}
-		
-		return "java.sql.dataSource_" + System.identityHashCode(this);
-	}
+    public List<Filter> getFilters() {
+        return config.getFilters();
+    }
 
-	public String getProperties() {
-		if (properties == null) {
-			return null;
-		}
-		
-		return properties.toString();
-	}
-	
-	private static CompositeType COMPOSITE_TYPE = null;
+    @Override
+    public String[] getFilterClasses() {
+        List<Filter> filterConfigList = config.getFilters();
 
-	public static CompositeType getCompositeType() throws JMException {
+        List<String> classes = new ArrayList<String>();
+        for (Filter filter : filterConfigList) {
+            classes.add(filter.getClass().getName());
+        }
 
-		if (COMPOSITE_TYPE != null) {
-			return COMPOSITE_TYPE;
-		}
+        return classes.toArray(new String[classes.size()]);
+    }
 
-		OpenType<?>[] indexTypes = new OpenType<?>[] { 
-				SimpleType.LONG, 
-				SimpleType.STRING, 
-				SimpleType.STRING,
-				new ArrayType<SimpleType<String>>(SimpleType.STRING, false), 
-				SimpleType.DATE, 
-				//
-				SimpleType.STRING, 
-				SimpleType.STRING, 
-				SimpleType.INTEGER,
-				SimpleType.INTEGER,
-				SimpleType.STRING 
-				};
+    @Override
+    public String getRawDriverClassName() {
+        return config.getRawDriverClassName();
+    }
 
-		String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime"
-				, "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" };
-		String[] indexDescriptions = indexNames;
-		COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
+    @Override
+    public Date getCreatedTime() {
+        return new Date(createdTimeMillis);
+    }
 
-		return COMPOSITE_TYPE;
-	}
-	
-	public CompositeDataSupport getCompositeData() throws JMException {
-		Map<String, Object> map = new HashMap<String, Object>();
+    @Override
+    public int getRawDriverMajorVersion() {
+        return rawDriver.getMajorVersion();
+    }
 
-		map.put("ID", id);
-		map.put("URL", this.getUrl());
-		map.put("Name", this.getName());
-		map.put("FilterClasses", getFilterClasses());
-		map.put("CreatedTime", getCreatedTime());
-		
-		map.put("RawDriverClassName", getRawDriverClassName());
-		map.put("RawUrl", getRawUrl());
-		map.put("RawDriverMajorVersion", getRawDriverMajorVersion());
-		map.put("RawDriverMinorVersion", getRawDriverMinorVersion());
-		map.put("Properties", getProperties());
+    @Override
+    public int getRawDriverMinorVersion() {
+        return rawDriver.getMinorVersion();
+    }
 
-		return new CompositeDataSupport(getCompositeType(), map);
-	}
+    public String getDataSourceMBeanDomain() {
+        String name = this.config.getName();
+        if (name != null && name.length() != 0) {
+            return name;
+        }
 
-	@Override
-	public String getRawJdbcUrl() {
-		return config.getRawUrl();
-	}
+        return "java.sql.dataSource_" + System.identityHashCode(this);
+    }
 
+    public String getProperties() {
+        if (properties == null) {
+            return null;
+        }
+
+        return properties.toString();
+    }
+
+    private static CompositeType COMPOSITE_TYPE = null;
+
+    public static CompositeType getCompositeType() throws JMException {
+
+        if (COMPOSITE_TYPE != null) {
+            return COMPOSITE_TYPE;
+        }
+
+        OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
+                new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE,
+                //
+                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING };
+
+        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", "RawUrl", "RawDriverClassName",
+                "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" };
+        String[] indexDescriptions = indexNames;
+        COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
+
+        return COMPOSITE_TYPE;
+    }
+
+    public CompositeDataSupport getCompositeData() throws JMException {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("ID", id);
+        map.put("URL", this.getUrl());
+        map.put("Name", this.getName());
+        map.put("FilterClasses", getFilterClasses());
+        map.put("CreatedTime", getCreatedTime());
+
+        map.put("RawDriverClassName", getRawDriverClassName());
+        map.put("RawUrl", getRawUrl());
+        map.put("RawDriverMajorVersion", getRawDriverMajorVersion());
+        map.put("RawDriverMinorVersion", getRawDriverMinorVersion());
+        map.put("Properties", getProperties());
+
+        return new CompositeDataSupport(getCompositeType(), map);
+    }
+
+    @Override
+    public String getRawJdbcUrl() {
+        return config.getRawUrl();
+    }
 
 }

@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.ast.statement;
 
@@ -24,11 +17,12 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSetStatement extends SQLStatementImpl {
+
     private static final long serialVersionUID = 1L;
 
-    private List<Item> items = new ArrayList<Item>();
+    private List<Item>        items            = new ArrayList<Item>();
 
-    public SQLSetStatement() {
+    public SQLSetStatement(){
     }
 
     public List<Item> getItems() {
@@ -61,15 +55,16 @@ public class SQLSetStatement extends SQLStatementImpl {
     }
 
     public static class Item extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLExpr target;
-        private SQLExpr value;
+        private SQLExpr           target;
+        private SQLExpr           value;
 
-        public Item() {
+        public Item(){
         }
 
-        public Item(SQLExpr target, SQLExpr value) {
+        public Item(SQLExpr target, SQLExpr value){
             this.target = target;
             this.value = value;
         }

@@ -119,7 +119,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected int               maxOpenPreparedStatements                 = -1;
 
     protected List<String>      connectionInitSqls;
-    
+
     public void addConnectionProperty(String name, String value) {
         properties.put(name, value);
     }
@@ -135,8 +135,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public void setConnectionInitSqls(Collection<Object> connectionInitSqls) {
         if ((connectionInitSqls != null) && (connectionInitSqls.size() > 0)) {
             ArrayList<String> newVal = null;
-            for (Iterator<Object> iterator = connectionInitSqls.iterator();
-            iterator.hasNext();) {
+            for (Iterator<Object> iterator = connectionInitSqls.iterator(); iterator.hasNext();) {
                 Object o = iterator.next();
                 if (o != null) {
                     String s = o.toString();

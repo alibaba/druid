@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.mock;
 
@@ -28,122 +21,123 @@ import java.sql.SQLXML;
 import java.util.Properties;
 
 public class MockDriver implements Driver {
-	private String prefix = "jdbc:fake:";
-	private String mockPrefix = "jdbc:mock:";
 
-	private final static MockDriver instance = new MockDriver();
+    private String                  prefix     = "jdbc:fake:";
+    private String                  mockPrefix = "jdbc:mock:";
 
-	static {
-		registerDriver(instance);
-	}
+    private final static MockDriver instance   = new MockDriver();
 
-	public static boolean registerDriver(Driver driver) {
-		try {
-			DriverManager.registerDriver(driver);
+    static {
+        registerDriver(instance);
+    }
 
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    public static boolean registerDriver(Driver driver) {
+        try {
+            DriverManager.registerDriver(driver);
 
-		return false;
-	}
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	@Override
-	public Connection connect(String url, Properties info) throws SQLException {
-		MockConnection conn = new MockConnection(this);
+        return false;
+    }
 
-		if (url == null) {
-			return conn;
-		}
+    @Override
+    public Connection connect(String url, Properties info) throws SQLException {
+        MockConnection conn = new MockConnection(this);
 
-		if (url.startsWith(prefix)) {
-			String catalog = url.substring(prefix.length());
-			conn.setCatalog(catalog);
+        if (url == null) {
+            return conn;
+        }
 
-			return conn;
-		}
-		
-		if (url.startsWith(mockPrefix)) {
-			String catalog = url.substring(mockPrefix.length());
-			conn.setCatalog(catalog);
-			
-			return conn;
-		}
+        if (url.startsWith(prefix)) {
+            String catalog = url.substring(prefix.length());
+            conn.setCatalog(catalog);
 
-		return null;
-	}
+            return conn;
+        }
 
-	@Override
-	public boolean acceptsURL(String url) throws SQLException {
-		return url.startsWith(prefix);
-	}
+        if (url.startsWith(mockPrefix)) {
+            String catalog = url.substring(mockPrefix.length());
+            conn.setCatalog(catalog);
 
-	@Override
-	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-		return null;
-	}
+            return conn;
+        }
 
-	@Override
-	public int getMajorVersion() {
-		return 0;
-	}
+        return null;
+    }
 
-	@Override
-	public int getMinorVersion() {
-		return 0;
-	}
+    @Override
+    public boolean acceptsURL(String url) throws SQLException {
+        return url.startsWith(prefix);
+    }
 
-	@Override
-	public boolean jdbcCompliant() {
-		return true;
-	}
+    @Override
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
+        return null;
+    }
 
-	protected ResultSet createResultSet(MockStatement stmt, String sql) {
-		MockResultSet rs = new MockResultSet(stmt);
+    @Override
+    public int getMajorVersion() {
+        return 0;
+    }
 
-		if ("SELECT 1".equalsIgnoreCase(sql)) {
-			rs.getRows().add(new Object[] { 1 });
-		} else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
-			rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
-		} else if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
-			for (int i = 0; i < 1000; ++i) {
-				rs.getRows().add(new Object[] { i });
-			}
-		}
+    @Override
+    public int getMinorVersion() {
+        return 0;
+    }
 
-		return rs;
-	}
+    @Override
+    public boolean jdbcCompliant() {
+        return true;
+    }
 
-	protected ResultSet createResultSet(MockPreparedStatement stmt) {
-		MockResultSet rs = new MockResultSet(stmt);
+    protected ResultSet createResultSet(MockStatement stmt, String sql) {
+        MockResultSet rs = new MockResultSet(stmt);
 
-		String sql = stmt.getSql();
+        if ("SELECT 1".equalsIgnoreCase(sql)) {
+            rs.getRows().add(new Object[] { 1 });
+        } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
+            rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
+        } else if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
+            for (int i = 0; i < 1000; ++i) {
+                rs.getRows().add(new Object[] { i });
+            }
+        }
 
-		if ("SELECT 1".equalsIgnoreCase(sql)) {
-			rs.getRows().add(new Object[] { 1 });
-		} else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
-			rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
-		} else if ("SELECT ?".equalsIgnoreCase(sql)) {
-			rs.getRows().add(new Object[] { stmt.getParameters().get(0) });
-		}
+        return rs;
+    }
 
-		return rs;
-	}
+    protected ResultSet createResultSet(MockPreparedStatement stmt) {
+        MockResultSet rs = new MockResultSet(stmt);
 
-	protected Clob createClob(MockConnection conn) throws SQLException {
-		return new MockClob();
-	}
+        String sql = stmt.getSql();
 
-	protected Blob createBlob(MockConnection conn) throws SQLException {
-		return new MockBlob();
-	}
+        if ("SELECT 1".equalsIgnoreCase(sql)) {
+            rs.getRows().add(new Object[] { 1 });
+        } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
+            rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
+        } else if ("SELECT ?".equalsIgnoreCase(sql)) {
+            rs.getRows().add(new Object[] { stmt.getParameters().get(0) });
+        }
 
-	protected NClob createNClob(MockConnection conn) throws SQLException {
-		return new MockNClob();
-	}
+        return rs;
+    }
 
-	protected SQLXML createSQLXML(MockConnection conn) throws SQLException {
-		return new MockSQLXML();
-	}
+    protected Clob createClob(MockConnection conn) throws SQLException {
+        return new MockClob();
+    }
+
+    protected Blob createBlob(MockConnection conn) throws SQLException {
+        return new MockBlob();
+    }
+
+    protected NClob createNClob(MockConnection conn) throws SQLException {
+        return new MockNClob();
+    }
+
+    protected SQLXML createSQLXML(MockConnection conn) throws SQLException {
+        return new MockSQLXML();
+    }
 }

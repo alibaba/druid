@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
@@ -24,13 +17,14 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
+
     private static final long serialVersionUID = 1L;
 
-    private List<SQLExpr> columns = new ArrayList<SQLExpr>();
+    private List<SQLExpr>     columns          = new ArrayList<SQLExpr>();
 
-    private SQLExpr against;
+    private SQLExpr           against;
 
-    private SearchModifier searchModifier;
+    private SearchModifier    searchModifier;
 
     public List<SQLExpr> getColumns() {
         return columns;
@@ -57,18 +51,17 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
     }
 
     public static enum SearchModifier {
-        IN_BOOLEAN_MODE("IN BOOLEAN MODE"),
-        IN_NATURAL_LANGUAGE_MODE("IN NATURAL LANGUAGE MODE"),
+        IN_BOOLEAN_MODE("IN BOOLEAN MODE"), IN_NATURAL_LANGUAGE_MODE("IN NATURAL LANGUAGE MODE"),
         IN_NATURAL_LANGUAGE_MODE_WITH_QUERY_EXPANSION("IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION"),
         WITH_QUERY_EXPANSION("WITH QUERY EXPANSION"), ;
 
         public final String name;
 
-        SearchModifier() {
+        SearchModifier(){
             this(null);
         }
 
-        SearchModifier(String name) {
+        SearchModifier(String name){
             this.name = name;
         }
     }

@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
@@ -29,38 +22,39 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
-    private boolean hignPriority;
-    private boolean straightJoin;
 
-    private boolean smallResult;
-    private boolean bigResult;
-    private boolean bufferResult;
-    private Boolean cache;
-    private boolean calcFoundRows;
+    private boolean        hignPriority;
+    private boolean        straightJoin;
 
-    private SQLOrderBy orderBy;
+    private boolean        smallResult;
+    private boolean        bigResult;
+    private boolean        bufferResult;
+    private Boolean        cache;
+    private boolean        calcFoundRows;
 
-    private Limit limit;
+    private SQLOrderBy     orderBy;
 
-    private SQLName procedureName;
-    private List<SQLExpr> procedureArgumentList = new ArrayList<SQLExpr>();
-    private SQLExpr outFile;
-    private String outFileCharset;
+    private Limit          limit;
+
+    private SQLName        procedureName;
+    private List<SQLExpr>  procedureArgumentList            = new ArrayList<SQLExpr>();
+    private SQLExpr        outFile;
+    private String         outFileCharset;
 
     private SQLLiteralExpr outFileColumnsTerminatedBy;
-    private boolean outFileColumnsEnclosedOptionally = false;
+    private boolean        outFileColumnsEnclosedOptionally = false;
     private SQLLiteralExpr outFileColumnsEnclosedBy;
     private SQLLiteralExpr outFileColumnsEscaped;
 
     private SQLLiteralExpr outFileLinesStartingBy;
     private SQLLiteralExpr outFileLinesTerminatedBy;
 
-    private SQLExpr outFileIgnoreLinesNumber;
+    private SQLExpr        outFileIgnoreLinesNumber;
 
-    private boolean forUpdate = false;
-    private boolean lockInShareMode = false;
+    private boolean        forUpdate                        = false;
+    private boolean        lockInShareMode                  = false;
 
-    public MySqlSelectQueryBlock() {
+    public MySqlSelectQueryBlock(){
 
     }
 
@@ -264,7 +258,8 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
     }
 
     public static class Limit extends SQLObjectImpl {
-        public Limit() {
+
+        public Limit(){
 
         }
 

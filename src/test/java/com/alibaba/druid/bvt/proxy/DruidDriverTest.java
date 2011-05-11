@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.bvt.proxy;
 
@@ -85,13 +78,14 @@ public class DruidDriverTest extends TestCase {
     public void test_getRawDriverClassName() throws Exception {
         Assert.assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
         Assert.assertEquals("oracle.jdbc.driver.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
-        Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver", JdbcUtils.getDriverClassName("jdbc:microsoft:"));
+        Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
+                            JdbcUtils.getDriverClassName("jdbc:microsoft:"));
         Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
         Assert.assertEquals("net.sourceforge.jtds.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:jtds:"));
         {
             Exception error = null;
             try {
-            	JdbcUtils.getDriverClassName("jdbc:xxx:");
+                JdbcUtils.getDriverClassName("jdbc:xxx:");
             } catch (Exception ex) {
                 error = ex;
             }

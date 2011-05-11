@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.parser;
 
@@ -56,11 +49,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 
 public class SQLExprParser extends SQLParser {
-    public SQLExprParser(String sql) throws ParserException {
+
+    public SQLExprParser(String sql) throws ParserException{
         super(sql);
     }
 
-    public SQLExprParser(Lexer lexer) {
+    public SQLExprParser(Lexer lexer){
         super(lexer);
     }
 
@@ -144,155 +138,24 @@ public class SQLExprParser extends SQLParser {
         final Token tok = lexer.token();
 
         switch (tok) {
-        case LPAREN:
-            lexer.nextToken();
-            sqlExpr = expr();
-            accept(Token.RPAREN);
-            break;
-        case INSERT:
-            lexer.nextToken();
-            if (lexer.token() != Token.LPAREN) {
-                throw new ParserException("syntax error");
-            }
-            sqlExpr = new SQLIdentifierExpr("INSERT");
-            break;
-        case IDENTIFIER:
-            sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
-            lexer.nextToken();
-            break;
-        case NEW:
-            throw new ParserException("TODO");
-        case LITERAL_NUM_PURE_DIGIT:
-            sqlExpr = new SQLIntegerExpr(lexer.integerValue());
-            lexer.nextToken();
-            break;
-        case LITERAL_NUM_MIX_DIGIT:
-            sqlExpr = new SQLNumberExpr(lexer.decimalValue());
-            lexer.nextToken();
-            break;
-        case LITERAL_CHARS:
-            sqlExpr = new SQLCharExpr(lexer.stringVal());
-            lexer.nextToken();
-            break;
-        case LITERAL_NCHARS:
-            sqlExpr = new SQLNCharExpr(lexer.stringVal());
-            lexer.nextToken();
-            break;
-        case USR_VAR:
-            sqlExpr = new SQLVariantRefExpr(lexer.stringVal());
-            lexer.nextToken();
-            break;
-        case SYS_VAR:
-            //QS_TODO add support for system var
-            break;
-        case CASE:
-            SQLCaseExpr caseExpr = new SQLCaseExpr();
-            lexer.nextToken();
-            if (lexer.token() != Token.WHEN) {
-                caseExpr.setValueExpr(expr());
-            }
-
-            accept(Token.WHEN);
-            SQLExpr testExpr = expr();
-            accept(Token.THEN);
-            SQLExpr valueExpr = expr();
-            SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-            caseExpr.getItems().add(caseItem);
-
-            while (lexer.token() == Token.WHEN) {
+            case LPAREN:
                 lexer.nextToken();
-                testExpr = expr();
-                accept(Token.THEN);
-                valueExpr = expr();
-                caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
-                caseExpr.getItems().add(caseItem);
-            }
-
-            if (lexer.token() == Token.ELSE) {
-                lexer.nextToken();
-                caseExpr.setElseExpr(expr());
-            }
-
-            accept(Token.END);
-
-            sqlExpr = caseExpr;
-            break;
-        case EXISTS:
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            sqlExpr = new SQLExistsExpr(createSelectParser().select());
-            accept(Token.RPAREN);
-            break;
-        case NOT:
-            lexer.nextToken();
-            if (lexer.token() == Token.EXISTS) {
-                lexer.nextToken();
-                accept(Token.LPAREN);
-                sqlExpr = new SQLExistsExpr(createSelectParser().select(), true);
+                sqlExpr = expr();
                 accept(Token.RPAREN);
-            } else if (lexer.token() == Token.LPAREN) {
-                lexer.token();
-
-                sqlExpr = new SQLNotExpr(expr());
-
-                accept(Token.RPAREN);
-                return primaryRest(sqlExpr);
-            } else {
-                SQLExpr restExpr = primary();
-                sqlExpr = new SQLNotExpr(restExpr);
-            }
-            break;
-        case SELECT:
-            SQLQueryExpr queryExpr = new SQLQueryExpr(createSelectParser().select());
-            sqlExpr = queryExpr;
-            break;
-        case CAST:
-            lexer.nextToken();
-            accept(Token.LPAREN);
-            SQLCastExpr cast = new SQLCastExpr();
-            cast.setExpr(expr());
-            accept(Token.AS);
-            cast.setDataType(parseDataType());
-            accept(Token.RPAREN);
-
-            sqlExpr = cast;
-            break;
-        case SUB:
-            lexer.nextToken();
-            switch (lexer.token()) {
-            case LITERAL_NUM_PURE_DIGIT:
-                Number integerValue = lexer.integerValue();
-                if (integerValue instanceof Integer) {
-                    int intVal = ((Integer) integerValue).intValue();
-                    if (intVal == Integer.MIN_VALUE) {
-                        integerValue = Long.valueOf(((long) intVal) * -1);
-                    } else {
-                        integerValue = Integer.valueOf(intVal * -1);
-                    }
-                } else if (integerValue instanceof Long) {
-                    long longVal = ((Long) integerValue).longValue();
-                    if (longVal == 2147483648L) {
-                        integerValue = Integer.valueOf((int) (((long) longVal) * -1));
-                    } else {
-                        integerValue = Long.valueOf(longVal * -1);
-                    }
-                } else {
-                    integerValue = ((BigInteger) integerValue).negate();
+                break;
+            case INSERT:
+                lexer.nextToken();
+                if (lexer.token() != Token.LPAREN) {
+                    throw new ParserException("syntax error");
                 }
-                sqlExpr = new SQLIntegerExpr(integerValue);
+                sqlExpr = new SQLIdentifierExpr("INSERT");
+                break;
+            case IDENTIFIER:
+                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
-            case LITERAL_NUM_MIX_DIGIT:
-                sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
-                lexer.nextToken();
-                break;
-            default:
+            case NEW:
                 throw new ParserException("TODO");
-            }
-            break;
-        case PLUS:
-            lexer.nextToken();
-            switch (lexer.token()) {
             case LITERAL_NUM_PURE_DIGIT:
                 sqlExpr = new SQLIntegerExpr(lexer.integerValue());
                 lexer.nextToken();
@@ -301,94 +164,225 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                 lexer.nextToken();
                 break;
+            case LITERAL_CHARS:
+                sqlExpr = new SQLCharExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
+            case LITERAL_NCHARS:
+                sqlExpr = new SQLNCharExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
+            case USR_VAR:
+                sqlExpr = new SQLVariantRefExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
+            case SYS_VAR:
+                // QS_TODO add support for system var
+                break;
+            case CASE:
+                SQLCaseExpr caseExpr = new SQLCaseExpr();
+                lexer.nextToken();
+                if (lexer.token() != Token.WHEN) {
+                    caseExpr.setValueExpr(expr());
+                }
+
+                accept(Token.WHEN);
+                SQLExpr testExpr = expr();
+                accept(Token.THEN);
+                SQLExpr valueExpr = expr();
+                SQLCaseExpr.Item caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
+                caseExpr.getItems().add(caseItem);
+
+                while (lexer.token() == Token.WHEN) {
+                    lexer.nextToken();
+                    testExpr = expr();
+                    accept(Token.THEN);
+                    valueExpr = expr();
+                    caseItem = new SQLCaseExpr.Item(testExpr, valueExpr);
+                    caseExpr.getItems().add(caseItem);
+                }
+
+                if (lexer.token() == Token.ELSE) {
+                    lexer.nextToken();
+                    caseExpr.setElseExpr(expr());
+                }
+
+                accept(Token.END);
+
+                sqlExpr = caseExpr;
+                break;
+            case EXISTS:
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                sqlExpr = new SQLExistsExpr(createSelectParser().select());
+                accept(Token.RPAREN);
+                break;
+            case NOT:
+                lexer.nextToken();
+                if (lexer.token() == Token.EXISTS) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    sqlExpr = new SQLExistsExpr(createSelectParser().select(), true);
+                    accept(Token.RPAREN);
+                } else if (lexer.token() == Token.LPAREN) {
+                    lexer.token();
+
+                    sqlExpr = new SQLNotExpr(expr());
+
+                    accept(Token.RPAREN);
+                    return primaryRest(sqlExpr);
+                } else {
+                    SQLExpr restExpr = primary();
+                    sqlExpr = new SQLNotExpr(restExpr);
+                }
+                break;
+            case SELECT:
+                SQLQueryExpr queryExpr = new SQLQueryExpr(createSelectParser().select());
+                sqlExpr = queryExpr;
+                break;
+            case CAST:
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                SQLCastExpr cast = new SQLCastExpr();
+                cast.setExpr(expr());
+                accept(Token.AS);
+                cast.setDataType(parseDataType());
+                accept(Token.RPAREN);
+
+                sqlExpr = cast;
+                break;
+            case SUB:
+                lexer.nextToken();
+                switch (lexer.token()) {
+                    case LITERAL_NUM_PURE_DIGIT:
+                        Number integerValue = lexer.integerValue();
+                        if (integerValue instanceof Integer) {
+                            int intVal = ((Integer) integerValue).intValue();
+                            if (intVal == Integer.MIN_VALUE) {
+                                integerValue = Long.valueOf(((long) intVal) * -1);
+                            } else {
+                                integerValue = Integer.valueOf(intVal * -1);
+                            }
+                        } else if (integerValue instanceof Long) {
+                            long longVal = ((Long) integerValue).longValue();
+                            if (longVal == 2147483648L) {
+                                integerValue = Integer.valueOf((int) (((long) longVal) * -1));
+                            } else {
+                                integerValue = Long.valueOf(longVal * -1);
+                            }
+                        } else {
+                            integerValue = ((BigInteger) integerValue).negate();
+                        }
+                        sqlExpr = new SQLIntegerExpr(integerValue);
+                        lexer.nextToken();
+                        break;
+                    case LITERAL_NUM_MIX_DIGIT:
+                        sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
+                        lexer.nextToken();
+                        break;
+                    default:
+                        throw new ParserException("TODO");
+                }
+                break;
+            case PLUS:
+                lexer.nextToken();
+                switch (lexer.token()) {
+                    case LITERAL_NUM_PURE_DIGIT:
+                        sqlExpr = new SQLIntegerExpr(lexer.integerValue());
+                        lexer.nextToken();
+                        break;
+                    case LITERAL_NUM_MIX_DIGIT:
+                        sqlExpr = new SQLNumberExpr(lexer.decimalValue());
+                        lexer.nextToken();
+                        break;
+                    default:
+                        throw new ParserException("TODO");
+                }
+                break;
+            case TILDE:
+                lexer.nextToken();
+                SQLExpr unaryValueExpr = expr();
+                SQLUnaryExpr unary = new SQLUnaryExpr(SQLUnaryOperator.Compl, unaryValueExpr);
+                sqlExpr = unary;
+                break;
+            case QUES:
+                lexer.nextToken();
+                sqlExpr = new SQLVariantRefExpr("?");
+                break;
+            case LEFT:
+                sqlExpr = new SQLIdentifierExpr("LEFT");
+                lexer.nextToken();
+                break;
+            case RIGHT:
+                sqlExpr = new SQLIdentifierExpr("RIGHT");
+                lexer.nextToken();
+                break;
+            case LOCK:
+                sqlExpr = new SQLIdentifierExpr("LOCK");
+                lexer.nextToken();
+                break;
+            case NULL:
+                sqlExpr = new SQLNullExpr();
+                lexer.nextToken();
+                break;
+            case BANG:
+                lexer.nextToken();
+                SQLExpr bangExpr = expr();
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not, bangExpr);
+                break;
+            case LITERAL_HEX:
+                String hex = lexer.hexString();
+                sqlExpr = new SQLHexExpr(hex);
+                lexer.nextToken();
+                break;
+            case INTERVAL:
+                sqlExpr = parseInterval();
+                break;
+            case DEFAULT:
+                lexer.nextToken();
+                sqlExpr = new SQLIdentifierExpr("DEFAULT");
+                break;
+            case ANY:
+                lexer.nextToken();
+                SQLAnyExpr anyExpr = new SQLAnyExpr();
+
+                accept(Token.LPAREN);
+                SQLSelect anySubQuery = createSelectParser().select();
+                anyExpr.setSubQuery(anySubQuery);
+                accept(Token.RPAREN);
+
+                anySubQuery.setParent(anyExpr);
+
+                sqlExpr = anyExpr;
+                break;
+            case SOME:
+                lexer.nextToken();
+                SQLSomeExpr someExpr = new SQLSomeExpr();
+
+                accept(Token.LPAREN);
+                SQLSelect someSubQuery = createSelectParser().select();
+                someExpr.setSubQuery(someSubQuery);
+                accept(Token.RPAREN);
+
+                someSubQuery.setParent(someExpr);
+
+                sqlExpr = someExpr;
+                break;
+            case ALL:
+                lexer.nextToken();
+                SQLAllExpr allExpr = new SQLAllExpr();
+
+                accept(Token.LPAREN);
+                SQLSelect allSubQuery = createSelectParser().select();
+                allExpr.setSubQuery(allSubQuery);
+                accept(Token.RPAREN);
+
+                allSubQuery.setParent(allExpr);
+
+                sqlExpr = allExpr;
+                break;
             default:
-                throw new ParserException("TODO");
-            }
-            break;
-        case TILDE:
-            lexer.nextToken();
-            SQLExpr unaryValueExpr = expr();
-            SQLUnaryExpr unary = new SQLUnaryExpr(SQLUnaryOperator.Compl, unaryValueExpr);
-            sqlExpr = unary;
-            break;
-        case QUES:
-            lexer.nextToken();
-            sqlExpr = new SQLVariantRefExpr("?");
-            break;
-        case LEFT:
-            sqlExpr = new SQLIdentifierExpr("LEFT");
-            lexer.nextToken();
-            break;
-        case RIGHT:
-            sqlExpr = new SQLIdentifierExpr("RIGHT");
-            lexer.nextToken();
-            break;
-        case LOCK:
-            sqlExpr = new SQLIdentifierExpr("LOCK");
-            lexer.nextToken();
-            break;
-        case NULL:
-            sqlExpr = new SQLNullExpr();
-            lexer.nextToken();
-            break;
-        case BANG:
-            lexer.nextToken();
-            SQLExpr bangExpr = expr();
-            sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Not, bangExpr);
-            break;
-        case LITERAL_HEX:
-            String hex = lexer.hexString();
-            sqlExpr = new SQLHexExpr(hex);
-            lexer.nextToken();
-            break;
-        case INTERVAL:
-            sqlExpr = parseInterval();
-            break;
-        case DEFAULT:
-            lexer.nextToken();
-            sqlExpr = new SQLIdentifierExpr("DEFAULT");
-            break;
-        case ANY:
-            lexer.nextToken();
-            SQLAnyExpr anyExpr = new SQLAnyExpr();
-
-            accept(Token.LPAREN);
-            SQLSelect anySubQuery = createSelectParser().select();
-            anyExpr.setSubQuery(anySubQuery);
-            accept(Token.RPAREN);
-
-            anySubQuery.setParent(anyExpr);
-
-            sqlExpr = anyExpr;
-            break;
-        case SOME:
-            lexer.nextToken();
-            SQLSomeExpr someExpr = new SQLSomeExpr();
-
-            accept(Token.LPAREN);
-            SQLSelect someSubQuery = createSelectParser().select();
-            someExpr.setSubQuery(someSubQuery);
-            accept(Token.RPAREN);
-
-            someSubQuery.setParent(someExpr);
-
-            sqlExpr = someExpr;
-            break;
-        case ALL:
-            lexer.nextToken();
-            SQLAllExpr allExpr = new SQLAllExpr();
-
-            accept(Token.LPAREN);
-            SQLSelect allSubQuery = createSelectParser().select();
-            allExpr.setSubQuery(allSubQuery);
-            accept(Token.RPAREN);
-
-            allSubQuery.setParent(allExpr);
-
-            sqlExpr = allExpr;
-            break;
-        default:
-            throw new ParserException("ERROR. token : " + tok);
+                throw new ParserException("ERROR. token : " + tok);
         }
 
         return primaryRest(sqlExpr);

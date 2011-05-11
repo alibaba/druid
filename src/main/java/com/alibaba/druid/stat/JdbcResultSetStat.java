@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.stat;
 
@@ -20,158 +13,160 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcResultSetStat implements JdbcResultSetStatMBean {
-	private final AtomicInteger concurrentCount = new AtomicInteger();
-	private final AtomicInteger concurrentMax = new AtomicInteger();
 
-	private final AtomicLong count = new AtomicLong();
-	private final AtomicLong errorCount = new AtomicLong();
+    private final AtomicInteger concurrentCount = new AtomicInteger();
+    private final AtomicInteger concurrentMax   = new AtomicInteger();
 
-	private final AtomicLong nanoTotal = new AtomicLong();
-	private Throwable lastError;
-	private long lastErrorTime;
+    private final AtomicLong    count           = new AtomicLong();
+    private final AtomicLong    errorCount      = new AtomicLong();
 
-	private long lastSampleTime = 0;
+    private final AtomicLong    nanoTotal       = new AtomicLong();
+    private Throwable           lastError;
+    private long                lastErrorTime;
 
-	private final AtomicLong fetchRowCounter = new AtomicLong(0); // 总共读取的行数
-	private final AtomicLong closeCount = new AtomicLong(0); // ResultSet打开的计数
+    private long                lastSampleTime  = 0;
 
-	public void reset() {
-		concurrentCount.set(0);
-		concurrentMax.set(0);
-		count.set(0);
-		errorCount.set(0);
-		nanoTotal.set(0);
-		lastError = null;
-		lastErrorTime = 0;
-		lastSampleTime = 0;
-	}
+    private final AtomicLong    fetchRowCounter = new AtomicLong(0);  // 总共读取的行数
+    private final AtomicLong    closeCount      = new AtomicLong(0);  // ResultSet打开的计数
 
-	public void beforeOpen() {
-		int invoking = concurrentCount.incrementAndGet();
+    public void reset() {
+        concurrentCount.set(0);
+        concurrentMax.set(0);
+        count.set(0);
+        errorCount.set(0);
+        nanoTotal.set(0);
+        lastError = null;
+        lastErrorTime = 0;
+        lastSampleTime = 0;
+    }
 
-		for (;;) {
-			int max = concurrentMax.get();
-			if (invoking > max) {
-				if (concurrentMax.compareAndSet(max, invoking)) {
-					break;
-				} else {
-					continue;
-				}
-			} else {
-				break;
-			}
-		}
+    public void beforeOpen() {
+        int invoking = concurrentCount.incrementAndGet();
 
-		count.incrementAndGet();
-		lastSampleTime = System.currentTimeMillis();
-	}
+        for (;;) {
+            int max = concurrentMax.get();
+            if (invoking > max) {
+                if (concurrentMax.compareAndSet(max, invoking)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
 
-	public long getErrorCount() {
-		return errorCount.get();
-	}
+        count.incrementAndGet();
+        lastSampleTime = System.currentTimeMillis();
+    }
 
-	public int getRunningCount() {
-		return concurrentCount.get();
-	}
+    public long getErrorCount() {
+        return errorCount.get();
+    }
 
-	public int getConcurrentMax() {
-		return concurrentMax.get();
-	}
+    public int getRunningCount() {
+        return concurrentCount.get();
+    }
 
-	public long getOpenCount() {
-		return count.get();
-	}
+    public int getConcurrentMax() {
+        return concurrentMax.get();
+    }
 
-	public Date getLastConnectTime() {
-		if (lastSampleTime == 0) {
-			return null;
-		}
+    public long getOpenCount() {
+        return count.get();
+    }
 
-		return new Date(lastSampleTime);
-	}
+    public Date getLastConnectTime() {
+        if (lastSampleTime == 0) {
+            return null;
+        }
 
-	public long getNanoTotal() {
-		return nanoTotal.get();
-	}
+        return new Date(lastSampleTime);
+    }
 
-	public void afterClose(long nanoSpan) {
-		concurrentCount.decrementAndGet();
+    public long getNanoTotal() {
+        return nanoTotal.get();
+    }
 
-		nanoTotal.addAndGet(nanoSpan);
-	}
+    public void afterClose(long nanoSpan) {
+        concurrentCount.decrementAndGet();
 
-	public Throwable getLastError() {
-		return lastError;
-	}
+        nanoTotal.addAndGet(nanoSpan);
+    }
 
-	public Date getLastErrorTime() {
-		if (lastErrorTime <= 0) {
-			return null;
-		}
+    public Throwable getLastError() {
+        return lastError;
+    }
 
-		return new Date(lastErrorTime);
-	}
+    public Date getLastErrorTime() {
+        if (lastErrorTime <= 0) {
+            return null;
+        }
 
-	public void error(Throwable error) {
-		errorCount.incrementAndGet();
-		lastError = error;
-		lastErrorTime = System.currentTimeMillis();
-	}
+        return new Date(lastErrorTime);
+    }
 
-	@Override
-	public long getHoldMillisTotal() {
-		return JdbcStatManager.getInstance().getResultSetStat().getNanoTotal() / (1000 * 1000);
-	}
+    public void error(Throwable error) {
+        errorCount.incrementAndGet();
+        lastError = error;
+        lastErrorTime = System.currentTimeMillis();
+    }
 
-	@Override
-	public long getFetchRowCount() {
-		return fetchRowCounter.get();
-	}
+    @Override
+    public long getHoldMillisTotal() {
+        return JdbcStatManager.getInstance().getResultSetStat().getNanoTotal() / (1000 * 1000);
+    }
 
-	@Override
-	public long getCloseCount() {
-		return closeCount.get();
-	}
-	
-	public void addFetchRowCount(long fetchCount) {
-		fetchRowCounter.addAndGet(fetchCount);
-	}
+    @Override
+    public long getFetchRowCount() {
+        return fetchRowCounter.get();
+    }
 
-	public void incrementCloseCounter() {
-		closeCount.incrementAndGet();
-	}
+    @Override
+    public long getCloseCount() {
+        return closeCount.get();
+    }
 
-	public static class Entry {
-		protected final long constructNano;
-		protected int cusorIndex = 0;
-		protected int fetchRowCount = 0;
+    public void addFetchRowCount(long fetchCount) {
+        fetchRowCounter.addAndGet(fetchCount);
+    }
 
-		public Entry() {
-			this.constructNano = System.nanoTime();
-		}
+    public void incrementCloseCounter() {
+        closeCount.incrementAndGet();
+    }
 
-		public void decrementCusorIndex() {
-			cusorIndex--;
-		}
+    public static class Entry {
 
-		public long getConstructNano() {
-			return constructNano;
-		}
+        protected final long constructNano;
+        protected int        cusorIndex    = 0;
+        protected int        fetchRowCount = 0;
 
-		public int getCusorIndex() {
-			return cusorIndex;
-		}
+        public Entry(){
+            this.constructNano = System.nanoTime();
+        }
 
-		public void setCusorIndex(int cusorIndex) {
-			this.cusorIndex = cusorIndex;
-		}
+        public void decrementCusorIndex() {
+            cusorIndex--;
+        }
 
-		public int getFetchRowCount() {
-			return fetchRowCount;
-		}
+        public long getConstructNano() {
+            return constructNano;
+        }
 
-		public void setFetchRowCount(int fetchRowCount) {
-			this.fetchRowCount = fetchRowCount;
-		}
-	}
+        public int getCusorIndex() {
+            return cusorIndex;
+        }
+
+        public void setCusorIndex(int cusorIndex) {
+            this.cusorIndex = cusorIndex;
+        }
+
+        public int getFetchRowCount() {
+            return fetchRowCount;
+        }
+
+        public void setFetchRowCount(int fetchRowCount) {
+            this.fetchRowCount = fetchRowCount;
+        }
+    }
 }

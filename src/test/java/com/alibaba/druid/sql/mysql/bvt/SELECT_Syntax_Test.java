@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.mysql.bvt;
 
@@ -26,6 +19,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class SELECT_Syntax_Test extends TestCase {
+
     public void test_0() throws Exception {
         String sql = "SELECT year, SUM(profit) FROM sales GROUP BY year WITH ROLLUP;";
 
@@ -60,15 +54,15 @@ public class SELECT_Syntax_Test extends TestCase {
     }
 
     public void test_3() throws Exception {
-        String sql =
-                "SELECT a,b,a+b INTO OUTFILE '/tmp/result.txt' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n' FROM test_table;";
+        String sql = "SELECT a,b,a+b INTO OUTFILE '/tmp/result.txt' FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\\n' FROM test_table;";
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT a, b, a + b\nINTO OUTFILE '/tmp/result.txt' COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n'\nFROM test_table;", text);
+        Assert.assertEquals("SELECT a, b, a + b\nINTO OUTFILE '/tmp/result.txt' COLUMNS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n'\nFROM test_table;",
+                            text);
     }
 
     public void test_4() throws Exception {
@@ -116,15 +110,15 @@ public class SELECT_Syntax_Test extends TestCase {
     }
 
     public void test_8() throws Exception {
-        String sql =
-                "SELECT DISTINCT store_type FROM stores WHERE NOT EXISTS (SELECT * FROM cities_stores WHERE cities_stores.store_type = stores.store_type);";
+        String sql = "SELECT DISTINCT store_type FROM stores WHERE NOT EXISTS (SELECT * FROM cities_stores WHERE cities_stores.store_type = stores.store_type);";
 
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList();
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT DISTINCT store_type\nFROM stores\nWHERE NOT EXISTS (SELECT *\n\tFROM cities_stores\n\tWHERE cities_stores.store_type = stores.store_type);", text);
+        Assert.assertEquals("SELECT DISTINCT store_type\nFROM stores\nWHERE NOT EXISTS (SELECT *\n\tFROM cities_stores\n\tWHERE cities_stores.store_type = stores.store_type);",
+                            text);
     }
 
     public void test_9() throws Exception {

@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
@@ -28,13 +21,14 @@ import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleAlterTableStatement extends SQLStatementImpl {
-    private static final long serialVersionUID = 1L;
 
-    private SQLName table;
-    private SQLObject node;
-    private final List<EnableClause> enableClauses = new ArrayList<EnableClause>();
+    private static final long        serialVersionUID = 1L;
 
-    public OracleAlterTableStatement() {
+    private SQLName                  table;
+    private SQLObject                node;
+    private final List<EnableClause> enableClauses    = new ArrayList<EnableClause>();
+
+    public OracleAlterTableStatement(){
 
     }
 
@@ -68,12 +62,13 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class ModifyCollectionRetrieval extends OracleAlterTableStatement.ColumnClause {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLName collectionItem;
-        private ReturnAs returnAs;
+        private SQLName           collectionItem;
+        private ReturnAs          returnAs;
 
-        public ModifyCollectionRetrieval() {
+        public ModifyCollectionRetrieval(){
 
         }
 
@@ -106,17 +101,17 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
         }
 
         public static enum ReturnAs {
-            LOCATOR,
-            VALUE;
+            LOCATOR, VALUE;
         }
     }
 
     public static class AddColumnClause extends OracleAlterTableStatement.ColumnClause {
-        private static final long serialVersionUID = 1L;
 
-        private final List<OracleTableColumn> columns = new ArrayList<OracleTableColumn>();
+        private static final long             serialVersionUID = 1L;
 
-        public AddColumnClause() {
+        private final List<OracleTableColumn> columns          = new ArrayList<OracleTableColumn>();
+
+        public AddColumnClause(){
 
         }
 
@@ -138,11 +133,12 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class ModifyColumnClause extends OracleAlterTableStatement.ColumnClause {
-        private static final long serialVersionUID = 1L;
 
-        private final List<OracleTableColumn> columns = new ArrayList<OracleTableColumn>();
+        private static final long             serialVersionUID = 1L;
 
-        public ModifyColumnClause() {
+        private final List<OracleTableColumn> columns          = new ArrayList<OracleTableColumn>();
+
+        public ModifyColumnClause(){
 
         }
 
@@ -164,17 +160,16 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static abstract class ColumnClause extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        public ColumnClause() {
+        public ColumnClause(){
 
         }
     }
 
     public static enum ConstraintType {
-        CONSTAINT,
-        UNIQUE,
-        PRIMARY_KEY;
+        CONSTAINT, UNIQUE, PRIMARY_KEY;
 
         public String toFormalString() {
             if (PRIMARY_KEY.equals(this)) {
@@ -185,8 +180,7 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static enum IndexType {
-        KEEP_INDEX,
-        DROP_INDEX;
+        KEEP_INDEX, DROP_INDEX;
 
         public String toFormalString() {
             if (KEEP_INDEX.equals(this)) {
@@ -200,19 +194,20 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class EnableClause extends OracleAlterTableStatement.AlterTableProperties {
-        private static final long serialVersionUID = 1L;
 
-        private boolean enable;
-        private Boolean validate;
-        private OracleAlterTableStatement.ConstraintType type;
-        private final List<SQLName> columns = new ArrayList<SQLName>();
+        private static final long                          serialVersionUID = 1L;
+
+        private boolean                                    enable;
+        private Boolean                                    validate;
+        private OracleAlterTableStatement.ConstraintType   type;
+        private final List<SQLName>                        columns          = new ArrayList<SQLName>();
         private OracleAlterTableStatement.UsingIndexClause usingIndex;
-        private SQLName exceptions;
-        private boolean cascade = false;
-        private OracleAlterTableStatement.IndexType indexType;
-        private SQLName constraintName;
+        private SQLName                                    exceptions;
+        private boolean                                    cascade          = false;
+        private OracleAlterTableStatement.IndexType        indexType;
+        private SQLName                                    constraintName;
 
-        public EnableClause() {
+        public EnableClause(){
 
         }
 
@@ -301,11 +296,12 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class DeallocateClause extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLExpr keep;
+        private SQLExpr           keep;
 
-        public DeallocateClause() {
+        public DeallocateClause(){
 
         }
 
@@ -331,11 +327,12 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class EnableTrigger extends OracleAlterTableStatement.AlterTableProperties {
+
         private static final long serialVersionUID = 1L;
 
-        private boolean enable;
+        private boolean           enable;
 
-        public EnableTrigger() {
+        public EnableTrigger(){
 
         }
 
@@ -359,9 +356,10 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class UsingIndexClause extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        public UsingIndexClause() {
+        public UsingIndexClause(){
 
         }
 
@@ -376,9 +374,10 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class NoParallelClause extends OracleAlterTableStatement.AlterTableProperties {
+
         private static final long serialVersionUID = 1L;
 
-        public NoParallelClause() {
+        public NoParallelClause(){
 
         }
 
@@ -394,11 +393,12 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class ParallelClause extends OracleAlterTableStatement.AlterTableProperties {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLIntegerExpr value;
+        private SQLIntegerExpr    value;
 
-        public ParallelClause() {
+        public ParallelClause(){
 
         }
 
@@ -424,22 +424,24 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static abstract class AlterTableProperties extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        public AlterTableProperties() {
+        public AlterTableProperties(){
 
         }
     }
 
     public static class ModifyConstaint extends SQLObjectImpl {
-        private static final long serialVersionUID = 1L;
 
-        private OracleConstraintState state;
-        private final List<SQLName> columns = new ArrayList<SQLName>();
+        private static final long                        serialVersionUID = 1L;
+
+        private OracleConstraintState                    state;
+        private final List<SQLName>                      columns          = new ArrayList<SQLName>();
         private OracleAlterTableStatement.ConstraintType type;
-        private SQLName constraintName;
+        private SQLName                                  constraintName;
 
-        public ModifyConstaint() {
+        public ModifyConstaint(){
 
         }
 
@@ -486,12 +488,13 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class RenameConstaint extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLName oldName;
-        private SQLName newName;
+        private SQLName           oldName;
+        private SQLName           newName;
 
-        public RenameConstaint() {
+        public RenameConstaint(){
 
         }
 
@@ -526,12 +529,13 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class RenameColumn extends SQLObjectImpl {
+
         private static final long serialVersionUID = 1L;
 
-        private SQLName oldName;
-        private SQLName newName;
+        private SQLName           oldName;
+        private SQLName           newName;
 
-        public RenameColumn() {
+        public RenameColumn(){
 
         }
 
@@ -566,14 +570,15 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class DropColumn extends SQLObjectImpl {
-        private static final long serialVersionUID = 1L;
 
-        private final List<SQLName> columns = new ArrayList<SQLName>();
-        private boolean cascade;
-        private boolean invlidate;
-        private SQLIntegerExpr checkPoint;
+        private static final long   serialVersionUID = 1L;
 
-        public DropColumn() {
+        private final List<SQLName> columns          = new ArrayList<SQLName>();
+        private boolean             cascade;
+        private boolean             invlidate;
+        private SQLIntegerExpr      checkPoint;
+
+        public DropColumn(){
 
         }
 
@@ -619,11 +624,12 @@ public class OracleAlterTableStatement extends SQLStatementImpl {
     }
 
     public static class AddConstraint extends SQLObjectImpl {
-        private static final long serialVersionUID = 1L;
 
-        private final List<OracleConstraint> constraints = new ArrayList<OracleConstraint>();
+        private static final long            serialVersionUID = 1L;
 
-        public AddConstraint() {
+        private final List<OracleConstraint> constraints      = new ArrayList<OracleConstraint>();
+
+        public AddConstraint(){
 
         }
 
