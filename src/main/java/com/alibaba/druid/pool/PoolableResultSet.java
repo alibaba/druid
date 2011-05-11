@@ -34,7 +34,7 @@ import java.util.Calendar;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public final class PoolableResultSet extends PoolableWrapper implements ResultSet {

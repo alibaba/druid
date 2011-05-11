@@ -52,7 +52,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  * 
  */
 public interface Filter {

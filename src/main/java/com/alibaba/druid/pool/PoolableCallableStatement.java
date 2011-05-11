@@ -31,7 +31,7 @@ import java.util.Calendar;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class PoolableCallableStatement extends PoolablePreparedStatement implements CallableStatement {

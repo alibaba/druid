@@ -61,7 +61,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxyImpl;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class FilterChainImpl implements FilterChain {

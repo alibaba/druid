@@ -54,7 +54,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 /**
  * 提供JdbcFilter的基本实现，使得实现一个JdbcFilter更容易。
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  * 
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {

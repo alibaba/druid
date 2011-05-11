@@ -17,7 +17,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class JdbcParameter {

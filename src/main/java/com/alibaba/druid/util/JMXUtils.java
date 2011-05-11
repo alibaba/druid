@@ -33,7 +33,7 @@ import javax.management.openmbean.SimpleType;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public final class JMXUtils {

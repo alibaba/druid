@@ -37,7 +37,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDataSource extends DruidDataAbstractSource implements DruidDataSourceMBean, Referenceable {
 

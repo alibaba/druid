@@ -23,7 +23,7 @@ import javax.management.openmbean.TabularData;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  * 
  */
 public interface StatFilterMBean {

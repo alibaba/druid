@@ -19,7 +19,7 @@ import java.sql.PreparedStatement;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface PreparedStatementProxy extends PreparedStatement, StatementProxy {

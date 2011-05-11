@@ -17,7 +17,7 @@ package com.alibaba.druid.proxy;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface DruidDriverMBean {

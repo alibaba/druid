@@ -34,7 +34,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public abstract class LogFilter extends FilterEventAdapter implements LogFilterMBean {

@@ -20,7 +20,7 @@ import java.sql.Wrapper;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class PoolableWrapper implements Wrapper {

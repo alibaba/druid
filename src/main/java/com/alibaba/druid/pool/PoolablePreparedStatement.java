@@ -40,7 +40,7 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class PoolablePreparedStatement extends PoolableStatement implements PreparedStatement {

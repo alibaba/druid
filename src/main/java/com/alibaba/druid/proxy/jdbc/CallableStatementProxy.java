@@ -19,7 +19,7 @@ import java.sql.CallableStatement;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface CallableStatementProxy extends CallableStatement, PreparedStatementProxy {

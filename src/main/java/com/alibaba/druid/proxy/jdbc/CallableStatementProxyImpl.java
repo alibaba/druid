@@ -32,7 +32,7 @@ import java.util.Calendar;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class CallableStatementProxyImpl extends PreparedStatementProxyImpl implements CallableStatementProxy {

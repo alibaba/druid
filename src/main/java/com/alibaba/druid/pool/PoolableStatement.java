@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class PoolableStatement extends PoolableWrapper implements Statement {

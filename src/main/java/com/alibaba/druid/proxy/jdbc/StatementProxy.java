@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface StatementProxy extends Statement, WrapperProxy {

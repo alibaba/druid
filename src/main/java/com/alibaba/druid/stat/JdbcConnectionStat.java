@@ -33,7 +33,7 @@ import com.alibaba.druid.util.JMXUtils;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class JdbcConnectionStat implements JdbcConnectionStatMBean {

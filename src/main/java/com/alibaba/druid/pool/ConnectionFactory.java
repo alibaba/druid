@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface ConnectionFactory {

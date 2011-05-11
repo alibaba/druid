@@ -23,7 +23,7 @@ import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class PreparedStatementPool {

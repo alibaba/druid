@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface ResultSetProxy extends ResultSet, WrapperProxy {

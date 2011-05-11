@@ -32,7 +32,7 @@ import com.alibaba.druid.util.JMXUtils;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  * 
  */
 public final class JdbcSqlStat implements JdbcSqlStatMBean {

@@ -21,7 +21,7 @@ import java.sql.SQLSyntaxErrorException;
  * support MySQL 5.5 token
  * 
  * @author <a href="mailto:shuo.qius@alibaba-inc.com">QIU Shuo</a>
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public class SQLLexer {
     protected final char[] buf;

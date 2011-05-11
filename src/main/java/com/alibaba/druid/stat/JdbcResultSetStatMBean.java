@@ -17,7 +17,7 @@ package com.alibaba.druid.stat;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface JdbcResultSetStatMBean {

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public class Keywords {
     private final Map<String, Token> keywords;

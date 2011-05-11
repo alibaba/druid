@@ -23,7 +23,7 @@ import com.alibaba.druid.filter.Filter;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface DataSourceProxy {

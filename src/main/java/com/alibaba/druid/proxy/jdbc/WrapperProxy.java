@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface WrapperProxy extends Wrapper {

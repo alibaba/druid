@@ -24,7 +24,7 @@ import com.alibaba.druid.filter.FilterChain;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public abstract class WrapperProxyImpl implements WrapperProxy {

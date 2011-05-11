@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface ConnectionProxy extends Connection, WrapperProxy {

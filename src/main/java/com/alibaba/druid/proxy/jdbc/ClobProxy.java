@@ -20,7 +20,7 @@ import java.sql.Clob;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface ClobProxy extends Clob {

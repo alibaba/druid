@@ -30,7 +30,7 @@ import java.sql.Types;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public final class JdbcUtils {

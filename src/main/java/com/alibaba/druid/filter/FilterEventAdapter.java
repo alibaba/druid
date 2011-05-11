@@ -43,7 +43,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public abstract class FilterEventAdapter extends FilterAdapter {

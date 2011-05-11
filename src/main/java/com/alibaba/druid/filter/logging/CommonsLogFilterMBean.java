@@ -17,7 +17,7 @@ package com.alibaba.druid.filter.logging;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface CommonsLogFilterMBean extends LogFilterMBean {

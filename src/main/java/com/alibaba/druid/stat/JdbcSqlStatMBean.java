@@ -19,7 +19,7 @@ import java.util.Date;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public interface JdbcSqlStatMBean {

@@ -18,7 +18,7 @@ package com.alibaba.druid.pool;
 import java.util.List;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public interface DruidDataSourceMBean {
 

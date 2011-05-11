@@ -39,7 +39,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionProxy {

@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.parser;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public class SQLParseException extends RuntimeException {
     private static final long serialVersionUID = 1L;

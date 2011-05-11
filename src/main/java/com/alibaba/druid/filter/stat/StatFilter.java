@@ -45,7 +45,7 @@ import com.alibaba.druid.stat.JdbcStatementStat;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  * 
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {

@@ -39,7 +39,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImplMBean {

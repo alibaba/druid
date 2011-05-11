@@ -33,7 +33,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public abstract class DruidDataAbstractSource implements DataSource, DataSourceProxy, Serializable {
 

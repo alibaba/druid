@@ -27,7 +27,7 @@ import javax.sql.StatementEventListener;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public final class ConnectionHolder {

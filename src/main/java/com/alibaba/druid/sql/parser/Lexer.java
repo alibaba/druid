@@ -37,7 +37,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  */
 public class Lexer {
 	protected final char[] sql;

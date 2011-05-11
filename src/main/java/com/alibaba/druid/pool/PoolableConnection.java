@@ -43,7 +43,7 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public final class PoolableConnection implements PooledConnection, Connection {

@@ -21,7 +21,7 @@ import org.apache.commons.logging.impl.Log4JLogger;
 
 /**
  * 
- * @author shaojin.wensj
+ * @author wenshao<szujobs@hotmail.com>
  *
  */
 public class CommonsLogFilter extends LogFilter {
