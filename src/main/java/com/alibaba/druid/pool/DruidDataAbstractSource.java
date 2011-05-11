@@ -14,6 +14,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -30,22 +33,32 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
  */
 public abstract class DruidDataAbstractSource implements DataSource, DataSourceProxy, Serializable {
 
-    private static final long   serialVersionUID         = 1L;
+    private static final long   serialVersionUID                          = 1L;
 
-    public final static int     DEFAULT_INITIAL_SIZE     = 0;
-    public final static int     DEFAULT_MAX_ACTIVE_SIZE  = 8;
-    public final static int     DEFAULT_MAX_IDLE         = 8;
-    public final static int     DEFAULT_MIN_IDLE         = 0;
-    public final static int     DEFAULT_MAX_WAIT         = -1;
-    public final static String  DEFAULT_VALIDATION_QUERY = "SELECT 1";
-    public final static boolean DEFAULT_TEST_ON_BORROW   = true;
-    public final static boolean DEFAULT_TEST_ON_RETURN   = false;
-    public final static boolean DEFAULT_WHILE_IDLE       = false;
+    public final static int     DEFAULT_INITIAL_SIZE                      = 0;
+    public final static int     DEFAULT_MAX_ACTIVE_SIZE                   = 8;
+    public final static int     DEFAULT_MAX_IDLE                          = 8;
+    public final static int     DEFAULT_MIN_IDLE                          = 0;
+    public final static int     DEFAULT_MAX_WAIT                          = -1;
+    public final static String  DEFAULT_VALIDATION_QUERY                  = "SELECT 1";
+    public final static boolean DEFAULT_TEST_ON_BORROW                    = true;
+    public final static boolean DEFAULT_TEST_ON_RETURN                    = false;
+    public final static boolean DEFAULT_WHILE_IDLE                        = false;
+    public static final long    DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final int     DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
-    private boolean             defaultAutoCommit        = false;
+    /**
+     * The default value for {@link #getMinEvictableIdleTimeMillis}.
+     * 
+     * @see #getMinEvictableIdleTimeMillis
+     * @see #setMinEvictableIdleTimeMillis
+     */
+    public static final long    DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
+
+    private boolean             defaultAutoCommit                         = false;
     private Boolean             defaultReadOnly;
     private Integer             defaultTransactionIsolation;
-    private String              defaultCatalog           = null;
+    private String              defaultCatalog                            = null;
 
     protected String            name;
 
@@ -53,30 +66,31 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected String            password;
     protected String            jdbcUrl;
     protected String            driverClass;
-    protected Properties        properties               = new Properties();
+    protected Properties        properties                                = new Properties();
 
     protected PasswordCallback  passwordCallback;
     protected NameCallback      userCallback;
 
     protected ConnectionFactory connectionFactory;
 
-    protected int               initialSize              = DEFAULT_INITIAL_SIZE;
-    protected int               maxActive                = DEFAULT_MAX_ACTIVE_SIZE;
-    protected int               minIdle                  = DEFAULT_MIN_IDLE;
-    protected int               maxIdle                  = DEFAULT_MAX_IDLE;
-    protected long              maxWait                  = DEFAULT_MAX_WAIT;
+    protected int               initialSize                               = DEFAULT_INITIAL_SIZE;
+    protected int               maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
+    protected int               minIdle                                   = DEFAULT_MIN_IDLE;
+    protected int               maxIdle                                   = DEFAULT_MAX_IDLE;
+    protected long              maxWait                                   = DEFAULT_MAX_WAIT;
 
-    protected String            validationQuery          = DEFAULT_VALIDATION_QUERY;
-    private boolean             testOnBorrow             = DEFAULT_TEST_ON_BORROW;
-    private boolean             testOnReturn             = DEFAULT_TEST_ON_RETURN;
-    private boolean             testWhileIdle            = DEFAULT_WHILE_IDLE;
-    protected boolean           poolPreparedStatements   = false;
+    protected String            validationQuery                           = DEFAULT_VALIDATION_QUERY;
+    protected int               validationQueryTimeout                    = -1;
+    private boolean             testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
+    private boolean             testOnReturn                              = DEFAULT_TEST_ON_RETURN;
+    private boolean             testWhileIdle                             = DEFAULT_WHILE_IDLE;
+    protected boolean           poolPreparedStatements                    = false;
 
-    protected boolean           inited                   = false;
+    protected boolean           inited                                    = false;
 
-    protected PrintWriter       logWriter                = new PrintWriter(System.out);
+    protected PrintWriter       logWriter                                 = new PrintWriter(System.out);
 
-    private final List<Filter>  filters                  = new ArrayList<Filter>();
+    private final List<Filter>  filters                                   = new ArrayList<Filter>();
 
     protected Driver            driver;
 
@@ -86,7 +100,115 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
     protected long              createTimespan;
 
-    protected int               maxWaitThreadCount      = -1;
+    protected int               maxWaitThreadCount                        = -1;
+
+    protected boolean           accessToUnderlyingConnectionAllowed       = true;
+
+    protected long              timeBetweenEvictionRunsMillis             = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+
+    protected int               numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
+
+    protected long              minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+
+    protected boolean           removeAbandoned;
+
+    protected int               removeAbandonedTimeout;
+
+    protected boolean           logAbandoned;
+
+    protected int               maxOpenPreparedStatements                 = -1;
+
+    protected List<String>      connectionInitSqls;
+    
+    public void addConnectionProperty(String name, String value) {
+        properties.put(name, value);
+    }
+
+    public Collection<String> getConnectionInitSqls() {
+        Collection<String> result = connectionInitSqls;
+        if (result == null) {
+            return Collections.emptyList();
+        }
+        return result;
+    }
+
+    public void setConnectionInitSqls(Collection<Object> connectionInitSqls) {
+        if ((connectionInitSqls != null) && (connectionInitSqls.size() > 0)) {
+            ArrayList<String> newVal = null;
+            for (Iterator<Object> iterator = connectionInitSqls.iterator();
+            iterator.hasNext();) {
+                Object o = iterator.next();
+                if (o != null) {
+                    String s = o.toString();
+                    if (s.trim().length() > 0) {
+                        if (newVal == null) {
+                            newVal = new ArrayList<String>();
+                        }
+                        newVal.add(s);
+                    }
+                }
+            }
+            this.connectionInitSqls = newVal;
+        } else {
+            this.connectionInitSqls = null;
+        }
+    }
+
+    public int getMaxOpenPreparedStatements() {
+        return maxOpenPreparedStatements;
+    }
+
+    public void setMaxOpenPreparedStatements(int maxOpenPreparedStatements) {
+        this.maxOpenPreparedStatements = maxOpenPreparedStatements;
+    }
+
+    public boolean isLogAbandoned() {
+        return logAbandoned;
+    }
+
+    public void setLogAbandoned(boolean logAbandoned) {
+        this.logAbandoned = logAbandoned;
+    }
+
+    public int getRemoveAbandonedTimeout() {
+        return removeAbandonedTimeout;
+    }
+
+    public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
+        this.removeAbandonedTimeout = removeAbandonedTimeout;
+    }
+
+    public boolean isRemoveAbandoned() {
+        return removeAbandoned;
+    }
+
+    public void setRemoveAbandoned(boolean removeAbandoned) {
+        this.removeAbandoned = removeAbandoned;
+    }
+
+    public long getMinEvictableIdleTimeMillis() {
+        return minEvictableIdleTimeMillis;
+    }
+
+    public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
+        this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
+    }
+
+    public int getNumTestsPerEvictionRun() {
+        return numTestsPerEvictionRun;
+    }
+
+    public void setNumTestsPerEvictionRun(int numTestsPerEvictionRun) {
+        this.numTestsPerEvictionRun = numTestsPerEvictionRun;
+    }
+
+    public long getTimeBetweenEvictionRunsMillis() {
+        return timeBetweenEvictionRunsMillis;
+    }
+
+    public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
+        this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
+    }
 
     public int getMaxWaitThreadCount() {
         return maxWaitThreadCount;
@@ -102,6 +224,22 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
     public void setValidationQuery(String validationQuery) {
         this.validationQuery = validationQuery;
+    }
+
+    public int getValidationQueryTimeout() {
+        return validationQueryTimeout;
+    }
+
+    public void setValidationQueryTimeout(int validationQueryTimeout) {
+        this.validationQueryTimeout = validationQueryTimeout;
+    }
+
+    public boolean isAccessToUnderlyingConnectionAllowed() {
+        return accessToUnderlyingConnectionAllowed;
+    }
+
+    public void setAccessToUnderlyingConnectionAllowed(boolean accessToUnderlyingConnectionAllowed) {
+        this.accessToUnderlyingConnectionAllowed = accessToUnderlyingConnectionAllowed;
     }
 
     public boolean isTestOnBorrow() {
