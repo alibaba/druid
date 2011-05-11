@@ -43,10 +43,10 @@ public class Case0 extends TestCase {
         dataSource.setMinIdle(minPoolSize);
         dataSource.setMaxIdle(maxPoolSize);
         dataSource.setPoolPreparedStatements(true);
-        dataSource.setDriverClass(driverClass);
+        dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setPoolPreparedStatements(true);
-        dataSource.setUser(user);
+        dataSource.setUsername(user);
         dataSource.setPassword(password);
 
         final int LOOP_COUNT = 1000 * 1000;

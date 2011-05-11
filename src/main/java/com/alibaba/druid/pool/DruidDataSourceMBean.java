@@ -15,11 +15,11 @@ public interface DruidDataSourceMBean {
 
     int getInitialSize();
 
-    String getUser();
+    String getUsername();
 
     String getPassword();
 
-    String getJdbcUrl();
+    String getUrl();
 
     String getDriverClass();
 

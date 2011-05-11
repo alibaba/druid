@@ -31,7 +31,7 @@ public interface DataSourceProxy {
 	
 	Driver getRawDriver();
 	
-	String getJdbcUrl();
+	String getUrl();
 	
 	String getRawJdbcUrl();
 	

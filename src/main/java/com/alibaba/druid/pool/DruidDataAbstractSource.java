@@ -277,11 +277,11 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         this.maxActive = maxActive;
     }
 
-    public String getUser() {
+    public String getUsername() {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUsername(String user) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
@@ -313,7 +313,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         this.properties = properties;
     }
 
-    public String getJdbcUrl() {
+    public String getUrl() {
         return jdbcUrl;
     }
 
@@ -333,7 +333,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         return driverClass;
     }
 
-    public void setDriverClass(String driverClass) {
+    public void setDriverClassName(String driverClass) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
@@ -402,14 +402,14 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
         public DruidPoolConnectionFactory(DruidDataAbstractSource dataSource){
             this.dataSource = dataSource;
-            this.url = dataSource.getJdbcUrl();
+            this.url = dataSource.getUrl();
 
             Properties properties = dataSource.getProperties();
             String user;
             if (dataSource.getUserCallback() != null) {
                 user = dataSource.getUserCallback().getName();
             } else {
-                user = dataSource.getUser();
+                user = dataSource.getUsername();
             }
 
             String password;

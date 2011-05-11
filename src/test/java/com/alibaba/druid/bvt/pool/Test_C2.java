@@ -42,7 +42,7 @@ public class Test_C2 extends TestCase {
 		dataSource.setMinIdle(minPoolSize);
 		dataSource.setMaxIdle(maxPoolSize);
 		dataSource.setPoolPreparedStatements(true);
-		dataSource.setDriverClass(driverClass);
+		dataSource.setDriverClassName(driverClass);
 		dataSource.setUrl(jdbcUrl);
 		dataSource.setPoolPreparedStatements(true);
 

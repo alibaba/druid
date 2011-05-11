@@ -80,7 +80,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
 		ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
 
-		String url = dataSource.getJdbcUrl();
+		String url = dataSource.getUrl();
 		JdbcDataSourceStat stat = dataSourceStats.get(url);
 		if (stat == null) {
 			dataSourceStats.putIfAbsent(url, new JdbcDataSourceStat(dataSource.getName(), url));
@@ -611,7 +611,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
 	@Override
 	public String getConnectionUrl() {
-		return dataSource.getJdbcUrl();
+		return dataSource.getUrl();
 	}
 
 	public final JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
@@ -620,7 +620,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 			JdbcSqlStat newSqlStat = new JdbcSqlStat(sql);
 			if (dataSourceStat.getSqlStatMap().putIfAbsent(sql, newSqlStat) == null) {
 				newSqlStat.setId(JdbcStatManager.getInstance().generateSqlId());
-				newSqlStat.setDataSource(this.dataSource.getJdbcUrl());
+				newSqlStat.setDataSource(this.dataSource.getUrl());
 			}
 
 			sqlStat = dataSourceStat.getSqlStatMap().get(sql);

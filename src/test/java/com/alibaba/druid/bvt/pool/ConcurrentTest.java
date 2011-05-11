@@ -41,10 +41,10 @@ public class ConcurrentTest extends TestCase {
 		dataSource.setMinIdle(minPoolSize);
 		dataSource.setMaxIdle(maxPoolSize);
 		dataSource.setPoolPreparedStatements(true);
-		dataSource.setDriverClass(driverClass);
+		dataSource.setDriverClassName(driverClass);
 		dataSource.setUrl(jdbcUrl);
 		dataSource.setPoolPreparedStatements(true);
-		dataSource.setUser(user);
+		dataSource.setUsername(user);
 		dataSource.setPassword(password);
 
 		final int THREAD_COUNT = 2;

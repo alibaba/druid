@@ -16,7 +16,7 @@ public class TestDruidDataSource extends TestCase {
 		
 		dataSource.setInitialSize(10);
 		dataSource.setMaxIdle(10);
-		dataSource.setDriverClass("com.alibaba.druid.mock.MockDriver");
+		dataSource.setDriverClassName("com.alibaba.druid.mock.MockDriver");
 		dataSource.setUrl("jdbc:mock:xxx");
 		
 		Assert.assertEquals(0, dataSource.getConnectCount());

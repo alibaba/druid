@@ -101,18 +101,12 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
 	}
 
 	@Override
-	public String getUrl() {
-		return this.config.getUrl();
-	}
-	
-
-	@Override
 	public String getName() {
 		return this.config.getName();
 	}
 	
 	@Override
-	public String getJdbcUrl() {
+	public String getUrl() {
 		return config.getUrl();
 	}
 

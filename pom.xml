@@ -5,8 +5,17 @@
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
 	<version>0.2-SNAPSHOT</version>
-	
+
 	<name>druid</name>
+
+	<repositories>
+		<repository>
+			<id>oracleReleases</id>
+			<name>Oracle Released Java Packages</name>
+			<url>http://download.oracle.com/maven</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

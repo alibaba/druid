@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
+import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class Case0 extends TestCase {
@@ -38,15 +39,16 @@ public class Case0 extends TestCase {
         dataSource.setMinIdle(minPoolSize);
         dataSource.setMaxIdle(maxPoolSize);
         dataSource.setPoolPreparedStatements(true);
-        dataSource.setDriverClass(driverClass);
+        dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setPoolPreparedStatements(true);
-        dataSource.setUser(user);
+        dataSource.setUsername(user);
         dataSource.setPassword(password);
 
         for (int i = 0; i < 10; ++i) {
-            p0(dataSource);
+            p0(dataSource, "druid");
         }
+        System.out.println();
     }
     
     public void test_1() throws Exception {
@@ -64,18 +66,25 @@ public class Case0 extends TestCase {
         dataSource.setPassword(password);
 
         for (int i = 0; i < 10; ++i) {
-            p0(dataSource);
+            p0(dataSource, "dbcp");
         }
+        System.out.println();
     }
 
-    private void p0(DataSource dataSource) throws SQLException {
+    private void p0(DataSource dataSource, String name) throws SQLException {
         long startMillis = System.currentTimeMillis();
+        long startYGC = TestUtil.getYoungGC();
+        long startFullGC = TestUtil.getFullGC();
+        
         final int COUNT = 1000 * 1000;
         for (int i = 0; i < COUNT; ++i) {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
         long millis = System.currentTimeMillis() - startMillis;
-        System.out.println(dataSource.getClass().getName() + " millis : " + NumberFormat.getInstance().format(millis));
+        long ygc = TestUtil.getYoungGC() - startYGC;
+        long fullGC = TestUtil.getFullGC() - startFullGC;
+        
+        System.out.println(name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }
