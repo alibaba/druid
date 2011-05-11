@@ -1,17 +1,10 @@
 /*
- * Copyright 2011 Alibaba Group.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2011 Alibaba Group. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.pool;
 
@@ -81,6 +74,14 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         }
 
         try {
+            int maxWaitThreadCount = getMaxWaitThreadCount();
+            if (maxWaitThreadCount > 0) {
+                if (lock.getQueueLength() > maxWaitThreadCount) {
+                    throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                                           + lock.getQueueLength());
+                }
+            }
+
             lock.lockInterruptibly();
 
             if (inited) {
@@ -201,14 +202,14 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                 if (holder == null) {
                     throw new SQLException("can not get connection");
                 }
-                
+
                 if (isTestOnBorrow()) {
                     boolean validate = testConnection(holder.getConnection());
                     if (!validate) {
                         continue;
                     }
                 }
-                
+
                 break;
             }
 
@@ -257,7 +258,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                 }
                 return;
             }
-            
+
             if (isTestOnReturn()) {
                 boolean validate = testConnection(conn);
                 if (!validate) {
