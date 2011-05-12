@@ -73,7 +73,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected String            password;
     protected String            jdbcUrl;
     protected String            driverClass;
-    protected Properties        properties                                = new Properties();
+    protected Properties        connectionProperties                                = new Properties();
 
     protected PasswordCallback  passwordCallback;
     protected NameCallback      userCallback;
@@ -128,7 +128,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected List<String>      connectionInitSqls;
 
     public void addConnectionProperty(String name, String value) {
-        properties.put(name, value);
+        connectionProperties.put(name, value);
     }
 
     public Collection<String> getConnectionInitSqls() {
@@ -457,16 +457,16 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         this.password = password;
     }
 
-    public Properties getProperties() {
-        return properties;
+    public Properties getConnectionProperties() {
+        return connectionProperties;
     }
 
-    public void setProperties(Properties properties) {
+    public void setConnectionProperties(Properties connectionProperties) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
 
-        this.properties = properties;
+        this.connectionProperties = connectionProperties;
     }
 
     public String getUrl() {
@@ -570,7 +570,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
             this.dataSource = dataSource;
             this.url = dataSource.getUrl();
 
-            Properties properties = dataSource.getProperties();
+            Properties properties = dataSource.getConnectionProperties();
             String user;
             if (dataSource.getUserCallback() != null) {
                 user = dataSource.getUserCallback().getName();
@@ -585,7 +585,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
                 password = dataSource.getPassword();
             }
 
-            this.info = new Properties(dataSource.getProperties());
+            this.info = new Properties(dataSource.getConnectionProperties());
 
             if (properties != null) {
                 info.putAll(properties);
