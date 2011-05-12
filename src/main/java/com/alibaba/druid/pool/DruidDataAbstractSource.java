@@ -491,8 +491,14 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     }
 
     @Override
-    public PrintWriter getLogWriter() throws SQLException {
+    public PrintWriter getLogWriter() {
         return logWriter;
+    }
+    
+    protected void printStackTrace(Throwable e) {
+        if (logWriter != null) {
+            e.printStackTrace(logWriter);
+        }
     }
 
     @Override

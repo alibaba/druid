@@ -487,7 +487,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                 } catch (InterruptedException e) {
                     break;
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    printStackTrace(e);
                 } finally {
                     lock.unlock();
                 }
@@ -532,7 +532,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                     try {
                         connection.close();
                     } catch (SQLException e) {
-                        e.printStackTrace(); // TODO
+                        printStackTrace(e);
                     }
 
                     destroyCount++;
