@@ -27,6 +27,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Case0 extends TestCase {
 
@@ -39,6 +40,8 @@ public class Case0 extends TestCase {
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
     private String validationQuery = null;
+    
+    public final int LOOP_COUNT = 5;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -63,7 +66,7 @@ public class Case0 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(true);
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "druid");
         }
         System.out.println();
@@ -85,8 +88,30 @@ public class Case0 extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setTestOnBorrow(true);
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "dbcp");
+        }
+        System.out.println();
+    }
+    
+    public void test_2() throws Exception {
+        BoneCPDataSource dataSource = new BoneCPDataSource();
+        // dataSource.(10);
+        // dataSource.setMaxActive(50);
+        dataSource.setMinConnectionsPerPartition(minPoolSize);
+        dataSource.setMaxConnectionsPerPartition(maxPoolSize);
+        
+        dataSource.setDriverClass(driverClass);
+        dataSource.setJdbcUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        dataSource.setConnectionTestStatement("SELECT 1");
+        dataSource.setPartitionCount(1);
+        
+        for (int i = 0; i < LOOP_COUNT; ++i) {
+            p0(dataSource, "boneCP");
         }
         System.out.println();
     }

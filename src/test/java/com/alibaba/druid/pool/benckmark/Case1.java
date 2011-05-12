@@ -27,6 +27,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Case1 extends TestCase {
 
@@ -39,7 +40,7 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
     private String validationQuery = "SELECT 1";
-    private int threadCount = 20;
+    private int threadCount = 2;
     private int loopCount = 5;
 
     protected void setUp() throws Exception {
@@ -89,6 +90,28 @@ public class Case1 extends TestCase {
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "dbcp", threadCount);
+        }
+        System.out.println();
+    }
+    
+    public void test_2() throws Exception {
+        BoneCPDataSource dataSource = new BoneCPDataSource();
+        // dataSource.(10);
+        // dataSource.setMaxActive(50);
+        dataSource.setMinConnectionsPerPartition(minPoolSize);
+        dataSource.setMaxConnectionsPerPartition(maxPoolSize);
+        
+        dataSource.setDriverClass(driverClass);
+        dataSource.setJdbcUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        dataSource.setConnectionTestStatement("SELECT 1");
+        dataSource.setPartitionCount(1);
+        
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "boneCP", threadCount);
         }
         System.out.println();
     }
