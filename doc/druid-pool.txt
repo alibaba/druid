@@ -19,7 +19,7 @@
     (maxActive.signal)        |                           |  
                               |                           |
                               |                           |
-              产生连接的线程                               |                           |
+              产生连接的线程     |                           |
      (lowWater.await)         |                           |
      (notEmpty.signal)        |                           |
   --------------------------> |                           |
