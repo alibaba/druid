@@ -511,17 +511,20 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         public void run() {
             for (;;) {
                 // 从前面开始删除
-
                 try {
+                    if (timeBetweenEvictionRunsMillis > 0) {
+                        Thread.sleep(timeBetweenEvictionRunsMillis);
+                    }
+                    
                     ConnectionHolder first = null;
                     lock.lock();
                     try {
-                        if (count <= maxIdle) {
-                            highWater.await();
+                        if (count <= 0) {
                             continue;
                         }
                         
-                        if (count <= 0) {
+                        if (count <= maxIdle) {
+                            highWater.await();
                             continue;
                         }
 
@@ -533,6 +536,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                             continue;
                         }
 
+                        // removete first
                         System.arraycopy(connections, 1, connections, 0, count - 1);
                         connections[count - 1] = null;
                     } finally {
