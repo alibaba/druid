@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Alibaba Group.
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,12 +103,15 @@ public class Case1 extends TestCase {
         
         dataSource.setDriverClass(driverClass);
         dataSource.setJdbcUrl(jdbcUrl);
-        // dataSource.setPoolPreparedStatements(true);
+        dataSource.setStatementsCacheSize(100);
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setConnectionTestStatement("SELECT 1");
         dataSource.setPartitionCount(1);
+        dataSource.setAcquireIncrement(5);
+        dataSource.setIdleConnectionTestPeriod(0L);
+        dataSource.setDisableConnectionTracking(true);
         
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "boneCP", threadCount);

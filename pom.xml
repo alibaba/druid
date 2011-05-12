@@ -15,6 +15,12 @@
 			<url>http://download.oracle.com/maven</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<id>bonecp</id>
+			<name>bonecp</name>
+			<url>http://jolbox.com/bonecp/downloads/maven/</url>
+			<layout>default</layout>
+		</repository>
 	</repositories>
 
 	<build>
@@ -86,8 +92,8 @@
 			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- 用于针对Oracle、MySQL的参数设置优化  -->
+
+		<!-- 用于针对Oracle、MySQL的参数设置优化 -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -100,7 +106,7 @@
 			<version>10.2.0.3.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -127,6 +133,10 @@
 			<version>0.7.1.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp-spring</artifactId>
+			<version>0.7.1.RELEASE</version>
+		</dependency>
 	</dependencies>
 </project>
