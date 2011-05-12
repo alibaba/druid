@@ -468,6 +468,28 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
         this.connectionProperties = connectionProperties;
     }
+    
+    public void setConnectionProperties(String connectionProperties) {
+        if (connectionProperties == null) throw new NullPointerException("connectionProperties is null");
+
+        String[] entries = connectionProperties.split(";");
+        Properties properties = new Properties();
+        for (int i = 0; i < entries.length; i++) {
+            String entry = entries[i];
+            if (entry.length() > 0) {
+                int index = entry.indexOf('=');
+                if (index > 0) {
+                    String name = entry.substring(0, index);
+                    String value = entry.substring(index + 1);
+                    properties.setProperty(name, value);
+                } else {
+                    // no value is empty string which is how java.util.Properties works
+                    properties.setProperty(entry, "");
+                }
+            }
+        }
+        this.connectionProperties = properties;
+    }
 
     public String getUrl() {
         return jdbcUrl;
