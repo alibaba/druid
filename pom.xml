@@ -74,18 +74,8 @@
 			<version>1.2.16</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.6.1.0</version>
-			<scope>test</scope>
-		</dependency>
+		
+		<!-- 用于针对Oracle、MySQL的参数设置优化  -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -98,6 +88,20 @@
 			<version>10.2.0.3.0</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.6.1.0</version>
+			<scope>test</scope>
+		</dependency>
+
 
 		<dependency>
 			<groupId>commons-dbcp</groupId>
@@ -105,5 +109,6 @@
 			<version>1.4</version>
 			<scope>test</scope>
 		</dependency>
+		
 	</dependencies>
 </project>
