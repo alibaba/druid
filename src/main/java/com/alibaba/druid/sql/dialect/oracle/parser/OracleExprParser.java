@@ -167,6 +167,7 @@ public class OracleExprParser extends SQLExprParser {
         return aggregateExpr;
     }
 
+    @SuppressWarnings("unused")
     private OracleIntervalType parseIntervalType() {
         String currentTokenUpperValue = lexer.stringVal();
         lexer.nextToken();
