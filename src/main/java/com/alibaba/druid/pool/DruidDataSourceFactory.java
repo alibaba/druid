@@ -114,6 +114,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
      * @param properties the datasource configuration properties
      * @throws Exception if an error occurs creating the data source
      */
+    @SuppressWarnings("deprecation")
     public static DataSource createDataSource(Properties properties) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         String value = null;

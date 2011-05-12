@@ -52,7 +52,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public final static boolean DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean DEFAULT_WHILE_IDLE                        = false;
     public static final long    DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
-    public static final int     DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
+    public static final int     DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 1;
 
     /**
      * The default value for {@link #getMinEvictableIdleTimeMillis}.
@@ -208,6 +208,11 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         return numTestsPerEvictionRun;
     }
 
+    /**
+     * 
+     * @param numTestsPerEvictionRun
+     */
+    @Deprecated
     public void setNumTestsPerEvictionRun(int numTestsPerEvictionRun) {
         this.numTestsPerEvictionRun = numTestsPerEvictionRun;
     }
