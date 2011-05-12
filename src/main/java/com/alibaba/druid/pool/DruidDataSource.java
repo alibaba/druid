@@ -520,11 +520,15 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                             highWater.await();
                             continue;
                         }
+                        
+                        if (count <= 0) {
+                            continue;
+                        }
 
                         first = connections[0];
 
                         long millis = System.currentTimeMillis() - first.getTimeMillis();
-                        if (millis > 0) {
+                        if (millis < minEvictableIdleTimeMillis) {
                             idleTimeout.await(millis, TimeUnit.MILLISECONDS);
                             continue;
                         }
