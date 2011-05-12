@@ -208,7 +208,6 @@ public class MySqlExprParser extends SQLExprParser {
 
             if ("EXTRACT".equalsIgnoreCase(ident)) {
                 lexer.nextToken();
-                SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(ident);
 
                 if (lexer.token() != Token.IDENTIFIER) {
                     throw new ParserException("syntax error");
