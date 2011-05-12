@@ -19,12 +19,13 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 
 public abstract class OracleDatetimeLiteralExpr extends SQLLiteralExpr {
 
-    protected int year;
-    protected int month;
-    protected int dayOfMonth;
-    protected int hour;
-    protected int minute;
-    protected int second;
+    private static final long serialVersionUID = 1L;
+    protected int             year;
+    protected int             month;
+    protected int             dayOfMonth;
+    protected int             hour;
+    protected int             minute;
+    protected int             second;
 
     public OracleDatetimeLiteralExpr(){
 

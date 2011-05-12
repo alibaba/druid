@@ -26,10 +26,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleGroupComparisonCondition extends SQLExprImpl {
 
-    private final List<SQLExpr>   exprList       = new ArrayList<SQLExpr>();
+    private static final long     serialVersionUID = 1L;
+    private final List<SQLExpr>   exprList         = new ArrayList<SQLExpr>();
     private SQLBinaryOperator     operator;
     private OracleGroupComparator comparator;
-    private final List<SQLExpr>   targetExprList = new ArrayList<SQLExpr>();
+    private final List<SQLExpr>   targetExprList   = new ArrayList<SQLExpr>();
 
     public OracleGroupComparisonCondition(){
 

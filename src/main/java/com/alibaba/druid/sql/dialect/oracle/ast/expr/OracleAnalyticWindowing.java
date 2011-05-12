@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
+@SuppressWarnings("serial")
 public class OracleAnalyticWindowing extends SQLObjectImpl {
 
     private Type    type;

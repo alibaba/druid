@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDateExpr extends OracleDatetimeLiteralExpr {
 
+    private static final long serialVersionUID = 1L;
+
     public OracleDateExpr(){
 
     }

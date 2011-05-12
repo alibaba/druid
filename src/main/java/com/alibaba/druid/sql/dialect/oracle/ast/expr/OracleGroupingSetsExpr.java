@@ -25,7 +25,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleGroupingSetsExpr extends SQLExprImpl {
 
-    private final List<SQLExpr> items = new ArrayList<SQLExpr>();
+    private static final long   serialVersionUID = 1L;
+    private final List<SQLExpr> items            = new ArrayList<SQLExpr>();
 
     public OracleGroupingSetsExpr(){
 

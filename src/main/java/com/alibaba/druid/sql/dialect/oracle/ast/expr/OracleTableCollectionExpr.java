@@ -22,8 +22,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleTableCollectionExpr extends SQLExprImpl {
 
-    private SQLExpr expr;
-    private boolean outer = false;
+    private static final long serialVersionUID = 1L;
+    private SQLExpr           expr;
+    private boolean           outer            = false;
 
     public OracleTableCollectionExpr(){
 

@@ -25,8 +25,9 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleArrayAccessExpr extends SQLExprImpl {
 
+    private static final long   serialVersionUID = 1L;
     private SQLExpr             ownner;
-    private final List<SQLExpr> arguments = new ArrayList<SQLExpr>();
+    private final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
 
     public OracleArrayAccessExpr(){
 
