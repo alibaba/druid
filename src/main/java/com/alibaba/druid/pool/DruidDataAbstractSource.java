@@ -128,6 +128,10 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected List<String>      connectionInitSqls;
 
     public void addConnectionProperty(String name, String value) {
+        if (inited) {
+            throw new UnsupportedOperationException();
+        }
+        
         connectionProperties.put(name, value);
     }
 
@@ -470,6 +474,10 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     }
     
     public void setConnectionProperties(String connectionProperties) {
+        if (inited) {
+            throw new UnsupportedOperationException();
+        }
+        
         if (connectionProperties == null) {
             throw new NullPointerException("connectionProperties is null");
         }
