@@ -247,7 +247,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
     /**
      * 回收连接
      */
-    void recycle(PoolableConnection pooledConnection) throws SQLException {
+    protected void recycle(PoolableConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
         try {
             if (activeConnectionTraceEnable) {

@@ -44,10 +44,10 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public final class PoolableConnection implements PooledConnection, Connection {
+public class PoolableConnection implements PooledConnection, Connection {
 
-    private Connection       conn;
-    private ConnectionHolder holder;
+    protected Connection       conn;
+    protected ConnectionHolder holder;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -413,8 +413,10 @@ public final class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public boolean isClosed() throws SQLException {
-        checkOpen();
-
+        if (holder == null) {
+            return true;
+        }
+        
         return conn.isClosed();
     }
 

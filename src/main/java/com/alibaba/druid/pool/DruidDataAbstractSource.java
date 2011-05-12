@@ -62,14 +62,14 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
      */
     public static final long    DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
 
-    private boolean             defaultAutoCommit                         = false;
-    private Boolean             defaultReadOnly;
-    private Integer             defaultTransactionIsolation;
-    private String              defaultCatalog                            = null;
+    protected boolean           defaultAutoCommit                         = false;
+    protected Boolean           defaultReadOnly;
+    protected Integer           defaultTransactionIsolation;
+    protected String            defaultCatalog                            = null;
 
     protected String            name;
 
-    protected String            user;
+    protected String            username;
     protected String            password;
     protected String            jdbcUrl;
     protected String            driverClass;
@@ -434,7 +434,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     }
 
     public String getUsername() {
-        return user;
+        return username;
     }
 
     public void setUsername(String user) {
@@ -442,7 +442,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
             throw new UnsupportedOperationException();
         }
 
-        this.user = user;
+        this.username = user;
     }
 
     public String getPassword() {
@@ -501,7 +501,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public PrintWriter getLogWriter() {
         return logWriter;
     }
-    
+
     protected void printStackTrace(Throwable e) {
         if (logWriter != null) {
             e.printStackTrace(logWriter);
@@ -533,8 +533,12 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         return false;
     }
 
-    protected void initConnectionFactory() {
-        connectionFactory = new DruidPoolConnectionFactory(this);
+    protected void initConnectionFactory() throws SQLException {
+        connectionFactory = createConnectionFactory();
+    }
+
+    protected ConnectionFactory createConnectionFactory() throws SQLException {
+        return new DruidPoolConnectionFactory(this);
     }
 
     public Driver getDriver() {
