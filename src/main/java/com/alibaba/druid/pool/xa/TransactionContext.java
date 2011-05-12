@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference;
  */
 public class TransactionContext {
     private final TransactionRegistry transactionRegistry;
-    private final WeakReference transactionRef;
+    private final WeakReference<Transaction> transactionRef;
     private Connection sharedConnection;
 
     /**
@@ -37,7 +37,7 @@ public class TransactionContext {
         if (transactionRegistry == null) throw new NullPointerException("transactionRegistry is null");
         if (transaction == null) throw new NullPointerException("transaction is null");
         this.transactionRegistry = transactionRegistry;
-        this.transactionRef = new WeakReference(transaction);
+        this.transactionRef = new WeakReference<Transaction>(transaction);
     }
 
     /**
