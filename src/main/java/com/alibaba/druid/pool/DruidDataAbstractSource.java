@@ -470,8 +470,10 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     }
     
     public void setConnectionProperties(String connectionProperties) {
-        if (connectionProperties == null) throw new NullPointerException("connectionProperties is null");
-
+        if (connectionProperties == null) {
+            throw new NullPointerException("connectionProperties is null");
+        }
+        
         String[] entries = connectionProperties.split(";");
         Properties properties = new Properties();
         for (int i = 0; i < entries.length; i++) {
