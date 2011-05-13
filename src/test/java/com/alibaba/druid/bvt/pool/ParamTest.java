@@ -87,10 +87,12 @@ public class ParamTest extends TestCase {
         JdbcStatManager.getInstance().reset();
 
         Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        
-        Connection conn = dataSource.getConnection();
-        conn.close();        
-        
+
+        for (int i = 0; i < 10; ++i) {
+            Connection conn = dataSource.getConnection();
+            conn.close();
+        }
+
         Assert.assertEquals(10, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
     }
 }
