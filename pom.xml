@@ -22,8 +22,26 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
+	
+	<distributionManagement>
+		<repository>
+			<id>opensesame</id>
+			<url>dav:http://code.alibabatech.com/mvn/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>opensesame</id>
+			<url>dav:http://code.alibabatech.com/mvn/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
 		<plugins>
 			<!-- 配置源码编译要求JDK 1.6 -->
 			<plugin>
