@@ -52,6 +52,8 @@ import com.alibaba.druid.proxy.jdbc.ClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.NClobProxy;
+import com.alibaba.druid.proxy.jdbc.NClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
@@ -171,11 +173,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = connection.getConnectionRaw().createClob();
-        
+
         if (clob == null) {
             return null;
         }
-        
+
         return wrap(connection, clob);
     }
 
@@ -185,7 +187,13 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createNClob(this, connection);
         }
 
-        return connection.getConnectionRaw().createNClob();
+        NClob nclob = connection.getConnectionRaw().createNClob();
+
+        if (nclob == null) {
+            return null;
+        }
+
+        return wrap(connection, nclob);
     }
 
     @Override
@@ -1623,7 +1631,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnIndex);
-        
+
         if (clob == null) {
             return null;
         }
@@ -1674,11 +1682,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnLabel);
-        
+
         if (clob == null) {
             return null;
         }
-        
+
         return wrap(resultSet.getStatementProxy().getConnectionProxy(), clob);
     }
 
@@ -1923,7 +1931,14 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().resultSet_getNClob(this, resultSet, columnIndex);
         }
-        return resultSet.getResultSetRaw().getNClob(columnIndex);
+
+        NClob nclob = resultSet.getResultSetRaw().getNClob(columnIndex);
+
+        if (nclob == null) {
+            return null;
+        }
+
+        return wrap(resultSet.getStatementProxy().getConnectionProxy(), nclob);
     }
 
     @Override
@@ -1931,7 +1946,14 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().resultSet_getNClob(this, resultSet, columnLabel);
         }
-        return resultSet.getResultSetRaw().getNClob(columnLabel);
+
+        NClob nclob = resultSet.getResultSetRaw().getNClob(columnLabel);
+
+        if (nclob == null) {
+            return null;
+        }
+
+        return wrap(resultSet.getStatementProxy().getConnectionProxy(), nclob);
     }
 
     @Override
@@ -1939,6 +1961,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().resultSet_getSQLXML(this, resultSet, columnIndex);
         }
+
         return resultSet.getResultSetRaw().getSQLXML(columnIndex);
     }
 
@@ -3352,11 +3375,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = statement.getRawCallableStatement().getClob(parameterIndex);
-        
+
         if (clob == null) {
             return null;
         }
-        
+
         return wrap(statement.getConnectionProxy(), clob);
     }
 
@@ -3846,11 +3869,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = statement.getRawCallableStatement().getClob(parameterName);
-        
+
         if (clob == null) {
             return null;
         }
-        
+
         return wrap(statement.getConnectionProxy(), clob);
     }
 
@@ -3989,7 +4012,14 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNClob(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getNClob(parameterIndex);
+
+        NClob nclob = statement.getRawCallableStatement().getNClob(parameterIndex);
+
+        if (nclob == null) {
+            return null;
+        }
+
+        return wrap(statement.getConnectionProxy(), nclob);
     }
 
     @Override
@@ -3997,7 +4027,14 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNClob(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getNClob(parameterName);
+        
+        NClob nclob = statement.getRawCallableStatement().getNClob(parameterName);
+
+        if (nclob == null) {
+            return null;
+        }
+
+        return wrap(statement.getConnectionProxy(), nclob);
     }
 
     @Override
@@ -4335,7 +4372,10 @@ public class FilterChainImpl implements FilterChain {
 
     public ClobProxy wrap(ConnectionProxy connection, Clob clob) {
         return new ClobProxyImpl(dataSource, connection, clob);
+    }
 
+    public NClobProxy wrap(ConnectionProxy connection, NClob clob) {
+        return new NClobProxyImpl(dataSource, connection, clob);
     }
 
     private final AtomicLong connectionIdSeed = new AtomicLong(10000);

@@ -30,10 +30,10 @@ import com.alibaba.druid.filter.FilterChainImpl;
  */
 public class ClobProxyImpl implements ClobProxy {
 
-    private final Clob            clob;
-    private final ConnectionProxy connection;
+    protected final Clob            clob;
+    protected final ConnectionProxy connection;
 
-    private final DataSourceProxy dataSource;
+    protected final DataSourceProxy dataSource;
 
     public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob){
         this.dataSource = dataSource;
