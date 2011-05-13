@@ -30,7 +30,7 @@ public class DruidDataSourceFilterTest extends TestCase {
 
         Assert.assertEquals(2, dataSource.getFilters().size());
     }
-    
+
     public void test_filter_3() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -40,12 +40,21 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat");
 
         JdbcStatManager.getInstance().reset();
-        
+
         Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
         Assert.assertEquals(1, dataSource.getFilters().size());
-        
-        Connection conn = dataSource.getConnection();
-        
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+
+        for (int i = 0; i < 2; ++i) {
+            Connection conn = dataSource.getConnection();
+
+            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+
+            conn.close();
+
+            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); // logic
+                                                                                                       // close不会导致计数器＋1
+        }
     }
 }
