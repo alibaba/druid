@@ -40,8 +40,8 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
     private String validationQuery = "SELECT 1";
-    private int threadCount = 2;
-    private int loopCount = 5;
+    private int    threadCount     = 2;
+    private int    loopCount       = 5;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -93,14 +93,14 @@ public class Case1 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_2() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
         dataSource.setMinConnectionsPerPartition(minPoolSize);
         dataSource.setMaxConnectionsPerPartition(maxPoolSize);
-        
+
         dataSource.setDriverClass(driverClass);
         dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setStatementsCacheSize(100);
@@ -112,7 +112,7 @@ public class Case1 extends TestCase {
         dataSource.setAcquireIncrement(5);
         dataSource.setIdleConnectionTestPeriod(0L);
         dataSource.setDisableConnectionTracking(true);
-        
+
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "boneCP", threadCount);
         }
