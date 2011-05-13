@@ -17,16 +17,8 @@ package com.alibaba.druid.pool.xa;
 
 import java.sql.SQLException;
 
-import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 import javax.transaction.TransactionManager;
-
-import org.apache.commons.dbcp.AbandonedConfig;
-import org.apache.commons.dbcp.PoolableConnectionFactory;
-import org.apache.commons.dbcp.PoolingDataSource;
-import org.apache.commons.dbcp.managed.ManagedDataSource;
-import org.apache.commons.dbcp.managed.PoolableManagedConnectionFactory;
-import org.apache.commons.pool.KeyedObjectPoolFactory;
 
 import com.alibaba.druid.pool.ConnectionFactory;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -164,9 +156,7 @@ public class DruidXADataSource extends DruidDataSource {
      * @param abandonedConfig abandoned connection tracking configuration (null if no tracking)
      * @throws SQLException if an error occurs creating the PoolableConnectionFactory
      */
-    protected void createPoolableConnectionFactory(ConnectionFactory driverConnectionFactory,
-                                                   KeyedObjectPoolFactory statementPoolFactory,
-                                                   AbandonedConfig abandonedConfig) throws SQLException {
+    protected void createPoolableConnectionFactory(ConnectionFactory driverConnectionFactory) throws SQLException {
         // PoolableConnectionFactory connectionFactory = null;
         // try {
         // connectionFactory = new PoolableManagedConnectionFactory((XAConnectionFactory) driverConnectionFactory,
