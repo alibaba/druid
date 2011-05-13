@@ -30,8 +30,6 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 public class DruidDataSourceFactory implements ObjectFactory {
 
     static final int              UNKNOWN_TRANSACTIONISOLATION             = -1;
