@@ -57,4 +57,6 @@ public interface DruidDataSourceMBean {
     void setActiveConnectionTraceEnable(boolean connectStackTraceEnable);
 
     List<String> getActiveConnectionStackTrace();
+    
+    List<String> getFilterClassNames();
 }
