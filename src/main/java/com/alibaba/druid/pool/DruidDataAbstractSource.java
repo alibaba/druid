@@ -34,6 +34,7 @@ import javax.sql.DataSource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.util.DruidLoaderUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -585,6 +586,20 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     @Override
     public List<Filter> getFilters() {
         return filters;
+    }
+    
+    public void setFilters(String filters) throws SQLException {
+        this.filters.clear();
+        
+        if (filters == null || filters.length() == 0) {
+            return;
+        }
+        
+        String[] filterArray = filters.split("\\,");
+        
+        for (String item : filterArray) {
+            DruidLoaderUtils.loadFilter(this.filters, item);
+        }
     }
 
     public long getCreateTimespanNano() {

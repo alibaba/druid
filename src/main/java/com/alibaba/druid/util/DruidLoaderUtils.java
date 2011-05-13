@@ -56,12 +56,12 @@ public class DruidLoaderUtils {
 
     }
 
-    public static void loadFilter(List<Filter> filterConfigList, String filterItem) throws SQLException {
-        if (filterItem.length() == 0) {
+    public static void loadFilter(List<Filter> filters, String filterName) throws SQLException {
+        if (filterName.length() == 0) {
             return;
         }
 
-        String filterClassNames = FilterManager.getFilter(filterItem);
+        String filterClassNames = FilterManager.getFilter(filterName);
         if (filterClassNames != null) {
             filterClassNames = filterClassNames.trim();
         }
@@ -69,7 +69,7 @@ public class DruidLoaderUtils {
         if (filterClassNames != null) {
             for (String filterClassName : filterClassNames.split(",")) {
 
-                if (!isExist(filterConfigList, filterClassName)) {
+                if (!isExist(filters, filterClassName)) {
                     Class<?> filterClass = loadClass(filterClassName);
 
                     if (filterClass != null) {
@@ -78,27 +78,27 @@ public class DruidLoaderUtils {
                         try {
                             filter = (Filter) filterClass.newInstance();
                         } catch (InstantiationException e) {
-                            throw new SQLException("load managed jdbc driver event listener error. " + filterItem, e);
+                            throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                         } catch (IllegalAccessException e) {
-                            throw new SQLException("load managed jdbc driver event listener error. " + filterItem, e);
+                            throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                         }
 
-                        filterConfigList.add(filter);
+                        filters.add(filter);
                     }
                 }
             }
         } else {
-            if (!isExist(filterConfigList, filterItem)) {
-                Class<?> filterClass = loadClass(filterItem);
+            if (!isExist(filters, filterName)) {
+                Class<?> filterClass = loadClass(filterName);
 
                 if (filterClass != null) {
                     try {
                         Filter filter = (Filter) filterClass.newInstance();
-                        filterConfigList.add(filter);
+                        filters.add(filter);
                     } catch (InstantiationException e) {
-                        throw new SQLException("load managed jdbc driver event listener error. " + filterItem, e);
+                        throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                     } catch (IllegalAccessException e) {
-                        throw new SQLException("load managed jdbc driver event listener error. " + filterItem, e);
+                        throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
                     }
                 }
             }
