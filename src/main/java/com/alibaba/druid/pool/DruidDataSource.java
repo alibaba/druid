@@ -90,6 +90,14 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
             if (inited) {
                 return;
             }
+            
+            if (maxActive <= 0) {
+                throw new IllegalArgumentException("illegal maxActive " + maxActive);
+            }
+            
+            if (maxIdle <= 0 || maxIdle < minIdle) {
+                throw new IllegalArgumentException("illegal maxPoolSize");
+            }
 
             if (this.driverClass != null) {
                 this.driverClass = driverClass.trim();
@@ -118,10 +126,6 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
             }
 
             initConnectionFactory();
-
-            if (maxIdle <= 0 || maxIdle < minIdle) {
-                throw new IllegalArgumentException("illegal maxPoolSize");
-            }
 
             int capacity = maxIdle + maxActive;
 
