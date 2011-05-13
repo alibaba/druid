@@ -74,7 +74,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     protected String            password;
     protected String            jdbcUrl;
     protected String            driverClass;
-    protected Properties        connectionProperties                                = new Properties();
+    protected Properties        connectionProperties                      = new Properties();
 
     protected PasswordCallback  passwordCallback;
     protected NameCallback      userCallback;
@@ -98,7 +98,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
     protected PrintWriter       logWriter                                 = new PrintWriter(System.out);
 
-    private final List<Filter>  filters                                   = new ArrayList<Filter>();
+    private List<Filter>        filters                                   = new ArrayList<Filter>();
 
     protected Driver            driver;
 
@@ -132,7 +132,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         if (inited) {
             throw new UnsupportedOperationException();
         }
-        
+
         connectionProperties.put(name, value);
     }
 
@@ -210,7 +210,6 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     }
 
     /**
-     * 
      * @param numTestsPerEvictionRun
      */
     @Deprecated
@@ -478,16 +477,16 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
         this.connectionProperties = connectionProperties;
     }
-    
+
     public void setConnectionProperties(String connectionProperties) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
-        
+
         if (connectionProperties == null) {
             throw new NullPointerException("connectionProperties is null");
         }
-        
+
         String[] entries = connectionProperties.split(";");
         Properties properties = new Properties();
         for (int i = 0; i < entries.length; i++) {
@@ -587,16 +586,20 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public List<Filter> getFilters() {
         return filters;
     }
-    
+
+    public void setFilters(List<Filter> filters) {
+        this.filters = filters;
+    }
+
     public void setFilters(String filters) throws SQLException {
         this.filters.clear();
-        
+
         if (filters == null || filters.length() == 0) {
             return;
         }
-        
+
         String[] filterArray = filters.split("\\,");
-        
+
         for (String item : filterArray) {
             DruidLoaderUtils.loadFilter(this.filters, item);
         }
