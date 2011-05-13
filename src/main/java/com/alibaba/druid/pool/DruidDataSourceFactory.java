@@ -69,6 +69,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
     private final static String   PROP_POOLPREPAREDSTATEMENTS              = "poolPreparedStatements";
     private final static String   PROP_MAXOPENPREPAREDSTATEMENTS           = "maxOpenPreparedStatements";
     private final static String   PROP_CONNECTIONPROPERTIES                = "connectionProperties";
+    private final static String   PROP_FILTERS                             = "filters";
 
     private final static String[] ALL_PROPERTIES                           = { PROP_DEFAULTAUTOCOMMIT,
             PROP_DEFAULTREADONLY, PROP_DEFAULTTRANSACTIONISOLATION, PROP_DEFAULTCATALOG, PROP_DRIVERCLASSNAME,
@@ -77,7 +78,8 @@ public class DruidDataSourceFactory implements ObjectFactory {
             PROP_MINEVICTABLEIDLETIMEMILLIS, PROP_TESTWHILEIDLE, PROP_PASSWORD, PROP_URL, PROP_USERNAME,
             PROP_VALIDATIONQUERY, PROP_VALIDATIONQUERY_TIMEOUT, PROP_INITCONNECTIONSQLS,
             PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED, PROP_REMOVEABANDONED, PROP_REMOVEABANDONEDTIMEOUT,
-            PROP_LOGABANDONED, PROP_POOLPREPAREDSTATEMENTS, PROP_MAXOPENPREPAREDSTATEMENTS, PROP_CONNECTIONPROPERTIES };
+            PROP_LOGABANDONED, PROP_POOLPREPAREDSTATEMENTS, PROP_MAXOPENPREPAREDSTATEMENTS, PROP_CONNECTIONPROPERTIES,
+            PROP_FILTERS                                                  };
 
     @Override
     public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment)
@@ -271,6 +273,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
         value = properties.getProperty(PROP_MAXOPENPREPAREDSTATEMENTS);
         if (value != null) {
             dataSource.setMaxOpenPreparedStatements(Integer.parseInt(value));
+        }
+        
+        value = properties.getProperty(PROP_FILTERS);
+        if (value != null) {
+            dataSource.setFilters(value);
         }
 
         value = properties.getProperty(PROP_INITCONNECTIONSQLS);
