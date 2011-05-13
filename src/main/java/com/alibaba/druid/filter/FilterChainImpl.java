@@ -171,6 +171,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = connection.getConnectionRaw().createClob();
+        
+        if (clob == null) {
+            return null;
+        }
+        
         return wrap(connection, clob);
     }
 
@@ -1618,6 +1623,10 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnIndex);
+        
+        if (clob == null) {
+            return null;
+        }
 
         return wrap(resultSet.getStatementProxy().getConnectionProxy(), clob);
     }
@@ -1665,6 +1674,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnLabel);
+        
+        if (clob == null) {
+            return null;
+        }
+        
         return wrap(resultSet.getStatementProxy().getConnectionProxy(), clob);
     }
 
@@ -3338,6 +3352,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = statement.getRawCallableStatement().getClob(parameterIndex);
+        
+        if (clob == null) {
+            return null;
+        }
+        
         return wrap(statement.getConnectionProxy(), clob);
     }
 
@@ -3827,6 +3846,11 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Clob clob = statement.getRawCallableStatement().getClob(parameterName);
+        
+        if (clob == null) {
+            return null;
+        }
+        
         return wrap(statement.getConnectionProxy(), clob);
     }
 
