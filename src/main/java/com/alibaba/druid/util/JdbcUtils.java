@@ -348,7 +348,7 @@ public final class JdbcUtils {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
             return "net.sourceforge.jtds.jdbc.Driver";
-        } else if (rawUrl.startsWith("jdbc:fake:")) {
+        } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
             return "org.postgresql.Driver";

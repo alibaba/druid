@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,6 +34,7 @@ import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -72,6 +74,8 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
     private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections           = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
+    private final CountDownLatch initedLatch = new CountDownLatch(2);
+    
     public DruidDataSource(){
     }
 
@@ -81,14 +85,6 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         }
 
         try {
-            final int maxWaitThreadCount = getMaxWaitThreadCount();
-            if (maxWaitThreadCount > 0) {
-                if (lock.getQueueLength() > maxWaitThreadCount) {
-                    throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
-                                           + lock.getQueueLength());
-                }
-            }
-
             lock.lockInterruptibly();
 
             if (inited) {
@@ -115,6 +111,10 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                 throw new SQLException(e.getMessage(), e);
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e.getMessage(), e);
+            }
+            
+            for (Filter filter : filters) {
+                filter.init(this);
             }
 
             initConnectionFactory();
@@ -145,7 +145,12 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
             createConnectionThread.start();
             destoryConnectionThread.start();
 
+            initedLatch.await();
             inited = true;
+            
+            if (count == 0) {
+                lowWater.signal();
+            }
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } finally {
@@ -193,6 +198,14 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
     public Connection getConnection() throws SQLException {
         init();
 
+        final int maxWaitThreadCount = getMaxWaitThreadCount();
+        if (maxWaitThreadCount > 0) {
+            if (lock.getQueueLength() > maxWaitThreadCount) {
+                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                                       + lock.getQueueLength());
+            }
+        }
+        
         try {
             lock.lockInterruptibly();
 
@@ -380,6 +393,10 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
         try {
             while (count == 0) {
+                if (minIdle == 0) {
+                    lowWater.signal();
+                }
+                
                 notEmpty.await();
             }
         } catch (InterruptedException ie) {
@@ -475,11 +492,15 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         }
 
         public void run() {
+            initedLatch.countDown();
+            
             for (;;) {
                 // addLast
                 lock.lock();
                 try {
-                    if (count >= minIdle) {
+                    if (count == 0 && minIdle == 0 && lock.getWaitQueueLength(notEmpty) > 0) {
+                        // not wait
+                    } else if (count >= minIdle) {
                         lowWater.await();
                     }
 
@@ -509,6 +530,8 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         }
 
         public void run() {
+            initedLatch.countDown();
+            
             for (;;) {
                 // 从前面开始删除
                 try {
