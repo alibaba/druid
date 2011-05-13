@@ -51,7 +51,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private final AtomicLong    closeCount      = new AtomicLong(0);  // 执行Connection.close的计数
     private final AtomicLong    commitCount     = new AtomicLong(0);  // 执行commit的计数
     private final AtomicLong    rollbackCount   = new AtomicLong(0);  // 执行rollback的计数
-    private final AtomicLong    connectNanoSpan = new AtomicLong(0);   // 连接建立消耗时间总和（纳秒）
+    private final AtomicLong    connectNanoSpan = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
 
     public void reset() {
         concurrentCount.set(0);

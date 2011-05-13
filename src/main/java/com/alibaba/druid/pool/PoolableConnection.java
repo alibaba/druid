@@ -416,7 +416,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder == null) {
             return true;
         }
-        
+
         return conn.isClosed();
     }
 

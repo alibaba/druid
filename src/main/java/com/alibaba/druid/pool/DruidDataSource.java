@@ -515,14 +515,14 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     }
-                    
+
                     ConnectionHolder first = null;
                     lock.lock();
                     try {
                         if (count <= 0) {
                             continue;
                         }
-                        
+
                         if (count <= maxIdle) {
                             highWater.await();
                             continue;

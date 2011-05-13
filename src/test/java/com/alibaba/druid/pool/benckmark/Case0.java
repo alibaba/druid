@@ -31,17 +31,17 @@ import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Case0 extends TestCase {
 
-    private String jdbcUrl;
-    private String user;
-    private String password;
-    private String driverClass;
-    private int    initialSize     = 10;
-    private int    minPoolSize     = 1;
-    private int    maxPoolSize     = 2;
-    private int    maxActive       = 2;
-    private String validationQuery = null;
-    
-    public final int LOOP_COUNT = 5;
+    private String   jdbcUrl;
+    private String   user;
+    private String   password;
+    private String   driverClass;
+    private int      initialSize     = 10;
+    private int      minPoolSize     = 1;
+    private int      maxPoolSize     = 2;
+    private int      maxActive       = 2;
+    private String   validationQuery = null;
+
+    public final int LOOP_COUNT      = 5;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -93,14 +93,14 @@ public class Case0 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_2() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
         dataSource.setMinConnectionsPerPartition(minPoolSize);
         dataSource.setMaxConnectionsPerPartition(maxPoolSize);
-        
+
         dataSource.setDriverClass(driverClass);
         dataSource.setJdbcUrl(jdbcUrl);
         // dataSource.setPoolPreparedStatements(true);
@@ -109,7 +109,7 @@ public class Case0 extends TestCase {
         dataSource.setPassword(password);
         dataSource.setConnectionTestStatement("SELECT 1");
         dataSource.setPartitionCount(1);
-        
+
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "boneCP");
         }

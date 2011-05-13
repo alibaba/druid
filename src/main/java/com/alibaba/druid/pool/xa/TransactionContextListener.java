@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool.xa;
 
-
 /**
  * A listener for transaction completion events.
  * 

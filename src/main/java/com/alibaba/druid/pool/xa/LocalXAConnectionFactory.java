@@ -46,8 +46,13 @@ public class LocalXAConnectionFactory implements XAConnectionFactory {
      * @param connectionFactory the connection factory from which connections will be retrieved
      */
     public LocalXAConnectionFactory(TransactionManager transactionManager, ConnectionFactory connectionFactory){
-        if (transactionManager == null) throw new NullPointerException("transactionManager is null");
-        if (connectionFactory == null) throw new NullPointerException("connectionFactory is null");
+        if (transactionManager == null) {
+            throw new NullPointerException("transactionManager is null");
+        }
+
+        if (connectionFactory == null) {
+            throw new NullPointerException("connectionFactory is null");
+        }
 
         this.transactionRegistry = new TransactionRegistry(transactionManager);
         this.connectionFactory = connectionFactory;

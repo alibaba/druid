@@ -154,35 +154,35 @@ public class ManagedConnection extends PoolableConnection {
     }
 
     protected void transactionComplete() {
-//        transactionContext = null;
-//
-//        // if we were using a shared connection, clear the reference now that the transaction has completed
-//        if (isSharedConnection) {
-//            // for now, just set the delegate to null, it will be created later if needed
-//            setDelegate(null);
-//            isSharedConnection = false;
-//        }
-//
-//        // if this connection was closed during the transaction and there is still a delegate present close it
-//        Connection delegate = getDelegateInternal();
-//        if (isClosed() && delegate != null) {
-//            try {
-//                setDelegate(null);
-//
-//                // don't actually close the connection if in a transaction
-//                if (!delegate.isClosed()) {
-//                    // don't use super.close() because it calls passivate() which marks the
-//                    // the connection as closed without returning it to the pool
-//                    delegate.close();
-//                }
-//            } catch (SQLException ignored) {
-//                // not a whole lot we can do here as connection is closed
-//                // and this is a transaction callback so there is no
-//                // way to report the error
-//            } finally {
-//                _closed = true;
-//            }
-//        }
+        // transactionContext = null;
+        //
+        // // if we were using a shared connection, clear the reference now that the transaction has completed
+        // if (isSharedConnection) {
+        // // for now, just set the delegate to null, it will be created later if needed
+        // setDelegate(null);
+        // isSharedConnection = false;
+        // }
+        //
+        // // if this connection was closed during the transaction and there is still a delegate present close it
+        // Connection delegate = getDelegateInternal();
+        // if (isClosed() && delegate != null) {
+        // try {
+        // setDelegate(null);
+        //
+        // // don't actually close the connection if in a transaction
+        // if (!delegate.isClosed()) {
+        // // don't use super.close() because it calls passivate() which marks the
+        // // the connection as closed without returning it to the pool
+        // delegate.close();
+        // }
+        // } catch (SQLException ignored) {
+        // // not a whole lot we can do here as connection is closed
+        // // and this is a transaction callback so there is no
+        // // way to report the error
+        // } finally {
+        // _closed = true;
+        // }
+        // }
         throw new RuntimeException("TODO");
     }
 
