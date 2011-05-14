@@ -105,6 +105,8 @@ public class MockDriver implements Driver {
 
         if ("SELECT 1".equalsIgnoreCase(sql)) {
             rs.getRows().add(new Object[] { 1 });
+        } else if ("SELECT NULL".equalsIgnoreCase(sql)) {
+                rs.getRows().add(new Object[] { null });
         } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
             rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
         } else if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
