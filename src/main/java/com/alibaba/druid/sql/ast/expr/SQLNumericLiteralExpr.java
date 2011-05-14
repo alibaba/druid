@@ -22,4 +22,6 @@ public abstract class SQLNumericLiteralExpr extends SQLLiteralExpr {
     public SQLNumericLiteralExpr(){
 
     }
+    
+    public abstract Number getNumber();
 }

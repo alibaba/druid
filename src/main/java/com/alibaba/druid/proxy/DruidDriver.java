@@ -105,6 +105,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
+        if (!acceptsURL(url)) {
+            return null;
+        }
+        
         connectCounter.incrementAndGet();
 
         DataSourceProxyImpl dataSource = getDataSource(url, info);

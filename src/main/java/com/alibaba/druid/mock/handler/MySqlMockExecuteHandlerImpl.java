@@ -2,25 +2,98 @@ package com.alibaba.druid.mock.handler;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
+import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
+
     @Override
     public ResultSet executeQuery(MockStatement statement, String sql) throws SQLException {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList(); //
-        
+
         if (stmtList.size() > 1) {
             throw new SQLException("not support multi-statment. " + sql);
         }
-        
-        // TODO Auto-generated method stub
-        return null;
+
+        if (stmtList.size() == 0) {
+            throw new SQLException("executeQueryError : " + sql);
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        if (!(stmt instanceof SQLSelectStatement)) {
+            throw new SQLException("executeQueryError : " + sql);
+        }
+
+        SQLSelect select = ((SQLSelectStatement) stmt).getSelect();
+        SQLSelectQuery query = select.getQuery();
+
+        if (query instanceof SQLSelectQueryBlock) {
+            return executeQuery(statement, (SQLSelectQueryBlock) query);
+        }
+
+        throw new SQLException("TODO");
     }
 
+    public ResultSet executeQuery(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
+        SQLTableSource from = query.getFrom();
+
+        if (from instanceof SQLExprTableSource) {
+            throw new SQLException("TODO");
+        } else if (from == null) {
+            return executeQueryFromDual(statement, query);
+        } else {
+            throw new SQLException("TODO");
+        }
+
+    }
+
+    public ResultSet executeQueryFromDual(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
+        MockResultSet rs = new MockResultSet(statement);
+        Object[] row = new Object[query.getSelectList().size()];
+
+        for (int i = 0, size = query.getSelectList().size(); i < size; ++i) {
+            SQLSelectItem item = query.getSelectList().get(i);
+            SQLExpr expr = item.getExpr();
+
+            if (expr instanceof SQLNumericLiteralExpr) {
+                row[i] = ((SQLNumericLiteralExpr) expr).getNumber();
+            } else if (expr instanceof SQLNullExpr) {
+                row[i] = null;
+            } else if (expr instanceof SQLMethodInvokeExpr) {
+                SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) expr;
+                
+                if ("NOW".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
+                    row[i] = new Timestamp(System.currentTimeMillis());
+                } else {
+                    throw new SQLException("TODO");
+                }
+                
+            } else {
+                throw new SQLException("TODO");
+            }
+        }
+
+        rs.getRows().add(row);
+
+        return rs;
+    }
 }

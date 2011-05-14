@@ -65,6 +65,10 @@ public class MockDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
+        if (!acceptsURL(url)) {
+            return null;
+        }
+
         MockConnection conn = new MockConnection(this);
 
         if (url == null) {
@@ -90,7 +94,11 @@ public class MockDriver implements Driver {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        return url.startsWith(prefix);
+        if (url == null) {
+            return false;
+        }
+
+        return url.startsWith(prefix) || url.startsWith(mockPrefix);
     }
 
     @Override
@@ -114,25 +122,17 @@ public class MockDriver implements Driver {
     }
 
     protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
-        if (this.executeHandler != null) {
-            return this.executeHandler.executeQuery(stmt, sql);
-        }
-        
-        MockResultSet rs = new MockResultSet(stmt);
+        if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
+            MockResultSet rs = new MockResultSet(stmt);
 
-        if ("SELECT 1".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { 1 });
-        } else if ("SELECT NULL".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { null });
-        } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
-            rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
-        } else if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
             for (int i = 0; i < 1000; ++i) {
                 rs.getRows().add(new Object[] { i });
             }
+
+            return rs;
         }
 
-        return rs;
+        return this.executeHandler.executeQuery(stmt, sql);
     }
 
     protected ResultSet createResultSet(MockPreparedStatement stmt) {
