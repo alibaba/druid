@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
@@ -104,6 +105,9 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
                 column.setColumnType(Types.VARCHAR);
             } else if (expr instanceof SQLNCharExpr) {
                 row[i] = ((SQLNCharExpr) expr).getText();
+                column.setColumnType(Types.NVARCHAR);
+            } else if (expr instanceof MySqlBooleanExpr) {
+                row[i] = ((MySqlBooleanExpr) expr).getValue();
                 column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;

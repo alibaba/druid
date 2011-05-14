@@ -28,6 +28,8 @@ public enum Token {
 
     LOCK("LOCK"), SOME("SOME"), ANY("ANY"),
 
+    TRUE("TRUE"), FALSE("FALSE"),
+
     EOF, ERROR,
     IDENTIFIER,
     HINT,
