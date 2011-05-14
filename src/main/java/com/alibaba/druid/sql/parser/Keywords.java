@@ -25,7 +25,7 @@ public class Keywords {
 
     private final Map<String, Token> keywords;
 
-    public static Keywords           DEFAULT_KEYWORDS;
+    public final static Keywords     DEFAULT_KEYWORDS;
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();

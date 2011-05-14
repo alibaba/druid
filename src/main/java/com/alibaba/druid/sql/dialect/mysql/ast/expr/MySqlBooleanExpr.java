@@ -28,6 +28,10 @@ public class MySqlBooleanExpr extends SQLLiteralExpr implements MySqlExpr {
     public MySqlBooleanExpr(){
 
     }
+    
+    public MySqlBooleanExpr(boolean value){
+        this.value = value;
+    }
 
     public boolean getValue() {
         return value;

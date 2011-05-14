@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
@@ -85,6 +86,22 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return super.notRationalRest(expr);
+    }
+
+    public SQLExpr primary() throws ParserException {
+        final Token tok = lexer.token();
+
+        switch (tok) {
+            case TRUE:
+                lexer.nextToken();
+                return primaryRest(new MySqlBooleanExpr(true));
+            case FALSE:
+                lexer.nextToken();
+                return primaryRest(new MySqlBooleanExpr(false));
+            default:
+                return super.primary();
+        }
+
     }
 
     public final SQLExpr primaryRest(SQLExpr expr) throws ParserException {

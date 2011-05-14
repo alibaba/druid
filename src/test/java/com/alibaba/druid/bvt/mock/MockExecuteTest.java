@@ -91,4 +91,18 @@ public class MockExecuteTest extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_6() throws Exception {
+        Connection conn = DriverManager.getConnection("jdbc:mock:");
+        Statement stmt = conn.createStatement();
+        
+        ResultSet rs = stmt.executeQuery("SELECT false FROM DUAL");
+        Assert.assertTrue(rs.next());
+        Assert.assertEquals(false, rs.getBoolean(1));
+        
+        rs.close();
+        
+        stmt.close();
+        conn.close();
+    }
 }
