@@ -51,4 +51,30 @@ public class MockExecuteTest extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_3() throws Exception {
+        Connection conn = DriverManager.getConnection("jdbc:mock:");
+        Statement stmt = conn.createStatement();
+        
+        ResultSet rs = stmt.executeQuery("SELECT NOW() FROM DUAL");
+        Assert.assertTrue(rs.next());
+        Assert.assertTrue(rs.getObject(1) instanceof Timestamp);
+        rs.close();
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_4() throws Exception {
+        Connection conn = DriverManager.getConnection("jdbc:mock:");
+        Statement stmt = conn.createStatement();
+        
+        ResultSet rs = stmt.executeQuery("SELECT 'ABCDE' FROM DUAL");
+        Assert.assertTrue(rs.next());
+        Assert.assertEquals("ABCDE", rs.getString(1));
+        rs.close();
+        
+        stmt.close();
+        conn.close();
+    }
 }

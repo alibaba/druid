@@ -13,6 +13,7 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -64,6 +65,14 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         SQLTableSource from = query.getFrom();
 
         if (from instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) from).getExpr();
+
+            if (expr instanceof SQLIdentifierExpr) {
+                String ident = ((SQLIdentifierExpr) expr).getName();
+                if ("dual".equalsIgnoreCase(ident)) {
+                    return executeQueryFromDual(statement, query);
+                }
+            }
             throw new SQLException("TODO");
         } else if (from == null) {
             return executeQueryFromDual(statement, query);
