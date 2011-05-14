@@ -36,16 +36,19 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MockResultSet implements ResultSet {
 
-    private int            rowIndex = -1;
-    private Statement      statement;
-    private List<Object[]> rows     = new ArrayList<Object[]>();
+    private int                   rowIndex = -1;
+    private Statement             statement;
+    private List<Object[]>        rows     = new ArrayList<Object[]>();
 
-    private boolean        wasNull  = false;
+    private boolean               wasNull  = false;
+
+    private MockResultSetMetaData metaData = new MockResultSetMetaData();
 
     public MockResultSet(Statement statement){
         super();
@@ -235,7 +238,6 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-
         return 0;
     }
 
@@ -324,7 +326,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        return new MockResultSetMetaData();
+        return metaData;
     }
 
     @Override
