@@ -41,9 +41,13 @@ import java.util.List;
 
 public class MockPreparedStatement extends MockStatement implements PreparedStatement {
 
-    private final String sql;
+    private final String          sql;
 
-    private List<Object> parameters = new ArrayList<Object>();
+    private final List<Object>    parameters = new ArrayList<Object>();
+
+    private MockParameterMetaData metadata   = new MockParameterMetaData();
+    
+    private MockResultSetMetaData resultSetMetaData = new MockResultSetMetaData();
 
     public MockPreparedStatement(Connection conn, String sql){
         super(conn);
@@ -210,8 +214,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-
-        return null;
+        return resultSetMetaData;
     }
 
     @Override
@@ -241,7 +244,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
-        return null;
+        return metadata;
     }
 
     @Override
