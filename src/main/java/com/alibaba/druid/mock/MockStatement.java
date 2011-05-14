@@ -59,7 +59,7 @@ public class MockStatement implements Statement {
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
         if (fakeConnection != null && fakeConnection.getDriver() != null) {
-            return fakeConnection.getDriver().createResultSet(this, sql);
+            return fakeConnection.getDriver().executeQuery(this, sql);
         }
 
         return new MockResultSet(this);

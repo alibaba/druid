@@ -27,12 +27,17 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.Properties;
 
+import com.alibaba.druid.mock.handler.MockExecuteHandler;
+import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
+
 public class MockDriver implements Driver {
 
-    private String                  prefix     = "jdbc:fake:";
-    private String                  mockPrefix = "jdbc:mock:";
+    private String                  prefix         = "jdbc:fake:";
+    private String                  mockPrefix     = "jdbc:mock:";
 
-    private final static MockDriver instance   = new MockDriver();
+    private MockExecuteHandler      executeHandler = new MySqlMockExecuteHandlerImpl();
+
+    private final static MockDriver instance       = new MockDriver();
 
     static {
         registerDriver(instance);
@@ -48,6 +53,14 @@ public class MockDriver implements Driver {
         }
 
         return false;
+    }
+
+    public MockExecuteHandler getExecuteHandler() {
+        return executeHandler;
+    }
+
+    public void setExecuteHandler(MockExecuteHandler executeHandler) {
+        this.executeHandler = executeHandler;
     }
 
     @Override
@@ -100,13 +113,17 @@ public class MockDriver implements Driver {
         return true;
     }
 
-    protected ResultSet createResultSet(MockStatement stmt, String sql) {
+    protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
+        if (this.executeHandler != null) {
+            return this.executeHandler.executeQuery(stmt, sql);
+        }
+        
         MockResultSet rs = new MockResultSet(stmt);
 
         if ("SELECT 1".equalsIgnoreCase(sql)) {
             rs.getRows().add(new Object[] { 1 });
         } else if ("SELECT NULL".equalsIgnoreCase(sql)) {
-                rs.getRows().add(new Object[] { null });
+            rs.getRows().add(new Object[] { null });
         } else if ("SELECT NOW()".equalsIgnoreCase(sql)) {
             rs.getRows().add(new Object[] { new java.sql.Timestamp(System.currentTimeMillis()) });
         } else if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
