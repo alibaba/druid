@@ -129,8 +129,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-                                                                                                           throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         return createChain().connection_createStatement(this, resultSetType, resultSetType, resultSetHoldability);
     }
 
@@ -215,10 +214,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-                                         int resultSetHoldability) throws SQLException {
-        return createChain().connection_prepareCall(this, sql, resultSetType, resultSetConcurrency,
-                                                    resultSetHoldability);
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+        return createChain().connection_prepareCall(this, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
@@ -242,16 +239,13 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         return createChain().connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-                                              int resultSetHoldability) throws SQLException {
-        return createChain().connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency,
-                                                         resultSetHoldability);
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+        return createChain().connection_prepareStatement(this, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override

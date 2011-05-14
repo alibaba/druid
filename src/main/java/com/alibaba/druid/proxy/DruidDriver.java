@@ -108,7 +108,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         if (!acceptsURL(url)) {
             return null;
         }
-        
+
         connectCounter.incrementAndGet();
 
         DataSourceProxyImpl dataSource = getDataSource(url, info);

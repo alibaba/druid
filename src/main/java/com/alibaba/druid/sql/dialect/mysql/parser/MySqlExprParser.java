@@ -169,8 +169,7 @@ public class MySqlExprParser extends SQLExprParser {
                 String collate = lexer.stringVal();
                 lexer.nextToken();
 
-                SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.COLLATE,
-                                                                 new SQLIdentifierExpr(collate));
+                SQLBinaryOpExpr binaryExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.COLLATE, new SQLIdentifierExpr(collate));
 
                 expr = binaryExpr;
 

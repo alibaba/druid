@@ -43,8 +43,7 @@ public class ManagedConnection extends PoolableConnection {
     private TransactionContext        transactionContext;
     private boolean                   isSharedConnection;
 
-    public ManagedConnection(ConnectionHolder holder, TransactionRegistry transactionRegistry,
-                             boolean accessToUnderlyingConnectionAllowed) throws SQLException{
+    public ManagedConnection(ConnectionHolder holder, TransactionRegistry transactionRegistry, boolean accessToUnderlyingConnectionAllowed) throws SQLException{
         super(holder);
         this.transactionRegistry = transactionRegistry;
         this.accessToUnderlyingConnectionAllowed = accessToUnderlyingConnectionAllowed;

@@ -55,8 +55,7 @@ public class OracleTimestampExpr extends OracleDatetimeLiteralExpr {
         buf.append("-");
         buf.append(this.dayOfMonth);
 
-        if ((this.hour != 0) || (this.minute != 0) || (this.second != 0) || (this.milliSecond != 0)
-            || (this.timeZone != null)) {
+        if ((this.hour != 0) || (this.minute != 0) || (this.second != 0) || (this.milliSecond != 0) || (this.timeZone != null)) {
             buf.append(' ');
             buf.append(this.hour);
             buf.append(":");

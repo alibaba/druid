@@ -175,8 +175,8 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 //
                 SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING };
 
-        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", "RawUrl", "RawDriverClassName",
-                "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" };
+        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", "RawUrl", "RawDriverClassName", "RawDriverMajorVersion",
+                "RawDriverMinorVersion", "Properties" };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 

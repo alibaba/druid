@@ -68,677 +68,587 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                    throws SQLException {
+    public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getArray(statement, parameterIndex);
     }
 
     @Override
-    public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                      throws SQLException {
+    public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getArray(statement, parameterName);
     }
 
     @Override
-    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement,
-                                                      int parameterIndex) throws SQLException {
+    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getBigDecimal(statement, parameterIndex);
     }
 
     @Override
-    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement,
-                                                      int parameterIndex, int scale) throws SQLException {
+    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement, int parameterIndex, int scale) throws SQLException {
         return chain.callableStatement_getBigDecimal(statement, parameterIndex, scale);
     }
 
     @Override
-    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement,
-                                                      String parameterName) throws SQLException {
+    public BigDecimal callableStatement_getBigDecimal(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getBigDecimal(statement, parameterName);
     }
 
     @Override
-    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getBlob(statement, parameterIndex);
     }
 
     @Override
-    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getBlob(statement, parameterName);
     }
 
     @Override
-    public boolean callableStatement_getBoolean(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                        throws SQLException {
+    public boolean callableStatement_getBoolean(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getBoolean(statement, parameterIndex);
     }
 
     @Override
-    public boolean callableStatement_getBoolean(FilterChain chain, CallableStatementProxy statement,
-                                                String parameterName) throws SQLException {
+    public boolean callableStatement_getBoolean(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getBoolean(statement, parameterName);
     }
 
     @Override
-    public byte callableStatement_getByte(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+    public byte callableStatement_getByte(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getByte(statement, parameterIndex);
     }
 
     @Override
-    public byte callableStatement_getByte(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+    public byte callableStatement_getByte(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getByte(statement, parameterName);
     }
 
     @Override
-    public byte[] callableStatement_getBytes(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                     throws SQLException {
+    public byte[] callableStatement_getBytes(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getBytes(statement, parameterIndex);
     }
 
     @Override
-    public byte[] callableStatement_getBytes(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                       throws SQLException {
+    public byte[] callableStatement_getBytes(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getBytes(statement, parameterName);
     }
 
     @Override
-    public java.io.Reader callableStatement_getCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                               int parameterIndex) throws SQLException {
+    public java.io.Reader callableStatement_getCharacterStream(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getCharacterStream(statement, parameterIndex);
     }
 
     @Override
-    public java.io.Reader callableStatement_getCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                               String parameterName) throws SQLException {
+    public java.io.Reader callableStatement_getCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getCharacterStream(statement, parameterName);
     }
 
     @Override
-    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getClob(statement, parameterIndex);
     }
 
     @Override
-    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getClob(statement, parameterName);
     }
 
     @Override
-    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement,
-                                                   int parameterIndex) throws SQLException {
+    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getDate(statement, parameterIndex);
     }
 
     @Override
-    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement,
-                                                   int parameterIndex, Calendar cal) throws SQLException {
+    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement, int parameterIndex, Calendar cal) throws SQLException {
         return chain.callableStatement_getDate(statement, parameterIndex, cal);
     }
 
     @Override
-    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement,
-                                                   String parameterName) throws SQLException {
+    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getDate(statement, parameterName);
     }
 
     @Override
-    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement,
-                                                   String parameterName, Calendar cal) throws SQLException {
+    public java.sql.Date callableStatement_getDate(FilterChain chain, CallableStatementProxy statement, String parameterName, Calendar cal) throws SQLException {
         return chain.callableStatement_getDate(statement, parameterName, cal);
     }
 
     @Override
-    public double callableStatement_getDouble(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                      throws SQLException {
+    public double callableStatement_getDouble(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getDouble(statement, parameterIndex);
     }
 
     @Override
-    public double callableStatement_getDouble(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                        throws SQLException {
+    public double callableStatement_getDouble(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getDouble(statement, parameterName);
     }
 
     @Override
-    public float callableStatement_getFloat(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                    throws SQLException {
+    public float callableStatement_getFloat(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getFloat(statement, parameterIndex);
     }
 
     @Override
-    public float callableStatement_getFloat(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                      throws SQLException {
+    public float callableStatement_getFloat(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getFloat(statement, parameterName);
     }
 
     @Override
-    public int callableStatement_getInt(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                throws SQLException {
+    public int callableStatement_getInt(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getInt(statement, parameterIndex);
     }
 
     @Override
-    public int callableStatement_getInt(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                  throws SQLException {
+    public int callableStatement_getInt(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getInt(statement, parameterName);
     }
 
     @Override
-    public long callableStatement_getLong(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                  throws SQLException {
+    public long callableStatement_getLong(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getLong(statement, parameterIndex);
     }
 
     @Override
-    public long callableStatement_getLong(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                    throws SQLException {
+    public long callableStatement_getLong(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getLong(statement, parameterName);
     }
 
     @Override
-    public java.io.Reader callableStatement_getNCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                                int parameterIndex) throws SQLException {
+    public java.io.Reader callableStatement_getNCharacterStream(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getNCharacterStream(statement, parameterIndex);
     }
 
     @Override
-    public java.io.Reader callableStatement_getNCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                                String parameterName) throws SQLException {
+    public java.io.Reader callableStatement_getNCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getNCharacterStream(statement, parameterName);
     }
 
     @Override
-    public NClob callableStatement_getNClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                    throws SQLException {
+    public NClob callableStatement_getNClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getNClob(statement, parameterIndex);
     }
 
     @Override
-    public NClob callableStatement_getNClob(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                      throws SQLException {
+    public NClob callableStatement_getNClob(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getNClob(statement, parameterName);
     }
 
     @Override
-    public String callableStatement_getNString(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                       throws SQLException {
+    public String callableStatement_getNString(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getNString(statement, parameterIndex);
     }
 
     @Override
-    public String callableStatement_getNString(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                         throws SQLException {
+    public String callableStatement_getNString(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getNString(statement, parameterName);
     }
 
     @Override
-    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                      throws SQLException {
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getObject(statement, parameterIndex);
     }
 
     @Override
-    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex,
-                                              java.util.Map<String, Class<?>> map) throws SQLException {
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex, java.util.Map<String, Class<?>> map)
+                                                                                                                                                           throws SQLException {
         return chain.callableStatement_getObject(statement, parameterIndex, map);
     }
 
     @Override
-    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                        throws SQLException {
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getObject(statement, parameterName);
     }
 
     @Override
-    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement,
-                                              String parameterName, java.util.Map<String, Class<?>> map)
-                                                                                                        throws SQLException {
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName, java.util.Map<String, Class<?>> map)
+                                                                                                                                                             throws SQLException {
         return chain.callableStatement_getObject(statement, parameterName, map);
     }
 
     @Override
-    public Ref callableStatement_getRef(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                throws SQLException {
+    public Ref callableStatement_getRef(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getRef(statement, parameterIndex);
     }
 
     @Override
-    public Ref callableStatement_getRef(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                  throws SQLException {
+    public Ref callableStatement_getRef(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getRef(statement, parameterName);
     }
 
     @Override
-    public RowId callableStatement_getRowId(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                    throws SQLException {
+    public RowId callableStatement_getRowId(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getRowId(statement, parameterIndex);
     }
 
     @Override
-    public RowId callableStatement_getRowId(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                      throws SQLException {
+    public RowId callableStatement_getRowId(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getRowId(statement, parameterName);
     }
 
     @Override
-    public short callableStatement_getShort(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                    throws SQLException {
+    public short callableStatement_getShort(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getShort(statement, parameterIndex);
     }
 
     @Override
-    public short callableStatement_getShort(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                      throws SQLException {
+    public short callableStatement_getShort(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getShort(statement, parameterName);
     }
 
     @Override
-    public SQLXML callableStatement_getSQLXML(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                      throws SQLException {
+    public SQLXML callableStatement_getSQLXML(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getSQLXML(statement, parameterIndex);
     }
 
     @Override
-    public SQLXML callableStatement_getSQLXML(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                        throws SQLException {
+    public SQLXML callableStatement_getSQLXML(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getSQLXML(statement, parameterName);
     }
 
     @Override
-    public String callableStatement_getString(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                      throws SQLException {
+    public String callableStatement_getString(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getString(statement, parameterIndex);
     }
 
     @Override
-    public String callableStatement_getString(FilterChain chain, CallableStatementProxy statement, String parameterName)
-                                                                                                                        throws SQLException {
+    public String callableStatement_getString(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getString(statement, parameterName);
     }
 
     @Override
-    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement,
-                                                   int parameterIndex) throws SQLException {
+    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getTime(statement, parameterIndex);
     }
 
     // //////////////////////////////
 
     @Override
-    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement,
-                                                   int parameterIndex, Calendar cal) throws SQLException {
+    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement, int parameterIndex, Calendar cal) throws SQLException {
         return chain.callableStatement_getTime(statement, parameterIndex, cal);
     }
 
     @Override
-    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement,
-                                                   String parameterName) throws SQLException {
+    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getTime(statement, parameterName);
     }
 
     @Override
-    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement,
-                                                   String parameterName, Calendar cal) throws SQLException {
+    public java.sql.Time callableStatement_getTime(FilterChain chain, CallableStatementProxy statement, String parameterName, Calendar cal) throws SQLException {
         return chain.callableStatement_getTime(statement, parameterName, cal);
     }
 
     @Override
-    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                                             int parameterIndex) throws SQLException {
+    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getTimestamp(statement, parameterIndex);
     }
 
     @Override
-    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                                             int parameterIndex, Calendar cal) throws SQLException {
+    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement, int parameterIndex, Calendar cal)
+                                                                                                                                                   throws SQLException {
         return chain.callableStatement_getTimestamp(statement, parameterIndex, cal);
     }
 
     @Override
-    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                                             String parameterName) throws SQLException {
+    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getTimestamp(statement, parameterName);
     }
 
     @Override
-    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                                             String parameterName, Calendar cal) throws SQLException {
+    public java.sql.Timestamp callableStatement_getTimestamp(FilterChain chain, CallableStatementProxy statement, String parameterName, Calendar cal)
+                                                                                                                                                     throws SQLException {
         return chain.callableStatement_getTimestamp(statement, parameterName, cal);
     }
 
     @Override
-    public java.net.URL callableStatement_getURL(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
-                                                                                                                         throws SQLException {
+    public java.net.URL callableStatement_getURL(FilterChain chain, CallableStatementProxy statement, int parameterIndex) throws SQLException {
         return chain.callableStatement_getURL(statement, parameterIndex);
     }
 
     @Override
-    public java.net.URL callableStatement_getURL(FilterChain chain, CallableStatementProxy statement,
-                                                 String parameterName) throws SQLException {
+    public java.net.URL callableStatement_getURL(FilterChain chain, CallableStatementProxy statement, String parameterName) throws SQLException {
         return chain.callableStatement_getURL(statement, parameterName);
     }
 
     // ///////////////
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       int parameterIndex, int sqlType) throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, int parameterIndex, int sqlType)
+                                                                                                                                            throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterIndex, sqlType);
     }
 
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       int parameterIndex, int sqlType, int scale) throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, int parameterIndex, int sqlType, int scale)
+                                                                                                                                                       throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterIndex, sqlType, scale);
     }
 
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       int parameterIndex, int sqlType, String typeName)
-                                                                                                        throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, int parameterIndex, int sqlType, String typeName)
+                                                                                                                                                             throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterIndex, sqlType, typeName);
     }
 
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       String parameterName, int sqlType) throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, String parameterName, int sqlType)
+                                                                                                                                              throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterName, sqlType);
     }
 
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       String parameterName, int sqlType, int scale)
-                                                                                                    throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, String parameterName, int sqlType, int scale)
+                                                                                                                                                         throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterName, sqlType, scale);
     }
 
     @Override
-    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement,
-                                                       String parameterName, int sqlType, String typeName)
-                                                                                                          throws SQLException {
+    public void callableStatement_registerOutParameter(FilterChain chain, CallableStatementProxy statement, String parameterName, int sqlType, String typeName)
+                                                                                                                                                               throws SQLException {
         chain.callableStatement_registerOutParameter(statement, parameterName, sqlType, typeName);
     }
 
     @Override
-    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement,
-                                                 String parameterName, java.io.InputStream x) throws SQLException {
+    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x)
+                                                                                                                                                  throws SQLException {
         chain.callableStatement_setAsciiStream(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement,
-                                                 String parameterName, java.io.InputStream x, int length)
-                                                                                                         throws SQLException {
+    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x, int length)
+                                                                                                                                                              throws SQLException {
         chain.callableStatement_setAsciiStream(statement, parameterName, x, length);
     }
 
     @Override
-    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement,
-                                                 String parameterName, java.io.InputStream x, long length)
-                                                                                                          throws SQLException {
+    public void callableStatement_setAsciiStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x, long length)
+                                                                                                                                                               throws SQLException {
         chain.callableStatement_setAsciiStream(statement, parameterName, x, length);
     }
 
     @Override
-    public void callableStatement_setBigDecimal(FilterChain chain, CallableStatementProxy statement,
-                                                String parameterName, BigDecimal x) throws SQLException {
+    public void callableStatement_setBigDecimal(FilterChain chain, CallableStatementProxy statement, String parameterName, BigDecimal x) throws SQLException {
         chain.callableStatement_setBigDecimal(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement,
-                                                  String parameterName, java.io.InputStream x) throws SQLException {
+    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x)
+                                                                                                                                                   throws SQLException {
         chain.callableStatement_setBinaryStream(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement,
-                                                  String parameterName, java.io.InputStream x, int length)
-                                                                                                          throws SQLException {
+    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x, int length)
+                                                                                                                                                               throws SQLException {
         chain.callableStatement_setBinaryStream(statement, parameterName, x, length);
     }
 
     @Override
-    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement,
-                                                  String parameterName, java.io.InputStream x, long length)
-                                                                                                           throws SQLException {
+    public void callableStatement_setBinaryStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.InputStream x, long length)
+                                                                                                                                                                throws SQLException {
         chain.callableStatement_setBinaryStream(statement, parameterName, x, length);
     }
 
     @Override
-    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          Blob x) throws SQLException {
+    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName, Blob x) throws SQLException {
         chain.callableStatement_setBlob(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          InputStream inputStream) throws SQLException {
+    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName, InputStream inputStream)
+                                                                                                                                             throws SQLException {
         chain.callableStatement_setBlob(statement, parameterName, inputStream);
     }
 
     @Override
-    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          InputStream inputStream, long length) throws SQLException {
+    public void callableStatement_setBlob(FilterChain chain, CallableStatementProxy statement, String parameterName, InputStream inputStream, long length)
+                                                                                                                                                          throws SQLException {
         chain.callableStatement_setBlob(statement, parameterName, inputStream, length);
     }
 
     @Override
-    public void callableStatement_setBoolean(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                             boolean x) throws SQLException {
+    public void callableStatement_setBoolean(FilterChain chain, CallableStatementProxy statement, String parameterName, boolean x) throws SQLException {
         chain.callableStatement_setBoolean(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setByte(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          byte x) throws SQLException {
+    public void callableStatement_setByte(FilterChain chain, CallableStatementProxy statement, String parameterName, byte x) throws SQLException {
         chain.callableStatement_setByte(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setBytes(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           byte x[]) throws SQLException {
+    public void callableStatement_setBytes(FilterChain chain, CallableStatementProxy statement, String parameterName, byte x[]) throws SQLException {
         chain.callableStatement_setBytes(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                     String parameterName, java.io.Reader reader) throws SQLException {
+    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.Reader reader)
+                                                                                                                                                      throws SQLException {
         chain.callableStatement_setCharacterStream(statement, parameterName, reader);
     }
 
     @Override
-    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                     String parameterName, java.io.Reader reader, int length)
-                                                                                                             throws SQLException {
+    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.Reader reader,
+                                                     int length) throws SQLException {
         chain.callableStatement_setCharacterStream(statement, parameterName, reader, length);
     }
 
     @Override
-    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                     String parameterName, java.io.Reader reader, long length)
-                                                                                                              throws SQLException {
+    public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName, java.io.Reader reader,
+                                                     long length) throws SQLException {
         chain.callableStatement_setCharacterStream(statement, parameterName, reader, length);
     }
 
     @Override
-    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          Clob x) throws SQLException {
+    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName, Clob x) throws SQLException {
         chain.callableStatement_setClob(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          Reader reader) throws SQLException {
+    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader reader) throws SQLException {
         chain.callableStatement_setClob(statement, parameterName, reader);
     }
 
     @Override
-    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          Reader reader, long length) throws SQLException {
+    public void callableStatement_setClob(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader reader, long length)
+                                                                                                                                                throws SQLException {
         chain.callableStatement_setClob(statement, parameterName, reader, length);
     }
 
     @Override
-    public void callableStatement_setDate(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          java.sql.Date x) throws SQLException {
+    public void callableStatement_setDate(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Date x) throws SQLException {
         chain.callableStatement_setDate(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setDate(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          java.sql.Date x, Calendar cal) throws SQLException {
+    public void callableStatement_setDate(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Date x, Calendar cal)
+                                                                                                                                                   throws SQLException {
         chain.callableStatement_setDate(statement, parameterName, x, cal);
     }
 
     @Override
-    public void callableStatement_setDouble(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            double x) throws SQLException {
+    public void callableStatement_setDouble(FilterChain chain, CallableStatementProxy statement, String parameterName, double x) throws SQLException {
         chain.callableStatement_setDouble(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setFloat(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           float x) throws SQLException {
+    public void callableStatement_setFloat(FilterChain chain, CallableStatementProxy statement, String parameterName, float x) throws SQLException {
         chain.callableStatement_setFloat(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setInt(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                         int x) throws SQLException {
+    public void callableStatement_setInt(FilterChain chain, CallableStatementProxy statement, String parameterName, int x) throws SQLException {
         chain.callableStatement_setInt(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setLong(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          long x) throws SQLException {
+    public void callableStatement_setLong(FilterChain chain, CallableStatementProxy statement, String parameterName, long x) throws SQLException {
         chain.callableStatement_setLong(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setNCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                      String parameterName, Reader value) throws SQLException {
+    public void callableStatement_setNCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader value)
+                                                                                                                                              throws SQLException {
         chain.callableStatement_setNCharacterStream(statement, parameterName, value);
     }
 
     @Override
-    public void callableStatement_setNCharacterStream(FilterChain chain, CallableStatementProxy statement,
-                                                      String parameterName, Reader value, long length)
-                                                                                                      throws SQLException {
+    public void callableStatement_setNCharacterStream(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader value, long length)
+                                                                                                                                                           throws SQLException {
         chain.callableStatement_setNCharacterStream(statement, parameterName, value, length);
     }
 
     @Override
-    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           NClob value) throws SQLException {
+    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName, NClob value) throws SQLException {
         chain.callableStatement_setNClob(statement, parameterName, value);
     }
 
     @Override
-    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           Reader reader) throws SQLException {
+    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader reader) throws SQLException {
         chain.callableStatement_setNClob(statement, parameterName, reader);
     }
 
     @Override
-    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           Reader reader, long length) throws SQLException {
+    public void callableStatement_setNClob(FilterChain chain, CallableStatementProxy statement, String parameterName, Reader reader, long length)
+                                                                                                                                                 throws SQLException {
         chain.callableStatement_setNClob(statement, parameterName, reader, length);
     }
 
     @Override
-    public void callableStatement_setNString(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                             String value) throws SQLException {
+    public void callableStatement_setNString(FilterChain chain, CallableStatementProxy statement, String parameterName, String value) throws SQLException {
         chain.callableStatement_setNString(statement, parameterName, value);
     }
 
     @Override
-    public void callableStatement_setNull(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          int sqlType) throws SQLException {
+    public void callableStatement_setNull(FilterChain chain, CallableStatementProxy statement, String parameterName, int sqlType) throws SQLException {
         chain.callableStatement_setNull(statement, parameterName, sqlType);
     }
 
     @Override
-    public void callableStatement_setNull(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          int sqlType, String typeName) throws SQLException {
+    public void callableStatement_setNull(FilterChain chain, CallableStatementProxy statement, String parameterName, int sqlType, String typeName)
+                                                                                                                                                  throws SQLException {
         chain.callableStatement_setNull(statement, parameterName, sqlType, typeName);
     }
 
     @Override
-    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            Object x) throws SQLException {
+    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName, Object x) throws SQLException {
         chain.callableStatement_setObject(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            Object x, int targetSqlType) throws SQLException {
+    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName, Object x, int targetSqlType)
+                                                                                                                                                   throws SQLException {
         chain.callableStatement_setObject(statement, parameterName, x, targetSqlType);
     }
 
     @Override
-    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            Object x, int targetSqlType, int scale) throws SQLException {
+    public void callableStatement_setObject(FilterChain chain, CallableStatementProxy statement, String parameterName, Object x, int targetSqlType, int scale)
+                                                                                                                                                              throws SQLException {
         chain.callableStatement_setObject(statement, parameterName, x, targetSqlType, scale);
     }
 
     @Override
-    public void callableStatement_setRowId(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           RowId x) throws SQLException {
+    public void callableStatement_setRowId(FilterChain chain, CallableStatementProxy statement, String parameterName, RowId x) throws SQLException {
         chain.callableStatement_setRowId(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setShort(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                           short x) throws SQLException {
+    public void callableStatement_setShort(FilterChain chain, CallableStatementProxy statement, String parameterName, short x) throws SQLException {
         chain.callableStatement_setShort(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setSQLXML(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            SQLXML xmlObject) throws SQLException {
+    public void callableStatement_setSQLXML(FilterChain chain, CallableStatementProxy statement, String parameterName, SQLXML xmlObject) throws SQLException {
         chain.callableStatement_setSQLXML(statement, parameterName, xmlObject);
     }
 
     @Override
-    public void callableStatement_setString(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                            String x) throws SQLException {
+    public void callableStatement_setString(FilterChain chain, CallableStatementProxy statement, String parameterName, String x) throws SQLException {
         chain.callableStatement_setString(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setTime(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          java.sql.Time x) throws SQLException {
+    public void callableStatement_setTime(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Time x) throws SQLException {
         chain.callableStatement_setTime(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setTime(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                          java.sql.Time x, Calendar cal) throws SQLException {
+    public void callableStatement_setTime(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Time x, Calendar cal)
+                                                                                                                                                   throws SQLException {
         chain.callableStatement_setTime(statement, parameterName, x, cal);
     }
 
     @Override
-    public void callableStatement_setTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                               String parameterName, java.sql.Timestamp x) throws SQLException {
+    public void callableStatement_setTimestamp(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Timestamp x)
+                                                                                                                                               throws SQLException {
         chain.callableStatement_setTimestamp(statement, parameterName, x);
     }
 
     @Override
-    public void callableStatement_setTimestamp(FilterChain chain, CallableStatementProxy statement,
-                                               String parameterName, java.sql.Timestamp x, Calendar cal)
-                                                                                                        throws SQLException {
+    public void callableStatement_setTimestamp(FilterChain chain, CallableStatementProxy statement, String parameterName, java.sql.Timestamp x, Calendar cal)
+                                                                                                                                                             throws SQLException {
         chain.callableStatement_setTimestamp(statement, parameterName, x, cal);
     }
 
     @Override
-    public void callableStatement_setURL(FilterChain chain, CallableStatementProxy statement, String parameterName,
-                                         java.net.URL val) throws SQLException {
+    public void callableStatement_setURL(FilterChain chain, CallableStatementProxy statement, String parameterName, java.net.URL val) throws SQLException {
         chain.callableStatement_setURL(statement, parameterName, val);
     }
 
@@ -768,8 +678,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Array connection_createArrayOf(FilterChain chain, ConnectionProxy connection, String typeName,
-                                          Object[] elements) throws SQLException {
+    public Array connection_createArrayOf(FilterChain chain, ConnectionProxy connection, String typeName, Object[] elements) throws SQLException {
         return chain.connection_createArrayOf(connection, typeName, elements);
     }
 
@@ -799,21 +708,19 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
-                                                     int resultSetConcurrency) throws SQLException {
+    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType, int resultSetConcurrency)
+                                                                                                                                                throws SQLException {
         return chain.connection_createStatement(connection, resultSetType, resultSetType);
     }
 
     @Override
-    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
-                                                     int resultSetConcurrency, int resultSetHoldability)
-                                                                                                        throws SQLException {
+    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType, int resultSetConcurrency,
+                                                     int resultSetHoldability) throws SQLException {
         return chain.connection_createStatement(connection, resultSetType, resultSetType, resultSetHoldability);
     }
 
     @Override
-    public Struct connection_createStruct(FilterChain chain, ConnectionProxy connection, String typeName,
-                                          Object[] attributes) throws SQLException {
+    public Struct connection_createStruct(FilterChain chain, ConnectionProxy connection, String typeName, Object[] attributes) throws SQLException {
         return chain.connection_createStruct(connection, typeName, attributes);
     }
 
@@ -833,8 +740,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public String connection_getClientInfo(FilterChain chain, ConnectionProxy connection, String name)
-                                                                                                      throws SQLException {
+    public String connection_getClientInfo(FilterChain chain, ConnectionProxy connection, String name) throws SQLException {
         return chain.connection_getClientInfo(connection, name);
     }
 
@@ -854,8 +760,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Map<String, Class<?>> connection_getTypeMap(FilterChain chain, ConnectionProxy connection)
-                                                                                                     throws SQLException {
+    public Map<String, Class<?>> connection_getTypeMap(FilterChain chain, ConnectionProxy connection) throws SQLException {
         return chain.connection_getTypeMap(connection);
     }
 
@@ -885,67 +790,59 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql)
-                                                                                                                   throws SQLException {
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql) throws SQLException {
         return chain.connection_prepareCall(connection, sql);
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql,
-                                                         int resultSetType, int resultSetConcurrency)
-                                                                                                     throws SQLException {
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType, int resultSetConcurrency)
+                                                                                                                                                                throws SQLException {
         return chain.connection_prepareCall(connection, sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql,
-                                                         int resultSetType, int resultSetConcurrency,
-                                                         int resultSetHoldability) throws SQLException {
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
+                                                         int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         return chain.connection_prepareCall(connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql)
-                                                                                                                        throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql) throws SQLException {
         return chain.connection_prepareStatement(connection, sql);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
-                                                              String sql, int autoGeneratedKeys) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int autoGeneratedKeys)
+                                                                                                                                               throws SQLException {
         return chain.connection_prepareStatement(connection, sql, autoGeneratedKeys);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
-                                                              String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                                      throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
+                                                              int resultSetConcurrency) throws SQLException {
         return chain.connection_prepareStatement(connection, sql, resultSetType, resultSetConcurrency);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
-                                                              String sql, int resultSetType, int resultSetConcurrency,
-                                                              int resultSetHoldability) throws SQLException {
-        return chain.connection_prepareStatement(connection, sql, resultSetType, resultSetConcurrency,
-                                                 resultSetHoldability);
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
+                                                              int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+        return chain.connection_prepareStatement(connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
-                                                              String sql, int[] columnIndexes) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int[] columnIndexes)
+                                                                                                                                             throws SQLException {
         return chain.connection_prepareStatement(connection, sql, columnIndexes);
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
-                                                              String sql, String[] columnNames) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, String[] columnNames)
+                                                                                                                                              throws SQLException {
         return chain.connection_prepareStatement(connection, sql, columnNames);
     }
 
     @Override
-    public void connection_releaseSavepoint(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
-                                                                                                               throws SQLException {
+    public void connection_releaseSavepoint(FilterChain chain, ConnectionProxy connection, Savepoint savepoint) throws SQLException {
         chain.connection_releaseSavepoint(connection, savepoint);
     }
 
@@ -955,44 +852,37 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
-                                                                                                       throws SQLException {
+    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint) throws SQLException {
         chain.connection_rollback(connection, savepoint);
     }
 
     @Override
-    public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
-                                                                                                           throws SQLException {
+    public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit) throws SQLException {
         chain.connection_setAutoCommit(connection, autoCommit);
     }
 
     @Override
-    public void connection_setCatalog(FilterChain chain, ConnectionProxy connection, String catalog)
-                                                                                                    throws SQLException {
+    public void connection_setCatalog(FilterChain chain, ConnectionProxy connection, String catalog) throws SQLException {
         chain.connection_setCatalog(connection, catalog);
     }
 
     @Override
-    public void connection_setClientInfo(FilterChain chain, ConnectionProxy connection, Properties properties)
-                                                                                                              throws SQLClientInfoException {
+    public void connection_setClientInfo(FilterChain chain, ConnectionProxy connection, Properties properties) throws SQLClientInfoException {
         chain.connection_setClientInfo(connection, properties);
     }
 
     @Override
-    public void connection_setClientInfo(FilterChain chain, ConnectionProxy connection, String name, String value)
-                                                                                                                  throws SQLClientInfoException {
+    public void connection_setClientInfo(FilterChain chain, ConnectionProxy connection, String name, String value) throws SQLClientInfoException {
         chain.connection_setClientInfo(connection, name, value);
     }
 
     @Override
-    public void connection_setHoldability(FilterChain chain, ConnectionProxy connection, int holdability)
-                                                                                                         throws SQLException {
+    public void connection_setHoldability(FilterChain chain, ConnectionProxy connection, int holdability) throws SQLException {
         chain.connection_setHoldability(connection, holdability);
     }
 
     @Override
-    public void connection_setReadOnly(FilterChain chain, ConnectionProxy connection, boolean readOnly)
-                                                                                                       throws SQLException {
+    public void connection_setReadOnly(FilterChain chain, ConnectionProxy connection, boolean readOnly) throws SQLException {
         chain.connection_setReadOnly(connection, readOnly);
     }
 
@@ -1002,20 +892,17 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection, String name)
-                                                                                                        throws SQLException {
+    public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection, String name) throws SQLException {
         return chain.connection_setSavepoint(connection, name);
     }
 
     @Override
-    public void connection_setTransactionIsolation(FilterChain chain, ConnectionProxy connection, int level)
-                                                                                                            throws SQLException {
+    public void connection_setTransactionIsolation(FilterChain chain, ConnectionProxy connection, int level) throws SQLException {
         chain.connection_setTransactionIsolation(connection, level);
     }
 
     @Override
-    public void connection_setTypeMap(FilterChain chain, ConnectionProxy connection, Map<String, Class<?>> map)
-                                                                                                               throws SQLException {
+    public void connection_setTypeMap(FilterChain chain, ConnectionProxy connection, Map<String, Class<?>> map) throws SQLException {
         chain.connection_setTypeMap(connection, map);
     }
 
@@ -1030,8 +917,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void preparedStatement_clearParameters(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                      throws SQLException {
+    public void preparedStatement_clearParameters(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         chain.preparedStatement_clearParameters(statement);
     }
 
@@ -1041,8 +927,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                             throws SQLException {
+    public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         return chain.preparedStatement_executeQuery(statement);
     }
 
@@ -1052,310 +937,274 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public ResultSetMetaData preparedStatement_getMetaData(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                               throws SQLException {
+    public ResultSetMetaData preparedStatement_getMetaData(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         return chain.preparedStatement_getMetaData(statement);
     }
 
     @Override
-    public ParameterMetaData preparedStatement_getParameterMetaData(FilterChain chain, PreparedStatementProxy statement)
-                                                                                                                        throws SQLException {
+    public ParameterMetaData preparedStatement_getParameterMetaData(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         return chain.preparedStatement_getParameterMetaData(statement);
     }
 
     @Override
-    public void preparedStatement_setArray(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           Array x) throws SQLException {
+    public void preparedStatement_setArray(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Array x) throws SQLException {
         chain.preparedStatement_setArray(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
-                                                 int parameterIndex, java.io.InputStream x) throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x)
+                                                                                                                                                throws SQLException {
         chain.preparedStatement_setAsciiStream(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
-                                                 int parameterIndex, java.io.InputStream x, int length)
-                                                                                                       throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x, int length)
+                                                                                                                                                            throws SQLException {
         chain.preparedStatement_setAsciiStream(statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
-                                                 int parameterIndex, java.io.InputStream x, long length)
-                                                                                                        throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x, long length)
+                                                                                                                                                             throws SQLException {
         chain.preparedStatement_setAsciiStream(statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setBigDecimal(FilterChain chain, PreparedStatementProxy statement,
-                                                int parameterIndex, BigDecimal x) throws SQLException {
+    public void preparedStatement_setBigDecimal(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, BigDecimal x) throws SQLException {
         chain.preparedStatement_setBigDecimal(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
-                                                  int parameterIndex, java.io.InputStream x) throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x)
+                                                                                                                                                 throws SQLException {
         chain.preparedStatement_setBinaryStream(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
-                                                  int parameterIndex, java.io.InputStream x, int length)
-                                                                                                        throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x, int length)
+                                                                                                                                                             throws SQLException {
         chain.preparedStatement_setBinaryStream(statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
-                                                  int parameterIndex, java.io.InputStream x, long length)
-                                                                                                         throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x, long length)
+                                                                                                                                                              throws SQLException {
         chain.preparedStatement_setBinaryStream(statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          Blob x) throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Blob x) throws SQLException {
         chain.preparedStatement_setBlob(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          InputStream inputStream) throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream inputStream) throws SQLException {
         chain.preparedStatement_setBlob(statement, parameterIndex, inputStream);
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          InputStream inputStream, long length) throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream inputStream, long length)
+                                                                                                                                                        throws SQLException {
         chain.preparedStatement_setBlob(statement, parameterIndex, inputStream, length);
     }
 
     @Override
-    public void preparedStatement_setBoolean(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                             boolean x) throws SQLException {
+    public void preparedStatement_setBoolean(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, boolean x) throws SQLException {
         chain.preparedStatement_setBoolean(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setByte(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          byte x) throws SQLException {
+    public void preparedStatement_setByte(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, byte x) throws SQLException {
         chain.preparedStatement_setByte(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setBytes(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           byte x[]) throws SQLException {
+    public void preparedStatement_setBytes(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, byte x[]) throws SQLException {
         chain.preparedStatement_setBytes(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
-                                                     int parameterIndex, java.io.Reader reader) throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.Reader reader)
+                                                                                                                                                    throws SQLException {
         chain.preparedStatement_setCharacterStream(statement, parameterIndex, reader);
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
-                                                     int parameterIndex, java.io.Reader reader, int length)
-                                                                                                           throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.Reader reader, int length)
+                                                                                                                                                                throws SQLException {
         chain.preparedStatement_setCharacterStream(statement, parameterIndex, reader, length);
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
-                                                     int parameterIndex, java.io.Reader reader, long length)
-                                                                                                            throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.Reader reader, long length)
+                                                                                                                                                                 throws SQLException {
         chain.preparedStatement_setCharacterStream(statement, parameterIndex, reader, length);
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          Clob x) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Clob x) throws SQLException {
         chain.preparedStatement_setClob(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          Reader reader) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader reader) throws SQLException {
         chain.preparedStatement_setClob(statement, parameterIndex, reader);
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          Reader reader, long length) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader reader, long length)
+                                                                                                                                              throws SQLException {
         chain.preparedStatement_setClob(statement, parameterIndex, reader, length);
     }
 
     @Override
-    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          java.sql.Date x) throws SQLException {
+    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Date x) throws SQLException {
         chain.preparedStatement_setDate(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          java.sql.Date x, Calendar cal) throws SQLException {
+    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Date x, Calendar cal)
+                                                                                                                                                 throws SQLException {
         chain.preparedStatement_setDate(statement, parameterIndex, x, cal);
     }
 
     @Override
-    public void preparedStatement_setDouble(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            double x) throws SQLException {
+    public void preparedStatement_setDouble(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, double x) throws SQLException {
         chain.preparedStatement_setDouble(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setFloat(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           float x) throws SQLException {
+    public void preparedStatement_setFloat(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, float x) throws SQLException {
         chain.preparedStatement_setFloat(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setInt(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int x)
-                                                                                                                        throws SQLException {
+    public void preparedStatement_setInt(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int x) throws SQLException {
         chain.preparedStatement_setInt(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setLong(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          long x) throws SQLException {
+    public void preparedStatement_setLong(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, long x) throws SQLException {
         chain.preparedStatement_setLong(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement,
-                                                      int parameterIndex, Reader value) throws SQLException {
+    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader value)
+                                                                                                                                            throws SQLException {
         chain.preparedStatement_setNCharacterStream(statement, parameterIndex, value);
     }
 
     @Override
-    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement,
-                                                      int parameterIndex, Reader value, long length)
-                                                                                                    throws SQLException {
+    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader value, long length)
+                                                                                                                                                         throws SQLException {
         chain.preparedStatement_setNCharacterStream(statement, parameterIndex, value, length);
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           NClob value) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, NClob value) throws SQLException {
         chain.preparedStatement_setNClob(statement, parameterIndex, value);
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           Reader reader) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader reader) throws SQLException {
         chain.preparedStatement_setNClob(statement, parameterIndex, reader);
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           Reader reader, long length) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader reader, long length)
+                                                                                                                                               throws SQLException {
         chain.preparedStatement_setNClob(statement, parameterIndex, reader, length);
     }
 
     @Override
-    public void preparedStatement_setNString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                             String value) throws SQLException {
+    public void preparedStatement_setNString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, String value) throws SQLException {
         chain.preparedStatement_setNString(statement, parameterIndex, value);
     }
 
     @Override
-    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          int sqlType) throws SQLException {
+    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int sqlType) throws SQLException {
         chain.preparedStatement_setNull(statement, parameterIndex, sqlType);
     }
 
     @Override
-    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          int sqlType, String typeName) throws SQLException {
+    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int sqlType, String typeName)
+                                                                                                                                                throws SQLException {
         chain.preparedStatement_setNull(statement, parameterIndex, sqlType, typeName);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            Object x) throws SQLException {
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x) throws SQLException {
         chain.preparedStatement_setObject(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            Object x, int targetSqlType) throws SQLException {
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x, int targetSqlType)
+                                                                                                                                                 throws SQLException {
         chain.preparedStatement_setObject(statement, parameterIndex, x, targetSqlType);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            Object x, int targetSqlType, int scaleOrLength) throws SQLException {
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x, int targetSqlType,
+                                            int scaleOrLength) throws SQLException {
         chain.preparedStatement_setObject(statement, parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
-    public void preparedStatement_setRef(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Ref x)
-                                                                                                                        throws SQLException {
+    public void preparedStatement_setRef(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Ref x) throws SQLException {
         chain.preparedStatement_setRef(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setRowId(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           RowId x) throws SQLException {
+    public void preparedStatement_setRowId(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, RowId x) throws SQLException {
         chain.preparedStatement_setRowId(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setShort(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                           short x) throws SQLException {
+    public void preparedStatement_setShort(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, short x) throws SQLException {
         chain.preparedStatement_setShort(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setSQLXML(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            SQLXML xmlObject) throws SQLException {
+    public void preparedStatement_setSQLXML(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, SQLXML xmlObject) throws SQLException {
         chain.preparedStatement_setSQLXML(statement, parameterIndex, xmlObject);
     }
 
     @Override
-    public void preparedStatement_setString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                            String x) throws SQLException {
+    public void preparedStatement_setString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, String x) throws SQLException {
         chain.preparedStatement_setString(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          java.sql.Time x) throws SQLException {
+    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Time x) throws SQLException {
         chain.preparedStatement_setTime(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                          java.sql.Time x, Calendar cal) throws SQLException {
+    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Time x, Calendar cal)
+                                                                                                                                                 throws SQLException {
         chain.preparedStatement_setTime(statement, parameterIndex, x, cal);
     }
 
     @Override
-    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                               java.sql.Timestamp x) throws SQLException {
+    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Timestamp x)
+                                                                                                                                             throws SQLException {
         chain.preparedStatement_setTimestamp(statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                               java.sql.Timestamp x, Calendar cal) throws SQLException {
+    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.sql.Timestamp x, Calendar cal)
+                                                                                                                                                           throws SQLException {
         chain.preparedStatement_setTimestamp(statement, parameterIndex, x, cal);
     }
 
     @Override
-    public void preparedStatement_setUnicodeStream(FilterChain chain, PreparedStatementProxy statement,
-                                                   int parameterIndex, java.io.InputStream x, int length)
-                                                                                                         throws SQLException {
+    public void preparedStatement_setUnicodeStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.io.InputStream x, int length)
+                                                                                                                                                              throws SQLException {
         chain.preparedStatement_setUnicodeStream(statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setURL(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
-                                         java.net.URL x) throws SQLException {
+    public void preparedStatement_setURL(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, java.net.URL x) throws SQLException {
         chain.preparedStatement_setURL(statement, parameterIndex, x);
     }
 
@@ -1415,50 +1264,42 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.io.InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                  throws SQLException {
+    public java.io.InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getAsciiStream(result, columnIndex);
     }
 
     @Override
-    public java.io.InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                     throws SQLException {
+    public java.io.InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getAsciiStream(result, columnLabel);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                        throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getBigDecimal(result, columnIndex);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex, int scale)
-                                                                                                                   throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex, int scale) throws SQLException {
         return chain.resultSet_getBigDecimal(result, columnIndex, scale);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                           throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getBigDecimal(result, columnLabel);
     }
 
     @Override
-    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel, int scale)
-                                                                                                                      throws SQLException {
+    public BigDecimal resultSet_getBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel, int scale) throws SQLException {
         return chain.resultSet_getBigDecimal(result, columnLabel, scale);
     }
 
     @Override
-    public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                   throws SQLException {
+    public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getBinaryStream(result, columnIndex);
     }
 
     @Override
-    public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                      throws SQLException {
+    public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getBinaryStream(result, columnLabel);
     }
 
@@ -1478,8 +1319,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public boolean resultSet_getBoolean(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                     throws SQLException {
+    public boolean resultSet_getBoolean(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getBoolean(result, columnLabel);
     }
 
@@ -1504,14 +1344,12 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                 throws SQLException {
+    public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getCharacterStream(result, columnIndex);
     }
 
     @Override
-    public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                    throws SQLException {
+    public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getCharacterStream(result, columnLabel);
     }
 
@@ -1536,26 +1374,22 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                     throws SQLException {
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getDate(result, columnIndex);
     }
 
     @Override
-    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, int columnIndex, Calendar cal)
-                                                                                                                   throws SQLException {
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, int columnIndex, Calendar cal) throws SQLException {
         return chain.resultSet_getDate(result, columnIndex, cal);
     }
 
     @Override
-    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                        throws SQLException {
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getDate(result, columnLabel);
     }
 
     @Override
-    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, String columnLabel, Calendar cal)
-                                                                                                                      throws SQLException {
+    public java.sql.Date resultSet_getDate(FilterChain chain, ResultSetProxy result, String columnLabel, Calendar cal) throws SQLException {
         return chain.resultSet_getDate(result, columnLabel, cal);
     }
 
@@ -1620,14 +1454,12 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                  throws SQLException {
+    public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getNCharacterStream(result, columnIndex);
     }
 
     @Override
-    public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                     throws SQLException {
+    public java.io.Reader resultSet_getNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getNCharacterStream(result, columnLabel);
     }
 
@@ -1647,8 +1479,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public String resultSet_getNString(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                    throws SQLException {
+    public String resultSet_getNString(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getNString(result, columnLabel);
     }
 
@@ -1658,8 +1489,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                      java.util.Map<String, Class<?>> map) throws SQLException {
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex, java.util.Map<String, Class<?>> map) throws SQLException {
         return chain.resultSet_getObject(result, columnIndex, map);
     }
 
@@ -1669,8 +1499,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                      java.util.Map<String, Class<?>> map) throws SQLException {
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel, java.util.Map<String, Class<?>> map) throws SQLException {
         return chain.resultSet_getObject(result, columnLabel, map);
     }
 
@@ -1737,50 +1566,42 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                     throws SQLException {
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getTime(result, columnIndex);
     }
 
     @Override
-    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, int columnIndex, Calendar cal)
-                                                                                                                   throws SQLException {
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, int columnIndex, Calendar cal) throws SQLException {
         return chain.resultSet_getTime(result, columnIndex, cal);
     }
 
     @Override
-    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                        throws SQLException {
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getTime(result, columnLabel);
     }
 
     @Override
-    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, String columnLabel, Calendar cal)
-                                                                                                                      throws SQLException {
+    public java.sql.Time resultSet_getTime(FilterChain chain, ResultSetProxy result, String columnLabel, Calendar cal) throws SQLException {
         return chain.resultSet_getTime(result, columnLabel, cal);
     }
 
     @Override
-    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                               throws SQLException {
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getTimestamp(result, columnIndex);
     }
 
     @Override
-    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                     Calendar cal) throws SQLException {
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex, Calendar cal) throws SQLException {
         return chain.resultSet_getTimestamp(result, columnIndex, cal);
     }
 
     @Override
-    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                  throws SQLException {
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getTimestamp(result, columnLabel);
     }
 
     @Override
-    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                     Calendar cal) throws SQLException {
+    public java.sql.Timestamp resultSet_getTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel, Calendar cal) throws SQLException {
         return chain.resultSet_getTimestamp(result, columnLabel, cal);
     }
 
@@ -1790,14 +1611,12 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                                    throws SQLException {
+    public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         return chain.resultSet_getUnicodeStream(result, columnIndex);
     }
 
     @Override
-    public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                                       throws SQLException {
+    public java.io.InputStream resultSet_getUnicodeStream(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getUnicodeStream(result, columnLabel);
     }
 
@@ -1807,8 +1626,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public java.net.URL resultSet_getURL(FilterChain chain, ResultSetProxy result, String columnLabel)
-                                                                                                      throws SQLException {
+    public java.net.URL resultSet_getURL(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         return chain.resultSet_getURL(result, columnLabel);
     }
 
@@ -1898,8 +1716,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void resultSet_setFetchDirection(FilterChain chain, ResultSetProxy result, int direction)
-                                                                                                    throws SQLException {
+    public void resultSet_setFetchDirection(FilterChain chain, ResultSetProxy result, int direction) throws SQLException {
         chain.resultSet_setFetchDirection(result, direction);
     }
 
@@ -1909,374 +1726,319 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void resultSet_updateArray(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Array x)
-                                                                                                                  throws SQLException {
+    public void resultSet_updateArray(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Array x) throws SQLException {
         chain.resultSet_updateArray(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateArray(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Array x)
-                                                                                                                     throws SQLException {
+    public void resultSet_updateArray(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Array x) throws SQLException {
         chain.resultSet_updateArray(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                            java.io.InputStream x) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x) throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                            java.io.InputStream x, int length) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x, int length) throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                            java.io.InputStream x, long length) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x, long length) throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                            java.io.InputStream x) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x) throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                            java.io.InputStream x, int length) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x, int length)
+                                                                                                                                            throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnLabel, x, length);
     }
 
     @Override
-    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                            java.io.InputStream x, long length) throws SQLException {
+    public void resultSet_updateAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x, long length)
+                                                                                                                                             throws SQLException {
         chain.resultSet_updateAsciiStream(result, columnLabel, x, length);
     }
 
     @Override
-    public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex, BigDecimal x)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy result, int columnIndex, BigDecimal x) throws SQLException {
         chain.resultSet_updateBigDecimal(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel, BigDecimal x)
-                                                                                                                      throws SQLException {
+    public void resultSet_updateBigDecimal(FilterChain chain, ResultSetProxy result, String columnLabel, BigDecimal x) throws SQLException {
         chain.resultSet_updateBigDecimal(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                             java.io.InputStream x) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x) throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                             java.io.InputStream x, int length) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x, int length) throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                             java.io.InputStream x, long length) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.InputStream x, long length) throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                             java.io.InputStream x) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x) throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                             java.io.InputStream x, int length) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x, int length)
+                                                                                                                                             throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnLabel, x, length);
     }
 
     @Override
-    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                             java.io.InputStream x, long length) throws SQLException {
+    public void resultSet_updateBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.InputStream x, long length)
+                                                                                                                                              throws SQLException {
         chain.resultSet_updateBinaryStream(result, columnLabel, x, length);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex, InputStream inputStream)
-                                                                                                                        throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex, InputStream inputStream) throws SQLException {
         chain.resultSet_updateBlob(result, columnIndex, inputStream);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                     InputStream inputStream, long length) throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex, InputStream inputStream, long length) throws SQLException {
         chain.resultSet_updateBlob(result, columnIndex, inputStream, length);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Blob x)
-                                                                                                                throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Blob x) throws SQLException {
         chain.resultSet_updateBlob(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                     InputStream inputStream) throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel, InputStream inputStream) throws SQLException {
         chain.resultSet_updateBlob(result, columnLabel, inputStream);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                     InputStream inputStream, long length) throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel, InputStream inputStream, long length) throws SQLException {
         chain.resultSet_updateBlob(result, columnLabel, inputStream, length);
     }
 
     @Override
-    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Blob x)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateBlob(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Blob x) throws SQLException {
         chain.resultSet_updateBlob(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy result, int columnIndex, boolean x)
-                                                                                                             throws SQLException {
+    public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy result, int columnIndex, boolean x) throws SQLException {
         chain.resultSet_updateBoolean(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy result, String columnLabel, boolean x)
-                                                                                                                throws SQLException {
+    public void resultSet_updateBoolean(FilterChain chain, ResultSetProxy result, String columnLabel, boolean x) throws SQLException {
         chain.resultSet_updateBoolean(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateByte(FilterChain chain, ResultSetProxy result, int columnIndex, byte x)
-                                                                                                       throws SQLException {
+    public void resultSet_updateByte(FilterChain chain, ResultSetProxy result, int columnIndex, byte x) throws SQLException {
         chain.resultSet_updateByte(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateByte(FilterChain chain, ResultSetProxy result, String columnLabel, byte x)
-                                                                                                          throws SQLException {
+    public void resultSet_updateByte(FilterChain chain, ResultSetProxy result, String columnLabel, byte x) throws SQLException {
         chain.resultSet_updateByte(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateBytes(FilterChain chain, ResultSetProxy result, int columnIndex, byte[] x)
-                                                                                                          throws SQLException {
+    public void resultSet_updateBytes(FilterChain chain, ResultSetProxy result, int columnIndex, byte[] x) throws SQLException {
         chain.resultSet_updateBytes(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateBytes(FilterChain chain, ResultSetProxy result, String columnLabel, byte[] x)
-                                                                                                             throws SQLException {
+    public void resultSet_updateBytes(FilterChain chain, ResultSetProxy result, String columnLabel, byte[] x) throws SQLException {
         chain.resultSet_updateBytes(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                java.io.Reader x) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.Reader x) throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                java.io.Reader x, int length) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.Reader x, int length) throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                java.io.Reader x, long length) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.Reader x, long length) throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                java.io.Reader reader) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.Reader reader) throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnLabel, reader);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                java.io.Reader reader, int length) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.Reader reader, int length)
+                                                                                                                                                throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnLabel, reader, length);
     }
 
     @Override
-    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                java.io.Reader reader, long length) throws SQLException {
+    public void resultSet_updateCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.Reader reader, long length)
+                                                                                                                                                 throws SQLException {
         chain.resultSet_updateCharacterStream(result, columnLabel, reader, length);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Clob x)
-                                                                                                                throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Clob x) throws SQLException {
         chain.resultSet_updateClob(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader)
-                                                                                                              throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader) throws SQLException {
         chain.resultSet_updateClob(result, columnIndex, reader);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader,
-                                     long length) throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader, long length) throws SQLException {
         chain.resultSet_updateClob(result, columnIndex, reader, length);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Clob x)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Clob x) throws SQLException {
         chain.resultSet_updateClob(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader)
-                                                                                                                 throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader) throws SQLException {
         chain.resultSet_updateClob(result, columnLabel, reader);
     }
 
     @Override
-    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader,
-                                     long length) throws SQLException {
+    public void resultSet_updateClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader, long length) throws SQLException {
         chain.resultSet_updateClob(result, columnLabel, reader, length);
     }
 
     @Override
-    public void resultSet_updateDate(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Date x)
-                                                                                                                throws SQLException {
+    public void resultSet_updateDate(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Date x) throws SQLException {
         chain.resultSet_updateDate(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateDate(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Date x)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateDate(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Date x) throws SQLException {
         chain.resultSet_updateDate(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateDouble(FilterChain chain, ResultSetProxy result, int columnIndex, double x)
-                                                                                                           throws SQLException {
+    public void resultSet_updateDouble(FilterChain chain, ResultSetProxy result, int columnIndex, double x) throws SQLException {
         chain.resultSet_updateDouble(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateDouble(FilterChain chain, ResultSetProxy result, String columnLabel, double x)
-                                                                                                              throws SQLException {
+    public void resultSet_updateDouble(FilterChain chain, ResultSetProxy result, String columnLabel, double x) throws SQLException {
         chain.resultSet_updateDouble(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateFloat(FilterChain chain, ResultSetProxy result, int columnIndex, float x)
-                                                                                                         throws SQLException {
+    public void resultSet_updateFloat(FilterChain chain, ResultSetProxy result, int columnIndex, float x) throws SQLException {
         chain.resultSet_updateFloat(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateFloat(FilterChain chain, ResultSetProxy result, String columnLabel, float x)
-                                                                                                            throws SQLException {
+    public void resultSet_updateFloat(FilterChain chain, ResultSetProxy result, String columnLabel, float x) throws SQLException {
         chain.resultSet_updateFloat(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateInt(FilterChain chain, ResultSetProxy result, int columnIndex, int x)
-                                                                                                     throws SQLException {
+    public void resultSet_updateInt(FilterChain chain, ResultSetProxy result, int columnIndex, int x) throws SQLException {
         chain.resultSet_updateInt(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateInt(FilterChain chain, ResultSetProxy result, String columnLabel, int x)
-                                                                                                        throws SQLException {
+    public void resultSet_updateInt(FilterChain chain, ResultSetProxy result, String columnLabel, int x) throws SQLException {
         chain.resultSet_updateInt(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateLong(FilterChain chain, ResultSetProxy result, int columnIndex, long x)
-                                                                                                       throws SQLException {
+    public void resultSet_updateLong(FilterChain chain, ResultSetProxy result, int columnIndex, long x) throws SQLException {
         chain.resultSet_updateLong(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateLong(FilterChain chain, ResultSetProxy result, String columnLabel, long x)
-                                                                                                          throws SQLException {
+    public void resultSet_updateLong(FilterChain chain, ResultSetProxy result, String columnLabel, long x) throws SQLException {
         chain.resultSet_updateLong(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                 java.io.Reader x) throws SQLException {
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.Reader x) throws SQLException {
         chain.resultSet_updateNCharacterStream(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                                 java.io.Reader x, long length) throws SQLException {
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex, java.io.Reader x, long length) throws SQLException {
         chain.resultSet_updateNCharacterStream(result, columnIndex, x, length);
     }
 
     @Override
-    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                 java.io.Reader reader) throws SQLException {
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.Reader reader) throws SQLException {
         chain.resultSet_updateNCharacterStream(result, columnLabel, reader);
     }
 
     @Override
-    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                                 java.io.Reader reader, long length) throws SQLException {
+    public void resultSet_updateNCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel, java.io.Reader reader, long length)
+                                                                                                                                                  throws SQLException {
         chain.resultSet_updateNCharacterStream(result, columnLabel, reader, length);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, NClob nClob)
-                                                                                                             throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, NClob nClob) throws SQLException {
         chain.resultSet_updateNClob(result, columnIndex, nClob);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader)
-                                                                                                               throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader) throws SQLException {
         chain.resultSet_updateNClob(result, columnIndex, reader);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader,
-                                      long length) throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, int columnIndex, Reader reader, long length) throws SQLException {
         chain.resultSet_updateNClob(result, columnIndex, reader, length);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, NClob nClob)
-                                                                                                                throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, NClob nClob) throws SQLException {
         chain.resultSet_updateNClob(result, columnLabel, nClob);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader)
-                                                                                                                  throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader) throws SQLException {
         chain.resultSet_updateNClob(result, columnLabel, reader);
     }
 
     @Override
-    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader,
-                                      long length) throws SQLException {
+    public void resultSet_updateNClob(FilterChain chain, ResultSetProxy result, String columnLabel, Reader reader, long length) throws SQLException {
         chain.resultSet_updateNClob(result, columnLabel, reader, length);
     }
 
     @Override
-    public void resultSet_updateNString(FilterChain chain, ResultSetProxy result, int columnIndex, String nString)
-                                                                                                                  throws SQLException {
+    public void resultSet_updateNString(FilterChain chain, ResultSetProxy result, int columnIndex, String nString) throws SQLException {
         chain.resultSet_updateNString(result, columnIndex, nString);
     }
 
     @Override
-    public void resultSet_updateNString(FilterChain chain, ResultSetProxy result, String columnLabel, String nString)
-                                                                                                                     throws SQLException {
+    public void resultSet_updateNString(FilterChain chain, ResultSetProxy result, String columnLabel, String nString) throws SQLException {
         chain.resultSet_updateNString(result, columnLabel, nString);
     }
 
@@ -2291,38 +2053,32 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, int columnIndex, Object x)
-                                                                                                           throws SQLException {
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, int columnIndex, Object x) throws SQLException {
         chain.resultSet_updateObject(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, int columnIndex, Object x,
-                                       int scaleOrLength) throws SQLException {
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, int columnIndex, Object x, int scaleOrLength) throws SQLException {
         chain.resultSet_updateObject(result, columnIndex, x, scaleOrLength);
     }
 
     @Override
-    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, String columnLabel, Object x)
-                                                                                                              throws SQLException {
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, String columnLabel, Object x) throws SQLException {
         chain.resultSet_updateObject(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, String columnLabel, Object x,
-                                       int scaleOrLength) throws SQLException {
+    public void resultSet_updateObject(FilterChain chain, ResultSetProxy result, String columnLabel, Object x, int scaleOrLength) throws SQLException {
         chain.resultSet_updateObject(result, columnLabel, x, scaleOrLength);
     }
 
     @Override
-    public void resultSet_updateRef(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Ref x)
-                                                                                                              throws SQLException {
+    public void resultSet_updateRef(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Ref x) throws SQLException {
         chain.resultSet_updateRef(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateRef(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Ref x)
-                                                                                                                 throws SQLException {
+    public void resultSet_updateRef(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Ref x) throws SQLException {
         chain.resultSet_updateRef(result, columnLabel, x);
     }
 
@@ -2332,74 +2088,62 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void resultSet_updateRowId(FilterChain chain, ResultSetProxy result, int columnIndex, RowId x)
-                                                                                                         throws SQLException {
+    public void resultSet_updateRowId(FilterChain chain, ResultSetProxy result, int columnIndex, RowId x) throws SQLException {
         chain.resultSet_updateRowId(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateRowId(FilterChain chain, ResultSetProxy result, String columnLabel, RowId x)
-                                                                                                            throws SQLException {
+    public void resultSet_updateRowId(FilterChain chain, ResultSetProxy result, String columnLabel, RowId x) throws SQLException {
         chain.resultSet_updateRowId(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateShort(FilterChain chain, ResultSetProxy result, int columnIndex, short x)
-                                                                                                         throws SQLException {
+    public void resultSet_updateShort(FilterChain chain, ResultSetProxy result, int columnIndex, short x) throws SQLException {
         chain.resultSet_updateShort(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateShort(FilterChain chain, ResultSetProxy result, String columnLabel, short x)
-                                                                                                            throws SQLException {
+    public void resultSet_updateShort(FilterChain chain, ResultSetProxy result, String columnLabel, short x) throws SQLException {
         chain.resultSet_updateShort(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy result, int columnIndex, SQLXML xmlObject)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy result, int columnIndex, SQLXML xmlObject) throws SQLException {
         chain.resultSet_updateSQLXML(result, columnIndex, xmlObject);
     }
 
     @Override
-    public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy result, String columnLabel, SQLXML xmlObject)
-                                                                                                                      throws SQLException {
+    public void resultSet_updateSQLXML(FilterChain chain, ResultSetProxy result, String columnLabel, SQLXML xmlObject) throws SQLException {
         chain.resultSet_updateSQLXML(result, columnLabel, xmlObject);
     }
 
     @Override
-    public void resultSet_updateString(FilterChain chain, ResultSetProxy result, int columnIndex, String x)
-                                                                                                           throws SQLException {
+    public void resultSet_updateString(FilterChain chain, ResultSetProxy result, int columnIndex, String x) throws SQLException {
         chain.resultSet_updateString(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateString(FilterChain chain, ResultSetProxy result, String columnLabel, String x)
-                                                                                                              throws SQLException {
+    public void resultSet_updateString(FilterChain chain, ResultSetProxy result, String columnLabel, String x) throws SQLException {
         chain.resultSet_updateString(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateTime(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Time x)
-                                                                                                                throws SQLException {
+    public void resultSet_updateTime(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Time x) throws SQLException {
         chain.resultSet_updateTime(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateTime(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Time x)
-                                                                                                                   throws SQLException {
+    public void resultSet_updateTime(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Time x) throws SQLException {
         chain.resultSet_updateTime(result, columnLabel, x);
     }
 
     @Override
-    public void resultSet_updateTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex,
-                                          java.sql.Timestamp x) throws SQLException {
+    public void resultSet_updateTimestamp(FilterChain chain, ResultSetProxy result, int columnIndex, java.sql.Timestamp x) throws SQLException {
         chain.resultSet_updateTimestamp(result, columnIndex, x);
     }
 
     @Override
-    public void resultSet_updateTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel,
-                                          java.sql.Timestamp x) throws SQLException {
+    public void resultSet_updateTimestamp(FilterChain chain, ResultSetProxy result, String columnLabel, java.sql.Timestamp x) throws SQLException {
         chain.resultSet_updateTimestamp(result, columnLabel, x);
     }
 
@@ -2439,20 +2183,17 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
-                                                                                                                    throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys) throws SQLException {
         return chain.statement_execute(statement, sql, autoGeneratedKeys);
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                  throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[]) throws SQLException {
         return chain.statement_execute(statement, sql, columnIndexes);
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
-                                                                                                                   throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[]) throws SQLException {
         return chain.statement_execute(statement, sql, columnNames);
     }
 
@@ -2463,8 +2204,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
 
     // /////////////////////////////
     @Override
-    public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
-                                                                                                         throws SQLException {
+    public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql) throws SQLException {
         return chain.statement_executeQuery(statement, sql);
     }
 
@@ -2474,20 +2214,17 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
-                                                                                                                      throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys) throws SQLException {
         return chain.statement_executeUpdate(statement, sql, autoGeneratedKeys);
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
-                                                                                                                    throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[]) throws SQLException {
         return chain.statement_executeUpdate(statement, sql, columnIndexes);
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
-                                                                                                                     throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String columnNames[]) throws SQLException {
         return chain.statement_executeUpdate(statement, sql, columnNames);
     }
 
@@ -2527,8 +2264,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public boolean statement_getMoreResults(FilterChain chain, StatementProxy statement, int current)
-                                                                                                     throws SQLException {
+    public boolean statement_getMoreResults(FilterChain chain, StatementProxy statement, int current) throws SQLException {
         return chain.statement_getMoreResults(statement, current);
     }
 
@@ -2583,14 +2319,12 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void statement_setEscapeProcessing(FilterChain chain, StatementProxy statement, boolean enable)
-                                                                                                          throws SQLException {
+    public void statement_setEscapeProcessing(FilterChain chain, StatementProxy statement, boolean enable) throws SQLException {
         chain.statement_setEscapeProcessing(statement, enable);
     }
 
     @Override
-    public void statement_setFetchDirection(FilterChain chain, StatementProxy statement, int direction)
-                                                                                                       throws SQLException {
+    public void statement_setFetchDirection(FilterChain chain, StatementProxy statement, int direction) throws SQLException {
         chain.statement_setFetchDirection(statement, direction);
     }
 
@@ -2610,8 +2344,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void statement_setPoolable(FilterChain chain, StatementProxy statement, boolean poolable)
-                                                                                                    throws SQLException {
+    public void statement_setPoolable(FilterChain chain, StatementProxy statement, boolean poolable) throws SQLException {
         chain.statement_setPoolable(statement, poolable);
     }
 
@@ -2661,8 +2394,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public int clob_setString(FilterChain chain, ClobProxy wrapper, long pos, String str, int offset, int len)
-                                                                                                              throws SQLException {
+    public int clob_setString(FilterChain chain, ClobProxy wrapper, long pos, String str, int offset, int len) throws SQLException {
         return chain.clob_setString(wrapper, pos, str, offset, len);
     }
 
@@ -2687,8 +2419,7 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public Reader clob_getCharacterStream(FilterChain chain, ClobProxy wrapper, long pos, long length)
-                                                                                                      throws SQLException {
+    public Reader clob_getCharacterStream(FilterChain chain, ClobProxy wrapper, long pos, long length) throws SQLException {
         return chain.clob_getCharacterStream(wrapper, pos, length);
     }
 

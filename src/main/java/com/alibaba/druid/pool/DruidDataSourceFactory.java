@@ -71,19 +71,15 @@ public class DruidDataSourceFactory implements ObjectFactory {
     private final static String   PROP_CONNECTIONPROPERTIES                = "connectionProperties";
     private final static String   PROP_FILTERS                             = "filters";
 
-    private final static String[] ALL_PROPERTIES                           = { PROP_DEFAULTAUTOCOMMIT,
-            PROP_DEFAULTREADONLY, PROP_DEFAULTTRANSACTIONISOLATION, PROP_DEFAULTCATALOG, PROP_DRIVERCLASSNAME,
-            PROP_MAXACTIVE, PROP_MAXIDLE, PROP_MINIDLE, PROP_INITIALSIZE, PROP_MAXWAIT, PROP_TESTONBORROW,
-            PROP_TESTONRETURN, PROP_TIMEBETWEENEVICTIONRUNSMILLIS, PROP_NUMTESTSPEREVICTIONRUN,
-            PROP_MINEVICTABLEIDLETIMEMILLIS, PROP_TESTWHILEIDLE, PROP_PASSWORD, PROP_URL, PROP_USERNAME,
-            PROP_VALIDATIONQUERY, PROP_VALIDATIONQUERY_TIMEOUT, PROP_INITCONNECTIONSQLS,
-            PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED, PROP_REMOVEABANDONED, PROP_REMOVEABANDONEDTIMEOUT,
-            PROP_LOGABANDONED, PROP_POOLPREPAREDSTATEMENTS, PROP_MAXOPENPREPAREDSTATEMENTS, PROP_CONNECTIONPROPERTIES,
-            PROP_FILTERS                                                  };
+    private final static String[] ALL_PROPERTIES                           = { PROP_DEFAULTAUTOCOMMIT, PROP_DEFAULTREADONLY, PROP_DEFAULTTRANSACTIONISOLATION,
+            PROP_DEFAULTCATALOG, PROP_DRIVERCLASSNAME, PROP_MAXACTIVE, PROP_MAXIDLE, PROP_MINIDLE, PROP_INITIALSIZE, PROP_MAXWAIT, PROP_TESTONBORROW,
+            PROP_TESTONRETURN, PROP_TIMEBETWEENEVICTIONRUNSMILLIS, PROP_NUMTESTSPEREVICTIONRUN, PROP_MINEVICTABLEIDLETIMEMILLIS, PROP_TESTWHILEIDLE,
+            PROP_PASSWORD, PROP_URL, PROP_USERNAME, PROP_VALIDATIONQUERY, PROP_VALIDATIONQUERY_TIMEOUT, PROP_INITCONNECTIONSQLS,
+            PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED, PROP_REMOVEABANDONED, PROP_REMOVEABANDONEDTIMEOUT, PROP_LOGABANDONED, PROP_POOLPREPAREDSTATEMENTS,
+            PROP_MAXOPENPREPAREDSTATEMENTS, PROP_CONNECTIONPROPERTIES, PROP_FILTERS };
 
     @Override
-    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment)
-                                                                                                        throws Exception {
+    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) throws Exception {
 
         // We only know how to deal with <code>javax.naming.Reference</code>s
         // that specify a class name of "javax.sql.DataSource"
@@ -274,7 +270,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
         if (value != null) {
             dataSource.setMaxOpenPreparedStatements(Integer.parseInt(value));
         }
-        
+
         value = properties.getProperty(PROP_FILTERS);
         if (value != null) {
             dataSource.setFilters(value);

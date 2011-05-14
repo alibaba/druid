@@ -325,22 +325,18 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             return new Date(lastErrorTime);
         }
 
-        private static String[] indexNames        = { "id", "connectTime", "connectTimespan", "establishTime",
-                                                          "aliveTimespan", "lastSql", "lastError", "lastErrorTime",
-                                                          "connectStatckTrace", "lastStatementStackTrace", "dataSource" };
+        private static String[] indexNames        = { "id", "connectTime", "connectTimespan", "establishTime", "aliveTimespan", "lastSql", "lastError",
+                                                          "lastErrorTime", "connectStatckTrace", "lastStatementStackTrace", "dataSource" };
         private static String[] indexDescriptions = indexNames;
 
         public static CompositeType getCompositeType() throws JMException {
-            OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
-                    SimpleType.DATE, SimpleType.LONG,
+            OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
 
-                    SimpleType.STRING, JMXUtils.getThrowableCompositeType(), SimpleType.DATE, SimpleType.STRING,
-                    SimpleType.STRING,
+            SimpleType.STRING, JMXUtils.getThrowableCompositeType(), SimpleType.DATE, SimpleType.STRING, SimpleType.STRING,
 
-                    SimpleType.STRING };
+            SimpleType.STRING };
 
-            return new CompositeType("ConnectionStatistic", "Connection Statistic", indexNames, indexDescriptions,
-                                     indexTypes);
+            return new CompositeType("ConnectionStatistic", "Connection Statistic", indexNames, indexDescriptions, indexTypes);
         }
 
         public String getDataSource() {

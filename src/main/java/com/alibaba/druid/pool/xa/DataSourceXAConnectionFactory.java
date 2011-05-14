@@ -55,8 +55,7 @@ public class DataSourceXAConnectionFactory implements XAConnectionFactory {
      * @param username the username used for authenticating new connections or null for unauthenticated
      * @param password the password used for authenticating new connections
      */
-    public DataSourceXAConnectionFactory(TransactionManager transactionManager, XADataSource xaDataSource,
-                                         String username, String password){
+    public DataSourceXAConnectionFactory(TransactionManager transactionManager, XADataSource xaDataSource, String username, String password){
         if (transactionManager == null) throw new NullPointerException("transactionManager is null");
         if (xaDataSource == null) throw new NullPointerException("xaDataSource is null");
 

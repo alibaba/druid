@@ -51,8 +51,7 @@ public class DruidFilterConfigLoader {
 
     private static final String CONFIG_CLAZZ_TAG = "configClass";
 
-    public static void loadConfig(String config, List<AbstractDruidFilterConfig> druidFilterConfigList)
-                                                                                                       throws SQLException {
+    public static void loadConfig(String config, List<AbstractDruidFilterConfig> druidFilterConfigList) throws SQLException {
         URL url = findResource(config);
         if (url != null) {
             try {
@@ -77,8 +76,7 @@ public class DruidFilterConfigLoader {
                 NodeList filterNodeList = filtersNode.getChildNodes();
                 for (int i = 0; i < filterNodeList.getLength(); i++) {
                     Node filterNode = filterNodeList.item(i);
-                    if (filterNode != null && filterNode.getNodeType() == Node.ELEMENT_NODE
-                        && filterNode.getAttributes().getNamedItem(NAME_TAG) != null) {
+                    if (filterNode != null && filterNode.getNodeType() == Node.ELEMENT_NODE && filterNode.getAttributes().getNamedItem(NAME_TAG) != null) {
                         Node configClassNode = filterNode.getAttributes().getNamedItem(CONFIG_CLAZZ_TAG);
                         if (configClassNode != null && !"".equalsIgnoreCase(configClassNode.getNodeValue())) {
                             Class<?> configClass = DruidLoaderUtils.loadClass(configClassNode.getNodeValue());

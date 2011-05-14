@@ -327,7 +327,7 @@ public class MockResultSet implements ResultSet {
     public ResultSetMetaData getMetaData() throws SQLException {
         return metaData;
     }
-    
+
     public MockResultSetMetaData getMockMetaData() throws SQLException {
         return metaData;
     }

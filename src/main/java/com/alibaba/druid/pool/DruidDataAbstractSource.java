@@ -98,7 +98,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
     protected PrintWriter       logWriter                                 = new PrintWriter(System.out);
 
-    protected List<Filter>        filters                                   = new ArrayList<Filter>();
+    protected List<Filter>      filters                                   = new ArrayList<Filter>();
 
     protected Driver            driver;
 

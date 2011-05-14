@@ -68,15 +68,13 @@ public final class JMXUtils {
 
     private static final String[]      THROWABLE_COMPOSITE_INDEX_NAMES        = { "message", "class", "stackTrace" };
     private static final String[]      THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS = { "message", "class", "stackTrace" };
-    private static final OpenType<?>[] THROWABLE_COMPOSITE_INDEX_TYPES        = new OpenType<?>[] { SimpleType.STRING,
-            SimpleType.STRING, SimpleType.STRING                             };
+    private static final OpenType<?>[] THROWABLE_COMPOSITE_INDEX_TYPES        = new OpenType<?>[] { SimpleType.STRING, SimpleType.STRING, SimpleType.STRING };
 
     private static CompositeType       THROWABLE_COMPOSITE_TYPE               = null;
 
     public static CompositeType getThrowableCompositeType() throws JMException {
         if (THROWABLE_COMPOSITE_TYPE == null) {
-            THROWABLE_COMPOSITE_TYPE = new CompositeType("Throwable", "Throwable", THROWABLE_COMPOSITE_INDEX_NAMES,
-                                                         THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS,
+            THROWABLE_COMPOSITE_TYPE = new CompositeType("Throwable", "Throwable", THROWABLE_COMPOSITE_INDEX_NAMES, THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS,
                                                          THROWABLE_COMPOSITE_INDEX_TYPES);
         }
 

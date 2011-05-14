@@ -139,8 +139,7 @@ public class LocalXAConnectionFactory implements XAConnectionFactory {
                 this.currentXid = xid;
             } else if (flag == XAResource.TMRESUME) {
                 if (xid != this.currentXid) {
-                    throw new XAException("Attempting to resume in different transaction: expected " + this.currentXid
-                                          + ", but was " + xid);
+                    throw new XAException("Attempting to resume in different transaction: expected " + this.currentXid + ", but was " + xid);
                 }
             } else {
                 throw new XAException("Unknown start flag " + flag);
@@ -156,8 +155,7 @@ public class LocalXAConnectionFactory implements XAConnectionFactory {
          */
         public synchronized void end(Xid xid, int flag) throws XAException {
             if (xid == null) throw new NullPointerException("xid is null");
-            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid
-                                                                    + ", but was " + xid);
+            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid + ", but was " + xid);
 
             // This notification tells us that the application server is done using this
             // connection for the time being. The connection is still associated with an
@@ -202,8 +200,7 @@ public class LocalXAConnectionFactory implements XAConnectionFactory {
          */
         public synchronized void commit(Xid xid, boolean flag) throws XAException {
             if (xid == null) throw new NullPointerException("xid is null");
-            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid
-                                                                    + ", but was " + xid);
+            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid + ", but was " + xid);
 
             try {
                 // make sure the connection isn't already closed
@@ -234,8 +231,7 @@ public class LocalXAConnectionFactory implements XAConnectionFactory {
          */
         public synchronized void rollback(Xid xid) throws XAException {
             if (xid == null) throw new NullPointerException("xid is null");
-            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid
-                                                                    + ", but was " + xid);
+            if (!this.currentXid.equals(xid)) throw new XAException("Invalid Xid: expected " + this.currentXid + ", but was " + xid);
 
             try {
                 connection.rollback();

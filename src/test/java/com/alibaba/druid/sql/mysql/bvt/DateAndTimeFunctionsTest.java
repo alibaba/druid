@@ -35,8 +35,7 @@ public class DateAndTimeFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col;",
-                            text);
+        Assert.assertEquals("SELECT something\nFROM tbl_name\nWHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) <= date_col;", text);
     }
 
     public void test_1() throws Exception {

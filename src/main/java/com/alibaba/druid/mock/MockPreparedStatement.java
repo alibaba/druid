@@ -43,10 +43,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     private final String          sql;
 
-    private final List<Object>    parameters = new ArrayList<Object>();
+    private final List<Object>    parameters        = new ArrayList<Object>();
 
-    private MockParameterMetaData metadata   = new MockParameterMetaData();
-    
+    private MockParameterMetaData metadata          = new MockParameterMetaData();
+
     private MockResultSetMetaData resultSetMetaData = new MockResultSetMetaData();
 
     public MockPreparedStatement(Connection conn, String sql){

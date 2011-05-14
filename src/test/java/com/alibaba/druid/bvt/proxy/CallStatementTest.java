@@ -34,24 +34,20 @@ public class CallStatementTest extends TestCase {
      */
     private static final String[] PROCEDURES = {
 
-            "CREATE PROCEDURE RETRIEVE_DYNAMIC_RESULTS(number INT) "
-                    + "LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
+            "CREATE PROCEDURE RETRIEVE_DYNAMIC_RESULTS(number INT) " + "LANGUAGE JAVA PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
                     + ".retrieveDynamicResults' " + "DYNAMIC RESULT SETS 4",
 
-            "CREATE PROCEDURE RETRIEVE_CLOSED_RESULT() LANGUAGE JAVA " + "PARAMETER STYLE JAVA EXTERNAL NAME '"
-                    + CallStatementTest.class.getName() + ".retrieveClosedResult' " + "DYNAMIC RESULT SETS 1",
+            "CREATE PROCEDURE RETRIEVE_CLOSED_RESULT() LANGUAGE JAVA " + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
+                    + ".retrieveClosedResult' " + "DYNAMIC RESULT SETS 1",
 
-            "CREATE PROCEDURE RETRIEVE_EXTERNAL_RESULT("
-                    + "DBNAME VARCHAR(128), DBUSER VARCHAR(128), DBPWD VARCHAR(128)) LANGUAGE JAVA "
-                    + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
-                    + ".retrieveExternalResult' " + "DYNAMIC RESULT SETS 1",
+            "CREATE PROCEDURE RETRIEVE_EXTERNAL_RESULT(" + "DBNAME VARCHAR(128), DBUSER VARCHAR(128), DBPWD VARCHAR(128)) LANGUAGE JAVA "
+                    + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName() + ".retrieveExternalResult' " + "DYNAMIC RESULT SETS 1",
 
-            "CREATE PROCEDURE PROC_WITH_SIDE_EFFECTS(ret INT) LANGUAGE JAVA " + "PARAMETER STYLE JAVA EXTERNAL NAME '"
-                    + CallStatementTest.class.getName() + ".procWithSideEffects' " + "DYNAMIC RESULT SETS 2",
+            "CREATE PROCEDURE PROC_WITH_SIDE_EFFECTS(ret INT) LANGUAGE JAVA " + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
+                    + ".procWithSideEffects' " + "DYNAMIC RESULT SETS 2",
 
-            "CREATE PROCEDURE NESTED_RESULT_SETS(proctext VARCHAR(128)) LANGUAGE JAVA "
-                    + "PARAMETER STYLE JAVA EXTERNAL NAME '" + CallStatementTest.class.getName()
-                    + ".nestedDynamicResultSets' " + "DYNAMIC RESULT SETS 6"
+            "CREATE PROCEDURE NESTED_RESULT_SETS(proctext VARCHAR(128)) LANGUAGE JAVA " + "PARAMETER STYLE JAVA EXTERNAL NAME '"
+                    + CallStatementTest.class.getName() + ".nestedDynamicResultSets' " + "DYNAMIC RESULT SETS 6"
 
                                              };
 
@@ -135,8 +131,7 @@ public class CallStatementTest extends TestCase {
         connect.close();
     }
 
-    public static void retrieveExternalResult(String dbName, String user, String password, ResultSet[] external)
-                                                                                                                throws SQLException {
+    public static void retrieveExternalResult(String dbName, String user, String password, ResultSet[] external) throws SQLException {
 
         Connection conn = DriverManager.getConnection(create_url);
 
@@ -195,8 +190,7 @@ public class CallStatementTest extends TestCase {
         conn.close();
     }
 
-    public static void fivejp(ResultSet[] data1, ResultSet[] data2, ResultSet[] data3, ResultSet[] data4,
-                              ResultSet[] data5) throws SQLException {
+    public static void fivejp(ResultSet[] data1, ResultSet[] data2, ResultSet[] data3, ResultSet[] data4, ResultSet[] data5) throws SQLException {
 
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
 
@@ -246,8 +240,7 @@ public class CallStatementTest extends TestCase {
         conn.close();
     }
 
-    public static void parameter2(int a, java.math.BigDecimal b, java.math.BigDecimal c, java.sql.ResultSet[] rs)
-                                                                                                                 throws SQLException {
+    public static void parameter2(int a, java.math.BigDecimal b, java.math.BigDecimal c, java.sql.ResultSet[] rs) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:default:connection");
         PreparedStatement ps = conn.prepareStatement("insert into PT1 values (?, ?, ?)");
         ps.setInt(1, a);
@@ -261,8 +254,7 @@ public class CallStatementTest extends TestCase {
         conn.close();
     }
 
-    public static void retrieveDynamicResults(int number, ResultSet[] rs1, ResultSet[] rs2, ResultSet[] rs3,
-                                              ResultSet[] rs4) throws SQLException {
+    public static void retrieveDynamicResults(int number, ResultSet[] rs1, ResultSet[] rs2, ResultSet[] rs3, ResultSet[] rs4) throws SQLException {
         Connection c = DriverManager.getConnection("jdbc:default:connection");
         if (number > 0) {
             rs1[0] = c.createStatement().executeQuery("VALUES(1)");

@@ -85,8 +85,7 @@ public class DruidDriverTest extends TestCase {
     public void test_getRawDriverClassName() throws Exception {
         Assert.assertEquals("com.mysql.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:mysql:"));
         Assert.assertEquals("oracle.jdbc.driver.OracleDriver", JdbcUtils.getDriverClassName("jdbc:oracle:"));
-        Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver",
-                            JdbcUtils.getDriverClassName("jdbc:microsoft:"));
+        Assert.assertEquals("com.microsoft.jdbc.sqlserver.SQLServerDriver", JdbcUtils.getDriverClassName("jdbc:microsoft:"));
         Assert.assertEquals("org.postgresql.Driver", JdbcUtils.getDriverClassName("jdbc:postgresql:xx"));
         Assert.assertEquals("net.sourceforge.jtds.jdbc.Driver", JdbcUtils.getDriverClassName("jdbc:jtds:"));
         {
@@ -186,8 +185,7 @@ public class DruidDriverTest extends TestCase {
             Exception error = null;
             try {
                 driver.connect("jdbc:wrap-jdbc:filters=" + PrivateJdbcFilterAdapter.class.getName()
-                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                               new Properties()).close();
+                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true", new Properties()).close();
             } catch (Exception ex) {
                 error = ex;
             }
@@ -197,8 +195,7 @@ public class DruidDriverTest extends TestCase {
             Exception error = null;
             try {
                 driver.connect("jdbc:wrap-jdbc:filters=" + InitErrorJdbcFilterAdapter.class.getName()
-                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true",
-                               new Properties()).close();
+                                       + ":name=driverWrapperTest:jdbc:derby:memory:driverWrapperTestDB;create=true", new Properties()).close();
             } catch (Exception ex) {
                 error = ex;
             }

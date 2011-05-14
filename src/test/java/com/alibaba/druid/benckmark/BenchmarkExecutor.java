@@ -98,8 +98,8 @@ public class BenchmarkExecutor {
         }
 
         NumberFormat format = NumberFormat.getInstance();
-        System.out.println("SUM\t" + benchmarkCase.getName() + "\t" + sqlExec.getName() + "\t" + format.format(millis)
-                           + "\tYoungGC " + youngGC + "\tFullGC " + fullGC);
+        System.out.println("SUM\t" + benchmarkCase.getName() + "\t" + sqlExec.getName() + "\t" + format.format(millis) + "\tYoungGC " + youngGC + "\tFullGC "
+                           + fullGC);
     }
 
     public void handleResult(SQLExecutor sqlExec, Result result) {
@@ -108,8 +108,8 @@ public class BenchmarkExecutor {
             return;
         }
         NumberFormat format = NumberFormat.getInstance();
-        System.out.println(result.getName() + "\t" + sqlExec.getName() + "\t" + format.format(result.getMillis())
-                           + "\tYoungGC " + result.getYoungGC() + "\tFullGC " + result.getFullGC());
+        System.out.println(result.getName() + "\t" + sqlExec.getName() + "\t" + format.format(result.getMillis()) + "\tYoungGC " + result.getYoungGC()
+                           + "\tFullGC " + result.getFullGC());
     }
 
     private Result executeLoop(SQLExecutor sqlExec, BenchmarkCase benchmarkCase) {

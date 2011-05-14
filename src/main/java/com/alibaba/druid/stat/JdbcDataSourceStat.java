@@ -136,8 +136,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         CompositeType rowType = JdbcConnectionStat.Entry.getCompositeType();
         String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
 
-        TabularType tabularType = new TabularType("ConnectionListStatistic", "ConnectionListStatistic", rowType,
-                                                  indexNames);
+        TabularType tabularType = new TabularType("ConnectionListStatistic", "ConnectionListStatistic", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
         for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : getConnections().entrySet()) {

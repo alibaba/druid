@@ -90,8 +90,7 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a, b, c) VALUES (1, 2, 3);",
-                            text);
+        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name (a, b, c) VALUES (1, 2, 3);", text);
     }
 
     public void test_6() throws Exception {

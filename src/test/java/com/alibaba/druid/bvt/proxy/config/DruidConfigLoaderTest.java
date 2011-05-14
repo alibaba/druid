@@ -45,8 +45,7 @@ public class DruidConfigLoaderTest extends TestCase {
                 Assert.assertEquals("gbk", druidConfig.getClientEncoding());
                 Assert.assertEquals("utf8", druidConfig.getServerEncoding());
             } else if ("stat".equalsIgnoreCase(abstractDruidFilterConfig.getName())) {
-                Assert.assertEquals("com.alibaba.druid.proxy.filter.stat.StatFilter",
-                                    abstractDruidFilterConfig.getClazz());
+                Assert.assertEquals("com.alibaba.druid.proxy.filter.stat.StatFilter", abstractDruidFilterConfig.getClazz());
             }
         }
 

@@ -26,7 +26,7 @@ public class ClobTest extends TestCase {
         ResultSet rs = stmt.executeQuery("SELECT NULL");
 
         Assert.assertTrue(rs.next());
-        
+
         {
             Clob x = rs.getClob(1);
             Assert.assertNull(x);

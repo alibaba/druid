@@ -6,5 +6,6 @@ import java.sql.SQLException;
 import com.alibaba.druid.mock.MockStatement;
 
 public interface MockExecuteHandler {
+
     ResultSet executeQuery(MockStatement statement, String sql) throws SQLException;
 }

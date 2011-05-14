@@ -102,8 +102,7 @@ public class BlobTest extends TestCase {
             updateCount = pstmt.executeUpdate();
             Assert.assertEquals(1, updateCount);
 
-            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                        ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE, ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
             conn.nativeSQL("SELECT ID, DATA FROM T_BLOB");
             // //////

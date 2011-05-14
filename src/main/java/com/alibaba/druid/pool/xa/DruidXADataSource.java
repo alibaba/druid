@@ -116,8 +116,7 @@ public class DruidXADataSource extends DruidDataSource {
         // LocalXAConnectionFactory
         if (xaDataSource == null) {
             ConnectionFactory connectionFactory = super.createConnectionFactory();
-            XAConnectionFactory xaConnectionFactory = new LocalXAConnectionFactory(getTransactionManager(),
-                                                                                   connectionFactory);
+            XAConnectionFactory xaConnectionFactory = new LocalXAConnectionFactory(getTransactionManager(), connectionFactory);
             transactionRegistry = xaConnectionFactory.getTransactionRegistry();
             return xaConnectionFactory;
         }
@@ -141,9 +140,7 @@ public class DruidXADataSource extends DruidDataSource {
         }
 
         // finally, create the XAConectionFactory using the XA data source
-        XAConnectionFactory xaConnectionFactory = new DataSourceXAConnectionFactory(getTransactionManager(),
-                                                                                    xaDataSourceInstance, username,
-                                                                                    password);
+        XAConnectionFactory xaConnectionFactory = new DataSourceXAConnectionFactory(getTransactionManager(), xaDataSourceInstance, username, password);
         transactionRegistry = xaConnectionFactory.getTransactionRegistry();
         return xaConnectionFactory;
     }

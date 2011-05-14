@@ -893,8 +893,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("-");
         print(x.getDayOfMonth());
 
-        if ((x.getHour() != 0) || (x.getMinute() != 0) || (x.getSecond() != 0) || (x.getMilliSecond() != 0)
-            || (x.getTimeZone() != null)) {
+        if ((x.getHour() != 0) || (x.getMinute() != 0) || (x.getSecond() != 0) || (x.getMilliSecond() != 0) || (x.getTimeZone() != null)) {
             print(' ');
             print(x.getHour());
             print(":");

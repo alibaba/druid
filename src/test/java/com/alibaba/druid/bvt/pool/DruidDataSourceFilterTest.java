@@ -56,10 +56,10 @@ public class DruidDataSourceFilterTest extends TestCase {
             Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); // logic
                                                                                                        // close不会导致计数器＋1
         }
-        
+
         dataSource.close();
-        
+
         Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); 
+        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
     }
 }

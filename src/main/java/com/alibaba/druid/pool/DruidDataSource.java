@@ -74,8 +74,8 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
     private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections           = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
-    private final CountDownLatch initedLatch = new CountDownLatch(2);
-    
+    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(2);
+
     public DruidDataSource(){
     }
 
@@ -90,11 +90,11 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
             if (inited) {
                 return;
             }
-            
+
             if (maxActive <= 0) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
-            
+
             if (maxIdle <= 0 || maxIdle < minIdle) {
                 throw new IllegalArgumentException("illegal maxPoolSize");
             }
@@ -120,7 +120,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
             } catch (ClassNotFoundException e) {
                 throw new SQLException(e.getMessage(), e);
             }
-            
+
             for (Filter filter : filters) {
                 filter.init(this);
             }
@@ -151,7 +151,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
             initedLatch.await();
             inited = true;
-            
+
             if (count == 0) {
                 lowWater.signal();
             }
@@ -205,11 +205,10 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (lock.getQueueLength() > maxWaitThreadCount) {
-                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
-                                       + lock.getQueueLength());
+                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count " + lock.getQueueLength());
             }
         }
-        
+
         try {
             lock.lockInterruptibly();
 
@@ -244,9 +243,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
             if (activeConnectionTraceEnable) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection,
-                                      new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
-                                                                    stackTrace));
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
 
             return poolalbeConnection;
@@ -400,7 +397,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
                 if (minIdle == 0) {
                     lowWater.signal();
                 }
-                
+
                 notEmpty.await();
             }
         } catch (InterruptedException ie) {
@@ -497,7 +494,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
         public void run() {
             initedLatch.countDown();
-            
+
             for (;;) {
                 // addLast
                 lock.lock();
@@ -535,7 +532,7 @@ public class DruidDataSource extends DruidDataAbstractSource implements DruidDat
 
         public void run() {
             initedLatch.countDown();
-            
+
             for (;;) {
                 // 从前面开始删除
                 try {
