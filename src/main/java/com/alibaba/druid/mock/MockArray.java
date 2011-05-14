@@ -21,6 +21,9 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class MockArray implements Array {
+    public MockArray() {
+        
+    }
 
     @Override
     public String getBaseTypeName() throws SQLException {
