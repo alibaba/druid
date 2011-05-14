@@ -32,12 +32,14 @@ import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
 public class MockDriver implements Driver {
 
-    private String                  prefix         = "jdbc:fake:";
-    private String                  mockPrefix     = "jdbc:mock:";
+    public final static MockExecuteHandler DEFAULT_HANDLER = new MySqlMockExecuteHandlerImpl();
 
-    private MockExecuteHandler      executeHandler = new MySqlMockExecuteHandlerImpl();
+    private String                         prefix          = "jdbc:fake:";
+    private String                         mockPrefix      = "jdbc:mock:";
 
-    private final static MockDriver instance       = new MockDriver();
+    private MockExecuteHandler             executeHandler  = DEFAULT_HANDLER;
+
+    private final static MockDriver        instance        = new MockDriver();
 
     static {
         registerDriver(instance);
