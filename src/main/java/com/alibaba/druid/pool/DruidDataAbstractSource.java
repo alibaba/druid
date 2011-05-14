@@ -320,6 +320,11 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public void setPasswordCallback(PasswordCallback passwordCallback) {
         this.passwordCallback = passwordCallback;
     }
+    
+    public void setPasswordCallback(String passwordCallbackClassName) throws Exception {
+        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(passwordCallbackClassName);
+        this.passwordCallback = (PasswordCallback) clazz.newInstance();
+    }
 
     public NameCallback getUserCallback() {
         return userCallback;
