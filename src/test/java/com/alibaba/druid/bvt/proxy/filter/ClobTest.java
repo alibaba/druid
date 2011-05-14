@@ -5,7 +5,6 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.NClob;
 import java.sql.ResultSet;
-import java.sql.RowId;
 import java.sql.SQLXML;
 import java.sql.Statement;
 
