@@ -736,20 +736,17 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Ref getRef(int columnIndex) throws SQLException {
-
-        return null;
+        return (Ref) getObject(columnIndex);
     }
 
     @Override
     public Blob getBlob(int columnIndex) throws SQLException {
-
-        return null;
+        return (Blob) getObject(columnIndex);
     }
 
     @Override
     public Clob getClob(int columnIndex) throws SQLException {
-
-        return null;
+        return (Clob) getObject(columnIndex);
     }
 
     @Override
