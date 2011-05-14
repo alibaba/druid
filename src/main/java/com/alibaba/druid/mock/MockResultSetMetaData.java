@@ -32,8 +32,12 @@ public class MockResultSetMetaData implements ResultSetMetaData {
         return columns;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (ResultSetMetaData.class.isAssignableFrom(iface)) {
+            return (T) this;
+        }
         return null;
     }
 
