@@ -53,7 +53,6 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public boolean wasNull() throws SQLException {
-
         return false;
     }
 
