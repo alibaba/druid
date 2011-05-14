@@ -35,7 +35,7 @@ public class MockResultSetMetaData implements ResultSetMetaData {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (ResultSetMetaData.class.isAssignableFrom(iface)) {
+        if (MockResultSetMetaData.class.isAssignableFrom(iface)) {
             return (T) this;
         }
         return null;
@@ -43,7 +43,7 @@ public class MockResultSetMetaData implements ResultSetMetaData {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+        return MockResultSetMetaData.class.isAssignableFrom(iface);
     }
 
     @Override
