@@ -17,6 +17,8 @@ package com.alibaba.druid.pool;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -320,7 +322,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
     public void setPasswordCallback(PasswordCallback passwordCallback) {
         this.passwordCallback = passwordCallback;
     }
-    
+
     public void setPasswordCallback(String passwordCallbackClassName) throws Exception {
         Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(passwordCallbackClassName);
         this.passwordCallback = (PasswordCallback) clazz.newInstance();
@@ -626,7 +628,7 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
         private final Properties              info;
         private final DruidDataAbstractSource dataSource;
 
-        public DruidPoolConnectionFactory(DruidDataAbstractSource dataSource){
+        public DruidPoolConnectionFactory(DruidDataAbstractSource dataSource) throws SQLException{
             this.dataSource = dataSource;
             this.url = dataSource.getUrl();
 
@@ -639,10 +641,33 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
             }
 
             String password;
-            if (dataSource.getPasswordCallback() != null) {
-                char[] chars = dataSource.getPasswordCallback().getPassword();
+            PasswordCallback passwordCallback = dataSource.getPasswordCallback();
+            if (passwordCallback != null) {
+                try {
+                    Method method = passwordCallback.getClass().getMethod("setUrl", String.class);
+                    method.invoke(passwordCallback, url);
+                } catch (NoSuchMethodException ex) {
+                    // skip
+                } catch (IllegalAccessException e) {
+                    throw new SQLException("passwordCallback Error", e);
+                } catch (InvocationTargetException e) {
+                    throw new SQLException("passwordCallback Error", e);
+                }
+                
+                try {
+                    Method method = passwordCallback.getClass().getMethod("setProperties", Properties.class);
+                    method.invoke(passwordCallback, properties);
+                } catch (NoSuchMethodException ex) {
+                    // skip
+                } catch (IllegalAccessException e) {
+                    throw new SQLException("passwordCallback Error", e);
+                } catch (InvocationTargetException e) {
+                    throw new SQLException("passwordCallback Error", e);
+                }
+
+                char[] chars = passwordCallback.getPassword();
                 if (chars != null) {
-                    password = new String(chars);    
+                    password = new String(chars);
                 } else {
                     password = null;
                 }
