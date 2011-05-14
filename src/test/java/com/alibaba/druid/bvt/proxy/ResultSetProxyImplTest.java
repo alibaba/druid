@@ -31,13 +31,14 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 
 public class ResultSetProxyImplTest extends TestCase {
 
-    String sql = "SELECT * FROM PATROL";
+    String sql = "SELECT 1";
 
     public void test_resultset() throws Exception {
 
         MockDriver driver = new MockDriver();
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
+        config.setRawUrl("jdbc:mock:");
         DataSourceProxyImpl dataSource = new DataSourceProxyImpl(driver, config);
 
         {

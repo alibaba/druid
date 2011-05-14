@@ -327,6 +327,10 @@ public class MockResultSet implements ResultSet {
     public ResultSetMetaData getMetaData() throws SQLException {
         return metaData;
     }
+    
+    public MockResultSetMetaData getMockMetaData() throws SQLException {
+        return metaData;
+    }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {

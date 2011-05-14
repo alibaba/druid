@@ -60,6 +60,10 @@ public class JdbcUtilsTest extends TestCase {
                 return types[column - 1];
             }
 
+            @Override
+            public String getColumnName(int column) throws SQLException {
+                return "C" + column;
+            }
         };
 
         MockResultSet rs = new MockResultSet(null) {

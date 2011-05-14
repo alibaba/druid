@@ -36,7 +36,7 @@ import com.alibaba.druid.stat.JdbcResultSetStat;
 
 public class CounterFilterTest extends TestCase {
 
-    String sql = "SELECT * FROM PATROL";
+    String sql = "SELECT 1";
 
     public void test_countFilter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
@@ -72,6 +72,7 @@ public class CounterFilterTest extends TestCase {
     public void test_count_filter() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
+        config.setRawUrl("jdbc:mock:");
 
         StatFilter filter = new StatFilter();
 

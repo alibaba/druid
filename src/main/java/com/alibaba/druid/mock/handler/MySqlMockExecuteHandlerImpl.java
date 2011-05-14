@@ -3,14 +3,19 @@ package com.alibaba.druid.mock.handler;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.List;
 
 import com.alibaba.druid.mock.MockResultSet;
+import com.alibaba.druid.mock.MockResultSetMetaData;
+import com.alibaba.druid.mock.MockResultSetMetaData.ColumnMetaData;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -68,28 +73,37 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
 
     public ResultSet executeQueryFromDual(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
         MockResultSet rs = new MockResultSet(statement);
+        MockResultSetMetaData metaData = rs.getMockMetaData();
+
         Object[] row = new Object[query.getSelectList().size()];
 
         for (int i = 0, size = query.getSelectList().size(); i < size; ++i) {
+            ColumnMetaData column = new ColumnMetaData();
             SQLSelectItem item = query.getSelectList().get(i);
             SQLExpr expr = item.getExpr();
 
-            if (expr instanceof SQLNumericLiteralExpr) {
+            if (expr instanceof SQLIntegerExpr) {
                 row[i] = ((SQLNumericLiteralExpr) expr).getNumber();
+                column.setColumnType(Types.INTEGER);
+            } else if (expr instanceof SQLNumberExpr) {
+                row[i] = ((SQLNumericLiteralExpr) expr).getNumber();
+                column.setColumnType(Types.DECIMAL);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;
             } else if (expr instanceof SQLMethodInvokeExpr) {
                 SQLMethodInvokeExpr methodInvokeExpr = (SQLMethodInvokeExpr) expr;
-                
+
                 if ("NOW".equalsIgnoreCase(methodInvokeExpr.getMethodName())) {
                     row[i] = new Timestamp(System.currentTimeMillis());
                 } else {
                     throw new SQLException("TODO");
                 }
-                
+
             } else {
                 throw new SQLException("TODO");
             }
+
+            metaData.getColumns().add(column);
         }
 
         rs.getRows().add(row);

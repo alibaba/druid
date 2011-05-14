@@ -48,6 +48,7 @@ public class LogFilterTest extends TestCase {
 
     public void test_logFilter_0() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
+        config.setRawUrl("jdbc:mock:");
         DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
         Log4jFilter log4jFilter = new Log4jFilter();
@@ -96,6 +97,7 @@ public class LogFilterTest extends TestCase {
 
     public void test_logFilter_1() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
+        config.setRawUrl("jdbc:mock:");
         DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
         Log4jFilter log4jFilter = new Log4jFilter();
@@ -144,6 +146,7 @@ public class LogFilterTest extends TestCase {
 
     public void test_logFilter_2() throws Exception {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
+        config.setRawUrl("jdbc:mock:");
         DataSourceProxyImpl dataSource = new DataSourceProxyImpl(new MockDriver(), config);
 
         Log4jFilter log4jFilter = new Log4jFilter();
@@ -261,7 +264,7 @@ public class LogFilterTest extends TestCase {
 
     @SuppressWarnings("deprecation")
     private void executeSQL(DataSourceProxyImpl dataSource) throws SQLException {
-        String sql = "SELECT * FROM PATROL";
+        String sql = "SELECT 1";
 
         Connection conn = dataSource.connect(new Properties());
         conn.commit();
