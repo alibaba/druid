@@ -640,7 +640,12 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
             String password;
             if (dataSource.getPasswordCallback() != null) {
-                password = new String(dataSource.getPasswordCallback().getPassword());
+                char[] chars = dataSource.getPasswordCallback().getPassword();
+                if (chars != null) {
+                    password = new String(chars);    
+                } else {
+                    password = null;
+                }
             } else {
                 password = dataSource.getPassword();
             }
