@@ -12,8 +12,10 @@ import com.alibaba.druid.mock.MockResultSetMetaData.ColumnMetaData;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
@@ -88,6 +90,12 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
             } else if (expr instanceof SQLNumberExpr) {
                 row[i] = ((SQLNumericLiteralExpr) expr).getNumber();
                 column.setColumnType(Types.DECIMAL);
+            } else if (expr instanceof SQLCharExpr) {
+                row[i] = ((SQLCharExpr) expr).getText();
+                column.setColumnType(Types.VARCHAR);
+            } else if (expr instanceof SQLNCharExpr) {
+                row[i] = ((SQLNCharExpr) expr).getText();
+                column.setColumnType(Types.NVARCHAR);
             } else if (expr instanceof SQLNullExpr) {
                 row[i] = null;
             } else if (expr instanceof SQLMethodInvokeExpr) {
