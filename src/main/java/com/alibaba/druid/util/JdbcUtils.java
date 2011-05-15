@@ -358,6 +358,12 @@ public final class JdbcUtils {
             return "COM.ibm.db2.jdbc.app.DB2Driver";
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return "org.sqlite.JDBC";
+        } else if (rawUrl.startsWith("jdbc:ingres:")) {
+            return "com.ingres.jdbc.IngresDriver";
+        } else if (rawUrl.startsWith("jdbc:h2:")) {
+            return "org.h2.Driver";
+        } else if (rawUrl.startsWith("jdbc:mckoi:")) {
+            return "com.mckoi.JDBCDriver";
         } else {
             throw new SQLException("unkow jdbc driver");
         }
