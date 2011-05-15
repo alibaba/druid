@@ -66,7 +66,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(MySqlBooleanExpr x) {
-        return true;
+        print(x.getValue() ? "true" : "false");
+        
+        return false;
     }
 
     public void endVisit(MySqlBooleanExpr x) {

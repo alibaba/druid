@@ -35,7 +35,7 @@ public class BooleanValuesTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT TRUE, true, FALSE, false;", text);
+        Assert.assertEquals("SELECT true, true, false, false;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

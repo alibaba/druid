@@ -35,7 +35,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 10 IS TRUE;", text);
+        Assert.assertEquals("SELECT 10 IS true;", text);
     }
 
     public void test_1() throws Exception {
@@ -46,7 +46,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT -10 IS TRUE;", text);
+        Assert.assertEquals("SELECT -10 IS true;", text);
     }
 
     public void test_2() throws Exception {

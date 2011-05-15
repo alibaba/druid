@@ -134,7 +134,7 @@ public class ComparisonFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 IS TRUE, 0 IS FALSE, NULL IS UNKNOWN;", text);
+        Assert.assertEquals("SELECT 1 IS true, 0 IS false, NULL IS UNKNOWN;", text);
     }
 
     public void test_10() throws Exception {
