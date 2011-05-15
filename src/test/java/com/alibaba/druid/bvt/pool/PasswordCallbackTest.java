@@ -27,7 +27,8 @@ public class PasswordCallbackTest extends TestCase {
     }
 
     public static class TestPasswordCallback extends PasswordCallback {
-
+        private static final long serialVersionUID = 1L;
+        
         private String     url;
         private Properties properties;
 
@@ -54,11 +55,6 @@ public class PasswordCallbackTest extends TestCase {
         public void setProperties(Properties properties) {
             this.properties = properties;
         }
-
-        /**
-         * 
-         */
-        private static final long serialVersionUID = 1L;
 
     }
 }

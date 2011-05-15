@@ -352,6 +352,10 @@ public final class JdbcUtils {
             return "com.alibaba.druid.mock.MockDriver";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
             return "org.postgresql.Driver";
+        } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
+            return "org.hsqldb.jdbcDriver";
+        } else if (rawUrl.startsWith("jdbc:db2:")) {
+            return "COM.ibm.db2.jdbc.app.DB2Driver";
         } else {
             throw new SQLException("unkow jdbc driver");
         }
