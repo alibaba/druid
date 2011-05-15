@@ -17,9 +17,11 @@ package com.alibaba.druid.util;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -27,11 +29,37 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class JdbcUtils {
+
+    private static final Properties driverUrlMapping = new Properties();
+
+    static {
+        try {
+            for (Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources("META-INF/druid-driver.properties"); e.hasMoreElements();) {
+                URL url = e.nextElement();
+
+                Properties property = new Properties();
+
+                InputStream is = null;
+                try {
+                    is = url.openStream();
+                    property.load(is);
+                } finally {
+                    JdbcUtils.close(is);
+                }
+
+                driverUrlMapping.putAll(property);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // error skip
+        }
+    }
 
     public final static void close(Connection x) {
         if (x != null) {
@@ -346,6 +374,8 @@ public final class JdbcUtils {
             return "oracle.jdbc.driver.OracleDriver";
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+        } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
+            return "com.sybase.jdbc2.jdbc.SybDriver";
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
             return "net.sourceforge.jtds.jdbc.Driver";
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
@@ -364,6 +394,30 @@ public final class JdbcUtils {
             return "org.h2.Driver";
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return "com.mckoi.JDBCDriver";
+        } else if (rawUrl.startsWith("jdbc:cloudscape:")) {
+            return "COM.cloudscape.core.JDBCDriver";
+        } else if (rawUrl.startsWith("jdbc:informix-sqli:")) {
+            return "com.informix.jdbc.IfxDriver";
+        } else if (rawUrl.startsWith("jdbc:timesten:")) {
+            return "com.timesten.jdbc.TimesTenDriver";
+        } else if (rawUrl.startsWith("jdbc:as400:")) {
+            return "com.ibm.as400.access.AS400JDBCDriver";
+        } else if (rawUrl.startsWith("jdbc:sapdb:")) {
+            return "com.sap.dbtech.jdbc.DriverSapDB";
+        } else if (rawUrl.startsWith("jdbc:JSQLConnect:")) {
+            return "com.jnetdirect.jsql.JSQLDriver";
+        } else if (rawUrl.startsWith("jdbc:JTurbo:")) {
+            return "com.newatlanta.jturbo.driver.Driver";
+        } else if (rawUrl.startsWith("jdbc:firebirdsql:")) {
+            return "org.firebirdsql.jdbc.FBDriver";
+        } else if (rawUrl.startsWith("jdbc:interbase:")) {
+            return "interbase.interclient.Driver";
+        } else if (rawUrl.startsWith("jdbc:pointbase:")) {
+            return "com.pointbase.jdbc.jdbcUniversalDriver";
+        } else if (rawUrl.startsWith("jdbc:edbc:")) {
+            return "ca.edbc.jdbc.EdbcDriver";
+        } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
+            return "com.mimer.jdbc.Driver";
         } else {
             throw new SQLException("unkow jdbc driver");
         }
