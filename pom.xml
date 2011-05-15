@@ -156,5 +156,6 @@
 			<artifactId>bonecp-spring</artifactId>
 			<version>0.7.1.RELEASE</version>
 		</dependency>
+		
 	</dependencies>
 </project>
