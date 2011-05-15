@@ -419,7 +419,7 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
             return "com.mimer.jdbc.Driver";
         } else {
-            throw new SQLException("unkow jdbc driver");
+            throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
     }
 }
