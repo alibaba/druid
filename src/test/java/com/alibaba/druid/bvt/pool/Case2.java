@@ -15,11 +15,64 @@
  */
 package com.alibaba.druid.bvt.pool;
 
+import java.sql.Connection;
+import java.util.Properties;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JMXUtils;
+
 /**
  * 类Case2.java的实现描述：TODO 类实现描述
  * 
  * @author admin 2011-5-4 下午02:45:21
  */
-public class Case2 {
+public class Case2 extends TestCase {
 
+
+    public void test_singleThread() throws Exception {
+
+        Class.forName("com.alibaba.druid.mock.MockDriver");
+
+        Properties properties = new Properties();
+        properties.put("maxActive", "100");
+        properties.put("maxIdle", "30");
+        properties.put("maxWait", "10000");
+        properties.put("url", "jdbc:derby:memory:tomcat-jndi;create=true");
+        properties.put("filters", "stat");
+        properties.put("validationQuery", "");
+        final DruidDataSource dataSource = (DruidDataSource) com.alibaba.druid.pool.DruidDataSourceFactory.createDataSource(properties);
+        JMXUtils.register("com.alibaba.druid:type=DruidDataSource", dataSource);
+
+        final int LOOP_COUNT = 1000 * 1000;
+
+        Assert.assertEquals(0, dataSource.getCreateCount());
+        Assert.assertEquals(0, dataSource.getDestroyCount());
+        Assert.assertEquals(0, dataSource.getPoolingSize());
+
+        for (int i = 0; i < LOOP_COUNT; ++i) {
+            Connection conn = dataSource.getConnection();
+
+            Assert.assertEquals(i + 1, dataSource.getConnectCount());
+            Assert.assertEquals(1, dataSource.getActiveCount());
+            Assert.assertEquals(i, dataSource.getCloseCount());
+            Assert.assertEquals(0, dataSource.getConnectErrorCount());
+            Assert.assertEquals(i, dataSource.getRecycleCount());
+
+            conn.close();
+
+            Assert.assertEquals(i + 1, dataSource.getConnectCount());
+            Assert.assertEquals(0, dataSource.getActiveCount());
+            Assert.assertEquals(i + 1, dataSource.getCloseCount());
+            Assert.assertEquals(0, dataSource.getConnectErrorCount());
+            Assert.assertEquals(i + 1, dataSource.getRecycleCount());
+        }
+
+        Assert.assertEquals(0, dataSource.getDestroyCount());
+
+        dataSource.close();
+        Assert.assertEquals(dataSource.getCreateCount(), dataSource.getDestroyCount());
+    }
 }
