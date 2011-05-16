@@ -428,6 +428,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (count == 0) {
+                lowWater.signal();
+                
                 notEmpty.awaitNanos(nanos);
 
                 if (count == 0) {
