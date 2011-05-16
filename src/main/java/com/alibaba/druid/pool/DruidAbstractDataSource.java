@@ -41,7 +41,7 @@ import com.alibaba.druid.util.DruidLoaderUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public abstract class DruidDataAbstractSource implements DataSource, DataSourceProxy, Serializable {
+public abstract class DruidAbstractDataSource implements DataSource, DataSourceProxy, Serializable {
 
     private static final long   serialVersionUID                          = 1L;
 
@@ -626,9 +626,9 @@ public abstract class DruidDataAbstractSource implements DataSource, DataSourceP
 
         private final String                  url;
         private final Properties              info;
-        private final DruidDataAbstractSource dataSource;
+        private final DruidAbstractDataSource dataSource;
 
-        public DruidPoolConnectionFactory(DruidDataAbstractSource dataSource) throws SQLException{
+        public DruidPoolConnectionFactory(DruidAbstractDataSource dataSource) throws SQLException{
             this.dataSource = dataSource;
             this.url = dataSource.getUrl();
 

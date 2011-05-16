@@ -41,7 +41,7 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidDataAbstractSource implements DruidDataSourceMBean, Referenceable {
+public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, Referenceable {
 
     private static final long                                                    serialVersionUID            = 1L;
 
