@@ -46,28 +46,19 @@ public class Case2 extends TestCase {
         final DruidDataSource dataSource = (DruidDataSource) com.alibaba.druid.pool.DruidDataSourceFactory.createDataSource(properties);
         JMXUtils.register("com.alibaba.druid:type=DruidDataSource", dataSource);
 
-        final int LOOP_COUNT = 1000 * 1000;
+        final int COUNT = 10;
 
         Assert.assertEquals(0, dataSource.getCreateCount());
         Assert.assertEquals(0, dataSource.getDestroyCount());
         Assert.assertEquals(0, dataSource.getPoolingSize());
 
-        for (int i = 0; i < LOOP_COUNT; ++i) {
-            Connection conn = dataSource.getConnection();
-
-            Assert.assertEquals(i + 1, dataSource.getConnectCount());
-            Assert.assertEquals(1, dataSource.getActiveCount());
-            Assert.assertEquals(i, dataSource.getCloseCount());
-            Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(i, dataSource.getRecycleCount());
-
-            conn.close();
-
-            Assert.assertEquals(i + 1, dataSource.getConnectCount());
-            Assert.assertEquals(0, dataSource.getActiveCount());
-            Assert.assertEquals(i + 1, dataSource.getCloseCount());
-            Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(i + 1, dataSource.getRecycleCount());
+        Connection[] connections = new Connection[COUNT];
+        for (int i = 0; i < COUNT; ++i) {
+            connections[i] = dataSource.getConnection();
+        }
+        
+        for (int i = 0; i < COUNT; ++i) {
+            connections[i].close();
         }
 
         Assert.assertEquals(0, dataSource.getDestroyCount());
