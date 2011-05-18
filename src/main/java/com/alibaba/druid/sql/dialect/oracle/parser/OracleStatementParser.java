@@ -30,7 +30,8 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleStatementParser extends SQLStatementParser {
 
     public OracleStatementParser(String sql){
-        super(sql);
+        super(new OracleLexer(sql));
+        this.lexer.nextToken();
     }
 
     public OracleStatementParser(Lexer lexer){
@@ -97,7 +98,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 throw new ParserException("TODO");
             }
 
-            throw new ParserException("TODO");
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
 

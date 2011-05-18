@@ -20,30 +20,38 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 
 public class OracleSelectParserTest extends TestCase {
 
-    public void test_select() throws Exception {
-        String sql = "SELECT TRIM('xxxxxxx')  FROM `T_USER`  WHERE FID >= 100 AND ROWNUM < 10";
-        SQLSelectParser parser = new OracleSelectParser(sql);
-        SQLSelect select = parser.select();
+    public void f_test_select() throws Exception {
+        String sql = "SELECT last_name, department_id FROM employees WHERE department_id = (SELECT department_id FROM employees WHERE last_name = 'Lorentz') ORDER BY last_name, department_id;";
 
-        select.accept(new OracleOutputVisitor(System.out));
-        System.out.println();
-        System.out.println(select);
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+
+        output(statementList);
+    }
+    
+    public void test_hinits() throws Exception {
+        String sql = "SELECT /*+FIRST_ROWS*/ * FROM T";
+        
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        
+        output(statementList);
     }
 
     private void output(List<SQLStatement> stmtList) {
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(new MySqlOutputVisitor(System.out));
-            System.out.println(";");
-            System.out.println();
-        }
-    }
+        StringBuilder out = new StringBuilder();
+        OracleOutputVisitor visitor = new OracleOutputVisitor(out);
 
+        for (SQLStatement stmt : stmtList) {
+            stmt.accept(visitor);
+            visitor.println();
+        }
+        
+        System.out.println(out.toString());
+    }
 }

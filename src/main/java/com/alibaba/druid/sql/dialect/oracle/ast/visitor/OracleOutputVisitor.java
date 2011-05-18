@@ -378,7 +378,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleHint x) {
-        throw new UnsupportedOperationException();
+        print(x.getName());
+        return false;
     }
 
     public boolean visit(OracleInsertStatement x) {
@@ -655,12 +656,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectQueryBlock select) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) print("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) print("DISTINCT ");
-        else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+            print("ALL ");
+        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+            print("DISTINCT ");
+        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
             print("UNIQUE ");
         }
-
+        
+        if (select.getHints().size() > 0) {
+            print("/*+");
+            printAndAccept(select.getHints(), ", ");
+            print("*/ ");
+        }
+        
         printAndAccept(select.getSelectList(), ", ");
 
         println();

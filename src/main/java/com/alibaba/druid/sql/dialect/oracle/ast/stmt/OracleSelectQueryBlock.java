@@ -51,7 +51,18 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        this.accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.where);
+            acceptChild(visitor, this.groupBy);
+        }
+        visitor.endVisit(this);
     }
 
     protected void accept0(OracleASTVisitor visitor) {

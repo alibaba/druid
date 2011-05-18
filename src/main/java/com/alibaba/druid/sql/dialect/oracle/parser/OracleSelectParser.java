@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
@@ -129,9 +130,11 @@ public class OracleSelectParser extends SQLSelectParser {
         OracleSelectQueryBlock queryBlock = new OracleSelectQueryBlock();
         parseHints(queryBlock);
 
-        if (lexer.token() == (Token.DISTINCT)) queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
-        else if (lexer.token() == (Token.UNIQUE)) queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
-        else if (lexer.token() == (Token.ALL)) {
+        if (lexer.token() == (Token.DISTINCT)) {
+            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+        } else if (lexer.token() == (Token.UNIQUE)) {
+            queryBlock.setDistionOption(SQLSetQuantifier.UNIQUE);
+        } else if (lexer.token() == (Token.ALL)) {
             queryBlock.setDistionOption(SQLSetQuantifier.ALL);
         }
 
@@ -484,6 +487,9 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private void parseHints(OracleSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.HINT) throw new ParserException("TODO");
+        if (lexer.token() == Token.HINT) {
+            queryBlock.getHints().add(new OracleHint(lexer.stringVal()));
+            lexer.nextToken();
+        }
     }
 }

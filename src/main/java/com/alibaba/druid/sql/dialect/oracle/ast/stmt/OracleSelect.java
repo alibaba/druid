@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelect extends SQLSelect {
 
@@ -50,6 +51,22 @@ public class OracleSelect extends SQLSelect {
         buf.append(" ");
 
         if (this.orderBy != null) this.orderBy.output(buf);
+    }
+    
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+            return;
+        }
+        
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.query);
+            acceptChild(visitor, this.restriction);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.forUpdate);
+        }
+
+        visitor.endVisit(this);
     }
 
     protected void accept0(OracleASTVisitor visitor) {
