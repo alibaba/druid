@@ -6,7 +6,7 @@ public class SQLLexerTest2 extends TestCase {
 
     public void test_lexer() throws Exception {
         String sql = "SELECT * FROM T WHERE F1 = ? ORDER BY F2";
-        SQLLexer lexer = new SQLLexer(sql);
+        Lexer lexer = new Lexer(sql);
         for (;;) {
             lexer.nextToken();
             Token tok = lexer.token();
