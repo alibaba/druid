@@ -179,12 +179,9 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLNCharExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
-            case USR_VAR:
+            case VARIANT:
                 sqlExpr = new SQLVariantRefExpr(lexer.stringVal());
                 lexer.nextToken();
-                break;
-            case SYS_VAR:
-                // QS_TODO add support for system var
                 break;
             case CASE:
                 SQLCaseExpr caseExpr = new SQLCaseExpr();

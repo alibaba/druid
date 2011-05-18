@@ -248,7 +248,7 @@ public class Lexer {
                     throw new SQLParseException("TODO"); // TODO
                 case '@':
                     scanVariable();
-                    token = Token.USR_VAR;
+                    token = Token.VARIANT;
                     return;
                 case '/':
                     scanComment();

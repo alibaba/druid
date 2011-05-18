@@ -99,16 +99,13 @@ public enum Token {
     EOF, ERROR,
     IDENTIFIER,
     HINT,
-    // QS_TODO add support in Lexer
-    SYS_VAR, USR_VAR,
+    VARIANT,
     LITERAL_INT,
     LITERAL_FLOAT,
     LITERAL_HEX,
-    // QS_TODO add syntax support
-    LITERAL_BIT,
     LITERAL_CHARS,
     LITERAL_NCHARS,
-    // QS_TODO remove alias token
+    
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
