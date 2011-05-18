@@ -287,8 +287,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLInListExpr x) {
         x.getExpr().accept(this);
 
-        if (x.isNot()) print(" NOT IN (");
-        else {
+        if (x.isNot()) {
+            print(" NOT IN (");
+        } else {
             print(" IN (");
         }
 

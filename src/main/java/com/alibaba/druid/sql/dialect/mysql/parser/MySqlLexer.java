@@ -108,8 +108,8 @@ public class MySqlLexer extends Lexer {
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
 
-    public MySqlLexer(char[] input, int inputLength){
-        super(input, inputLength);
+    public MySqlLexer(char[] input, int inputLength, boolean skipComment){
+        super(input, inputLength, skipComment);
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
     }
 

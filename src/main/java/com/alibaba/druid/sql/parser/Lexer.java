@@ -74,11 +74,18 @@ public class Lexer {
 
     protected String                           stringVal;
 
+    protected boolean                          skipComment = true;
+
     public Lexer(String input){
-        this(input.toCharArray(), input.length());
+        this(input, true);
     }
 
-    public Lexer(char[] input, int inputLength){
+    public Lexer(String input, boolean skipComment){
+        this(input.toCharArray(), input.length(), skipComment);
+    }
+
+    public Lexer(char[] input, int inputLength, boolean skipComment){
+        this.skipComment = skipComment;
         this.sbuf = sbufRef.get(); // new char[1024];
         if (this.sbuf == null) {
             this.sbuf = new char[1024];
@@ -245,6 +252,9 @@ public class Lexer {
                     return;
                 case '/':
                     scanComment();
+                    if (skipComment) {
+                        continue;
+                    }
                     return;
                 default:
                     if (Character.isLetter(ch)) {
