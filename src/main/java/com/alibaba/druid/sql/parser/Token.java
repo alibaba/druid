@@ -15,9 +15,28 @@
  */
 package com.alibaba.druid.sql.parser;
 
+/**
+ * 
+ * SQL Token 
+ * @author wenshao 2011-5-18 下午05:16:49
+ * @formatter:off
+ */
 public enum Token {
-    FOR("FOR"), INDEX("INDEX"), PRIMARY("PRIMARY"), KEY("KEY"), DEFAULT("DEFAULT"), CONSTRAINT("CONSTRAINT"), CHECK("CHECK"), VIEW("VIEW"), CREATE("CREATE"),
-    ALTER("ALTER"), DROP("DROP"), TABLE("TABLE"), UPDATE("UPDATE"), SET("SET"), SELECT("SELECT"), FROM("FROM"), WHERE("WHERE"), ORDER("ORDER"), BY("BY"),
+    FOR("FOR"), 
+    INDEX("INDEX"), 
+    PRIMARY("PRIMARY"), 
+    KEY("KEY"), 
+    DEFAULT("DEFAULT"), 
+    CONSTRAINT("CONSTRAINT"), 
+    CHECK("CHECK"), 
+    VIEW("VIEW"), 
+    CREATE("CREATE"),
+    ALTER("ALTER"), 
+    DROP("DROP"), 
+    TABLE("TABLE"), 
+    UPDATE("UPDATE"), 
+    SET("SET"), 
+    SELECT("SELECT"), FROM("FROM"), WHERE("WHERE"), ORDER("ORDER"), BY("BY"),
     GROUP("GROUP"), HAVING("HAVING"), INSERT("INSERT"), INTO("INTO"), NULL("NULL"), NOT("NOT"), AS("AS"), DELETE("DELETE"), DISTINCT("DISTINCT"),
     UNIQUE("UNIQUE"), FOREIGN("FOREIGN"), REFERENCE("REFERENCE"), REFERENCES("REFERENCES"), ALL("ALL"), UNION("UNION"), INTERSECT("INTERSECT"), MINUS("MINUS"),
     INNER("INNER"), LEFT("LEFT"), RIGHT("RIGHT"), FULL("FULL"), OUTER("OUTER"), JOIN("JOIN"), ON("ON"), SCHEMA("SCHEMA"), CAST("CAST"),
@@ -35,10 +54,8 @@ public enum Token {
     HINT,
     // QS_TODO add support in Lexer
     SYS_VAR, USR_VAR,
-    /** number composed purely of digit */
-    LITERAL_NUM_PURE_DIGIT,
-    /** number composed of digit mixed with <code>.</code> or <code>e</code> */
-    LITERAL_NUM_MIX_DIGIT,
+    LITERAL_INT,
+    LITERAL_FLOAT,
     LITERAL_HEX,
     // QS_TODO add syntax support
     LITERAL_BIT,
@@ -46,6 +63,8 @@ public enum Token {
     LITERAL_NCHARS,
     // QS_TODO remove alias token
     LITERAL_ALIAS,
+    LINE_COMMENT,
+    MULTI_LINE_COMMENT,
 
     LPAREN("("), RPAREN(")"), LBRACE("{"), RBRACE("}"), LBRACKET("["), RBRACKET("]"), SEMI(";"), COMMA(","), DOT("."), EQ("="), GT(">"), LT("<"), BANG("!"),
     TILDE("~"), QUES("?"), COLON(":"), COLONEQ(":="), EQEQ("=="), LTEQ("<="), LTEQGT("<=>"), LTGT("<>"), GTEQ(">="), BANGEQ("!="), BANGGT("!>"), BANGLT("!<"),

@@ -124,15 +124,15 @@ public class MySqlLexer extends Lexer {
         if (ch == '`') {
             int hash = first;
 
-            offsetCache = curIndex;
-            sizeCache = 1;
+            np = bp;
+            sp = 1;
             char ch;
             for (;;) {
-                ch = sql[++curIndex];
+                ch = buf[++bp];
 
                 if (ch == '`') {
-                    sizeCache++;
-                    ch = sql[++curIndex];
+                    sp++;
+                    ch = buf[++bp];
                     break;
                 } else if (ch == EOI) {
                     throw new SQLParseException("illegal identifier");
@@ -140,13 +140,13 @@ public class MySqlLexer extends Lexer {
 
                 hash = 31 * hash + ch;
 
-                sizeCache++;
+                sp++;
                 continue;
             }
 
-            this.ch = sql[curIndex];
+            this.ch = buf[bp];
 
-            stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
+            stringVal = symbolTable.addSymbol(buf, np, sp, hash);
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;
@@ -162,11 +162,11 @@ public class MySqlLexer extends Lexer {
 
             int hash = first;
 
-            offsetCache = curIndex;
-            sizeCache = 1;
+            np = bp;
+            sp = 1;
             char ch;
             for (;;) {
-                ch = sql[++curIndex];
+                ch = buf[++bp];
 
                 if (!isIdentifierChar(ch)) {
                     break;
@@ -174,13 +174,13 @@ public class MySqlLexer extends Lexer {
 
                 hash = 31 * hash + ch;
 
-                sizeCache++;
+                sp++;
                 continue;
             }
 
-            this.ch = sql[curIndex];
+            this.ch = buf[bp];
 
-            stringVal = symbolTable.addSymbol(sql, offsetCache, sizeCache, hash);
+            stringVal = symbolTable.addSymbol(buf, np, sp, hash);
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;
@@ -191,21 +191,21 @@ public class MySqlLexer extends Lexer {
     }
 
     protected void scanString() {
-        offsetCache = curIndex;
+        np = bp;
         boolean hasSpecial = false;
 
         for (;;) {
-            if (curIndex >= sqlLength) {
+            if (bp >= buflen) {
                 lexError(tokenPos, "unclosed.str.lit");
                 return;
             }
 
-            ch = sql[++curIndex];
+            ch = buf[++bp];
 
             if (ch == '\\') {
                 scanChar();
                 if (!hasSpecial) {
-                    System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
+                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
                     hasSpecial = true;
                 }
 
@@ -250,7 +250,7 @@ public class MySqlLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    System.arraycopy(sql, offsetCache + 1, sbuf, 0, sizeCache);
+                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
                     hasSpecial = true;
                     putChar('\'');
                     continue;
@@ -258,21 +258,21 @@ public class MySqlLexer extends Lexer {
             }
 
             if (!hasSpecial) {
-                sizeCache++;
+                sp++;
                 continue;
             }
 
-            if (sizeCache == sbuf.length) {
+            if (sp == sbuf.length) {
                 putChar(ch);
             } else {
-                sbuf[sizeCache++] = ch;
+                sbuf[sp++] = ch;
             }
         }
 
         if (!hasSpecial) {
-            stringVal = new String(sql, offsetCache + 1, sizeCache);
+            stringVal = new String(buf, np + 1, sp);
         } else {
-            stringVal = new String(sbuf, 0, sizeCache);
+            stringVal = new String(sbuf, 0, sp);
         }
     }
 }

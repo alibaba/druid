@@ -503,7 +503,7 @@ public class SQLLexer {
                         scanIdentifierFromNumber(offsetCache, sizeCache);
                         return;
                     } else {
-                        token = Token.LITERAL_NUM_PURE_DIGIT;
+                        token = Token.LITERAL_INT;
                         return;
                     }
                     break;
@@ -522,7 +522,7 @@ public class SQLLexer {
                             throw err("invalid char after '.': " + ch);
                         }
                     } else {
-                        token = Token.LITERAL_NUM_MIX_DIGIT;
+                        token = Token.LITERAL_FLOAT;
                         return;
                     }
                     break;
@@ -540,7 +540,7 @@ public class SQLLexer {
                             throw err("invalid char after '.' for as part of number: " + ch);
                         }
                     } else {
-                        token = Token.LITERAL_NUM_MIX_DIGIT;
+                        token = Token.LITERAL_FLOAT;
                         return;
                     }
                     break;
@@ -607,12 +607,12 @@ public class SQLLexer {
                             throw err("expect digit char after SIGN for 'e': " + ch);
                         }
                     } else {
-                        token = Token.LITERAL_NUM_MIX_DIGIT;
+                        token = Token.LITERAL_FLOAT;
                     }
                     return;
             }
         }
-        token = state == 0 ? Token.LITERAL_NUM_PURE_DIGIT : Token.LITERAL_NUM_MIX_DIGIT;
+        token = state == 0 ? Token.LITERAL_INT : Token.LITERAL_FLOAT;
     }
 
     /**

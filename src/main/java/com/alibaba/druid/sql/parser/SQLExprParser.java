@@ -163,11 +163,11 @@ public class SQLExprParser extends SQLParser {
                 break;
             case NEW:
                 throw new ParserException("TODO");
-            case LITERAL_NUM_PURE_DIGIT:
+            case LITERAL_INT:
                 sqlExpr = new SQLIntegerExpr(lexer.integerValue());
                 lexer.nextToken();
                 break;
-            case LITERAL_NUM_MIX_DIGIT:
+            case LITERAL_FLOAT:
                 sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                 lexer.nextToken();
                 break;
@@ -261,7 +261,7 @@ public class SQLExprParser extends SQLParser {
             case SUB:
                 lexer.nextToken();
                 switch (lexer.token()) {
-                    case LITERAL_NUM_PURE_DIGIT:
+                    case LITERAL_INT:
                         Number integerValue = lexer.integerValue();
                         if (integerValue instanceof Integer) {
                             int intVal = ((Integer) integerValue).intValue();
@@ -283,7 +283,7 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLIntegerExpr(integerValue);
                         lexer.nextToken();
                         break;
-                    case LITERAL_NUM_MIX_DIGIT:
+                    case LITERAL_FLOAT:
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
                         lexer.nextToken();
                         break;
@@ -294,11 +294,11 @@ public class SQLExprParser extends SQLParser {
             case PLUS:
                 lexer.nextToken();
                 switch (lexer.token()) {
-                    case LITERAL_NUM_PURE_DIGIT:
+                    case LITERAL_INT:
                         sqlExpr = new SQLIntegerExpr(lexer.integerValue());
                         lexer.nextToken();
                         break;
-                    case LITERAL_NUM_MIX_DIGIT:
+                    case LITERAL_FLOAT:
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue());
                         lexer.nextToken();
                         break;
