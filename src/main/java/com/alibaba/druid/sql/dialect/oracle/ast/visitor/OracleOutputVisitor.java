@@ -663,19 +663,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
             print("UNIQUE ");
         }
-        
+
         if (select.getHints().size() > 0) {
             print("/*+");
             printAndAccept(select.getHints(), ", ");
             print("*/ ");
         }
-        
+
         printAndAccept(select.getSelectList(), ", ");
 
         println();
         print("FROM ");
-        if (select.getFrom() == null) print("DUAL");
-        else {
+        if (select.getFrom() == null) {
+            print("DUAL");
+        } else {
             select.getFrom().accept(this);
         }
 
@@ -853,12 +854,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getPartition().accept(this);
             print(")");
         } else {
-            int i;
-            int size;
             if (x.getPartitionFor().size() > 0) {
                 print(" PARTITION FOR (");
-                i = 0;
-                for (size = x.getPartitionFor().size(); i < size; ++i) {
+                for (int i = 0, size = x.getPartitionFor().size(); i < size; ++i) {
                     ((SQLName) x.getPartitionFor().get(i)).accept(this);
                 }
                 print(")");
@@ -868,8 +866,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(")");
             } else if (x.getSubPartitionFor().size() > 0) {
                 print(" SUBPARTITION FOR (");
-                i = 0;
-                for (size = x.getSubPartitionFor().size(); i < size; ++i) {
+                for (int i = 0, size = x.getSubPartitionFor().size(); i < size; ++i) {
                     ((SQLName) x.getSubPartitionFor().get(i)).accept(this);
                 }
                 print(")");
