@@ -252,7 +252,7 @@ public class Lexer {
                     return;
                 case '/':
                     scanComment();
-                    if (skipComment) {
+                    if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
                         continue;
                     }
                     return;
