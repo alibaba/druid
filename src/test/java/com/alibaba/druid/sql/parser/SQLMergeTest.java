@@ -18,7 +18,7 @@ public class SQLMergeTest extends TestCase {
         String result = merge();
         System.out.println(result);
     }
-    
+
     public void test_merge_2() throws Exception {
         String result = merge2();
         System.out.println(result);
@@ -38,6 +38,7 @@ public class SQLMergeTest extends TestCase {
 
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out) {
+
             public boolean visit(SQLInListExpr x) {
                 x.getExpr().accept(this);
 
@@ -49,7 +50,7 @@ public class SQLMergeTest extends TestCase {
                 return false;
             }
         };
-        
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         for (SQLStatement statement : statementList) {
@@ -59,12 +60,13 @@ public class SQLMergeTest extends TestCase {
 
         return out.toString();
     }
-    
+
     private String merge2() {
         String sql = "INSERT INTO T (F1, F2, F3, F4, F5) VALUES (?, ?, ?, ?, ?), (?, ?, ?, ?, ?), (?, ?, ?, ?, ?)";
 
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out) {
+
             public boolean visit(SQLInListExpr x) {
                 x.getExpr().accept(this);
 
@@ -75,7 +77,7 @@ public class SQLMergeTest extends TestCase {
                 }
                 return false;
             }
-            
+
             @Override
             public boolean visit(MySqlInsertStatement x) {
                 print("INSERT ");
@@ -138,14 +140,14 @@ public class SQLMergeTest extends TestCase {
                 return false;
             }
         };
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         for (SQLStatement statement : statementList) {
             statement.accept(visitor);
             visitor.println();
         }
-
+        
         return out.toString();
     }
 }

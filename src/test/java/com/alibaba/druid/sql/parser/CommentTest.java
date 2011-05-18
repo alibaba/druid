@@ -18,9 +18,9 @@ public class CommentTest extends TestCase {
             Token tok = lexer.token();
 
             if (tok == Token.IDENTIFIER) {
-                System.out.println(tok.name() + "\t\t" + lexer.stringVal);
+                System.out.println(tok.name() + "\t\t" + lexer.stringVal());
             } else if (tok == Token.MULTI_LINE_COMMENT) {
-                    System.out.println(tok.name() + "\t\t" + lexer.stringVal);
+                    System.out.println(tok.name() + "\t\t" + lexer.stringVal());
             } else {
                 System.out.println(tok.name() + "\t\t\t" + tok.name);
             }
