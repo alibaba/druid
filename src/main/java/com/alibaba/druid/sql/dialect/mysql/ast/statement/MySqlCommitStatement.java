@@ -51,9 +51,8 @@ public class MySqlCommitStatement extends MySqlStatementImpl {
     }
 
     protected void accept0(MySqlASTVisitor visitor) {
-        if (visitor.visit(this)) {
+        visitor.visit(this);
 
-        }
         visitor.endVisit(this);
     }
 }
