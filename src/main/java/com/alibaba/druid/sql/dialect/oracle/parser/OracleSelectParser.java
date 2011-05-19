@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -39,6 +40,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -362,6 +364,28 @@ public class OracleSelectParser extends SQLSelectParser {
             
             tableReference.setPartition(partition);
         }
+        
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+            
+            if (identifierEquals("OF")) {
+                lexer.nextToken();
+                
+                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
+                if (identifierEquals("SCN")) {
+                    clause.setType(AsOfFlashbackQueryClause.Type.SCN);
+                    lexer.nextToken();
+                } else {
+                    acceptIdentifier("TIMESTAMP");
+                    clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
+                }
+                clause.setExpr(createExprParser().primary());
+                tableReference.setFlashback(clause);
+            } else {
+                throw new SQLParseException("TODO");
+            }
+        }
+ 
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {

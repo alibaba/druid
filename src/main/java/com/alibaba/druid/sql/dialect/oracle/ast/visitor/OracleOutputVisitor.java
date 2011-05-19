@@ -31,6 +31,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -1520,6 +1522,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(PartitionExtensionClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(VersionsFlashbackQueryClause x) {
+        print("VERSIONS BETWEEN ");
+        print(x.getType().name());
+        print(" ");
+        x.getBegin().accept(this);
+        print(" AND ");
+        x.getEnd().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(VersionsFlashbackQueryClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(AsOfFlashbackQueryClause x) {
+        print("AS OF ");
+        print(x.getType().name());
+        print(" ");
+        x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(AsOfFlashbackQueryClause x) {
         
     }
 
