@@ -1,2 +1,7 @@
 SELECT employee_id FROM (SELECT * FROM employees)
    FOR UPDATE OF employee_id;
+---------------------------
+SELECT employee_id
+FROM (SELECT *
+	FROM employees)
+FOR UPDATE(employee_id);
