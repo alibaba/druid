@@ -251,9 +251,15 @@ public class Lexer {
                     token = Token.VARIANT;
                     return;
                 case '/':
-                    scanComment();
-                    if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
-                        continue;
+                    int nextChar = buf[bp + 1];
+                    if (nextChar == '/' || nextChar == '*') {
+                        scanComment();
+                        if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
+                            continue;
+                        }
+                    } else {
+                        token = Token.SLASH;
+                        scanChar();
                     }
                     return;
                 default:
