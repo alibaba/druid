@@ -35,18 +35,30 @@ public class OracleSQLParserTest extends TestCase {
         SQLBinaryOpExpr value = (SQLBinaryOpExpr) item.getValue();
         Assert.assertEquals(SQLBinaryOperator.Multiply, value.getOperator());
 
-        output(statementList);
+        String text = output(statementList);
+        System.out.println(text);
+    }
+    
+    public void test_1() throws Exception {
+        String sql = "SELECT employees_seq.nextval FROM DUAL;";
+        
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        
+        Assert.assertEquals(1, statementList.size());
+        
+        String text = output(statementList);
+        System.out.println(text);
     }
 
-    private void output(List<SQLStatement> stmtList) {
+    private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);
 
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
-            visitor.println();
         }
 
-        System.out.println(out.toString());
+        return out.toString();
     }
 }
