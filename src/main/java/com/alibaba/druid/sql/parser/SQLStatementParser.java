@@ -153,7 +153,7 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setValues(values);
             accept(Token.RPAREN);
         } else if (lexer.token() == (Token.SELECT)) {
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             insertStatement.setQuery(queryExpr);
         }
         return insertStatement;

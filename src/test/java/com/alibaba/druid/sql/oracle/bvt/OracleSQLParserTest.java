@@ -11,13 +11,11 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSQLParserTest extends TestCase {
 
-    public void test_1() throws Exception {
+    public void f_test_1() throws Exception {
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-0.txt");

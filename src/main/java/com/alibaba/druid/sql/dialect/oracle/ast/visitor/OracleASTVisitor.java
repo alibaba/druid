@@ -40,7 +40,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
@@ -134,18 +133,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleGroupingSetsExpr x);
 
     void endVisit(OracleHint x);
-
-    void endVisit(OracleInsertStatement x);
-
-    void endVisit(OracleInsertStatement.InsertSource x);
-
-    void endVisit(OracleInsertStatement.Into x);
-
-    void endVisit(OracleInsertStatement.IntoSubQuery x);
-
-    void endVisit(OracleInsertStatement.IntoValues x);
-
-    void endVisit(OracleInsertStatement.SigleTableInert x);
 
     void endVisit(OracleIntervalExpr x);
 
@@ -266,18 +253,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleGroupingSetsExpr x);
 
     boolean visit(OracleHint x);
-
-    boolean visit(OracleInsertStatement x);
-
-    boolean visit(OracleInsertStatement.InsertSource x);
-
-    boolean visit(OracleInsertStatement.Into x);
-
-    boolean visit(OracleInsertStatement.IntoSubQuery x);
-
-    boolean visit(OracleInsertStatement.IntoValues x);
-
-    boolean visit(OracleInsertStatement.SigleTableInert x);
 
     boolean visit(OracleIntervalExpr x);
 

@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
@@ -67,7 +68,14 @@ public class OracleExprParser extends SQLExprParser {
                     String name = ":" + lexer.numberString();
                     lexer.nextToken();
                     return new SQLVariantRefExpr(name);
-                } else{
+                } else if (lexer.token() == Token.IDENTIFIER) {
+                    String name = lexer.stringVal();
+                    if (name.startsWith("B")) {
+                        lexer.nextToken();
+                        return new SQLVariantRefExpr(":" + name);
+                    }
+                    throw new ParserException("syntax error : " + lexer.token());
+                } else {
                     throw new ParserException("syntax error : " + lexer.token());
                 }
             default:

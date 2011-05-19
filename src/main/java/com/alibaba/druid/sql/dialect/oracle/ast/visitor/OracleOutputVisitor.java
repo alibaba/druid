@@ -66,12 +66,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement.InsertSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement.Into;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement.IntoSubQuery;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement.IntoValues;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement.SigleTableInert;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
@@ -382,40 +376,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleInsertStatement x) {
-        print("INSERT ");
-        printHints(x.getHints());
-        x.getInsert().accept(this);
-        return false;
-    }
-
-    public boolean visit(OracleInsertStatement.InsertSource x) {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean visit(OracleInsertStatement.Into x) {
-        print("INTO ");
-        x.getTarget().accept(this);
-        printAlias(x.getAlias());
-        if (x.getColumns().size() > 0) {
-            print("(");
-            printAndAccept(x.getColumns(), ", ");
-            print(")");
-        }
-        return false;
-    }
-
-    public boolean visit(OracleInsertStatement.IntoSubQuery x) {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean visit(OracleInsertStatement.IntoValues x) {
-        print("VALUES (");
-        printAndAccept(x.getValues(), ", ");
-        print(")");
-        return false;
-    }
-
     public boolean visit(OracleIntervalExpr x) {
         print("INTERVAL '");
         print(x.getValue());
@@ -562,18 +522,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectHierachicalQueryClause x) {
         print("START WITH ");
         x.getStartWith().accept(this);
-        
+
         println();
         print("CONNECT BY ");
-        
+
         if (x.isPrior()) {
             print("PRIOR ");
         }
-        
+
         if (x.isNoCycle()) {
             print("NOCYCLE ");
         }
-        
+
         x.getConnectBy().accept(this);
 
         return false;
@@ -1358,36 +1318,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleInsertStatement x) {
-
-    }
-
-    @Override
-    public void endVisit(InsertSource x) {
-
-    }
-
-    @Override
-    public void endVisit(Into x) {
-
-    }
-
-    @Override
-    public void endVisit(IntoSubQuery x) {
-
-    }
-
-    @Override
-    public void endVisit(IntoValues x) {
-
-    }
-
-    @Override
-    public void endVisit(SigleTableInert x) {
-
-    }
-
-    @Override
     public void endVisit(OracleIntervalExpr x) {
 
     }
@@ -1517,10 +1447,4 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
-    public boolean visit(OracleInsertStatement.SigleTableInert x) {
-        x.getInto().accept(this);
-        print(" ");
-        x.getSource().accept(this);
-        return false;
-    }
 }
