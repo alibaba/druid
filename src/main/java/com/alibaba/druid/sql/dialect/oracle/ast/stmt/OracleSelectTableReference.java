@@ -16,21 +16,31 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectTableReference extends SQLExprTableSource implements OracleSelectTableSource {
 
-    private static final long       serialVersionUID = 1L;
+    private static final long          serialVersionUID = 1L;
 
-    private boolean                 only             = false;
-    protected OracleSelectPivotBase pivot;
+    private boolean                    only             = false;
+    protected OracleSelectPivotBase    pivot;
 
-    protected SampleClause          sampleClause;
+    protected PartitionExtensionClause partition;
+    protected SampleClause             sampleClause;
 
     public OracleSelectTableReference(){
 
+    }
+
+    public PartitionExtensionClause getPartition() {
+        return partition;
+    }
+
+    public void setPartition(PartitionExtensionClause partition) {
+        this.partition = partition;
     }
 
     public boolean isOnly() {
@@ -65,6 +75,7 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);
+            acceptChild(visitor, this.partition);
             acceptChild(visitor, this.sampleClause);
             acceptChild(visitor, this.pivot);
         }

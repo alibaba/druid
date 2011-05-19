@@ -47,9 +47,8 @@ public class SQLParser {
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
-            // QS_TODO remove alias token
             if (lexer.token() == Token.LITERAL_ALIAS) {
-                rtnValue = "'" + lexer.stringVal() + "'";
+                rtnValue = lexer.stringVal();
                 lexer.nextToken();
                 return rtnValue;
             }
@@ -64,10 +63,10 @@ public class SQLParser {
         }
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
-            rtnValue = "'" + lexer.stringVal() + "'";
+            rtnValue = lexer.stringVal();
             lexer.nextToken();
         } else if (lexer.token() == Token.IDENTIFIER) {
-            rtnValue = "'" + lexer.stringVal() + "'";
+            rtnValue = lexer.stringVal();
             lexer.nextToken();
         }
         return rtnValue;

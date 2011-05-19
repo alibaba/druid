@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -712,9 +713,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isOnly()) {
             print("ONLY (");
             x.getExpr().accept(this);
+            
+            if (x.getPartition() != null) {
+                print(" ");
+                x.getPartition().accept(this);
+            }
+            
             print(")");
         } else {
             x.getExpr().accept(this);
+            
+            if (x.getPartition() != null) {
+                print(" ");
+                x.getPartition().accept(this);
+            }
         }
         
         if (x.getSampleClause() != null) {
@@ -1483,6 +1495,31 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSelectTableReference x) {
+        
+    }
+
+    @Override
+    public boolean visit(PartitionExtensionClause x) {
+        if (x.isSubPartition()) {
+            print("SUBPARTITION ");
+        } else {
+            print("PARTITION ");
+        }
+        
+        if (x.getPartition() != null) {
+            print("(");
+            x.getPartition().accept(this);
+            print(")");
+        } else {
+            print("FOR (");
+            printAndAccept(x.getFor(), ",");
+            print(")");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(PartitionExtensionClause x) {
         
     }
 

@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -313,4 +314,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSelectTableReference x);
     
     void endVisit(OracleSelectTableReference x);
+    
+    boolean visit(PartitionExtensionClause x);
+    
+    void endVisit(PartitionExtensionClause x);
 }

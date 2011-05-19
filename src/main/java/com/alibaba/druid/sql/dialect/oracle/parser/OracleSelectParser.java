@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -327,10 +328,39 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (identifierEquals("PARTITION")) {
             lexer.nextToken();
-            throw new ParserException("TODO");
+            PartitionExtensionClause partition = new PartitionExtensionClause();
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                partition.setPartition(createExprParser().name());
+                accept(Token.RPAREN);
+            } else {
+                accept(Token.FOR);
+                accept(Token.LPAREN);
+                createExprParser().names(partition.getFor());
+                accept(Token.RPAREN);
+            }
+            
+            tableReference.setPartition(partition);
         }
+        
         if (identifierEquals("SUBPARTITION")) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+            PartitionExtensionClause partition = new PartitionExtensionClause();
+            partition.setSubPartition(true);
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                partition.setPartition(createExprParser().name());
+                accept(Token.RPAREN);
+            } else {
+                accept(Token.FOR);
+                accept(Token.LPAREN);
+                createExprParser().names(partition.getFor());
+                accept(Token.RPAREN);
+            }
+            
+            tableReference.setPartition(partition);
         }
     }
 
