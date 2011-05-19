@@ -127,8 +127,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     protected void printAndAccept(List<? extends SQLObject> nodes, String seperator) {
-        int i = 0;
-        for (int size = nodes.size(); i < size; ++i) {
+        for (int i = 0, size = nodes.size(); i < size; ++i) {
             if (i != 0) {
                 print(seperator);
             }
@@ -164,8 +163,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLBetweenExpr x) {
         x.getTestExpr().accept(this);
-        if (x.isNot()) print(" NOT BETWEEN ");
-        else {
+        if (x.isNot()) {
+            print(" NOT BETWEEN ");
+        } else {
             print(" BETWEEN ");
         }
         x.getBeginExpr().accept(this);
@@ -415,9 +415,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLSelectQueryBlock select) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) print("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) print("DISTINCT ");
-        else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+            print("ALL ");
+        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+            print("DISTINCT ");
+        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
             print("UNIQUE ");
         }
 

@@ -217,8 +217,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print("OR REPLACE ");
         }
 
-        if (Boolean.TRUE.equals(x.getForce())) print("FORCE ");
-        else if (Boolean.FALSE.equals(x.getForce())) {
+        if (Boolean.TRUE.equals(x.getForce())) {
+            print("FORCE ");
+        } else if (Boolean.FALSE.equals(x.getForce())) {
             print("NO FORCE ");
         }
 
@@ -1082,8 +1083,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleAlterTableStatement.EnableTrigger x) {
-        if (x.isEnable()) print("ENABLE ALL TRIGGERS");
-        else {
+        if (x.isEnable()) {
+            print("ENABLE ALL TRIGGERS");
+        } else {
             print("DISABLE ALL TRIGGERS");
         }
         return false;
