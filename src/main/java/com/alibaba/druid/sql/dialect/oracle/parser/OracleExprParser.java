@@ -28,17 +28,27 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
 
+
+
     public boolean                allowStringAdditive = false;
 
-    private static final String[] _aggregateFunctions = { "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT", "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE",
-            "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX", "MIN", "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "RATIO_TO_REPORT",
-            "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT", "REGR_R2", "REGR_AVGX", "REGR_AVGY", "REGR_SXX", "REGR_SYY", "REGR_SXY", "ROW_NUMBER", "STDDEV",
-            "STDDEV_POP", "STDDEV_SAMP", "SUM", "VAR_POP", "VAR_SAMP", "VARIANCE" };
+    /**
+     * @formatter:off
+     */
+    private static final String[] _aggregateFunctions = { 
+            "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT"
+            , "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE"
+            , "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX"
+            , "MIN", "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC"
+            , "RANK", "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT"
+            , "REGR_R2", "REGR_AVGX", "REGR_AVGY", "REGR_SXX", "REGR_SYY"
+            , "REGR_SXY", "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP"
+            , "SUM", "VAR_POP", "VAR_SAMP", "VARIANCE" 
+            };
 
     public OracleExprParser(Lexer lexer){
         super(lexer);
