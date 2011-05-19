@@ -1468,8 +1468,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(")");
         
         if (x.getSeedValue() != null) {
-            print(" SEED ");
+            print(" SEED (");
             x.getSeedValue().accept(this);
+            print(")");
         }
        
         return false;
