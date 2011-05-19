@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -32,7 +32,7 @@ public class OracleInsertParser extends SQLStatementParser {
         super(lexer);
     }
 
-    public SQLInsertStatement parseInsert() throws ParserException {
+    public SQLStatement parseInsert() throws ParserException {
         throw new ParserException("TODO");
     }
 

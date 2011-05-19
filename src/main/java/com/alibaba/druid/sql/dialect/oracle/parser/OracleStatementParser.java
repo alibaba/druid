@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -36,6 +37,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
     public OracleStatementParser(Lexer lexer){
         super(lexer);
+    }
+    
+    protected SQLExprParser createExprParser() {
+        return new OracleExprParser(lexer);
     }
 
     @Override

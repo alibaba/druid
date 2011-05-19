@@ -102,7 +102,8 @@ public enum Token {
     PRIOR("PRIOR"),
     CONNECT("CONNECT"),
 
-    EOF, ERROR,
+    EOF, 
+    ERROR,
     IDENTIFIER,
     HINT,
     VARIANT,

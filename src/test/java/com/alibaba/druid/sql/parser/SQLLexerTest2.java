@@ -13,6 +13,8 @@ public class SQLLexerTest2 extends TestCase {
 
             if (tok == Token.IDENTIFIER) {
                 System.out.println(tok.name() + "\t\t" + lexer.stringVal());
+            } else if (tok == Token.LITERAL_INT) {
+                System.out.println(tok.name() + "\t\t" + lexer.numberString());
             } else {
                 System.out.println(tok.name() + "\t\t\t" + tok.name);
             }

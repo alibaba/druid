@@ -15,8 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -53,6 +55,24 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return false;
+    }
+
+    public SQLExpr primary() throws ParserException {
+        final Token tok = lexer.token();
+
+        switch (tok) {
+            case COLON:
+                lexer.nextToken();
+                if (lexer.token() == Token.LITERAL_INT) {
+                    String name = ":" + lexer.numberString();
+                    lexer.nextToken();
+                    return new SQLVariantRefExpr(name);
+                } else{
+                    throw new ParserException("syntax error : " + lexer.token());
+                }
+            default:
+                return super.primary();
+        }
     }
 
     @Override

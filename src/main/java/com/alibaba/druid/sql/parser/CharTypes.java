@@ -84,6 +84,7 @@ public class CharTypes {
         whitespaceFlags['\t'] = true;
         whitespaceFlags['\f'] = true;
         whitespaceFlags['\b'] = true;
+        whitespaceFlags[160] = true; // 特别处理
     }
 
     /**

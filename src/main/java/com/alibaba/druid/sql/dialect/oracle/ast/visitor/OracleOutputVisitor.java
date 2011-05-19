@@ -560,6 +560,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelectHierachicalQueryClause x) {
+        print("START WITH ");
+        x.getStartWith().accept(this);
+        
+        println();
         print("CONNECT BY ");
         
         if (x.isPrior()) {
@@ -571,8 +575,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
         
         x.getConnectBy().accept(this);
-        print(" START WITH ");
-        x.getStartWith().accept(this);
+
         return false;
     }
 

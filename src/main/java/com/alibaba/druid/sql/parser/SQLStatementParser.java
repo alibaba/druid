@@ -85,7 +85,7 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == (Token.INSERT)) {
-                SQLInsertStatement insertStatement = parseInsert();
+                SQLStatement insertStatement = parseInsert();
                 statementList.add(insertStatement);
 
                 continue;
@@ -130,7 +130,7 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    public SQLInsertStatement parseInsert() {
+    public SQLStatement parseInsert() {
         accept(Token.INSERT);
         accept(Token.INTO);
 
