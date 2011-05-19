@@ -350,6 +350,11 @@ public class OracleSelectParser extends SQLSelectParser {
             lexer.nextToken();
             joinType = OracleSelectJoin.JoinType.JOIN;
         }
+        
+        if (lexer.token() == (Token.COMMA)) {
+            lexer.nextToken();
+            joinType = OracleSelectJoin.JoinType.COMMA;
+        }
 
         if (joinType != null) {
             OracleSelectJoin join = new OracleSelectJoin();
@@ -369,7 +374,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
             return join;
         }
-
+        
         return tableSource;
     }
 

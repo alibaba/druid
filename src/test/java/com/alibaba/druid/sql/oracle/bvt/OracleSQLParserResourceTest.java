@@ -16,51 +16,19 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSQLParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        InputStream is = null;
-
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-0.txt");
-        Reader reader = new InputStreamReader(is);
-        String input = JdbcUtils.read(reader);
-        JdbcUtils.close(reader);
-        String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
-        String expect = items[1].trim();
-        
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        Assert.assertEquals(1, statementList.size());
-
-        String text = output(statementList);
-        Assert.assertEquals(expect, text.trim());
-        System.out.println(text);
+        exec_test("bvt/parser/oracle-0.txt");
+        exec_test("bvt/parser/oracle-1.txt");
+        exec_test("bvt/parser/oracle-2.txt");
+        exec_test("bvt/parser/oracle-3.txt");
+        exec_test("bvt/parser/oracle-4.txt");
+        exec_test("bvt/parser/oracle-5.txt");
     }
     
-    public void test_1() throws Exception {
-        InputStream is = null;
-
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-0.txt");
-        Reader reader = new InputStreamReader(is);
-        String input = JdbcUtils.read(reader);
-        JdbcUtils.close(reader);
-        String[] items = input.split("---------------------------");
-        String sql = items[0].trim();
-        String expect = items[1].trim();
-        
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        Assert.assertEquals(1, statementList.size());
-
-        String text = output(statementList);
-        Assert.assertEquals(expect, text.trim());
-        System.out.println(text);
-    }
     
-    public void test_2() throws Exception {
+    public void exec_test(String resource) throws Exception {
         InputStream is = null;
 
-        is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bvt/parser/oracle-0.txt");
+        is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         Reader reader = new InputStreamReader(is);
         String input = JdbcUtils.read(reader);
         JdbcUtils.close(reader);
@@ -74,8 +42,9 @@ public class OracleSQLParserResourceTest extends TestCase {
         Assert.assertEquals(1, statementList.size());
         
         String text = output(statementList);
-        Assert.assertEquals(expect, text.trim());
         System.out.println(text);
+        Assert.assertEquals(expect, text.trim());
+       
     }
 
     private String output(List<SQLStatement> stmtList) {

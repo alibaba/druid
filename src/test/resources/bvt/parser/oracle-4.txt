@@ -1,0 +1,9 @@
+SELECT * 
+   FROM employees 
+   WHERE department_id = 30
+   ORDER BY last_name;
+---------------------------
+SELECT *
+FROM employees
+WHERE department_id = 30
+ORDER BY last_name;
