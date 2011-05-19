@@ -6,7 +6,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DruidDataSourceFilterTest extends TestCase {
