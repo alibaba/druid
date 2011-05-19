@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.pool;
+package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 
