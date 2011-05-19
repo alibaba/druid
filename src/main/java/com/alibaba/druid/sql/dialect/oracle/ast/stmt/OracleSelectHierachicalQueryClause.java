@@ -25,10 +25,19 @@ public class OracleSelectHierachicalQueryClause extends OracleSQLObject {
 
     private SQLExpr           startWith;
     private SQLExpr           connectBy;
+    private boolean           prior            = false;
     private boolean           noCycle          = false;
 
     public OracleSelectHierachicalQueryClause(){
 
+    }
+
+    public boolean isPrior() {
+        return prior;
+    }
+
+    public void setPrior(boolean prior) {
+        this.prior = prior;
     }
 
     protected void accept0(OracleASTVisitor visitor) {

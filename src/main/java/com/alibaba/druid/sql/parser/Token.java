@@ -93,8 +93,14 @@ public enum Token {
     SOME("SOME"), 
     ANY("ANY"),
 
+    // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),
+    
+    // oracle
+    START("START"),
+    PRIOR("PRIOR"),
+    CONNECT("CONNECT"),
 
     EOF, ERROR,
     IDENTIFIER,

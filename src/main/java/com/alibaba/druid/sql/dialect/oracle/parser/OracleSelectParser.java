@@ -217,7 +217,7 @@ public class OracleSelectParser extends SQLSelectParser {
             hierachical.setConnectBy(this.createExprParser().expr());
         }
 
-        if (identifierEquals("START")) {
+        if (lexer.token() == Token.START) {
             lexer.nextToken();
             if (hierachical == null) {
                 hierachical = new OracleSelectHierachicalQueryClause();
@@ -227,13 +227,19 @@ public class OracleSelectParser extends SQLSelectParser {
             hierachical.setStartWith(this.createExprParser().expr());
         }
 
-        if (identifierEquals("CONNECT")) {
+        if (lexer.token() == Token.CONNECT) {
             if (hierachical == null) {
                 hierachical = new OracleSelectHierachicalQueryClause();
             }
 
             lexer.nextToken();
             accept(Token.BY);
+            
+            
+            if (lexer.token() == Token.PRIOR) {
+                lexer.nextToken();
+                hierachical.setPrior(true);
+            }
 
             if (identifierEquals("NOCYCLE")) {
                 hierachical.setNoCycle(true);

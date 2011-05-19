@@ -50,6 +50,18 @@ public class OracleSQLParserTest extends TestCase {
         String text = output(statementList);
         System.out.println(text);
     }
+    
+    public void test_2() throws Exception {
+        String sql = "SELECT LPAD(' ',2*(LEVEL-1)) || last_name org_chart, employee_id, manager_id, job_id FROM employees WHERE job_id != 'FI_MGR' START WITH job_id = 'AD_VP' CONNECT BY PRIOR employee_id = manager_id; ";
+        
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        
+        Assert.assertEquals(1, statementList.size());
+        
+        String text = output(statementList);
+        System.out.println(text);
+    }
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();

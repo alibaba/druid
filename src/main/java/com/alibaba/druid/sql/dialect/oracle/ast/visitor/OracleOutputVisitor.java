@@ -561,9 +561,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleSelectHierachicalQueryClause x) {
         print("CONNECT BY ");
+        
+        if (x.isPrior()) {
+            print("PRIOR ");
+        }
+        
         if (x.isNoCycle()) {
             print("NOCYCLE ");
         }
+        
         x.getConnectBy().accept(this);
         print(" START WITH ");
         x.getStartWith().accept(this);
