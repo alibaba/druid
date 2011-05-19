@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -25,6 +26,8 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
     private boolean                 only             = false;
     protected OracleSelectPivotBase pivot;
+
+    protected SampleClause          sampleClause;
 
     public OracleSelectTableReference(){
 
@@ -36,6 +39,14 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
 
     public void setOnly(boolean only) {
         this.only = only;
+    }
+
+    public SampleClause getSampleClause() {
+        return sampleClause;
+    }
+
+    public void setSampleClause(SampleClause sampleClause) {
+        this.sampleClause = sampleClause;
     }
 
     public OracleSelectPivotBase getPivot() {
@@ -54,6 +65,7 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);
+            acceptChild(visitor, this.sampleClause);
             acceptChild(visitor, this.pivot);
         }
         visitor.endVisit(this);
@@ -73,6 +85,8 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
             this.pivot.output(buf);
         }
 
-        if ((this.alias != null) && (this.alias.length() != 0)) buf.append(this.alias);
+        if ((this.alias != null) && (this.alias.length() != 0)) {
+            buf.append(this.alias);
+        }
     }
 }

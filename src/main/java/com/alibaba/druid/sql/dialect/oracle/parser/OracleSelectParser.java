@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
@@ -294,6 +295,35 @@ public class OracleSelectParser extends SQLSelectParser {
 
     private void parseTableSourceQueryTableExpr(OracleSelectTableReference tableReference) {
         tableReference.setExpr(this.createExprParser().expr());
+        
+        if (identifierEquals("SAMPLE")) {
+            lexer.nextToken();
+            
+            SampleClause sample = new SampleClause();
+            
+            if (identifierEquals("BLOCK")) {
+                sample.setBlock(true);
+            }
+            
+            accept(Token.LPAREN);
+            
+            if (lexer.token() != Token.LITERAL_INT) {
+                throw new ParserException("syntax error : " + lexer.token());
+            }
+            sample.setPercent(lexer.integerValue().intValue());
+            lexer.nextToken();
+            
+            accept(Token.RPAREN);
+            
+            if (identifierEquals("SEED")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                sample.setSeedValue(expr());
+                accept(Token.RPAREN);
+            }
+            
+            tableReference.setSampleClause(sample);
+        }
 
         if (identifierEquals("PARTITION")) {
             lexer.nextToken();

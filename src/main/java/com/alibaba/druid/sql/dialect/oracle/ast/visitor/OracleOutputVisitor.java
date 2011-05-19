@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -714,6 +715,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(")");
         } else {
             x.getExpr().accept(this);
+        }
+        
+        if (x.getSampleClause() != null) {
+            print(" ");
+            x.getSampleClause().accept(this);
         }
 
         if (x.getPivot() != null) {
@@ -1447,6 +1453,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleUpdateStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(SampleClause x) {
+        print("SAMPLE ");
+        
+        if (x.isBlock()) {
+            print("BLOCK ");
+        }
+        
+        print("(");
+        print(x.getPercent());
+        print(")");
+        
+        if (x.getSeedValue() != null) {
+            print(" SEED ");
+            x.getSeedValue().accept(this);
+        }
+       
+        return false;
+    }
+
+    @Override
+    public void endVisit(SampleClause x) {
+        
+    }
+
+    @Override
+    public void endVisit(OracleSelectTableReference x) {
+        
     }
 
 }
