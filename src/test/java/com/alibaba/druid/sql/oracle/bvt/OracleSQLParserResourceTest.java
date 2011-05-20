@@ -35,7 +35,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         InputStream is = null;
 
         is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
-        Reader reader = new InputStreamReader(is);
+        Reader reader = new InputStreamReader(is, "UTF-8");
         String input = JdbcUtils.read(reader);
         JdbcUtils.close(reader);
         String[] items = input.split("---------------------------");
