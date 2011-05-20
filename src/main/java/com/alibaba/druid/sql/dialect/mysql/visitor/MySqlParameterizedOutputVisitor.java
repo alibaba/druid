@@ -1,9 +1,12 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 
 public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
@@ -11,7 +14,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
     public MySqlParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
-    
+
     public void println() {
         print(' ');
     }
@@ -24,9 +27,10 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
         } else {
             print(" IN (##)");
         }
+
         return false;
     }
-    
+
     public boolean visit(SQLBinaryOpExpr x) {
         if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
             print(x.getLeft().toString());
@@ -37,9 +41,52 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
             return false;
         }
         
+        x = merge(x);
+
         return super.visit(x);
     }
-    
+
+    public SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
+        if (x.getRight() instanceof SQLLiteralExpr) {
+            x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), new SQLVariantRefExpr("?"));
+        }
+
+        if (x.getLeft() instanceof SQLLiteralExpr) {
+            x = new SQLBinaryOpExpr(new SQLVariantRefExpr("?"), x.getOperator(), x.getRight());
+        }
+
+        if (x.getRight() instanceof SQLBinaryOpExpr) {
+            x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
+        }
+
+        if (x.getLeft() instanceof SQLBinaryOpExpr) {
+            x = new SQLBinaryOpExpr((SQLBinaryOpExpr) x.getLeft(), x.getOperator(), x.getRight());
+        }
+
+        // ID = ? OR ID = ? => ID = ?
+        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
+            if ((x.getLeft() instanceof SQLBinaryOpExpr) && (x.getRight() instanceof SQLBinaryOpExpr)) {
+                SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
+                SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
+
+                if (left.getOperator() == SQLBinaryOperator.Equality && right.getOperator() == SQLBinaryOperator.Equality) {
+                    if ((left.getLeft() instanceof SQLIdentifierExpr) && (right.getLeft() instanceof SQLIdentifierExpr)) {
+                        String leftColumn = left.getLeft().toString();
+                        String rightColumn = right.getLeft().toString();
+
+                        if (leftColumn.equals(rightColumn)) {
+                            if ((left.getRight() instanceof SQLVariantRefExpr) && (right.getRight() instanceof SQLVariantRefExpr)) {
+                                return left; // merge
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return x;
+    }
+
     public boolean visit(SQLIntegerExpr x) {
         print('?');
         return false;

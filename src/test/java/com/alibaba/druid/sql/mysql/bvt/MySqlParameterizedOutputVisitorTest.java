@@ -15,6 +15,8 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT * FROM T WHERE ID IN (##)");
         validate("SELECT * FROM T WHERE ID = 5", "SELECT * FROM T WHERE ID = ?");
         validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT * FROM T WHERE 1 = 0 AND ID = ?");
+        validate("SELECT * FROM T WHERE ID = ? OR ID = ?", "SELECT * FROM T WHERE ID = ?");
+        validate("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2) VALUES (?, ?)");
     }
 
     void validate(String sql, String expect) {
