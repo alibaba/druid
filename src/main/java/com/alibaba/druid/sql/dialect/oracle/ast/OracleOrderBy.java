@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 
 public class OracleOrderBy extends SQLOrderBy {
@@ -57,7 +57,7 @@ public class OracleOrderBy extends SQLOrderBy {
             if (i != 0) {
                 buf.append(", ");
             }
-            ((OracleSelectOrderByItem) this.items.get(i)).output(buf);
+            ((OracleOrderByItem) this.items.get(i)).output(buf);
         }
     }
 }

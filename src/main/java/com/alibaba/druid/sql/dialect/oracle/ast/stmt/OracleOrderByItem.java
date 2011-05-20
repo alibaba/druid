@@ -20,13 +20,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleSelectOrderByItem extends SQLSelectOrderByItem {
+public class OracleOrderByItem extends SQLSelectOrderByItem {
 
     private static final long serialVersionUID = 1L;
 
     private NullsOrderType    nullsOrderType;
 
-    public OracleSelectOrderByItem(){
+    public OracleOrderByItem(){
 
     }
 

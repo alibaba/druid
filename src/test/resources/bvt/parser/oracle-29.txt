@@ -1,18 +1,38 @@
-select count(*) 
-from CREDIT_CMT_APPLY ,CREDIT_CMT_SHEET 			 			 		 		
-where 1=2 		
-OR 			 				 					operator =  ?  			   
- and 					CREDIT_CMT_APPLY.GMT_CREATE >=  ?  			    
- and 					CREDIT_CMT_APPLY.GMT_CREATE <=  ?  			     			 			 		    
- and 		    	    CREDIT_CMT_APPLY.ID = CREDIT_CMT_SHEET.cmt_apply_id 			    
- and  					Type = 'denounce' 			    
- and  					(SHEET_STATUS = 'assigned_unresolved') 			     			 	     	
+WITH
+  org_chart (eid, emp_last, mgr_id, reportLevel, salary, job_id) AS
+  (
+    SELECT employee_id, last_name, manager_id, 0 reportLevel, salary, job_id
+    FROM employees
+    WHERE manager_id is null
+  UNION ALL
+    SELECT e.employee_id, e.last_name, e.manager_id,
+           r.reportLevel+1 reportLevel, e.salary, e.job_id
+    FROM org_chart r, employees e
+    WHERE r.eid = e.manager_id
+  )
+  SEARCH DEPTH FIRST BY emp_last SET order1
+SELECT lpad(' ',2*reportLevel)||emp_last emp_name, eid, mgr_id, salary, job_id
+FROM org_chart
+ORDER BY order1;	     			 	     	
 
 
 
 ---------------------------
-SELECT bk.attr_id AS attrId, group_concat(DISTINCT(bk.value_id)) AS attrValueStr, group_concat(DISTINCT(pt.name)) AS themeNameStr
-FROM price_theme pt LEFT JOIN tl_spu_attr_value_rel_bk bk ON pt.spu_id = bk.spu_id 
-WHERE pt.status = 'action' AND pt.category_id = ?
-GROUP BY bk.attr_id;
-
+WITH
+	org_chart (eid, emp_last, mgr_id, reportLevel, salary, job_id)
+	AS
+	(
+		SELECT employee_id, last_name, manager_id, 0 AS reportLevel, salary
+			, job_id
+		FROM employees
+		WHERE manager_id IS NULL
+		UNION ALL
+		SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel, e.salary
+			, e.job_id
+		FROM org_chart r , employees e
+		WHERE r.eid = e.manager_id
+	)
+	SEARCH DEPTH FIRST BY emp_last SET order1
+SELECT lpad(' ', 2 * reportLevel) || emp_last AS emp_name, eid, mgr_id, salary, job_id
+FROM org_chart
+ORDER BY order1;

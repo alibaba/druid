@@ -102,6 +102,11 @@ public class OracleStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.ALTER) {
                 throw new ParserException("TODO");
             }
+            
+            if (lexer.token() == Token.WITH) {
+                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.lexer).select()));
+                continue;
+            }
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }

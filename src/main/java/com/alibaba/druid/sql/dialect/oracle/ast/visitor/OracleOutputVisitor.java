@@ -31,11 +31,14 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -72,6 +75,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
@@ -80,7 +84,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot.Item;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -496,6 +499,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelect x) {
+        if (x.getFactoring() != null) {
+            x.getFactoring().accept(this);
+            println();
+        }
+
         x.getQuery().accept(this);
 
         if (x.getRestriction() != null) {
@@ -567,7 +575,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleSelectOrderByItem x) {
+    public boolean visit(OracleOrderByItem x) {
         x.getExpr().accept(this);
         if (x.getType() != null) {
             print(" ");
@@ -717,22 +725,22 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.isOnly()) {
             print("ONLY (");
             x.getExpr().accept(this);
-            
+
             if (x.getPartition() != null) {
                 print(" ");
                 x.getPartition().accept(this);
             }
-            
+
             print(")");
         } else {
             x.getExpr().accept(this);
-            
+
             if (x.getPartition() != null) {
                 print(" ");
                 x.getPartition().accept(this);
             }
         }
-        
+
         if (x.getSampleClause() != null) {
             print(" ");
             x.getSampleClause().accept(this);
@@ -746,7 +754,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             decrementIndent();
         }
-        
+
         if (x.getFlashback() != null) {
             println();
             x.getFlashback().accept(this);
@@ -1392,7 +1400,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OracleSelectOrderByItem x) {
+    public void endVisit(OracleOrderByItem x) {
 
     }
 
@@ -1479,32 +1487,32 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(SampleClause x) {
         print("SAMPLE ");
-        
+
         if (x.isBlock()) {
             print("BLOCK ");
         }
-        
+
         print("(");
         print(x.getPercent());
         print(")");
-        
+
         if (x.getSeedValue() != null) {
             print(" SEED (");
             x.getSeedValue().accept(this);
             print(")");
         }
-       
+
         return false;
     }
 
     @Override
     public void endVisit(SampleClause x) {
-        
+
     }
 
     @Override
     public void endVisit(OracleSelectTableReference x) {
-        
+
     }
 
     @Override
@@ -1514,7 +1522,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         } else {
             print("PARTITION ");
         }
-        
+
         if (x.getPartition() != null) {
             print("(");
             x.getPartition().accept(this);
@@ -1529,7 +1537,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(PartitionExtensionClause x) {
-        
+
     }
 
     @Override
@@ -1545,7 +1553,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(VersionsFlashbackQueryClause x) {
-        
+
     }
 
     @Override
@@ -1560,9 +1568,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(AsOfFlashbackQueryClause x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(GroupingSetExpr x) {
         print("GROUPING SETS");
@@ -1571,10 +1579,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(")");
         return false;
     }
-    
+
     @Override
     public void endVisit(GroupingSetExpr x) {
-        
+
     }
 
     @Override
@@ -1586,7 +1594,95 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OraclePriorExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(SubqueryFactoringClause.Entry x) {
+        x.getName().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+        println();
+        print("AS");
+        println();
+        print("(");
+        incrementIndent();
+        println();
+        x.getSubQuery().accept(this);
+        decrementIndent();
+        println();
+        print(")");
+
+        if (x.getSearchClause() != null) {
+            println();
+            x.getSearchClause().accept(this);
+        }
         
+        if (x.getCycleClause() != null) {
+            println();
+            x.getCycleClause().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(SubqueryFactoringClause.Entry x) {
+
+    }
+
+    @Override
+    public boolean visit(SubqueryFactoringClause x) {
+        print("WITH");
+        incrementIndent();
+        println();
+        printlnAndAccept(x.getEntries(), ", ");
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(SubqueryFactoringClause x) {
+
+    }
+
+    @Override
+    public boolean visit(SearchClause x) {
+        print("SEARCH ");
+        print(x.getType().name());
+        print(" FIRST BY ");
+        printAndAccept(x.getItems(), ", ");
+        print(" SET ");
+        x.getOrderingColumn().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(SearchClause x) {
+
+    }
+
+    @Override
+    public boolean visit(CycleClause x) {
+        print("CYCLE ");
+        printAndAccept(x.getAliases(), ", ");
+        print(" SET ");
+        x.getMark().accept(this);
+        print(" TO ");
+        x.getValue().accept(this);
+        print(" DEFAULT ");
+        x.getDefaultValue().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(CycleClause x) {
+
     }
 
 }

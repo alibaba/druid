@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -234,8 +234,8 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     @Override
-    protected OracleSelectOrderByItem parseSelectOrderByItem() {
-        OracleSelectOrderByItem item = new OracleSelectOrderByItem();
+    public OracleOrderByItem parseSelectOrderByItem() {
+        OracleOrderByItem item = new OracleOrderByItem();
 
         item.setExpr(expr());
 
@@ -251,10 +251,10 @@ public class OracleExprParser extends SQLExprParser {
             lexer.nextToken();
             if (identifierEquals("FIRST")) {
                 lexer.nextToken();
-                item.setNullsOrderType(OracleSelectOrderByItem.NullsOrderType.NullsFirst);
+                item.setNullsOrderType(OracleOrderByItem.NullsOrderType.NullsFirst);
             } else if (identifierEquals("LAST")) {
                 lexer.nextToken();
-                item.setNullsOrderType(OracleSelectOrderByItem.NullsOrderType.NullsLast);
+                item.setNullsOrderType(OracleOrderByItem.NullsOrderType.NullsLast);
             } else {
                 throw new ParserException("TODO " + lexer.token());
             }

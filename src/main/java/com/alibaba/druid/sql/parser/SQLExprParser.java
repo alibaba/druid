@@ -618,7 +618,7 @@ public class SQLExprParser extends SQLParser {
         return null;
     }
 
-    protected SQLSelectOrderByItem parseSelectOrderByItem() throws ParserException {
+    public SQLSelectOrderByItem parseSelectOrderByItem() throws ParserException {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem();
 
         item.setExpr(expr());

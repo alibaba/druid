@@ -19,11 +19,14 @@ import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -46,6 +49,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
@@ -53,7 +57,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
@@ -157,7 +160,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleSelectJoin x);
 
-    void endVisit(OracleSelectOrderByItem x);
+    void endVisit(OracleOrderByItem x);
 
     void endVisit(OracleSelectPivot x);
 
@@ -277,7 +280,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     boolean visit(OracleSelectJoin x);
 
-    boolean visit(OracleSelectOrderByItem x);
+    boolean visit(OracleOrderByItem x);
 
     boolean visit(OracleSelectPivot x);
 
@@ -314,28 +317,44 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(SampleClause x);
 
     void endVisit(SampleClause x);
-    
+
     boolean visit(OracleSelectTableReference x);
-    
+
     void endVisit(OracleSelectTableReference x);
-    
+
     boolean visit(PartitionExtensionClause x);
-    
+
     void endVisit(PartitionExtensionClause x);
-    
+
     boolean visit(VersionsFlashbackQueryClause x);
-    
+
     void endVisit(VersionsFlashbackQueryClause x);
-    
+
     boolean visit(AsOfFlashbackQueryClause x);
-    
+
     void endVisit(AsOfFlashbackQueryClause x);
-    
+
     boolean visit(GroupingSetExpr x);
-    
+
     void endVisit(GroupingSetExpr x);
-    
+
     boolean visit(OraclePriorExpr x);
-    
+
     void endVisit(OraclePriorExpr x);
+
+    boolean visit(SubqueryFactoringClause x);
+
+    void endVisit(SubqueryFactoringClause x);
+    
+    boolean visit(SubqueryFactoringClause.Entry x);
+    
+    void endVisit(SubqueryFactoringClause.Entry x);
+    
+    boolean visit(SearchClause x);
+    
+    void endVisit(SearchClause x);
+    
+    boolean visit(CycleClause x);
+    
+    void endVisit(CycleClause x);
 }

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
@@ -52,7 +52,7 @@ public class SQLOrderBy extends SQLObjectImpl {
             if (i != 0) {
                 buf.append(", ");
             }
-            ((OracleSelectOrderByItem) this.items.get(i)).output(buf);
+            ((OracleOrderByItem) this.items.get(i)).output(buf);
         }
     }
 }

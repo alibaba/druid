@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -23,11 +24,20 @@ public class OracleSelect extends SQLSelect {
 
     private static final long       serialVersionUID = 1L;
 
+    private SubqueryFactoringClause factoring;
     private OracleSelectForUpdate   forUpdate;
     private OracleSelectRestriction restriction;
 
     public OracleSelect(){
 
+    }
+
+    public SubqueryFactoringClause getFactoring() {
+        return factoring;
+    }
+
+    public void setFactoring(SubqueryFactoringClause factoring) {
+        this.factoring = factoring;
     }
 
     public OracleSelectRestriction getRestriction() {
@@ -52,25 +62,14 @@ public class OracleSelect extends SQLSelect {
 
         if (this.orderBy != null) this.orderBy.output(buf);
     }
-    
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor instanceof OracleASTVisitor) {
-            accept0((OracleASTVisitor) visitor);
-            return;
-        }
-        
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.query);
-            acceptChild(visitor, this.restriction);
-            acceptChild(visitor, this.orderBy);
-            acceptChild(visitor, this.forUpdate);
-        }
 
-        visitor.endVisit(this);
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
     }
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.factoring);
             acceptChild(visitor, this.query);
             acceptChild(visitor, this.restriction);
             acceptChild(visitor, this.orderBy);
