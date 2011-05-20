@@ -667,7 +667,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if (select.getGroupBy() != null) {
-            print(" ");
+            println();
             select.getGroupBy().accept(this);
         }
 

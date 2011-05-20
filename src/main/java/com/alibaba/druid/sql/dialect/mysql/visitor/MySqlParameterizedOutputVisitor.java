@@ -2,10 +2,13 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 
@@ -40,7 +43,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
             print(x.getRight().toString());
             return false;
         }
-        
+
         x = merge(x);
 
         return super.visit(x);
@@ -88,6 +91,21 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
     }
 
     public boolean visit(SQLIntegerExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLNumberExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLCharExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLNCharExpr x) {
         print('?');
         return false;
     }

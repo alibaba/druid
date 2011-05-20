@@ -310,7 +310,7 @@ public class MathematicalFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM tbl_name ORDER BY RAND();", text);
+        Assert.assertEquals("SELECT *\nFROM tbl_name\nORDER BY RAND();", text);
     }
 
     public void test_26() throws Exception {

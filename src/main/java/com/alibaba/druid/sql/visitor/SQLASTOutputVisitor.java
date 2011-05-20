@@ -389,7 +389,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSelectGroupByClause x) {
         if (x.getItems().size() > 0) {
-            println();
             print("GROUP BY ");
             printAndAccept(x.getItems(), ", ");
         }

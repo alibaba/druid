@@ -641,7 +641,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr equality() throws ParserException {
-        SQLExpr expr = multiplicative();
+        SQLExpr expr = additive();
         return equalityRest(expr);
     }
 

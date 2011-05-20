@@ -112,7 +112,7 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT enum_col\nFROM tbl_name ORDER BY CAST(enum_col AS CHAR);", text);
+        Assert.assertEquals("SELECT enum_col\nFROM tbl_name\nORDER BY CAST(enum_col AS CHAR);", text);
     }
 
     public void test_8() throws Exception {

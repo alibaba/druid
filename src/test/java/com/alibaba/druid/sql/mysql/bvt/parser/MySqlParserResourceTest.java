@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.oracle.bvt;
+package com.alibaba.druid.sql.mysql.bvt.parser;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,28 +9,14 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleSQLParserResourceTest extends TestCase {
+public class MySqlParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        exec_test("bvt/parser/oracle-0.txt");
-        exec_test("bvt/parser/oracle-1.txt");
-        exec_test("bvt/parser/oracle-2.txt");
-        exec_test("bvt/parser/oracle-3.txt");
-        exec_test("bvt/parser/oracle-4.txt");
-        exec_test("bvt/parser/oracle-5.txt");
-        exec_test("bvt/parser/oracle-6.txt"); // PARTITION
-        exec_test("bvt/parser/oracle-7.txt");
-        exec_test("bvt/parser/oracle-8.txt");
-        exec_test("bvt/parser/oracle-9.txt");
-        exec_test("bvt/parser/oracle-10.txt");
-        exec_test("bvt/parser/oracle-11.txt");
-        exec_test("bvt/parser/oracle-12.txt");
-        exec_test("bvt/parser/oracle-13.txt");
-        exec_test("bvt/parser/oracle-14.txt");
+        exec_test("bvt/parser/mysql-0.txt");
     }
     
     
@@ -46,7 +32,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         String sql = items[0].trim();
         String expect = items[1].trim();
         
-        OracleStatementParser parser = new OracleStatementParser(sql);
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         
         Assert.assertEquals(1, statementList.size());
@@ -59,7 +45,7 @@ public class OracleSQLParserResourceTest extends TestCase {
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
-        OracleOutputVisitor visitor = new OracleOutputVisitor(out);
+        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
 
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);

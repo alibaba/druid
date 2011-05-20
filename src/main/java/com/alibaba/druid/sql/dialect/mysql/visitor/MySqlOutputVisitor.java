@@ -179,11 +179,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (select.getGroupBy() != null) {
+            println();
             select.getGroupBy().accept(this);
         }
 
         if (select.getOrderBy() != null) {
-            print(" ");
+            println();
             select.getOrderBy().accept(this);
         }
 

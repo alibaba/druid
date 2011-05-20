@@ -255,7 +255,7 @@ public class SQLSelectParser extends SQLParser {
                 join.setCondition(expr());
             }
 
-            return join;
+            return parseTableSourceRest(join);
         }
 
         return tableSource;
