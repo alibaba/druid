@@ -18,7 +18,7 @@ select * from (
 ---------------------------
 SELECT *
 FROM (SELECT rownum AS rnm, z.*
-	FROM (SELECT DISTINCT DISTINCT(tt.id) AS use_less_id, tt.*
+	FROM (SELECT DISTINCT tt.id AS use_less_id, tt.*
 		FROM (SELECT t.*, rct.parent_id, RCT.NAME AS trunk_name
 			FROM rc_clot_info t , rc_clot_trunk rct
 			WHERE t.is_deleted = 'n' AND t.trunk_id = rct.id) tt
