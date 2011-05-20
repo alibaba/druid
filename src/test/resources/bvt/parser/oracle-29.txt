@@ -1,0 +1,18 @@
+select count(*) 
+from CREDIT_CMT_APPLY ,CREDIT_CMT_SHEET 			 			 		 		
+where 1=2 		
+OR 			 				 					operator =  ?  			   
+ and 					CREDIT_CMT_APPLY.GMT_CREATE >=  ?  			    
+ and 					CREDIT_CMT_APPLY.GMT_CREATE <=  ?  			     			 			 		    
+ and 		    	    CREDIT_CMT_APPLY.ID = CREDIT_CMT_SHEET.cmt_apply_id 			    
+ and  					Type = 'denounce' 			    
+ and  					(SHEET_STATUS = 'assigned_unresolved') 			     			 	     	
+
+
+
+---------------------------
+SELECT bk.attr_id AS attrId, group_concat(DISTINCT(bk.value_id)) AS attrValueStr, group_concat(DISTINCT(pt.name)) AS themeNameStr
+FROM price_theme pt LEFT JOIN tl_spu_attr_value_rel_bk bk ON pt.spu_id = bk.spu_id 
+WHERE pt.status = 'action' AND pt.category_id = ?
+GROUP BY bk.attr_id;
+

@@ -2,14 +2,50 @@ package com.alibaba.druid.sql.dialect.oracle.ast.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
+    }
+
+    public void println() {
+        print(' ');
+    }
+
+    public boolean visit(SQLInListExpr x) {
+        x.getExpr().accept(this);
+
+        if (x.isNot()) {
+            print(" NOT IN (##)");
+        } else {
+            print(" IN (##)");
+        }
+
+        return false;
+    }
+    
+    public boolean visit(SQLBinaryOpExpr x) {
+        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
+            print(x.getLeft().toString());
+            print(' ');
+            print(x.getOperator().name);
+            print(' ');
+            print(x.getRight().toString());
+            return false;
+        }
+
+        x = merge(x);
+
+        return super.visit(x);
     }
 
     public SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
@@ -51,6 +87,26 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         return x;
+    }
+    
+    public boolean visit(SQLIntegerExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLNumberExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLCharExpr x) {
+        print('?');
+        return false;
+    }
+
+    public boolean visit(SQLNCharExpr x) {
+        print('?');
+        return false;
     }
 
 }

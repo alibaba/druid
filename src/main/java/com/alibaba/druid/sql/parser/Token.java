@@ -96,6 +96,7 @@ public enum Token {
     // mysql
     TRUE("TRUE"), 
     FALSE("FALSE"),
+    LIMIT("LIMIT"),
     
     // oracle
     START("START"),

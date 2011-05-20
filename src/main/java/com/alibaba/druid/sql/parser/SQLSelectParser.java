@@ -18,15 +18,16 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 
 public class SQLSelectParser extends SQLParser {
@@ -60,7 +61,7 @@ public class SQLSelectParser extends SQLParser {
             union.setLeft(selectQuery);
 
             if (lexer.token() == Token.ALL) {
-                union.setAll(true);
+                union.setOperator(SQLUnionOperator.UNION_ALL);
                 lexer.nextToken();
             }
 
@@ -71,11 +72,31 @@ public class SQLSelectParser extends SQLParser {
         }
 
         if (lexer.token() == Token.INTERSECT) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+
+            SQLUnionQuery union = new SQLUnionQuery();
+            union.setLeft(selectQuery);
+
+            union.setOperator(SQLUnionOperator.INTERSECT);
+
+            SQLSelectQuery right = this.query();
+            union.setRight(right);
+
+            return union;
         }
 
         if (lexer.token() == Token.MINUS) {
-            throw new ParserException("TODO");
+            lexer.nextToken();
+
+            SQLUnionQuery union = new SQLUnionQuery();
+            union.setLeft(selectQuery);
+
+            union.setOperator(SQLUnionOperator.MINUS);
+
+            SQLSelectQuery right = this.query();
+            union.setRight(right);
+
+            return union;
         }
 
         return selectQuery;
@@ -174,14 +195,16 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
             SQLTableSource tableSource;
             if (lexer.token() == Token.SELECT) {
-                tableSource = new SQLSubqueryTableSource(select());
+                SQLSelect select = select();
+                accept(Token.RPAREN);
+                queryRest(select.getQuery());
+                tableSource = new SQLSubqueryTableSource(select);
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = parseTableSource();
+                accept(Token.RPAREN);
             } else {
                 throw new ParserException("TODO");
             }
-
-            accept(Token.RPAREN);
 
             return parseTableSourceRest(tableSource);
         }
@@ -256,6 +279,10 @@ public class SQLSelectParser extends SQLParser {
             }
 
             return parseTableSourceRest(join);
+        }
+
+        if (lexer.token() == Token.UNION) {
+            throw new SQLParseException("TODO");
         }
 
         return tableSource;

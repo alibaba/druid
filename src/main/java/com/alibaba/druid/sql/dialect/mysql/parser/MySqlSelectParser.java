@@ -38,6 +38,41 @@ public class MySqlSelectParser extends SQLSelectParser {
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
     }
+    
+    @Override
+    protected final String as() throws ParserException {
+        String rtnValue = null;
+
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.LITERAL_ALIAS) {
+                rtnValue = lexer.stringVal();
+                lexer.nextToken();
+                return rtnValue;
+            }
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                rtnValue = lexer.stringVal();
+                lexer.nextToken();
+                return rtnValue;
+            }
+
+            throw new ParserException("Error", 0, 0);
+        }
+
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            rtnValue = lexer.stringVal();
+            lexer.nextToken();
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            rtnValue = lexer.stringVal();
+            lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_CHARS) {
+            rtnValue = "'" + lexer.stringVal() + "'";
+            lexer.nextToken();
+        }
+        return rtnValue;
+    }
 
     @Override
     protected SQLSelectQuery query() throws ParserException {
@@ -164,7 +199,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         queryBlock.setOrderBy(this.createExprParser().parseOrderBy());
 
-        if (identifierEquals("LIMIT")) {
+        if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
 
             MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();

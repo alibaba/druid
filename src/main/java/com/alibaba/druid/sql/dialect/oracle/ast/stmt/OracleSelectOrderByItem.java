@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleSelectOrderByItem extends SQLSelectOrderByItem {
 
@@ -36,6 +37,10 @@ public class OracleSelectOrderByItem extends SQLSelectOrderByItem {
     public void setNullsOrderType(NullsOrderType nullsOrderType) {
         this.nullsOrderType = nullsOrderType;
     }
+    
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
+    }
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -47,12 +52,16 @@ public class OracleSelectOrderByItem extends SQLSelectOrderByItem {
 
     public void output(StringBuffer buf) {
         this.expr.output(buf);
-        if (SQLOrderingSpecification.ASC.equals(this.type)) buf.append(" ASC");
-        else if (SQLOrderingSpecification.DESC.equals(this.type)) {
+        if (SQLOrderingSpecification.ASC.equals(this.type)) {
+            buf.append(" ASC");
+        } else if (SQLOrderingSpecification.DESC.equals(this.type)) {
             buf.append(" DESC");
         }
-        if (NullsOrderType.NullsFirst.equals(this.nullsOrderType)) buf.append(" NULLS FIRST");
-        else if (NullsOrderType.NullsLast.equals(this.nullsOrderType)) buf.append(" NULLS LAST");
+        if (NullsOrderType.NullsFirst.equals(this.nullsOrderType)) {
+            buf.append(" NULLS FIRST");
+        } else if (NullsOrderType.NullsLast.equals(this.nullsOrderType)) {
+            buf.append(" NULLS LAST");
+        }
     }
 
     public static enum NullsOrderType {

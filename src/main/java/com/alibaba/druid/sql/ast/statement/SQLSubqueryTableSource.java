@@ -51,7 +51,10 @@ public class SQLSubqueryTableSource extends SQLTableSource {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
-        throw new UnsupportedOperationException();
+       if (visitor.visit(this)) {
+           acceptChild(visitor, select);
+       }
+       visitor.endVisit(this);
     }
 
     public void output(StringBuffer buf) {

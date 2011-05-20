@@ -382,6 +382,14 @@ public class SQLExprParser extends SQLParser {
 
                 sqlExpr = someExpr;
                 break;
+            case KEY:
+                lexer.nextToken();
+                sqlExpr = new SQLIdentifierExpr("KEY");
+                break;
+            case DISTINCT:
+                lexer.nextToken();
+                sqlExpr = new SQLIdentifierExpr("DISTINCT");
+                break;
             case ALL:
                 lexer.nextToken();
                 SQLAllExpr allExpr = new SQLAllExpr();
@@ -422,12 +430,17 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 expr = new SQLPropertyExpr(expr, "*");
             } else {
-                if (lexer.token() != Token.IDENTIFIER) {
-                    throw new ParserException("error");
+                String name;
+                
+                if (lexer.token() == Token.KEY) {
+                    name = "KEY";
+                    lexer.nextToken();
+                } else if (lexer.token() != Token.IDENTIFIER) {
+                    throw new ParserException("error : " + lexer.stringVal());
+                } else {
+                    name = lexer.stringVal();
+                    lexer.nextToken();
                 }
-
-                String name = lexer.stringVal();
-                lexer.nextToken();
 
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
@@ -436,7 +449,12 @@ public class SQLExprParser extends SQLParser {
                     if (lexer.token() == Token.RPAREN) {
                         lexer.nextToken();
                     } else {
-                        exprList(methodInvokeExpr.getParameters());
+                        if (lexer.token() == Token.PLUS) {
+                            methodInvokeExpr.getParameters().add(new SQLIdentifierExpr("+"));
+                            lexer.nextToken();
+                        } else {
+                            exprList(methodInvokeExpr.getParameters());
+                        }
                         accept(Token.RPAREN);
                     }
                     expr = methodInvokeExpr;
@@ -521,13 +539,17 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLName name() throws ParserException {
-        if (lexer.token() != Token.IDENTIFIER) {
+        String identName;
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            identName = '"' + lexer.stringVal() + '"';
+            lexer.nextToken();
+        } else if (lexer.token() == Token.IDENTIFIER) {
+            identName = lexer.stringVal();
+
+            lexer.nextToken();
+        } else {
             throw new ParserException("error");
         }
-
-        String identName = lexer.stringVal();
-
-        lexer.nextToken();
 
         SQLName name = new SQLIdentifierExpr(identName);
 
@@ -770,13 +792,13 @@ public class SQLExprParser extends SQLParser {
     public final SQLExpr orRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
-            SQLExpr rightExp = relational();
+            SQLExpr rightExp = and();
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp);
             expr = orRest(expr);
         } else  if (lexer.token() == Token.XOR) {
             lexer.nextToken();
-            SQLExpr rightExp = relational();
+            SQLExpr rightExp = and();
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanXor, rightExp);
             expr = orRest(expr);

@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -89,6 +90,13 @@ public class OracleExprParser extends SQLExprParser {
                 } else {
                     throw new ParserException("syntax error : " + lexer.token());
                 }
+            case PRIOR:
+                lexer.nextToken();
+                primaryRest(new OraclePriorExpr(expr()));
+            case LITERAL_ALIAS:
+                String alias = '"' + lexer.stringVal() + '"';
+                lexer.nextToken();
+                return primaryRest(new SQLIdentifierExpr(alias));
             default:
                 return super.primary();
         }
@@ -157,7 +165,7 @@ public class OracleExprParser extends SQLExprParser {
                     exprList(over.getPartitionBy());
                     accept(Token.RPAREN);
                 } else {
-                    over.getPartitionBy().add(expr());
+                    exprList(over.getPartitionBy());
                 }
             }
 
@@ -240,14 +248,15 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         if (identifierEquals("NULLS")) {
-            if (lexer.stringVal().equalsIgnoreCase("FIRST")) {
+            lexer.nextToken();
+            if (identifierEquals("FIRST")) {
                 lexer.nextToken();
                 item.setNullsOrderType(OracleSelectOrderByItem.NullsOrderType.NullsFirst);
-            } else if (lexer.stringVal().equalsIgnoreCase("LAST")) {
+            } else if (identifierEquals("LAST")) {
                 lexer.nextToken();
                 item.setNullsOrderType(OracleSelectOrderByItem.NullsOrderType.NullsLast);
             } else {
-                throw new ParserException("TODO");
+                throw new ParserException("TODO " + lexer.token());
             }
         }
 

@@ -29,6 +29,7 @@ public class SQLInsertStatement extends SQLStatementImpl {
 
     private static final long   serialVersionUID = 1L;
     private SQLName             tableName;
+    private String              alias;
 
     private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
     private ValuesClause        values;
@@ -36,6 +37,14 @@ public class SQLInsertStatement extends SQLStatementImpl {
 
     public SQLInsertStatement(){
 
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public SQLName getTableName() {

@@ -23,7 +23,15 @@ public class SQLUnionQuery extends SQLSelectQuery {
 
     private SQLSelectQuery    left;
     private SQLSelectQuery    right;
-    private boolean           all;
+    private SQLUnionOperator  operator         = SQLUnionOperator.UNION;
+
+    public SQLUnionOperator getOperator() {
+        return operator;
+    }
+
+    public void setOperator(SQLUnionOperator operator) {
+        this.operator = operator;
+    }
 
     public SQLUnionQuery(){
 
@@ -43,14 +51,6 @@ public class SQLUnionQuery extends SQLSelectQuery {
 
     public void setRight(SQLSelectQuery right) {
         this.right = right;
-    }
-
-    public boolean isAll() {
-        return all;
-    }
-
-    public void setAll(boolean all) {
-        this.all = all;
     }
 
     @Override

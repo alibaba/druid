@@ -1,0 +1,16 @@
+select count(*) 
+from CREDIT_CMT_APPLY ,CREDIT_CMT_SHEET 			 			 		 		
+where 1=2 		
+OR 			 				 					operator =  ?  			   
+ and 					CREDIT_CMT_APPLY.GMT_CREATE >=  ?  			    
+ and 					CREDIT_CMT_APPLY.GMT_CREATE <=  ?  			     			 			 		    
+ and 		    	    CREDIT_CMT_APPLY.ID = CREDIT_CMT_SHEET.cmt_apply_id 			    
+ and  					Type = 'denounce' 			    
+ and  					(SHEET_STATUS = 'assigned_unresolved') 		
+ 
+---------------------------
+SELECT count(*)
+FROM CREDIT_CMT_APPLY , CREDIT_CMT_SHEET
+WHERE 1 = 2 OR operator = ? AND CREDIT_CMT_APPLY.GMT_CREATE >= ? AND CREDIT_CMT_APPLY.GMT_CREATE <= ? AND CREDIT_CMT_APPLY.ID = CREDIT_CMT_SHEET.cmt_apply_id AND Type = 'denounce' AND SHEET_STATUS = 'assigned_unresolved';
+
+

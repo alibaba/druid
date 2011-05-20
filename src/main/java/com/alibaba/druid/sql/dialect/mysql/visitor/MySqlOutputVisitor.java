@@ -189,7 +189,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (select.getLimit() != null) {
-            print(" ");
+            println();
             select.getLimit().accept(this);
         }
 

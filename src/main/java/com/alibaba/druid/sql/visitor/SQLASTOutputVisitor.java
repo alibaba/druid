@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
@@ -664,10 +665,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLUnionQuery x) {
         x.getLeft().accept(this);
         println();
-        print("UNION");
-        if (x.isAll()) {
-            print(" ALL");
-        }
+        print(x.getOperator().name);
         println();
         x.getRight().accept(this);
         return false;
@@ -813,6 +811,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLListExpr x) {
         print("(");
         printAndAccept(x.getItems(), ", ");
+        print(")");
+        
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLSubqueryTableSource x) {
+        print("(");
+        incrementIndent();
+        x.getSelect().accept(this);
+        decrementIndent();
         print(")");
         
         return false;

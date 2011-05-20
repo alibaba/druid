@@ -98,6 +98,10 @@ public class MySqlExprParser extends SQLExprParser {
             case FALSE:
                 lexer.nextToken();
                 return primaryRest(new MySqlBooleanExpr(false));
+            case LITERAL_ALIAS:
+                String aliasValue = lexer.stringVal();
+                lexer.nextToken();
+                return primaryRest(new SQLCharExpr(aliasValue));
             default:
                 return super.primary();
         }

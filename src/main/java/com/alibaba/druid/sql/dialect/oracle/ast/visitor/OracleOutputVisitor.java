@@ -47,6 +47,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupComparisonCondit
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
@@ -1573,6 +1574,18 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     
     @Override
     public void endVisit(GroupingSetExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(OraclePriorExpr x) {
+        print("PRIOR ");
+        x.getExpr().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePriorExpr x) {
         
     }
 

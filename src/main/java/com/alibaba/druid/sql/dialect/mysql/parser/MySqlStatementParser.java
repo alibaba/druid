@@ -129,7 +129,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             deleteStatement.setOrderBy(orderBy);
         }
 
-        if (identifierEquals("LIMIT")) {
+        if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
 
             MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
@@ -317,7 +317,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private MySqlShowWarningsStatement parseShowWarnings() throws ParserException {
         MySqlShowWarningsStatement stmt = new MySqlShowWarningsStatement();
 
-        if (identifierEquals("LIMIT")) {
+        if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
 
             MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
@@ -771,6 +771,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
+        
+        if (lexer.token() == Token.IDENTIFIER) {
+            insertStatement.setAlias(lexer.stringVal());
+            lexer.nextToken();
+        }
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();

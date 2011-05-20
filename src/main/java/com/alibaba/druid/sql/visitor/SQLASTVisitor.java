@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
@@ -324,4 +325,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLListExpr x);
 
     boolean visit(SQLListExpr x);
+    
+    void endVisit(SQLSubqueryTableSource x);
+    
+    boolean visit(SQLSubqueryTableSource x);
 }
