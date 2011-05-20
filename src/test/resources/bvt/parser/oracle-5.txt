@@ -9,9 +9,9 @@ FROM
    FROM employees) b
 ORDER BY a.department_id;
 ---------------------------
-SELECT a.department_id AS 'department_id', a.num_emp / b.total_count AS 'total_count', a.sal_sum / b.total_sal AS 'total_sal'
-FROM (SELECT department_id, COUNT(*) AS 'num_emp', SUM(salary) AS 'sal_sum'
+SELECT a.department_id AS department_id, a.num_emp / b.total_count AS total_count, a.sal_sum / b.total_sal AS total_sal
+FROM (SELECT department_id, COUNT(*) AS num_emp, SUM(salary) AS sal_sum
 	FROM employees 
-	GROUP BY department_id) 'a' , (SELECT COUNT(*) AS 'total_count', SUM(salary) AS 'total_sal'
-	FROM employees) 'b'
+	GROUP BY department_id) a , (SELECT COUNT(*) AS total_count, SUM(salary) AS total_sal
+	FROM employees) b
 ORDER BY a.department_id;

@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -251,5 +252,25 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return item;
+    }
+    
+    protected SQLExpr parseInterval() {
+        accept(Token.INTERVAL);
+        
+        OracleIntervalExpr interval = new OracleIntervalExpr();
+        if (lexer.token() != Token.LITERAL_CHARS) {
+            throw new ParserException("syntax error : " + lexer.token());
+        }
+        interval.setValue(lexer.stringVal());
+        lexer.nextToken();
+        
+        if (lexer.token() != Token.IDENTIFIER) {
+            throw new ParserException("syntax error : " + lexer.token());
+        }
+        OracleIntervalType type = OracleIntervalType.valueOf(lexer.stringVal());
+        interval.setType(type);
+        lexer.nextToken();
+        
+        return interval;
     }
 }

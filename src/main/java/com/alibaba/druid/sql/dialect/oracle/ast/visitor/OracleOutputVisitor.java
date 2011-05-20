@@ -744,6 +744,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
             decrementIndent();
         }
+        
+        if (x.getFlashback() != null) {
+            println();
+            x.getFlashback().accept(this);
+        }
 
         printAlias(x.getAlias());
 
@@ -1545,8 +1550,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(AsOfFlashbackQueryClause x) {
         print("AS OF ");
         print(x.getType().name());
-        print(" ");
+        print(" (");
         x.getExpr().accept(this);
+        print(")");
         return false;
     }
 

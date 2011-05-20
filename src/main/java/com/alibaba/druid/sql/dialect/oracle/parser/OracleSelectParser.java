@@ -16,6 +16,8 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -23,6 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -380,6 +383,34 @@ public class OracleSelectParser extends SQLSelectParser {
                     clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
                 }
                 clause.setExpr(createExprParser().primary());
+                
+                tableReference.setFlashback(clause);
+            } else {
+                throw new SQLParseException("TODO");
+            }
+        } else if (identifierEquals("VERSIONS")) {
+            lexer.nextToken();
+            
+            if (lexer.token() == Token.BETWEEN) {
+                lexer.nextToken();
+                
+                VersionsFlashbackQueryClause clause = new VersionsFlashbackQueryClause();
+                if (identifierEquals("SCN")) {
+                    clause.setType(AsOfFlashbackQueryClause.Type.SCN);
+                    lexer.nextToken();
+                } else {
+                    acceptIdentifier("TIMESTAMP");
+                    clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
+                }
+                
+                SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) createExprParser().expr();
+                if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
+                    throw new SQLParseException("syntax error : " + binaryExpr.getOperator());
+                }
+                
+                clause.setBegin(binaryExpr.getLeft());
+                clause.setEnd(binaryExpr.getRight());
+                
                 tableReference.setFlashback(clause);
             } else {
                 throw new SQLParseException("TODO");
