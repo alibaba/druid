@@ -4,6 +4,6 @@
    FROM    sys_user               
    LIMIT    ?, ?     
 ---------------------------
-  SELECT id AS id, username AS username, password AS password, name AS name, staff_num AS staff_num, wangwang AS wangwang, email AS email, mobile AS mobile, is_deleted AS is_deleted, is_admin AS is_admin, gmt_create AS gmt_create
+SELECT id AS "id", username AS "username", password AS "password", name AS "name", staff_num AS "staffNumber", wangwang AS "wangwang", email AS "email", mobile AS "mobile", is_deleted AS "isDeleted", is_admin AS "isAdmin", gmt_create AS "gmtCreate"
 FROM sys_user
 LIMIT ?, ?

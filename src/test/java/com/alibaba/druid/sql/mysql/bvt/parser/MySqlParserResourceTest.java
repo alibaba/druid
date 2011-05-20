@@ -16,14 +16,14 @@ import com.alibaba.druid.util.JdbcUtils;
 public class MySqlParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-//        exec_test("bvt/parser/mysql-0.txt");
-//        exec_test("bvt/parser/mysql-1.txt");
-//        exec_test("bvt/parser/mysql-2.txt");
-//        exec_test("bvt/parser/mysql-3.txt");
-//        exec_test("bvt/parser/mysql-4.txt");
-//        exec_test("bvt/parser/mysql-5.txt");
-//        exec_test("bvt/parser/mysql-6.txt");
-//        exec_test("bvt/parser/mysql-7.txt");
+        exec_test("bvt/parser/mysql-0.txt");
+        exec_test("bvt/parser/mysql-1.txt");
+        exec_test("bvt/parser/mysql-2.txt");
+        exec_test("bvt/parser/mysql-3.txt");
+        exec_test("bvt/parser/mysql-4.txt");
+        exec_test("bvt/parser/mysql-5.txt");
+        exec_test("bvt/parser/mysql-6.txt");
+        exec_test("bvt/parser/mysql-7.txt");
         exec_test("bvt/parser/mysql-8.txt");
     }
     

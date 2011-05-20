@@ -41,37 +41,37 @@ public class MySqlSelectParser extends SQLSelectParser {
     
     @Override
     protected final String as() throws ParserException {
-        String rtnValue = null;
+        String alias = null;
 
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
             if (lexer.token() == Token.LITERAL_ALIAS) {
-                rtnValue = lexer.stringVal();
+                alias = '"' + lexer.stringVal() + '"';
                 lexer.nextToken();
-                return rtnValue;
+                return alias;
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
-                rtnValue = lexer.stringVal();
+                alias = lexer.stringVal();
                 lexer.nextToken();
-                return rtnValue;
+                return alias;
             }
 
             throw new ParserException("Error", 0, 0);
         }
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
-            rtnValue = lexer.stringVal();
+            alias = '"' + lexer.stringVal() + '"';
             lexer.nextToken();
         } else if (lexer.token() == Token.IDENTIFIER) {
-            rtnValue = lexer.stringVal();
+            alias = lexer.stringVal();
             lexer.nextToken();
         } else if (lexer.token() == Token.LITERAL_CHARS) {
-            rtnValue = "'" + lexer.stringVal() + "'";
+            alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
         }
-        return rtnValue;
+        return alias;
     }
 
     @Override
