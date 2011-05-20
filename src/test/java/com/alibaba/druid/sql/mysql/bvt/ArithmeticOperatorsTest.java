@@ -158,6 +158,28 @@ public class ArithmeticOperatorsTest extends TestCase {
 
         Assert.assertEquals("SELECT N % M;", text);
     }
+    
+    public void test_12() throws Exception {
+        String sql = "SELECT 1 = 0 OR A > ?;";
+
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+
+        String text = output(stmtList);
+
+        Assert.assertEquals("SELECT 1 = 0 OR A > ?;", text);
+    }
+    
+    public void test_13() throws Exception {
+        String sql = "SELECT 1 = 0 AND ID = ?;";
+        
+        SQLStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        
+        String text = output(stmtList);
+        
+        Assert.assertEquals("SELECT 1 = 0 AND ID = ?;", text);
+    }
 
     private String output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();

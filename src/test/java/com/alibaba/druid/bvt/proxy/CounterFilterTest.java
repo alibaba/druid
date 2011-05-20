@@ -32,7 +32,6 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.stat.JdbcResultSetStat;
 
 public class CounterFilterTest extends TestCase {
 
@@ -86,7 +85,6 @@ public class CounterFilterTest extends TestCase {
 
         Statement stmt = conn.createStatement();
         ResultSetProxy rs = (ResultSetProxy) stmt.executeQuery(sql);
-        JdbcResultSetStat.Entry resultSetStat = StatFilter.getResultSetInfo(rs);
         rs.close();
         stmt.close();
 
