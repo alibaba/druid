@@ -52,7 +52,7 @@ public class MySqlExprParser extends SQLExprParser {
     public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.IDENTIFIER && "REGEXP".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();
-            SQLExpr rightExp = bitOr();
+            SQLExpr rightExp = equality();
 
             rightExp = relationalRest(rightExp);
 
@@ -65,7 +65,7 @@ public class MySqlExprParser extends SQLExprParser {
     public SQLExpr multiplicativeRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.IDENTIFIER && "MOD".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();
-            SQLExpr rightExp = bitOr();
+            SQLExpr rightExp = primary();
 
             rightExp = relationalRest(rightExp);
 
@@ -78,7 +78,7 @@ public class MySqlExprParser extends SQLExprParser {
     public SQLExpr notRationalRest(SQLExpr expr) {
         if (lexer.token() == Token.IDENTIFIER && "REGEXP".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();
-            SQLExpr rightExp = bitOr();
+            SQLExpr rightExp = primary();
 
             rightExp = relationalRest(rightExp);
 

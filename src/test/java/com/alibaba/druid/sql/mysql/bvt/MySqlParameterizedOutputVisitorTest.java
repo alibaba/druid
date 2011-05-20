@@ -12,8 +12,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisit
 public class MySqlParameterizedOutputVisitorTest extends TestCase {
 
     public void test_0() throws Exception {
-        //validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT * FROM T WHERE ID IN (##)");
-        //validate("SELECT * FROM T WHERE ID = 5", "SELECT * FROM T WHERE ID = ?");
+        validate("SELECT * FROM T WHERE ID IN (?, ?, ?)", "SELECT * FROM T WHERE ID IN (##)");
+        validate("SELECT * FROM T WHERE ID = 5", "SELECT * FROM T WHERE ID = ?");
         validate("SELECT * FROM T WHERE 1 = 0 AND ID = 5", "SELECT * FROM T WHERE 1 = 0 AND ID = ?");
     }
 
