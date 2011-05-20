@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -540,5 +541,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public boolean visit(SQLInSubQueryExpr x) {
         return true;
+    }
+
+    @Override
+    public void endVisit(SQLListExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLListExpr x) {
+        return false;
     }
 }

@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -806,6 +807,15 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         decrementIndent();
         print(")");
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLListExpr x) {
+        print("(");
+        printAndAccept(x.getItems(), ", ");
+        print(")");
+        
         return false;
     }
 }

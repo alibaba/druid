@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntervalLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -319,4 +320,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLInSubQueryExpr x);
 
     boolean visit(SQLInSubQueryExpr x);
+
+    void endVisit(SQLListExpr x);
+
+    boolean visit(SQLListExpr x);
 }

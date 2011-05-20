@@ -27,7 +27,10 @@ public class OracleSQLParserResourceTest extends TestCase {
 //        exec_test("bvt/parser/oracle-8.txt");
 //        exec_test("bvt/parser/oracle-9.txt");
 //        exec_test("bvt/parser/oracle-10.txt");
-        exec_test("bvt/parser/oracle-11.txt");
+//        exec_test("bvt/parser/oracle-11.txt");
+//        exec_test("bvt/parser/oracle-12.txt");
+//        exec_test("bvt/parser/oracle-13.txt");
+        exec_test("bvt/parser/oracle-14.txt");
     }
     
     

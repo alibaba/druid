@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -1558,6 +1559,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(AsOfFlashbackQueryClause x) {
+        
+    }
+    
+    @Override
+    public boolean visit(GroupingSetExpr x) {
+        print("GROUPING SETS");
+        print(" (");
+        printAndAccept(x.getParameters(), ", ");
+        print(")");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(GroupingSetExpr x) {
         
     }
 

@@ -40,6 +40,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -148,6 +149,16 @@ public class SQLExprParser extends SQLParser {
             case LPAREN:
                 lexer.nextToken();
                 sqlExpr = expr();
+                if (lexer.token() == Token.COMMA) {
+                    SQLListExpr listExpr = new SQLListExpr();
+                    listExpr.getItems().add(sqlExpr);
+                    do {
+                        lexer.nextToken();
+                        listExpr.getItems().add(expr());
+                    } while (lexer.token() == Token.COMMA);
+                    
+                    sqlExpr = listExpr;
+                }
                 accept(Token.RPAREN);
                 break;
             case INSERT:
