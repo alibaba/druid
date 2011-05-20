@@ -47,6 +47,7 @@ public class MySqlParserResourceTest extends TestCase {
         
         String text = output(statementList);
         System.out.println(text);
+        System.out.println();
         Assert.assertEquals(expect, text.trim());
        
     }

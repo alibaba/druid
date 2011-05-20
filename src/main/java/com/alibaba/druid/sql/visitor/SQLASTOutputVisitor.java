@@ -137,11 +137,28 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
     }
 
+    protected void printSelectList(List<SQLSelectItem> selectList) {
+        incrementIndent();
+        for (int i = 0, size = selectList.size(); i < size; ++i) {
+            if (i != 0) {
+                if (i % 5 == 0) {
+                    println();
+                }
+                
+                print(", ");
+            }
+
+            selectList.get(i).accept(this);
+        }
+        decrementIndent();
+    }
+
     protected void printlnAndAccept(List<? extends SQLObject> nodes, String seperator) {
         for (int i = 0, size = nodes.size(); i < size; ++i) {
             if (i != 0) {
                 println(seperator);
             }
+
             ((SQLObject) nodes.get(i)).accept(this);
         }
     }
@@ -424,7 +441,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print("UNIQUE ");
         }
 
-        printAndAccept(select.getSelectList(), ", ");
+        printSelectList(select.getSelectList());
 
         if (select.getFrom() != null) {
             println();
@@ -806,16 +823,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLListExpr x) {
         print("(");
         printAndAccept(x.getItems(), ", ");
         print(")");
-        
+
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLSubqueryTableSource x) {
         print("(");
@@ -823,7 +840,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         x.getSelect().accept(this);
         decrementIndent();
         print(")");
-        
+
         return false;
     }
 }

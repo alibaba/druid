@@ -120,7 +120,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print("SQL_CALC_FOUND_ROWS ");
         }
 
-        printAndAccept(select.getSelectList(), ", ");
+        printSelectList(select.getSelectList());
 
         if (select.getOutFile() != null) {
             println();

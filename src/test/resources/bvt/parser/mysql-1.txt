@@ -7,7 +7,8 @@
    ORDER BY sequence desc         
    LIMIT ?, ?  
 ---------------------------
-SELECT id, item_type AS 'itemType', item_id AS 'itemId', item_name AS 'itemName', app_id AS 'appId', sequence, refresh_intv AS "refreshIntv"
+SELECT id, item_type AS 'itemType', item_id AS 'itemId', item_name AS 'itemName', app_id AS 'appId'
+	, sequence, refresh_intv AS "refreshIntv"
 FROM view_portal_info
 WHERE 1 = 1 AND item_type = ? AND app_id = ?
 ORDER BY sequence DESC

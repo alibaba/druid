@@ -646,7 +646,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print("*/ ");
         }
 
-        printAndAccept(select.getSelectList(), ", ");
+        printSelectList(select.getSelectList());
 
         println();
         print("FROM ");
