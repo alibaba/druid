@@ -16,17 +16,18 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSQLParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        exec_test("bvt/parser/oracle-0.txt");
-        exec_test("bvt/parser/oracle-1.txt");
-        exec_test("bvt/parser/oracle-2.txt");
-        exec_test("bvt/parser/oracle-3.txt");
-        exec_test("bvt/parser/oracle-4.txt");
-        exec_test("bvt/parser/oracle-5.txt");
-        exec_test("bvt/parser/oracle-6.txt"); // PARTITION
-        exec_test("bvt/parser/oracle-7.txt");
-        exec_test("bvt/parser/oracle-8.txt");
-        exec_test("bvt/parser/oracle-9.txt");
-        exec_test("bvt/parser/oracle-10.txt");
+//        exec_test("bvt/parser/oracle-0.txt");
+//        exec_test("bvt/parser/oracle-1.txt");
+//        exec_test("bvt/parser/oracle-2.txt");
+//        exec_test("bvt/parser/oracle-3.txt");
+//        exec_test("bvt/parser/oracle-4.txt");
+//        exec_test("bvt/parser/oracle-5.txt");
+//        exec_test("bvt/parser/oracle-6.txt"); // PARTITION
+//        exec_test("bvt/parser/oracle-7.txt");
+//        exec_test("bvt/parser/oracle-8.txt");
+//        exec_test("bvt/parser/oracle-9.txt");
+//        exec_test("bvt/parser/oracle-10.txt");
+        exec_test("bvt/parser/oracle-11.txt");
     }
     
     

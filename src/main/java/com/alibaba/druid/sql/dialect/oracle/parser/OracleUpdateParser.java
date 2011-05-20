@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleCo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -107,5 +108,9 @@ public class OracleUpdateParser extends SQLStatementParser {
         }
 
         update.setSetClause(setListClause);
+    }
+    
+    protected SQLExprParser createExprParser() {
+        return new OracleExprParser(lexer);
     }
 }
