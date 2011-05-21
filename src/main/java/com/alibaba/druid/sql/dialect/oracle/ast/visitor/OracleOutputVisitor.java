@@ -54,7 +54,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
@@ -437,12 +436,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printAndAccept(node.getColumns(), ", ");
             print(")");
         }
-        return false;
-    }
-
-    public boolean visit(OraclePriorIdentifierExpr x) {
-        print("PRIOR ");
-        x.getValue().accept(this);
         return false;
     }
 
@@ -1356,11 +1349,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OraclePriorIdentifierExpr x) {
-
-    }
-
-    @Override
     public void endVisit(OracleSelectForUpdate x) {
 
     }
@@ -1672,17 +1660,17 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(OracleBinaryFloatExpr x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleBinaryDoubleExpr x) {
         print(x.getValue().toString());
         print('D');
         return false;
     }
-    
+
     @Override
     public void endVisit(OracleBinaryDoubleExpr x) {
-        
+
     }
 
 }

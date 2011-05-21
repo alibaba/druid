@@ -41,7 +41,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
@@ -153,8 +152,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleOrderBy x);
 
     void endVisit(OracleOuterExpr x);
-
-    void endVisit(OraclePriorIdentifierExpr x);
 
     void endVisit(OracleSelectForUpdate x);
 
@@ -274,8 +271,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     boolean visit(OracleOuterExpr x);
 
-    boolean visit(OraclePriorIdentifierExpr x);
-
     boolean visit(OracleSelectForUpdate x);
 
     boolean visit(OracleSelectHierachicalQueryClause x);
@@ -347,24 +342,24 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(SubqueryFactoringClause x);
 
     void endVisit(SubqueryFactoringClause x);
-    
+
     boolean visit(SubqueryFactoringClause.Entry x);
-    
+
     void endVisit(SubqueryFactoringClause.Entry x);
-    
+
     boolean visit(SearchClause x);
-    
+
     void endVisit(SearchClause x);
-    
+
     boolean visit(CycleClause x);
-    
+
     void endVisit(CycleClause x);
-    
+
     boolean visit(OracleBinaryFloatExpr x);
-    
+
     void endVisit(OracleBinaryFloatExpr x);
-    
+
     boolean visit(OracleBinaryDoubleExpr x);
-    
+
     void endVisit(OracleBinaryDoubleExpr x);
 }
