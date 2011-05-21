@@ -803,7 +803,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         } else if (lexer.token() == (Token.SELECT)) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
-            insertStatement.setQuery(queryExpr);
+            insertStatement.setQuery(queryExpr.getSubQuery());
         }
 
         if (lexer.token() == Token.ON) {

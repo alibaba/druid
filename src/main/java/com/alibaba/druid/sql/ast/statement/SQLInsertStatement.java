@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
-import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLInsertStatement extends SQLStatementImpl {
@@ -33,7 +32,7 @@ public class SQLInsertStatement extends SQLStatementImpl {
 
     private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
     private ValuesClause        values;
-    private SQLQueryExpr        query;
+    private SQLSelect           query;
 
     public SQLInsertStatement(){
 
@@ -55,11 +54,11 @@ public class SQLInsertStatement extends SQLStatementImpl {
         this.tableName = tableName;
     }
 
-    public SQLQueryExpr getQuery() {
+    public SQLSelect getQuery() {
         return query;
     }
 
-    public void setQuery(SQLQueryExpr query) {
+    public void setQuery(SQLSelect query) {
         this.query = query;
     }
 
@@ -73,28 +72,6 @@ public class SQLInsertStatement extends SQLStatementImpl {
 
     public void setValues(ValuesClause values) {
         this.values = values;
-    }
-
-    public void output(StringBuffer buf) {
-        buf.append("INSERT INTO ");
-        this.tableName.output(buf);
-        if (columns.size() > 0) {
-            buf.append(" (");
-            for (int i = 0, size = columns.size(); i < size; ++i) {
-                if (i != 0) {
-                    buf.append(", ");
-                }
-                columns.get(i).output(buf);
-            }
-            buf.append(")");
-        }
-
-        if (values != null) {
-            values.output(buf);
-        } else {
-            buf.append(" ");
-            this.query.output(buf);
-        }
     }
 
     @Override

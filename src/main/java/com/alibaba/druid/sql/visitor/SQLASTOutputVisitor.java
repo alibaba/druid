@@ -182,17 +182,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLBetweenExpr x) {
         x.getTestExpr().accept(this);
-        
+
         if (x.isNot()) {
             print(" NOT BETWEEN ");
         } else {
             print(" BETWEEN ");
         }
-        
+
         x.getBeginExpr().accept(this);
         print(" AND ");
         x.getEndExpr().accept(this);
-        
+
         return false;
     }
 
@@ -586,21 +586,27 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getColumns().size() > 0) {
             print(" (");
+            incrementIndent();
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
                     print(", ");
                 }
                 x.getColumns().get(i).accept(this);
             }
+            decrementIndent();
             print(")");
         }
 
         if (x.getValues() != null) {
-            print(" VALUES ");
+            println();
+            print("VALUES ");
             x.getValues().accept(this);
         } else {
             if (x.getQuery() != null) {
-                print(" ");
+                println();
                 x.getQuery().accept(this);
             }
         }
