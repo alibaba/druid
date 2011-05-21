@@ -47,6 +47,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         exec_test("bvt/parser/oracle-28.txt");
         exec_test("bvt/parser/oracle-29.txt");
         exec_test("bvt/parser/oracle-30.txt");
+        exec_test("bvt/parser/oracle-31.txt");
     }
     
     
