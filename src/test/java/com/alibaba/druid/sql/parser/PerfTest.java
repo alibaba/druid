@@ -36,13 +36,13 @@ public class PerfTest extends TestCase {
     void perf(String sql) {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {
-            merge(sql);
+            exec(sql);
         }
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println(millis);
     }
 
-    private String merge(String sql) {
+    private String exec(String sql) {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out);
 
