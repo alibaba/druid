@@ -585,8 +585,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         x.getTableName().accept(this);
 
         if (x.getColumns().size() > 0) {
-            print(" (");
             incrementIndent();
+            println();
+            print("(");
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
