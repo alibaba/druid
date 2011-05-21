@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleOrderBy extends SQLOrderBy {
 
@@ -35,6 +36,10 @@ public class OracleOrderBy extends SQLOrderBy {
 
     public void setSibings(boolean sibings) {
         this.sibings = sibings;
+    }
+    
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
     }
 
     protected void accept0(OracleASTVisitor visitor) {
