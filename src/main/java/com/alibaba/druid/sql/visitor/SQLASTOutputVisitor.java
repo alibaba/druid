@@ -63,6 +63,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -76,7 +77,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.SQLSelectSubqueryQuery;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
@@ -144,7 +144,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 if (i % 5 == 0) {
                     println();
                 }
-                
+
                 print(", ");
             }
 
@@ -748,8 +748,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLJoinTableSource x) {
         x.getLeft().accept(this);
-        print(" ");
-        print(OracleSelectJoin.JoinType.toString(x.getJoinType()));
+        if (x.getJoinType() == JoinType.COMMA) {
+            print(",");
+        } else {
+            print(" ");
+            print(JoinType.toString(x.getJoinType()));
+        }
         print(" ");
         x.getRight().accept(this);
 

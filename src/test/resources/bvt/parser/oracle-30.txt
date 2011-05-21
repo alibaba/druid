@@ -30,7 +30,7 @@ WITH
 		UNION ALL
 		SELECT e.employee_id, e.last_name, e.manager_id, r.reportLevel + 1 AS reportLevel, e.hire_date
 			, e.job_id
-		FROM dup_hiredate r , employees e
+		FROM dup_hiredate r, employees e
 		WHERE r.eid = e.manager_id
 	)
 	SEARCH DEPTH FIRST BY hire_date SET order1

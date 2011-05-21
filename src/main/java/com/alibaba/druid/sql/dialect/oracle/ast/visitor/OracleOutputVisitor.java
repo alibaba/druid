@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
@@ -556,8 +557,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleSelectJoin x) {
         x.getLeft().accept(this);
-        print(" ");
-        print(OracleSelectJoin.JoinType.toString(x.getJoinType()));
+
+        if (x.getJoinType() == JoinType.COMMA) {
+            print(",");
+        } else {
+            print(" ");
+            print(JoinType.toString(x.getJoinType()));
+        }
+
         print(" ");
         x.getRight().accept(this);
 
@@ -1621,7 +1628,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             x.getSearchClause().accept(this);
         }
-        
+
         if (x.getCycleClause() != null) {
             println();
             x.getCycleClause().accept(this);
@@ -1684,6 +1691,5 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(CycleClause x) {
 
     }
-    
 
 }

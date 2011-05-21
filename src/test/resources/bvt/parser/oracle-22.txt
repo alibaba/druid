@@ -32,7 +32,7 @@ FROM (SELECT rownum AS rnm, z.*
 				WHERE a.is_deleted = 'n'
 				UNION ALL
 				SELECT lower(b.role_name) || '#' || a.permission_id, 'y'
-				FROM app_role_permission A , app_role_base_role B
+				FROM app_role_permission A, app_role_base_role B
 				WHERE a.is_deleted = 'n' AND b.is_deleted = 'n' AND a.role_name = b.base_role_name)) c
 		ORDER BY c.KEY) z
 	WHERE rownum < ?)

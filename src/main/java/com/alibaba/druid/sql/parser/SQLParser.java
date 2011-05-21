@@ -65,7 +65,16 @@ public class SQLParser {
                 return alias;
             }
 
-            throw new ParserException("Error", 0, 0);
+            switch (lexer.token()) {
+                case KEY:
+                    alias = lexer.token().name();
+                    lexer.nextToken();
+                    return alias;
+                default:
+                    break;
+            }
+
+            throw new ParserException("Error : " + lexer.token());
         }
 
         if (lexer.token() == Token.LITERAL_ALIAS) {
@@ -78,6 +87,16 @@ public class SQLParser {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
         }
+        
+        switch (lexer.token()) {
+            case KEY:
+                alias = lexer.token().name();
+                lexer.nextToken();
+                return alias;
+            default:
+                break;
+        }
+        
         return alias;
     }
 
