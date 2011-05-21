@@ -15,19 +15,27 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import java.math.BigInteger;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -35,6 +43,9 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
+
 
 
 
@@ -75,6 +86,7 @@ public class OracleExprParser extends SQLExprParser {
     public SQLExpr primary() throws ParserException {
         final Token tok = lexer.token();
 
+        SQLExpr sqlExpr = null;
         switch (tok) {
             case COLON:
                 lexer.nextToken();
@@ -115,9 +127,123 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
                 
                 return primaryRest(extract);
+            case TIMESTAMP:
+                return primaryRest(parseTimestamp());
+            case DATE:
+                return primaryRest(parseDate());
+            case BINARY_FLOAT:
+                OracleBinaryFloatExpr floatExpr = new OracleBinaryFloatExpr();
+                floatExpr.setValue(Float.parseFloat(lexer.numberString()));
+                lexer.nextToken();
+                return primaryRest(floatExpr);
+            case BINARY_DOUBLE:
+                OracleBinaryDoubleExpr doubleExpr = new OracleBinaryDoubleExpr();
+                doubleExpr.setValue(Double.parseDouble(lexer.numberString()));
+                
+                lexer.nextToken();
+                return primaryRest(doubleExpr);
+            case PLUS:
+                lexer.nextToken();
+                switch (lexer.token()) {
+                    case LITERAL_INT:
+                        sqlExpr = new SQLIntegerExpr(lexer.integerValue());
+                        lexer.nextToken();
+                        break;
+                    case LITERAL_FLOAT:
+                        sqlExpr = new SQLNumberExpr(lexer.decimalValue());
+                        lexer.nextToken();
+                        break;
+                    case BINARY_FLOAT:
+                        sqlExpr = new OracleBinaryFloatExpr(Float.parseFloat(lexer.numberString()));
+                        lexer.nextToken();
+                        break;
+                    case BINARY_DOUBLE:
+                        sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()));
+                        lexer.nextToken();
+                        break;
+                    default:
+                        throw new ParserException("TODO");
+                }
+                return primaryRest(sqlExpr);
+            case SUB:
+                lexer.nextToken();
+                switch (lexer.token()) {
+                    case LITERAL_INT:
+                        Number integerValue = lexer.integerValue();
+                        if (integerValue instanceof Integer) {
+                            int intVal = ((Integer) integerValue).intValue();
+                            if (intVal == Integer.MIN_VALUE) {
+                                integerValue = Long.valueOf(((long) intVal) * -1);
+                            } else {
+                                integerValue = Integer.valueOf(intVal * -1);
+                            }
+                        } else if (integerValue instanceof Long) {
+                            long longVal = ((Long) integerValue).longValue();
+                            if (longVal == 2147483648L) {
+                                integerValue = Integer.valueOf((int) (((long) longVal) * -1));
+                            } else {
+                                integerValue = Long.valueOf(longVal * -1);
+                            }
+                        } else {
+                            integerValue = ((BigInteger) integerValue).negate();
+                        }
+                        sqlExpr = new SQLIntegerExpr(integerValue);
+                        lexer.nextToken();
+                        break;
+                    case LITERAL_FLOAT:
+                        sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
+                        lexer.nextToken();
+                        break;
+                    case BINARY_FLOAT:
+                        sqlExpr = new OracleBinaryFloatExpr(Float.parseFloat(lexer.numberString()) * -1);
+                        lexer.nextToken();
+                        break;
+                    case BINARY_DOUBLE:
+                        sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()) * -1);
+                        lexer.nextToken();
+                        break;
+                    default:
+                        throw new ParserException("TODO");
+                }
+                return primaryRest(sqlExpr);
             default:
                 return super.primary();
         }
+    }
+    
+    public OracleDateExpr parseDate() {
+        accept(Token.DATE);
+        
+        OracleDateExpr timestamp = new OracleDateExpr();
+        
+        String literal = lexer.stringVal();
+        timestamp.setLiteral(literal);
+        accept(Token.LITERAL_CHARS);
+        
+        
+        return timestamp;
+    }
+    
+    public OracleTimestampExpr parseTimestamp() {
+        accept(Token.TIMESTAMP);
+        
+        OracleTimestampExpr timestamp = new OracleTimestampExpr();
+        
+        String literal = lexer.stringVal();
+        timestamp.setLiteral(literal);
+        accept(Token.LITERAL_CHARS);
+        
+        if (identifierEquals("AT")) {
+            lexer.nextToken();
+            acceptIdentifier("TIME");
+            acceptIdentifier("ZONE");
+            
+            String timezone = lexer.stringVal();
+            timestamp.setTimeZone(timezone);
+            accept(Token.LITERAL_CHARS);
+        }
+        
+        return timestamp;
     }
 
     @Override

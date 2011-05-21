@@ -15,15 +15,26 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleDateExpr extends OracleDatetimeLiteralExpr {
+public class OracleDateExpr extends SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 
+    private String            literal;
+
     public OracleDateExpr(){
 
+    }
+
+    public String getLiteral() {
+        return literal;
+    }
+
+    public void setLiteral(String literal) {
+        this.literal = literal;
     }
 
     @Override
@@ -36,26 +47,4 @@ public class OracleDateExpr extends OracleDatetimeLiteralExpr {
         visitor.endVisit(this);
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("DATE '");
-
-        buf.append(this.year);
-        buf.append('-');
-        buf.append(this.month);
-        buf.append("-");
-        buf.append(this.dayOfMonth);
-
-        if ((this.hour != 0) || (this.minute != 0) || (this.second != 0)) {
-            buf.append(' ');
-            buf.append(this.hour);
-            buf.append(":");
-            buf.append(this.minute);
-            if (this.second != 0) {
-                buf.append(":");
-                buf.append(this.second);
-            }
-        }
-
-        buf.append("'");
-    }
 }

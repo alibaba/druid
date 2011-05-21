@@ -104,6 +104,8 @@ public enum Token {
     CONNECT("CONNECT"),
     WITH("WITH"),
     EXTRACT("EXTRACT"),
+    TIMESTAMP("TIMESTAMP"),
+    DATE("DATE"),
 
     EOF, 
     ERROR,
@@ -119,6 +121,10 @@ public enum Token {
     LITERAL_ALIAS,
     LINE_COMMENT,
     MULTI_LINE_COMMENT,
+    
+    // Oracle
+    BINARY_FLOAT,
+    BINARY_DOUBLE,
 
     LPAREN("("), 
     RPAREN(")"), 

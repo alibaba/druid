@@ -1,0 +1,7 @@
+SELECT *
+  FROM my_table
+  WHERE TRUNC(SYSDATE) = DATE '2002-10-03';
+---------------------------
+SELECT *
+FROM my_table
+WHERE TRUNC(SYSDATE) = DATE '2002-10-03';

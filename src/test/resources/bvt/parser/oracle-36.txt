@@ -1,0 +1,11 @@
+SELECT last_name, employee_id, hire_date
+  FROM employees
+  WHERE EXTRACT(YEAR FROM TO_DATE(hire_date, 'DD-MON-RR')) > 2007
+  ORDER BY hire_date;
+
+
+---------------------------
+SELECT last_name, employee_id, hire_date
+FROM employees
+WHERE EXTRACT(YEAR FROM TO_DATE(hire_date, 'DD-MON-RR')) > 2007
+ORDER BY hire_date;

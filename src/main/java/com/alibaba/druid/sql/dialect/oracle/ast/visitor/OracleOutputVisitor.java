@@ -44,6 +44,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArrayAccessExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -265,25 +267,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OracleDateExpr x) {
         print("DATE '");
-
-        print(x.getYear());
-        print("-");
-        print(x.getMonth());
-        print("-");
-        print(x.getDayOfMonth());
-
-        if ((x.getHour() != 0) || (x.getMinute() != 0) || (x.getSecond() != 0)) {
-            print(" ");
-            print(x.getHour());
-            print(":");
-            print(x.getMinute());
-            if (x.getSecond() != 0) {
-                print(":");
-                print(x.getSecond());
-            }
-        }
-
-        print("'");
+        print(x.getLiteral());
+        print('\'');
         return false;
     }
 
@@ -905,31 +890,14 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleTimestampExpr x) {
         print("TIMESTAMP '");
 
-        print(x.getYear());
-        print('-');
-        print(x.getMonth());
-        print("-");
-        print(x.getDayOfMonth());
+        print(x.getLiteral());
+        print('\'');
 
-        if ((x.getHour() != 0) || (x.getMinute() != 0) || (x.getSecond() != 0) || (x.getMilliSecond() != 0) || (x.getTimeZone() != null)) {
-            print(' ');
-            print(x.getHour());
-            print(":");
-            print(x.getHour());
-            print(":");
-            print(x.getSecond());
-
-            if (x.getMilliSecond() != 0) {
-                print(".");
-                print(x.getMilliSecond());
-            }
-
-            if (x.getTimeZone() != null) {
-                print(x.getTimeZone());
-            }
+        if (x.getTimeZone() != null) {
+            print(" AT TIME ZONE '");
+            print(x.getTimeZone());
+            print('\'');
         }
-
-        print("'");
 
         return false;
     }
@@ -1690,6 +1658,30 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(CycleClause x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleBinaryFloatExpr x) {
+        print(x.getValue().toString());
+        print('F');
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleBinaryFloatExpr x) {
+
+    }
+    
+    @Override
+    public boolean visit(OracleBinaryDoubleExpr x) {
+        print(x.getValue().toString());
+        print('D');
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleBinaryDoubleExpr x) {
+        
     }
 
 }

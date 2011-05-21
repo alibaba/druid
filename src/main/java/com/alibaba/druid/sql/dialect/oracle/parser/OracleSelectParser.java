@@ -501,7 +501,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     clause.setType(AsOfFlashbackQueryClause.Type.SCN);
                     lexer.nextToken();
                 } else {
-                    acceptIdentifier("TIMESTAMP");
+                    accept(Token.TIMESTAMP);
                     clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
                 }
                 clause.setExpr(createExprParser().primary());
@@ -521,7 +521,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     clause.setType(AsOfFlashbackQueryClause.Type.SCN);
                     lexer.nextToken();
                 } else {
-                    acceptIdentifier("TIMESTAMP");
+                   accept(Token.TIMESTAMP);
                     clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
                 }
 

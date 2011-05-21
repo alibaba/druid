@@ -87,6 +87,8 @@ public class OracleLexer extends Lexer {
         map.put("PRIOR", Token.PRIOR);
         map.put("WITH", Token.WITH);
         map.put("EXTRACT", Token.EXTRACT);
+        map.put("DATE", Token.DATE);
+        map.put("TIMESTAMP", Token.TIMESTAMP);
         
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -182,6 +184,80 @@ public class OracleLexer extends Lexer {
             stringVal = new String(buf, np + 1, sp);
             token = Token.LINE_COMMENT;
             return;
+        }
+    }
+    
+    public void scanNumber() {
+        np = bp;
+
+        if (ch == '-') {
+            sp++;
+            ch = buf[++bp];
+        }
+
+        for (;;) {
+            if (ch >= '0' && ch <= '9') {
+                sp++;
+            } else {
+                break;
+            }
+            ch = buf[++bp];
+        }
+
+        boolean isDouble = false;
+
+        if (ch == '.') {
+            sp++;
+            ch = buf[++bp];
+            isDouble = true;
+
+            for (;;) {
+                if (ch >= '0' && ch <= '9') {
+                    sp++;
+                } else {
+                    break;
+                }
+                ch = buf[++bp];
+            }
+        }
+
+        if (ch == 'e' || ch == 'E') {
+            sp++;
+            ch = buf[++bp];
+
+            if (ch == '+' || ch == '-') {
+                sp++;
+                ch = buf[++bp];
+            }
+
+            for (;;) {
+                if (ch >= '0' && ch <= '9') {
+                    sp++;
+                } else {
+                    break;
+                }
+                ch = buf[++bp];
+            }
+
+            isDouble = true;
+        }
+        
+        if (ch == 'f' || ch == 'F') {
+            token = Token.BINARY_FLOAT;
+            scanChar();
+            return;
+        }
+        
+        if (ch == 'd' || ch == 'D') {
+            token = Token.BINARY_DOUBLE;
+            scanChar();
+            return;
+        }
+
+        if (isDouble) {
+            token = Token.LITERAL_FLOAT;
+        } else {
+            token = Token.LITERAL_INT;
         }
     }
 }
