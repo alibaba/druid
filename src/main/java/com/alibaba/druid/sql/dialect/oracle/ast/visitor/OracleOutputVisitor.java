@@ -1684,5 +1684,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(CycleClause x) {
 
     }
+    
 
 }

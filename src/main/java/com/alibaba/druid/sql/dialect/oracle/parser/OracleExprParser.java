@@ -23,6 +23,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
@@ -97,6 +99,22 @@ public class OracleExprParser extends SQLExprParser {
                 String alias = '"' + lexer.stringVal() + '"';
                 lexer.nextToken();
                 return primaryRest(new SQLIdentifierExpr(alias));
+            case EXTRACT:
+                lexer.nextToken();
+                OracleExtractExpr extract = new OracleExtractExpr();
+                
+                accept(Token.LPAREN);
+                
+                extract.setUnit(OracleDateTimeUnit.valueOf(lexer.stringVal()));
+                lexer.nextToken();
+                
+                accept(Token.FROM);
+                
+                extract.setFrom(expr());
+                
+                accept(Token.RPAREN);
+                
+                return primaryRest(extract);
             default:
                 return super.primary();
         }

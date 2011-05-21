@@ -86,6 +86,7 @@ public class OracleLexer extends Lexer {
         map.put("CONNECT", Token.CONNECT);
         map.put("PRIOR", Token.PRIOR);
         map.put("WITH", Token.WITH);
+        map.put("EXTRACT", Token.EXTRACT);
         
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

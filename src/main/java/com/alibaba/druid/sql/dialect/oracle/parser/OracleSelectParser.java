@@ -638,7 +638,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
 
-            acceptIdentifier("FOR");
+            accept(Token.FOR);
 
             if (lexer.token() == (Token.LPAREN)) {
                 lexer.nextToken();
@@ -656,17 +656,26 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
             }
 
-            acceptIdentifier("IN");
+            accept(Token.IN);
             accept(Token.LPAREN);
-            if (lexer.token() == (Token.LPAREN)) throw new ParserException("TODO");
-            if (lexer.token() == (Token.SELECT)) throw new ParserException("TODO");
-            while (true) {
+            if (lexer.token() == (Token.LPAREN)) {
+                throw new ParserException("TODO");
+            }
+
+            if (lexer.token() == (Token.SELECT)) {
+                throw new ParserException("TODO");
+            }
+
+            for (;;) {
                 item = new OracleSelectPivot.Item();
                 item.setExpr(this.createExprParser().expr());
                 item.setAlias(as());
                 pivot.getPivotIn().add(item);
 
-                if (!(lexer.token() == (Token.COMMA))) break;
+                if (lexer.token() != Token.COMMA) {
+                    break;
+                }
+                
                 lexer.nextToken();
             }
 
