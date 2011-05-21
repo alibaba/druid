@@ -597,8 +597,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 }
                 x.getColumns().get(i).accept(this);
             }
-            decrementIndent();
             print(")");
+            decrementIndent();
         }
 
         if (x.getValues() != null) {
@@ -778,12 +778,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(ValuesClause x) {
         print("(");
+        incrementIndent();
         for (int i = 0, size = x.getValues().size(); i < size; ++i) {
             if (i != 0) {
+                if (i % 5 == 0) {
+                    println();
+                }
                 print(", ");
             }
+            
             x.getValues().get(i).accept(this);
         }
+        decrementIndent();
         print(")");
         return false;
     }

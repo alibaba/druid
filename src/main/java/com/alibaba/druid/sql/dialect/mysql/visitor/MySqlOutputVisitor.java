@@ -67,7 +67,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(MySqlBooleanExpr x) {
         print(x.getValue() ? "true" : "false");
-        
+
         return false;
     }
 
@@ -709,30 +709,36 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getTableName().accept(this);
 
         if (x.getColumns().size() > 0) {
-            print(" (");
+            incrementIndent();
+            println();
+            print("(");
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
                     print(", ");
                 }
+
                 x.getColumns().get(i).accept(this);
             }
             print(")");
+            decrementIndent();
         }
 
         if (x.getValuesList().size() != 0) {
-            print(" VALUES ");
-            int size = x.getValuesList().size();
-            if (size == 0) {
-                print("()");
-            } else {
-                for (int i = 0; i < size; ++i) {
-                    if (i != 0) {
-                        print(", ");
-                    }
-                    x.getValuesList().get(i).accept(this);
+            println();
+            print("VALUES ");
+            println();
+            for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
+                if (i != 0) {
+                    print(", ");
                 }
+                x.getValuesList().get(i).accept(this);
             }
+
         }
+
         if (x.getQuery() != null) {
             print(" ");
             x.getQuery().accept(this);
