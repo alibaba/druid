@@ -16,51 +16,13 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSQLParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        exec_test("bvt/parser/oracle-0.txt");
-        exec_test("bvt/parser/oracle-1.txt");
-        exec_test("bvt/parser/oracle-2.txt");
-        exec_test("bvt/parser/oracle-3.txt");
-        exec_test("bvt/parser/oracle-4.txt");
-        exec_test("bvt/parser/oracle-5.txt");
-        exec_test("bvt/parser/oracle-6.txt"); // PARTITION
-        exec_test("bvt/parser/oracle-7.txt");
-        exec_test("bvt/parser/oracle-8.txt");
-        exec_test("bvt/parser/oracle-9.txt");
-        exec_test("bvt/parser/oracle-10.txt");
-        exec_test("bvt/parser/oracle-11.txt");
-        exec_test("bvt/parser/oracle-12.txt");
-        exec_test("bvt/parser/oracle-13.txt");
-        exec_test("bvt/parser/oracle-14.txt");
-        exec_test("bvt/parser/oracle-15.txt");
-        exec_test("bvt/parser/oracle-16.txt");
-        exec_test("bvt/parser/oracle-17.txt");
-        exec_test("bvt/parser/oracle-18.txt");
-        exec_test("bvt/parser/oracle-19.txt");
-        exec_test("bvt/parser/oracle-20.txt");
-        exec_test("bvt/parser/oracle-21.txt");
-        exec_test("bvt/parser/oracle-22.txt");
-        exec_test("bvt/parser/oracle-23.txt");
-        exec_test("bvt/parser/oracle-24.txt");
-        exec_test("bvt/parser/oracle-25.txt");
-        exec_test("bvt/parser/oracle-26.txt");
-        exec_test("bvt/parser/oracle-27.txt");
-        exec_test("bvt/parser/oracle-28.txt");
-        exec_test("bvt/parser/oracle-29.txt");
-        exec_test("bvt/parser/oracle-30.txt");
-        exec_test("bvt/parser/oracle-31.txt");
-        exec_test("bvt/parser/oracle-32.txt");
-        exec_test("bvt/parser/oracle-33.txt");
-        exec_test("bvt/parser/oracle-34.txt");
-        exec_test("bvt/parser/oracle-35.txt");
-        exec_test("bvt/parser/oracle-36.txt");
-        exec_test("bvt/parser/oracle-37.txt");
-        exec_test("bvt/parser/oracle-38.txt");
-        exec_test("bvt/parser/oracle-39.txt");
-        exec_test("bvt/parser/oracle-40.txt");
-        exec_test("bvt/parser/oracle-41.txt");
+        for (int i = 0; i <= 46; ++i) {
+            String resource = "bvt/parser/oracle-" + i + ".txt";
+            exec_test(resource);
+        }
+        // exec_test("bvt/parser/oracle-0.txt");
     }
-    
-    
+
     public void exec_test(String resource) throws Exception {
         System.out.println(resource);
         InputStream is = null;
@@ -72,16 +34,16 @@ public class OracleSQLParserResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = items[1].trim();
-        
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        
+
         Assert.assertEquals(1, statementList.size());
-        
+
         String text = output(statementList);
         System.out.println(text);
         Assert.assertEquals(expect, text.trim());
-       
+
     }
 
     private String output(List<SQLStatement> stmtList) {
