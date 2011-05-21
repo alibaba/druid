@@ -3,5 +3,6 @@ SELECT employee_id FROM (SELECT employee_id+1 AS employee_id FROM employees)
 ---------------------------
 SELECT employee_id
 FROM (SELECT employee_id + 1 AS employee_id
-	FROM employees)
+	FROM employees
+	)
 FOR UPDATE;

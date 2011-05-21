@@ -16,7 +16,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSQLParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        for (int i = 0; i <= 46; ++i) {
+        for (int i = 0; i <= 52; ++i) {
             String resource = "bvt/parser/oracle-" + i + ".txt";
             exec_test(resource);
         }

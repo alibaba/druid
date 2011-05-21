@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
@@ -142,6 +143,9 @@ public class OracleExprParser extends SQLExprParser {
                 
                 lexer.nextToken();
                 return primaryRest(doubleExpr);
+            case TABLE:
+                lexer.nextToken();
+                return primaryRest(new SQLIdentifierExpr("TABLE"));
             case PLUS:
                 lexer.nextToken();
                 switch (lexer.token()) {
@@ -209,6 +213,24 @@ public class OracleExprParser extends SQLExprParser {
             default:
                 return super.primary();
         }
+    }
+    
+    
+    public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+        if (lexer.token() == Token.MONKEYS_AT) {
+            lexer.nextToken();
+            
+            OracleDbLinkExpr dblink = new OracleDbLinkExpr();
+            dblink.setExpr(expr);
+            
+            String link = lexer.stringVal();
+            accept(Token.IDENTIFIER);
+            dblink.setDbLink(link);
+            
+            expr = dblink;
+        }
+        
+        return super.primaryRest(expr);
     }
     
     public OracleDateExpr parseDate() {

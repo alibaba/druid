@@ -248,7 +248,6 @@ public class Lexer {
                     throw new SQLParseException("TODO"); // TODO
                 case '@':
                     scanVariable();
-                    token = Token.VARIANT;
                     return;
                 case '/':
                     int nextChar = buf[bp + 1];
@@ -508,12 +507,7 @@ public class Lexer {
         this.ch = buf[bp];
 
         stringVal = symbolTable.addSymbol(buf, np, sp, hash);
-        Token tok = keywods.getKeyword(stringVal);
-        if (tok != null) {
-            token = tok;
-        } else {
-            token = Token.IDENTIFIER;
-        }
+        token = Token.VARIANT;
     }
 
     public void scanComment() {

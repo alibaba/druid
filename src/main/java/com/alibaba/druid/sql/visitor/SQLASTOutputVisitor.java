@@ -399,9 +399,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         } else {
             print("(");
             incrementIndent();
-
+            println();
             x.getSubQuery().accept(this);
-
+            println();
             decrementIndent();
             print(")");
         }
@@ -858,8 +858,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print("(");
         incrementIndent();
         x.getSelect().accept(this);
+        println();
         decrementIndent();
         print(")");
+        
+        if (x.getAlias() != null) {
+            print(' ');
+            print(x.getAlias());
+        }
 
         return false;
     }

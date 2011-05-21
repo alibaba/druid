@@ -16,6 +16,8 @@ FROM (SELECT rownum AS rnm, z.*
 	FROM (SELECT name AS KEY, value
 		FROM app_resource t
 		WHERE t.type = 'VODKA._CTPCLEAN_NIRVANA_URL' AND is_deleted = 'n'
-		ORDER BY id) z
-	WHERE rownum < ?)
+		ORDER BY id
+		) z
+	WHERE rownum < ?
+	)
 WHERE rnm >= ?;

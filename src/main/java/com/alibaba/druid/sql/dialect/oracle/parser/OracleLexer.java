@@ -1,10 +1,13 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleLexer extends Lexer {
@@ -101,6 +104,47 @@ public class OracleLexer extends Lexer {
     public OracleLexer(String input){
         super(input);
         super.keywods = DEFAULT_ORACLE_KEYWORDS;
+    }
+    
+    public void scanVariable() {
+        if (ch == '@') {
+            scanChar();
+            token = Token.MONKEYS_AT;
+            return;
+        }
+        
+        if (ch != ':') {
+            throw new SQLParseException("illegal variable");
+        }
+
+        int hash = ch;
+
+        np = bp;
+        sp = 1;
+        char ch;
+        
+        for (;;) {
+            ch = buf[++bp];
+
+            if (!isIdentifierChar(ch)) {
+                break;
+            }
+
+            hash = 31 * hash + ch;
+
+            sp++;
+            continue;
+        }
+
+        this.ch = buf[bp];
+
+        stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+        Token tok = keywods.getKeyword(stringVal);
+        if (tok != null) {
+            token = tok;
+        } else {
+            token = Token.IDENTIFIER;
+        }
     }
 
     public void scanComment() {

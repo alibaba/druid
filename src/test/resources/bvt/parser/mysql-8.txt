@@ -12,5 +12,7 @@ FROM c_examinepaper a, (SELECT examine_id
 	WHERE level_limit = ? AND status = 1
 	MINUS
 	SELECT DISTINCT examine_id
-	FROM course)
+	FROM course
+	) b
 WHERE a.examine_id = b.examine_id
+

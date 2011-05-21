@@ -693,6 +693,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("(");
         incrementIndent();
         x.getSelect().accept(this);
+        println();
         decrementIndent();
         print(")");
 
