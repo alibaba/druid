@@ -40,41 +40,6 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
     
     @Override
-    protected final String as() throws ParserException {
-        String alias = null;
-
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
-
-            if (lexer.token() == Token.LITERAL_ALIAS) {
-                alias = '"' + lexer.stringVal() + '"';
-                lexer.nextToken();
-                return alias;
-            }
-
-            if (lexer.token() == Token.IDENTIFIER) {
-                alias = lexer.stringVal();
-                lexer.nextToken();
-                return alias;
-            }
-
-            throw new ParserException("Error", 0, 0);
-        }
-
-        if (lexer.token() == Token.LITERAL_ALIAS) {
-            alias = '"' + lexer.stringVal() + '"';
-            lexer.nextToken();
-        } else if (lexer.token() == Token.IDENTIFIER) {
-            alias = lexer.stringVal();
-            lexer.nextToken();
-        } else if (lexer.token() == Token.LITERAL_CHARS) {
-            alias = "'" + lexer.stringVal() + "'";
-            lexer.nextToken();
-        }
-        return alias;
-    }
-
-    @Override
     protected SQLSelectQuery query() throws ParserException {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();

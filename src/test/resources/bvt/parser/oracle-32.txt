@@ -1,12 +1,12 @@
-SELECT * FROM
-(SELECT EXTRACT(YEAR FROM order_date) year, order_mode, order_total FROM orders)
-PIVOT
-(SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));
+SELECT * FROM pivot_table
+  UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct',
+           internet AS 'online'))
+  ORDER BY year, order_mode;
 
 
 ---------------------------
-SELECT * FROM
-(SELECT EXTRACT(YEAR FROM order_date) year, order_mode, order_total FROM orders)
-PIVOT
-(SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));
+SELECT *
+FROM pivot_table
+	UNPIVOT (yearly_total FOR order_mode IN (store AS 'direct', internet AS 'online'))
+ORDER BY year, order_mode;
 
