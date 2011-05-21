@@ -36,6 +36,7 @@ import com.alibaba.druid.pool.PoolableConnection;
  * @author Dain Sundstrom
  * @version $Revision$
  */
+@SuppressWarnings("unused")
 public class ManagedConnection extends PoolableConnection {
 
     private final TransactionRegistry transactionRegistry;
