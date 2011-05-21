@@ -110,6 +110,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.driverClass == null || this.driverClass.isEmpty()) {
                 this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
             }
+            
+            this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             try {
                 driver = (Driver) Class.forName(this.driverClass).newInstance();

@@ -61,6 +61,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
 
+    public JdbcSqlStat(String sql){
+        this.sql = sql;
+    }
+
     public String getDbType() {
         return dbType;
     }
@@ -115,10 +119,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         context.setFile(val);
-    }
-
-    public JdbcSqlStat(String sql){
-        this.sql = sql;
     }
 
     public String getName() {

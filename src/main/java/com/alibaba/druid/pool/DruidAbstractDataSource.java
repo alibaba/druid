@@ -130,6 +130,12 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
 
     protected List<String>      connectionInitSqls;
 
+    protected String            dbType;
+
+    public String getDbType() {
+        return dbType;
+    }
+
     public void addConnectionProperty(String name, String value) {
         if (inited) {
             throw new UnsupportedOperationException();
@@ -653,7 +659,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
                 } catch (InvocationTargetException e) {
                     throw new SQLException("passwordCallback Error", e);
                 }
-                
+
                 try {
                     Method method = passwordCallback.getClass().getMethod("setProperties", Properties.class);
                     method.invoke(passwordCallback, properties);

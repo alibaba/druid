@@ -422,4 +422,66 @@ public final class JdbcUtils {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
     }
+    
+    public static String getDbType(String rawUrl, String driverClassName) {
+        if (rawUrl == null) {
+            return null;
+        }
+        
+        if (rawUrl.startsWith("jdbc:derby:")) {
+            return "derby";
+        } else if (rawUrl.startsWith("jdbc:mysql:")) {
+            return "mysql";
+        } else if (rawUrl.startsWith("jdbc:oracle:")) {
+            return "oracle";
+        } else if (rawUrl.startsWith("jdbc:microsoft:")) {
+            return "sqlserver";
+        } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
+            return "sybase";
+        } else if (rawUrl.startsWith("jdbc:jtds:")) {
+            return "jtds";
+        } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
+            return "mock";
+        } else if (rawUrl.startsWith("jdbc:postgresql:")) {
+            return "postgresql";
+        } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
+            return "hsql";
+        } else if (rawUrl.startsWith("jdbc:db2:")) {
+            return "db2";
+        } else if (rawUrl.startsWith("jdbc:sqlite:")) {
+            return "sqlite";
+        } else if (rawUrl.startsWith("jdbc:ingres:")) {
+            return "ingres";
+        } else if (rawUrl.startsWith("jdbc:h2:")) {
+            return "h2";
+        } else if (rawUrl.startsWith("jdbc:mckoi:")) {
+            return "mckoi";
+        } else if (rawUrl.startsWith("jdbc:cloudscape:")) {
+            return "cloudscape";
+        } else if (rawUrl.startsWith("jdbc:informix-sqli:")) {
+            return "informix";
+        } else if (rawUrl.startsWith("jdbc:timesten:")) {
+            return "timesten";
+        } else if (rawUrl.startsWith("jdbc:as400:")) {
+            return "as400";
+        } else if (rawUrl.startsWith("jdbc:sapdb:")) {
+            return "sapdb";
+        } else if (rawUrl.startsWith("jdbc:JSQLConnect:")) {
+            return "JSQLConnect";
+        } else if (rawUrl.startsWith("jdbc:JTurbo:")) {
+            return "JTurbo";
+        } else if (rawUrl.startsWith("jdbc:firebirdsql:")) {
+            return "firebirdsql";
+        } else if (rawUrl.startsWith("jdbc:interbase:")) {
+            return "interbase";
+        } else if (rawUrl.startsWith("jdbc:pointbase:")) {
+            return "pointbase";
+        } else if (rawUrl.startsWith("jdbc:edbc:")) {
+            return "edbc";
+        } else if (rawUrl.startsWith("jdbc:mimer:multi1:")) {
+            return "mimer";
+        } else {
+            return null;
+        }
+    }
 }

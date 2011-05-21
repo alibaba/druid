@@ -36,6 +36,7 @@ import javax.security.auth.callback.PasswordCallback;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -52,10 +53,17 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
 
     private Properties                  properties;
 
+    private String                      dbType;
+
     public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
         super();
         this.rawDriver = rawDriver;
         this.config = config;
+        this.dbType = JdbcUtils.getDbType(config.getRawUrl(), config.getRawDriverClassName());
+    }
+
+    public String getDbType() {
+        return dbType;
     }
 
     public Driver getRawDriver() {

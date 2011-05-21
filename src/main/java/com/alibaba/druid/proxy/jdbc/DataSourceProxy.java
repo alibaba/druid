@@ -26,6 +26,8 @@ import com.alibaba.druid.filter.Filter;
 public interface DataSourceProxy {
 
     String getName();
+    
+    String getDbType();
 
     Driver getRawDriver();
 
