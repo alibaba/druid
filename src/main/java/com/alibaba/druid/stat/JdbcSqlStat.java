@@ -50,6 +50,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong concurrentMax         = new AtomicLong();
     private String           name;
     private String           file;
+    private String           dbType;
 
     private long             executeNanoSpanMaxOccurTime;
 
@@ -59,6 +60,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 
     public String getDataSource() {
         return dataSource;
@@ -310,11 +319,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.LONG,
                 SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
-                SimpleType.STRING, SimpleType.DATE };
+                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING };
 
         String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
                 "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", "RunningCount", "Name", "File",
-                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime" };
+                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType" };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -365,6 +374,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             map.put("LastErrorStackTrace", null);
             map.put("LastErrorTime", null);
         }
+
+        map.put("DbType", dbType);
 
         return new CompositeDataSupport(getCompositeType(), map);
     }

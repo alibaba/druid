@@ -112,6 +112,8 @@ public class SQLParser {
     private int errorEndPos = -1;
 
     protected void setErrorEndPos(int errPos) {
-        if (errPos > errorEndPos) errorEndPos = errPos;
+        if (errPos > errorEndPos) {
+            errorEndPos = errPos;
+        }
     }
 }
