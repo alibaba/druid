@@ -182,14 +182,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLBetweenExpr x) {
         x.getTestExpr().accept(this);
+        
         if (x.isNot()) {
             print(" NOT BETWEEN ");
         } else {
             print(" BETWEEN ");
         }
+        
         x.getBeginExpr().accept(this);
         print(" AND ");
         x.getEndExpr().accept(this);
+        
         return false;
     }
 
