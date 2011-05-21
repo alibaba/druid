@@ -34,6 +34,11 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<url>http://code.alibabatech.com/wiki/display/Druid/Home</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://code.alibabatech.com/jira/browse/DRUID</url>
+	</issueManagement>
 	<build>
         <extensions>
             <extension>
