@@ -102,7 +102,7 @@ public class SELECT_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM t1\nWHERE column1 = (SELECT column1\n\tFROM t2);", text);
+        Assert.assertEquals("SELECT *\nFROM t1\nWHERE column1 = (\n\tSELECT column1\n\tFROM t2\n\t);", text);
     }
 
     public void test_7() throws Exception {
