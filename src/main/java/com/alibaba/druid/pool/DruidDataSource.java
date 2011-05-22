@@ -50,7 +50,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final Condition                                                      notEmpty                    = lock.newCondition();
     private final Condition                                                      notMaxActive                = lock.newCondition();
     private final Condition                                                      lowWater                    = lock.newCondition();
-    private final Condition                                                      highWater                   = lock.newCondition();
     private final Condition                                                      idleTimeout                 = lock.newCondition();
 
     // stats
@@ -393,11 +392,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw new NullPointerException();
         }
 
+        e.setLastActiveMillis(System.currentTimeMillis());
         connections[count++] = e;
-
-        if (count == maxIdle + 1) {
-            highWater.signal();
-        }
 
         notEmpty.signal();
     }
@@ -550,7 +546,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
-            final long highWaterWaitTime = 1000;
             for (;;) {
                 // 从前面开始删除
                 try {
@@ -562,25 +557,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         break;
                     }
 
+                    if (count <= 0) {
+                        Thread.sleep(minEvictableIdleTimeMillis);
+                        continue;
+                    }
+
                     ConnectionHolder first = null;
                     lock.lock();
                     try {
-                        if (count <= 0) {
-                            continue;
-                        }
-
-                        if (count <= minIdle) {
-                            highWater.await(highWaterWaitTime, TimeUnit.MILLISECONDS);
-                            continue;
-                        }
-
                         first = connections[0];
 
                         if (first == null) {
                             continue;
                         }
 
-                        long millis = System.currentTimeMillis() - first.getTimeMillis();
+                        long millis = System.currentTimeMillis() - first.getLastActiveMillis();
                         if (millis < minEvictableIdleTimeMillis) {
                             idleTimeout.await(millis, TimeUnit.MILLISECONDS);
                             continue;
@@ -588,7 +579,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                         // removete first
                         System.arraycopy(connections, 1, connections, 0, count - 1);
-                        connections[count - 1] = null;
+                        connections[--count] = null;
                     } finally {
                         lock.unlock();
                     }

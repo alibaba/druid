@@ -74,6 +74,9 @@ public class DruidDataSourceUIManager extends JFrame {
 
     private JLabel                                  lbConnecting                  = new JLabel("Connecting : ");
     private JTextField                              txtConnecting                 = new JTextField("0");
+    
+    private JLabel                                  lbValidationQuery                  = new JLabel("ValidationQuery : ");
+    private JTextField                              txtValidationQuery                 = new JTextField("");
 
     private AtomicInteger                           connectingCount               = new AtomicInteger();
 
@@ -228,11 +231,23 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMinEvictableIdleTimeMillis, 0, SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, txtUrl);
+        
+        // ////
+        
+        mainPanel.add(lbValidationQuery);
+        layout.putConstraint(SpringLayout.NORTH, lbValidationQuery, 10, SpringLayout.SOUTH, lbMinEvictableIdleTimeMillis);
+        layout.putConstraint(SpringLayout.WEST, lbValidationQuery, 0, SpringLayout.WEST, lbUrl);
+        layout.putConstraint(SpringLayout.EAST, lbValidationQuery, 0, SpringLayout.EAST, lbUrl);
+        
+        mainPanel.add(txtValidationQuery);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtValidationQuery, 0, SpringLayout.VERTICAL_CENTER, lbValidationQuery);
+        layout.putConstraint(SpringLayout.WEST, txtValidationQuery, 0, SpringLayout.WEST, txtUrl);
+        layout.putConstraint(SpringLayout.EAST, txtValidationQuery, 0, SpringLayout.EAST, txtUrl);
 
         // ////
 
         mainPanel.add(btnInitDataSource);
-        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbMinEvictableIdleTimeMillis);
+        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbValidationQuery);
         layout.putConstraint(SpringLayout.WEST, btnInitDataSource, 0, SpringLayout.WEST, lbUrl);
         btnInitDataSource.addActionListener(new ActionListener() {
 
