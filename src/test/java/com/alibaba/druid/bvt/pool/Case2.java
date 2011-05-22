@@ -50,7 +50,7 @@ public class Case2 extends TestCase {
 
         Assert.assertEquals(0, dataSource.getCreateCount());
         Assert.assertEquals(0, dataSource.getDestroyCount());
-        Assert.assertEquals(0, dataSource.getPoolingSize());
+        Assert.assertEquals(0, dataSource.getPoolingCount());
 
         Connection[] connections = new Connection[COUNT];
         for (int i = 0; i < COUNT; ++i) {

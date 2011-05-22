@@ -38,7 +38,7 @@ public interface DruidDataSourceMBean {
 
     long getConnectErrorCount();
 
-    int getPoolingSize();
+    int getPoolingCount();
 
     long getRecycleCount();
 

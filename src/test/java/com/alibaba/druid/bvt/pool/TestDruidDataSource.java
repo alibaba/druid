@@ -38,7 +38,7 @@ public class TestDruidDataSource extends TestCase {
         Assert.assertEquals(0, dataSource.getConnectCount());
         Assert.assertEquals(0, dataSource.getConnectErrorCount());
         Assert.assertEquals(0, dataSource.getCloseCount());
-        Assert.assertEquals(0, dataSource.getPoolingSize());
+        Assert.assertEquals(0, dataSource.getPoolingCount());
 
         Connection conn = dataSource.getConnection();
 
@@ -49,7 +49,7 @@ public class TestDruidDataSource extends TestCase {
         Assert.assertEquals(0, dataSource.getCloseCount());
         Assert.assertEquals(0, dataSource.getRecycleCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
-        Assert.assertEquals(9, dataSource.getPoolingSize());
+        Assert.assertEquals(9, dataSource.getPoolingCount());
 
         conn.close();
 
@@ -58,7 +58,7 @@ public class TestDruidDataSource extends TestCase {
         Assert.assertEquals(1, dataSource.getCloseCount());
         Assert.assertEquals(1, dataSource.getRecycleCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(10, dataSource.getPoolingSize());
+        Assert.assertEquals(10, dataSource.getPoolingCount());
 
         conn.close(); // 重复close
 

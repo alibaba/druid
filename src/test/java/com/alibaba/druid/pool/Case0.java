@@ -63,7 +63,7 @@ public class Case0 extends TestCase {
 
         Assert.assertEquals(0, dataSource.getCreateCount());
         Assert.assertEquals(0, dataSource.getDestroyCount());
-        Assert.assertEquals(0, dataSource.getPoolingSize());
+        Assert.assertEquals(0, dataSource.getPoolingCount());
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             Connection conn = dataSource.getConnection();
@@ -74,7 +74,7 @@ public class Case0 extends TestCase {
             Assert.assertEquals(1, dataSource.getActiveCount());
             Assert.assertEquals(i, dataSource.getCloseCount());
             Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(initialSize - 1, dataSource.getPoolingSize());
+            Assert.assertEquals(initialSize - 1, dataSource.getPoolingCount());
             Assert.assertEquals(i, dataSource.getRecycleCount());
 
             conn.close();
@@ -83,7 +83,7 @@ public class Case0 extends TestCase {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(i + 1, dataSource.getCloseCount());
             Assert.assertEquals(0, dataSource.getConnectErrorCount());
-            Assert.assertEquals(initialSize, dataSource.getPoolingSize());
+            Assert.assertEquals(initialSize, dataSource.getPoolingCount());
             Assert.assertEquals(i + 1, dataSource.getRecycleCount());
         }
 

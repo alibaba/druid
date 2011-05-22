@@ -48,7 +48,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final ReentrantLock                                                  lock                        = new ReentrantLock();
 
     private final Condition                                                      notEmpty                    = lock.newCondition();
-    private final Condition                                                      notFullActive               = lock.newCondition();
+    private final Condition                                                      notMaxActive                = lock.newCondition();
     private final Condition                                                      lowWater                    = lock.newCondition();
     private final Condition                                                      highWater                   = lock.newCondition();
     private final Condition                                                      idleTimeout                 = lock.newCondition();
@@ -110,7 +110,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.driverClass == null || this.driverClass.isEmpty()) {
                 this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
             }
-            
+
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             try {
@@ -282,13 +282,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
-            if (isTestOnReturn()) {
-                boolean validate = testConnection(conn);
-                if (!validate) {
-                    return;
-                }
-            }
-
             boolean isAutoCommit = conn.getAutoCommit();
             boolean isReadOnly = conn.isReadOnly();
 
@@ -303,12 +296,32 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 conn.setAutoCommit(true);
             }
 
+            // 第四步，检查是符合MaxIdle的设定
+            if (count >= maxIdle) {
+                lock.lock();
+                try {
+                    conn.close();
+                    decrementActiveCount();
+                } finally {
+                    lock.unlock();
+                }
+                return;
+            }
+
+            //
+            if (isTestOnReturn()) {
+                boolean validate = testConnection(conn);
+                if (!validate) {
+                    return;
+                }
+            }
+
             lock.lockInterruptibly();
             try {
                 decrementActiveCount();
                 closeCount++;
 
-                // 第四部，加入队列中(putLast)
+                // 第六步，加入队列中(putLast)
                 putLast(pooledConnection.getConnectionHolder());
                 recycleCount++;
             } finally {
@@ -363,7 +376,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     void decrementActiveCount() {
         activeCount--;
-        notFullActive.signal();
+        notMaxActive.signal();
     }
 
     void decrementActiveCountWithLock() {
@@ -391,7 +404,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     ConnectionHolder takeLast() throws InterruptedException {
         while (activeCount >= maxActive) {
-            notFullActive.await();
+            notMaxActive.await();
         }
 
         try {
@@ -425,13 +438,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         for (;;) {
             if (activeCount == maxActive) {
                 long startNano = System.nanoTime();
-                notFullActive.awaitNanos(nanos);
+                notMaxActive.awaitNanos(nanos);
                 nanos -= (System.nanoTime() - startNano);
             }
 
             if (count == 0) {
                 lowWater.signal();
-                
+
                 notEmpty.awaitNanos(nanos);
 
                 if (count == 0) {
@@ -478,7 +491,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     @Override
-    public int getPoolingSize() {
+    public int getPoolingCount() {
         return count;
     }
 
@@ -537,11 +550,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
+            final long highWaterWaitTime = 1000;
             for (;;) {
                 // 从前面开始删除
                 try {
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
+                    }
+
+                    if (Thread.interrupted()) {
+                        break;
                     }
 
                     ConnectionHolder first = null;
@@ -551,12 +569,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             continue;
                         }
 
-                        if (count <= maxIdle) {
-                            highWater.await();
+                        if (count <= minIdle) {
+                            highWater.await(highWaterWaitTime, TimeUnit.MILLISECONDS);
                             continue;
                         }
 
                         first = connections[0];
+
+                        if (first == null) {
+                            continue;
+                        }
 
                         long millis = System.currentTimeMillis() - first.getTimeMillis();
                         if (millis < minEvictableIdleTimeMillis) {
