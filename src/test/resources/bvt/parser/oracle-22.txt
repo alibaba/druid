@@ -7,11 +7,11 @@ from
 				SELECT DISTINCT * 
 				FROM (
 					SELECT lower(a.role_name) || '#' || a.permission_id as key, 'y' as value 
-					FROM app_role_permission A 
+					FROM f_p_23 A 
 					WHERE a.is_deleted = 'n' 
 				UNION ALL 
 				SELECT lower(b.role_name) || '#' || a.permission_id, 'y' 
-				FROM app_role_permission A, app_role_base_role B 
+				FROM f_p_23 A, app_role_base_role B 
 				WHERE a.is_deleted = 'n' AND b.is_deleted = 'n' AND a.role_name = b.base_role_name
 				)
 			) c 
@@ -28,11 +28,11 @@ FROM (SELECT rownum AS rnm, z.*
 	FROM (SELECT *
 		FROM (SELECT DISTINCT *
 			FROM (SELECT lower(a.role_name) || '#' || a.permission_id AS KEY, 'y' AS value
-				FROM app_role_permission A
+				FROM f_p_23 A
 				WHERE a.is_deleted = 'n'
 				UNION ALL
 				SELECT lower(b.role_name) || '#' || a.permission_id, 'y'
-				FROM app_role_permission A, app_role_base_role B
+				FROM f_p_23 A, app_role_base_role B
 				WHERE a.is_deleted = 'n' AND b.is_deleted = 'n' AND a.role_name = b.base_role_name
 				)
 			) c
