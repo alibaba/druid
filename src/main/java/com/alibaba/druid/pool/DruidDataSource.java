@@ -106,21 +106,27 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.jdbcUrl = this.jdbcUrl.trim();
             }
 
-            if (this.driverClass == null || this.driverClass.isEmpty()) {
-                this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
-            }
+            if (this.driver == null) {
+                if (this.driverClass == null || this.driverClass.isEmpty()) {
+                    this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
+                }
 
+                try {
+                    driver = (Driver) Class.forName(this.driverClass).newInstance();
+                } catch (IllegalAccessException e) {
+                    throw new SQLException(e.getMessage(), e);
+                } catch (InstantiationException e) {
+                    throw new SQLException(e.getMessage(), e);
+                } catch (ClassNotFoundException e) {
+                    throw new SQLException(e.getMessage(), e);
+                }
+            } else {
+                if (this.driverClass == null) {
+                    this.driverClass = driver.getClass().getName();
+                }
+            }
+            
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
-
-            try {
-                driver = (Driver) Class.forName(this.driverClass).newInstance();
-            } catch (IllegalAccessException e) {
-                throw new SQLException(e.getMessage(), e);
-            } catch (InstantiationException e) {
-                throw new SQLException(e.getMessage(), e);
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e.getMessage(), e);
-            }
 
             for (Filter filter : filters) {
                 filter.init(this);

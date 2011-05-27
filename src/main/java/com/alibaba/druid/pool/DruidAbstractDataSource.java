@@ -594,6 +594,10 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     public Driver getDriver() {
         return driver;
     }
+    
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
 
     @Override
     public List<Filter> getFilters() {
@@ -715,6 +719,10 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
                     conn = new FilterChainImpl(dataSource).connection_connect(info);
                 } else {
                     conn = dataSource.getDriver().connect(url, info);
+                    
+                    if (conn == null) {
+                        throw new SQLException("connect error, url " + url);
+                    }
                 }
 
                 conn.setAutoCommit(dataSource.isDefaultAutoCommit());
