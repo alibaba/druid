@@ -55,6 +55,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     public final static boolean DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean DEFAULT_WHILE_IDLE                        = false;
     public static final long    DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final long    DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
     public static final int     DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 1;
 
     /**
@@ -132,6 +133,8 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
 
     protected String            dbType;
 
+    protected long              timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
+
     public String getDbType() {
         return dbType;
     }
@@ -171,6 +174,14 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
         } else {
             this.connectionInitSqls = null;
         }
+    }
+
+    public long getTimeBetweenConnectErrorMillis() {
+        return timeBetweenConnectErrorMillis;
+    }
+
+    public void setTimeBetweenConnectErrorMillis(long timeBetweenConnectErrorMillis) {
+        this.timeBetweenConnectErrorMillis = timeBetweenConnectErrorMillis;
     }
 
     public int getMaxOpenPreparedStatements() {
@@ -594,7 +605,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     public Driver getDriver() {
         return driver;
     }
-    
+
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
@@ -719,7 +730,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
                     conn = new FilterChainImpl(dataSource).connection_connect(info);
                 } else {
                     conn = dataSource.getDriver().connect(url, info);
-                    
+
                     if (conn == null) {
                         throw new SQLException("connect error, url " + url);
                     }

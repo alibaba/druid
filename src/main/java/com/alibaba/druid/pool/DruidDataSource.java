@@ -536,6 +536,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 } catch (SQLException e) {
                     printStackTrace(e);
+                    
+                    if (timeBetweenConnectErrorMillis > 0) {
+                        try {
+                            Thread.sleep(timeBetweenConnectErrorMillis);
+                        } catch (InterruptedException e1) {
+                            break;
+                        }
+                    }
+                } catch (RuntimeException e) {
+                    printStackTrace(e);
+                } catch (Error e) {
+                    printStackTrace(e);
+                    break;
                 } finally {
                     lock.unlock();
                 }
