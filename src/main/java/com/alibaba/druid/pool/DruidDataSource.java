@@ -124,7 +124,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.driverClass = driver.getClass().getName();
                 }
             }
-            
+
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             for (Filter filter : filters) {
@@ -191,6 +191,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
 
+        for (;;) {
+            PoolableConnection poolalbeConnection = getConnectionInternal();
+
+            if (isTestOnBorrow()) {
+                boolean validate = testConnection(poolalbeConnection.getRawConnection());
+                if (!validate) {
+                    continue;
+                }
+            }
+
+            return poolalbeConnection;
+        }
+    }
+
+    private PoolableConnection getConnectionInternal() throws SQLException {
+        PoolableConnection poolalbeConnection;
+
         try {
             lock.lockInterruptibly();
 
@@ -208,27 +225,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     throw new SQLException("can not get connection");
                 }
 
-                if (isTestOnBorrow()) {
-                    boolean validate = testConnection(holder.getConnection());
-                    if (!validate) {
-                        continue;
-                    }
-                }
-
                 break;
             }
 
             holder.incrementUseCount();
             activeCount++;
 
-            PoolableConnection poolalbeConnection = new PoolableConnection(holder);
+            poolalbeConnection = new PoolableConnection(holder);
 
             if (activeConnectionTraceEnable) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
                 activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
-
-            return poolalbeConnection;
         } catch (InterruptedException e) {
             connectErrorCount++;
             throw new SQLException(e.getMessage(), e);
@@ -238,6 +246,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+        return poolalbeConnection;
     }
 
     /**
@@ -511,7 +520,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 } catch (SQLException e) {
                     printStackTrace(e);
-                    
+
                     if (timeBetweenConnectErrorMillis > 0) {
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);

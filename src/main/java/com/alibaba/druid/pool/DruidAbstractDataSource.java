@@ -635,7 +635,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
         }
     }
 
-    public void validateConnection(Connection conn) throws SQLException {
+    protected void validateConnection(Connection conn) throws SQLException {
         String query = getValidationQuery();
         if (conn.isClosed()) {
             throw new SQLException("validateConnection: connection closed");

@@ -34,7 +34,7 @@ import com.jolbox.bonecp.BoneCPDataSource;
  * 类Case1.java的实现描述：TODO 类实现描述 
  * @author admin 2011-5-28 下午03:47:40
  */
-public class Case1 extends TestCase {
+public class Case2 extends TestCase {
 
     private String jdbcUrl;
     private String user;
@@ -45,9 +45,10 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 2;
     private int    maxActive       = 2;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 2;
+    private int    threadCount     = 1;
     private int    loopCount       = 5;
     final int      LOOP_COUNT      = 1000 * 1000;
+    private boolean testOnBorrow = true;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -70,7 +71,7 @@ public class Case1 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(false);
+        dataSource.setTestOnBorrow(testOnBorrow);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "druid", threadCount);
@@ -92,7 +93,7 @@ public class Case1 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setTestOnBorrow(false);
+        dataSource.setTestOnBorrow(testOnBorrow);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "dbcp", threadCount);
@@ -100,7 +101,8 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void test_2() throws Exception {
+    // 当testOnBorrow为true时，BoneCP的处理策略不一样，所以略过
+    public void f_test_2() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
