@@ -21,7 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -633,6 +635,85 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
         }
     }
 
+    public void validateConnection(Connection conn) throws SQLException {
+        String query = getValidationQuery();
+        if (conn.isClosed()) {
+            throw new SQLException("validateConnection: connection closed");
+        }
+        if (null != query) {
+            Statement stmt = null;
+            ResultSet rset = null;
+            try {
+                stmt = conn.createStatement();
+                if (getValidationQueryTimeout() > 0) {
+                    stmt.setQueryTimeout(getValidationQueryTimeout());
+                }
+                rset = stmt.executeQuery(query);
+                if (!rset.next()) {
+                    throw new SQLException("validationQuery didn't return a row");
+                }
+            } finally {
+                if (rset != null) {
+                    try {
+                        rset.close();
+                    } catch (Exception t) {
+                        // ignored
+                    }
+                }
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (Exception t) {
+                        // ignored
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean testConnection(Connection conn) {
+        try {
+            String query = getValidationQuery();
+            if (conn.isClosed()) {
+                return false;
+            }
+            if (null != query) {
+                Statement stmt = null;
+                ResultSet rset = null;
+                try {
+                    stmt = conn.createStatement();
+                    if (getValidationQueryTimeout() > 0) {
+                        stmt.setQueryTimeout(getValidationQueryTimeout());
+                    }
+                    rset = stmt.executeQuery(query);
+                    if (!rset.next()) {
+                        return false;
+                    }
+                } finally {
+                    if (rset != null) {
+                        try {
+                            rset.close();
+                        } catch (Exception t) {
+                            // ignored
+                        }
+                    }
+                    if (stmt != null) {
+                        try {
+                            stmt.close();
+                        } catch (Exception t) {
+                            // ignored
+                        }
+                    }
+                }
+            }
+
+            return true;
+        } catch (SQLException ex) {
+            // skip
+            return false;
+        }
+    }
+
     public long getCreateTimespanNano() {
         return createTimespan;
     }
@@ -748,6 +829,8 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
                 if (dataSource.getDefaultCatalog() != null && dataSource.getDefaultCatalog().length() != 0) {
                     conn.setCatalog(dataSource.getDefaultCatalog());
                 }
+
+                dataSource.validateConnection(conn);
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
                 throw ex;

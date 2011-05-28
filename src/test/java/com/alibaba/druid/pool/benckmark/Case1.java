@@ -42,6 +42,7 @@ public class Case1 extends TestCase {
     private String validationQuery = "SELECT 1";
     private int    threadCount     = 2;
     private int    loopCount       = 5;
+    final int      LOOP_COUNT      = 1000 * 1000;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -64,7 +65,7 @@ public class Case1 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(false);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "druid", threadCount);
@@ -86,7 +87,7 @@ public class Case1 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(false);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "dbcp", threadCount);
@@ -111,7 +112,7 @@ public class Case1 extends TestCase {
         dataSource.setPartitionCount(1);
         dataSource.setAcquireIncrement(5);
         dataSource.setIdleConnectionTestPeriod(0L);
-        dataSource.setDisableConnectionTracking(true);
+        // dataSource.setDisableConnectionTracking(true);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "boneCP", threadCount);
@@ -129,8 +130,8 @@ public class Case1 extends TestCase {
                 public void run() {
                     try {
                         startLatch.await();
-                        final int COUNT = 1000 * 1000;
-                        for (int i = 0; i < COUNT; ++i) {
+
+                        for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
                             conn.close();
                         }

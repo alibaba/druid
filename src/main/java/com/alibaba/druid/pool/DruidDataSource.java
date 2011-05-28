@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -179,30 +178,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public Set<PoolableConnection> getActiveConnections() {
         return this.activeConnections.keySet();
-    }
-
-    private boolean testConnection(Connection conn) {
-        String query = getValidationQuery();
-        if (query == null || query.length() == 0) {
-            return true;
-        }
-
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (SQLException e) {
-            return false;
-        } finally {
-            JdbcUtils.close(rs);
-            JdbcUtils.close(stmt);
-        }
     }
 
     @Override
