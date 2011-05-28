@@ -116,7 +116,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         TabularData data = new TabularDataSupport(tabularType);
 
         for (JdbcDataSourceStat dataSource : dataSources.values()) {
-            ConcurrentMap<String, JdbcSqlStat> statMap = dataSource.getSqlStatisticMap();
+            ConcurrentMap<String, JdbcSqlStat> statMap = dataSource.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 data.put(entry.getValue().getCompositeData());
             }

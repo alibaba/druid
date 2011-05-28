@@ -84,12 +84,8 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return url;
     }
 
-    public JdbcSqlStat getSqlCounter(String sql) {
+    public JdbcSqlStat getSqlStat(String sql) {
         return this.sqlStatMap.get(sql);
-    }
-
-    public ConcurrentMap<String, JdbcSqlStat> getSqlStatisticMap() {
-        return this.sqlStatMap;
     }
 
     @Override
@@ -107,7 +103,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return data;
     }
 
-    public static StatFilter getCounterFilter(DataSourceProxy dataSource) {
+    public static StatFilter getStatFilter(DataSourceProxy dataSource) {
         for (Filter filter : dataSource.getFilters()) {
             if (filter instanceof StatFilter) {
                 return (StatFilter) filter;
@@ -117,7 +113,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return null;
     }
 
-    public JdbcSqlStat getSqlCounter(long id) {
+    public JdbcSqlStat getSqlStat(long id) {
         for (Map.Entry<String, JdbcSqlStat> entry : this.sqlStatMap.entrySet()) {
             if (entry.getValue().getId() == id) {
                 return entry.getValue();

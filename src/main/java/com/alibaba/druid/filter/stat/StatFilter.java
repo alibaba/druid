@@ -613,7 +613,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public final JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
-        JdbcSqlStat sqlStat = dataSourceStat.getSqlStatMap().get(sql);
+        final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = dataSourceStat.getSqlStatMap();
+        JdbcSqlStat sqlStat = sqlStatMap.get(sql);
         if (sqlStat == null) {
             JdbcSqlStat newSqlStat = new JdbcSqlStat(sql);
             if (dataSourceStat.getSqlStatMap().putIfAbsent(sql, newSqlStat) == null) {
@@ -659,7 +660,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat getSqlStat(long id) {
-        return dataSourceStat.getSqlCounter(id);
+        return dataSourceStat.getSqlStat(id);
     }
 
     @Override
