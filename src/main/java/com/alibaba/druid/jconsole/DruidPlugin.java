@@ -11,9 +11,11 @@ import com.sun.tools.jconsole.JConsolePlugin;
 public class DruidPlugin extends JConsolePlugin {
 
     private final Map<String, JPanel> tabs = new HashMap<String, JPanel>();
+    private DruidPanel                panel;
 
     public DruidPlugin(){
-        tabs.put("Druid", new DruidPanel());
+        panel = new DruidPanel();
+        tabs.put("Druid", panel);
     }
 
     @Override
@@ -23,11 +25,11 @@ public class DruidPlugin extends JConsolePlugin {
 
     @Override
     public SwingWorker<?, ?> newSwingWorker() {
-        SwingWorker worer = new SwingWorker() {
+        SwingWorker<?, ?> worer = new SwingWorker<Object, Object>() {
 
             @Override
             protected Object doInBackground() throws Exception {
-                return null;
+                return DruidPlugin.this.doInBackground();
             }
 
         };
@@ -35,4 +37,7 @@ public class DruidPlugin extends JConsolePlugin {
         return worer;
     }
 
+    protected Object doInBackground() throws Exception {
+        return panel.doInBackground(this.getContext());
+    }
 }
