@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -40,14 +41,14 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
         return super.visit(x);
     }
-
+    
     public SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
         if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
             x.getLeft().getAttributes().put(ATTR_PARAMS_SKIP, true);
             x.getRight().getAttributes().put(ATTR_PARAMS_SKIP, true);
             return x;
         }
-        
+
         if (x.getRight() instanceof SQLLiteralExpr) {
             x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), new SQLVariantRefExpr("?"));
         }
@@ -61,7 +62,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         }
 
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
-            x = new SQLBinaryOpExpr((SQLBinaryOpExpr) x.getLeft(), x.getOperator(), x.getRight());
+            x = new SQLBinaryOpExpr(merge((SQLBinaryOpExpr) x.getLeft()), x.getOperator(), x.getRight());
         }
 
         // ID = ? OR ID = ? => ID = ?
@@ -70,33 +71,62 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
                 SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
                 SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
 
-                if (left.getOperator() == SQLBinaryOperator.Equality && right.getOperator() == SQLBinaryOperator.Equality) {
-                    if ((left.getLeft() instanceof SQLIdentifierExpr) && (right.getLeft() instanceof SQLIdentifierExpr)) {
-                        String leftColumn = left.getLeft().toString();
-                        String rightColumn = right.getLeft().toString();
+                if (mergeEqual(left, right)) {
+                    return left;
+                }
 
-                        if (leftColumn.equals(rightColumn)) {
-                            if ((left.getRight() instanceof SQLVariantRefExpr) && (right.getRight() instanceof SQLVariantRefExpr)) {
-                                return left; // merge
-                            }
-                        }
-                    }
-                    
-                    if ((left.getLeft() instanceof SQLPropertyExpr) && (right.getLeft() instanceof SQLPropertyExpr)) {
-                        String leftColumn = left.getLeft().toString();
-                        String rightColumn = right.getLeft().toString();
-
-                        if (leftColumn.equals(rightColumn)) {
-                            if ((left.getRight() instanceof SQLVariantRefExpr) && (right.getRight() instanceof SQLVariantRefExpr)) {
-                                return left; // merge
-                            }
-                        }
+                if (isLiteralExpr(left.getLeft()) && left.getOperator() == SQLBinaryOperator.BooleanOr) {
+                    if (mergeEqual(left.getRight(), right)) {
+                        return left;
                     }
                 }
             }
         }
 
         return x;
+    }
+
+    private boolean mergeEqual(SQLExpr a, SQLExpr b) {
+        if (!(a instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+        if (!(b instanceof SQLBinaryOpExpr)) {
+            return false;
+        }
+
+        SQLBinaryOpExpr binaryA = (SQLBinaryOpExpr) a;
+        SQLBinaryOpExpr binaryB = (SQLBinaryOpExpr) b;
+
+        if (binaryA.getOperator() != SQLBinaryOperator.Equality) {
+            return false;
+        }
+
+        if (binaryB.getOperator() != SQLBinaryOperator.Equality) {
+            return false;
+        }
+
+        if (!(binaryA.getRight() instanceof SQLLiteralExpr || binaryA.getRight() instanceof SQLVariantRefExpr)) {
+            return false;
+        }
+
+        if (!(binaryB.getRight() instanceof SQLLiteralExpr || binaryB.getRight() instanceof SQLVariantRefExpr)) {
+            return false;
+        }
+
+        return binaryA.getLeft().toString().equals(binaryB.getLeft().toString());
+    }
+
+    private boolean isLiteralExpr(SQLExpr expr) {
+        if (expr instanceof SQLLiteralExpr) {
+            return true;
+        }
+
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binary = (SQLBinaryOpExpr) expr;
+            return isLiteralExpr(binary.getLeft()) && isLiteralExpr(binary.getRight());
+        }
+
+        return false;
     }
     
     public boolean visit(SQLIntegerExpr x) {
