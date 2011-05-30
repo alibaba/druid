@@ -21,6 +21,8 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         validate("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT * FROM T WHERE A.ID = ?");
         validateOracle("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT * FROM T WHERE A.ID = ?; ");
         validate("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2) VALUES (?, ?)");
+        
+        System.out.println("SELECT * FORM A WHERE ID = (##)".replaceAll("##", "?"));
     }
 
     void validate(String sql, String expect) {
