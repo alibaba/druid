@@ -522,9 +522,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
                     connections[count++] = poolableConnection;
 
-                    if (count == 1) {
-                        notEmpty.signal();
-                    }
+                    notEmpty.signal();
 
                 } catch (InterruptedException e) {
                     break;

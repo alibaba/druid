@@ -40,9 +40,9 @@ public class Case2 extends TestCase {
         properties.put("maxActive", "100");
         properties.put("maxIdle", "30");
         properties.put("maxWait", "10000");
-        properties.put("url", "jdbc:derby:memory:tomcat-jndi;create=true");
+        properties.put("url", "jdbc:mock:");
         properties.put("filters", "stat");
-        properties.put("validationQuery", "");
+        properties.put("validationQuery", "SELECT 1");
         final DruidDataSource dataSource = (DruidDataSource) com.alibaba.druid.pool.DruidDataSourceFactory.createDataSource(properties);
         JMXUtils.register("com.alibaba.druid:type=DruidDataSource", dataSource);
 

@@ -571,6 +571,7 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     protected void printStackTrace(Throwable e) {
         if (logWriter != null) {
             e.printStackTrace(logWriter);
+            logWriter.flush();
         }
     }
 
