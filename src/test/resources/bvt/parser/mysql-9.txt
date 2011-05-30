@@ -1,42 +1,11 @@
-SELECT 	       * 	       
-FROM 	         
-	(SELECT  	           
-		records.*, 	           
-		rownum as row_num 	         
-		FROM 	                      
-		（ SELECT  	                
-			re.exchange_record_id as recordId, 	                
-			re.GOODS_TITLE as goodsTitle, 	                
-			re.GOODS_ATTRIBUTE as goodsAttribute, 	                
-			re.GOODS_USAGE as goodsUsage, 	                
-			re.goods_Id as goodsId, 	                
-			re.EXPRESS_company as expressCompany, 	                
-			re.EXPRESS_number as expressNumber, 	                
-			re.cost_score as costScore, 	                
-			re.exchange_Status as exchangeStatus, 	                
-			re.remark as remark, 	                
-			re.receiver_Name as receiverName, 	                
-			re.receiver_Address as receiverAddress, 	                
-			re.receiver_post_code as receiverPostCode, 	                
-			re.receiver_mobile_phon as receiverMobilePhone, 	                
-			re.receiver_phone_numer as receiverPhoneNumber, 	                
-			re.change_date as createDate, 	                accoun.memberid as memberId 	             
-			FROM  	                JF_EXCHANGE_RECORD re,  	                Q_CUSTINFO accoun  	             
-			WHERE re.custId = accoun.custId(+) 	               	                 
-				AND  	                     re.exchange_Status = ? 	                  	                 
-				AND  	                    (re.goods_Attribute = ? ) 	                  	                  	                 
-				AND  	                     re.change_Date >= to_date(? || ' 00:00:00', 'yyyy-mm-dd hh24:mi:ss') 	                       	                 
-				AND  	                     re.change_Date <= to_date(? || ' 23:59:59', 'yyyy-mm-dd hh24:mi:ss') 	                   	                   	                 	             
-				ORDER BY 	                 re.exchange_record_id DESC   	             )records 	               
-				WHERE rownum < ? 	           ) 
-				WHERE 	              row_num > ?      
-
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName" , d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule" FROM mi_alarm_rule_status d LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id LEFT JOIN instance b ON b.number = c.inst_num AND b.app_num = c.app_num AND b.hostname = c.hostname LEFT JOIN app a ON a.number = b.app_num WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? 
+OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? ORDER BY lastChangeTimeOfAlarmRule DESC LIMIT ?, ?
 ---------------------------
-SELECT a.examine_id AS examineId, a.examine_name AS examineName, a.level_limit AS levelLimit
-FROM c_examinepaper a , (SELECT examine_id
-	FROM c_examinepaper
-	WHERE level_limit = ? AND status = 1
-	MINUS
-	SELECT DISTINCT examine_id
-	FROM course)
-WHERE a.examine_id = b.examine_id
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName"
+	, d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule"
+FROM mi_alarm_rule_status d LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id LEFT JOIN instance b ON b.number = c.inst_num AND b.app_num = c.app_num AND b.hostname = c.hostname LEFT JOIN app a ON a.number = b.app_num
+WHERE 1 = 0 OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ?
+ORDER BY lastChangeTimeOfAlarmRule DESC
+LIMIT ?, ?
+---------------------------
+SELECT a.id AS "appId", a.name AS "appName", b.number AS "instanceNumber", b.hostname AS "hostname", c.name AS "monitorItemName" , d.id AS "alarmRuleStatusId", d.name AS "alarmRuleName", d.current_status AS "alarmRuleStatus", d.last_change_time AS "lastChangeTimeOfAlarmRule" FROM mi_alarm_rule_status d LEFT JOIN monitor_item_status c ON d.mi_status_id = c.id LEFT JOIN instance b ON b.number = c.inst_num AND b.app_num = c.app_num AND b.hostname = c.hostname LEFT JOIN app a ON a.number = b.app_num WHERE ? = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? OR a.id = ? ORDER BY lastChangeTimeOfAlarmRule DESC LIMIT ?, ?

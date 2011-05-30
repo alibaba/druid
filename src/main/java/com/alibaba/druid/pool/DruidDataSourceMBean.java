@@ -21,6 +21,8 @@ import java.util.List;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface DruidDataSourceMBean {
+    
+    String getName();
 
     int getInitialSize();
 

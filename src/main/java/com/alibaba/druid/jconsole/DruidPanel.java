@@ -2,7 +2,10 @@ package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.lang.management.ManagementFactory;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,21 +13,27 @@ import java.util.Set;
 import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.sun.tools.jconsole.JConsoleContext;
 
 public class DruidPanel extends JPanel {
 
-    protected JSplitPane      mainSplit;
-    protected JTree           tree;
-    protected JPanel          sheet;
+    private static final long        serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+    protected JSplitPane             mainSplit;
+    protected JTree                  tree;
+    protected JPanel                 sheet;
+    protected DefaultMutableTreeNode rootNode;
+    protected DefaultMutableTreeNode dataSourcesNode;
 
     public DruidPanel(){
         setLayout(new BorderLayout());
@@ -33,7 +42,12 @@ public class DruidPanel extends JPanel {
         mainSplit.setDividerLocation(160);
         mainSplit.setBorder(BorderFactory.createEmptyBorder());
 
-        tree = new JTree();
+        rootNode = new DefaultMutableTreeNode("root", true);
+        dataSourcesNode = new DefaultMutableTreeNode("DataSources", true);
+        rootNode.add(dataSourcesNode);
+
+        tree = new JTree(rootNode);
+        tree.setRootVisible(false);
 
         JScrollPane theScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JPanel treePanel = new JPanel(new BorderLayout());
@@ -46,22 +60,51 @@ public class DruidPanel extends JPanel {
         add(mainSplit);
 
         this.setBackground(Color.BLUE);
+
+        init();
     }
 
     public void init() {
+        try {
+            ManagementFactory.getPlatformMBeanServer().registerMBean(JdbcStatManager.getInstance(), new ObjectName("com.alibaba.druid:type=JdbcStatManager"));
 
+            DruidDataSource dataSource = new DruidDataSource();
+
+            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DataSource"));
+
+            dataSource.setUrl("jdbc:mock:");
+            dataSource.setFilters("stat,trace");
+
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT 1");
+            while (rs.next()) {
+
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (Exception ex) {
+
+        }
     }
 
     protected Object doInBackground(JConsoleContext context) throws Exception {
         MBeanServerConnection conn = context.getMBeanServerConnection();
         List<ObjectInstance> stats = new ArrayList<ObjectInstance>();
+        List<ObjectInstance> dataSourceInstances = new ArrayList<ObjectInstance>();
 
         Set<ObjectInstance> instances = conn.queryMBeans(null, null);
         for (ObjectInstance instance : instances) {
             MBeanInfo info = conn.getMBeanInfo(instance.getObjectName());
             if ("com.alibaba.druid.stat.JdbcStatManager".equals(info.getClassName())) {
                 stats.add(instance);
-                break;
+                continue;
+            }
+
+            if ("com.alibaba.druid.pool.DruidDataSource".equals(info.getClassName())) {
+                dataSourceInstances.add(instance);
+                continue;
             }
         }
 
@@ -69,7 +112,24 @@ public class DruidPanel extends JPanel {
 
         }
 
-        this.setPreferredSize(new Dimension(400, 500));
+        for (ObjectInstance dataSourceInstance : dataSourceInstances) {
+            String name = (String) conn.getAttribute(dataSourceInstance.getObjectName(), "Name");
+            
+            DefaultMutableTreeNode dataSource = new DefaultMutableTreeNode(name, true);
+
+            DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
+            {
+            }
+            dataSource.add(connections);
+
+            DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode("SQL", true);
+            {
+
+            }
+            dataSource.add(sqlListNode);
+
+            dataSourcesNode.add(dataSource);
+        }
 
         return null;
     }

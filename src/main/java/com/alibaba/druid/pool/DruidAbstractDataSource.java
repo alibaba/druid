@@ -385,6 +385,9 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     }
 
     public String getName() {
+        if (name == null) {
+            return "DataSource-" + System.identityHashCode(this);
+        }
         return name;
     }
 
