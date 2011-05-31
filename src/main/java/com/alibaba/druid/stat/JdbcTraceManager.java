@@ -30,16 +30,31 @@ import com.alibaba.druid.filter.trace.TraceEventListener;
 
 public class JdbcTraceManager extends NotificationBroadcasterSupport implements JdbcTraceManagerMBean {
 
-    public final static Log                LOG            = LogFactory.getLog(JdbcTraceManager.class);
+    public final static Log                LOG                  = LogFactory.getLog(JdbcTraceManager.class);
 
-    private boolean                        traceEnable    = false;
+    private boolean                        traceEnable          = false;
 
-    private final static JdbcTraceManager  instance       = new JdbcTraceManager();
+    private final static JdbcTraceManager  instance             = new JdbcTraceManager();
 
-    private final List<TraceEventListener> eventListeners = new ArrayList<TraceEventListener>();
+    private final List<TraceEventListener> eventListeners       = new ArrayList<TraceEventListener>();
 
-    private final AtomicLong               fireEventCount = new AtomicLong();
-    private final AtomicLong               skipEventCount = new AtomicLong();
+    private final AtomicLong               fireEventCount       = new AtomicLong();
+    private final AtomicLong               skipEventCount       = new AtomicLong();
+
+    private boolean                        notificationEnable   = false;
+    private final NotificationTraceEventListener notificationListener = new NotificationTraceEventListener();
+
+    public boolean isNotificationEnable() {
+        return notificationEnable;
+    }
+
+    public void setNotificationEnable(boolean notificationEnable) {
+        this.notificationEnable = notificationEnable;
+    }
+
+    public NotificationTraceEventListener getNotificationListener() {
+        return notificationListener;
+    }
 
     public static JdbcTraceManager getInstance() {
         return instance;
@@ -72,6 +87,10 @@ public class JdbcTraceManager extends NotificationBroadcasterSupport implements 
             skipEventCount.incrementAndGet();
             return;
         }
+        
+        if (isNotificationEnable()) {
+            notificationListener.fireEvent(event);
+        }
 
         for (TraceEventListener listener : this.eventListeners) {
             try {
@@ -85,15 +104,19 @@ public class JdbcTraceManager extends NotificationBroadcasterSupport implements 
     public List<TraceEventListener> getEventListeners() {
         return eventListeners;
     }
-    
+
     public class NotificationTraceEventListener implements TraceEventListener {
+
         private long sequenceNumber = 0;
+
         @Override
         public void fireEvent(TraceEvent event) {
             Notification notification = new Notification(event.getEventType(), null, sequenceNumber++);
             notification.setTimeStamp(event.getEventTime().getTime());
             notification.setUserData(event.getContext());
+
+            sendNotification(notification);
         }
-        
+
     }
 }
