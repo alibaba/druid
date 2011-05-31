@@ -27,7 +27,7 @@ public class MySqlParserResourceTest extends TestCase {
         exec_test("bvt/parser/mysql-7.txt");
         exec_test("bvt/parser/mysql-8.txt");
         exec_test("bvt/parser/mysql-9.txt");
-        // exec_test("bvt/parser/mysql-10.txt");
+        exec_test("bvt/parser/mysql-10.txt");
     }
 
     public void exec_test(String resource) throws Exception {
@@ -72,7 +72,7 @@ public class MySqlParserResourceTest extends TestCase {
         StringBuilder out = new StringBuilder();
         MySqlParameterizedOutputVisitor visitor = new MySqlParameterizedOutputVisitor(out);
         statemen.accept(visitor);
-        
+
         System.out.println(out.toString());
 
         Assert.assertEquals(expect, out.toString());

@@ -14,6 +14,8 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -61,7 +63,7 @@ public class DruidPanel extends JPanel {
 
         this.setBackground(Color.BLUE);
 
-        init();
+        // init();
     }
 
     public void init() {
@@ -112,9 +114,33 @@ public class DruidPanel extends JPanel {
 
         }
 
+        for (ObjectInstance statInstance : stats) {
+            TabularData tabularValue = (TabularData) conn.getAttribute(statInstance.getObjectName(), "DataSourceList");
+            for (Object item : tabularValue.values()) {
+                CompositeData rowData = (CompositeData) item;
+
+                String name = (String) rowData.get("Name");
+
+                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(name, true);
+
+                DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
+                {
+                }
+                dataSourceNode.add(connections);
+
+                DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode("SQL", true);
+                {
+
+                }
+                dataSourceNode.add(sqlListNode);
+
+                dataSourcesNode.add(dataSourceNode);
+            }
+        }
+
         for (ObjectInstance dataSourceInstance : dataSourceInstances) {
             String name = (String) conn.getAttribute(dataSourceInstance.getObjectName(), "Name");
-            
+
             DefaultMutableTreeNode dataSource = new DefaultMutableTreeNode(name, true);
 
             DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
