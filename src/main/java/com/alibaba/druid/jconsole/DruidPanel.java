@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -92,6 +93,8 @@ public class DruidPanel extends JPanel {
     }
 
     protected Object doInBackground(JConsoleContext context) throws Exception {
+        //dataSourcesNode.removeAllChildren();
+        
         MBeanServerConnection conn = context.getMBeanServerConnection();
         List<ObjectInstance> stats = new ArrayList<ObjectInstance>();
         List<ObjectInstance> dataSourceInstances = new ArrayList<ObjectInstance>();
@@ -156,6 +159,9 @@ public class DruidPanel extends JPanel {
 
             dataSourcesNode.add(dataSource);
         }
+        
+        TreePath path = new TreePath(dataSourcesNode.children());
+        tree.scrollPathToVisible(path);  
 
         return null;
     }
