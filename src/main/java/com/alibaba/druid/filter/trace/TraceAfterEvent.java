@@ -19,21 +19,24 @@ import java.util.Date;
 
 public class TraceAfterEvent extends TraceEvent {
 
-    private long timespan;
-
     public TraceAfterEvent(){
     }
 
     public TraceAfterEvent(String eventType, Date eventTime, long timespan){
         super(eventType, eventTime);
-        this.timespan = timespan;
+        this.getContext().put("timespan", timespan);
     }
 
     public long getTimespan() {
-        return timespan;
+        Long timespan = ((Long) getContext().get("timespan"));
+        if (timespan == null) {
+            return 0;
+        }
+
+        return timespan.longValue();
     }
 
     public void setTimespan(long timespan) {
-        this.timespan = timespan;
+        this.getContext().put("timespan", timespan);
     }
 }

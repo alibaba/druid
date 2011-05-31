@@ -122,9 +122,10 @@ public class DruidPanel extends JPanel {
             for (Object item : tabularValue.values()) {
                 CompositeData rowData = (CompositeData) item;
 
-                String name = (String) rowData.get("Name");
-
-                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(name, true);
+                DataSourceInfo dataSourceInfo = new DataSourceInfo(rowData);
+                
+                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceInfo.getName(), true);
+                dataSourceNode.setUserObject(dataSourceInfo);
 
                 DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
                 {
@@ -160,8 +161,8 @@ public class DruidPanel extends JPanel {
             dataSourcesNode.add(dataSource);
         }
         
-        TreePath path = new TreePath(dataSourcesNode.children());
-        tree.scrollPathToVisible(path);  
+//        TreePath path = new TreePath(dataSourcesNode.children());
+//        tree.scrollPathToVisible(path);  
 
         return null;
     }

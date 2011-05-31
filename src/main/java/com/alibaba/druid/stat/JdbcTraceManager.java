@@ -19,13 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.druid.filter.trace.TraceEvent;
 import com.alibaba.druid.filter.trace.TraceEventListener;
 
-public class JdbcTraceManager implements JdbcTraceManagerMBean {
+public class JdbcTraceManager extends NotificationBroadcasterSupport implements JdbcTraceManagerMBean {
 
     public final static Log                LOG            = LogFactory.getLog(JdbcTraceManager.class);
 
@@ -81,5 +84,16 @@ public class JdbcTraceManager implements JdbcTraceManagerMBean {
 
     public List<TraceEventListener> getEventListeners() {
         return eventListeners;
+    }
+    
+    public class NotificationTraceEventListener implements TraceEventListener {
+        private long sequenceNumber = 0;
+        @Override
+        public void fireEvent(TraceEvent event) {
+            Notification notification = new Notification(event.getEventType(), null, sequenceNumber++);
+            notification.setTimeStamp(event.getEventTime().getTime());
+            notification.setUserData(event.getContext());
+        }
+        
     }
 }

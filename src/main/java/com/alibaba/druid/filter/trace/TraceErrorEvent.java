@@ -19,9 +19,6 @@ import java.util.Date;
 
 public class TraceErrorEvent extends TraceEvent {
 
-    private Throwable error;
-    private Date      errorTime = new Date();
-
     public TraceErrorEvent(){
 
     }
@@ -29,23 +26,23 @@ public class TraceErrorEvent extends TraceEvent {
     public TraceErrorEvent(String eventType, Date eventTime, Throwable error){
         super(eventType, eventTime);
 
-        this.error = error;
+        this.getContext().put("error", error);
     }
 
     public Throwable getError() {
-        return error;
+        return (Throwable) getContext().get("error");
     }
 
     public void setError(Throwable error) {
-        this.error = error;
+        this.getContext().put("error", error);
     }
 
     public Date getErrorTime() {
-        return errorTime;
+        return (Date) getContext().get("errorTime");
     }
 
     public void setErrorTime(Date errorTime) {
-        this.errorTime = errorTime;
+        this.getContext().put("errorTime", errorTime);
     }
 
 }

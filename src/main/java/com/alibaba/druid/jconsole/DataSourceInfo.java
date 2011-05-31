@@ -16,8 +16,8 @@ public class DataSourceInfo {
 
     private String       rawDriverClassName;
     private String       rawUrl;
-    private String       rawDriverMajorVersion;
-    private String       rawDriverMinorVersion;
+    private int       rawDriverMajorVersion;
+    private int       rawDriverMinorVersion;
     private String       properties;
 
     public DataSourceInfo(){
@@ -35,8 +35,8 @@ public class DataSourceInfo {
 
         this.rawDriverClassName = (String) data.get("RawDriverClassName");
         this.rawUrl = (String) data.get("RawUrl");
-        this.rawDriverMajorVersion = (String) data.get("RawDriverMajorVersion");
-        this.rawDriverMinorVersion = (String) data.get("RawDriverMinorVersion");
+        this.rawDriverMajorVersion = ((Number) data.get("RawDriverMajorVersion")).intValue();
+        this.rawDriverMinorVersion = ((Number) data.get("RawDriverMinorVersion")).intValue();
         this.properties = (String) data.get("Properties");
     }
 
@@ -96,19 +96,19 @@ public class DataSourceInfo {
         this.rawUrl = rawUrl;
     }
 
-    public String getRawDriverMajorVersion() {
+    public int getRawDriverMajorVersion() {
         return rawDriverMajorVersion;
     }
 
-    public void setRawDriverMajorVersion(String rawDriverMajorVersion) {
+    public void setRawDriverMajorVersion(int rawDriverMajorVersion) {
         this.rawDriverMajorVersion = rawDriverMajorVersion;
     }
 
-    public String getRawDriverMinorVersion() {
+    public int getRawDriverMinorVersion() {
         return rawDriverMinorVersion;
     }
 
-    public void setRawDriverMinorVersion(String rawDriverMinorVersion) {
+    public void setRawDriverMinorVersion(int rawDriverMinorVersion) {
         this.rawDriverMinorVersion = rawDriverMinorVersion;
     }
 
