@@ -43,7 +43,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
@@ -4123,7 +4122,7 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new ConnectionProxyImpl(dataSource, connection, info, createConnectionId());
+        return new ConnectionProxyImpl(dataSource, connection, info, dataSource.createConnectionId());
     }
 
     public StatementProxy wrap(ConnectionProxy connection, Statement statement) {
@@ -4131,7 +4130,7 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new StatementProxyImpl(connection, statement, createStatementId());
+        return new StatementProxyImpl(connection, statement, dataSource.createStatementId());
     }
 
     public PreparedStatementProxy wrap(ConnectionProxy connection, PreparedStatement statement, String sql) {
@@ -4139,7 +4138,7 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new PreparedStatementProxyImpl(connection, statement, sql, createStatementId());
+        return new PreparedStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     public CallableStatementProxy wrap(ConnectionProxy connection, CallableStatement statement, String sql) {
@@ -4147,7 +4146,7 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new CallableStatementProxyImpl(connection, statement, sql, createStatementId());
+        return new CallableStatementProxyImpl(connection, statement, sql, dataSource.createStatementId());
     }
 
     public ResultSetProxy wrap(StatementProxy statement, ResultSet resultSet) {
@@ -4155,7 +4154,7 @@ public class FilterChainImpl implements FilterChain {
             return null;
         }
 
-        return new ResultSetProxyImpl(statement, resultSet, createResultSetId(), statement.getLastExecuteSql());
+        return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(), statement.getLastExecuteSql());
     }
 
     public ClobProxy wrap(ConnectionProxy connection, Clob clob) {
@@ -4174,19 +4173,5 @@ public class FilterChainImpl implements FilterChain {
         return new NClobProxyImpl(dataSource, connection, nclob);
     }
 
-    private final AtomicLong connectionIdSeed = new AtomicLong(10000);
-    private final AtomicLong statementIdSeed  = new AtomicLong(20000);
-    private final AtomicLong resultSetIdSeed  = new AtomicLong(50000);
 
-    public long createConnectionId() {
-        return connectionIdSeed.incrementAndGet();
-    }
-
-    public long createStatementId() {
-        return statementIdSeed.getAndIncrement();
-    }
-
-    public long createResultSetId() {
-        return resultSetIdSeed.getAndIncrement();
-    }
 }

@@ -15,13 +15,12 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.stat.JdbcTraceManager.NotificationTraceEventListener;
 
 public interface JdbcTraceManagerMBean {
 
     void setNotificationEnable(boolean notificationEnable);
 
-    NotificationTraceEventListener getNotificationListener();
+    boolean isNotificationEnable();
 
     long getEventFiredCount();
 

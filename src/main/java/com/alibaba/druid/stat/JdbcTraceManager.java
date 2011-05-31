@@ -111,7 +111,7 @@ public class JdbcTraceManager extends NotificationBroadcasterSupport implements 
 
         @Override
         public void fireEvent(TraceEvent event) {
-            Notification notification = new Notification(event.getEventType(), null, sequenceNumber++);
+            Notification notification = new Notification(event.getEventType(), JdbcTraceManager.class.getName(), sequenceNumber++);
             notification.setTimeStamp(event.getEventTime().getTime());
             notification.setUserData(event.getContext());
 

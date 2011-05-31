@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -684,5 +685,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             names.add(filter.getClass().getName());
         }
         return names;
+    }
+    
+    private final AtomicLong connectionIdSeed = new AtomicLong(10000);
+    private final AtomicLong statementIdSeed  = new AtomicLong(20000);
+    private final AtomicLong resultSetIdSeed  = new AtomicLong(50000);
+
+    public long createConnectionId() {
+        return connectionIdSeed.incrementAndGet();
+    }
+
+    public long createStatementId() {
+        return statementIdSeed.getAndIncrement();
+    }
+
+    public long createResultSetId() {
+        return resultSetIdSeed.getAndIncrement();
     }
 }

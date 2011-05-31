@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
 import javax.management.openmbean.ArrayType;
@@ -54,6 +55,10 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     private Properties                  properties;
 
     private String                      dbType;
+
+    private final AtomicLong            connectionIdSeed  = new AtomicLong(10000);
+    private final AtomicLong            statementIdSeed   = new AtomicLong(20000);
+    private final AtomicLong            resultSetIdSeed   = new AtomicLong(50000);
 
     public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
         super();
@@ -214,4 +219,15 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         return config.getRawUrl();
     }
 
+    public long createConnectionId() {
+        return connectionIdSeed.incrementAndGet();
+    }
+
+    public long createStatementId() {
+        return statementIdSeed.getAndIncrement();
+    }
+
+    public long createResultSetId() {
+        return resultSetIdSeed.getAndIncrement();
+    }
 }
