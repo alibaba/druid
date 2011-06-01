@@ -1,7 +1,6 @@
 package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
@@ -29,6 +28,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -56,6 +56,7 @@ public class DruidPanel extends JPanel {
         rootNode.add(dataSourcesNode);
 
         tree = new JTree(rootNode);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setRootVisible(false);
 
         tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -76,12 +77,20 @@ public class DruidPanel extends JPanel {
 
         add(mainSplit);
 
-        this.setBackground(Color.BLUE);
 
         // init();
     }
 
     private void treeSelect(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+        Object userData = node.getUserObject();
+        
+        if (userData instanceof DataSourceInfo) {
+            DataSourceInfo dataSourceInfo = (DataSourceInfo) userData;
+            mainSplit.setRightComponent(new DataSourcePanel(dataSourceInfo));
+        } else {
+            mainSplit.setRightComponent(sheet);
+        }
     }
 
     public void init() {
@@ -144,7 +153,7 @@ public class DruidPanel extends JPanel {
             for (Object item : tabularValue.values()) {
                 CompositeData rowData = (CompositeData) item;
 
-                DataSourceInfo dataSourceInfo = new DataSourceInfo(rowData);
+                DataSourceInfo dataSourceInfo = new DataSourceInfo(conn, rowData);
 
                 DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceInfo.getName(), true);
                 dataSourceNode.setUserObject(dataSourceInfo);

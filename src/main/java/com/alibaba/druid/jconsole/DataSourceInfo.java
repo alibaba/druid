@@ -4,27 +4,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.management.MBeanServerConnection;
 import javax.management.openmbean.CompositeData;
 
 public class DataSourceInfo {
 
-    private long         id;
-    private String       name;
-    private String       url;
-    private List<String> filters = new ArrayList<String>();
-    private Date         createdTime;
+    private long                  id;
+    private String                name;
+    private String                url;
+    private List<String>          filters = new ArrayList<String>();
+    private Date                  createdTime;
 
-    private String       rawDriverClassName;
-    private String       rawUrl;
-    private int       rawDriverMajorVersion;
-    private int       rawDriverMinorVersion;
-    private String       properties;
+    private String                rawDriverClassName;
+    private String                rawUrl;
+    private int                   rawDriverMajorVersion;
+    private int                   rawDriverMinorVersion;
+    private String                properties;
+    private MBeanServerConnection connection;
 
     public DataSourceInfo(){
 
     }
 
-    public DataSourceInfo(CompositeData data){
+    public DataSourceInfo(MBeanServerConnection conn, CompositeData data){
+        this.connection = conn;
         this.id = ((Number) data.get("ID")).longValue();
         this.name = (String) data.get("Name");
         this.url = (String) data.get("URL");
@@ -38,6 +41,14 @@ public class DataSourceInfo {
         this.rawDriverMajorVersion = ((Number) data.get("RawDriverMajorVersion")).intValue();
         this.rawDriverMinorVersion = ((Number) data.get("RawDriverMinorVersion")).intValue();
         this.properties = (String) data.get("Properties");
+    }
+
+    public MBeanServerConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(MBeanServerConnection connection) {
+        this.connection = connection;
     }
 
     public long getId() {
