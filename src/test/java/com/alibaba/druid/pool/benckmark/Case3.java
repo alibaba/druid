@@ -20,11 +20,11 @@ public class Case3 extends TestCase {
     private String  password;
     private String  driverClass;
     private int     maxIdle         = 40;
-    private int     maxActive       = 140;
-    private int     maxWait         = 50;
+    private int     maxActive       = 50;
+    private int     maxWait         = 500;
     private String  validationQuery = "SELECT 1";
     private int     threadCount     = 14;
-    private int     loopCount       = 5;
+    private int     loopCount       = 3;
     final int       LOOP_COUNT      = 1000 * 100;
     private boolean testOnBorrow    = true;
 

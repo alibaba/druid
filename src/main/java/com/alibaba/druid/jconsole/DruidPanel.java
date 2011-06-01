@@ -2,6 +2,7 @@ package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,13 +17,18 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -52,19 +58,30 @@ public class DruidPanel extends JPanel {
         tree = new JTree(rootNode);
         tree.setRootVisible(false);
 
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+
+            @Override
+            public void valueChanged(TreeSelectionEvent e) {
+                treeSelect(e);
+            }
+        });
+
         JScrollPane theScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JPanel treePanel = new JPanel(new BorderLayout());
         treePanel.add(theScrollPane, BorderLayout.CENTER);
-        mainSplit.add(treePanel, JSplitPane.LEFT, 0);
+        mainSplit.setLeftComponent(treePanel);
 
         sheet = new JPanel();
-        mainSplit.add(sheet, JSplitPane.RIGHT, 0);
+        mainSplit.setRightComponent(sheet);
 
         add(mainSplit);
 
         this.setBackground(Color.BLUE);
 
         // init();
+    }
+
+    private void treeSelect(TreeSelectionEvent e) {
     }
 
     public void init() {
@@ -93,9 +110,14 @@ public class DruidPanel extends JPanel {
     }
 
     protected Object doInBackground(JConsoleContext context) throws Exception {
-        //dataSourcesNode.removeAllChildren();
-        
-        MBeanServerConnection conn = context.getMBeanServerConnection();
+        doInBackground(context.getMBeanServerConnection());
+
+        return null;
+    }
+
+    protected void doInBackground(MBeanServerConnection conn) throws Exception {
+        // dataSourcesNode.removeAllChildren();
+
         List<ObjectInstance> stats = new ArrayList<ObjectInstance>();
         List<ObjectInstance> dataSourceInstances = new ArrayList<ObjectInstance>();
 
@@ -123,7 +145,7 @@ public class DruidPanel extends JPanel {
                 CompositeData rowData = (CompositeData) item;
 
                 DataSourceInfo dataSourceInfo = new DataSourceInfo(rowData);
-                
+
                 DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceInfo.getName(), true);
                 dataSourceNode.setUserObject(dataSourceInfo);
 
@@ -160,10 +182,36 @@ public class DruidPanel extends JPanel {
 
             dataSourcesNode.add(dataSource);
         }
-        
-//        TreePath path = new TreePath(dataSourcesNode.children());
-//        tree.scrollPathToVisible(path);  
 
-        return null;
+        // TreePath path = new TreePath(dataSourcesNode.children());
+        // tree.scrollPathToVisible(path);
+    }
+
+    public static void main(String[] args) throws Exception {
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                try {
+                    JFrame frame = new JFrame();
+
+                    DruidPanel panel = new DruidPanel();
+
+                    frame.getContentPane().add(panel);
+                    frame.pack();
+                    frame.setSize(1024, 768);
+
+                    final String urlPath = "/jndi/rmi://10.20.138.25:9006/jmxrmi";
+                    JMXServiceURL jmxUrl = new JMXServiceURL("rmi", "", 0, urlPath);
+
+                    JMXConnector connector = JMXConnectorFactory.connect(jmxUrl);
+                    panel.doInBackground(connector.getMBeanServerConnection());
+
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

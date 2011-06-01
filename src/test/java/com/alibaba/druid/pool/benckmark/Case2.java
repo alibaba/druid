@@ -41,13 +41,13 @@ public class Case2 extends TestCase {
     private String password;
     private String driverClass;
     private int    initialSize     = 10;
-    private int    minPoolSize     = 1;
-    private int    maxPoolSize     = 2;
-    private int    maxActive       = 2;
+    private int    minPoolSize     = 10;
+    private int    maxPoolSize     = 50;
+    private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 1;
-    private int    loopCount       = 5;
-    final int      LOOP_COUNT      = 1000 * 1000;
+    private int    threadCount     = 100;
+    private int    executeCount       = 4;
+    final int      LOOP_COUNT      = (1000 * 1000) / executeCount;
     private boolean testOnBorrow = true;
 
     protected void setUp() throws Exception {
@@ -73,7 +73,7 @@ public class Case2 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
 
-        for (int i = 0; i < loopCount; ++i) {
+        for (int i = 0; i < executeCount; ++i) {
             p0(dataSource, "druid", threadCount);
         }
         System.out.println();
@@ -95,7 +95,7 @@ public class Case2 extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setTestOnBorrow(testOnBorrow);
 
-        for (int i = 0; i < loopCount; ++i) {
+        for (int i = 0; i < executeCount; ++i) {
             p0(dataSource, "dbcp", threadCount);
         }
         System.out.println();
@@ -121,7 +121,7 @@ public class Case2 extends TestCase {
         dataSource.setIdleConnectionTestPeriod(0L);
         // dataSource.setDisableConnectionTracking(true);
 
-        for (int i = 0; i < loopCount; ++i) {
+        for (int i = 0; i < executeCount; ++i) {
             p0(dataSource, "boneCP", threadCount);
         }
         System.out.println();

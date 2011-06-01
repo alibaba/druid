@@ -41,13 +41,13 @@ public class Case1 extends TestCase {
     private String password;
     private String driverClass;
     private int    initialSize     = 10;
-    private int    minPoolSize     = 1;
-    private int    maxPoolSize     = 2;
-    private int    maxActive       = 2;
+    private int    minPoolSize     = 10;
+    private int    maxPoolSize     = 50;
+    private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 2;
-    private int    loopCount       = 5;
-    final int      LOOP_COUNT      = 1000 * 1000;
+    private int    threadCount     = 10;
+    private int    loopCount       = 4;
+    final int      LOOP_COUNT      = 1000 * 100;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -113,7 +113,7 @@ public class Case1 extends TestCase {
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        dataSource.setConnectionTestStatement("SELECT 1");
+        //dataSource.setConnectionTestStatement("SELECT 1");
         dataSource.setPartitionCount(1);
         dataSource.setAcquireIncrement(5);
         dataSource.setIdleConnectionTestPeriod(0L);
