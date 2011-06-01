@@ -156,7 +156,7 @@ public class DruidPanel extends JPanel {
                 DataSourceInfo dataSourceInfo = new DataSourceInfo(conn, rowData);
 
                 DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceInfo.getName(), true);
-                dataSourceNode.setUserObject(dataSourceInfo);
+                dataSourceNode.setUserObject(new NodeInfo(conn, NodeType.DataSource));
 
                 DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
                 {
@@ -164,9 +164,7 @@ public class DruidPanel extends JPanel {
                 dataSourceNode.add(connections);
 
                 DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode("SQL", true);
-                {
-
-                }
+                sqlListNode.setUserObject(new NodeInfo(conn, NodeType.SQL));
                 dataSourceNode.add(sqlListNode);
 
                 dataSourcesNode.add(dataSourceNode);
