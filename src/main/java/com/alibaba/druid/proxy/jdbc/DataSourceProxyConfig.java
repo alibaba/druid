@@ -32,12 +32,25 @@ public class DataSourceProxyConfig {
     private String             url;
     private String             rawDriverClassName;
     private String             name;
+    private boolean            jmx;
 
     private PasswordCallback   passwordCallback;
     private NameCallback       userCallback;
     private final List<Filter> filters = new ArrayList<Filter>();
 
     public DataSourceProxyConfig(){
+    }
+
+    public boolean isJmxOption() {
+        return jmx;
+    }
+
+    public void setJmxOption(boolean jmx) {
+        this.jmx = jmx;
+    }
+    
+    public void setJmxOption(String jmx) {
+        this.jmx = Boolean.parseBoolean(jmx);
     }
 
     public PasswordCallback getPasswordCallback() {

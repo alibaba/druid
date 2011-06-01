@@ -34,7 +34,9 @@ import com.alibaba.druid.proxy.config.DruidFilterConfigLoader;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.DruidLoaderUtils;
+import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -52,6 +54,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     public final static String                                      DRIVER_PREFIX            = "driver=";
     public final static String                                      PASSWORD_CALLBACK_PREFIX = "passwordCallback=";
     public final static String                                      NAME_PREFIX              = "name=";
+    public final static String                                      JMX_PREFIX               = "jmx=";
     public final static String                                      FILTERS_PREFIX           = "filters=";
 
     private final AtomicLong                                        connectCounter           = new AtomicLong(0);
@@ -168,6 +171,13 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 config.setName(name);
                 restUrl = restUrl.substring(pos + 1);
             }
+            
+            if (restUrl.startsWith(JMX_PREFIX)) {
+                int pos = restUrl.indexOf(':', JMX_PREFIX.length());
+                String jmxOption = restUrl.substring(JMX_PREFIX.length(), pos);
+                config.setJmxOption(jmxOption);
+                restUrl = restUrl.substring(pos + 1);
+            }
 
             String rawUrl = restUrl;
             config.setRawUrl(rawUrl);
@@ -191,6 +201,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
                 for (Filter filter : config.getFilters()) {
                     filter.init(newDataSource);
+                }
+                
+                if (config.isJmxOption()) {
+                    JMXUtils.register("com.alibaba.druid:type=JdbcStat", JdbcStatManager.getInstance());
                 }
             }
 
