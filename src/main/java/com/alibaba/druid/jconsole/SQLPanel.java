@@ -1,9 +1,10 @@
 package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 public class SQLPanel extends JPanel {
@@ -31,15 +31,11 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
 
-    private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecuteCount",
+    private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecCount",
 
                                                    "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
 
-                                                   "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal",
-
-                                                   "ConcurrentMax", "RunningCount", "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace",
-
-                                                   "LastErrorTime" };
+                                                   "EffectedRowCount", "FetchRowCount", "ConcurrentMax", "Running" };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -77,17 +73,8 @@ public class SQLPanel extends JPanel {
 
                 row[columnIndex++] = rowData.get("EffectedRowCount");
                 row[columnIndex++] = rowData.get("FetchRowCount");
-                row[columnIndex++] = rowData.get("MaxTimespanOccurTime");
-                row[columnIndex++] = rowData.get("BatchSizeMax");
-                row[columnIndex++] = rowData.get("BatchSizeTotal");
-
                 row[columnIndex++] = rowData.get("ConcurrentMax");
                 row[columnIndex++] = rowData.get("RunningCount");
-                row[columnIndex++] = rowData.get("LastErrorMessage");
-                row[columnIndex++] = rowData.get("LastErrorClass");
-                row[columnIndex++] = rowData.get("LastErrorStackTrace");
-
-                row[columnIndex++] = rowData.get("LastErrorTime");
 
                 rowList.add(row);
             }
@@ -97,6 +84,13 @@ public class SQLPanel extends JPanel {
             TableColumnModel columnModel = new TableColumnModel();
 
             table = new JTable(new SQLTableModel(rows), columnModel);
+            table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+            table.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    tableMouseClicked(e);
+                }
+            });
 
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -109,6 +103,25 @@ public class SQLPanel extends JPanel {
         }
     }
 
+    public void tableMouseClicked(MouseEvent e) {
+        if (e.getClickCount() < 2) {
+            return;
+        }
+        
+        int rowIndex = table.getSelectedRow();
+        if (rowIndex < 0) {
+            return;
+        }
+        
+        Object[] row = new Object[columnNames.length];
+        for (int i = 0; i < columnNames.length; ++i) {
+            row[i] = table.getValueAt(rowIndex, i);
+        }
+        
+        SQLDetailDialog dialog = new SQLDetailDialog(row);
+        dialog.setVisible(true);
+    }
+
     public MBeanServerConnection getConnection() {
         return connection;
     }
@@ -119,29 +132,6 @@ public class SQLPanel extends JPanel {
 
     public DataSourceInfo getDataSourceInfo() {
         return dataSourceInfo;
-    }
-
-    public class IDCellRender extends DefaultTableCellRenderer implements TableCellRenderer {
-
-        private static final long serialVersionUID = 1L;
-
-        public IDCellRender(){
-            this.addMouseListener(new MouseAdapter() {
-
-                public void mouseEntered(MouseEvent e) {
-                }
-
-                public void mouseExited(MouseEvent e) {
-                }
-            });
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            this.setText(value.toString());
-            return this;
-        }
-
     }
 
     class SQLTableModel extends AbstractTableModel {
@@ -198,8 +188,43 @@ public class SQLPanel extends JPanel {
 
             {
                 TableColumn column = getColumn(0);
-                column.setCellRenderer(new IDCellRender());
+                column.setMinWidth(50);
+                column.setMaxWidth(50);
             }
+
+            {
+                TableColumn column = getColumn(3);
+                column.setPreferredWidth(400);
+            }
+
+            {
+                TableColumn column = getColumn(4);
+                column.setPreferredWidth(60);
+            }
+            
+            {
+                TableColumn column = getColumn(7);
+                column.setCellRenderer(new DateRenderer());
+                column.setPreferredWidth(120);
+            }
+        }
+
+    }
+
+    static class DateRenderer extends DefaultTableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+        DateFormat formatter;
+
+        public DateRenderer(){
+            super();
+        }
+
+        public void setValue(Object value) {
+            if (formatter == null) {
+                formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
+            }
+            setText((value == null) ? "" : formatter.format(value));
         }
     }
 }
