@@ -290,7 +290,7 @@ public class SQLPanel extends JPanel {
             String sql = (String) value;
             String formattedSql = SQLDetailDialog.format(sql);
             setText(sql);
-            setToolTipText("<html><pre>" + formattedSql + "</pre>");   
+            setToolTipText("<html><pre>" + formattedSql + "</pre></html>");   
         }
     }
 
