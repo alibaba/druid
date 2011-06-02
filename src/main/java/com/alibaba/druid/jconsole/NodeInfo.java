@@ -13,6 +13,7 @@ public class NodeInfo {
 
     public NodeInfo(MBeanServerConnection connection, ObjectInstance objectInstance, NodeType type, Object data, String name){
         this.connection = connection;
+        this.objectInstance = objectInstance;
         this.type = type;
         this.data = data;
         this.name = name;
