@@ -32,13 +32,15 @@ public class SQLPanel extends JPanel {
     private DataSourceInfo        dataSourceInfo;
 
     private JTable                table;
+    private SQLTableModel tableModel;
 
     private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecCount",
 
                                                    "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
 
                                                    "EffectedRowCount", "FetchRowCount", "ConcurrentMax", "Running" };
-
+    
+    
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
         this.connection = connection;
@@ -85,7 +87,8 @@ public class SQLPanel extends JPanel {
             rowList.toArray(rows);
             TableColumnModel columnModel = new TableColumnModel();
 
-            table = new JTable(new SQLTableModel(rows), columnModel);
+            tableModel = new SQLTableModel(rows);
+            table = new JTable(tableModel, columnModel);
             table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
             table.addMouseListener(new MouseAdapter() {
 
@@ -100,6 +103,57 @@ public class SQLPanel extends JPanel {
 
             this.setLayout(new BorderLayout());
             this.add(tableScrollPane, BorderLayout.CENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void refresh() {
+        try {
+            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "SqlList");
+
+            List<Object[]> rowList = new ArrayList<Object[]>();
+
+            for (Object item : connectionTabularData.values()) {
+                CompositeData rowData = (CompositeData) item;
+
+                String url = (String) rowData.get("DataSource");
+
+                if (!dataSourceInfo.getUrl().equals(url)) {
+                    continue;
+                }
+
+                Object[] row = new Object[columnNames.length];
+                int columnIndex = 0;
+                row[columnIndex++] = rowData;
+                row[columnIndex++] = rowData.get("File");
+                row[columnIndex++] = rowData.get("Name");
+                row[columnIndex++] = rowData.get("SQL");
+                row[columnIndex++] = rowData.get("ExecuteCount");
+
+                row[columnIndex++] = rowData.get("ErrorCount");
+                row[columnIndex++] = rowData.get("TotalTime");
+                row[columnIndex++] = rowData.get("LastTime");
+                row[columnIndex++] = rowData.get("MaxTimespan");
+                row[columnIndex++] = rowData.get("LastError");
+
+                row[columnIndex++] = rowData.get("EffectedRowCount");
+                row[columnIndex++] = rowData.get("FetchRowCount");
+                row[columnIndex++] = rowData.get("ConcurrentMax");
+                row[columnIndex++] = rowData.get("RunningCount");
+
+                rowList.add(row);
+            }
+
+            Object[][] rows = new Object[rowList.size()][];
+            rowList.toArray(rows);
+            
+            int rowCount = tableModel.getRowCount();
+            tableModel.setRowData(rows);
+            tableModel.fireTableRowsDeleted(0, rowCount - 1);
+            
+            tableModel.setRowData(rows);
+            tableModel.fireTableRowsInserted(0, rows.length);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -174,6 +228,10 @@ public class SQLPanel extends JPanel {
             }
 
             return true;
+        }
+
+        public void setRowData(Object[][] rowData) {
+            this.rowData = rowData;
         }
 
         public void setValueAt(Object value, int row, int col) {
