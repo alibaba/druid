@@ -94,6 +94,10 @@ public class DruidPanel extends JPanel {
         if (nodeInfo.getType() == NodeType.DataSource) {
             DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
             mainSplit.setRightComponent(new DataSourcePanel(dataSourceInfo));
+        } else if (nodeInfo.getType() == NodeType.Connections) {
+            DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
+            ConnectionsPanel connectionsPanel = new ConnectionsPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(), dataSourceInfo);
+            mainSplit.setRightComponent(connectionsPanel);
         } else {
             mainSplit.setRightComponent(sheet);
         }
@@ -159,13 +163,13 @@ public class DruidPanel extends JPanel {
                 NodeInfo dataSourceNodeInfo = new NodeInfo(conn, statInstance, NodeType.DataSource, dataSourceInfo, dataSourceInfo.getName());
                 DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceNodeInfo, true);
                 
-                NodeInfo connectionsNodeInfo = new NodeInfo(conn, statInstance, NodeType.Connections, "Connections", "Connections");
+                NodeInfo connectionsNodeInfo = new NodeInfo(conn, statInstance, NodeType.Connections, dataSourceInfo, "Connections");
                 DefaultMutableTreeNode connections = new DefaultMutableTreeNode(connectionsNodeInfo, true);
                 {
                 }
                 dataSourceNode.add(connections);
 
-                NodeInfo sqlNodeInfo = new NodeInfo(conn, statInstance, NodeType.SQL, dataSourceInfo.getName(), "SQL");
+                NodeInfo sqlNodeInfo = new NodeInfo(conn, statInstance, NodeType.SQL, dataSourceInfo, "SQL");
                 DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(sqlNodeInfo, true);
                 dataSourceNode.add(sqlListNode);
 
