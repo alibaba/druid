@@ -1,6 +1,7 @@
 package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public class SQLPanel extends JPanel {
 
@@ -25,15 +31,15 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
 
-    private String[]              columns          = { "ID", "File", "Name", "SQL", "ExecuteCount", 
-                                                       
-                                                       "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError", 
-                                                       
-                                                       "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", 
-                                                       
-                                                       "ConcurrentMax", "RunningCount", "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", 
-                                                       
-                                                       "LastErrorTime"};
+    private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecuteCount",
+
+                                                   "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
+
+                                                   "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal",
+
+                                                   "ConcurrentMax", "RunningCount", "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace",
+
+                                                   "LastErrorTime" };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -55,7 +61,7 @@ public class SQLPanel extends JPanel {
                     continue;
                 }
 
-                Object[] row = new Object[columns.length];
+                Object[] row = new Object[columnNames.length];
                 int columnIndex = 0;
                 row[columnIndex++] = rowData.get("ID");
                 row[columnIndex++] = rowData.get("File");
@@ -88,14 +94,11 @@ public class SQLPanel extends JPanel {
 
             Object[][] rows = new Object[rowList.size()][];
             rowList.toArray(rows);
-            table = new JTable(rows, columns);
-            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            table.addMouseListener(new MouseAdapter() {
+            TableColumnModel columnModel = new TableColumnModel();
 
-                public void mouseClicked(MouseEvent e) {
-                    tableMouseClicked(e);
-                }
-            });
+            table = new JTable(new SQLTableModel(rows), columnModel);
+
+            table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
             JScrollPane tableScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -104,25 +107,6 @@ public class SQLPanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void tableMouseClicked(MouseEvent e) {
-        if (e.getClickCount() < 2) {
-            return;
-        }
-
-        int rowIndex = table.getSelectedRow();
-        if (rowIndex < 0) {
-            return;
-        }
-
-        Object[] row = new Object[columns.length];
-        for (int i = 0; i < row.length; ++i) {
-            row[i] = table.getModel().getValueAt(rowIndex, i);
-        }
-
-        SQLDetailDialog dialog = new SQLDetailDialog(row);
-        dialog.setVisible(true);
     }
 
     public MBeanServerConnection getConnection() {
@@ -137,4 +121,85 @@ public class SQLPanel extends JPanel {
         return dataSourceInfo;
     }
 
+    public class IDCellRender extends DefaultTableCellRenderer implements TableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+
+        public IDCellRender(){
+            this.addMouseListener(new MouseAdapter() {
+
+                public void mouseEntered(MouseEvent e) {
+                }
+
+                public void mouseExited(MouseEvent e) {
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            this.setText(value.toString());
+            return this;
+        }
+
+    }
+
+    class SQLTableModel extends AbstractTableModel {
+
+        private static final long serialVersionUID = 1L;
+
+        private Object[][]        rowData;
+
+        public SQLTableModel(Object[][] rows){
+            this.rowData = rows;
+        }
+
+        public String getColumnName(int column) {
+            return columnNames[column].toString();
+        }
+
+        public int getRowCount() {
+            return rowData.length;
+        }
+
+        public int getColumnCount() {
+            return columnNames.length;
+        }
+
+        public Object getValueAt(int row, int col) {
+            return rowData[row][col];
+        }
+
+        public boolean isCellEditable(int row, int column) {
+            if (column == 0) {
+                return false;
+            }
+
+            return true;
+        }
+
+        public void setValueAt(Object value, int row, int col) {
+            rowData[row][col] = value;
+            fireTableCellUpdated(row, col);
+        }
+    }
+
+    class TableColumnModel extends DefaultTableColumnModel {
+
+        private static final long serialVersionUID = 1L;
+
+        public TableColumnModel(){
+            for (int i = 0; i < columnNames.length; ++i) {
+                TableColumn column = new TableColumn();
+                column.setModelIndex(i);
+                column.setHeaderValue(columnNames[i]);
+                this.addColumn(column);
+            }
+
+            {
+                TableColumn column = getColumn(0);
+                column.setCellRenderer(new IDCellRender());
+            }
+        }
+    }
 }
