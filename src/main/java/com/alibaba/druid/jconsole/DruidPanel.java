@@ -52,7 +52,7 @@ public class DruidPanel extends JPanel {
         mainSplit.setBorder(BorderFactory.createEmptyBorder());
 
         rootNode = new DefaultMutableTreeNode("root", true);
-        dataSourcesNode = new DefaultMutableTreeNode("DataSources", true);
+        dataSourcesNode = new DefaultMutableTreeNode(new NodeInfo(null, NodeType.DataSources, null, "DataSources"), true);
         rootNode.add(dataSourcesNode);
 
         tree = new JTree(rootNode);
@@ -77,16 +77,22 @@ public class DruidPanel extends JPanel {
 
         add(mainSplit);
 
-
         // init();
     }
 
     private void treeSelect(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
-        Object userData = node.getUserObject();
-        
-        if (userData instanceof DataSourceInfo) {
-            DataSourceInfo dataSourceInfo = (DataSourceInfo) userData;
+
+        Object userObject = node.getUserObject();
+        NodeInfo nodeInfo = (NodeInfo) userObject;
+
+        if (nodeInfo == null) {
+            mainSplit.setRightComponent(sheet);
+            return;
+        }
+
+        if (nodeInfo.getType() == NodeType.DataSource) {
+            DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
             mainSplit.setRightComponent(new DataSourcePanel(dataSourceInfo));
         } else {
             mainSplit.setRightComponent(sheet);
@@ -155,16 +161,14 @@ public class DruidPanel extends JPanel {
 
                 DataSourceInfo dataSourceInfo = new DataSourceInfo(conn, rowData);
 
-                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceInfo.getName(), true);
-                dataSourceNode.setUserObject(new NodeInfo(conn, NodeType.DataSource));
-
-                DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
+                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.DataSource, dataSourceInfo,
+                                                                                                dataSourceInfo.getName()), true);
+                DefaultMutableTreeNode connections = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.Connections, "Connections", "Connections"), true);
                 {
                 }
                 dataSourceNode.add(connections);
 
-                DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode("SQL", true);
-                sqlListNode.setUserObject(new NodeInfo(conn, NodeType.SQL));
+                DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.SQL, dataSourceInfo.getName(), "SQL"), true);
                 dataSourceNode.add(sqlListNode);
 
                 dataSourcesNode.add(dataSourceNode);
@@ -176,12 +180,12 @@ public class DruidPanel extends JPanel {
 
             DefaultMutableTreeNode dataSource = new DefaultMutableTreeNode(name, true);
 
-            DefaultMutableTreeNode connections = new DefaultMutableTreeNode("Connections", true);
+            DefaultMutableTreeNode connections = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.Connections, "Connections", "Connections"), true);
             {
             }
             dataSource.add(connections);
 
-            DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode("SQL", true);
+            DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.SQL, name, "SQL"), true);
             {
 
             }
@@ -207,6 +211,7 @@ public class DruidPanel extends JPanel {
                     frame.pack();
                     frame.setSize(1024, 768);
 
+                    // final String urlPath = "/jndi/rmi://192.168.1.103:9005/jmxrmi";
                     final String urlPath = "/jndi/rmi://10.20.138.25:9006/jmxrmi";
                     JMXServiceURL jmxUrl = new JMXServiceURL("rmi", "", 0, urlPath);
 
