@@ -3,13 +3,21 @@ package com.alibaba.druid.ha;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
 public class HADataSource implements DataSource {
 
-    private int         loginTimeout = 0;
-    private PrintWriter logWriter    = new PrintWriter(System.out);
+    private final List<DataSource> dataSources  = new CopyOnWriteArrayList<DataSource>();
+
+    private int              loginTimeout = 0;
+    private PrintWriter      logWriter    = new PrintWriter(System.out);
+
+    public List<DataSource> getDataSources() {
+        return dataSources;
+    }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
