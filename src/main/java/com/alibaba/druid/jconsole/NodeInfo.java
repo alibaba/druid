@@ -1,19 +1,25 @@
 package com.alibaba.druid.jconsole;
 
 import javax.management.MBeanServerConnection;
+import javax.management.ObjectInstance;
 
 public class NodeInfo {
 
     private MBeanServerConnection connection;
+    private ObjectInstance        objectInstance;
     private NodeType              type;
     private Object                data;
     private String                name;
 
-    public NodeInfo(MBeanServerConnection connection, NodeType type, Object data, String name){
+    public NodeInfo(MBeanServerConnection connection, ObjectInstance objectInstance, NodeType type, Object data, String name){
         this.connection = connection;
         this.type = type;
         this.data = data;
         this.name = name;
+    }
+
+    public ObjectInstance getObjectInstance() {
+        return objectInstance;
     }
 
     public MBeanServerConnection getConnection() {

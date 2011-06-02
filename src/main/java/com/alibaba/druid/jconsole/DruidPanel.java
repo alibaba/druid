@@ -52,7 +52,7 @@ public class DruidPanel extends JPanel {
         mainSplit.setBorder(BorderFactory.createEmptyBorder());
 
         rootNode = new DefaultMutableTreeNode("root", true);
-        dataSourcesNode = new DefaultMutableTreeNode(new NodeInfo(null, NodeType.DataSources, null, "DataSources"), true);
+        dataSourcesNode = new DefaultMutableTreeNode(new NodeInfo(null, null, NodeType.DataSources, null, "DataSources"), true);
         rootNode.add(dataSourcesNode);
 
         tree = new JTree(rootNode);
@@ -134,7 +134,6 @@ public class DruidPanel extends JPanel {
         // dataSourcesNode.removeAllChildren();
 
         List<ObjectInstance> stats = new ArrayList<ObjectInstance>();
-        List<ObjectInstance> dataSourceInstances = new ArrayList<ObjectInstance>();
 
         Set<ObjectInstance> instances = conn.queryMBeans(null, null);
         for (ObjectInstance instance : instances) {
@@ -144,10 +143,6 @@ public class DruidPanel extends JPanel {
                 continue;
             }
 
-            if ("com.alibaba.druid.pool.DruidDataSource".equals(info.getClassName())) {
-                dataSourceInstances.add(instance);
-                continue;
-            }
         }
 
         if (stats.size() == 0) {
@@ -161,37 +156,21 @@ public class DruidPanel extends JPanel {
 
                 DataSourceInfo dataSourceInfo = new DataSourceInfo(conn, rowData);
 
-                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.DataSource, dataSourceInfo,
-                                                                                                dataSourceInfo.getName()), true);
-                DefaultMutableTreeNode connections = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.Connections, "Connections", "Connections"), true);
+                NodeInfo dataSourceNodeInfo = new NodeInfo(conn, statInstance, NodeType.DataSource, dataSourceInfo, dataSourceInfo.getName());
+                DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceNodeInfo, true);
+                
+                NodeInfo connectionsNodeInfo = new NodeInfo(conn, statInstance, NodeType.Connections, "Connections", "Connections");
+                DefaultMutableTreeNode connections = new DefaultMutableTreeNode(connectionsNodeInfo, true);
                 {
                 }
                 dataSourceNode.add(connections);
 
-                DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.SQL, dataSourceInfo.getName(), "SQL"), true);
+                NodeInfo sqlNodeInfo = new NodeInfo(conn, statInstance, NodeType.SQL, dataSourceInfo.getName(), "SQL");
+                DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(sqlNodeInfo, true);
                 dataSourceNode.add(sqlListNode);
 
                 dataSourcesNode.add(dataSourceNode);
             }
-        }
-
-        for (ObjectInstance dataSourceInstance : dataSourceInstances) {
-            String name = (String) conn.getAttribute(dataSourceInstance.getObjectName(), "Name");
-
-            DefaultMutableTreeNode dataSource = new DefaultMutableTreeNode(name, true);
-
-            DefaultMutableTreeNode connections = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.Connections, "Connections", "Connections"), true);
-            {
-            }
-            dataSource.add(connections);
-
-            DefaultMutableTreeNode sqlListNode = new DefaultMutableTreeNode(new NodeInfo(conn, NodeType.SQL, name, "SQL"), true);
-            {
-
-            }
-            dataSource.add(sqlListNode);
-
-            dataSourcesNode.add(dataSource);
         }
 
         // TreePath path = new TreePath(dataSourcesNode.children());
