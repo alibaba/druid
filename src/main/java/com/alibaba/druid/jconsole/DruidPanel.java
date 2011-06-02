@@ -98,6 +98,10 @@ public class DruidPanel extends JPanel {
             DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
             ConnectionsPanel connectionsPanel = new ConnectionsPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(), dataSourceInfo);
             mainSplit.setRightComponent(connectionsPanel);
+        } else if (nodeInfo.getType() == NodeType.SQL) {
+            DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
+            SQLPanel connectionsPanel = new SQLPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(), dataSourceInfo);
+            mainSplit.setRightComponent(connectionsPanel);
         } else {
             mainSplit.setRightComponent(sheet);
         }

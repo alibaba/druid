@@ -20,9 +20,15 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
 
-    private String[]              columns          = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", "TotalTime", "LastTime", "MaxTimespan",
-            "LastError", "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", "RunningCount",
-            "Name", "File", "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType" };
+    private String[]              columns          = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", 
+                                                       
+                                                       "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount", 
+            
+            "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", 
+            
+            "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass", 
+            
+            "LastErrorStackTrace", "LastErrorTime", "DbType" };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -31,26 +37,42 @@ public class SQLPanel extends JPanel {
         this.dataSourceInfo = dataSourceInfo;
 
         try {
-            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "ConnectionList");
+            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "SqlList");
 
             Object[][] rows = new Object[connectionTabularData.size()][];
             int rowIndex = 0;
             for (Object item : connectionTabularData.values()) {
                 CompositeData rowData = (CompositeData) item;
                 Object[] row = new Object[columns.length];
-                row[0] = rowData.get("id");
-                row[1] = rowData.get("connectTime");
-                row[2] = rowData.get("connectTimespan");
-                row[3] = rowData.get("establishTime");
-                row[4] = rowData.get("aliveTimespan");
+                int columnIndex = 0;
+                row[columnIndex++] = rowData.get("ID");
+                row[columnIndex++] = rowData.get("DataSource");
+                row[columnIndex++] = rowData.get("SQL");
+                row[columnIndex++] = rowData.get("ExecuteCount");
+                row[columnIndex++] = rowData.get("ErrorCount");
 
-                row[5] = rowData.get("lastSql");
-                row[6] = rowData.get("lastError");
-                row[7] = rowData.get("lastErrorTime");
-                row[8] = rowData.get("connectStatckTrace");
-                row[9] = rowData.get("lastStatementStackTrace");
+                row[columnIndex++] = rowData.get("TotalTime");
+                row[columnIndex++] = rowData.get("LastTime");
+                row[columnIndex++] = rowData.get("MaxTimespan");
+                row[columnIndex++] = rowData.get("LastError");
+                row[columnIndex++] = rowData.get("EffectedRowCount");
 
-                row[10] = rowData.get("dataSource");
+                row[columnIndex++] = rowData.get("FetchRowCount");
+                row[columnIndex++] = rowData.get("MaxTimespanOccurTime");
+                row[columnIndex++] = rowData.get("BatchSizeMax");
+                row[columnIndex++] = rowData.get("BatchSizeTotal");
+                row[columnIndex++] = rowData.get("ConcurrentMax");
+               
+                
+                row[columnIndex++] = rowData.get("RunningCount");
+                row[columnIndex++] = rowData.get("Name");
+                row[columnIndex++] = rowData.get("File");
+                row[columnIndex++] = rowData.get("LastErrorMessage");
+                row[columnIndex++] = rowData.get("LastErrorClass");
+                
+                row[columnIndex++] = rowData.get("LastErrorStackTrace");
+                row[columnIndex++] = rowData.get("LastErrorTime");
+                row[columnIndex++] = rowData.get("DbType");
 
                 rows[rowIndex++] = row;
             }
