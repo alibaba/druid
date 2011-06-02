@@ -32,15 +32,14 @@ public class SQLPanel extends JPanel {
     private DataSourceInfo        dataSourceInfo;
 
     private JTable                table;
-    private SQLTableModel tableModel;
+    private SQLTableModel         tableModel;
 
     private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecCount",
 
                                                    "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
 
                                                    "EffectedRowCount", "FetchRowCount", "ConcurrentMax", "Running" };
-    
-    
+
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
         this.connection = connection;
@@ -147,11 +146,11 @@ public class SQLPanel extends JPanel {
 
             Object[][] rows = new Object[rowList.size()][];
             rowList.toArray(rows);
-            
+
             int rowCount = tableModel.getRowCount();
             tableModel.setRowData(rows);
             tableModel.fireTableRowsDeleted(0, rowCount - 1);
-            
+
             tableModel.setRowData(rows);
             tableModel.fireTableRowsInserted(0, rows.length);
         } catch (Exception e) {
@@ -262,6 +261,7 @@ public class SQLPanel extends JPanel {
             {
                 TableColumn column = getColumn(3);
                 column.setPreferredWidth(400);
+                column.setCellRenderer(new SQLRenderer());
             }
 
             {
@@ -276,6 +276,22 @@ public class SQLPanel extends JPanel {
             }
         }
 
+    }
+
+    static class SQLRenderer extends DefaultTableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+
+        public SQLRenderer(){
+            super();
+        }
+
+        public void setValue(Object value) {
+            String sql = (String) value;
+            String formattedSql = SQLDetailDialog.format(sql);
+            setText(sql);
+            setToolTipText("<html><pre>" + formattedSql + "</pre>");   
+        }
     }
 
     static class DateRenderer extends DefaultTableCellRenderer {

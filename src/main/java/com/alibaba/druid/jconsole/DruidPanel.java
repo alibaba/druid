@@ -198,8 +198,8 @@ public class DruidPanel extends JPanel {
                     frame.pack();
                     frame.setSize(1024, 768);
 
-                    // final String urlPath = "/jndi/rmi://192.168.1.103:9005/jmxrmi";
-                    final String urlPath = "/jndi/rmi://10.20.138.25:9006/jmxrmi";
+                     final String urlPath = "/jndi/rmi://192.168.1.103:9005/jmxrmi";
+//                    final String urlPath = "/jndi/rmi://10.20.138.25:9006/jmxrmi";
                     JMXServiceURL jmxUrl = new JMXServiceURL("rmi", "", 0, urlPath);
 
                     JMXConnector connector = JMXConnectorFactory.connect(jmxUrl);
