@@ -12,8 +12,8 @@ public class HADataSource implements DataSource {
 
     private final List<DataSource> dataSources  = new CopyOnWriteArrayList<DataSource>();
 
-    private int              loginTimeout = 0;
-    private PrintWriter      logWriter    = new PrintWriter(System.out);
+    private int                    loginTimeout = 0;
+    private PrintWriter            logWriter    = new PrintWriter(System.out);
 
     public List<DataSource> getDataSources() {
         return dataSources;
@@ -40,13 +40,30 @@ public class HADataSource implements DataSource {
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        if (iface == null) {
+            return false;
+        }
+
+        if (iface.isInstance(this)) {
+            return true;
+        }
+
+        return false;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == null) {
+            return null;
+        }
+
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+
+        return null;
     }
 
     @Override
@@ -56,7 +73,7 @@ public class HADataSource implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 }
