@@ -1,6 +1,8 @@
 package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectInstance;
@@ -20,15 +22,15 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
 
-    private String[]              columns          = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", 
-                                                       
-                                                       "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount", 
-            
-            "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", 
-            
-            "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass", 
-            
-            "LastErrorStackTrace", "LastErrorTime", "DbType" };
+    private String[]              columns          = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount",
+
+                                                   "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount",
+
+                                                   "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax",
+
+                                                   "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass",
+
+                                                   "LastErrorStackTrace", "LastErrorTime", "DbType" };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -39,10 +41,17 @@ public class SQLPanel extends JPanel {
         try {
             TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "SqlList");
 
-            Object[][] rows = new Object[connectionTabularData.size()][];
-            int rowIndex = 0;
+            List<Object[]> rowList = new ArrayList<Object[]>();
+
             for (Object item : connectionTabularData.values()) {
                 CompositeData rowData = (CompositeData) item;
+                
+                String url = (String) rowData.get("DataSource");
+                
+                if (!dataSourceInfo.getUrl().equals(url)) {
+                    continue;
+                }
+
                 Object[] row = new Object[columns.length];
                 int columnIndex = 0;
                 row[columnIndex++] = rowData.get("ID");
@@ -62,21 +71,22 @@ public class SQLPanel extends JPanel {
                 row[columnIndex++] = rowData.get("BatchSizeMax");
                 row[columnIndex++] = rowData.get("BatchSizeTotal");
                 row[columnIndex++] = rowData.get("ConcurrentMax");
-               
-                
+
                 row[columnIndex++] = rowData.get("RunningCount");
                 row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("File");
                 row[columnIndex++] = rowData.get("LastErrorMessage");
                 row[columnIndex++] = rowData.get("LastErrorClass");
-                
+
                 row[columnIndex++] = rowData.get("LastErrorStackTrace");
                 row[columnIndex++] = rowData.get("LastErrorTime");
                 row[columnIndex++] = rowData.get("DbType");
 
-                rows[rowIndex++] = row;
+                rowList.add(row);
             }
 
+            Object[][] rows = new Object[rowList.size()][];
+            rowList.toArray(rows);
             table = new JTable(rows, columns);
 
             JScrollPane tableScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -88,20 +98,16 @@ public class SQLPanel extends JPanel {
         }
     }
 
-    
     public MBeanServerConnection getConnection() {
         return connection;
     }
 
-    
     public ObjectInstance getObjectInstance() {
         return objectInstance;
     }
 
-    
     public DataSourceInfo getDataSourceInfo() {
         return dataSourceInfo;
     }
 
-    
 }
