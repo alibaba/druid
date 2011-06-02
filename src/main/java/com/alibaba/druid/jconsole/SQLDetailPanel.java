@@ -11,4 +11,8 @@ public class SQLDetailPanel extends JPanel {
     public SQLDetailPanel(Object[] row) {
         this.row = row;
     }
+    
+    public Object[] getRow() {
+        return row;
+    }
 }

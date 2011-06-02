@@ -25,7 +25,7 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
 
-    private String[]              columns          = { "ID", "Name", "File", "SQL", "ExecuteCount", 
+    private String[]              columns          = { "ID", "File", "Name", "SQL", "ExecuteCount", 
                                                        
                                                        "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError", 
                                                        
@@ -58,8 +58,8 @@ public class SQLPanel extends JPanel {
                 Object[] row = new Object[columns.length];
                 int columnIndex = 0;
                 row[columnIndex++] = rowData.get("ID");
-                row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("File");
+                row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("SQL");
                 row[columnIndex++] = rowData.get("ExecuteCount");
 
