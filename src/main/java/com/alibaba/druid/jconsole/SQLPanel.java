@@ -1,6 +1,8 @@
 package com.alibaba.druid.jconsole;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -59,7 +61,7 @@ public class SQLPanel extends JPanel {
 
                 Object[] row = new Object[columnNames.length];
                 int columnIndex = 0;
-                row[columnIndex++] = rowData.get("ID");
+                row[columnIndex++] = rowData;
                 row[columnIndex++] = rowData.get("File");
                 row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("SQL");
@@ -107,18 +109,24 @@ public class SQLPanel extends JPanel {
         if (e.getClickCount() < 2) {
             return;
         }
-        
+
         int rowIndex = table.getSelectedRow();
         if (rowIndex < 0) {
             return;
         }
-        
-        Object[] row = new Object[columnNames.length];
-        for (int i = 0; i < columnNames.length; ++i) {
-            row[i] = table.getValueAt(rowIndex, i);
-        }
-        
-        SQLDetailDialog dialog = new SQLDetailDialog(row);
+
+        CompositeData rowData = (CompositeData) table.getValueAt(rowIndex, 0);
+
+        SQLDetailDialog dialog = new SQLDetailDialog(rowData);
+
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        int width = (int) screenSize.getWidth();
+        int height = (int) screenSize.getHeight();
+        dialog.setSize(800, 600);
+        int w = dialog.getWidth();
+        int h = dialog.getHeight();
+        dialog.setLocation((width - w) / 2, (height - h) / 2);
         dialog.setVisible(true);
     }
 
@@ -190,6 +198,7 @@ public class SQLPanel extends JPanel {
                 TableColumn column = getColumn(0);
                 column.setMinWidth(50);
                 column.setMaxWidth(50);
+                column.setCellRenderer(new IDRender());
             }
 
             {
@@ -201,7 +210,7 @@ public class SQLPanel extends JPanel {
                 TableColumn column = getColumn(4);
                 column.setPreferredWidth(60);
             }
-            
+
             {
                 TableColumn column = getColumn(7);
                 column.setCellRenderer(new DateRenderer());
@@ -214,7 +223,7 @@ public class SQLPanel extends JPanel {
     static class DateRenderer extends DefaultTableCellRenderer {
 
         private static final long serialVersionUID = 1L;
-        DateFormat formatter;
+        DateFormat                formatter;
 
         public DateRenderer(){
             super();
@@ -225,6 +234,17 @@ public class SQLPanel extends JPanel {
                 formatter = new SimpleDateFormat("MM-dd HH:mm:ss");
             }
             setText((value == null) ? "" : formatter.format(value));
+        }
+    }
+
+    static class IDRender extends DefaultTableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+
+        public void setValue(Object value) {
+            CompositeData rowData = (CompositeData) value;
+            Object id = rowData.get("ID");
+            setText((id == null) ? "" : id.toString());
         }
     }
 }
