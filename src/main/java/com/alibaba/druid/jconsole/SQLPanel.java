@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.management.MBeanServerConnection;
@@ -22,6 +23,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 public class SQLPanel extends JPanel {
 
@@ -33,12 +35,13 @@ public class SQLPanel extends JPanel {
 
     private JTable                table;
     private SQLTableModel         tableModel;
+    private SQLTableRowSorter     sorter;
 
     private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecCount",
 
-                                                   "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
+                                                   "TotalTime", "EffectedRows", "FetchRowCount", "Running", "ConcurrentMax", 
 
-                                                   "EffectedRowCount", "FetchRowCount", "ConcurrentMax", "Running" };
+                                                   "MaxTimespan", "LastTime", "LastError","ErrorCount",  };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -67,17 +70,17 @@ public class SQLPanel extends JPanel {
                 row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("SQL");
                 row[columnIndex++] = rowData.get("ExecuteCount");
-
-                row[columnIndex++] = rowData.get("ErrorCount");
+                
                 row[columnIndex++] = rowData.get("TotalTime");
-                row[columnIndex++] = rowData.get("LastTime");
-                row[columnIndex++] = rowData.get("MaxTimespan");
-                row[columnIndex++] = rowData.get("LastError");
-
                 row[columnIndex++] = rowData.get("EffectedRowCount");
                 row[columnIndex++] = rowData.get("FetchRowCount");
-                row[columnIndex++] = rowData.get("ConcurrentMax");
                 row[columnIndex++] = rowData.get("RunningCount");
+                row[columnIndex++] = rowData.get("ConcurrentMax");
+                
+                row[columnIndex++] = rowData.get("MaxTimespan");
+                row[columnIndex++] = rowData.get("LastTime");
+                row[columnIndex++] = rowData.get("LastError");
+                row[columnIndex++] = rowData.get("ErrorCount");
 
                 rowList.add(row);
             }
@@ -87,8 +90,10 @@ public class SQLPanel extends JPanel {
             TableColumnModel columnModel = new TableColumnModel();
 
             tableModel = new SQLTableModel(rows);
+            sorter = new SQLTableRowSorter(tableModel);
             table = new JTable(tableModel, columnModel);
             table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+            table.setRowSorter(sorter);
             table.addMouseListener(new MouseAdapter() {
 
                 public void mouseClicked(MouseEvent e) {
@@ -270,7 +275,7 @@ public class SQLPanel extends JPanel {
             }
 
             {
-                TableColumn column = getColumn(7);
+                TableColumn column = getColumn(11);
                 column.setCellRenderer(new DateRenderer());
                 column.setPreferredWidth(120);
             }
@@ -290,7 +295,7 @@ public class SQLPanel extends JPanel {
             String sql = (String) value;
             String formattedSql = SQLDetailDialog.format(sql);
             setText(sql);
-            setToolTipText("<html><pre>" + formattedSql + "</pre></html>");   
+            setToolTipText("<html><pre>" + formattedSql + "</pre></html>");
         }
     }
 
@@ -319,6 +324,43 @@ public class SQLPanel extends JPanel {
             CompositeData rowData = (CompositeData) value;
             Object id = rowData.get("ID");
             setText((id == null) ? "" : id.toString());
+        }
+    }
+
+    static class SQLTableRowSorter extends TableRowSorter<SQLTableModel> {
+
+        public SQLTableRowSorter(SQLTableModel model){
+            super(model);
+        }
+
+        public Comparator<?> getComparator(int column) {
+            switch (column) {
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 13:
+                    return new LongComparator();
+                default:
+                    return super.getComparator(column);
+            }
+
+        }
+    }
+
+    static class LongComparator implements Comparator<Object> {
+
+        @Override
+        public int compare(Object a, Object b) {
+            long aValue = Long.parseLong(a.toString());
+            long bValue = Long.parseLong(b.toString());
+            
+            if (aValue == bValue) {
+                return 0;
+            }
+            return aValue > bValue ? 1 : -1;
         }
     }
 }
