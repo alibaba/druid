@@ -61,6 +61,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         lastErrorTime = 0;
         lastSampleTime = 0;
 
+        count.set(0);
         closeCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
