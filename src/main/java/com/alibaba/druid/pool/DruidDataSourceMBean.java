@@ -53,6 +53,16 @@ public interface DruidDataSourceMBean {
     long getCreateTimespanMillis();
 
     int getQueryTimeout();
+    
+    String getValidationQuery();
+    
+    int getValidationQueryTimeout();
+    
+    int getMaxWaitThreadCount();
+    
+    long getTimeBetweenEvictionRunsMillis();
+    
+    long getMinEvictableIdleTimeMillis();
 
     boolean isActiveConnectionTraceEnable();
 
