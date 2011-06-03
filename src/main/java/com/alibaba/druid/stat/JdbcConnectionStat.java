@@ -54,16 +54,13 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private final AtomicLong    connectNanoSpan = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
 
     public void reset() {
-        concurrentCount.set(0);
         concurrentMax.set(0);
-        // count.set(0);
         errorCount.set(0);
         nanoTotal.set(0);
         lastError = null;
         lastErrorTime = 0;
         lastSampleTime = 0;
 
-        count.set(0);
         closeCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
