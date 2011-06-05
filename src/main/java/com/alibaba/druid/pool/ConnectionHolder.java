@@ -30,7 +30,7 @@ import javax.sql.StatementEventListener;
  */
 public final class ConnectionHolder {
 
-    private final DruidDataSource               dataSource;
+    private final DruidAbstractDataSource               dataSource;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
@@ -85,7 +85,7 @@ public final class ConnectionHolder {
         return statementPool;
     }
 
-    public DruidDataSource getDataSource() {
+    public DruidAbstractDataSource getDataSource() {
         return dataSource;
     }
 

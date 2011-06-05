@@ -18,14 +18,12 @@ package com.alibaba.druid.pool;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -615,16 +613,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return null;
     }
 
-    @Override
-    public Driver getRawDriver() {
-        return driver;
-    }
-
-    void initStatement(Statement stmt) throws SQLException {
-        if (queryTimeout > 0) {
-            stmt.setQueryTimeout(queryTimeout);
-        }
-    }
 
     /** Instance key */
     protected String instanceKey = null;
@@ -687,19 +675,5 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return names;
     }
     
-    private final AtomicLong connectionIdSeed = new AtomicLong(10000);
-    private final AtomicLong statementIdSeed  = new AtomicLong(20000);
-    private final AtomicLong resultSetIdSeed  = new AtomicLong(50000);
 
-    public long createConnectionId() {
-        return connectionIdSeed.incrementAndGet();
-    }
-
-    public long createStatementId() {
-        return statementIdSeed.getAndIncrement();
-    }
-
-    public long createResultSetId() {
-        return resultSetIdSeed.getAndIncrement();
-    }
 }

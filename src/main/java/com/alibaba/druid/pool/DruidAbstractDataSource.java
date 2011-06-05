@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
@@ -725,6 +726,36 @@ public abstract class DruidAbstractDataSource implements DataSource, DataSourceP
     public long getCreateTimespanMillis() {
         return createTimespan / (1000 * 1000);
     }
+
+    @Override
+    public Driver getRawDriver() {
+        return driver;
+    }
+
+    private final AtomicLong connectionIdSeed = new AtomicLong(10000);
+    private final AtomicLong statementIdSeed  = new AtomicLong(20000);
+    private final AtomicLong resultSetIdSeed  = new AtomicLong(50000);
+
+    public long createConnectionId() {
+        return connectionIdSeed.incrementAndGet();
+    }
+
+    public long createStatementId() {
+        return statementIdSeed.getAndIncrement();
+    }
+
+    public long createResultSetId() {
+        return resultSetIdSeed.getAndIncrement();
+    }
+    
+
+    void initStatement(Statement stmt) throws SQLException {
+        if (queryTimeout > 0) {
+            stmt.setQueryTimeout(queryTimeout);
+        }
+    }
+    
+    protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
 
     abstract void incrementCreateCount();
 
