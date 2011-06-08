@@ -15,60 +15,10 @@
  */
 package com.alibaba.druid.pool;
 
-import java.util.List;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public interface DruidDataSourceMBean {
-    
-    String getName();
+public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
-    int getInitialSize();
-
-    String getUsername();
-
-    String getPassword();
-
-    String getUrl();
-
-    String getDriverClassName();
-
-    long getConnectCount();
-
-    long getCloseCount();
-
-    long getConnectErrorCount();
-
-    int getPoolingCount();
-
-    long getRecycleCount();
-
-    int getActiveCount();
-
-    long getCreateCount();
-
-    long getDestroyCount();
-
-    long getCreateTimespanMillis();
-
-    int getQueryTimeout();
-    
-    String getValidationQuery();
-    
-    int getValidationQueryTimeout();
-    
-    int getMaxWaitThreadCount();
-    
-    long getTimeBetweenEvictionRunsMillis();
-    
-    long getMinEvictableIdleTimeMillis();
-
-    boolean isActiveConnectionTraceEnable();
-
-    void setActiveConnectionTraceEnable(boolean connectStackTraceEnable);
-
-    List<String> getActiveConnectionStackTrace();
-
-    List<String> getFilterClassNames();
 }

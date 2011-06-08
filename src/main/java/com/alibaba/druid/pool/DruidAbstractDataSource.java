@@ -44,7 +44,7 @@ import com.alibaba.druid.util.DruidLoaderUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public abstract class DruidAbstractDataSource implements DataSource, DataSourceProxy, Serializable {
+public abstract class DruidAbstractDataSource implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 
     private static final long   serialVersionUID                          = 1L;
 

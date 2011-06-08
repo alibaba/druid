@@ -43,7 +43,7 @@ public final class ConnectionHolder {
 
     private final List<PoolableStatement>       statementTrace           = new ArrayList<PoolableStatement>();
 
-    public ConnectionHolder(DruidDataSource dataSource, Connection conn){
+    public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn){
         this.dataSource = dataSource;
         this.conn = conn;
         this.poolPreparedStatements = dataSource.isPoolPreparedStatements();
