@@ -323,8 +323,8 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             return new Date(lastErrorTime);
         }
 
-        private static String[] indexNames        = { "id", "connectTime", "connectTimespan", "establishTime", "aliveTimespan", "lastSql", "lastError",
-                                                          "lastErrorTime", "connectStatckTrace", "lastStatementStackTrace", "dataSource" };
+        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime", "AliveTimespan", "LastSql", "LastError",
+                                                          "LastErrorTime", "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
         private static String[] indexDescriptions = indexNames;
 
         public static CompositeType getCompositeType() throws JMException {
@@ -344,19 +344,19 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         public CompositeDataSupport getCompositeData() throws JMException {
             Map<String, Object> map = new HashMap<String, Object>();
 
-            map.put("id", id);
-            map.put("connectTime", getConnectTime());
-            map.put("connectTimespan", getConnectTimespanNano() / (1000 * 1000));
-            map.put("establishTime", getEstablishTime());
-            map.put("aliveTimespan", (System.nanoTime() - getEstablishNano()) / (1000 * 1000));
+            map.put("ID", id);
+            map.put("ConnectTime", getConnectTime());
+            map.put("ConnectTimespan", getConnectTimespanNano() / (1000 * 1000));
+            map.put("EstablishTime", getEstablishTime());
+            map.put("AliveTimespan", (System.nanoTime() - getEstablishNano()) / (1000 * 1000));
 
-            map.put("lastSql", getLastSql());
-            map.put("lastError", JMXUtils.getErrorCompositeData(this.lastError));
-            map.put("lastErrorTime", getLastErrorTime());
-            map.put("connectStatckTrace", getConnectStackTrace());
-            map.put("lastStatementStackTrace", getLastStatementStatckTrace());
+            map.put("LastSql", getLastSql());
+            map.put("LastError", JMXUtils.getErrorCompositeData(this.lastError));
+            map.put("LastErrorTime", getLastErrorTime());
+            map.put("ConnectStatckTrace", getConnectStackTrace());
+            map.put("LastStatementStackTrace", getLastStatementStatckTrace());
 
-            map.put("dataSource", this.getDataSource());
+            map.put("DataSource", this.getDataSource());
 
             return new CompositeDataSupport(getCompositeType(), map);
         }
