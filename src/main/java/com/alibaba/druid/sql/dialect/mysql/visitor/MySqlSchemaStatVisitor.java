@@ -20,6 +20,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.stat.TableStat.Column;
+import com.alibaba.druid.stat.TableStat.Mode;
 
 public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
 
@@ -52,16 +55,16 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             Mode mode = modeLocal.get();
             switch (mode) {
                 case Delete:
-                    stat.deleteCount++;
+                    stat.incrementDeleteCount();
                     break;
                 case Insert:
-                    stat.insertCount++;
+                    stat.incrementInsertCount();
                     break;
                 case Update:
-                    stat.updateCount++;
+                    stat.incrementUpdateCount();
                     break;
                 case Select:
-                    stat.selectCount++;
+                    stat.incrementSelectCount();
                     break;
                 default:
                     break;
@@ -97,7 +100,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             stat = new TableStat();
             tableStats.put(ident, stat);
         }
-        stat.updateCount++;
+        stat.incrementUpdateCount();
 
         Map<String, String> aliasMap = aliasLocal.get();
         aliasMap.put(ident, ident);
@@ -132,7 +135,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                 stat = new TableStat();
                 tableStats.put(ident, stat);
             }
-            stat.deleteCount++;
+            stat.incrementDeleteCount();
         }
 
         accept(x.getWhere());
@@ -182,7 +185,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                 stat = new TableStat();
                 tableStats.put(ident, stat);
             }
-            stat.insertCount++;
+            stat.incrementInsertCount();
 
             Map<String, String> aliasMap = aliasLocal.get();
             if (aliasMap != null) {
@@ -220,7 +223,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                 stat = new TableStat();
                 tableStats.put(ident, stat);
             }
-            stat.insertCount++;
+            stat.incrementInsertCount();
 
             Map<String, String> aliasMap = aliasLocal.get();
             if (aliasMap != null) {
@@ -323,143 +326,5 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         return fields;
     }
 
-    public static class Column {
-
-        private String table;
-        private String name;
-
-        public Column(){
-
-        }
-
-        public Column(String table, String name){
-            this.table = table;
-            this.name = name;
-        }
-
-        public String getTable() {
-            return table;
-        }
-
-        public void setTable(String table) {
-            this.table = table;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int hashCode() {
-            int tableHashCode = table != null ? table.toLowerCase().hashCode() : 0;
-            int nameHashCode = name != null ? name.toLowerCase().hashCode() : 0;
-
-            return tableHashCode + nameHashCode;
-        }
-
-        public String toString() {
-            if (table != null) {
-                return table + "." + name;
-            }
-
-            return name;
-        }
-
-        public boolean equals(Object obj) {
-            Column column = (Column) obj;
-
-            if (table == null) {
-                if (column.getTable() != null) {
-                    return false;
-                }
-            } else {
-                if (!table.equalsIgnoreCase(column.getTable())) {
-                    return false;
-                }
-            }
-
-            if (name == null) {
-                if (column.getName() != null) {
-                    return false;
-                }
-            } else {
-                if (!name.equalsIgnoreCase(column.getName())) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
-
-    public static enum Mode {
-        Insert(1), Update(2), Delete(4), Select(8);
-
-        public final int mark;
-
-        private Mode(int mark){
-            this.mark = mark;
-        }
-    }
-
-    public static class TableStat {
-
-        private int selectCount = 0;
-        private int updateCount = 0;
-        private int deleteCount = 0;
-        private int insertCount = 0;
-
-        public int getSelectCount() {
-            return selectCount;
-        }
-
-        public void setSelectCount(int selectCount) {
-            this.selectCount = selectCount;
-        }
-
-        public int getUpdateCount() {
-            return updateCount;
-        }
-
-        public void setUpdateCount(int updateCount) {
-            this.updateCount = updateCount;
-        }
-
-        public int getDeleteCount() {
-            return deleteCount;
-        }
-
-        public void setDeleteCount(int deleteCount) {
-            this.deleteCount = deleteCount;
-        }
-
-        public int getInsertCount() {
-            return insertCount;
-        }
-
-        public void setInsertCount(int insertCount) {
-            this.insertCount = insertCount;
-        }
-
-        public String toString() {
-            StringBuilder buf = new StringBuilder(4);
-            if (insertCount > 0) {
-                buf.append("C");
-            }
-            if (updateCount > 0) {
-                buf.append("U");
-            }
-            if (selectCount > 0) {
-                buf.append("R");
-            }
-            if (deleteCount > 0) {
-                buf.append("D");
-            }
-
-            return buf.toString();
-        }
-    }
+   
 }
