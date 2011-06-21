@@ -16,6 +16,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -239,6 +240,12 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
+        
+        if (x.getFrom() instanceof SQLSubqueryTableSource) {
+            x.getFrom().accept(this);
+            return false;
+        }
+        
         x.putAttribute("_original_use_mode", modeLocal.get());
         modeLocal.set(Mode.Select);
 
