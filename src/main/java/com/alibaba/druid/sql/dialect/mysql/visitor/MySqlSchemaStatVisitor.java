@@ -354,8 +354,8 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         }
 
         public int hashCode() {
-            int tableHashCode = table != null ? table.hashCode() : 0;
-            int nameHashCode = name != null ? name.hashCode() : 0;
+            int tableHashCode = table != null ? table.toLowerCase().hashCode() : 0;
+            int nameHashCode = name != null ? name.toLowerCase().hashCode() : 0;
 
             return tableHashCode + nameHashCode;
         }
@@ -376,7 +376,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                     return false;
                 }
             } else {
-                if (!table.equals(column.getTable())) {
+                if (!table.equalsIgnoreCase(column.getTable())) {
                     return false;
                 }
             }
@@ -386,7 +386,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                     return false;
                 }
             } else {
-                if (!name.equals(column.getName())) {
+                if (!name.equalsIgnoreCase(column.getName())) {
                     return false;
                 }
             }

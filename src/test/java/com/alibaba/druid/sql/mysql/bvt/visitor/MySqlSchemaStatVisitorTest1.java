@@ -39,4 +39,32 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "name")));
 
     }
+    
+    public void test_1() throws Exception {
+        String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id where a.groupID = ?";
+
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+
+        Assert.assertEquals(1, statementList.size());
+
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println(sql);
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getFields());
+
+        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(true, visitor.getTables().containsKey("users"));
+        Assert.assertEquals(true, visitor.getTables().containsKey("usergroups"));
+
+        Assert.assertEquals(4, visitor.getFields().size());
+        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
+        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
+        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "id")));
+        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "name")));
+
+    }
 }
