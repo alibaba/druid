@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
+import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.CompositeType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
@@ -118,7 +119,9 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         for (JdbcDataSourceStat dataSource : dataSources.values()) {
             ConcurrentMap<String, JdbcSqlStat> statMap = dataSource.getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
-                data.put(entry.getValue().getCompositeData());
+                Map<String, Object> map = entry.getValue().getData();
+                map.put("URL", dataSource.getUrl());
+                data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
             }
         }
 

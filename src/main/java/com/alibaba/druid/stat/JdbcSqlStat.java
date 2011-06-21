@@ -319,11 +319,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.LONG,
                 SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
-                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING };
+                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING };
 
         String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
                 "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", "RunningCount", "Name", "File",
-                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType" };
+                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType", "URL" };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -333,8 +333,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteCount() {
         return getErrorCount() + getExecuteSuccessCount();
     }
-
-    public CompositeDataSupport getCompositeData() throws JMException {
+    
+    public Map<String, Object> getData() throws JMException {
         Map<String, Object> map = new HashMap<String, Object>();
 
         map.put("ID", id);
@@ -376,8 +376,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         map.put("DbType", dbType);
+        map.put("URL", null);
+        
+        return map;
+    }
 
-        return new CompositeDataSupport(getCompositeType(), map);
+    public CompositeDataSupport getCompositeData() throws JMException {
+        return new CompositeDataSupport(getCompositeType(), getData());
     }
 
     public Throwable getExecuteErrorLast() {
