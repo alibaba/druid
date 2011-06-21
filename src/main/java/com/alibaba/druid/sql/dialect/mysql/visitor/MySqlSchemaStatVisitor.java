@@ -30,6 +30,16 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
     private final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
     private final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
 
+    public boolean visit(SQLSubqueryTableSource x) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                aliasMap.put(x.getAlias(), null);
+            }
+        }
+        return true;
+    }
+
     public boolean visit(SQLExprTableSource x) {
         if (x.getExpr() instanceof SQLIdentifierExpr) {
             String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
@@ -91,10 +101,10 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
 
         Map<String, String> aliasMap = aliasLocal.get();
         aliasMap.put(ident, ident);
-        
+
         accept(x.getItems());
         accept(x.getWhere());
-        
+
         return false;
     }
 
@@ -240,12 +250,12 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
-        
+
         if (x.getFrom() instanceof SQLSubqueryTableSource) {
             x.getFrom().accept(this);
             return false;
         }
-        
+
         x.putAttribute("_original_use_mode", modeLocal.get());
         modeLocal.set(Mode.Select);
 
@@ -281,10 +291,16 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
-            Map<String, String> aliasMap = aliasLocal.get();
-            if (aliasMap != null) {
-                String table = aliasMap.get(owner);
-                fields.add(new Column(table, x.getName()));
+            if (owner != null) {
+                Map<String, String> aliasMap = aliasLocal.get();
+                if (aliasMap != null) {
+                    String table = aliasMap.get(owner);
+                    
+                    // table == null时是SubQuery
+                    if (table != null) {
+                        fields.add(new Column(table, x.getName()));
+                    }
+                }
             }
         }
         return false;
