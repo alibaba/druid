@@ -9,6 +9,7 @@ import java.util.Set;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -114,6 +115,14 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(OracleDeleteStatement x) {
+        return visit((SQLDeleteStatement) x);
+    }
+
+    public void endVisit(OracleDeleteStatement x) {
+        aliasLocal.set(null);
+    }
+    
+    public boolean visit(SQLDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
         x.putAttribute("_original_use_mode", modeLocal.get());
@@ -123,13 +132,20 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         currentTableLocal.set(ident);
+        
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(ident, stat);
+        }
+        stat.incrementDeleteCount();
 
         accept(x.getWhere());
 
         return false;
     }
 
-    public void endVisit(OracleDeleteStatement x) {
+    public void endVisit(SQLDeleteStatement x) {
         aliasLocal.set(null);
     }
 
