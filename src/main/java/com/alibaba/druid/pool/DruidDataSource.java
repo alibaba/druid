@@ -351,6 +351,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     connections[i] = null;
                     destroyCount++;
                 } catch (Exception ex) {
+                    printStackTrace(ex);
                     // skip it
                 }
             }
