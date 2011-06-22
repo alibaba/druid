@@ -6,8 +6,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest2 extends TestCase {
@@ -15,13 +15,13 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select id, name FROM users";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println(sql);
@@ -40,13 +40,13 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
     public void test_2() throws Exception {
         String sql = "select id, name FROM users a";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println(sql);
@@ -65,13 +65,13 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
     public void test_3() throws Exception {
         String sql = "select id, a.name FROM users a";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println(sql);

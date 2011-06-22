@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
@@ -82,7 +83,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
         return false;
     }
-    
+
     public boolean visit(OracleSelectTableReference x) {
         if (x.getExpr() instanceof SQLIdentifierExpr) {
             String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
@@ -91,7 +92,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
                 stat = new TableStat();
                 tableStats.put(ident, stat);
             }
-            
+
             Mode mode = modeLocal.get();
             switch (mode) {
                 case Delete:
@@ -109,7 +110,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
                 default:
                     break;
             }
-            
+
             Map<String, String> aliasMap = aliasLocal.get();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
@@ -118,7 +119,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
                 aliasMap.put(ident, ident);
             }
         }
-        
+
         return false;
     }
 
@@ -155,6 +156,36 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         aliasLocal.set(null);
     }
 
+    public boolean visit(OracleUpdateStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+
+        if (x.getTable() instanceof SQLIdentifierExpr) {
+            String ident = x.getTable().toString();
+            currentTableLocal.set(ident);
+
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(ident, stat);
+            }
+            stat.incrementUpdateCount();
+
+            Map<String, String> aliasMap = aliasLocal.get();
+            aliasMap.put(ident, ident);
+        } else {
+            accept(x.getTable());
+        }
+
+        accept(x.getSetClause());
+        accept(x.getWhere());
+
+        return false;
+    }
+
+    public void endVisit(OracleUpdateStatement x) {
+        aliasLocal.set(null);
+    }
+
     public boolean visit(OracleDeleteStatement x) {
         return visit((SQLDeleteStatement) x);
     }
@@ -162,7 +193,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     public void endVisit(OracleDeleteStatement x) {
         aliasLocal.set(null);
     }
-    
+
     public boolean visit(SQLDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
@@ -173,7 +204,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         currentTableLocal.set(ident);
-        
+
         TableStat stat = tableStats.get(ident);
         if (stat == null) {
             stat = new TableStat();
@@ -285,13 +316,13 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
         modeLocal.set(originalMode);
     }
-    
+
     public boolean visit(OracleSelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
     }
-    
+
     public void endVisit(OracleSelectQueryBlock x) {
-        endVisit((SQLSelectQueryBlock)x);
+        endVisit((SQLSelectQueryBlock) x);
     }
 
     public boolean visit(SQLJoinTableSource x) {
@@ -302,7 +333,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         if ("ROWNUM".equalsIgnoreCase(x.getName())) {
             return false;
         }
-        
+
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
@@ -325,7 +356,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         if ("ROWNUM".equalsIgnoreCase(x.getName())) {
             return false;
         }
-        
+
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {

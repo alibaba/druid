@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class OracleSchemaStatVisitorTest1 extends TestCase {
@@ -15,13 +17,13 @@ public class OracleSchemaStatVisitorTest1 extends TestCase {
     public void test_0() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println(sql);
