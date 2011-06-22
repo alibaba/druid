@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -18,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
@@ -29,7 +34,7 @@ import com.alibaba.druid.stat.TableStat.Name;
 
 public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
-    private HashMap<TableStat.Name, TableStat>                    tableStats        = new HashMap<TableStat.Name, TableStat>();
+    private HashMap<TableStat.Name, TableStat>            tableStats        = new HashMap<TableStat.Name, TableStat>();
     private Set<Column>                                   fields            = new HashSet<Column>();
 
     private final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
@@ -47,8 +52,8 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(SQLExprTableSource x) {
-        if (x.getExpr() instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
+        if (x.getExpr() instanceof SQLName) {
+            String ident = ((SQLName) x.getExpr()).toString();
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
@@ -86,8 +91,8 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(OracleSelectTableReference x) {
-        if (x.getExpr() instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
+        if (x.getExpr() instanceof SQLName) {
+            String ident = ((SQLName) x.getExpr()).toString();
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
@@ -123,9 +128,36 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
         return false;
     }
+    
+    public boolean visit(SQLAggregateExpr x) {
+        accept(x.getArguments());
+        return false;
+    }
+    
+    public boolean visit(OracleAggregateExpr x) {
+        accept(x.getArguments());
+        accept(x.getOver());
+        return false;
+    }
+    
+    public boolean visit(SQLMethodInvokeExpr x) {
+        accept(x.getParameters());
+        return false;
+    }
 
     public boolean visit(SQLSelect x) {
-        return true;
+        accept(x.getQuery());
+        
+        String originalTable = currentTableLocal.get();
+        
+        currentTableLocal.set((String) x.getQuery().getAttribute("table"));
+        x.putAttribute("_old_local_", originalTable);
+        
+        accept(x.getOrderBy());
+        
+        currentTableLocal.set(originalTable);
+        
+        return false;
     }
 
     public void endVisit(SQLSelect x) {
@@ -312,6 +344,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
     public void endVisit(SQLSelectQueryBlock x) {
         String originalTable = (String) x.getAttribute("_old_local_");
+        x.putAttribute("table", currentTableLocal.get());
         currentTableLocal.set(originalTable);
 
         Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
@@ -366,10 +399,19 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLAllColumnExpr x) {
+        String currentTable = currentTableLocal.get();
+
+        if (currentTable != null) {
+            fields.add(new Column(currentTable, "*"));
+        }
+        return false;
+    }
+
     public Map<Name, TableStat> getTables() {
         return tableStats;
     }
-    
+
     public boolean containsTable(String tableName) {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }

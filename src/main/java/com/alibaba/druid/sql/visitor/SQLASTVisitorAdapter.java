@@ -225,10 +225,10 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         return true;
     }
 
-    public void endVisit(SQLAggregateExpr astNode) {
+    public void endVisit(SQLAggregateExpr x) {
     }
 
-    public boolean visit(SQLAggregateExpr astNode) {
+    public boolean visit(SQLAggregateExpr x) {
         return true;
     }
 

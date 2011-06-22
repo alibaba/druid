@@ -8,7 +8,10 @@ import java.util.Set;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -26,7 +29,7 @@ import com.alibaba.druid.stat.TableStat.Mode;
 
 public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
 
-    private HashMap<TableStat.Name, TableStat>                    tableStats        = new HashMap<TableStat.Name, TableStat>();
+    private HashMap<TableStat.Name, TableStat>            tableStats        = new HashMap<TableStat.Name, TableStat>();
     private Set<Column>                                   fields            = new HashSet<Column>();
 
     private final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
@@ -83,10 +86,28 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelect x) {
-        return true;
+        accept(x.getQuery());
+
+        String originalTable = currentTableLocal.get();
+
+        currentTableLocal.set((String) x.getQuery().getAttribute("table"));
+        x.putAttribute("_old_local_", originalTable);
+
+        accept(x.getOrderBy());
+
+        currentTableLocal.set(originalTable);
+
+        return false;
     }
 
-    public void endVisit(SQLSelect x) {
+    public boolean visit(SQLAggregateExpr x) {
+        accept(x.getArguments());
+        return false;
+    }
+
+    public boolean visit(SQLMethodInvokeExpr x) {
+        accept(x.getParameters());
+        return false;
     }
 
     public boolean visit(SQLUpdateStatement x) {
@@ -280,6 +301,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
 
     public void endVisit(SQLSelectQueryBlock x) {
         String originalTable = (String) x.getAttribute("_old_local_");
+        x.putAttribute("table", currentTableLocal.get());
         currentTableLocal.set(originalTable);
 
         Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
@@ -298,7 +320,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                 Map<String, String> aliasMap = aliasLocal.get();
                 if (aliasMap != null) {
                     String table = aliasMap.get(owner);
-                    
+
                     // table == null时是SubQuery
                     if (table != null) {
                         fields.add(new Column(table, x.getName()));
@@ -318,10 +340,19 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         return false;
     }
 
+    public boolean visit(SQLAllColumnExpr x) {
+        String currentTable = currentTableLocal.get();
+
+        if (currentTable != null) {
+            fields.add(new Column(currentTable, "*"));
+        }
+        return false;
+    }
+
     public Map<TableStat.Name, TableStat> getTables() {
         return tableStats;
     }
-    
+
     public boolean containsTable(String tableName) {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
@@ -330,5 +361,4 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         return fields;
     }
 
-   
 }
