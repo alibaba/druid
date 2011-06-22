@@ -26,7 +26,7 @@ import com.alibaba.druid.stat.TableStat.Mode;
 
 public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
 
-    private HashMap<String, TableStat>                    tableStats        = new HashMap<String, TableStat>();
+    private HashMap<TableStat.Name, TableStat>                    tableStats        = new HashMap<TableStat.Name, TableStat>();
     private Set<Column>                                   fields            = new HashSet<Column>();
 
     private final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
@@ -49,7 +49,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
-                tableStats.put(ident, stat);
+                tableStats.put(new TableStat.Name(ident), stat);
             }
 
             Mode mode = modeLocal.get();
@@ -98,7 +98,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         TableStat stat = tableStats.get(ident);
         if (stat == null) {
             stat = new TableStat();
-            tableStats.put(ident, stat);
+            tableStats.put(new TableStat.Name(ident), stat);
         }
         stat.incrementUpdateCount();
 
@@ -133,7 +133,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
-                tableStats.put(ident, stat);
+                tableStats.put(new TableStat.Name(ident), stat);
             }
             stat.incrementDeleteCount();
         }
@@ -183,7 +183,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
-                tableStats.put(ident, stat);
+                tableStats.put(new TableStat.Name(ident), stat);
             }
             stat.incrementInsertCount();
 
@@ -221,7 +221,7 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
-                tableStats.put(ident, stat);
+                tableStats.put(new TableStat.Name(ident), stat);
             }
             stat.incrementInsertCount();
 
@@ -318,8 +318,12 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
         return false;
     }
 
-    public Map<String, TableStat> getTables() {
+    public Map<TableStat.Name, TableStat> getTables() {
         return tableStats;
+    }
+    
+    public boolean containsTable(String tableName) {
+        return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
     public Set<Column> getFields() {

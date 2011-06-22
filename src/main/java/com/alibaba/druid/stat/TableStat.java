@@ -22,7 +22,6 @@ public class TableStat {
     public int getUpdateCount() {
         return updateCount;
     }
-    
 
     public void incrementUpdateCount() {
         updateCount++;
@@ -35,7 +34,7 @@ public class TableStat {
     public int getDeleteCount() {
         return deleteCount;
     }
-    
+
     public void incrementDeleteCount() {
         this.deleteCount++;
     }
@@ -43,7 +42,7 @@ public class TableStat {
     public void setDeleteCount(int deleteCount) {
         this.deleteCount = deleteCount;
     }
-    
+
     public void incrementInsertCount() {
         this.insertCount++;
     }
@@ -72,6 +71,37 @@ public class TableStat {
         }
 
         return buf.toString();
+    }
+
+    public static class Name {
+
+        private String name;
+
+        public Name(String name){
+            this.name = name;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public int hashCode() {
+            return this.name.toLowerCase().hashCode();
+        }
+
+        public boolean equals(Object o) {
+            if (!(o instanceof Name)) {
+                return false;
+            }
+
+            Name other = (Name) o;
+
+            return this.name.equalsIgnoreCase(other.name);
+        }
+
+        public String toString() {
+            return this.name;
+        }
     }
 
     public static class Column {

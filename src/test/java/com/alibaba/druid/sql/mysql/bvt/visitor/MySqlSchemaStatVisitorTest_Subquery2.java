@@ -29,8 +29,8 @@ public class MySqlSchemaStatVisitorTest_Subquery2 extends TestCase {
         System.out.println("fields : " + visitor.getFields());
 
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.getTables().containsKey("users"));
-        Assert.assertEquals(true, visitor.getTables().containsKey("groups"));
+        Assert.assertEquals(true, visitor.containsTable("users"));
+        Assert.assertEquals(true, visitor.containsTable("groups"));
 
         Assert.assertEquals(5, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));

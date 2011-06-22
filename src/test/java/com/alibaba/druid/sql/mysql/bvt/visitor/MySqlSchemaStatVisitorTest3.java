@@ -29,8 +29,8 @@ public class MySqlSchemaStatVisitorTest3 extends TestCase {
         System.out.println("fields : " + visitor.getFields());
 
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.getTables().containsKey("users"));
-        Assert.assertEquals(true, visitor.getTables().containsKey("users2"));
+        Assert.assertEquals(true, visitor.containsTable("users"));
+        Assert.assertEquals(true, visitor.containsTable("users2"));
 
         Assert.assertEquals(5, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));

@@ -29,8 +29,8 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         System.out.println("fields : " + visitor.getFields());
 
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.getTables().containsKey("users"));
-        Assert.assertEquals(true, visitor.getTables().containsKey("usergroups"));
+        Assert.assertEquals(true, visitor.containsTable("users"));
+        Assert.assertEquals(true, visitor.containsTable("usergroups"));
 
         Assert.assertEquals(4, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
@@ -57,8 +57,8 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
         System.out.println("fields : " + visitor.getFields());
 
         Assert.assertEquals(2, visitor.getTables().size());
-        Assert.assertEquals(true, visitor.getTables().containsKey("users"));
-        Assert.assertEquals(true, visitor.getTables().containsKey("usergroups"));
+        Assert.assertEquals(true, visitor.containsTable("users"));
+        Assert.assertEquals(true, visitor.containsTable("usergroups"));
 
         Assert.assertEquals(4, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
