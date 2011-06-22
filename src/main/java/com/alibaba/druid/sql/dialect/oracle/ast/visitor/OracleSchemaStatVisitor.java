@@ -19,6 +19,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
@@ -78,6 +80,45 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
             }
         }
 
+        return false;
+    }
+    
+    public boolean visit(OracleSelectTableReference x) {
+        if (x.getExpr() instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(ident, stat);
+            }
+            
+            Mode mode = modeLocal.get();
+            switch (mode) {
+                case Delete:
+                    stat.incrementDeleteCount();
+                    break;
+                case Insert:
+                    stat.incrementInsertCount();
+                    break;
+                case Update:
+                    stat.incrementUpdateCount();
+                    break;
+                case Select:
+                    stat.incrementSelectCount();
+                    break;
+                default:
+                    break;
+            }
+            
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                if (x.getAlias() != null) {
+                    aliasMap.put(x.getAlias(), ident);
+                }
+                aliasMap.put(ident, ident);
+            }
+        }
+        
         return false;
     }
 
@@ -244,12 +285,24 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
         modeLocal.set(originalMode);
     }
+    
+    public boolean visit(OracleSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
+    }
+    
+    public void endVisit(OracleSelectQueryBlock x) {
+        endVisit((SQLSelectQueryBlock)x);
+    }
 
     public boolean visit(SQLJoinTableSource x) {
         return true;
     }
 
     public boolean visit(SQLPropertyExpr x) {
+        if ("ROWNUM".equalsIgnoreCase(x.getName())) {
+            return false;
+        }
+        
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
@@ -269,6 +322,10 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(SQLIdentifierExpr x) {
+        if ("ROWNUM".equalsIgnoreCase(x.getName())) {
+            return false;
+        }
+        
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {

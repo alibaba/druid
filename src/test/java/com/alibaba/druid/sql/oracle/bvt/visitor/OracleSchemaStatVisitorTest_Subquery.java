@@ -13,7 +13,7 @@ import com.alibaba.druid.stat.TableStat.Column;
 public class OracleSchemaStatVisitorTest_Subquery extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "SELECT id2, name2 FROM (select id, name from users limit 10) a";
+        String sql = "SELECT id2, name2 FROM (select id, name from users where ROWNUM < 10) a";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

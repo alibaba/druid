@@ -576,8 +576,8 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.JOIN);
             joinType = OracleSelectJoin.JoinType.FULL_OUTER_JOIN;
         }
-
-        if (identifierEquals("INNER")) {
+        
+        if (lexer.token() == Token.INNER) {
             lexer.nextToken();
             accept(Token.JOIN);
             joinType = OracleSelectJoin.JoinType.INNER_JOIN;
