@@ -1673,4 +1673,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     }
 
+    @Override
+    public void endVisit(OracleSelect x) {
+        
+    }
+
 }

@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
@@ -146,6 +147,25 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(SQLSelect x) {
+        accept(x.getQuery());
+        
+        String originalTable = currentTableLocal.get();
+        
+        currentTableLocal.set((String) x.getQuery().getAttribute("table"));
+        x.putAttribute("_old_local_", originalTable);
+        
+        accept(x.getOrderBy());
+        
+        currentTableLocal.set(originalTable);
+        
+        return false;
+    }
+
+    public void endVisit(OracleSelect x) {
+    }
+    
+    public boolean visit(OracleSelect x) {
+        accept(x.getFactoring());
         accept(x.getQuery());
         
         String originalTable = currentTableLocal.get();

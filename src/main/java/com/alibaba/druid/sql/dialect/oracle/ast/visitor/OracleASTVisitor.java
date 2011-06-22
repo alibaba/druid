@@ -55,6 +55,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
@@ -362,4 +363,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleBinaryDoubleExpr x);
 
     void endVisit(OracleBinaryDoubleExpr x);
+    
+    boolean visit(OracleSelect x);
+    
+    void endVisit(OracleSelect x);
 }
