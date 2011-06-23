@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class OracleSQLObject extends SQLObjectImpl {

@@ -12,15 +12,15 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleResourceTest extends TestCase {
 
     public void test_0() throws Exception {
         // 13
-        exec_test("bvt/parser/oracle-29.txt");
+        exec_test("bvt/parser/oracle-53.txt");
 //        for (int i = 0; i <= 53; ++i) {
 //            exec_test("bvt/parser/oracle-" + i + ".txt");
 //        }

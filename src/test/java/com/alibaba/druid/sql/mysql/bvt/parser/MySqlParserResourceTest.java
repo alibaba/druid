@@ -28,6 +28,8 @@ public class MySqlParserResourceTest extends TestCase {
         exec_test("bvt/parser/mysql-8.txt");
         exec_test("bvt/parser/mysql-9.txt");
         exec_test("bvt/parser/mysql-10.txt");
+        exec_test("bvt/parser/mysql-11.txt");
+        exec_test("bvt/parser/mysql-12.txt");
     }
 
     public void exec_test(String resource) throws Exception {

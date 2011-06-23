@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.oracle.ast.visitor;
+package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,6 +86,8 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
                 }
                 aliasMap.put(ident, ident);
             }
+        } else {
+            accept(x.getExpr());
         }
 
         return false;
@@ -125,22 +127,25 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
                 }
                 aliasMap.put(ident, ident);
             }
+            return false;
         }
+        
+        accept(x.getExpr());
 
         return false;
     }
-    
+
     public boolean visit(SQLAggregateExpr x) {
         accept(x.getArguments());
         return false;
     }
-    
+
     public boolean visit(OracleAggregateExpr x) {
         accept(x.getArguments());
         accept(x.getOver());
         return false;
     }
-    
+
     public boolean visit(SQLMethodInvokeExpr x) {
         accept(x.getParameters());
         return false;
@@ -148,35 +153,35 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
     public boolean visit(SQLSelect x) {
         accept(x.getQuery());
-        
+
         String originalTable = currentTableLocal.get();
-        
+
         currentTableLocal.set((String) x.getQuery().getAttribute("table"));
         x.putAttribute("_old_local_", originalTable);
-        
+
         accept(x.getOrderBy());
-        
+
         currentTableLocal.set(originalTable);
-        
+
         return false;
     }
 
     public void endVisit(OracleSelect x) {
     }
-    
+
     public boolean visit(OracleSelect x) {
         accept(x.getFactoring());
         accept(x.getQuery());
-        
+
         String originalTable = currentTableLocal.get();
-        
+
         currentTableLocal.set((String) x.getQuery().getAttribute("table"));
         x.putAttribute("_old_local_", originalTable);
-        
+
         accept(x.getOrderBy());
-        
+
         currentTableLocal.set(originalTable);
-        
+
         return false;
     }
 
@@ -408,6 +413,14 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
     public boolean visit(SQLIdentifierExpr x) {
         if ("ROWNUM".equalsIgnoreCase(x.getName())) {
+            return false;
+        }
+
+        if ("SYSDATE".equalsIgnoreCase(x.getName())) {
+            return false;
+        }
+        
+        if ("+".equalsIgnoreCase(x.getName())) {
             return false;
         }
 

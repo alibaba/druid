@@ -80,6 +80,8 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
                 }
                 aliasMap.put(ident, ident);
             }
+        } else {
+            accept(x.getExpr());
         }
 
         return false;

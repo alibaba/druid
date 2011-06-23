@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.oracle.ast.visitor;
+package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;

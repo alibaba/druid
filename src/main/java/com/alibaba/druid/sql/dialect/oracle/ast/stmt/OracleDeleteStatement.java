@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 

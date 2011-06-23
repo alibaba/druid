@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.visitor;
+package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 

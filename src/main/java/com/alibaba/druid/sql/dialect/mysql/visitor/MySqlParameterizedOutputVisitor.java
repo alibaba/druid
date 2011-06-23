@@ -44,8 +44,10 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
 
     public SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
         if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
-            x.getLeft().getAttributes().put(ATTR_PARAMS_SKIP, true);
-            x.getRight().getAttributes().put(ATTR_PARAMS_SKIP, true);
+            if (x.getOperator() == SQLBinaryOperator.Equality || x.getOperator() == SQLBinaryOperator.NotEqual) {
+                x.getLeft().getAttributes().put(ATTR_PARAMS_SKIP, true);
+                x.getRight().getAttributes().put(ATTR_PARAMS_SKIP, true);
+            }
             return x;
         }
 

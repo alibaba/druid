@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public abstract class SQLStatementImpl extends SQLObjectImpl implements SQLStatement {

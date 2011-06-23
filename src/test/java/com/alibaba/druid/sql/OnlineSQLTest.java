@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 
 public class OnlineSQLTest extends TestCase {
 

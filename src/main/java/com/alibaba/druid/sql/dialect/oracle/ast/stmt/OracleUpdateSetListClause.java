@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleUpdateSetListClause extends OracleUpdateSetClause {
 

@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleHint extends OracleSQLObject {
 

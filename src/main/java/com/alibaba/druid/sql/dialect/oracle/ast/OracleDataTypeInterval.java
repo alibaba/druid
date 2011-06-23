@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
-import com.alibaba.druid.sql.dialect.oracle.ast.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleDataTypeInterval extends SQLDataTypeImpl {
 

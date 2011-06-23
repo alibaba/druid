@@ -654,10 +654,16 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr bitOrRest(SQLExpr expr) throws ParserException {
-        while (lexer.token() == Token.BAR) {
+        if (lexer.token() == Token.BAR) {
             lexer.nextToken();
             SQLExpr rightExp = bitAnd();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BitwiseOr, rightExp);
+            expr = bitAndRest(expr);
+        } else if (lexer.token() == Token.TILDE) {
+            lexer.nextToken();
+            SQLExpr rightExp = bitAnd();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.InvertBits, rightExp);
+            expr = bitAndRest(expr);
         }
         return expr;
     }
