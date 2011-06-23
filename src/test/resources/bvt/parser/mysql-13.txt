@@ -1,0 +1,5 @@
+SELECT 'Monty!' REGEXP '.*'
+---------------------------
+SELECT 'Monty!' REGEXP '.*'
+---------------------------
+SELECT ? REGEXP ?
