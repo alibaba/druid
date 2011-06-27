@@ -20,6 +20,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
@@ -60,6 +61,22 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
+    
+    private AtomicInteger       count_0_2         = new AtomicInteger();
+    private AtomicInteger       count_2_5         = new AtomicInteger();
+    private AtomicInteger       count_5_10        = new AtomicInteger();
+    private AtomicInteger       count_10_20       = new AtomicInteger();
+    private AtomicInteger       count_20_50       = new AtomicInteger();
+    private AtomicInteger       count_50_100      = new AtomicInteger();
+    private AtomicInteger       count_100_200     = new AtomicInteger();
+    private AtomicInteger       count_200_500     = new AtomicInteger();
+    private AtomicInteger       count_500_1000    = new AtomicInteger();
+    private AtomicInteger       count_1000_2000   = new AtomicInteger();
+    private AtomicInteger       count_2000_5000   = new AtomicInteger();
+    private AtomicInteger       count_5000_10000  = new AtomicInteger();
+    private AtomicInteger       count_10000_20000 = new AtomicInteger();
+    private AtomicInteger       count_20000_50000 = new AtomicInteger();
+    private AtomicInteger       count_50000_more  = new AtomicInteger();
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
@@ -156,6 +173,22 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         updateCount.set(0);
         fetchRowCount.set(0);
+        
+        count_0_2.set(0);
+        count_2_5.set(0);
+        count_5_10.set(0);
+        count_10_20.set(0);
+        count_20_50.set(0);
+        count_50_100.set(0);
+        count_100_200.set(0);
+        count_200_500.set(0);
+        count_500_1000.set(0);
+        count_1000_2000.set(0);
+        count_2000_5000.set(0);
+        count_5000_10000.set(0);
+        count_10000_20000.set(0);
+        count_20000_50000.set(0);
+        count_50000_more.set(0);
     }
 
     public long getConcurrentMax() {
@@ -289,6 +322,39 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 break;
             }
         }
+        
+
+        if (nanoSpan <= 2 * 1000 * 1000) {
+            count_0_2.incrementAndGet();
+        } else if (nanoSpan <= 5 * 1000 * 1000) {
+            count_2_5.incrementAndGet();
+        } else if (nanoSpan <= 10 * 1000 * 1000) {
+            count_5_10.incrementAndGet();
+        } else if (nanoSpan <= 20 * 1000 * 1000) {
+            count_10_20.incrementAndGet();
+        } else if (nanoSpan <= 50 * 1000 * 1000) {
+            count_20_50.incrementAndGet();
+        } else if (nanoSpan <= 100 * 1000 * 1000) {
+            count_50_100.incrementAndGet();
+        } else if (nanoSpan <= 200 * 1000 * 1000) {
+            count_100_200.incrementAndGet();
+        } else if (nanoSpan <= 500 * 1000 * 1000) {
+            count_200_500.incrementAndGet();
+        } else if (nanoSpan <= 1000 * 1000 * 1000) {
+            count_500_1000.incrementAndGet();
+        } else if (nanoSpan <= 2000 * 1000 * 1000) {
+            count_1000_2000.incrementAndGet();
+        } else if (nanoSpan <= 5000 * 1000 * 1000) {
+            count_2000_5000.incrementAndGet();
+        } else if (nanoSpan <= 10000 * 1000 * 1000) {
+            count_5000_10000.incrementAndGet();
+        } else if (nanoSpan <= 20000 * 1000 * 1000) {
+            count_10000_20000.incrementAndGet();
+        } else if (nanoSpan <= 50000 * 1000 * 1000) {
+            count_20000_50000.incrementAndGet();
+        } else {
+            count_50000_more.incrementAndGet();
+        }
     }
 
     public long getExecuteMillisTotal() {
@@ -307,6 +373,66 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteBatchSizeMax() {
         return executeBatchSizeMax.get();
     }
+    
+    public int getCount_0_2() {
+        return count_0_2.get();
+    }
+
+    public int getCount_2_5() {
+        return count_2_5.get();
+    }
+
+    public int getCount_5_10() {
+        return count_5_10.get();
+    }
+
+    public int getCount_10_20() {
+        return count_10_20.get();
+    }
+
+    public int getCount_20_50() {
+        return count_20_50.get();
+    }
+
+    public int getCount_50_100() {
+        return count_50_100.get();
+    }
+
+    public int getCount_100_200() {
+        return count_100_200.get();
+    }
+
+    public int getCount_200_500() {
+        return count_200_500.get();
+    }
+
+    public int getCount_500_1000() {
+        return count_500_1000.get();
+    }
+
+    public int getCount_1000_2000() {
+        return count_1000_2000.get();
+    }
+
+    public int getCount_2000_5000() {
+        return count_2000_5000.get();
+    }
+
+    public int getCount_5000_10000() {
+        return count_5000_10000.get();
+    }
+
+    public int getCount_10000_20000() {
+        return count_10000_20000.get();
+    }
+
+    public int getCount_20000_50000() {
+        return count_20000_50000.get();
+    }
+
+    public int getCount_50000_more() {
+        return count_50000_more.get();
+    }
 
     private static CompositeType COMPOSITE_TYPE = null;
 
@@ -319,11 +445,23 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.LONG,
                 SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
-                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING };
+                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
+        
+                , SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER  //     
+                , SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER  //     
+                , SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER  // 
+        };
 
         String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount", "TotalTime", "LastTime", "MaxTimespan", "LastError",
                 "EffectedRowCount", "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax", "RunningCount", "Name", "File",
-                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType", "URL" };
+                "LastErrorMessage", "LastErrorClass", "LastErrorStackTrace", "LastErrorTime", "DbType", "URL", //
+                
+                "Count_0_2", "Count_2_5", "Count_5_10", "Count_10_20", "Count_20_50" //
+
+                , "Count_50_100", "Count_100_200", "Count_200_500", "Count_500_1000", "Count_1000_2000" //
+
+                , "Count_2000_5000", "Count_5000_10000", "Count_10000_20000", "Count_20000_50000", "Count_50000_more", //
+        };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -377,6 +515,24 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         map.put("DbType", dbType);
         map.put("URL", null);
+        
+        map.put("Count_0_2", this.getCount_0_2());
+        map.put("Count_2_5", this.getCount_2_5());
+        map.put("Count_5_10", this.getCount_5_10());
+        map.put("Count_10_20", this.getCount_10_20());
+        map.put("Count_20_50", this.getCount_20_50());
+
+        map.put("Count_50_100", this.getCount_50_100());
+        map.put("Count_100_200", this.getCount_100_200());
+        map.put("Count_200_500", this.getCount_200_500());
+        map.put("Count_500_1000", this.getCount_500_1000());
+        map.put("Count_1000_2000", this.getCount_1000_2000());
+
+        map.put("Count_2000_5000", this.getCount_2000_5000());
+        map.put("Count_5000_10000", this.getCount_5000_10000());
+        map.put("Count_10000_20000", this.getCount_10000_20000());
+        map.put("Count_20000_50000", this.getCount_20000_50000());
+        map.put("Count_50000_more", this.getCount_50000_more());
         
         return map;
     }
