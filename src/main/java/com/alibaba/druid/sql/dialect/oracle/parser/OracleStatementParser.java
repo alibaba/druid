@@ -107,11 +107,16 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(new SQLSelectStatement(new OracleSelectParser(this.lexer).select()));
                 continue;
             }
+            
+            if (identifierEquals("CALL")) {
+                statementList.add(this.parseCall());
+                continue;
+            }
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
-
+    
     public OracleCreateTableStatement parseOracleCreateTable() throws ParserException {
         // OracleCreateTableParser parser = new OracleCreateTableParser(this.tokenList);
         // return parser.parseCrateTable();
