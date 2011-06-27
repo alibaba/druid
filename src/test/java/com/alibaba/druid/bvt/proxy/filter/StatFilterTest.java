@@ -12,6 +12,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.fastjson.JSON;
 
 public class StatFilterTest extends TestCase {
 
@@ -45,5 +46,7 @@ public class StatFilterTest extends TestCase {
             Assert.assertEquals(url, (String) row.get("URL"));
             Assert.assertEquals(0, row.get("Count_50000_more"));
         }
+        
+        System.out.println(JSON.toJSONString(sqlList));
     }
 }

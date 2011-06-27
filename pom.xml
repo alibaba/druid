@@ -229,6 +229,12 @@
 			<version>0.7.1.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.0.6</version>
+			<scope>test</scope>
+		</dependency>
 		
 	</dependencies>
 </project>
