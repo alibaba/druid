@@ -509,6 +509,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
+            final int MAX_ERRRO_TRY = 3;
+            int errorCount = 0;
             for (;;) {
                 // addLast
                 lock.lock();
@@ -522,6 +524,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     Connection connection = connectionFactory.createConnection();
                     ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
                     connections[count++] = poolableConnection;
+                    
+                    errorCount = 0; // reset errorCount
 
                     notEmpty.signal();
 
@@ -529,8 +533,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 } catch (SQLException e) {
                     printStackTrace(e);
+                    
+                    errorCount++;
 
-                    if (timeBetweenConnectErrorMillis > 0) {
+                    if (errorCount > MAX_ERRRO_TRY && timeBetweenConnectErrorMillis > 0) {
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);
                         } catch (InterruptedException e1) {
