@@ -52,13 +52,6 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         statementStat.reset();
         resultSetStat.reset();
 
-        for (JdbcSqlStat sqlStat : sqlStatMap.values()) {
-            if (sqlStat.getExecuteCount() == 0) {
-                continue;
-            }
-
-            sqlStat.reset();
-        }
         sqlStatMap.clear();
 
         for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
