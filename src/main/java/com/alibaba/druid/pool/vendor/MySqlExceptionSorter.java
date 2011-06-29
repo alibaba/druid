@@ -8,8 +8,8 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override
     public boolean isExceptionFatal(SQLException e) {
-        String state = e.getSQLState();
-        if (state != null && state.startsWith("08")) { // per Mark Matthews at MySQL
+        String sqlState = e.getSQLState();
+        if (sqlState != null && sqlState.startsWith("08")) { // per Mark Matthews at MySQL
             return true;
         }
 
