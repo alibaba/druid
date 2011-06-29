@@ -53,7 +53,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public final static int     DEFAULT_MAX_IDLE                          = 8;
     public final static int     DEFAULT_MIN_IDLE                          = 0;
     public final static int     DEFAULT_MAX_WAIT                          = -1;
-    public final static String  DEFAULT_VALIDATION_QUERY                  = "SELECT 1";
+    public final static String  DEFAULT_VALIDATION_QUERY                  = null; //
     public final static boolean DEFAULT_TEST_ON_BORROW                    = true;
     public final static boolean DEFAULT_TEST_ON_RETURN                    = false;
     public final static boolean DEFAULT_WHILE_IDLE                        = false;
