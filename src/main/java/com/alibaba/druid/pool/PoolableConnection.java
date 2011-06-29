@@ -40,7 +40,6 @@ import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
-import com.alibaba.druid.pool.vendor.ExceptionSorter;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

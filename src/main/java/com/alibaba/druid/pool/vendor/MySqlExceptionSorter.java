@@ -2,6 +2,8 @@ package com.alibaba.druid.pool.vendor;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 public class MySqlExceptionSorter implements ExceptionSorter {
 
     @Override

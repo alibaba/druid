@@ -38,7 +38,6 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.pool.vendor.ExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.DruidLoaderUtils;
 

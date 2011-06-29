@@ -3,6 +3,8 @@ package com.alibaba.druid.pool.vendor;
 import java.io.Serializable;
 import java.sql.SQLException;
 
+import com.alibaba.druid.pool.ExceptionSorter;
+
 /**
  * Implementation of ExceptionSorter for Oracle.
  */

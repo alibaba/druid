@@ -1,4 +1,4 @@
-package com.alibaba.druid.pool.vendor;
+package com.alibaba.druid.pool;
 
 import java.sql.SQLException;
 
