@@ -34,7 +34,7 @@ import javax.naming.StringRefAddr;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.MySQLValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker1;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.util.JdbcUtils;
@@ -131,7 +131,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             if ("mysql".equals(dbType)) {
-                this.validConnectionChecker = new MySQLValidConnectionChecker();
+                this.validConnectionChecker = new MySqlValidConnectionChecker1();
             } else if ("oracle".equals(dbType)) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
             } else if ("sqlserver".equals(dbType)) {
