@@ -35,16 +35,16 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
 
     private static final Log  LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
 
+    private Class<?>          clazz;
     private Method            ping;
 
     // The timeout (apparently the timeout is ignored?)
     private static Object[]   params           = new Object[] { new Integer(5000) };
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public OracleValidConnectionChecker(){
         try {
-            Class oracleConnection = Thread.currentThread().getContextClassLoader().loadClass("oracle.jdbc.driver.OracleConnection");
-            ping = oracleConnection.getMethod("pingDatabase", new Class[] { Integer.TYPE });
+            clazz = Thread.currentThread().getContextClassLoader().loadClass("oracle.jdbc.driver.OracleConnection");
+            ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
         } catch (Exception e) {
             throw new RuntimeException("Unable to resolve pingDatabase method:", e);
         }
@@ -52,6 +52,11 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
 
     public boolean isValidConnection(Connection c) {
         try {
+            Connection conn = (Connection) c.unwrap(clazz);
+            if (conn != null) {
+                c = conn;
+            }
+
             Integer status = (Integer) ping.invoke(c, params);
 
             // Error

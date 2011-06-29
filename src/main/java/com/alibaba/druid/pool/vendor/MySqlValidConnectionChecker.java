@@ -17,17 +17,17 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
     private static final long serialVersionUID    = 1L;
     private static final Log  LOG                 = LogFactory.getLog(MySqlValidConnectionChecker.class);
 
+    private Class<?>          clazz;
     private Method            ping;
     private boolean           driverHasPingMethod = false;
 
     // The timeout (apparently the timeout is ignored?)
     private static Object[]   params              = new Object[] {};
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public MySqlValidConnectionChecker(){
         try {
-            Class mysqlConnection = Thread.currentThread().getContextClassLoader().loadClass("com.mysql.jdbc.Connection");
-            ping = mysqlConnection.getMethod("ping", new Class[] {});
+            clazz = Thread.currentThread().getContextClassLoader().loadClass("com.mysql.jdbc.Connection");
+            ping = clazz.getMethod("ping", new Class[] {});
             if (ping != null) {
                 driverHasPingMethod = true;
             }
@@ -37,6 +37,16 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
     }
 
     public boolean isValidConnection(Connection c) {
+        try {
+            Connection conn = (Connection) c.unwrap(clazz);
+           if (conn != null) {
+               c = conn;
+           }
+       } catch (SQLException e) {
+           LOG.warn("Unexpected error in ping", e);
+           return false;
+       }
+       
         // if there is a ping method then use it, otherwise just use a 'SELECT 1' statement
         if (driverHasPingMethod) {
             try {
