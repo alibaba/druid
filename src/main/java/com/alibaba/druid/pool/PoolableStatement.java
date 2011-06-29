@@ -37,6 +37,10 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         this.stmt = stmt;
     }
 
+    protected SQLException checkException(Throwable error) throws SQLException {
+        return conn.checkException(error);
+    }
+
     public PoolableConnection getPoolableConnection() {
         return conn;
     }
@@ -60,17 +64,25 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final ResultSet executeQuery(String sql) throws SQLException {
-        ResultSet rs = stmt.executeQuery(sql);
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
 
-        PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
-        resultSetTrace.add(poolableResultSet);
+            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            resultSetTrace.add(poolableResultSet);
 
-        return poolableResultSet;
+            return poolableResultSet;
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int executeUpdate(String sql) throws SQLException {
-        return stmt.executeUpdate(sql);
+        try {
+            return stmt.executeUpdate(sql);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
@@ -84,127 +96,223 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getMaxFieldSize() throws SQLException {
-        return stmt.getMaxFieldSize();
+        try {
+            return stmt.getMaxFieldSize();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setMaxFieldSize(int max) throws SQLException {
-        stmt.setMaxFieldSize(max);
+        try {
+            stmt.setMaxFieldSize(max);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getMaxRows() throws SQLException {
-        return stmt.getMaxRows();
+        try {
+            return stmt.getMaxRows();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setMaxRows(int max) throws SQLException {
-        stmt.setMaxRows(max);
+        try {
+            stmt.setMaxRows(max);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setEscapeProcessing(boolean enable) throws SQLException {
-        stmt.setEscapeProcessing(enable);
+        try {
+            stmt.setEscapeProcessing(enable);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getQueryTimeout() throws SQLException {
-        return stmt.getQueryTimeout();
+        try {
+            return stmt.getQueryTimeout();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setQueryTimeout(int seconds) throws SQLException {
-        stmt.setQueryTimeout(seconds);
+        try {
+            stmt.setQueryTimeout(seconds);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void cancel() throws SQLException {
-        stmt.cancel();
+        try {
+            stmt.cancel();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final SQLWarning getWarnings() throws SQLException {
-        return stmt.getWarnings();
+        try {
+            return stmt.getWarnings();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void clearWarnings() throws SQLException {
-        stmt.clearWarnings();
+        try {
+            stmt.clearWarnings();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setCursorName(String name) throws SQLException {
-        stmt.setCursorName(name);
+        try {
+            stmt.setCursorName(name);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean execute(String sql) throws SQLException {
-        return stmt.execute(sql);
+        try {
+            return stmt.execute(sql);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final ResultSet getResultSet() throws SQLException {
-        ResultSet rs = stmt.getResultSet();
+        try {
+            ResultSet rs = stmt.getResultSet();
 
-        PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
-        resultSetTrace.add(poolableResultSet);
+            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            resultSetTrace.add(poolableResultSet);
 
-        return poolableResultSet;
+            return poolableResultSet;
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getUpdateCount() throws SQLException {
-        return stmt.getUpdateCount();
+        try {
+            return stmt.getUpdateCount();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean getMoreResults() throws SQLException {
-        return stmt.getMoreResults();
+        try {
+            return stmt.getMoreResults();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setFetchDirection(int direction) throws SQLException {
-        stmt.setFetchDirection(direction);
+        try {
+            stmt.setFetchDirection(direction);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getFetchDirection() throws SQLException {
-        return stmt.getFetchDirection();
+        try {
+            return stmt.getFetchDirection();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void setFetchSize(int rows) throws SQLException {
-        stmt.setFetchSize(rows);
+        try {
+            stmt.setFetchSize(rows);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getFetchSize() throws SQLException {
-        return stmt.getFetchSize();
+        try {
+            return stmt.getFetchSize();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getResultSetConcurrency() throws SQLException {
-        return stmt.getResultSetConcurrency();
+        try {
+            return stmt.getResultSetConcurrency();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getResultSetType() throws SQLException {
-        return stmt.getResultSetType();
+        try {
+            return stmt.getResultSetType();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void addBatch(String sql) throws SQLException {
-        stmt.addBatch(sql);
+        try {
+            stmt.addBatch(sql);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final void clearBatch() throws SQLException {
-        stmt.clearBatch();
+        try {
+            stmt.clearBatch();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int[] executeBatch() throws SQLException {
-        return stmt.executeBatch();
+        try {
+            return stmt.executeBatch();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
@@ -214,58 +322,98 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean getMoreResults(int current) throws SQLException {
-        return stmt.getMoreResults(current);
+        try {
+            return stmt.getMoreResults(current);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final ResultSet getGeneratedKeys() throws SQLException {
-        ResultSet rs = stmt.getGeneratedKeys();
+        try {
+            ResultSet rs = stmt.getGeneratedKeys();
 
-        PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
 
-        resultSetTrace.add(poolableResultSet);
+            resultSetTrace.add(poolableResultSet);
 
-        return poolableResultSet;
+            return poolableResultSet;
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        return stmt.executeUpdate(sql, autoGeneratedKeys);
+        try {
+            return stmt.executeUpdate(sql, autoGeneratedKeys);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int executeUpdate(String sql, int columnIndexes[]) throws SQLException {
-        return stmt.executeUpdate(sql, columnIndexes);
+        try {
+            return stmt.executeUpdate(sql, columnIndexes);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int executeUpdate(String sql, String columnNames[]) throws SQLException {
-        return stmt.executeUpdate(sql, columnNames);
+        try {
+            return stmt.executeUpdate(sql, columnNames);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
-        return stmt.execute(sql, autoGeneratedKeys);
+        try {
+            return stmt.execute(sql, autoGeneratedKeys);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean execute(String sql, int columnIndexes[]) throws SQLException {
-        return stmt.execute(sql, columnIndexes);
+        try {
+            return stmt.execute(sql, columnIndexes);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean execute(String sql, String columnNames[]) throws SQLException {
-        return stmt.execute(sql, columnNames);
+        try {
+            return stmt.execute(sql, columnNames);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final int getResultSetHoldability() throws SQLException {
-        return stmt.getResultSetHoldability();
+        try {
+            return stmt.getResultSetHoldability();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public final boolean isClosed() throws SQLException {
-        return stmt.isClosed();
+        try {
+            return stmt.isClosed();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override

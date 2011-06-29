@@ -73,283 +73,503 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        ResultSet rs = stmt.executeQuery();
+        try {
+            ResultSet rs = stmt.executeQuery();
 
-        PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
-        resultSetTrace.add(poolableResultSet);
+            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            resultSetTrace.add(poolableResultSet);
 
-        return poolableResultSet;
+            return poolableResultSet;
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        return stmt.executeUpdate();
+        try {
+            return stmt.executeUpdate();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
-        stmt.setNull(parameterIndex, sqlType);
+        try {
+            stmt.setNull(parameterIndex, sqlType);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
-        stmt.setBoolean(parameterIndex, x);
+        try {
+            stmt.setBoolean(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setByte(int parameterIndex, byte x) throws SQLException {
-        stmt.setByte(parameterIndex, x);
+        try {
+            stmt.setByte(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setShort(int parameterIndex, short x) throws SQLException {
-        stmt.setShort(parameterIndex, x);
+        try {
+            stmt.setShort(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
-        stmt.setInt(parameterIndex, x);
+        try {
+            stmt.setInt(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
-        stmt.setLong(parameterIndex, x);
+        try {
+            stmt.setLong(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
-        stmt.setFloat(parameterIndex, x);
+        try {
+            stmt.setFloat(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
-        stmt.setDouble(parameterIndex, x);
+        try {
+            stmt.setDouble(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
-        stmt.setBigDecimal(parameterIndex, x);
+        try {
+            stmt.setBigDecimal(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
-        stmt.setString(parameterIndex, x);
+        try {
+            stmt.setString(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
-        stmt.setBytes(parameterIndex, x);
+        try {
+            stmt.setBytes(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
-        stmt.setDate(parameterIndex, x);
+        try {
+            stmt.setDate(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setTime(int parameterIndex, Time x) throws SQLException {
-        stmt.setTime(parameterIndex, x);
+        try {
+            stmt.setTime(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
-        stmt.setTimestamp(parameterIndex, x);
+        try {
+            stmt.setTimestamp(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        stmt.setAsciiStream(parameterIndex, x, length);
+        try {
+            stmt.setAsciiStream(parameterIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     @Deprecated
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        stmt.setUnicodeStream(parameterIndex, x, length);
+        try {
+            stmt.setUnicodeStream(parameterIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-        stmt.setBinaryStream(parameterIndex, x, length);
+        try {
+            stmt.setBinaryStream(parameterIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void clearParameters() throws SQLException {
-        stmt.clearParameters();
+        try {
+            stmt.clearParameters();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
-        stmt.setObject(parameterIndex, x, targetSqlType);
+        try {
+            stmt.setObject(parameterIndex, x, targetSqlType);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setObject(int parameterIndex, Object x) throws SQLException {
-        stmt.setObject(parameterIndex, x);
+        try {
+            stmt.setObject(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean execute() throws SQLException {
-        return stmt.execute();
+        try {
+            return stmt.execute();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void addBatch() throws SQLException {
-        stmt.addBatch();
+        try {
+            stmt.addBatch();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
-        stmt.setCharacterStream(parameterIndex, reader, length);
+        try {
+            stmt.setCharacterStream(parameterIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setRef(int parameterIndex, Ref x) throws SQLException {
-        stmt.setRef(parameterIndex, x);
+        try {
+            stmt.setRef(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
-        stmt.setBlob(parameterIndex, x);
+        try {
+            stmt.setBlob(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setClob(int parameterIndex, Clob x) throws SQLException {
-        stmt.setClob(parameterIndex, x);
+        try {
+            stmt.setClob(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setArray(int parameterIndex, Array x) throws SQLException {
-        stmt.setArray(parameterIndex, x);
+        try {
+            stmt.setArray(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        return stmt.getMetaData();
+        try {
+            return stmt.getMetaData();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
-        stmt.setDate(parameterIndex, x, cal);
+        try {
+            stmt.setDate(parameterIndex, x, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-        stmt.setTime(parameterIndex, x, cal);
+        try {
+            stmt.setTime(parameterIndex, x, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
-        stmt.setTimestamp(parameterIndex, x, cal);
+        try {
+            stmt.setTimestamp(parameterIndex, x, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
-        stmt.setNull(parameterIndex, sqlType, typeName);
+        try {
+            stmt.setNull(parameterIndex, sqlType, typeName);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setURL(int parameterIndex, URL x) throws SQLException {
-        stmt.setURL(parameterIndex, x);
+        try {
+            stmt.setURL(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
-        return stmt.getParameterMetaData();
+        try {
+            return stmt.getParameterMetaData();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setRowId(int parameterIndex, RowId x) throws SQLException {
-        stmt.setRowId(parameterIndex, x);
+        try {
+            stmt.setRowId(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNString(int parameterIndex, String value) throws SQLException {
-        stmt.setNString(parameterIndex, value);
+        try {
+            stmt.setNString(parameterIndex, value);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
-        stmt.setNCharacterStream(parameterIndex, value, length);
+        try {
+            stmt.setNCharacterStream(parameterIndex, value, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNClob(int parameterIndex, NClob value) throws SQLException {
-        stmt.setNClob(parameterIndex, value);
+        try {
+            stmt.setNClob(parameterIndex, value);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
-        stmt.setClob(parameterIndex, reader, length);
+        try {
+            stmt.setClob(parameterIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
-        stmt.setBlob(parameterIndex, inputStream, length);
+        try {
+            stmt.setBlob(parameterIndex, inputStream, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
-        stmt.setNClob(parameterIndex, reader, length);
+        try {
+            stmt.setNClob(parameterIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
-        stmt.setSQLXML(parameterIndex, xmlObject);
+        try {
+            stmt.setSQLXML(parameterIndex, xmlObject);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
-        stmt.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+        try {
+            stmt.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
-        stmt.setAsciiStream(parameterIndex, x, length);
+        try {
+            stmt.setAsciiStream(parameterIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-        stmt.setBinaryStream(parameterIndex, x, length);
+        try {
+            stmt.setBinaryStream(parameterIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
-        stmt.setCharacterStream(parameterIndex, reader, length);
+        try {
+            stmt.setCharacterStream(parameterIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-        stmt.setAsciiStream(parameterIndex, x);
+        try {
+            stmt.setAsciiStream(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-        stmt.setBinaryStream(parameterIndex, x);
+        try {
+            stmt.setBinaryStream(parameterIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
-        stmt.setCharacterStream(parameterIndex, reader);
+        try {
+            stmt.setCharacterStream(parameterIndex, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
-        stmt.setNCharacterStream(parameterIndex, value);
+        try {
+            stmt.setNCharacterStream(parameterIndex, value);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader) throws SQLException {
-        stmt.setClob(parameterIndex, reader);
+        try {
+            stmt.setClob(parameterIndex, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
-        stmt.setBlob(parameterIndex, inputStream);
+        try {
+            stmt.setBlob(parameterIndex, inputStream);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader) throws SQLException {
-        stmt.setNClob(parameterIndex, reader);
+        try {
+            stmt.setNClob(parameterIndex, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     static class PreparedStatementKey {
