@@ -150,6 +150,13 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         this.validConnectionChecker = validConnectionChecker;
     }
 
+    public void setValidConnectionChecker(String validConnectionCheckerClass) throws Exception {
+        Class<?> clazz = DruidLoaderUtils.loadClass(validConnectionCheckerClass);
+        ValidConnectionChecker validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
+
+        this.validConnectionChecker = validConnectionChecker;
+    }
+
     public String getDbType() {
         return dbType;
     }
@@ -636,7 +643,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public void setExceptionSoters(List<ExceptionSorter> exceptionSoters) {
         this.exceptionSoters = exceptionSoters;
     }
-    
+
     public void setExceptionSoters(String exceptionSorters) throws Exception {
         this.exceptionSoters.clear();
 
