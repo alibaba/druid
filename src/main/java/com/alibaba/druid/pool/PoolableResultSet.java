@@ -45,6 +45,10 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
         this.rs = rs;
     }
 
+    protected SQLException checkException(Throwable error) throws SQLException {
+        return stmt.checkException(error);
+    }
+
     public PoolableStatement getPoolableStatement() {
         return stmt;
     }
@@ -55,941 +59,1689 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
 
     @Override
     public boolean next() throws SQLException {
-        return rs.next();
+        try {
+            return rs.next();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void close() throws SQLException {
-        rs.close();
+        try {
+            rs.close();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean wasNull() throws SQLException {
-        return rs.wasNull();
+        try {
+            return rs.wasNull();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public String getString(int columnIndex) throws SQLException {
-        return rs.getString(columnIndex);
+        try {
+            return rs.getString(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean getBoolean(int columnIndex) throws SQLException {
-        return rs.getBoolean(columnIndex);
+        try {
+            return rs.getBoolean(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public byte getByte(int columnIndex) throws SQLException {
-        return rs.getByte(columnIndex);
+        try {
+            return rs.getByte(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public short getShort(int columnIndex) throws SQLException {
-        return rs.getShort(columnIndex);
+        try {
+            return rs.getShort(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
-        return rs.getInt(columnIndex);
+        try {
+            return rs.getInt(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public long getLong(int columnIndex) throws SQLException {
-        return rs.getLong(columnIndex);
+        try {
+            return rs.getLong(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public float getFloat(int columnIndex) throws SQLException {
-        return rs.getFloat(columnIndex);
+        try {
+            return rs.getFloat(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public double getDouble(int columnIndex) throws SQLException {
-        return rs.getDouble(columnIndex);
+        try {
+            return rs.getDouble(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     @Deprecated
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-        return rs.getBigDecimal(columnIndex, scale);
+        try {
+            return rs.getBigDecimal(columnIndex, scale);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
-        return rs.getBytes(columnIndex);
+        try {
+            return rs.getBytes(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Date getDate(int columnIndex) throws SQLException {
-        return rs.getDate(columnIndex);
+        try {
+            return rs.getDate(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Time getTime(int columnIndex) throws SQLException {
-        return rs.getTime(columnIndex);
+        try {
+            return rs.getTime(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Timestamp getTimestamp(int columnIndex) throws SQLException {
-        return rs.getTimestamp(columnIndex);
+        try {
+            return rs.getTimestamp(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.InputStream getAsciiStream(int columnIndex) throws SQLException {
-        return rs.getAsciiStream(columnIndex);
+        try {
+            return rs.getAsciiStream(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     @Deprecated
     public java.io.InputStream getUnicodeStream(int columnIndex) throws SQLException {
-        return rs.getUnicodeStream(columnIndex);
+        try {
+            return rs.getUnicodeStream(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.InputStream getBinaryStream(int columnIndex) throws SQLException {
-        return rs.getBinaryStream(columnIndex);
+        try {
+            return rs.getBinaryStream(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        return rs.getString(columnLabel);
+        try {
+            return rs.getString(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
-        return rs.getBoolean(columnLabel);
+        try {
+            return rs.getBoolean(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public byte getByte(String columnLabel) throws SQLException {
-        return rs.getByte(columnLabel);
+        try {
+            return rs.getByte(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public short getShort(String columnLabel) throws SQLException {
-        return rs.getShort(columnLabel);
+        try {
+            return rs.getShort(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        return rs.getInt(columnLabel);
+        try {
+            return rs.getInt(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
-        return rs.getLong(columnLabel);
+        try {
+            return rs.getLong(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public float getFloat(String columnLabel) throws SQLException {
-        return rs.getFloat(columnLabel);
+        try {
+            return rs.getFloat(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public double getDouble(String columnLabel) throws SQLException {
-        return rs.getDouble(columnLabel);
+        try {
+            return rs.getDouble(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     @Deprecated
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-        return rs.getBigDecimal(columnLabel, scale);
+        try {
+            return rs.getBigDecimal(columnLabel, scale);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public byte[] getBytes(String columnLabel) throws SQLException {
-        return rs.getBytes(columnLabel);
+        try {
+            return rs.getBytes(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Date getDate(String columnLabel) throws SQLException {
-        return rs.getDate(columnLabel);
+        try {
+            return rs.getDate(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Time getTime(String columnLabel) throws SQLException {
-        return rs.getTime(columnLabel);
+        try {
+            return rs.getTime(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Timestamp getTimestamp(String columnLabel) throws SQLException {
-        return rs.getTimestamp(columnLabel);
+        try {
+            return rs.getTimestamp(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.InputStream getAsciiStream(String columnLabel) throws SQLException {
-        return rs.getAsciiStream(columnLabel);
+        try {
+            return rs.getAsciiStream(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     @Deprecated
     public java.io.InputStream getUnicodeStream(String columnLabel) throws SQLException {
-        return rs.getUnicodeStream(columnLabel);
+        try {
+            return rs.getUnicodeStream(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.InputStream getBinaryStream(String columnLabel) throws SQLException {
-        return rs.getBinaryStream(columnLabel);
+        try {
+            return rs.getBinaryStream(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        return rs.getWarnings();
+        try {
+            return rs.getWarnings();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void clearWarnings() throws SQLException {
-        rs.clearWarnings();
+        try {
+            rs.clearWarnings();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public String getCursorName() throws SQLException {
-        return rs.getCursorName();
+        try {
+            return rs.getCursorName();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        return rs.getMetaData();
+        try {
+            return rs.getMetaData();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
-        return rs.getObject(columnIndex);
+        try {
+            return rs.getObject(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Object getObject(String columnLabel) throws SQLException {
-        return rs.getObject(columnLabel);
+        try {
+            return rs.getObject(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-        return rs.findColumn(columnLabel);
+        try {
+            return rs.findColumn(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.Reader getCharacterStream(int columnIndex) throws SQLException {
-        return rs.getCharacterStream(columnIndex);
+        try {
+            return rs.getCharacterStream(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.Reader getCharacterStream(String columnLabel) throws SQLException {
-        return rs.getCharacterStream(columnLabel);
+        try {
+            return rs.getCharacterStream(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-        return rs.getBigDecimal(columnIndex);
+        try {
+            return rs.getBigDecimal(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-        return rs.getBigDecimal(columnLabel);
+        try {
+            return rs.getBigDecimal(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean isBeforeFirst() throws SQLException {
-        return rs.isBeforeFirst();
+        try {
+            return rs.isBeforeFirst();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean isAfterLast() throws SQLException {
-        return rs.isAfterLast();
+        try {
+            return rs.isAfterLast();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean isFirst() throws SQLException {
-        return rs.isFirst();
+        try {
+            return rs.isFirst();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean isLast() throws SQLException {
-        return rs.isLast();
+        try {
+            return rs.isLast();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void beforeFirst() throws SQLException {
-        rs.beforeFirst();
+        try {
+            rs.beforeFirst();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void afterLast() throws SQLException {
-        rs.afterLast();
+        try {
+            rs.afterLast();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean first() throws SQLException {
-        return rs.first();
+        try {
+            return rs.first();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean last() throws SQLException {
-        return rs.last();
+        try {
+            return rs.last();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getRow() throws SQLException {
-        return rs.getRow();
+        try {
+            return rs.getRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean absolute(int row) throws SQLException {
-        return rs.absolute(row);
+        try {
+            return rs.absolute(row);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean relative(int rows) throws SQLException {
-        return rs.relative(rows);
+        try {
+            return rs.relative(rows);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean previous() throws SQLException {
-        return rs.previous();
+        try {
+            return rs.previous();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setFetchDirection(int direction) throws SQLException {
-        rs.setFetchDirection(direction);
+        try {
+            rs.setFetchDirection(direction);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getFetchDirection() throws SQLException {
-        return rs.getFetchDirection();
+        try {
+            return rs.getFetchDirection();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void setFetchSize(int rows) throws SQLException {
-        rs.setFetchSize(rows);
+        try {
+            rs.setFetchSize(rows);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getFetchSize() throws SQLException {
-        return rs.getFetchSize();
+        try {
+            return rs.getFetchSize();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getType() throws SQLException {
-        return rs.getType();
+        try {
+            return rs.getType();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getConcurrency() throws SQLException {
-        return rs.getConcurrency();
+        try {
+            return rs.getConcurrency();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean rowUpdated() throws SQLException {
-        return rs.rowUpdated();
+        try {
+            return rs.rowUpdated();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean rowInserted() throws SQLException {
-        return rs.rowInserted();
+        try {
+            return rs.rowInserted();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean rowDeleted() throws SQLException {
-        return rs.rowDeleted();
+        try {
+            return rs.rowDeleted();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNull(int columnIndex) throws SQLException {
-        rs.updateNull(columnIndex);
+        try {
+            rs.updateNull(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
-        rs.updateBoolean(columnIndex, x);
+        try {
+            rs.updateBoolean(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateByte(int columnIndex, byte x) throws SQLException {
-        rs.updateByte(columnIndex, x);
+        try {
+            rs.updateByte(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateShort(int columnIndex, short x) throws SQLException {
-        rs.updateShort(columnIndex, x);
+        try {
+            rs.updateShort(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateInt(int columnIndex, int x) throws SQLException {
-        rs.updateInt(columnIndex, x);
+        try {
+            rs.updateInt(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateLong(int columnIndex, long x) throws SQLException {
-        rs.updateLong(columnIndex, x);
+        try {
+            rs.updateLong(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateFloat(int columnIndex, float x) throws SQLException {
-        rs.updateFloat(columnIndex, x);
+        try {
+            rs.updateFloat(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateDouble(int columnIndex, double x) throws SQLException {
-        rs.updateDouble(columnIndex, x);
+        try {
+            rs.updateDouble(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
-        rs.updateBigDecimal(columnIndex, x);
+        try {
+            rs.updateBigDecimal(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateString(int columnIndex, String x) throws SQLException {
-        rs.updateString(columnIndex, x);
+        try {
+            rs.updateString(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBytes(int columnIndex, byte x[]) throws SQLException {
-        rs.updateBytes(columnIndex, x);
+        try {
+            rs.updateBytes(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateDate(int columnIndex, java.sql.Date x) throws SQLException {
-        rs.updateDate(columnIndex, x);
+        try {
+            rs.updateDate(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateTime(int columnIndex, java.sql.Time x) throws SQLException {
-        rs.updateTime(columnIndex, x);
+        try {
+            rs.updateTime(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateTimestamp(int columnIndex, java.sql.Timestamp x) throws SQLException {
-        rs.updateTimestamp(columnIndex, x);
+        try {
+            rs.updateTimestamp(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, java.io.InputStream x, int length) throws SQLException {
-        rs.updateAsciiStream(columnIndex, x, length);
+        try {
+            rs.updateAsciiStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, java.io.InputStream x, int length) throws SQLException {
-        rs.updateBinaryStream(columnIndex, x, length);
+        try {
+            rs.updateBinaryStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, java.io.Reader x, int length) throws SQLException {
-        rs.updateCharacterStream(columnIndex, x, length);
+        try {
+            rs.updateCharacterStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateObject(int columnIndex, Object x, int scaleOrLength) throws SQLException {
-        rs.updateObject(columnIndex, x, scaleOrLength);
+        try {
+            rs.updateObject(columnIndex, x, scaleOrLength);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateObject(int columnIndex, Object x) throws SQLException {
-        rs.updateObject(columnIndex, x);
+        try {
+            rs.updateObject(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNull(String columnLabel) throws SQLException {
-        rs.updateNull(columnLabel);
+        try {
+            rs.updateNull(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBoolean(String columnLabel, boolean x) throws SQLException {
-        rs.updateBoolean(columnLabel, x);
+        try {
+            rs.updateBoolean(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateByte(String columnLabel, byte x) throws SQLException {
-        rs.updateByte(columnLabel, x);
+        try {
+            rs.updateByte(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateShort(String columnLabel, short x) throws SQLException {
-        rs.updateShort(columnLabel, x);
+        try {
+            rs.updateShort(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateInt(String columnLabel, int x) throws SQLException {
-        rs.updateInt(columnLabel, x);
+        try {
+            rs.updateInt(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateLong(String columnLabel, long x) throws SQLException {
-        rs.updateLong(columnLabel, x);
+        try {
+            rs.updateLong(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateFloat(String columnLabel, float x) throws SQLException {
-        rs.updateFloat(columnLabel, x);
+        try {
+            rs.updateFloat(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateDouble(String columnLabel, double x) throws SQLException {
-        rs.updateDouble(columnLabel, x);
+        try {
+            rs.updateDouble(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBigDecimal(String columnLabel, BigDecimal x) throws SQLException {
-        rs.updateBigDecimal(columnLabel, x);
+        try {
+            rs.updateBigDecimal(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateString(String columnLabel, String x) throws SQLException {
-        rs.updateString(columnLabel, x);
+        try {
+            rs.updateString(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBytes(String columnLabel, byte x[]) throws SQLException {
-        rs.updateBytes(columnLabel, x);
+        try {
+            rs.updateBytes(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateDate(String columnLabel, java.sql.Date x) throws SQLException {
-        rs.updateDate(columnLabel, x);
+        try {
+            rs.updateDate(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateTime(String columnLabel, java.sql.Time x) throws SQLException {
-        rs.updateTime(columnLabel, x);
+        try {
+            rs.updateTime(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateTimestamp(String columnLabel, java.sql.Timestamp x) throws SQLException {
-        rs.updateTimestamp(columnLabel, x);
+        try {
+            rs.updateTimestamp(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, java.io.InputStream x, int length) throws SQLException {
-        rs.updateAsciiStream(columnLabel, x, length);
+        try {
+            rs.updateAsciiStream(columnLabel, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, java.io.InputStream x, int length) throws SQLException {
-        rs.updateBinaryStream(columnLabel, x, length);
+        try {
+            rs.updateBinaryStream(columnLabel, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, java.io.Reader reader, int length) throws SQLException {
-        rs.updateCharacterStream(columnLabel, reader, length);
+        try {
+            rs.updateCharacterStream(columnLabel, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateObject(String columnLabel, Object x, int scaleOrLength) throws SQLException {
-        rs.updateObject(columnLabel, x, scaleOrLength);
+        try {
+            rs.updateObject(columnLabel, x, scaleOrLength);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateObject(String columnLabel, Object x) throws SQLException {
-        rs.updateObject(columnLabel, x);
+        try {
+            rs.updateObject(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void insertRow() throws SQLException {
-        rs.insertRow();
+        try {
+            rs.insertRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateRow() throws SQLException {
-        rs.updateRow();
+        try {
+            rs.updateRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void deleteRow() throws SQLException {
-        rs.deleteRow();
+        try {
+            rs.deleteRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void refreshRow() throws SQLException {
-        rs.refreshRow();
+        try {
+            rs.refreshRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void cancelRowUpdates() throws SQLException {
-        rs.cancelRowUpdates();
+        try {
+            rs.cancelRowUpdates();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void moveToInsertRow() throws SQLException {
-        rs.moveToInsertRow();
+        try {
+            rs.moveToInsertRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void moveToCurrentRow() throws SQLException {
-        rs.moveToCurrentRow();
+        try {
+            rs.moveToCurrentRow();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Statement getStatement() throws SQLException {
-        return stmt;
+        try {
+            return stmt;
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Object getObject(int columnIndex, java.util.Map<String, Class<?>> map) throws SQLException {
-        return rs.getObject(columnIndex, map);
+        try {
+            return rs.getObject(columnIndex, map);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Ref getRef(int columnIndex) throws SQLException {
-        return rs.getRef(columnIndex);
+        try {
+            return rs.getRef(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Blob getBlob(int columnIndex) throws SQLException {
-        return rs.getBlob(columnIndex);
+        try {
+            return rs.getBlob(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Clob getClob(int columnIndex) throws SQLException {
-        return rs.getClob(columnIndex);
+        try {
+            return rs.getClob(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Array getArray(int columnIndex) throws SQLException {
-        return rs.getArray(columnIndex);
+        try {
+            return rs.getArray(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Object getObject(String columnLabel, java.util.Map<String, Class<?>> map) throws SQLException {
-        return rs.getObject(columnLabel, map);
+        try {
+            return rs.getObject(columnLabel, map);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Ref getRef(String columnLabel) throws SQLException {
-        return rs.getRef(columnLabel);
+        try {
+            return rs.getRef(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Blob getBlob(String columnLabel) throws SQLException {
-        return rs.getBlob(columnLabel);
+        try {
+            return rs.getBlob(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Clob getClob(String columnLabel) throws SQLException {
-        return rs.getClob(columnLabel);
+        try {
+            return rs.getClob(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public Array getArray(String columnLabel) throws SQLException {
-        return rs.getArray(columnLabel);
+        try {
+            return rs.getArray(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Date getDate(int columnIndex, Calendar cal) throws SQLException {
-        return rs.getDate(columnIndex, cal);
+        try {
+            return rs.getDate(columnIndex, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Date getDate(String columnLabel, Calendar cal) throws SQLException {
-        return rs.getDate(columnLabel, cal);
+        try {
+            return rs.getDate(columnLabel, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Time getTime(int columnIndex, Calendar cal) throws SQLException {
-        return rs.getTime(columnIndex, cal);
+        try {
+            return rs.getTime(columnIndex, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Time getTime(String columnLabel, Calendar cal) throws SQLException {
-        return rs.getTime(columnLabel, cal);
+        try {
+            return rs.getTime(columnLabel, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-        return rs.getTimestamp(columnIndex, cal);
+        try {
+            return rs.getTimestamp(columnIndex, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.sql.Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
-        return rs.getTimestamp(columnLabel, cal);
+        try {
+            return rs.getTimestamp(columnLabel, cal);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.net.URL getURL(int columnIndex) throws SQLException {
-        return rs.getURL(columnIndex);
+        try {
+            return rs.getURL(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.net.URL getURL(String columnLabel) throws SQLException {
-        return rs.getURL(columnLabel);
+        try {
+            return rs.getURL(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateRef(int columnIndex, java.sql.Ref x) throws SQLException {
-        rs.updateRef(columnIndex, x);
+        try {
+            rs.updateRef(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateRef(String columnLabel, java.sql.Ref x) throws SQLException {
-        rs.updateRef(columnLabel, x);
+        try {
+            rs.updateRef(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(int columnIndex, java.sql.Blob x) throws SQLException {
-        rs.updateBlob(columnIndex, x);
+        try {
+            rs.updateBlob(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(String columnLabel, java.sql.Blob x) throws SQLException {
-        rs.updateBlob(columnLabel, x);
+        try {
+            rs.updateBlob(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(int columnIndex, java.sql.Clob x) throws SQLException {
-        rs.updateClob(columnIndex, x);
+        try {
+            rs.updateClob(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(String columnLabel, java.sql.Clob x) throws SQLException {
-        rs.updateClob(columnLabel, x);
+        try {
+            rs.updateClob(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateArray(int columnIndex, java.sql.Array x) throws SQLException {
-        rs.updateArray(columnIndex, x);
+        try {
+            rs.updateArray(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateArray(String columnLabel, java.sql.Array x) throws SQLException {
-        rs.updateArray(columnLabel, x);
+        try {
+            rs.updateArray(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public RowId getRowId(int columnIndex) throws SQLException {
-        return rs.getRowId(columnIndex);
+        try {
+            return rs.getRowId(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public RowId getRowId(String columnLabel) throws SQLException {
-        return rs.getRowId(columnLabel);
+        try {
+            return rs.getRowId(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateRowId(int columnIndex, RowId x) throws SQLException {
-        rs.updateRowId(columnIndex, x);
+        try {
+            rs.updateRowId(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateRowId(String columnLabel, RowId x) throws SQLException {
-        rs.updateRowId(columnLabel, x);
+        try {
+            rs.updateRowId(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public int getHoldability() throws SQLException {
-        return rs.getHoldability();
+        try {
+            return rs.getHoldability();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        return rs.isClosed();
+        try {
+            return rs.isClosed();
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNString(int columnIndex, String nString) throws SQLException {
-        rs.updateNString(columnIndex, nString);
+        try {
+            rs.updateNString(columnIndex, nString);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNString(String columnLabel, String nString) throws SQLException {
-        rs.updateNString(columnLabel, nString);
+        try {
+            rs.updateNString(columnLabel, nString);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
-        rs.updateNClob(columnIndex, nClob);
+        try {
+            rs.updateNClob(columnIndex, nClob);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(String columnLabel, NClob nClob) throws SQLException {
-        rs.updateNClob(columnLabel, nClob);
+        try {
+            rs.updateNClob(columnLabel, nClob);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public NClob getNClob(int columnIndex) throws SQLException {
-        return rs.getNClob(columnIndex);
+        try {
+            return rs.getNClob(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public NClob getNClob(String columnLabel) throws SQLException {
-        return rs.getNClob(columnLabel);
+        try {
+            return rs.getNClob(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-        return rs.getSQLXML(columnIndex);
+        try {
+            return rs.getSQLXML(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-        return rs.getSQLXML(columnLabel);
+        try {
+            return rs.getSQLXML(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateSQLXML(int columnIndex, SQLXML xmlObject) throws SQLException {
-        rs.updateSQLXML(columnIndex, xmlObject);
+        try {
+            rs.updateSQLXML(columnIndex, xmlObject);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateSQLXML(String columnLabel, SQLXML xmlObject) throws SQLException {
-        rs.updateSQLXML(columnLabel, xmlObject);
+        try {
+            rs.updateSQLXML(columnLabel, xmlObject);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public String getNString(int columnIndex) throws SQLException {
-        return rs.getNString(columnIndex);
+        try {
+            return rs.getNString(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public String getNString(String columnLabel) throws SQLException {
-        return rs.getNString(columnLabel);
+        try {
+            return rs.getNString(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.Reader getNCharacterStream(int columnIndex) throws SQLException {
-        return rs.getNCharacterStream(columnIndex);
+        try {
+            return rs.getNCharacterStream(columnIndex);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public java.io.Reader getNCharacterStream(String columnLabel) throws SQLException {
-        return rs.getNCharacterStream(columnLabel);
+        try {
+            return rs.getNCharacterStream(columnLabel);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNCharacterStream(int columnIndex, java.io.Reader x, long length) throws SQLException {
-        rs.updateNCharacterStream(columnIndex, x, length);
+        try {
+            rs.updateNCharacterStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNCharacterStream(String columnLabel, java.io.Reader reader, long length) throws SQLException {
-        rs.updateNCharacterStream(columnLabel, reader, length);
+        try {
+            rs.updateNCharacterStream(columnLabel, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, java.io.InputStream x, long length) throws SQLException {
-        rs.updateAsciiStream(columnIndex, x, length);
+        try {
+            rs.updateAsciiStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, java.io.InputStream x, long length) throws SQLException {
-        rs.updateBinaryStream(columnIndex, x, length);
+        try {
+            rs.updateBinaryStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, java.io.Reader x, long length) throws SQLException {
-        rs.updateCharacterStream(columnIndex, x, length);
+        try {
+            rs.updateCharacterStream(columnIndex, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, java.io.InputStream x, long length) throws SQLException {
-        rs.updateAsciiStream(columnLabel, x, length);
+        try {
+            rs.updateAsciiStream(columnLabel, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, java.io.InputStream x, long length) throws SQLException {
-        rs.updateBinaryStream(columnLabel, x, length);
+        try {
+            rs.updateBinaryStream(columnLabel, x, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, java.io.Reader reader, long length) throws SQLException {
-        rs.updateCharacterStream(columnLabel, reader, length);
+        try {
+            rs.updateCharacterStream(columnLabel, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(int columnIndex, InputStream inputStream, long length) throws SQLException {
-        rs.updateBlob(columnIndex, inputStream, length);
+        try {
+            rs.updateBlob(columnIndex, inputStream, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
-        rs.updateBlob(columnLabel, inputStream, length);
+        try {
+            rs.updateBlob(columnLabel, inputStream, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(int columnIndex, Reader reader, long length) throws SQLException {
-        rs.updateClob(columnIndex, reader, length);
+        try {
+            rs.updateClob(columnIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(String columnLabel, Reader reader, long length) throws SQLException {
-        rs.updateClob(columnLabel, reader, length);
+        try {
+            rs.updateClob(columnLabel, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(int columnIndex, Reader reader, long length) throws SQLException {
-        rs.updateNClob(columnIndex, reader, length);
+        try {
+            rs.updateNClob(columnIndex, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(String columnLabel, Reader reader, long length) throws SQLException {
-        rs.updateNClob(columnLabel, reader, length);
+        try {
+            rs.updateNClob(columnLabel, reader, length);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNCharacterStream(int columnIndex, java.io.Reader x) throws SQLException {
-        rs.updateNCharacterStream(columnIndex, x);
+        try {
+            rs.updateNCharacterStream(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNCharacterStream(String columnLabel, java.io.Reader reader) throws SQLException {
-        rs.updateNCharacterStream(columnLabel, reader);
+        try {
+            rs.updateNCharacterStream(columnLabel, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, java.io.InputStream x) throws SQLException {
-        rs.updateAsciiStream(columnIndex, x);
+        try {
+            rs.updateAsciiStream(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, java.io.InputStream x) throws SQLException {
-        rs.updateBinaryStream(columnIndex, x);
+        try {
+            rs.updateBinaryStream(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, java.io.Reader x) throws SQLException {
-        rs.updateCharacterStream(columnIndex, x);
+        try {
+            rs.updateCharacterStream(columnIndex, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, java.io.InputStream x) throws SQLException {
-        rs.updateAsciiStream(columnLabel, x);
+        try {
+            rs.updateAsciiStream(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, java.io.InputStream x) throws SQLException {
-        rs.updateBinaryStream(columnLabel, x);
+        try {
+            rs.updateBinaryStream(columnLabel, x);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, java.io.Reader reader) throws SQLException {
-        rs.updateCharacterStream(columnLabel, reader);
+        try {
+            rs.updateCharacterStream(columnLabel, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(int columnIndex, InputStream inputStream) throws SQLException {
-        rs.updateBlob(columnIndex, inputStream);
+        try {
+            rs.updateBlob(columnIndex, inputStream);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateBlob(String columnLabel, InputStream inputStream) throws SQLException {
-        rs.updateBlob(columnLabel, inputStream);
+        try {
+            rs.updateBlob(columnLabel, inputStream);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(int columnIndex, Reader reader) throws SQLException {
-        rs.updateClob(columnIndex, reader);
+        try {
+            rs.updateClob(columnIndex, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateClob(String columnLabel, Reader reader) throws SQLException {
-        rs.updateClob(columnLabel, reader);
+        try {
+            rs.updateClob(columnLabel, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(int columnIndex, Reader reader) throws SQLException {
-        rs.updateNClob(columnIndex, reader);
+        try {
+            rs.updateNClob(columnIndex, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
     @Override
     public void updateNClob(String columnLabel, Reader reader) throws SQLException {
-        rs.updateNClob(columnLabel, reader);
+        try {
+            rs.updateNClob(columnLabel, reader);
+        } catch (Throwable t) {
+            throw checkException(t);
+        }
     }
 
 }
