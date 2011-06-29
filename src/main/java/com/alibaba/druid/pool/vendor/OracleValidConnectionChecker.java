@@ -24,7 +24,6 @@ package com.alibaba.druid.pool.vendor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -51,17 +50,19 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
         }
     }
 
-    public SQLException isValidConnection(Connection c) {
+    public boolean isValidConnection(Connection c) {
         try {
             Integer status = (Integer) ping.invoke(c, params);
 
             // Error
-            if (status.intValue() < 0) return new SQLException("pingDatabase failed status=" + status);
+            if (status.intValue() < 0) {
+                return false;
+            }
         } catch (Exception e) {
             LOG.warn("Unexpected error in pingDatabase", e);
         }
 
         // OK
-        return null;
+        return true;
     }
 }

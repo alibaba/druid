@@ -45,23 +45,19 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
     /** The serialVersionUID */
     private static final long   serialVersionUID = 3995516551833725723L;
 
-    public SQLException isValidConnection(final Connection c) {
-        SQLException sqe = null;
+    public boolean isValidConnection(final Connection c) {
         Statement stmt = null;
 
         try {
             stmt = c.createStatement();
             stmt.execute(QUERY);
-        }
-
-        catch (SQLException e) {
+            return true;
+        } catch (SQLException e) {
             LOG.warn("warning: connection validation failed for current managed connection.");
-            sqe = e;
+            return false;
         } finally {
             JdbcUtils.close(stmt);
         }
-
-        return sqe;
     }
 
 }

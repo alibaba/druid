@@ -2,6 +2,7 @@ package com.alibaba.druid.logging;
 
 import java.lang.reflect.Constructor;
 
+@SuppressWarnings("rawtypes")
 public class LogFactory {
 
     private static Constructor logConstructor;
@@ -14,6 +15,7 @@ public class LogFactory {
         tryImplementation("java.lang.Object", "com.ibatis.common.logging.nologging.NoLoggingImpl");
     }
 
+    @SuppressWarnings("unchecked")
     private static void tryImplementation(String testClassName, String implClassName) {
         if (logConstructor == null) {
             try {
@@ -39,6 +41,7 @@ public class LogFactory {
      * Note that this method is only effective for log classes obtained after calling this method. If you intend to use
      * this method you should call it before calling any other iBATIS method.
      */
+    @SuppressWarnings("unchecked")
     public static synchronized void selectLog4JLogging() {
         try {
             Resources.classForName("org.apache.log4j.Logger");
@@ -54,6 +57,7 @@ public class LogFactory {
      * or Log4J is on the classpath. Note that this method is only effective for log classes obtained after calling this
      * method. If you intend to use this method you should call it before calling any other iBATIS method.
      */
+    @SuppressWarnings("unchecked")
     public static synchronized void selectJavaLogging() {
         try {
             Resources.classForName("java.util.logging.Logger");

@@ -36,41 +36,35 @@ public class MySQLValidConnectionChecker implements ValidConnectionChecker, Seri
         }
     }
 
-    public SQLException isValidConnection(Connection c) {
+    public boolean isValidConnection(Connection c) {
         // if there is a ping method then use it, otherwise just use a 'SELECT 1' statement
         if (driverHasPingMethod) {
             try {
                 ping.invoke(c, params);
+                return true;
             } catch (Exception e) {
-                if (e instanceof SQLException) {
-                    return (SQLException) e;
-                } else {
-                    LOG.warn("Unexpected error in ping", e);
-                    return new SQLException("ping failed: " + e.toString());
-                }
-            }
-
-        } else {
-
-            Statement stmt = null;
-            ResultSet rs = null;
-            try {
-                stmt = c.createStatement();
-                rs = stmt.executeQuery("SELECT 1");
-            } catch (Exception e) {
-                if (e instanceof SQLException) {
-                    return (SQLException) e;
-                } else {
-                    LOG.warn("Unexpected error in ping (SELECT 1)", e);
-                    return new SQLException("ping (SELECT 1) failed: " + e.toString());
-                }
-            } finally {
-                JdbcUtils.close(rs);
-                JdbcUtils.close(stmt);
+                LOG.warn("Unexpected error in ping", e);
+                return false;
             }
 
         }
-        return null;
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = c.createStatement();
+            rs = stmt.executeQuery("SELECT 1");
+            return true;
+        } catch (SQLException e) {
+            return false;
+        } catch (Exception e) {
+            LOG.warn("Unexpected error in ping", e);
+            return false;
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+        }
+
     }
 
 }

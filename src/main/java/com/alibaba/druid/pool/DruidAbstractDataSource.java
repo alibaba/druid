@@ -46,20 +46,20 @@ import com.alibaba.druid.util.DruidLoaderUtils;
  */
 public abstract class DruidAbstractDataSource implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 
-    private static final long   serialVersionUID                          = 1L;
+    private static final long      serialVersionUID                          = 1L;
 
-    public final static int     DEFAULT_INITIAL_SIZE                      = 0;
-    public final static int     DEFAULT_MAX_ACTIVE_SIZE                   = 8;
-    public final static int     DEFAULT_MAX_IDLE                          = 8;
-    public final static int     DEFAULT_MIN_IDLE                          = 0;
-    public final static int     DEFAULT_MAX_WAIT                          = -1;
-    public final static String  DEFAULT_VALIDATION_QUERY                  = null; //
-    public final static boolean DEFAULT_TEST_ON_BORROW                    = true;
-    public final static boolean DEFAULT_TEST_ON_RETURN                    = false;
-    public final static boolean DEFAULT_WHILE_IDLE                        = false;
-    public static final long    DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
-    public static final long    DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
-    public static final int     DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 1;
+    public final static int        DEFAULT_INITIAL_SIZE                      = 0;
+    public final static int        DEFAULT_MAX_ACTIVE_SIZE                   = 8;
+    public final static int        DEFAULT_MAX_IDLE                          = 8;
+    public final static int        DEFAULT_MIN_IDLE                          = 0;
+    public final static int        DEFAULT_MAX_WAIT                          = -1;
+    public final static String     DEFAULT_VALIDATION_QUERY                  = null;                                     //
+    public final static boolean    DEFAULT_TEST_ON_BORROW                    = true;
+    public final static boolean    DEFAULT_TEST_ON_RETURN                    = false;
+    public final static boolean    DEFAULT_WHILE_IDLE                        = false;
+    public static final long       DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final long       DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
+    public static final int        DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 1;
 
     /**
      * The default value for {@link #getMinEvictableIdleTimeMillis}.
@@ -67,76 +67,86 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
      * @see #getMinEvictableIdleTimeMillis
      * @see #setMinEvictableIdleTimeMillis
      */
-    public static final long    DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
+    public static final long       DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
 
-    protected boolean           defaultAutoCommit                         = false;
-    protected Boolean           defaultReadOnly;
-    protected Integer           defaultTransactionIsolation;
-    protected String            defaultCatalog                            = null;
+    protected boolean              defaultAutoCommit                         = false;
+    protected Boolean              defaultReadOnly;
+    protected Integer              defaultTransactionIsolation;
+    protected String               defaultCatalog                            = null;
 
-    protected String            name;
+    protected String               name;
 
-    protected String            username;
-    protected String            password;
-    protected String            jdbcUrl;
-    protected String            driverClass;
-    protected Properties        connectionProperties                      = new Properties();
+    protected String               username;
+    protected String               password;
+    protected String               jdbcUrl;
+    protected String               driverClass;
+    protected Properties           connectionProperties                      = new Properties();
 
-    protected PasswordCallback  passwordCallback;
-    protected NameCallback      userCallback;
+    protected PasswordCallback     passwordCallback;
+    protected NameCallback         userCallback;
 
-    protected ConnectionFactory connectionFactory;
+    protected ConnectionFactory    connectionFactory;
 
-    protected int               initialSize                               = DEFAULT_INITIAL_SIZE;
-    protected int               maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
-    protected int               minIdle                                   = DEFAULT_MIN_IDLE;
-    protected int               maxIdle                                   = DEFAULT_MAX_IDLE;
-    protected long              maxWait                                   = DEFAULT_MAX_WAIT;
+    protected int                  initialSize                               = DEFAULT_INITIAL_SIZE;
+    protected int                  maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
+    protected int                  minIdle                                   = DEFAULT_MIN_IDLE;
+    protected int                  maxIdle                                   = DEFAULT_MAX_IDLE;
+    protected long                 maxWait                                   = DEFAULT_MAX_WAIT;
 
-    protected String            validationQuery                           = DEFAULT_VALIDATION_QUERY;
-    protected int               validationQueryTimeout                    = -1;
-    private boolean             testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
-    private boolean             testOnReturn                              = DEFAULT_TEST_ON_RETURN;
-    private boolean             testWhileIdle                             = DEFAULT_WHILE_IDLE;
-    protected boolean           poolPreparedStatements                    = false;
+    protected String               validationQuery                           = DEFAULT_VALIDATION_QUERY;
+    protected int                  validationQueryTimeout                    = -1;
+    private boolean                testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
+    private boolean                testOnReturn                              = DEFAULT_TEST_ON_RETURN;
+    private boolean                testWhileIdle                             = DEFAULT_WHILE_IDLE;
+    protected boolean              poolPreparedStatements                    = false;
 
-    protected boolean           inited                                    = false;
+    protected boolean              inited                                    = false;
 
-    protected PrintWriter       logWriter                                 = new PrintWriter(System.out);
+    protected PrintWriter          logWriter                                 = new PrintWriter(System.out);
 
-    protected List<Filter>      filters                                   = new ArrayList<Filter>();
+    protected List<Filter>         filters                                   = new ArrayList<Filter>();
 
-    protected Driver            driver;
+    protected Driver               driver;
 
-    protected int               queryTimeout;
+    protected int                  queryTimeout;
 
-    protected long              createErrorCount;
+    protected long                 createErrorCount;
 
-    protected long              createTimespan;
+    protected long                 createTimespan;
 
-    protected int               maxWaitThreadCount                        = -1;
+    protected int                  maxWaitThreadCount                        = -1;
 
-    protected boolean           accessToUnderlyingConnectionAllowed       = true;
+    protected boolean              accessToUnderlyingConnectionAllowed       = true;
 
-    protected long              timeBetweenEvictionRunsMillis             = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+    protected long                 timeBetweenEvictionRunsMillis             = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
 
-    protected int               numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
+    protected int                  numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
 
-    protected long              minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+    protected long                 minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
 
-    protected boolean           removeAbandoned;
+    protected boolean              removeAbandoned;
 
-    protected int               removeAbandonedTimeout;
+    protected int                  removeAbandonedTimeout;
 
-    protected boolean           logAbandoned;
+    protected boolean              logAbandoned;
 
-    protected int               maxOpenPreparedStatements                 = -1;
+    protected int                  maxOpenPreparedStatements                 = -1;
 
-    protected List<String>      connectionInitSqls;
+    protected List<String>         connectionInitSqls;
 
-    protected String            dbType;
+    protected String               dbType;
 
-    protected long              timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
+    protected long                 timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
+
+    private ValidConnectionChecker validConnectionChecker                    = null;
+
+    public ValidConnectionChecker getValidConnectionChecker() {
+        return validConnectionChecker;
+    }
+
+    public void setValidConnectionChecker(ValidConnectionChecker validConnectionChecker) {
+        this.validConnectionChecker = validConnectionChecker;
+    }
 
     public String getDbType() {
         return dbType;
@@ -645,6 +655,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         if (conn.isClosed()) {
             throw new SQLException("validateConnection: connection closed");
         }
+
         if (null != query) {
             Statement stmt = null;
             ResultSet rset = null;
@@ -678,36 +689,43 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean testConnection(Connection conn) {
         try {
+            if (validConnectionChecker != null) {
+                return validConnectionChecker.isValidConnection(conn);
+            }
+
             String query = getValidationQuery();
             if (conn.isClosed()) {
                 return false;
             }
-            if (null != query) {
-                Statement stmt = null;
-                ResultSet rset = null;
-                try {
-                    stmt = conn.createStatement();
-                    if (getValidationQueryTimeout() > 0) {
-                        stmt.setQueryTimeout(getValidationQueryTimeout());
+            
+            if (null == query) {
+                return true;
+            }
+            
+            Statement stmt = null;
+            ResultSet rset = null;
+            try {
+                stmt = conn.createStatement();
+                if (getValidationQueryTimeout() > 0) {
+                    stmt.setQueryTimeout(getValidationQueryTimeout());
+                }
+                rset = stmt.executeQuery(query);
+                if (!rset.next()) {
+                    return false;
+                }
+            } finally {
+                if (rset != null) {
+                    try {
+                        rset.close();
+                    } catch (Exception t) {
+                        // ignored
                     }
-                    rset = stmt.executeQuery(query);
-                    if (!rset.next()) {
-                        return false;
-                    }
-                } finally {
-                    if (rset != null) {
-                        try {
-                            rset.close();
-                        } catch (Exception t) {
-                            // ignored
-                        }
-                    }
-                    if (stmt != null) {
-                        try {
-                            stmt.close();
-                        } catch (Exception t) {
-                            // ignored
-                        }
+                }
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (Exception t) {
+                        // ignored
                     }
                 }
             }
@@ -747,14 +765,13 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public long createResultSetId() {
         return resultSetIdSeed.getAndIncrement();
     }
-    
 
     void initStatement(Statement stmt) throws SQLException {
         if (queryTimeout > 0) {
             stmt.setQueryTimeout(queryTimeout);
         }
     }
-    
+
     protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
 
     abstract void incrementCreateCount();

@@ -71,7 +71,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections           = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
-    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(2);
+    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(
+                                                                                                                                  2);
+
+   
 
     public DruidDataSource(){
     }
@@ -188,7 +191,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (lock.getQueueLength() > maxWaitThreadCount) {
-                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count " + lock.getQueueLength());
+                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                                       + lock.getQueueLength());
             }
         }
 
@@ -236,7 +240,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (activeConnectionTraceEnable) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
+                activeConnections.put(poolalbeConnection,
+                                      new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
+                                                                    stackTrace));
             }
         } catch (InterruptedException e) {
             connectErrorCount++;
@@ -441,10 +447,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             nanos = estimate;
                             continue;
                         }
-                        
+
                         return null;
                     }
-                    
+
                     break;
                 }
             }
@@ -524,7 +530,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     Connection connection = connectionFactory.createConnection();
                     ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
                     connections[count++] = poolableConnection;
-                    
+
                     errorCount = 0; // reset errorCount
 
                     notEmpty.signal();
@@ -533,7 +539,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     break;
                 } catch (SQLException e) {
                     printStackTrace(e);
-                    
+
                     errorCount++;
 
                     if (errorCount > MAX_ERRRO_TRY && timeBetweenConnectErrorMillis > 0) {
@@ -621,7 +627,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return null;
     }
 
-
     /** Instance key */
     protected String instanceKey = null;
 
@@ -682,6 +687,5 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
         return names;
     }
-    
 
 }
