@@ -55,13 +55,13 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
             Connection conn = (Connection) c.unwrap(clazz);
             if (conn != null) {
                 c = conn;
-            }
+                
+                Integer status = (Integer) ping.invoke(c, params);
 
-            Integer status = (Integer) ping.invoke(c, params);
-
-            // Error
-            if (status.intValue() < 0) {
-                return false;
+                // Error
+                if (status.intValue() < 0) {
+                    return false;
+                }
             }
         } catch (Exception e) {
             LOG.warn("Unexpected error in pingDatabase", e);
