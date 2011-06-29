@@ -38,7 +38,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
-        return conn.checkException(error);
+        return conn.handleException(error);
     }
 
     public PoolableConnection getPoolableConnection() {

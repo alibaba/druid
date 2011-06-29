@@ -40,6 +40,7 @@ import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.pool.vendor.ExceptionSorter;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -54,12 +55,40 @@ public class PoolableConnection implements PooledConnection, Connection {
         this.holder = holder;
     }
 
-    protected SQLException checkException(Throwable t) throws SQLException {
-        //if (mc != null) mc.connectionError(t);
-        
+    protected SQLException handleException(Throwable t) throws SQLException {
+        final ConnectionHolder holder = this.holder;
+
+        // 
+        if (holder != null) {
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            if (dataSource != null) {
+                holder.getDataSource().handleException(t);
+            }
+        }
+
         if (t instanceof SQLException) {
-            throw (SQLException) t;
-        } else  {
+            SQLException sqlEx = (SQLException) t;
+
+            // broadcastConnectionError
+            ConnectionEvent event = new ConnectionEvent(this, sqlEx);
+            for (ConnectionEventListener eventListener : holder.getConnectionEventListeners()) {
+                eventListener.connectionErrorOccurred(event);
+            }
+
+            // exceptionSorter.isExceptionFatal
+            if (holder != null) {
+                DruidAbstractDataSource dataSource = holder.getDataSource();
+
+                if (dataSource != null) {
+                    ExceptionSorter exceptionSorter = dataSource.getExceptionSoter();
+                    if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
+                        this.holder = null; // isClosed() is true
+                    }
+                }
+            }
+
+            throw sqlEx;
+        } else {
             throw new SQLException("Error", t);
         }
     }

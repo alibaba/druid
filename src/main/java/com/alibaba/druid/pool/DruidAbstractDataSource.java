@@ -106,7 +106,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected PrintWriter            logWriter                                 = new PrintWriter(System.out);
 
     protected List<Filter>           filters                                   = new ArrayList<Filter>();
-    protected List<ExceptionSorter>  exceptionSoters                           = new ArrayList<ExceptionSorter>();
+    protected ExceptionSorter        exceptionSoter                            = null;
 
     protected Driver                 driver;
 
@@ -141,6 +141,8 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected long                   timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
 
     protected ValidConnectionChecker validConnectionChecker                    = null;
+
+    protected final AtomicLong       errorCount                                = new AtomicLong();
 
     public ValidConnectionChecker getValidConnectionChecker() {
         return validConnectionChecker;
@@ -636,28 +638,28 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         this.driver = driver;
     }
 
-    public List<ExceptionSorter> getExceptionSoters() {
-        return exceptionSoters;
+    public ExceptionSorter getExceptionSoter() {
+        return exceptionSoter;
     }
 
-    public void setExceptionSoters(List<ExceptionSorter> exceptionSoters) {
-        this.exceptionSoters = exceptionSoters;
+    public void setExceptionSoter(ExceptionSorter exceptionSoter) {
+        this.exceptionSoter = exceptionSoter;
     }
 
-    public void setExceptionSoters(String exceptionSorters) throws Exception {
-        this.exceptionSoters.clear();
-
-        if (exceptionSorters == null || exceptionSorters.length() == 0) {
+    public void setExceptionSoter(String exceptionSorter) throws Exception {
+        if (exceptionSorter == null) {
+            this.exceptionSoter = null;
             return;
         }
 
-        String[] sorterArray = exceptionSorters.split("\\,");
-
-        for (String item : sorterArray) {
-            Class<?> clazz = DruidLoaderUtils.loadClass(item);
-            ExceptionSorter sorter = (ExceptionSorter) clazz.newInstance();
-            exceptionSoters.add(sorter);
+        exceptionSorter = exceptionSorter.trim();
+        if (exceptionSorter.length() == 0) {
+            this.exceptionSoter = null;
+            return;
         }
+
+        Class<?> clazz = DruidLoaderUtils.loadClass(exceptionSorter);
+        this.exceptionSoter = (ExceptionSorter) clazz.newInstance();
     }
 
     @Override
@@ -803,6 +805,10 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         if (queryTimeout > 0) {
             stmt.setQueryTimeout(queryTimeout);
         }
+    }
+
+    protected void handleException(Throwable e) throws SQLException {
+        errorCount.incrementAndGet();
     }
 
     protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
