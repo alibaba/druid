@@ -15,11 +15,10 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Serializable {
 
+    private static final long   serialVersionUID = 1L;
+
     private static final String QUERY            = "SELECT x";
     private static final Log    LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
-
-    /** The serialVersionUID */
-    private static final long   serialVersionUID = 3995516551833725723L;
 
     public boolean isValidConnection(final Connection c) {
         Statement stmt = null;
