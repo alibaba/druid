@@ -28,6 +28,7 @@ import java.sql.Connection;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.util.DruidLoaderUtils;
 
 public class OracleValidConnectionChecker implements ValidConnectionChecker, Serializable {
 
@@ -43,7 +44,7 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
 
     public OracleValidConnectionChecker(){
         try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass("oracle.jdbc.driver.OracleConnection");
+            clazz = DruidLoaderUtils.loadClass("oracle.jdbc.driver.OracleConnection");
             ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
         } catch (Exception e) {
             throw new RuntimeException("Unable to resolve pingDatabase method:", e);
