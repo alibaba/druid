@@ -51,6 +51,7 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
 
     public boolean isValidConnection(Connection c) {
         try {
+            // unwrap
             Connection conn = (Connection) c.unwrap(clazz);
             if (conn != null) {
                 c = conn;
