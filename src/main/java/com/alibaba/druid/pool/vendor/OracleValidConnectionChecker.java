@@ -36,11 +36,9 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
 
     private static final Log  LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
 
-    private Class<?>          clazz;
-    private Method            ping;
-
-    // The timeout (apparently the timeout is ignored?)
-    private static Object[]   params           = new Object[] { new Integer(5000) };
+    private final Class<?>          clazz;
+    private final Method            ping;
+    private final static Object[]   params           = new Object[] { new Integer(5000) };
 
     public OracleValidConnectionChecker(){
         try {
