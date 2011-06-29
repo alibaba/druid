@@ -33,6 +33,9 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.MySQLValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -73,8 +76,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(
                                                                                                                                   2);
-
-   
 
     public DruidDataSource(){
     }
@@ -128,6 +129,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
+
+            if ("mysql".equals(dbType)) {
+                this.validConnectionChecker = new MySQLValidConnectionChecker();
+            } else if ("oracle".equals(dbType)) {
+                this.validConnectionChecker = new OracleValidConnectionChecker();
+            } else if ("sqlserver".equals(dbType)) {
+                this.validConnectionChecker = new MSSQLValidConnectionChecker();
+            }
 
             for (Filter filter : filters) {
                 filter.init(this);

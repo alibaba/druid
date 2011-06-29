@@ -138,7 +138,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected long                 timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
 
-    private ValidConnectionChecker validConnectionChecker                    = null;
+    protected ValidConnectionChecker validConnectionChecker                    = null;
 
     public ValidConnectionChecker getValidConnectionChecker() {
         return validConnectionChecker;
