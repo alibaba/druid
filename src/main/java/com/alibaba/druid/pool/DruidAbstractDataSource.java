@@ -645,6 +645,11 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         this.exceptionSoter = exceptionSoter;
     }
 
+    // 兼容JBOSS
+    public void setExceptionSorterClassName(String exceptionSorter) throws Exception {
+        this.setExceptionSoter(exceptionSorter);
+    }
+    
     public void setExceptionSoter(String exceptionSorter) throws Exception {
         if (exceptionSorter == null) {
             this.exceptionSoter = null;
