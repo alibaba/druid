@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
 public class MySqlValdConnectionTest extends TestCase {
     private String jdbcUrl;
@@ -25,7 +25,7 @@ public class MySqlValdConnectionTest extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setFilters("stat");
-        dataSource.setExceptionSoter(OracleExceptionSorter.class.getName());
+        dataSource.setExceptionSoter(MySqlExceptionSorter.class.getName());
         
         Connection conn = dataSource.getConnection();
         conn.close();
