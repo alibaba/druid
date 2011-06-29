@@ -55,10 +55,13 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     protected SQLException checkException(Throwable t) throws SQLException {
-        // if (mc != null) mc.connectionError(t);
-        // if (t instanceof SQLException) throw (SQLException) t;
-        // else throw new NestedSQLException("Error", t);
-        return null;
+        //if (mc != null) mc.connectionError(t);
+        
+        if (t instanceof SQLException) {
+            throw (SQLException) t;
+        } else  {
+            throw new SQLException("Error", t);
+        }
     }
 
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
