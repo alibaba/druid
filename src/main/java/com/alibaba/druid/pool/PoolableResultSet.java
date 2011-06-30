@@ -39,6 +39,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
 
     private final ResultSet         rs;
     private final PoolableStatement stmt;
+    private boolean                 closed = false;
 
     public PoolableResultSet(PoolableStatement stmt, ResultSet rs){
         this.stmt = stmt;
@@ -70,6 +71,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     public void close() throws SQLException {
         try {
             rs.close();
+            this.closed = true;
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -1359,6 +1361,10 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
 
     @Override
     public boolean isClosed() throws SQLException {
+        if (this.closed) {
+            return true;
+        }
+        
         try {
             return rs.isClosed();
         } catch (Throwable t) {
