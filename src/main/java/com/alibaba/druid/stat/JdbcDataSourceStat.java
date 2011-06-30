@@ -155,7 +155,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     @Override
     public long getConnectionConnectAliveMillis() {
         long nowNano = System.nanoTime();
-        long aliveNanoSpan = this.getConnectionStat().getNanoTotal();
+        long aliveNanoSpan = this.getConnectionStat().getAliveTotal();
 
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             aliveNanoSpan += nowNano - connection.getEstablishNano();

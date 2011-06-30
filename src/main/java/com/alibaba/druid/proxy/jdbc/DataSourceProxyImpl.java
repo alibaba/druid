@@ -198,7 +198,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
                 , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.LONG
+                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG
         //
         };
 
@@ -211,8 +211,8 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
                 , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
                 , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
-                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillis", "ConnectionConnectingCountMax" //
-                , "ConnectionConnectMillisMax"
+                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
+                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin"
         //
         };
 
@@ -329,9 +329,13 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 map.put("ConnectionErrorLastMessage", null);
                 map.put("ConnectionErrorLastStackTrace", null);
             }
-            map.put("ConnectionConnectMillis", stat.getConnectionStat().getConnectMillis());
+            map.put("ConnectionConnectMillisTotal", stat.getConnectionStat().getConnectMillis());
             map.put("ConnectionConnectingCountMax", stat.getConnectionStat().getConnectingMax());
+            
             map.put("ConnectionConnectMillisMax", stat.getConnectionStat().getConnectMillisMax());
+            map.put("ConnectionErrorLastTime", stat.getConnectionStat().getErrorLastTime());
+            map.put("ConnectionAliveMillisMax", stat.getConnectionStat().getAliveMillisMax());
+            map.put("ConnectionAliveMillisMin", stat.getConnectionStat().getAliveMillisMin());
         } else {
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);
@@ -378,9 +382,13 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionConnectCount", null);
             map.put("ConnectionErrorLastMessage", null);
             map.put("ConnectionErrorLastStackTrace", null);
-            map.put("ConnectionConnectMillis", null);
+            map.put("ConnectionConnectMillisTotal", null);
             map.put("ConnectionConnectingCountMax", null);
+            
             map.put("ConnectionConnectMillisMax", null);
+            map.put("ConnectionErrorLastTime", null);
+            map.put("ConnectionAliveMillisMax", null);
+            map.put("ConnectionAliveMillisMin", null);
         }
 
         return new CompositeDataSupport(getCompositeType(), map);

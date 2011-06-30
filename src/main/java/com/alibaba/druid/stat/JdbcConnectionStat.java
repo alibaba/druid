@@ -50,7 +50,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
     private final AtomicLong    errorCount        = new AtomicLong();
 
-    private final AtomicLong    nanoTotal         = new AtomicLong();
+    private final AtomicLong    aliveNanoTotal         = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
@@ -59,12 +59,17 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private final AtomicLong    closeCount        = new AtomicLong(0);  // 执行Connection.close的计数
     private final AtomicLong    commitCount       = new AtomicLong(0);  // 执行commit的计数
     private final AtomicLong    rollbackCount     = new AtomicLong(0);  // 执行rollback的计数
+    
+    private final AtomicLong aliveNanoMin     = new AtomicLong();
+    private final AtomicLong aliveNanoMax     = new AtomicLong();
 
     public void reset() {
         connectingMax.set(0);
         connectErrorCount.set(0);
         errorCount.set(0);
-        nanoTotal.set(0);
+        aliveNanoTotal.set(0);
+        aliveNanoMin.set(0);
+        aliveNanoMax.set(0);
         lastError = null;
         lastErrorTime = 0;
         connectLastTime = 0;
@@ -162,13 +167,56 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         return connectingMax.get();
     }
 
-    public long getNanoTotal() {
-        return nanoTotal.get();
+    public long getAliveTotal() {
+        return aliveNanoTotal.get();
+    }
+    
+    public long getAliveNanoMin() {
+        return aliveNanoMin.get();
+    }
+    
+    public long getAliveMillisMin() {
+        return aliveNanoMin.get() / (1000 * 1000);
+    }
+    
+    public long getAliveNanoMax() {
+        return aliveNanoMax.get();
+    }
+    
+    public long getAliveMillisMax() {
+        return aliveNanoMax.get() / (1000 * 1000);
     }
 
-    public void afterClose(long nanoSpan) {
+    public void afterClose(long aliveNano) {
         activeCount.decrementAndGet();
-        nanoTotal.addAndGet(nanoSpan);
+        aliveNanoTotal.addAndGet(aliveNano);
+        
+        for (;;) {
+            long max = aliveNanoMax.get();
+            if (aliveNano > max) {
+                if (aliveNanoMax.compareAndSet(max, aliveNano)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
+        
+        for (;;) {
+            long min = aliveNanoMin.get();
+            if (aliveNano < min) {
+                if (aliveNanoMax.compareAndSet(min, aliveNano)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
+        //holdTimeMin
     }
 
     public Throwable getErrorLast() {
