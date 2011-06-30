@@ -92,14 +92,29 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().isWrapperFor(this, wrapper, iface);
         }
+        
+        // // if driver is for jdbc 3.0
+        if (iface.isAssignableFrom(wrapper.getClass())) {
+            return true;
+        }
 
         return wrapper.isWrapperFor(iface);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Wrapper wrapper, Class<T> iface) throws SQLException {
         if (this.pos < filterSize) {
             return nextFilter().unwrap(this, wrapper, iface);
+        }
+        
+        if (iface == null) {
+            return null;
+        }
+        
+        // if driver is for jdbc 3.0
+        if (iface.isAssignableFrom(wrapper.getClass())) {
+            return (T) wrapper;
         }
 
         return wrapper.unwrap(iface);
