@@ -85,7 +85,7 @@ public class Case0 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(true);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
@@ -107,7 +107,7 @@ public class Case0 extends TestCase {
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        dataSource.setConnectionTestStatement("SELECT 1");
+        dataSource.setConnectionTestStatement(validationQuery);
         dataSource.setPartitionCount(1);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
