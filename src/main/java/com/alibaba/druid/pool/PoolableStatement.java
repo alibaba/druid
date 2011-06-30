@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -417,6 +418,25 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     public final boolean isClosed() throws SQLException {
         if (this.closed) {
             return true;
+        }
+
+        Driver driver = null;
+        {
+            ConnectionHolder holder = conn.getConnectionHolder();
+            if (holder != null) {
+                DruidAbstractDataSource dataSource = holder.getDataSource();
+                if (dataSource != null) {
+                    driver = dataSource.getDriver();
+                }
+            }
+        }
+        // Oracle Driver 10.x is JDBC 3.0
+        if (driver != null) {
+            if ("oracle.jdbc.driver.OracleDriver".equals(driver.getClass().getName())) {
+                if (driver.getMajorVersion() <= 10) {
+                    return closed;
+                }
+            }
         }
 
         try {

@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.util.Assert;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -96,7 +97,9 @@ public class Oracle_Case3 extends TestCase {
                             ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
                             rs.next();
                             rs.close();
+                            Assert.isTrue(!stmt.isClosed());
                             stmt.close();
+                            Assert.isTrue(stmt.isClosed());
                             conn.close();
                         }
                     } catch (Exception ex) {
