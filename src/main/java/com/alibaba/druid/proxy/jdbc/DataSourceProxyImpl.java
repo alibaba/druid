@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ import javax.security.auth.callback.PasswordCallback;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -183,20 +187,48 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
-                new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE,
-                //
-                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING };
+        OpenType<?>[] indexTypes = new OpenType<?>[] { //
+        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
+                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.INTEGER //
+                , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
+                , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
+                ,
+        //
+        };
 
-        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", "RawUrl", "RawDriverClassName", "RawDriverMajorVersion",
-                "RawDriverMinorVersion", "Properties" };
+        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
+                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
+                , "ConnectionCount", "ConnectionCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
+                , "ConnectLastTime", "ConnectErrorCount", "ConnectLastErrorTime", "ConnectLastErrorMessage", "ConnectLastErrorStackTrace" //
+                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
+                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
+                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime"
+        //
+        };
+
         String[] indexDescriptions = indexNames;
-        COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
+        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames, indexDescriptions, indexTypes);
 
         return COMPOSITE_TYPE;
     }
 
     public CompositeDataSupport getCompositeData() throws JMException {
+        StatFilter statFilter = null;
+        JdbcDataSourceStat stat = null;
+        for (Filter filter : this.getFilters()) {
+            if (filter instanceof StatFilter) {
+                statFilter = (StatFilter) filter;
+            }
+        }
+        if (statFilter != null) {
+            stat = statFilter.getDataSourceStat();
+        }
+
         Map<String, Object> map = new HashMap<String, Object>();
 
         map.put("ID", id);
@@ -210,6 +242,100 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         map.put("RawDriverMajorVersion", getRawDriverMajorVersion());
         map.put("RawDriverMinorVersion", getRawDriverMinorVersion());
         map.put("Properties", getProperties());
+
+        if (stat != null) {
+            map.put("ConnectionCount", stat.getConnectionActiveCount());
+            map.put("ConnectionCountMax", stat.getConnectionStat().getActiveMax());
+            map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
+            map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
+            map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
+
+            map.put("ConnectLastTime", stat.getConnectionStat().getLastConnectTime());
+            map.put("ConnectErrorCount", stat.getConnectionStat().getErrorCount());
+            Throwable lastConnectionError = stat.getConnectionStat().getLastError();
+            if (lastConnectionError != null) {
+                map.put("ConnectLastErrorTime", stat.getConnectionStat().getLastErrorTime());
+                map.put("ConnectLastErrorMessage", lastConnectionError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastConnectionError.printStackTrace(new PrintWriter(buf));
+                map.put("ConnectLastErrorStackTrace", buf.toString());
+            } else {
+                map.put("ConnectLastErrorTime", null);
+                map.put("ConnectLastErrorMessage", null);
+                map.put("ConnectLastErrorStackTrace", null);
+            }
+
+            map.put("StatementCreateCount", stat.getStatementStat().getCreateCount());
+            map.put("StatementPrepareCount", stat.getStatementStat().getPrepareCount());
+            map.put("StatementPreCallCount", stat.getStatementStat().getPrepareCallCount());
+            map.put("StatementExecuteCount", stat.getStatementStat().getExecuteCount());
+            map.put("StatementRunningCount", stat.getStatementStat().getRunningCount());
+
+            map.put("StatementConcurrentMax", stat.getStatementStat().getConcurrentMax());
+            map.put("StatementCloseCount", stat.getStatementStat().getCloseCount());
+            map.put("StatementErrorCount", stat.getStatementStat().getErrorCount());
+            Throwable lastStatementError = stat.getStatementStat().getLastException();
+            if (lastStatementError != null) {
+                map.put("StatementLastErrorTime", stat.getStatementStat().getLastErrorTime());
+                map.put("StatementLastErrorMessage", lastStatementError.getMessage());
+
+                StringWriter buf = new StringWriter();
+                lastStatementError.printStackTrace(new PrintWriter(buf));
+                map.put("StatementLastErrorStackTrace", buf.toString());
+            } else {
+                map.put("StatementLastErrorTime", null);
+                map.put("StatementLastErrorMessage", null);
+
+                map.put("StatementLastErrorStackTrace", null);
+            }
+            map.put("StatementExecuteMillis", stat.getStatementStat().getMillisTotal());
+            map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
+            map.put("ConnectingCount", stat.getConnectionStat().getRunningCount());
+            map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
+
+            map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
+            map.put("ResultSetOpenningCount", stat.getResultSetStat().getRunningCount());
+            map.put("ResultSetOpenningMax", stat.getResultSetStat().getConcurrentMax());
+            map.put("ResultSetFetchRowCount", stat.getResultSetStat().getFetchRowCount());
+            map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
+
+        } else {
+            map.put("ConnectionCount", null);
+            map.put("ConnectionCountMax", null);
+            map.put("ConnectionCloseCount", null);
+            map.put("ConnectionCommitCount", null);
+            map.put("ConnectionRollbackCount", null);
+
+            map.put("ConnectLastTime", null);
+            map.put("ConnectErrorCount", null);
+            map.put("ConnectLastErrorTime", null);
+            map.put("ConnectLastErrorMessage", null);
+            map.put("ConnectLastErrorStackTrace", null);
+
+            map.put("StatementCreateCount", null);
+            map.put("StatementPrepareCount", null);
+            map.put("StatementPreCallCount", null);
+            map.put("StatementExecuteCount", null);
+            map.put("StatementRunningCount", null);
+
+            map.put("StatementConcurrentMax", null);
+            map.put("StatementCloseCount", null);
+            map.put("StatementErrorCount", null);
+            map.put("StatementLastErrorTime", null);
+            map.put("StatementLastErrorMessage", null);
+
+            map.put("StatementLastErrorStackTrace", null);
+            map.put("StatementExecuteMillis", null);
+            map.put("ConnectingCount", null);
+            map.put("StatementExecuteLastTime", null);
+            map.put("ResultSetCloseCount", null);
+
+            map.put("ResultSetOpenCount", null);
+            map.put("ResultSetOpenningCount", null);
+            map.put("ResultSetOpenningMax", null);
+            map.put("ResultSetFetchRowCount", null);
+            map.put("ResultSetLastOpenTime", null);
+        }
 
         return new CompositeDataSupport(getCompositeType(), map);
     }

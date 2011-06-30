@@ -21,10 +21,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
-    private final AtomicInteger concurrentCount = new AtomicInteger();
-    private final AtomicInteger concurrentMax   = new AtomicInteger();
+    private final AtomicInteger openningCount = new AtomicInteger();
+    private final AtomicInteger opeeningtMax   = new AtomicInteger();
 
-    private final AtomicLong    count           = new AtomicLong();
+    private final AtomicLong    openCount           = new AtomicLong();
     private final AtomicLong    errorCount      = new AtomicLong();
 
     private final AtomicLong    nanoTotal       = new AtomicLong();
@@ -37,9 +37,9 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     private final AtomicLong    closeCount      = new AtomicLong(0);  // ResultSet打开的计数
 
     public void reset() {
-        concurrentCount.set(0);
-        concurrentMax.set(0);
-        count.set(0);
+        openningCount.set(0);
+        opeeningtMax.set(0);
+        openCount.set(0);
         errorCount.set(0);
         nanoTotal.set(0);
         lastError = null;
@@ -48,12 +48,12 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public void beforeOpen() {
-        int invoking = concurrentCount.incrementAndGet();
+        int invoking = openningCount.incrementAndGet();
 
         for (;;) {
-            int max = concurrentMax.get();
+            int max = opeeningtMax.get();
             if (invoking > max) {
-                if (concurrentMax.compareAndSet(max, invoking)) {
+                if (opeeningtMax.compareAndSet(max, invoking)) {
                     break;
                 } else {
                     continue;
@@ -63,7 +63,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
             }
         }
 
-        count.incrementAndGet();
+        openCount.incrementAndGet();
         lastSampleTime = System.currentTimeMillis();
     }
 
@@ -72,18 +72,18 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public int getRunningCount() {
-        return concurrentCount.get();
+        return openningCount.get();
     }
 
     public int getConcurrentMax() {
-        return concurrentMax.get();
+        return opeeningtMax.get();
     }
 
     public long getOpenCount() {
-        return count.get();
+        return openCount.get();
     }
 
-    public Date getLastConnectTime() {
+    public Date getLastOpenTime() {
         if (lastSampleTime == 0) {
             return null;
         }
@@ -96,7 +96,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public void afterClose(long nanoSpan) {
-        concurrentCount.decrementAndGet();
+        openningCount.decrementAndGet();
 
         nanoTotal.addAndGet(nanoSpan);
     }

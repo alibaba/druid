@@ -29,9 +29,9 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     private final AtomicLong    createCount      = new AtomicLong(0);  // 执行createStatement的计数
     private final AtomicLong    prepareCount     = new AtomicLong(0);  // 执行parepareStatement的计数
     private final AtomicLong    prepareCallCount = new AtomicLong(0);  // 执行preCall的计数
-    private final AtomicLong    closeCounter     = new AtomicLong(0);  // Statement关闭的计数
+    private final AtomicLong    closeCount     = new AtomicLong(0);  // Statement关闭的计数
 
-    private final AtomicInteger concurrentCount  = new AtomicInteger();
+    private final AtomicInteger runningCount  = new AtomicInteger();
     private final AtomicInteger concurrentMax    = new AtomicInteger();
 
     private final AtomicLong    count            = new AtomicLong();
@@ -45,7 +45,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     private long                lastSampleTime   = 0;
 
     public void reset() {
-        concurrentCount.set(0);
+        runningCount.set(0);
         concurrentMax.set(0);
         count.set(0);
         errorCount.set(0);
@@ -57,11 +57,11 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
         createCount.set(0);
         prepareCount.set(0);
         prepareCallCount.set(0);
-        closeCounter.set(0);
+        closeCount.set(0);
     }
 
     public void beforeExecute() {
-        int invoking = concurrentCount.incrementAndGet();
+        int invoking = runningCount.incrementAndGet();
 
         for (;;) {
             int max = concurrentMax.get();
@@ -85,7 +85,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     }
 
     public int getRunningCount() {
-        return concurrentCount.get();
+        return runningCount.get();
     }
 
     public int getConcurrentMax() {
@@ -107,9 +107,13 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     public long getNanoTotal() {
         return nanoTotal.get();
     }
+    
+    public long getMillisTotal() {
+        return nanoTotal.get() / (1000 * 1000);
+    }
 
     public void afterExecute(long nanoSpan) {
-        concurrentCount.decrementAndGet();
+        runningCount.decrementAndGet();
 
         nanoTotal.addAndGet(nanoSpan);
     }
@@ -134,7 +138,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
 
     @Override
     public long getCloseCount() {
-        return closeCounter.get();
+        return closeCount.get();
     }
 
     @Override
@@ -180,7 +184,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     }
 
     public void incrementStatementCloseCounter() {
-        closeCounter.incrementAndGet();
+        closeCount.incrementAndGet();
     }
 
     public static class Entry {

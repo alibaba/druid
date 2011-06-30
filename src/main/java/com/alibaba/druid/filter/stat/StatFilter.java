@@ -68,6 +68,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void setConnectionStackTraceEnable(boolean connectionStackTraceEnable) {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
     }
+    
+    public JdbcDataSourceStat getDataSourceStat() {
+        return this.dataSourceStat;
+    }
 
     public void reset() {
         dataSourceStat.reset();
