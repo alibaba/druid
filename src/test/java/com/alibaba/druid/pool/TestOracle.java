@@ -23,7 +23,7 @@ public class TestOracle extends TestCase {
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        dataSource.setFilters("stat");
+        // dataSource.setFilters("stat");
         dataSource.setExceptionSoter(MySqlExceptionSorter.class.getName());
 
         Connection conn = dataSource.getConnection();

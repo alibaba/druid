@@ -32,13 +32,13 @@ import com.alibaba.druid.util.DruidLoaderUtils;
 
 public class OracleValidConnectionChecker implements ValidConnectionChecker, Serializable {
 
-    private static final long serialVersionUID = -2227528634302168877L;
+    private static final long     serialVersionUID = -2227528634302168877L;
 
-    private static final Log  LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
+    private static final Log      LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
 
-    private final Class<?>          clazz;
-    private final Method            ping;
-    private final static Object[]   params           = new Object[] { new Integer(5000) };
+    private final Class<?>        clazz;
+    private final Method          ping;
+    private final static Object[] params           = new Object[] { new Integer(5000) };
 
     public OracleValidConnectionChecker(){
         try {
@@ -52,15 +52,17 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
     public boolean isValidConnection(Connection c) {
         try {
             // unwrap
-            Connection conn = (Connection) c.unwrap(clazz);
-            if (conn != null) {
-                c = conn;
-                
-                Integer status = (Integer) ping.invoke(c, params);
+            if (!clazz.isAssignableFrom(c.getClass())) {
+                Connection conn = (Connection) c.unwrap(clazz);
+                if (conn != null) {
+                    c = conn;
 
-                // Error
-                if (status.intValue() < 0) {
-                    return false;
+                    Integer status = (Integer) ping.invoke(c, params);
+
+                    // Error
+                    if (status.intValue() < 0) {
+                        return false;
+                    }
                 }
             }
         } catch (Exception e) {

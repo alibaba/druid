@@ -36,11 +36,16 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
 
     public boolean isValidConnection(Connection c) {
         Connection conn = null;
-        try {
-            conn = (Connection) c.unwrap(clazz);
-        } catch (SQLException e) {
-            LOG.warn("Unexpected error in ping", e);
-            return false;
+
+        if (clazz.isAssignableFrom(c.getClass())) {
+            conn = c;
+        } else {
+            try {
+                conn = (Connection) c.unwrap(clazz);
+            } catch (SQLException e) {
+                LOG.warn("Unexpected error in ping", e);
+                return false;
+            }
         }
 
         // if there is a ping method then use it, otherwise just use a 'SELECT 1' statement
