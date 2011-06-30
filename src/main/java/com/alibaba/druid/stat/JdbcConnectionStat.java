@@ -36,45 +36,54 @@ import com.alibaba.druid.util.JMXUtils;
  */
 public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
-    private final AtomicInteger concurrentCount = new AtomicInteger();
-    private final AtomicInteger concurrentMax   = new AtomicInteger();
+    private final AtomicInteger activeCount   = new AtomicInteger();
+    private final AtomicInteger activeCountMax   = new AtomicInteger();
+    
+    private final AtomicInteger connectingCount   = new AtomicInteger();
+    private final AtomicInteger connectingMax     = new AtomicInteger();
 
-    private final AtomicLong    count           = new AtomicLong();
-    private final AtomicLong    errorCount      = new AtomicLong();
+    private final AtomicLong    connectCount      = new AtomicLong();
+    private final AtomicLong    connectErrorCount = new AtomicLong();
+    private Throwable           connectErrorLast;
+    private final AtomicLong    connectNanoTotal   = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
+    private final AtomicLong    connectNanoMax   = new AtomicLong(0);  // 连接建立消耗最大时间（纳秒）
 
-    private final AtomicLong    nanoTotal       = new AtomicLong();
+    private final AtomicLong    errorCount        = new AtomicLong();
+
+    private final AtomicLong    nanoTotal         = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
-    private long                lastSampleTime  = 0;
+    private long                connectLastTime   = 0;
 
-    private final AtomicLong    closeCount      = new AtomicLong(0);  // 执行Connection.close的计数
-    private final AtomicLong    commitCount     = new AtomicLong(0);  // 执行commit的计数
-    private final AtomicLong    rollbackCount   = new AtomicLong(0);  // 执行rollback的计数
-    private final AtomicLong    connectNanoSpan = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
+    private final AtomicLong    closeCount        = new AtomicLong(0);  // 执行Connection.close的计数
+    private final AtomicLong    commitCount       = new AtomicLong(0);  // 执行commit的计数
+    private final AtomicLong    rollbackCount     = new AtomicLong(0);  // 执行rollback的计数
 
     public void reset() {
-        concurrentMax.set(0);
+        connectingMax.set(0);
+        connectErrorCount.set(0);
         errorCount.set(0);
         nanoTotal.set(0);
         lastError = null;
         lastErrorTime = 0;
-        lastSampleTime = 0;
+        connectLastTime = 0;
 
-        count.set(0);
+        connectCount.set(0);
         closeCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
-        connectNanoSpan.set(0);
+        connectNanoTotal.set(0);
+        connectNanoMax.set(0);
     }
 
     public void beforeConnect() {
-        int invoking = concurrentCount.incrementAndGet();
+        int invoking = connectingCount.incrementAndGet();
 
         for (;;) {
-            int max = concurrentMax.get();
+            int max = connectingMax.get();
             if (invoking > max) {
-                if (concurrentMax.compareAndSet(max, invoking)) {
+                if (connectingMax.compareAndSet(max, invoking)) {
                     break;
                 } else {
                     continue;
@@ -84,17 +93,45 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             }
         }
 
-        count.incrementAndGet();
-        lastSampleTime = System.currentTimeMillis();
+        connectCount.incrementAndGet();
+        connectLastTime = System.currentTimeMillis();
+    }
+    
+    public void afterConnected(long delta) {
+        connectingCount.decrementAndGet();
+        connectNanoTotal.addAndGet(delta);
+        for (;;) {
+            //connectNanoMax
+            long max = connectNanoMax.get();
+            if (delta > max) {
+                if (connectNanoMax.compareAndSet(max, delta)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
+        
+        activeCount.incrementAndGet();
+    }
+    
+    public long getConnectNanoMax() {
+        return this.connectNanoMax.get();
+    }
+    
+    public long getConnectMillisMax() {
+        return this.connectNanoMax.get() / (1000 * 1000);
     }
 
-    public void setConcurrentCount(int concurrentCount) {
-        this.concurrentCount.set(concurrentCount);
+    public void setActiveCount(int activeCount) {
+        this.activeCount.set(activeCount);
 
         for (;;) {
-            int max = concurrentMax.get();
-            if (concurrentCount > max) {
-                if (concurrentMax.compareAndSet(max, concurrentCount)) {
+            int max = activeCountMax.get();
+            if (activeCount > max) {
+                if (activeCountMax.compareAndSet(max, activeCount)) {
                     break;
                 } else {
                     continue;
@@ -103,30 +140,26 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
                 break;
             }
         }
+    }
+    
+    public int getActiveCount() {
+        return activeCount.get();
+    }
+    
+    public int getAtiveCountMax() {
+        return this.activeCount.get();
     }
 
     public long getErrorCount() {
         return errorCount.get();
     }
 
-    public int getRunningCount() {
-        return concurrentCount.get();
+    public int getConnectingCount() {
+        return connectingCount.get();
     }
 
-    public int getConcurrentMax() {
-        return concurrentMax.get();
-    }
-
-    public long getCount() {
-        return count.get();
-    }
-
-    public Date getLastConnectTime() {
-        if (lastSampleTime == 0) {
-            return null;
-        }
-
-        return new Date(lastSampleTime);
+    public int getConnectingMax() {
+        return connectingMax.get();
     }
 
     public long getNanoTotal() {
@@ -134,21 +167,33 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     }
 
     public void afterClose(long nanoSpan) {
-        concurrentCount.decrementAndGet();
-
+        activeCount.decrementAndGet();
         nanoTotal.addAndGet(nanoSpan);
     }
 
-    public Throwable getLastError() {
+    public Throwable getErrorLast() {
         return lastError;
     }
 
-    public Date getLastErrorTime() {
+    public Throwable getConnectErrorLast() {
+        return this.connectErrorLast;
+    }
+
+    public Date getErrorLastTime() {
         if (lastErrorTime <= 0) {
             return null;
         }
 
         return new Date(lastErrorTime);
+    }
+
+    public void connectError(Throwable error) {
+        connectErrorCount.incrementAndGet();
+        connectErrorLast = error;
+
+        errorCount.incrementAndGet();
+        lastError = error;
+        lastErrorTime = System.currentTimeMillis();
     }
 
     public void error(Throwable error) {
@@ -169,17 +214,17 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
     @Override
     public long getConnectCount() {
-        return this.getCount();
+        return connectCount.get();
     }
 
     @Override
     public long getConnectMillis() {
-        return connectNanoSpan.get() / (1000 * 1000);
+        return connectNanoTotal.get() / (1000 * 1000);
     }
 
     @Override
-    public long getActiveMax() {
-        return this.getConcurrentMax();
+    public int getActiveMax() {
+        return this.activeCountMax.get();
     }
 
     @Override
@@ -189,17 +234,19 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
     @Override
     public long getConnectErrorCount() {
-        return this.getErrorCount();
+        return connectErrorCount.get();
     }
 
     @Override
     public Date getConnectLastTime() {
-        return this.getLastConnectTime();
+        if (connectLastTime == 0) {
+            return null;
+        }
+
+        return new Date(connectLastTime);
     }
 
-    public void addConnectionConnectNano(long delta) {
-        connectNanoSpan.addAndGet(delta);
-    }
+
 
     public void incrementConnectionCloseCount() {
         closeCount.incrementAndGet();
@@ -323,8 +370,8 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             return new Date(lastErrorTime);
         }
 
-        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime", "AliveTimespan", "LastSql", "LastError",
-                                                          "LastErrorTime", "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
+        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime", "AliveTimespan", "LastSql", "LastError", "LastErrorTime",
+                                                          "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
         private static String[] indexDescriptions = indexNames;
 
         public static CompositeType getCompositeType() throws JMException {

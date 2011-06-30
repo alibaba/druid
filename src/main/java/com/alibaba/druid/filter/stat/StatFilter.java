@@ -68,7 +68,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void setConnectionStackTraceEnable(boolean connectionStackTraceEnable) {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
     }
-    
+
     public JdbcDataSourceStat getDataSourceStat() {
         return this.dataSourceStat;
     }
@@ -93,41 +93,40 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
-        long startNano = System.nanoTime();
-        long startTime = System.currentTimeMillis();
-
-        long nanoSpan = System.nanoTime() - startNano;
-        long nowTime = System.currentTimeMillis();
-
-        connectStat.beforeConnect();
-        dataSourceStat.getConnectionStat().beforeConnect();
-
         ConnectionProxy connection = null;
+        {
+            long startNano = System.nanoTime();
+            long startTime = System.currentTimeMillis();
 
-        try {
-            connection = super.connection_connect(chain, info);
-        } catch (SQLException ex) {
-            connectStat.error(ex);
-            dataSourceStat.getConnectionStat().error(ex);
-            throw ex;
+            long nanoSpan;
+            long nowTime = System.currentTimeMillis();
+
+            connectStat.beforeConnect();
+            dataSourceStat.getConnectionStat().beforeConnect();
+            try {
+                connection = super.connection_connect(chain, info);
+                nanoSpan = System.nanoTime() - startNano;
+            } catch (SQLException ex) {
+                connectStat.connectError(ex);
+                dataSourceStat.getConnectionStat().connectError(ex);
+                throw ex;
+            }
+            connectStat.afterConnected(nanoSpan);
+            dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
+
+            JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
+
+            dataSourceStat.getConnections().put(connection.getId(), statEntry);
+
+            statEntry.setConnectTime(new Date(startTime));
+            statEntry.setConnectTimespanNano(nanoSpan);
+            statEntry.setEstablishNano(System.nanoTime());
+            statEntry.setEstablishTime(nowTime);
+            statEntry.setConnectStackTrace(new Exception());
+
+            connectStat.setActiveCount(dataSourceStat.getConnections().size());
+            dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
         }
-
-        JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
-
-        dataSourceStat.getConnections().put(connection.getId(), statEntry);
-
-        statEntry.setConnectTime(new Date(startTime));
-        statEntry.setConnectTimespanNano(nanoSpan);
-        statEntry.setEstablishNano(System.nanoTime());
-        statEntry.setEstablishTime(nowTime);
-        statEntry.setConnectStackTrace(new Exception());
-
-        connectStat.addConnectionConnectNano(nanoSpan);
-        dataSourceStat.getConnectionStat().addConnectionConnectNano(nanoSpan);
-
-        connectStat.setConcurrentCount(dataSourceStat.getConnections().size());
-        dataSourceStat.getConnectionStat().setConcurrentCount(dataSourceStat.getConnections().size());
-
         return connection;
     }
 
@@ -513,7 +512,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public long getConnectionConnectCount() {
-        return dataSourceStat.getConnectionStat().getCount();
+        return dataSourceStat.getConnectionStat().getConnectCount();
     }
 
     @Override
@@ -522,8 +521,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public long getConnectionActiveCountMax() {
-        return dataSourceStat.getConnectionStat().getConcurrentMax();
+    public long getConnectionConnectingMax() {
+        return dataSourceStat.getConnectionStat().getConnectingMax();
     }
 
     @Override
@@ -538,7 +537,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public long getConnectionConnectErrorCount() {
-        return dataSourceStat.getConnectionStat().getErrorCount();
+        return dataSourceStat.getConnectionStat().getConnectErrorCount();
     }
 
     @Override

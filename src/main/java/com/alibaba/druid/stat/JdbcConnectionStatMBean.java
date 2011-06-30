@@ -19,17 +19,11 @@ import java.util.Date;
 
 public interface JdbcConnectionStatMBean {
 
-    long getCount();
-
-    long getErrorCount();
-
-    Date getLastConnectTime();
-
     long getConnectCount();
 
     long getCloseCount();
 
-    long getActiveMax();
+    int getActiveMax();
 
     long getCommitCount();
 

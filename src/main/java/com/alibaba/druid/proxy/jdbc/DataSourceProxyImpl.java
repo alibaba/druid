@@ -190,26 +190,29 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         OpenType<?>[] indexTypes = new OpenType<?>[] { //
         SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
                 SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.INTEGER //
                 , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
                 , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-                ,
+                , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
+                , SimpleType.LONG
         //
         };
 
         String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
                 "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
-                , "ConnectionOpenningCount", "ConnectionOpenningCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
-                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectLastErrorTime", "ConnectLastErrorMessage", "ConnectLastErrorStackTrace" //
+                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
+                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
                 , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
                 , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
                 , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
                 , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
+                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillis", "ConnectionConnectingCountMax" //
+                , "ConnectionConnectMillisMax"
         //
         };
 
@@ -246,25 +249,25 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         map.put("Properties", getProperties());
 
         if (stat != null) {
-            map.put("ConnectionOpenningCount", stat.getConnectionActiveCount());
-            map.put("ConnectionOpenningCountMax", stat.getConnectionStat().getActiveMax());
+            map.put("ConnectionActiveCount", stat.getConnectionActiveCount());
+            map.put("ConnectionActiveCountMax", stat.getConnectionStat().getActiveMax());
             map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
             map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
             map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
 
-            map.put("ConnectionConnectLastTime", stat.getConnectionStat().getLastConnectTime());
-            map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getErrorCount());
-            Throwable lastConnectionError = stat.getConnectionStat().getLastError();
-            if (lastConnectionError != null) {
-                map.put("ConnectLastErrorTime", stat.getConnectionStat().getLastErrorTime());
-                map.put("ConnectLastErrorMessage", lastConnectionError.getMessage());
+            map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
+            map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getConnectErrorCount());
+            Throwable lastConnectionConnectError = stat.getConnectionStat().getConnectErrorLast();
+            if (lastConnectionConnectError != null) {
+                map.put("ConnectionConnectErrorLastTime", stat.getConnectionStat().getErrorLastTime());
+                map.put("ConnectionConnectErrorLastMessage", lastConnectionConnectError.getMessage());
                 StringWriter buf = new StringWriter();
-                lastConnectionError.printStackTrace(new PrintWriter(buf));
-                map.put("ConnectLastErrorStackTrace", buf.toString());
+                lastConnectionConnectError.printStackTrace(new PrintWriter(buf));
+                map.put("ConnectionConnectErrorLastStackTrace", buf.toString());
             } else {
-                map.put("ConnectLastErrorTime", null);
-                map.put("ConnectLastErrorMessage", null);
-                map.put("ConnectLastErrorStackTrace", null);
+                map.put("ConnectionConnectErrorLastTime", null);
+                map.put("ConnectionConnectErrorLastMessage", null);
+                map.put("ConnectionConnectErrorLastStackTrace", null);
             }
 
             map.put("StatementCreateCount", stat.getStatementStat().getCreateCount());
@@ -292,7 +295,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             }
             map.put("StatementExecuteMillis", stat.getStatementStat().getMillisTotal());
             map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
-            map.put("ConnectingCount", stat.getConnectionStat().getRunningCount());
+            map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
             map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
 
             map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
@@ -314,19 +317,33 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 map.put("ResultSetLastErrorMessage", null);
                 map.put("ResultSetLastErrorStackTrace", null);
             }
-
+            
+            map.put("ConnectionConnectCount", stat.getConnectionStat().getConnectCount());
+            Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
+            if (lastConnectionError != null) {
+                map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastConnectionError.printStackTrace(new PrintWriter(buf));
+                map.put("ConnectionErrorLastStackTrace", buf.toString());
+            } else {
+                map.put("ConnectionErrorLastMessage", null);
+                map.put("ConnectionErrorLastStackTrace", null);
+            }
+            map.put("ConnectionConnectMillis", stat.getConnectionStat().getConnectMillis());
+            map.put("ConnectionConnectingCountMax", stat.getConnectionStat().getConnectingMax());
+            map.put("ConnectionConnectMillisMax", stat.getConnectionStat().getConnectMillisMax());
         } else {
-            map.put("ConnectionOpenningCount", null);
-            map.put("ConnectionOpenningCountMax", null);
+            map.put("ConnectionActiveCount", null);
+            map.put("ConnectionActiveCountMax", null);
             map.put("ConnectionCloseCount", null);
             map.put("ConnectionCommitCount", null);
             map.put("ConnectionRollbackCount", null);
 
             map.put("ConnectionConnectLastTime", null);
             map.put("ConnectionConnectErrorCount", null);
-            map.put("ConnectLastErrorTime", null);
-            map.put("ConnectLastErrorMessage", null);
-            map.put("ConnectLastErrorStackTrace", null);
+            map.put("ConnectionConnectErrorLastTime", null);
+            map.put("ConnectionConnectErrorLastMessage", null);
+            map.put("ConnectionConnectErrorLastStackTrace", null);
 
             map.put("StatementCreateCount", null);
             map.put("StatementPrepareCount", null);
@@ -342,7 +359,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
 
             map.put("StatementLastErrorStackTrace", null);
             map.put("StatementExecuteMillis", null);
-            map.put("ConnectingCount", null);
+            map.put("ConnectionConnectingCount", null);
             map.put("StatementExecuteLastTime", null);
             map.put("ResultSetCloseCount", null);
 
@@ -357,6 +374,13 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ResultSetLastErrorTime", null);
             map.put("ResultSetLastErrorMessage", null);
             map.put("ResultSetLastErrorStackTrace", null);
+            
+            map.put("ConnectionConnectCount", null);
+            map.put("ConnectionErrorLastMessage", null);
+            map.put("ConnectionErrorLastStackTrace", null);
+            map.put("ConnectionConnectMillis", null);
+            map.put("ConnectionConnectingCountMax", null);
+            map.put("ConnectionConnectMillisMax", null);
         }
 
         return new CompositeDataSupport(getCompositeType(), map);

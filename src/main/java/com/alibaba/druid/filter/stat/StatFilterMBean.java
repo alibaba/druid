@@ -40,7 +40,7 @@ public interface StatFilterMBean {
 
     long getConnectionActiveCount();
 
-    long getConnectionActiveCountMax();
+    long getConnectionConnectingMax();
 
     long getConnectionCommitCount();
 
