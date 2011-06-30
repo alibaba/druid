@@ -19,7 +19,7 @@ public class StatFilterTest extends TestCase {
     public void setUp() throws Exception {
         JdbcStatManager.getInstance().reset();
     }
-    
+
     public void tearDown() throws Exception {
         JdbcStatManager.getInstance().reset();
     }
@@ -27,7 +27,7 @@ public class StatFilterTest extends TestCase {
     public void test_stat() throws Exception {
         String url = "jdbc:wrap-jdbc:filters=default:jdbc:mock:xx";
         Connection conn = DriverManager.getConnection(url);
-        
+
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT 1");
         while (rs.next()) {
@@ -35,18 +35,22 @@ public class StatFilterTest extends TestCase {
         }
         rs.close();
         stmt.close();
-        
+
         conn.close();
-        
+
         TabularData sqlList = JdbcStatManager.getInstance().getSqlList();
         Assert.assertEquals(true, sqlList.size() > 0);
-        
+
+        int count = 0;
         for (Object item : sqlList.values()) {
             CompositeData row = (CompositeData) item;
-            Assert.assertEquals(url, (String) row.get("URL"));
+            if (url.equals((String) row.get("URL"))) {
+                count++;
+            }
             Assert.assertEquals(0, row.get("Count_50000_more"));
         }
-        
+        Assert.assertEquals(true, count > 0);
+
         System.out.println(JSON.toJSONString(sqlList));
     }
 }

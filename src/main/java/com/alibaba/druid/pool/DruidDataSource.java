@@ -271,6 +271,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      */
     protected void recycle(PoolableConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
+        ConnectionHolder holder = pooledConnection.getConnectionHolder();
+        
+        assert holder != null;
+        
         try {
             if (activeConnectionTraceEnable) {
                 activeConnections.remove(pooledConnection);
@@ -280,6 +284,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (conn == null || conn.isClosed()) {
                 lock.lock();
                 try {
+                    holder.reset();
                     decrementActiveCount();
                     closeCount++;
                 } finally {
@@ -306,6 +311,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (count >= maxIdle) {
                 lock.lock();
                 try {
+                    holder.reset();
                     conn.close();
                     decrementActiveCount();
                 } finally {
@@ -328,7 +334,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 closeCount++;
 
                 // 第六步，加入队列中(putLast)
-                putLast(pooledConnection.getConnectionHolder());
+                holder.reset();
+                putLast(holder);
                 recycleCount++;
             } finally {
                 lock.unlock();

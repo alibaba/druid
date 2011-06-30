@@ -57,7 +57,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     protected SQLException handleException(Throwable t) throws SQLException {
         final ConnectionHolder holder = this.holder;
 
-        // 
+        //
         if (holder != null) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
             if (dataSource != null) {
@@ -124,7 +124,6 @@ public class PoolableConnection implements PooledConnection, Connection {
         }
 
         holder.getDataSource().recycle(this);
-        holder.reset();
         holder = null;
         conn = null;
     }

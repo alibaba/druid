@@ -31,6 +31,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     private final Statement         stmt;
     protected PoolableConnection    conn;
     protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
+    protected boolean               closed         = false;
 
     public PoolableStatement(PoolableConnection conn, Statement stmt){
         this.conn = conn;
@@ -47,6 +48,10 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     public void setPoolableConnection(PoolableConnection conn) {
         this.conn = conn;
+    }
+
+    public Statement getStatement() {
+        return stmt;
     }
 
     protected void clearResultSet() {
@@ -90,6 +95,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         clearResultSet();
 
         stmt.close();
+        this.closed = true;
 
         conn.getConnectionHolder().removeTrace(this);
     }
@@ -409,6 +415,10 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean isClosed() throws SQLException {
+        if (this.closed) {
+            return true;
+        }
+
         try {
             return stmt.isClosed();
         } catch (Throwable t) {
