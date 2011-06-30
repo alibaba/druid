@@ -196,18 +196,20 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
                 , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
                 ,
         //
         };
 
         String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
                 "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
-                , "ConnectionCount", "ConnectionCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
-                , "ConnectLastTime", "ConnectErrorCount", "ConnectLastErrorTime", "ConnectLastErrorMessage", "ConnectLastErrorStackTrace" //
+                , "ConnectionOpenningCount", "ConnectionOpenningCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
+                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectLastErrorTime", "ConnectLastErrorMessage", "ConnectLastErrorStackTrace" //
                 , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
                 , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
                 , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
-                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime"
+                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
+                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
         //
         };
 
@@ -244,14 +246,14 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         map.put("Properties", getProperties());
 
         if (stat != null) {
-            map.put("ConnectionCount", stat.getConnectionActiveCount());
-            map.put("ConnectionCountMax", stat.getConnectionStat().getActiveMax());
+            map.put("ConnectionOpenningCount", stat.getConnectionActiveCount());
+            map.put("ConnectionOpenningCountMax", stat.getConnectionStat().getActiveMax());
             map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
             map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
             map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
 
-            map.put("ConnectLastTime", stat.getConnectionStat().getLastConnectTime());
-            map.put("ConnectErrorCount", stat.getConnectionStat().getErrorCount());
+            map.put("ConnectionConnectLastTime", stat.getConnectionStat().getLastConnectTime());
+            map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getErrorCount());
             Throwable lastConnectionError = stat.getConnectionStat().getLastError();
             if (lastConnectionError != null) {
                 map.put("ConnectLastErrorTime", stat.getConnectionStat().getLastErrorTime());
@@ -294,20 +296,34 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
 
             map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
-            map.put("ResultSetOpenningCount", stat.getResultSetStat().getRunningCount());
-            map.put("ResultSetOpenningMax", stat.getResultSetStat().getConcurrentMax());
+            map.put("ResultSetOpenningCount", stat.getResultSetStat().getOpenningCount());
+            map.put("ResultSetOpenningMax", stat.getResultSetStat().getOpenningMax());
             map.put("ResultSetFetchRowCount", stat.getResultSetStat().getFetchRowCount());
             map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
+            
+            map.put("ResultSetErrorCount", stat.getResultSetStat().getErrorCount());
+            map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getOpenningMillisTotal());
+            map.put("ResultSetLastErrorTime", stat.getResultSetStat().getLastErrorTime());
+            Throwable lastResultSetError = stat.getResultSetStat().getLastError();
+            if (lastResultSetError != null) {
+                map.put("ResultSetLastErrorMessage", lastResultSetError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastResultSetError.printStackTrace(new PrintWriter(buf));
+                map.put("ResultSetLastErrorStackTrace", buf.toString());
+            } else {
+                map.put("ResultSetLastErrorMessage", null);
+                map.put("ResultSetLastErrorStackTrace", null);
+            }
 
         } else {
-            map.put("ConnectionCount", null);
-            map.put("ConnectionCountMax", null);
+            map.put("ConnectionOpenningCount", null);
+            map.put("ConnectionOpenningCountMax", null);
             map.put("ConnectionCloseCount", null);
             map.put("ConnectionCommitCount", null);
             map.put("ConnectionRollbackCount", null);
 
-            map.put("ConnectLastTime", null);
-            map.put("ConnectErrorCount", null);
+            map.put("ConnectionConnectLastTime", null);
+            map.put("ConnectionConnectErrorCount", null);
             map.put("ConnectLastErrorTime", null);
             map.put("ConnectLastErrorMessage", null);
             map.put("ConnectLastErrorStackTrace", null);
@@ -335,6 +351,12 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ResultSetOpenningMax", null);
             map.put("ResultSetFetchRowCount", null);
             map.put("ResultSetLastOpenTime", null);
+            
+            map.put("ResultSetLastErrorCount", null);
+            map.put("ResultSetOpenningMillisTotal", null);
+            map.put("ResultSetLastErrorTime", null);
+            map.put("ResultSetLastErrorMessage", null);
+            map.put("ResultSetLastErrorStackTrace", null);
         }
 
         return new CompositeDataSupport(getCompositeType(), map);

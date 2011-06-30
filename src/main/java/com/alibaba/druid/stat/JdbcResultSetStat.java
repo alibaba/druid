@@ -27,24 +27,25 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     private final AtomicLong    openCount           = new AtomicLong();
     private final AtomicLong    errorCount      = new AtomicLong();
 
-    private final AtomicLong    nanoTotal       = new AtomicLong();
+    private final AtomicLong    openningNanoTotal       = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
-    private long                lastSampleTime  = 0;
+    private long                lastOpenTime  = 0;
 
-    private final AtomicLong    fetchRowCounter = new AtomicLong(0);  // 总共读取的行数
+    private final AtomicLong    fetchRowCount = new AtomicLong(0);  // 总共读取的行数
     private final AtomicLong    closeCount      = new AtomicLong(0);  // ResultSet打开的计数
 
     public void reset() {
-        openningCount.set(0);
         opeeningtMax.set(0);
         openCount.set(0);
         errorCount.set(0);
-        nanoTotal.set(0);
+        openningNanoTotal.set(0);
         lastError = null;
         lastErrorTime = 0;
-        lastSampleTime = 0;
+        lastOpenTime = 0;
+        fetchRowCount.set(0);
+        closeCount.set(0);
     }
 
     public void beforeOpen() {
@@ -64,18 +65,18 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         }
 
         openCount.incrementAndGet();
-        lastSampleTime = System.currentTimeMillis();
+        lastOpenTime = System.currentTimeMillis();
     }
 
     public long getErrorCount() {
         return errorCount.get();
     }
 
-    public int getRunningCount() {
+    public int getOpenningCount() {
         return openningCount.get();
     }
 
-    public int getConcurrentMax() {
+    public int getOpenningMax() {
         return opeeningtMax.get();
     }
 
@@ -84,21 +85,25 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public Date getLastOpenTime() {
-        if (lastSampleTime == 0) {
+        if (lastOpenTime == 0) {
             return null;
         }
 
-        return new Date(lastSampleTime);
+        return new Date(lastOpenTime);
     }
 
-    public long getNanoTotal() {
-        return nanoTotal.get();
+    public long getOpenningNanoTotal() {
+        return openningNanoTotal.get();
+    }
+    
+    public long getOpenningMillisTotal() {
+        return openningNanoTotal.get() / (1000 * 1000);
     }
 
     public void afterClose(long nanoSpan) {
         openningCount.decrementAndGet();
 
-        nanoTotal.addAndGet(nanoSpan);
+        openningNanoTotal.addAndGet(nanoSpan);
     }
 
     public Throwable getLastError() {
@@ -121,12 +126,12 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
     @Override
     public long getHoldMillisTotal() {
-        return JdbcStatManager.getInstance().getResultSetStat().getNanoTotal() / (1000 * 1000);
+        return JdbcStatManager.getInstance().getResultSetStat().getOpenningNanoTotal() / (1000 * 1000);
     }
 
     @Override
     public long getFetchRowCount() {
-        return fetchRowCounter.get();
+        return fetchRowCount.get();
     }
 
     @Override
@@ -135,7 +140,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     }
 
     public void addFetchRowCount(long fetchCount) {
-        fetchRowCounter.addAndGet(fetchCount);
+        fetchRowCount.addAndGet(fetchCount);
     }
 
     public void incrementCloseCounter() {
