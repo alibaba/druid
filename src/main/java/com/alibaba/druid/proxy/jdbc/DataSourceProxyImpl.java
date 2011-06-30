@@ -305,7 +305,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
             
             map.put("ResultSetErrorCount", stat.getResultSetStat().getErrorCount());
-            map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getOpenningMillisTotal());
+            map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getAliveMillisTotal());
             map.put("ResultSetLastErrorTime", stat.getResultSetStat().getLastErrorTime());
             Throwable lastResultSetError = stat.getResultSetStat().getLastError();
             if (lastResultSetError != null) {

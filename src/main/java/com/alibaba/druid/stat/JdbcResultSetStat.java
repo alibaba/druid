@@ -27,7 +27,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     private final AtomicLong    openCount           = new AtomicLong();
     private final AtomicLong    errorCount      = new AtomicLong();
 
-    private final AtomicLong    openningNanoTotal       = new AtomicLong();
+    private final AtomicLong    aliveNanoTotal       = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
@@ -40,7 +40,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         opeeningtMax.set(0);
         openCount.set(0);
         errorCount.set(0);
-        openningNanoTotal.set(0);
+        aliveNanoTotal.set(0);
         lastError = null;
         lastErrorTime = 0;
         lastOpenTime = 0;
@@ -92,18 +92,18 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         return new Date(lastOpenTime);
     }
 
-    public long getOpenningNanoTotal() {
-        return openningNanoTotal.get();
+    public long getAliveNanoTotal() {
+        return aliveNanoTotal.get();
     }
     
-    public long getOpenningMillisTotal() {
-        return openningNanoTotal.get() / (1000 * 1000);
+    public long getAliveMillisTotal() {
+        return aliveNanoTotal.get() / (1000 * 1000);
     }
 
     public void afterClose(long nanoSpan) {
         openningCount.decrementAndGet();
 
-        openningNanoTotal.addAndGet(nanoSpan);
+        aliveNanoTotal.addAndGet(nanoSpan);
     }
 
     public Throwable getLastError() {
@@ -126,7 +126,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
     @Override
     public long getHoldMillisTotal() {
-        return JdbcStatManager.getInstance().getResultSetStat().getOpenningNanoTotal() / (1000 * 1000);
+        return JdbcStatManager.getInstance().getResultSetStat().getAliveNanoTotal() / (1000 * 1000);
     }
 
     @Override
