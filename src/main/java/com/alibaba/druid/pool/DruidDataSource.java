@@ -42,6 +42,8 @@ import javax.naming.StringRefAddr;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
@@ -55,6 +57,7 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, Referenceable {
+    private final static Log LOG = LogFactory.getLog(DruidDataSource.class);
 
     private static final Object                                                  PRESENT                     = new Object();
     private static final IdentityHashMap<DruidDataSource, Object>                instances                   = new IdentityHashMap<DruidDataSource, Object>();
@@ -393,7 +396,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     connections[i] = null;
                     destroyCount++;
                 } catch (Exception ex) {
-                    printStackTrace(ex);
+                    LOG.warn("close connection error", ex);
                 }
             }
             count = 0;
@@ -575,7 +578,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (InterruptedException e) {
                     break;
                 } catch (SQLException e) {
-                    printStackTrace(e);
+                    LOG.error("create connection error", e);
 
                     errorCount++;
 
@@ -587,9 +590,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
                     }
                 } catch (RuntimeException e) {
-                    printStackTrace(e);
+                    LOG.error("create connection error", e);
                 } catch (Error e) {
-                    printStackTrace(e);
+                    LOG.error("create connection error", e);
                     break;
                 } finally {
                     lock.unlock();
@@ -649,7 +652,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     try {
                         connection.close();
                     } catch (SQLException e) {
-                        printStackTrace(e);
+                        LOG.error("create connection error", e);
                     }
 
                     destroyCount++;
