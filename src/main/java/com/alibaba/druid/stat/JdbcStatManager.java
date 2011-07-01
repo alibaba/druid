@@ -16,6 +16,7 @@
 package com.alibaba.druid.stat;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,6 +33,7 @@ import javax.management.openmbean.TabularType;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 
@@ -94,7 +96,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
     public JdbcConnectionStat getConnectionstat() {
         return connectionStat;
     }
-    
+
     private static CompositeType COMPOSITE_TYPE = null;
 
     public static CompositeType getDataSourceCompositeType() throws JMException {
@@ -118,16 +120,28 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         //
         };
 
-        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
-                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
-                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
-                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
-                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
-                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
-                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
-                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
-                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
+        String[] indexNames = { "ID", "URL", "Name",
+                "FilterClasses",
+                "CreatedTime", //
+                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion",
+                "RawDriverMinorVersion",
+                "Properties" //
+                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount",
+                "ConnectionCommitCount",
+                "ConnectionRollbackCount" //
+                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime",
+                "ConnectionConnectErrorLastMessage",
+                "ConnectionConnectErrorLastStackTrace" //
+                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount",
+                "StatementRunningCount" //
+                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime",
+                "StatementLastErrorMessage" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime",
+                "ResultSetCloseCount" //
+                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount",
+                "ResultSetLastOpenTime" //
+                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace",
+                "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
                 , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin"
         //
         };
@@ -146,8 +160,15 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         TabularType tabularType = new TabularType("DataSourceStat", "DataSourceStat", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
-        for (DataSourceProxyImpl dataSource : dataSources.values()) {
+        {
+            final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
+            for (DataSourceProxyImpl dataSource : dataSources.values()) {
+                data.put(dataSource.getCompositeData());
+            }
+        }
+
+        final Set<DruidDataSource> dataSources = DruidDataSource.getInstances();
+        for (DruidDataSource dataSource : dataSources) {
             data.put(dataSource.getCompositeData());
         }
 

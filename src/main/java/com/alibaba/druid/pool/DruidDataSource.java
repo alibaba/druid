@@ -15,34 +15,48 @@
  */
 package com.alibaba.druid.pool;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.management.JMException;
+import javax.management.openmbean.CompositeDataSupport;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, Referenceable {
+
+    private static final Object                                                  PRESENT                     = new Object();
+    private static final IdentityHashMap<DruidDataSource, Object>                instances                   = new IdentityHashMap<DruidDataSource, Object>();
 
     private static final long                                                    serialVersionUID            = 1L;
 
@@ -74,10 +88,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections           = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
-    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(
-                                                                                                                                  2);
+    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(2);
+
+    private long                                                                 id;
+    private Date                                                                 createdTime;
 
     public DruidDataSource(){
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
     private void init() throws SQLException {
@@ -91,6 +111,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (inited) {
                 return;
             }
+
+            this.id = DruidDriver.createDataSourceId();
 
             if (maxActive <= 0) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
@@ -174,6 +196,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (count == 0) {
                 lowWater.signal();
             }
+
+            createdTime = new Date();
+            instances.put(this, PRESENT);
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } finally {
@@ -200,8 +225,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (lock.getQueueLength() > maxWaitThreadCount) {
-                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
-                                       + lock.getQueueLength());
+                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count " + lock.getQueueLength());
             }
         }
 
@@ -249,9 +273,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (activeConnectionTraceEnable) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection,
-                                      new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
-                                                                    stackTrace));
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
         } catch (InterruptedException e) {
             connectErrorCount++;
@@ -265,16 +287,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return poolalbeConnection;
     }
 
-
     /**
      * 回收连接
      */
     protected void recycle(PoolableConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
         ConnectionHolder holder = pooledConnection.getConnectionHolder();
-        
+
         assert holder != null;
-        
+
         try {
             if (activeConnectionTraceEnable) {
                 activeConnections.remove(pooledConnection);
@@ -378,6 +399,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             count = 0;
+            instances.remove(this);
         } finally {
             lock.unlock();
         }
@@ -705,4 +727,218 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return names;
     }
 
+    public static Set<DruidDataSource> getInstances() {
+        return instances.keySet();
+    }
+
+    public long getID() {
+        return this.id;
+    }
+    
+    private int getRawDriverMajorVersion() {
+        int version = -1;
+        if (this.driver != null) {
+            version = driver.getMajorVersion();
+        }
+        return version;
+    }
+    
+    private int getRawDriverMinorVersion() {
+        int version = -1;
+        if (this.driver != null) {
+            version = driver.getMinorVersion();
+        }
+        return version;
+    }
+    
+    private String getProperties() {
+        if (this.connectionProperties == null) {
+            return null;
+        }
+
+        return connectionProperties.toString();
+    }
+    
+    public String[] getFilterClasses() {
+        List<Filter> filterConfigList = getFilters();
+
+        List<String> classes = new ArrayList<String>();
+        for (Filter filter : filterConfigList) {
+            classes.add(filter.getClass().getName());
+        }
+
+        return classes.toArray(new String[classes.size()]);
+    }
+
+    public CompositeDataSupport getCompositeData() throws JMException {
+        StatFilter statFilter = null;
+        JdbcDataSourceStat stat = null;
+        for (Filter filter : this.getFilters()) {
+            if (filter instanceof StatFilter) {
+                statFilter = (StatFilter) filter;
+            }
+        }
+        if (statFilter != null) {
+            stat = statFilter.getDataSourceStat();
+        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("ID", id);
+        map.put("URL", this.getUrl());
+        map.put("Name", this.getName());
+        map.put("FilterClasses", getFilterClasses());
+        map.put("CreatedTime", getCreatedTime());
+
+        map.put("RawDriverClassName", getDriverClassName());
+        map.put("RawUrl", getUrl());
+        map.put("RawDriverMajorVersion", getRawDriverMajorVersion());
+        map.put("RawDriverMinorVersion", getRawDriverMinorVersion());
+        map.put("Properties", getProperties());
+
+        if (stat != null) {
+            map.put("ConnectionActiveCount", stat.getConnectionActiveCount());
+            map.put("ConnectionActiveCountMax", stat.getConnectionStat().getActiveMax());
+            map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
+            map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
+            map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
+
+            map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
+            map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getConnectErrorCount());
+            Throwable lastConnectionConnectError = stat.getConnectionStat().getConnectErrorLast();
+            if (lastConnectionConnectError != null) {
+                map.put("ConnectionConnectErrorLastTime", stat.getConnectionStat().getErrorLastTime());
+                map.put("ConnectionConnectErrorLastMessage", lastConnectionConnectError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastConnectionConnectError.printStackTrace(new PrintWriter(buf));
+                map.put("ConnectionConnectErrorLastStackTrace", buf.toString());
+            } else {
+                map.put("ConnectionConnectErrorLastTime", null);
+                map.put("ConnectionConnectErrorLastMessage", null);
+                map.put("ConnectionConnectErrorLastStackTrace", null);
+            }
+
+            map.put("StatementCreateCount", stat.getStatementStat().getCreateCount());
+            map.put("StatementPrepareCount", stat.getStatementStat().getPrepareCount());
+            map.put("StatementPreCallCount", stat.getStatementStat().getPrepareCallCount());
+            map.put("StatementExecuteCount", stat.getStatementStat().getExecuteCount());
+            map.put("StatementRunningCount", stat.getStatementStat().getRunningCount());
+
+            map.put("StatementConcurrentMax", stat.getStatementStat().getConcurrentMax());
+            map.put("StatementCloseCount", stat.getStatementStat().getCloseCount());
+            map.put("StatementErrorCount", stat.getStatementStat().getErrorCount());
+            Throwable lastStatementError = stat.getStatementStat().getLastException();
+            if (lastStatementError != null) {
+                map.put("StatementLastErrorTime", stat.getStatementStat().getLastErrorTime());
+                map.put("StatementLastErrorMessage", lastStatementError.getMessage());
+
+                StringWriter buf = new StringWriter();
+                lastStatementError.printStackTrace(new PrintWriter(buf));
+                map.put("StatementLastErrorStackTrace", buf.toString());
+            } else {
+                map.put("StatementLastErrorTime", null);
+                map.put("StatementLastErrorMessage", null);
+
+                map.put("StatementLastErrorStackTrace", null);
+            }
+            map.put("StatementExecuteMillis", stat.getStatementStat().getMillisTotal());
+            map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
+            map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
+            map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
+
+            map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
+            map.put("ResultSetOpenningCount", stat.getResultSetStat().getOpenningCount());
+            map.put("ResultSetOpenningMax", stat.getResultSetStat().getOpenningMax());
+            map.put("ResultSetFetchRowCount", stat.getResultSetStat().getFetchRowCount());
+            map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
+
+            map.put("ResultSetErrorCount", stat.getResultSetStat().getErrorCount());
+            map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getAliveMillisTotal());
+            map.put("ResultSetLastErrorTime", stat.getResultSetStat().getLastErrorTime());
+            Throwable lastResultSetError = stat.getResultSetStat().getLastError();
+            if (lastResultSetError != null) {
+                map.put("ResultSetLastErrorMessage", lastResultSetError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastResultSetError.printStackTrace(new PrintWriter(buf));
+                map.put("ResultSetLastErrorStackTrace", buf.toString());
+            } else {
+                map.put("ResultSetLastErrorMessage", null);
+                map.put("ResultSetLastErrorStackTrace", null);
+            }
+
+            map.put("ConnectionConnectCount", stat.getConnectionStat().getConnectCount());
+            Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
+            if (lastConnectionError != null) {
+                map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
+                StringWriter buf = new StringWriter();
+                lastConnectionError.printStackTrace(new PrintWriter(buf));
+                map.put("ConnectionErrorLastStackTrace", buf.toString());
+            } else {
+                map.put("ConnectionErrorLastMessage", null);
+                map.put("ConnectionErrorLastStackTrace", null);
+            }
+            map.put("ConnectionConnectMillisTotal", stat.getConnectionStat().getConnectMillis());
+            map.put("ConnectionConnectingCountMax", stat.getConnectionStat().getConnectingMax());
+
+            map.put("ConnectionConnectMillisMax", stat.getConnectionStat().getConnectMillisMax());
+            map.put("ConnectionErrorLastTime", stat.getConnectionStat().getErrorLastTime());
+            map.put("ConnectionAliveMillisMax", stat.getConnectionStat().getAliveMillisMax());
+            map.put("ConnectionAliveMillisMin", stat.getConnectionStat().getAliveMillisMin());
+        } else {
+            map.put("ConnectionActiveCount", null);
+            map.put("ConnectionActiveCountMax", null);
+            map.put("ConnectionCloseCount", null);
+            map.put("ConnectionCommitCount", null);
+            map.put("ConnectionRollbackCount", null);
+
+            map.put("ConnectionConnectLastTime", null);
+            map.put("ConnectionConnectErrorCount", null);
+            map.put("ConnectionConnectErrorLastTime", null);
+            map.put("ConnectionConnectErrorLastMessage", null);
+            map.put("ConnectionConnectErrorLastStackTrace", null);
+
+            map.put("StatementCreateCount", null);
+            map.put("StatementPrepareCount", null);
+            map.put("StatementPreCallCount", null);
+            map.put("StatementExecuteCount", null);
+            map.put("StatementRunningCount", null);
+
+            map.put("StatementConcurrentMax", null);
+            map.put("StatementCloseCount", null);
+            map.put("StatementErrorCount", null);
+            map.put("StatementLastErrorTime", null);
+            map.put("StatementLastErrorMessage", null);
+
+            map.put("StatementLastErrorStackTrace", null);
+            map.put("StatementExecuteMillis", null);
+            map.put("ConnectionConnectingCount", null);
+            map.put("StatementExecuteLastTime", null);
+            map.put("ResultSetCloseCount", null);
+
+            map.put("ResultSetOpenCount", null);
+            map.put("ResultSetOpenningCount", null);
+            map.put("ResultSetOpenningMax", null);
+            map.put("ResultSetFetchRowCount", null);
+            map.put("ResultSetLastOpenTime", null);
+
+            map.put("ResultSetLastErrorCount", null);
+            map.put("ResultSetOpenningMillisTotal", null);
+            map.put("ResultSetLastErrorTime", null);
+            map.put("ResultSetLastErrorMessage", null);
+            map.put("ResultSetLastErrorStackTrace", null);
+
+            map.put("ConnectionConnectCount", null);
+            map.put("ConnectionErrorLastMessage", null);
+            map.put("ConnectionErrorLastStackTrace", null);
+            map.put("ConnectionConnectMillisTotal", null);
+            map.put("ConnectionConnectingCountMax", null);
+
+            map.put("ConnectionConnectMillisMax", null);
+            map.put("ConnectionErrorLastTime", null);
+            map.put("ConnectionAliveMillisMax", null);
+            map.put("ConnectionAliveMillisMin", null);
+        }
+
+        return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
+    }
 }
