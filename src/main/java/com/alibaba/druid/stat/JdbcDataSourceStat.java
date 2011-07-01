@@ -162,11 +162,11 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return aliveNanoSpan / (1000 * 1000);
     }
-    
+
     public long getConnectionConnectAliveMillisMax() {
-        long nowNano = System.nanoTime();
         long max = this.getConnectionStat().getAliveNanoMax();
 
+        long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
             if (connectionAliveNano > max) {
@@ -175,11 +175,11 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return max / (1000 * 1000);
     }
-    
+
     public long getConnectionConnectAliveMillisMin() {
-        long nowNano = System.nanoTime();
         long min = this.getConnectionStat().getAliveNanoMin();
 
+        long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
             if (connectionAliveNano < min || min == 0) {
@@ -188,4 +188,220 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return min / (1000 * 1000);
     }
+
+    final static long SECOND = 1000 * 1000 * 1000;
+    final static long MINUTE = SECOND * 60;
+    final static long HOUR   = MINUTE * 60;
+    final static long DAY    = HOUR * 24;
+
+    public long getConnectionCount_Alive_0_1_Seconds() {
+        long count = this.getConnectionStat().getCount_Alive_0_1_Seconds();
+
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano < SECOND) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_1_5_Seconds() {
+        long count = this.getConnectionStat().getCount_Alive_1_5_Seconds();
+
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= SECOND && connectionAliveNano < 5 * SECOND) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_5_10_Seconds() {
+        long count = this.getConnectionStat().getCount_Alive_5_10_Seconds();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 5 * SECOND && connectionAliveNano < 10 * SECOND) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_10_30_Seconds() {
+        long count = this.getConnectionStat().getCount_Alive_10_30_Seconds();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 10 * SECOND && connectionAliveNano < 30 * SECOND) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_30_60_Seconds() {
+        long count = this.getConnectionStat().getCount_Alive_30_60_Seconds();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 30 * SECOND && connectionAliveNano < 60 * SECOND) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_1_5_Minutes() {
+        long count = this.getConnectionStat().getCount_Alive_1_5_Minutes();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 1 * MINUTE && connectionAliveNano < 5 * MINUTE) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_5_10_Minutes() {
+        long count = this.getConnectionStat().getCount_Alive_5_10_Minutes();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 5 * MINUTE && connectionAliveNano < 10 * MINUTE) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_10_30_Minutes() {
+        long count = this.getConnectionStat().getCount_Alive_10_30_Minutes();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 10 * MINUTE && connectionAliveNano < 30 * MINUTE) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_30_60_Minutes() {
+        long count = this.getConnectionStat().getCount_Alive_30_60_Minutes();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 30 * MINUTE && connectionAliveNano < 60 * MINUTE) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_1_3_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_1_3_Hours();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 1 * HOUR && connectionAliveNano < 3 * HOUR) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_3_6_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_3_6_Hours();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 3 * HOUR && connectionAliveNano < 6 * HOUR) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_6_12_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_6_12_Hours();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 6 * HOUR && connectionAliveNano < 12 * HOUR) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_12_24_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_12_24_Hours();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 12 * HOUR && connectionAliveNano < 24 * HOUR) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_1_3_Day() {
+        long count = this.getConnectionStat().getCount_Alive_1_3_Day();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 1 * DAY && connectionAliveNano < 2 * DAY) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
+    public long getConnectionCount_Alive_3_more_Day() {
+        long count = this.getConnectionStat().getCount_Alive_3_more_Day();
+        
+        long nowNano = System.nanoTime();
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano >= 2 * DAY) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+    
 }

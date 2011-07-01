@@ -116,33 +116,29 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
                 , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG
+                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG //
+                //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+        //
         //
         };
 
-        String[] indexNames = { "ID", "URL", "Name",
-                "FilterClasses",
-                "CreatedTime", //
-                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion",
-                "RawDriverMinorVersion",
-                "Properties" //
-                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount",
-                "ConnectionCommitCount",
-                "ConnectionRollbackCount" //
-                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime",
-                "ConnectionConnectErrorLastMessage",
-                "ConnectionConnectErrorLastStackTrace" //
-                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount",
-                "StatementRunningCount" //
-                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime",
-                "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime",
-                "ResultSetCloseCount" //
-                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount",
-                "ResultSetLastOpenTime" //
-                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace",
-                "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
-                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin"
+        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
+                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
+                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
+                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
+                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
+                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
+                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
+                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace", "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
+                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin" //
+                //
+                , "ConnectionCount_Alive_0_1_Seconds", "ConnectionCount_Alive_1_5_Seconds", "ConnectionCount_Alive_5_10_Seconds", "ConnectionCount_Alive_10_30_Seconds", "ConnectionCount_Alive_30_60_Seconds" //
+                , "ConnectionCount_Alive_1_5_Minutes", "ConnectionCount_Alive_5_10_Minutes", "ConnectionCount_Alive_10_30_Minutes", "ConnectionCount_Alive_30_60_Minutes", "ConnectionCount_Alive_1_3_Hours" //
+                , "ConnectionCount_Alive_3_6_Hours", "ConnectionCount_Alive_6_12_Hours", "ConnectionCount_Alive_12_24_Hours", "ConnectionCount_Alive_1_3_Day", "ConnectionCount_Alive_3_more_Day" //
         //
         };
 

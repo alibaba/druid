@@ -36,32 +36,50 @@ import com.alibaba.druid.util.JMXUtils;
  */
 public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
-    private final AtomicInteger activeCount   = new AtomicInteger();
-    private final AtomicInteger activeCountMax   = new AtomicInteger();
-    
-    private final AtomicInteger connectingCount   = new AtomicInteger();
-    private final AtomicInteger connectingMax     = new AtomicInteger();
+    private final AtomicInteger activeCount               = new AtomicInteger();
+    private final AtomicInteger activeCountMax            = new AtomicInteger();
 
-    private final AtomicLong    connectCount      = new AtomicLong();
-    private final AtomicLong    connectErrorCount = new AtomicLong();
+    private final AtomicInteger connectingCount           = new AtomicInteger();
+    private final AtomicInteger connectingMax             = new AtomicInteger();
+
+    private final AtomicLong    connectCount              = new AtomicLong();
+    private final AtomicLong    connectErrorCount         = new AtomicLong();
     private Throwable           connectErrorLast;
-    private final AtomicLong    connectNanoTotal   = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
-    private final AtomicLong    connectNanoMax   = new AtomicLong(0);  // 连接建立消耗最大时间（纳秒）
+    private final AtomicLong    connectNanoTotal          = new AtomicLong(0);  // 连接建立消耗时间总和（纳秒）
+    private final AtomicLong    connectNanoMax            = new AtomicLong(0);  // 连接建立消耗最大时间（纳秒）
 
-    private final AtomicLong    errorCount        = new AtomicLong();
+    private final AtomicLong    errorCount                = new AtomicLong();
 
-    private final AtomicLong    aliveNanoTotal         = new AtomicLong();
+    private final AtomicLong    aliveNanoTotal            = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
-    private long                connectLastTime   = 0;
+    private long                connectLastTime           = 0;
 
-    private final AtomicLong    closeCount        = new AtomicLong(0);  // 执行Connection.close的计数
-    private final AtomicLong    commitCount       = new AtomicLong(0);  // 执行commit的计数
-    private final AtomicLong    rollbackCount     = new AtomicLong(0);  // 执行rollback的计数
-    
-    private final AtomicLong aliveNanoMin     = new AtomicLong();
-    private final AtomicLong aliveNanoMax     = new AtomicLong();
+    private final AtomicLong    closeCount                = new AtomicLong(0);  // 执行Connection.close的计数
+    private final AtomicLong    commitCount               = new AtomicLong(0);  // 执行commit的计数
+    private final AtomicLong    rollbackCount             = new AtomicLong(0);  // 执行rollback的计数
+
+    private final AtomicLong    aliveNanoMin              = new AtomicLong();
+    private final AtomicLong    aliveNanoMax              = new AtomicLong();
+
+    private final AtomicLong    count_Alive_0_1_Seconds   = new AtomicLong();
+    private final AtomicLong    count_Alive_1_5_Seconds   = new AtomicLong();
+    private final AtomicLong    count_Alive_5_10_Seconds  = new AtomicLong();
+    private final AtomicLong    count_Alive_10_30_Seconds = new AtomicLong();
+    private final AtomicLong    count_Alive_30_60_Seconds = new AtomicLong();
+
+    private final AtomicLong    count_Alive_1_5_Minutes   = new AtomicLong();
+    private final AtomicLong    count_Alive_5_10_Minutes  = new AtomicLong();
+    private final AtomicLong    count_Alive_10_30_Minutes = new AtomicLong();
+    private final AtomicLong    count_Alive_30_60_Minutes = new AtomicLong();
+    private final AtomicLong    count_Alive_1_3_Hours     = new AtomicLong();
+
+    private final AtomicLong    count_Alive_3_6_Hours     = new AtomicLong();
+    private final AtomicLong    count_Alive_6_12_Hours    = new AtomicLong();
+    private final AtomicLong    count_Alive_12_24_Hours   = new AtomicLong();
+    private final AtomicLong    count_Alive_1_3_Day       = new AtomicLong();
+    private final AtomicLong    count_Alive_3_more_Day    = new AtomicLong();
 
     public void reset() {
         connectingMax.set(0);
@@ -80,6 +98,24 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         rollbackCount.set(0);
         connectNanoTotal.set(0);
         connectNanoMax.set(0);
+
+        count_Alive_0_1_Seconds.set(0);
+        count_Alive_1_5_Seconds.set(0);
+        count_Alive_5_10_Seconds.set(0);
+        count_Alive_10_30_Seconds.set(0);
+        count_Alive_30_60_Seconds.set(0);
+
+        count_Alive_1_5_Minutes.set(0);
+        count_Alive_5_10_Minutes.set(0);
+        count_Alive_10_30_Minutes.set(0);
+        count_Alive_30_60_Minutes.set(0);
+        count_Alive_1_3_Hours.set(0);
+
+        count_Alive_3_6_Hours.set(0);
+        count_Alive_6_12_Hours.set(0);
+        count_Alive_12_24_Hours.set(0);
+        count_Alive_1_3_Day.set(0);
+        count_Alive_3_more_Day.set(0);
     }
 
     public void beforeConnect() {
@@ -101,12 +137,12 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         connectCount.incrementAndGet();
         connectLastTime = System.currentTimeMillis();
     }
-    
+
     public void afterConnected(long delta) {
         connectingCount.decrementAndGet();
         connectNanoTotal.addAndGet(delta);
         for (;;) {
-            //connectNanoMax
+            // connectNanoMax
             long max = connectNanoMax.get();
             if (delta > max) {
                 if (connectNanoMax.compareAndSet(max, delta)) {
@@ -118,14 +154,14 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
                 break;
             }
         }
-        
+
         activeCount.incrementAndGet();
     }
-    
+
     public long getConnectNanoMax() {
         return this.connectNanoMax.get();
     }
-    
+
     public long getConnectMillisMax() {
         return this.connectNanoMax.get() / (1000 * 1000);
     }
@@ -146,11 +182,11 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             }
         }
     }
-    
+
     public int getActiveCount() {
         return activeCount.get();
     }
-    
+
     public int getAtiveCountMax() {
         return this.activeCount.get();
     }
@@ -170,19 +206,19 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     public long getAliveTotal() {
         return aliveNanoTotal.get();
     }
-    
+
     public long getAliveNanoMin() {
         return aliveNanoMin.get();
     }
-    
+
     public long getAliveMillisMin() {
         return aliveNanoMin.get() / (1000 * 1000);
     }
-    
+
     public long getAliveNanoMax() {
         return aliveNanoMax.get();
     }
-    
+
     public long getAliveMillisMax() {
         return aliveNanoMax.get() / (1000 * 1000);
     }
@@ -190,7 +226,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     public void afterClose(long aliveNano) {
         activeCount.decrementAndGet();
         aliveNanoTotal.addAndGet(aliveNano);
-        
+
         for (;;) {
             long max = aliveNanoMax.get();
             if (aliveNano > max) {
@@ -203,7 +239,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
                 break;
             }
         }
-        
+
         for (;;) {
             long min = aliveNanoMin.get();
             if (min == 0 || aliveNano < min) {
@@ -216,7 +252,45 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
                 break;
             }
         }
-        //holdTimeMin
+
+        final long SECOND = 1000 * 1000 * 1000;
+        final long MINUTE = SECOND * 60;
+        final long HOUR = MINUTE * 60;
+        final long DAY = HOUR * 24;
+        if (aliveNano < 1 * SECOND) {
+            count_Alive_0_1_Seconds.incrementAndGet();
+        } else if (aliveNano < 5 * SECOND) {
+            count_Alive_1_5_Seconds.incrementAndGet();
+        } else if (aliveNano < 10 * SECOND) {
+            count_Alive_5_10_Seconds.incrementAndGet();
+        } else if (aliveNano < 30 * SECOND) {
+            count_Alive_10_30_Seconds.incrementAndGet();
+        } else if (aliveNano < 60 * SECOND) {
+            count_Alive_30_60_Seconds.incrementAndGet();
+
+        } else if (aliveNano < 5 * MINUTE) {
+            count_Alive_1_5_Minutes.incrementAndGet();
+        } else if (aliveNano < 10 * MINUTE) {
+            count_Alive_5_10_Minutes.incrementAndGet();
+        } else if (aliveNano < 30 * MINUTE) {
+            count_Alive_10_30_Minutes.incrementAndGet();
+        } else if (aliveNano < 60 * MINUTE) {
+            count_Alive_30_60_Minutes.incrementAndGet();
+        } else if (aliveNano < 3 * HOUR) {
+            count_Alive_1_3_Hours.incrementAndGet();
+
+        } else if (aliveNano < 6 * HOUR) {
+            count_Alive_3_6_Hours.incrementAndGet();
+        } else if (aliveNano < 12 * HOUR) {
+            count_Alive_6_12_Hours.incrementAndGet();
+        } else if (aliveNano < 24 * HOUR) {
+            count_Alive_12_24_Hours.incrementAndGet();
+        } else if (aliveNano < 3 * DAY) {
+            count_Alive_1_3_Day.incrementAndGet();
+        } else {
+            count_Alive_3_more_Day.incrementAndGet();
+        }
+
     }
 
     public Throwable getErrorLast() {
@@ -293,8 +367,6 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
         return new Date(connectLastTime);
     }
-
-
 
     public void incrementConnectionCloseCount() {
         closeCount.incrementAndGet();
@@ -476,5 +548,65 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         Date getLastErrorTime();
 
         void reset();
+    }
+
+    public long getCount_Alive_0_1_Seconds() {
+        return count_Alive_0_1_Seconds.get();
+    }
+
+    public long getCount_Alive_1_5_Seconds() {
+        return count_Alive_1_5_Seconds.get();
+    }
+
+    public long getCount_Alive_5_10_Seconds() {
+        return count_Alive_5_10_Seconds.get();
+    }
+
+    public long getCount_Alive_10_30_Seconds() {
+        return count_Alive_10_30_Seconds.get();
+    }
+
+    public long getCount_Alive_30_60_Seconds() {
+        return count_Alive_30_60_Seconds.get();
+    }
+
+    public long getCount_Alive_1_5_Minutes() {
+        return count_Alive_1_5_Minutes.get();
+    }
+
+    public long getCount_Alive_5_10_Minutes() {
+        return count_Alive_5_10_Minutes.get();
+    }
+
+    public long getCount_Alive_10_30_Minutes() {
+        return count_Alive_10_30_Minutes.get();
+    }
+
+    public long getCount_Alive_30_60_Minutes() {
+        return count_Alive_30_60_Minutes.get();
+    }
+
+    public long getCount_Alive_1_3_Hours() {
+        return count_Alive_1_3_Hours.get();
+    }
+
+    public long getCount_Alive_3_6_Hours() {
+        return count_Alive_3_6_Hours.get();
+    }
+
+    public long getCount_Alive_6_12_Hours() {
+        return count_Alive_6_12_Hours.get();
+    }
+
+    public long getCount_Alive_12_24_Hours() {
+        return count_Alive_12_24_Hours.get();
+    }
+
+    public long getCount_Alive_1_3_Day() {
+        return count_Alive_1_3_Day.get();
+    }
+
+    public long getCount_Alive_3_more_Day() {
+        return count_Alive_3_more_Day.get();
     }
 }
