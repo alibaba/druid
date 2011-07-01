@@ -288,8 +288,8 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             
             map.put("ConnectionConnectMillisMax", stat.getConnectionStat().getConnectMillisMax());
             map.put("ConnectionErrorLastTime", stat.getConnectionStat().getErrorLastTime());
-            map.put("ConnectionAliveMillisMax", stat.getConnectionStat().getAliveMillisMax());
-            map.put("ConnectionAliveMillisMin", stat.getConnectionStat().getAliveMillisMin());
+            map.put("ConnectionAliveMillisMax", stat.getConnectionConnectAliveMillisMax());
+            map.put("ConnectionAliveMillisMin", stat.getConnectionConnectAliveMillisMin());
         } else {
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);

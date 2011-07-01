@@ -162,4 +162,30 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         }
         return aliveNanoSpan / (1000 * 1000);
     }
+    
+    public long getConnectionConnectAliveMillisMax() {
+        long nowNano = System.nanoTime();
+        long max = this.getConnectionStat().getAliveNanoMax();
+
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano > max) {
+                max = connectionAliveNano;
+            }
+        }
+        return max / (1000 * 1000);
+    }
+    
+    public long getConnectionConnectAliveMillisMin() {
+        long nowNano = System.nanoTime();
+        long min = this.getConnectionStat().getAliveNanoMin();
+
+        for (JdbcConnectionStat.Entry connection : connections.values()) {
+            long connectionAliveNano = nowNano - connection.getEstablishNano();
+            if (connectionAliveNano < min || min == 0) {
+                min = connectionAliveNano;
+            }
+        }
+        return min / (1000 * 1000);
+    }
 }
