@@ -321,11 +321,17 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("StatementExecuteCount_200_500_Millis", stat.getStatementStat().getCount_200_500_Millis());
             map.put("StatementExecuteCount_500_1000_Millis", stat.getStatementStat().getCount_500_1000_Millis());
             
-            map.put("StatementExecuteCount_1000_2000_Millis", stat.getStatementStat().getCount_1000_2000_Millis());
-            map.put("StatementExecuteCount_2000_5000_Millis", stat.getStatementStat().getCount_2000_5000_Millis());
-            map.put("StatementExecuteCount_5000_10000_Millis", stat.getStatementStat().getCount_5000_10000_Millis());
-            map.put("StatementExecuteCount_10000_20000_Millis", stat.getStatementStat().getCount_10000_20000_Millis());
-            map.put("StatementExecuteCount_20000_more_Millis", stat.getStatementStat().getCount_20000_more_Millis());
+            map.put("StatementExecuteCount_1_2_Seconds", stat.getStatementStat().getCount_1_2_Seconds());
+            map.put("StatementExecuteCount_2_5_Seconds", stat.getStatementStat().getCount_2_5_Seconds());
+            map.put("StatementExecuteCount_5_10_Seconds", stat.getStatementStat().getCount_5_10_Seconds());
+            map.put("StatementExecuteCount_10_30_Seconds", stat.getStatementStat().getCount_10_30_Seconds());
+            map.put("StatementExecuteCount_30_60_Seconds", stat.getStatementStat().getCount_30_60_Seconds());
+            
+            map.put("StatementExecuteCount_1_2_Minutes", stat.getStatementStat().getCount_1_2_minutes());
+            map.put("StatementExecuteCount_2_5_Minutes", stat.getStatementStat().getCount_2_5_minutes());
+            map.put("StatementExecuteCount_5_10_Minutes", stat.getStatementStat().getCount_5_10_minutes());
+            map.put("StatementExecuteCount_10_30_Minutes", stat.getStatementStat().getCount_10_30_minutes());
+            map.put("StatementExecuteCount_30_more_Minutes", stat.getStatementStat().getCount_30_more_minutes());
         } else {
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);
@@ -411,11 +417,17 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("StatementExecuteCount_200_500_Millis", null);
             map.put("StatementExecuteCount_500_1000_Millis", null);
             
-            map.put("StatementExecuteCount_1000_2000_Millis", null);
-            map.put("StatementExecuteCount_2000_5000_Millis", null);
-            map.put("StatementExecuteCount_5000_10000_Millis", null);
-            map.put("StatementExecuteCount_10000_20000_Millis", null);
-            map.put("StatementExecuteCount_20000_more_Millis", null);
+            map.put("StatementExecuteCount_1_2_Seconds", null);
+            map.put("StatementExecuteCount_2_5_Seconds", null);
+            map.put("StatementExecuteCount_5_10_Seconds", null);
+            map.put("StatementExecuteCount_10_30_Seconds", null);
+            map.put("StatementExecuteCount_30_60_Seconds", null);
+            
+            map.put("StatementExecuteCount_1_2_Minutes", null);
+            map.put("StatementExecuteCount_2_5_Minutes", null);
+            map.put("StatementExecuteCount_5_10_Minutes", null);
+            map.put("StatementExecuteCount_10_30_Minutes", null);
+            map.put("StatementExecuteCount_30_more_Minutes", null);
         }
 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);

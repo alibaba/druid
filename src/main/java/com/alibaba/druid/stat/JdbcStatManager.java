@@ -125,6 +125,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
         //
         //
         };
@@ -146,7 +147,8 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 //
                 , "StatementExecuteCount_0_1_Millis", "StatementExecuteCount_1_2_Millis", "StatementExecuteCount_2_5_Millis", "StatementExecuteCount_5_10_Millis", "StatementExecuteCount_10_20_Millis"
                 , "StatementExecuteCount_20_50_Millis", "StatementExecuteCount_50_100_Millis", "StatementExecuteCount_100_200_Millis", "StatementExecuteCount_200_500_Millis", "StatementExecuteCount_500_1000_Millis" 
-                , "StatementExecuteCount_1000_2000_Millis", "StatementExecuteCount_2000_5000_Millis", "StatementExecuteCount_5000_10000_Millis", "StatementExecuteCount_10000_20000_Millis", "StatementExecuteCount_20000_more_Millis"
+                , "StatementExecuteCount_1_2_Seconds", "StatementExecuteCount_2_5_Seconds", "StatementExecuteCount_5_10_Seconds", "StatementExecuteCount_10_30_Seconds", "StatementExecuteCount_30_60_Seconds"
+                , "StatementExecuteCount_1_2_Minutes", "StatementExecuteCount_2_5_Minutes", "StatementExecuteCount_5_10_Minutes", "StatementExecuteCount_10_30_Minutes", "StatementExecuteCount_30_more_Minutes"
         //
         };
 

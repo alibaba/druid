@@ -42,8 +42,12 @@ public class TestOracle extends TestCase {
         stmt.close();
         conn.close();
         
-        TabularData dataSourcesList = JdbcStatManager.getInstance().getDataSourceList();
-        for (Object item : dataSourcesList.values()) {
+        for (Object item : JdbcStatManager.getInstance().getDataSourceList().values()) {
+            String text = JSON.toJSONString(item, SerializerFeature.UseISO8601DateFormat);
+            System.out.println(JSON.toJSONString(JSON.parseObject(text, TreeMap.class), true));
+        }
+        
+        for (Object item : JdbcStatManager.getInstance().getSqlList().values()) {
             String text = JSON.toJSONString(item, SerializerFeature.UseISO8601DateFormat);
             System.out.println(JSON.toJSONString(JSON.parseObject(text, TreeMap.class), true));
         }
