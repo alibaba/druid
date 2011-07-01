@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
@@ -20,31 +21,57 @@ public class TestOracle_DruidDataSource extends TestCase {
 
     public void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@20.20.149.85:1521:ocnauto"; // error url
         user = "alibaba";
         password = "ccbuauto";
     }
 
     public void test_0() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource();
+        final String SQL = "SELECT SYSDATE FROM DUAL";
+        final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setFilters("stat");
         dataSource.setExceptionSoter(OracleExceptionSorter.class.getName());
 
-        Connection conn = dataSource.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
-        rs.next();
-        rs.close();
-        stmt.close();
-        conn.close();
+        final int COUNT = 100;
+        final int THREAD_COUNT = 1000;
+        final CountDownLatch startLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
         
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            Thread thread = new Thread() {
+
+                public void run() {
+                    try {
+                        startLatch.await();
+                        for (int i = 0; i < COUNT; ++i) {
+                            Connection conn = dataSource.getConnection();
+                            Statement stmt = conn.createStatement();
+                            ResultSet rs = stmt.executeQuery(SQL);
+                            rs.next();
+                            rs.close();
+                            stmt.close();
+                            conn.close();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        endLatch.countDown();
+                    }
+                }
+            };
+            thread.start();
+        }
+        startLatch.countDown();
+        endLatch.await();
+
         for (Object item : JdbcStatManager.getInstance().getDataSourceList().values()) {
             String text = JSON.toJSONString(item, SerializerFeature.UseISO8601DateFormat);
             System.out.println(JSON.toJSONString(JSON.parseObject(text, TreeMap.class), true));
         }
-        
+
         for (Object item : JdbcStatManager.getInstance().getSqlList().values()) {
             String text = JSON.toJSONString(item, SerializerFeature.UseISO8601DateFormat);
             System.out.println(JSON.toJSONString(JSON.parseObject(text, TreeMap.class), true));
