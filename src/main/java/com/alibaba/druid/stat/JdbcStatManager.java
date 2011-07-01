@@ -121,6 +121,10 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
         //
         //
         };
@@ -139,6 +143,10 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , "ConnectionCount_Alive_0_1_Seconds", "ConnectionCount_Alive_1_5_Seconds", "ConnectionCount_Alive_5_10_Seconds", "ConnectionCount_Alive_10_30_Seconds", "ConnectionCount_Alive_30_60_Seconds" //
                 , "ConnectionCount_Alive_1_5_Minutes", "ConnectionCount_Alive_5_10_Minutes", "ConnectionCount_Alive_10_30_Minutes", "ConnectionCount_Alive_30_60_Minutes", "ConnectionCount_Alive_1_6_Hours" //
                 , "ConnectionCount_Alive_6_24_Hours", "ConnectionCount_Alive_1_7_Day", "ConnectionCount_Alive_7_30_Day", "ConnectionCount_Alive_30_90_Day", "ConnectionCount_Alive_90_more_Day" //
+                //
+                , "StatementExecuteCount_0_1_Millis", "StatementExecuteCount_1_2_Millis", "StatementExecuteCount_2_5_Millis", "StatementExecuteCount_5_10_Millis", "StatementExecuteCount_10_20_Millis"
+                , "StatementExecuteCount_20_50_Millis", "StatementExecuteCount_50_100_Millis", "StatementExecuteCount_100_200_Millis", "StatementExecuteCount_200_500_Millis", "StatementExecuteCount_500_1000_Millis" 
+                , "StatementExecuteCount_1000_2000_Millis", "StatementExecuteCount_2000_5000_Millis", "StatementExecuteCount_5000_10000_Millis", "StatementExecuteCount_10000_20000_Millis", "StatementExecuteCount_20000_more_Millis"
         //
         };
 
