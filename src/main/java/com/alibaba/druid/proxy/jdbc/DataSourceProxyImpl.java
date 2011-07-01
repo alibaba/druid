@@ -28,11 +28,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
-import javax.management.openmbean.ArrayType;
 import javax.management.openmbean.CompositeDataSupport;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.OpenType;
-import javax.management.openmbean.SimpleType;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 
@@ -41,6 +37,7 @@ import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -177,49 +174,6 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         }
 
         return properties.toString();
-    }
-
-    private static CompositeType COMPOSITE_TYPE = null;
-
-    public static CompositeType getCompositeType() throws JMException {
-
-        if (COMPOSITE_TYPE != null) {
-            return COMPOSITE_TYPE;
-        }
-
-        OpenType<?>[] indexTypes = new OpenType<?>[] { //
-        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
-                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
-                , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG
-        //
-        };
-
-        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
-                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
-                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
-                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
-                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
-                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
-                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
-                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
-                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
-                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin"
-        //
-        };
-
-        String[] indexDescriptions = indexNames;
-        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames, indexDescriptions, indexTypes);
-
-        return COMPOSITE_TYPE;
     }
 
     public CompositeDataSupport getCompositeData() throws JMException {
@@ -391,7 +345,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionAliveMillisMin", null);
         }
 
-        return new CompositeDataSupport(getCompositeType(), map);
+        return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
     }
 
     @Override

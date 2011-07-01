@@ -28,6 +28,8 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     private final AtomicLong    errorCount      = new AtomicLong();
 
     private final AtomicLong    aliveNanoTotal       = new AtomicLong();
+    private final AtomicLong    aliveNanoMax       = new AtomicLong();
+    private final AtomicLong    aliveNanoMin       = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
@@ -41,6 +43,8 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         openCount.set(0);
         errorCount.set(0);
         aliveNanoTotal.set(0);
+        aliveNanoMax.set(0);
+        aliveNanoMin.set(0);
         lastError = null;
         lastErrorTime = 0;
         lastOpenTime = 0;
@@ -99,11 +103,45 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     public long getAliveMillisTotal() {
         return aliveNanoTotal.get() / (1000 * 1000);
     }
+    
+    public long getAliveMilisMin() {
+        return aliveNanoMin.get() / (1000 * 1000);
+    }
+    
+    public long getAliveMilisMax() {
+        return aliveNanoMax.get() / (1000 * 1000);
+    }
 
-    public void afterClose(long nanoSpan) {
+    public void afterClose(long aliveNano) {
         openningCount.decrementAndGet();
 
-        aliveNanoTotal.addAndGet(nanoSpan);
+        aliveNanoTotal.addAndGet(aliveNano);
+        
+        for (;;) {
+            long max = aliveNanoMax.get();
+            if (aliveNano > max) {
+                if (aliveNanoMax.compareAndSet(max, aliveNano)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
+        
+        for (;;) {
+            long min = aliveNanoMin.get();
+            if (aliveNano < min) {
+                if (aliveNanoMin.compareAndSet(min, aliveNano)) {
+                    break;
+                } else {
+                    continue;
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     public Throwable getLastError() {

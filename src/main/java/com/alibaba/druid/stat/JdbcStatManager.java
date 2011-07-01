@@ -21,8 +21,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
+import javax.management.openmbean.ArrayType;
 import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.CompositeType;
+import javax.management.openmbean.OpenType;
+import javax.management.openmbean.SimpleType;
 import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
@@ -91,16 +94,59 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
     public JdbcConnectionStat getConnectionstat() {
         return connectionStat;
     }
+    
+    private static CompositeType COMPOSITE_TYPE = null;
+
+    public static CompositeType getDataSourceCompositeType() throws JMException {
+
+        if (COMPOSITE_TYPE != null) {
+            return COMPOSITE_TYPE;
+        }
+
+        OpenType<?>[] indexTypes = new OpenType<?>[] { //
+        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
+                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
+                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.INTEGER //
+                , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
+                , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
+                , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
+                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG
+        //
+        };
+
+        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
+                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
+                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
+                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
+                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
+                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
+                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
+                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace"
+                , "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
+                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin"
+        //
+        };
+
+        String[] indexDescriptions = indexNames;
+        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames, indexDescriptions, indexTypes);
+
+        return COMPOSITE_TYPE;
+    }
 
     @Override
     public TabularData getDataSourceList() throws JMException {
-        CompositeType rowType = DataSourceProxyImpl.getCompositeType();
+        CompositeType rowType = getDataSourceCompositeType();
         String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
 
         TabularType tabularType = new TabularType("DataSourceStat", "DataSourceStat", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getDataSources();
+        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
         for (DataSourceProxyImpl dataSource : dataSources.values()) {
             data.put(dataSource.getCompositeData());
         }
@@ -135,7 +181,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         TabularType tabularType = new TabularType("ConnectionList", "ConnectionList", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getDataSources();
+        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
         for (DataSourceProxyImpl dataSource : dataSources.values()) {
             for (Filter filter : dataSource.getConfig().getFilters()) {
                 if (filter instanceof StatFilter) {
@@ -160,7 +206,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         statementStat.reset();
         resultSetStat.reset();
 
-        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getDataSources();
+        final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
         for (DataSourceProxyImpl dataSource : dataSources.values()) {
             for (Filter filter : dataSource.getConfig().getFilters()) {
                 if (filter instanceof StatFilter) {

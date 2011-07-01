@@ -206,8 +206,8 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         
         for (;;) {
             long min = aliveNanoMin.get();
-            if (aliveNano < min) {
-                if (aliveNanoMax.compareAndSet(min, aliveNano)) {
+            if (min == 0 || aliveNano < min) {
+                if (aliveNanoMin.compareAndSet(min, aliveNano)) {
                     break;
                 } else {
                     continue;

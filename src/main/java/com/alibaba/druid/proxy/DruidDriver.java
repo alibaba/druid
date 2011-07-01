@@ -46,7 +46,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> dataSources              = new ConcurrentHashMap<String, DataSourceProxyImpl>();
+    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources              = new ConcurrentHashMap<String, DataSourceProxyImpl>();
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
 
     public final static String                                      DEFAULT_PREFIX           = "jdbc:wrap-jdbc:";
@@ -128,7 +128,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
      * @throws SQLException
      */
     private DataSourceProxyImpl getDataSource(String url, Properties info) throws SQLException {
-        DataSourceProxyImpl dataSource = dataSources.get(url);
+        DataSourceProxyImpl dataSource = proxyDataSources.get(url);
 
         if (dataSource == null) {
             String restUrl = url.substring(DEFAULT_PREFIX.length());
@@ -193,7 +193,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
             DataSourceProxyImpl newDataSource = new DataSourceProxyImpl(rawDriver, config);
 
-            DataSourceProxy oldDataSource = dataSources.putIfAbsent(url, newDataSource); // 多线程处理需要
+            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); // 多线程处理需要
             if (oldDataSource == null) {
                 // 放进去的线程负责初始化
                 int dataSourceId = createDataSourceId();
@@ -208,7 +208,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 }
             }
 
-            dataSource = dataSources.get(url);
+            dataSource = proxyDataSources.get(url);
         }
         return dataSource;
     }
@@ -264,10 +264,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public String[] getDataSourceUrls() {
-        return dataSources.keySet().toArray(new String[dataSources.size()]);
+        return proxyDataSources.keySet().toArray(new String[proxyDataSources.size()]);
     }
 
-    public static ConcurrentMap<String, DataSourceProxyImpl> getDataSources() {
-        return dataSources;
+    public static ConcurrentMap<String, DataSourceProxyImpl> getProxyDataSources() {
+        return proxyDataSources;
     }
 }
