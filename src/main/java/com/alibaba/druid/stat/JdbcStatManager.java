@@ -137,8 +137,8 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin" //
                 //
                 , "ConnectionCount_Alive_0_1_Seconds", "ConnectionCount_Alive_1_5_Seconds", "ConnectionCount_Alive_5_10_Seconds", "ConnectionCount_Alive_10_30_Seconds", "ConnectionCount_Alive_30_60_Seconds" //
-                , "ConnectionCount_Alive_1_5_Minutes", "ConnectionCount_Alive_5_10_Minutes", "ConnectionCount_Alive_10_30_Minutes", "ConnectionCount_Alive_30_60_Minutes", "ConnectionCount_Alive_1_3_Hours" //
-                , "ConnectionCount_Alive_3_6_Hours", "ConnectionCount_Alive_6_12_Hours", "ConnectionCount_Alive_12_24_Hours", "ConnectionCount_Alive_1_3_Day", "ConnectionCount_Alive_3_more_Day" //
+                , "ConnectionCount_Alive_1_5_Minutes", "ConnectionCount_Alive_5_10_Minutes", "ConnectionCount_Alive_10_30_Minutes", "ConnectionCount_Alive_30_60_Minutes", "ConnectionCount_Alive_1_6_Hours" //
+                , "ConnectionCount_Alive_6_24_Hours", "ConnectionCount_Alive_1_7_Day", "ConnectionCount_Alive_7_30_Day", "ConnectionCount_Alive_30_90_Day", "ConnectionCount_Alive_90_more_Day" //
         //
         };
 

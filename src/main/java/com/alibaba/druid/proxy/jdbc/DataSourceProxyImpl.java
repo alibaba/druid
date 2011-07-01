@@ -301,13 +301,13 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionCount_Alive_5_10_Minutes", stat.getConnectionCount_Alive_5_10_Minutes());
             map.put("ConnectionCount_Alive_10_30_Minutes", stat.getConnectionCount_Alive_10_30_Minutes());
             map.put("ConnectionCount_Alive_30_60_Minutes", stat.getConnectionCount_Alive_30_60_Minutes());
-            map.put("ConnectionCount_Alive_1_3_Hours", stat.getConnectionCount_Alive_1_3_Hours());
+            map.put("ConnectionCount_Alive_1_6_Hours", stat.getConnectionCount_Alive_1_6_Hours());
             
-            map.put("ConnectionCount_Alive_3_6_Hours", stat.getConnectionCount_Alive_3_6_Hours());
-            map.put("ConnectionCount_Alive_6_12_Hours", stat.getConnectionCount_Alive_6_12_Hours());
-            map.put("ConnectionCount_Alive_12_24_Hours", stat.getConnectionCount_Alive_12_24_Hours());
-            map.put("ConnectionCount_Alive_1_3_Day", stat.getConnectionCount_Alive_1_3_Day());
-            map.put("ConnectionCount_Alive_3_more_Day", stat.getConnectionCount_Alive_3_more_Day());
+            map.put("ConnectionCount_Alive_6_24_Hours", stat.getConnectionCount_Alive_6_24_Hours());
+            map.put("ConnectionCount_Alive_1_7_Day", stat.getConnectionCount_Alive_1_7_day());
+            map.put("ConnectionCount_Alive_7_30_Day", stat.getConnectionCount_Alive_7_30_Day());
+            map.put("ConnectionCount_Alive_30_90_Day", stat.getConnectionCount_Alive_30_90_Day());
+            map.put("ConnectionCount_Alive_90_more_Day", stat.getConnectionCount_Alive_90_more_Day());
         } else {
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);
@@ -373,15 +373,13 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionCount_Alive_5_10_Minutes", null);
             map.put("ConnectionCount_Alive_10_30_Minutes", null);
             map.put("ConnectionCount_Alive_30_60_Minutes", null);
-            map.put("ConnectionCount_Alive_1_3_Hours", null);
+            map.put("ConnectionCount_Alive_1_6_Hours", null);
             
-            map.put("ConnectionCount_Alive_3_6_Hours", null);
-            map.put("ConnectionCount_Alive_6_12_Hours", null);
-            map.put("ConnectionCount_Alive_12_24_Hours", null);
-            map.put("ConnectionCount_Alive_1_3_Day", null);
-            map.put("ConnectionCount_Alive_3_more_Day", null);
-            
-            
+            map.put("ConnectionCount_Alive_6_24_Hours", null);
+            map.put("ConnectionCount_Alive_1_7_Day", null);
+            map.put("ConnectionCount_Alive_7_30_Day", null);
+            map.put("ConnectionCount_Alive_30_90_Day", null);
+            map.put("ConnectionCount_Alive_90_more_Day", null);
         }
 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);

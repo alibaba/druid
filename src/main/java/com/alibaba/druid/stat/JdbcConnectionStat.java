@@ -73,13 +73,13 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private final AtomicLong    count_Alive_5_10_Minutes  = new AtomicLong();
     private final AtomicLong    count_Alive_10_30_Minutes = new AtomicLong();
     private final AtomicLong    count_Alive_30_60_Minutes = new AtomicLong();
-    private final AtomicLong    count_Alive_1_3_Hours     = new AtomicLong();
+    private final AtomicLong    count_Alive_1_6_Hours     = new AtomicLong();
 
-    private final AtomicLong    count_Alive_3_6_Hours     = new AtomicLong();
-    private final AtomicLong    count_Alive_6_12_Hours    = new AtomicLong();
-    private final AtomicLong    count_Alive_12_24_Hours   = new AtomicLong();
-    private final AtomicLong    count_Alive_1_3_Day       = new AtomicLong();
-    private final AtomicLong    count_Alive_3_more_Day    = new AtomicLong();
+    private final AtomicLong    count_Alive_6_24_Hours    = new AtomicLong();
+    private final AtomicLong    count_Alive_1_7_Day       = new AtomicLong();
+    private final AtomicLong    count_Alive_7_30_Day      = new AtomicLong();
+    private final AtomicLong    count_Alive_30_90_Day     = new AtomicLong();
+    private final AtomicLong    count_Alive_90_more_Day   = new AtomicLong();
 
     public void reset() {
         connectingMax.set(0);
@@ -109,13 +109,13 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         count_Alive_5_10_Minutes.set(0);
         count_Alive_10_30_Minutes.set(0);
         count_Alive_30_60_Minutes.set(0);
-        count_Alive_1_3_Hours.set(0);
+        count_Alive_1_6_Hours.set(0);
 
-        count_Alive_3_6_Hours.set(0);
-        count_Alive_6_12_Hours.set(0);
-        count_Alive_12_24_Hours.set(0);
-        count_Alive_1_3_Day.set(0);
-        count_Alive_3_more_Day.set(0);
+        count_Alive_6_24_Hours.set(0);
+        count_Alive_1_7_Day.set(0);
+        count_Alive_7_30_Day.set(0);
+        count_Alive_30_90_Day.set(0);
+        count_Alive_90_more_Day.set(0);
     }
 
     public void beforeConnect() {
@@ -276,19 +276,19 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             count_Alive_10_30_Minutes.incrementAndGet();
         } else if (aliveNano < 60 * MINUTE) {
             count_Alive_30_60_Minutes.incrementAndGet();
-        } else if (aliveNano < 3 * HOUR) {
-            count_Alive_1_3_Hours.incrementAndGet();
-
         } else if (aliveNano < 6 * HOUR) {
-            count_Alive_3_6_Hours.incrementAndGet();
-        } else if (aliveNano < 12 * HOUR) {
-            count_Alive_6_12_Hours.incrementAndGet();
+            count_Alive_1_6_Hours.incrementAndGet();
+
         } else if (aliveNano < 24 * HOUR) {
-            count_Alive_12_24_Hours.incrementAndGet();
-        } else if (aliveNano < 3 * DAY) {
-            count_Alive_1_3_Day.incrementAndGet();
+            count_Alive_6_24_Hours.incrementAndGet();
+        } else if (aliveNano < 7 * DAY) {
+            count_Alive_1_7_Day.incrementAndGet();
+        } else if (aliveNano < 30 * DAY) {
+            count_Alive_7_30_Day.incrementAndGet();
+        } else if (aliveNano < 90 * DAY) {
+            count_Alive_30_90_Day.incrementAndGet();
         } else {
-            count_Alive_3_more_Day.incrementAndGet();
+            count_Alive_90_more_Day.incrementAndGet();
         }
 
     }
@@ -490,8 +490,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
             return new Date(lastErrorTime);
         }
 
-        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime", "AliveTimespan", "LastSql", "LastError", "LastErrorTime",
-                                                          "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
+        private static String[] indexNames        = { "ID", "ConnectTime", "ConnectTimespan", "EstablishTime", "AliveTimespan", "LastSql", "LastError", "LastErrorTime", "ConnectStatckTrace", "LastStatementStackTrace", "DataSource" };
         private static String[] indexDescriptions = indexNames;
 
         public static CompositeType getCompositeType() throws JMException {
@@ -586,27 +585,28 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         return count_Alive_30_60_Minutes.get();
     }
 
-    public long getCount_Alive_1_3_Hours() {
-        return count_Alive_1_3_Hours.get();
+    public long getCount_Alive_1_6_Hours() {
+        return count_Alive_1_6_Hours.get();
     }
 
-    public long getCount_Alive_3_6_Hours() {
-        return count_Alive_3_6_Hours.get();
+    public long getCount_Alive_6_24_Hours() {
+        return count_Alive_6_24_Hours.get();
     }
 
-    public long getCount_Alive_6_12_Hours() {
-        return count_Alive_6_12_Hours.get();
+    public long getCount_Alive_1_7_Day() {
+        return count_Alive_1_7_Day.get();
     }
 
-    public long getCount_Alive_12_24_Hours() {
-        return count_Alive_12_24_Hours.get();
+    public long getCount_Alive_7_30_Day() {
+        return count_Alive_7_30_Day.get();
     }
 
-    public long getCount_Alive_1_3_Day() {
-        return count_Alive_1_3_Day.get();
+    public long getCount_Alive_30_90_Day() {
+        return count_Alive_30_90_Day.get();
     }
 
-    public long getCount_Alive_3_more_Day() {
-        return count_Alive_3_more_Day.get();
+    public long getCount_Alive_90_more_Day() {
+        return count_Alive_90_more_Day.get();
     }
+
 }

@@ -320,13 +320,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_1_3_Hours() {
-        long count = this.getConnectionStat().getCount_Alive_1_3_Hours();
+    public long getConnectionCount_Alive_1_6_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_1_6_Hours();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 1 * HOUR && connectionAliveNano < 3 * HOUR) {
+            if (connectionAliveNano >= 1 * HOUR && connectionAliveNano < 6 * HOUR) {
                 count++;
             }
         }
@@ -334,13 +334,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_3_6_Hours() {
-        long count = this.getConnectionStat().getCount_Alive_3_6_Hours();
+    public long getConnectionCount_Alive_6_24_Hours() {
+        long count = this.getConnectionStat().getCount_Alive_6_24_Hours();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 3 * HOUR && connectionAliveNano < 6 * HOUR) {
+            if (connectionAliveNano >= 6 * HOUR && connectionAliveNano < 24 * HOUR) {
                 count++;
             }
         }
@@ -348,13 +348,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_6_12_Hours() {
-        long count = this.getConnectionStat().getCount_Alive_6_12_Hours();
+    public long getConnectionCount_Alive_1_7_day() {
+        long count = this.getConnectionStat().getCount_Alive_1_7_Day();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 6 * HOUR && connectionAliveNano < 12 * HOUR) {
+            if (connectionAliveNano >= 1 * DAY && connectionAliveNano < 7 * DAY) {
                 count++;
             }
         }
@@ -362,13 +362,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_12_24_Hours() {
-        long count = this.getConnectionStat().getCount_Alive_12_24_Hours();
+    public long getConnectionCount_Alive_7_30_Day() {
+        long count = this.getConnectionStat().getCount_Alive_7_30_Day();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 12 * HOUR && connectionAliveNano < 24 * HOUR) {
+            if (connectionAliveNano >= 7 * DAY && connectionAliveNano < 30 * DAY) {
                 count++;
             }
         }
@@ -376,13 +376,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_1_3_Day() {
-        long count = this.getConnectionStat().getCount_Alive_1_3_Day();
+    public long getConnectionCount_Alive_30_90_Day() {
+        long count = this.getConnectionStat().getCount_Alive_30_90_Day();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 1 * DAY && connectionAliveNano < 2 * DAY) {
+            if (connectionAliveNano >= 30 * DAY && connectionAliveNano < 90 * DAY) {
                 count++;
             }
         }
@@ -390,13 +390,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return count;
     }
     
-    public long getConnectionCount_Alive_3_more_Day() {
-        long count = this.getConnectionStat().getCount_Alive_3_more_Day();
+    public long getConnectionCount_Alive_90_more_Day() {
+        long count = this.getConnectionStat().getCount_Alive_90_more_Day();
         
         long nowNano = System.nanoTime();
         for (JdbcConnectionStat.Entry connection : connections.values()) {
             long connectionAliveNano = nowNano - connection.getEstablishNano();
-            if (connectionAliveNano >= 2 * DAY) {
+            if (connectionAliveNano >= 90 * DAY) {
                 count++;
             }
         }
