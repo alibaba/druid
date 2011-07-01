@@ -169,10 +169,14 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     }
 
     public String getProperties() {
-        if (properties == null) {
+        if (this.properties == null) {
             return null;
         }
 
+        Properties properties = new Properties(this.properties);
+        if (properties.contains("password")) {
+            properties.put("password", "******");
+        }
         return properties.toString();
     }
 
@@ -247,7 +251,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
 
                 map.put("StatementLastErrorStackTrace", null);
             }
-            map.put("StatementExecuteMillis", stat.getStatementStat().getMillisTotal());
+            map.put("StatementExecuteMillisTotal", stat.getStatementStat().getMillisTotal());
             map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
             map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
             map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
@@ -358,7 +362,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("StatementLastErrorMessage", null);
 
             map.put("StatementLastErrorStackTrace", null);
-            map.put("StatementExecuteMillis", null);
+            map.put("StatementExecuteMillisTotal", null);
             map.put("ConnectionConnectingCount", null);
             map.put("StatementExecuteLastTime", null);
             map.put("ResultSetCloseCount", null);

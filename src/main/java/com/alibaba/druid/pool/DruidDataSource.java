@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -305,7 +306,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (conn == null || conn.isClosed()) {
                 lock.lock();
                 try {
-                    holder.reset();
                     decrementActiveCount();
                     closeCount++;
                 } finally {
@@ -332,7 +332,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (count >= maxIdle) {
                 lock.lock();
                 try {
-                    holder.reset();
                     conn.close();
                     decrementActiveCount();
                 } finally {
@@ -355,7 +354,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 closeCount++;
 
                 // 第六步，加入队列中(putLast)
-                holder.reset();
                 putLast(holder);
                 recycleCount++;
             } finally {
@@ -755,8 +753,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (this.connectionProperties == null) {
             return null;
         }
-
-        return connectionProperties.toString();
+        
+        Properties properties = new Properties(this.connectionProperties);
+        if (properties.contains("password")) {
+            properties.put("password", "******");
+        }
+        return properties.toString();
     }
     
     public String[] getFilterClasses() {
@@ -841,7 +843,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 map.put("StatementLastErrorStackTrace", null);
             }
-            map.put("StatementExecuteMillis", stat.getStatementStat().getMillisTotal());
+            map.put("StatementExecuteMillisTotal", stat.getStatementStat().getMillisTotal());
             map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
             map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
             map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
@@ -952,7 +954,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("StatementLastErrorMessage", null);
 
             map.put("StatementLastErrorStackTrace", null);
-            map.put("StatementExecuteMillis", null);
+            map.put("StatementExecuteMillisTotal", null);
             map.put("ConnectionConnectingCount", null);
             map.put("StatementExecuteLastTime", null);
             map.put("ResultSetCloseCount", null);

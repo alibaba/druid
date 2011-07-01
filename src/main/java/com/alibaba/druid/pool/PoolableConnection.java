@@ -123,6 +123,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             listener.connectionClosed(new ConnectionEvent(this));
         }
 
+        holder.reset();
         holder.getDataSource().recycle(this);
         holder = null;
         conn = null;

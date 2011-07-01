@@ -136,7 +136,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
                 , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
                 , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillis", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
+                , "StatementLastErrorStackTrace", "StatementExecuteMillisTotal", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
                 , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
                 , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace", "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
                 , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin" //
