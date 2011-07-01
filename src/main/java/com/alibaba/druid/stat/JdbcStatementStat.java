@@ -29,9 +29,9 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     private final AtomicLong    createCount      = new AtomicLong(0);  // 执行createStatement的计数
     private final AtomicLong    prepareCount     = new AtomicLong(0);  // 执行parepareStatement的计数
     private final AtomicLong    prepareCallCount = new AtomicLong(0);  // 执行preCall的计数
-    private final AtomicLong    closeCount     = new AtomicLong(0);  // Statement关闭的计数
+    private final AtomicLong    closeCount       = new AtomicLong(0);  // Statement关闭的计数
 
-    private final AtomicInteger runningCount  = new AtomicInteger();
+    private final AtomicInteger runningCount     = new AtomicInteger();
     private final AtomicInteger concurrentMax    = new AtomicInteger();
 
     private final AtomicLong    count            = new AtomicLong();
@@ -80,6 +80,12 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
         lastSampleTime = System.currentTimeMillis();
     }
 
+    public void afterExecute(long nanoSpan) {
+        runningCount.decrementAndGet();
+
+        nanoTotal.addAndGet(nanoSpan);
+    }
+
     public long getErrorCount() {
         return errorCount.get();
     }
@@ -107,15 +113,9 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     public long getNanoTotal() {
         return nanoTotal.get();
     }
-    
+
     public long getMillisTotal() {
         return nanoTotal.get() / (1000 * 1000);
-    }
-
-    public void afterExecute(long nanoSpan) {
-        runningCount.decrementAndGet();
-
-        nanoTotal.addAndGet(nanoSpan);
     }
 
     public Throwable getLastException() {
