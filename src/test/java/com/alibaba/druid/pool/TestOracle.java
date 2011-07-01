@@ -1,6 +1,8 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.TreeMap;
 
 import javax.management.openmbean.TabularData;
@@ -33,6 +35,11 @@ public class TestOracle extends TestCase {
         dataSource.setExceptionSoter(OracleExceptionSorter.class.getName());
 
         Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
+        rs.next();
+        rs.close();
+        stmt.close();
         conn.close();
         
         TabularData dataSourcesList = JdbcStatManager.getInstance().getDataSourceList();
