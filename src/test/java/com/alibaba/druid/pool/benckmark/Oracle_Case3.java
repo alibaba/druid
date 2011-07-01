@@ -28,7 +28,7 @@ public class Oracle_Case3 extends TestCase {
     private String  validationQuery = "SELECT 1 FROM DUAL";
     private int     threadCount     = 14;
     private int     loopCount       = 3;
-    final int       LOOP_COUNT      = 100 * 1;
+    final int       LOOP_COUNT      = 1000 * 1;
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {

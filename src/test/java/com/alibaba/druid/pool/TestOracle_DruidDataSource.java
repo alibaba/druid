@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.TreeMap;
 
-import javax.management.openmbean.TabularData;
-
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
@@ -14,7 +12,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-public class TestOracle extends TestCase {
+public class TestOracle_DruidDataSource extends TestCase {
 
     private String jdbcUrl;
     private String user;
