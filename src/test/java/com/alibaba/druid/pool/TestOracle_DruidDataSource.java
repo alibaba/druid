@@ -35,8 +35,8 @@ public class TestOracle_DruidDataSource extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setExceptionSoter(OracleExceptionSorter.class.getName());
 
-        final int COUNT = 100;
-        final int THREAD_COUNT = 1000;
+        final int COUNT = 100 * 100;
+        final int THREAD_COUNT = 10;
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
         
