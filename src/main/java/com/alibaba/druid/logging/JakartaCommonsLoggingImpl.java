@@ -8,7 +8,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log 
 
     private Log log;
 
-    public JakartaCommonsLoggingImpl(Class clazz){
+    public JakartaCommonsLoggingImpl(Class<?> clazz){
         log = LogFactory.getLog(clazz);
     }
 
