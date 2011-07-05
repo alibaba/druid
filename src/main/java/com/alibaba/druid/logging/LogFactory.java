@@ -9,7 +9,7 @@ public class LogFactory {
 
     static {
         tryImplementation("org.apache.commons.logging.LogFactory",
-                          "com.ibatis.common.logging.jakarta.JakartaCommonsLoggingImpl");
+                          "com.alibaba.druid.logging.JakartaCommonsLoggingImpl");
         tryImplementation("org.apache.log4j.Logger", "com.alibaba.druid.logging.Log4jImpl");
         tryImplementation("java.util.logging.Logger", "com.alibaba.druid.logging.Jdk14LoggingImpl");
         tryImplementation("java.lang.Object", "com.alibaba.druid.logging.NoLoggingImpl");
