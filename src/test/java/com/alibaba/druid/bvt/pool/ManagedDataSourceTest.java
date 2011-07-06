@@ -1,6 +1,9 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -20,7 +23,24 @@ public class ManagedDataSourceTest extends TestCase {
     }
 
     public void test_managed() throws Exception {
-        Connection conn = dataSource.getConnection();
-        conn.close();
+        {
+            Connection conn = dataSource.getConnection();
+            conn.close();
+        }
+
+        dataSource.setEnable(false);
+        SQLException error = null;
+        try {
+            dataSource.getConnection();
+        } catch (SQLException ex) {
+            error = ex;
+        }
+        Assert.assertNotNull(error);
+
+        dataSource.setEnable(true);
+        {
+            Connection conn = dataSource.getConnection();
+            conn.close();
+        }
     }
 }
