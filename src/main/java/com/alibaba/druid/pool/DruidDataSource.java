@@ -98,7 +98,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                                                                 id;
     private Date                                                                 createdTime;
 
-    private boolean                                                              enable;
+    private boolean                                                              enable                      = true;
 
     public DruidDataSource(){
     }
@@ -1048,5 +1048,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
+    }
+
+    @Override
+    public void shrink() {
+        throw new UnsupportedOperationException();
     }
 }
