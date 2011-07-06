@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.pool;
 
-
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
+    boolean isEnable();
+
+    void setEnable(boolean enable);
 }

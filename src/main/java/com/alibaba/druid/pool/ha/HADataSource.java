@@ -1,4 +1,4 @@
-package com.alibaba.druid.ha;
+package com.alibaba.druid.pool.ha;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
