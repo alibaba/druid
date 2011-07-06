@@ -8,14 +8,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
 public class HADataSource implements DataSource {
 
-    private final List<DataSource> dataSources  = new CopyOnWriteArrayList<DataSource>();
+    private final List<DruidDataSource> dataSources  = new CopyOnWriteArrayList<DruidDataSource>();
 
     private int                    loginTimeout = 0;
     private PrintWriter            logWriter    = new PrintWriter(System.out);
 
-    public List<DataSource> getDataSources() {
+    public List<DruidDataSource> getDataSources() {
         return dataSources;
     }
 
