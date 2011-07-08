@@ -40,7 +40,7 @@ public class TestReplaceLicense extends TestCase {
         reader.close();
         System.out.println(license);
 
-        lineSeparator = (String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
+        lineSeparator = "\n"; //(String) java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
     }
 
     public void test_0() throws Exception {
