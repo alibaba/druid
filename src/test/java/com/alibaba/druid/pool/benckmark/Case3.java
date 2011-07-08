@@ -21,21 +21,32 @@ public class Case3 extends TestCase {
     private String  driverClass;
     private int     maxIdle         = 40;
     private int     maxActive       = 50;
-    private int     maxWait         = 500;
+    private int     maxWait         = -1;
     private String  validationQuery = "SELECT 1";
-    private int     threadCount     = 14;
-    private int     loopCount       = 3;
-    final int       LOOP_COUNT      = 1000 * 100;
+    private int     threadCount     = 10;
+    private int     loopCount       = 5;
+    final int       LOOP_COUNT      = 1000 * 10;
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        user = "dragoon25";
-        password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
+//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+//        user = "dragoon25";
+//        password = "dragoon25";
+//        driverClass = "com.alibaba.druid.mock.MockDriver";
+        
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
+    }
+    
+    public void test_perf() throws Exception {
+        for (int i = 0; i < 10; ++i) {
+            druid();
+            dbcp();
+        }
     }
 
-    public void test_0() throws Exception {
+    public void druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setMaxActive(maxActive);
@@ -56,7 +67,7 @@ public class Case3 extends TestCase {
         System.out.println();
     }
 
-    public void test_1() throws Exception {
+    public void dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setMaxActive(maxActive);
@@ -76,6 +87,7 @@ public class Case3 extends TestCase {
         }
         System.out.println();
     }
+    
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
 
