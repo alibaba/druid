@@ -16,7 +16,9 @@
 package com.alibaba.druid.pool.benckmark;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.NumberFormat;
 
 import javax.sql.DataSource;
@@ -36,18 +38,24 @@ public class Case0 extends TestCase {
     private String   password;
     private String   driverClass;
     private int      initialSize     = 10;
-    private int      minPoolSize     = 1;
-    private int      maxPoolSize     = 2;
-    private int      maxActive       = 2;
-    private String   validationQuery = null;
+    private int      minIdle         = 0;
+    private int      maxIdle         = 8;
+    private int      maxActive       = 8;
+    private String   validationQuery = "SELECT 1";
+    private boolean  testOnBorrow    = false;
 
     public final int LOOP_COUNT      = 5;
+    public final int COUNT           = 1000 * 1;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        user = "dragoon25";
-        password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
+
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
     }
 
     public void test_0() throws Exception {
@@ -55,8 +63,8 @@ public class Case0 extends TestCase {
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
-        dataSource.setMinIdle(minPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxIdle(maxIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
@@ -64,7 +72,7 @@ public class Case0 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(testOnBorrow);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "druid");
@@ -77,8 +85,8 @@ public class Case0 extends TestCase {
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
-        dataSource.setMinIdle(minPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxIdle(maxIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
@@ -86,7 +94,7 @@ public class Case0 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(testOnBorrow);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "dbcp");
@@ -98,8 +106,8 @@ public class Case0 extends TestCase {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
-        dataSource.setMinConnectionsPerPartition(minPoolSize);
-        dataSource.setMaxConnectionsPerPartition(maxPoolSize);
+        dataSource.setMinConnectionsPerPartition(minIdle);
+        dataSource.setMaxConnectionsPerPartition(maxIdle);
 
         dataSource.setDriverClass(driverClass);
         dataSource.setJdbcUrl(jdbcUrl);
@@ -121,9 +129,12 @@ public class Case0 extends TestCase {
         long startYGC = TestUtil.getYoungGC();
         long startFullGC = TestUtil.getFullGC();
 
-        final int COUNT = 1000 * 1000;
         for (int i = 0; i < COUNT; ++i) {
             Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT 1");
+            rs.close();
+            stmt.close();
             conn.close();
         }
         long millis = System.currentTimeMillis() - startMillis;
