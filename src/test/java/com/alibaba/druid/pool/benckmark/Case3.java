@@ -25,7 +25,7 @@ public class Case3 extends TestCase {
     private String  validationQuery = "SELECT 1";
     private int     threadCount     = 40;
     private int     TEST_COUNT       = 5;
-    final int       LOOP_COUNT      = 1000 * 10;
+    final int       LOOP_COUNT      = 1000 * 100;
     private boolean testOnBorrow    = false;
 
     protected void setUp() throws Exception {
