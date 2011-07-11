@@ -728,9 +728,9 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean testConnection(Connection conn) {
         try {
-            if (validConnectionChecker != null) {
-                return validConnectionChecker.isValidConnection(conn);
-            }
+//            if (validConnectionChecker != null) {
+//                return validConnectionChecker.isValidConnection(conn);
+//            }
 
             String query = getValidationQuery();
             if (conn.isClosed()) {
