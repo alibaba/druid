@@ -22,11 +22,11 @@ public class Case3 extends TestCase {
     private int     maxIdle         = 40;
     private int     maxActive       = 50;
     private int     maxWait         = -1;
-    private String  validationQuery = "SELECT 1";
+    private String  validationQuery = null; //"SELECT 1";
     private int     threadCount     = 40;
     private int     TEST_COUNT       = 3;
     final int       LOOP_COUNT      = 1000 * 100;
-    private boolean testOnBorrow    = true;
+    private boolean testOnBorrow    = false;
 
     protected void setUp() throws Exception {
 //        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
