@@ -23,9 +23,9 @@ public class Case3 extends TestCase {
     private int     maxActive       = 50;
     private int     maxWait         = -1;
     private String  validationQuery = "SELECT 1";
-    private int     threadCount     = 10;
-    private int     loopCount       = 5;
-    final int       LOOP_COUNT      = 1000 * 10;
+    private int     threadCount     = 40;
+    private int     TEST_COUNT       = 5;
+    final int       LOOP_COUNT      = 1000 * 5;
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
@@ -61,7 +61,7 @@ public class Case3 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
 
-        for (int i = 0; i < loopCount; ++i) {
+        for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
         }
         System.out.println();
@@ -82,7 +82,7 @@ public class Case3 extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setTestOnBorrow(testOnBorrow);
 
-        for (int i = 0; i < loopCount; ++i) {
+        for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
         }
         System.out.println();
