@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.junit.Assert;
@@ -23,19 +24,22 @@ public class ManagedDataSourceTest extends TestCase {
     }
 
     public void test_managed() throws Exception {
+        DriverManager.getConnection("jdbc:mock:aaa");
         {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
 
-        dataSource.setEnable(false);
-        SQLException error = null;
-        try {
-            dataSource.getConnection();
-        } catch (SQLException ex) {
-            error = ex;
+        {
+            dataSource.setEnable(false);
+            SQLException error = null;
+            try {
+                dataSource.getConnection();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
         }
-        Assert.assertNotNull(error);
 
         dataSource.setEnable(true);
         {
