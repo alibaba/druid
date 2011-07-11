@@ -22,7 +22,7 @@ public class Case3 extends TestCase {
     private int     maxIdle         = 40;
     private int     maxActive       = 50;
     private int     maxWait         = -1;
-    private String  validationQuery = "SELECT 1";
+    private String  validationQuery = null; //"SELECT 1";
     private int     threadCount     = 40;
     private int     TEST_COUNT       = 5;
     final int       LOOP_COUNT      = 1000 * 100;
@@ -79,7 +79,7 @@ public class Case3 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
