@@ -46,7 +46,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     private final static DruidDriver                                instance                 = new DruidDriver();
 
-    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources              = new ConcurrentHashMap<String, DataSourceProxyImpl>();
+    private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
 
     public final static String                                      DEFAULT_PREFIX           = "jdbc:wrap-jdbc:";
@@ -171,7 +171,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 config.setName(name);
                 restUrl = restUrl.substring(pos + 1);
             }
-            
+
             if (restUrl.startsWith(JMX_PREFIX)) {
                 int pos = restUrl.indexOf(':', JMX_PREFIX.length());
                 String jmxOption = restUrl.substring(JMX_PREFIX.length(), pos);
@@ -192,17 +192,18 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             Driver rawDriver = createDriver(config.getRawDriverClassName());
 
             DataSourceProxyImpl newDataSource = new DataSourceProxyImpl(rawDriver, config);
-
-            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); // 多线程处理需要
-            if (oldDataSource == null) {
-                // 放进去的线程负责初始化
+            {
                 int dataSourceId = createDataSourceId();
                 newDataSource.setId(dataSourceId);
 
                 for (Filter filter : config.getFilters()) {
                     filter.init(newDataSource);
                 }
-                
+            }
+
+            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); // 多线程处理需要
+            if (oldDataSource == null) {
+                // 放进去的线程负责注册MBean
                 if (config.isJmxOption()) {
                     JMXUtils.register("com.alibaba.druid:type=JdbcStat", JdbcStatManager.getInstance());
                 }
