@@ -168,7 +168,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             if ("mysql".equals(dbType)) {
-                this.validConnectionChecker = new MySqlValidConnectionChecker();
+//                this.validConnectionChecker = new MySqlValidConnectionChecker();
+                this.validConnectionChecker = null;
             } else if ("oracle".equals(dbType)) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
             } else if ("sqlserver".equals(dbType)) {
