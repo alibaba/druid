@@ -661,9 +661,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 continue FOR_0;
                             }
 
-                            long millis = System.currentTimeMillis() - first.getLastActiveMillis();
-                            if (millis < minEvictableIdleTimeMillis) {
-                                idleTimeout.await(millis, TimeUnit.MILLISECONDS);
+                            long idleMillis = System.currentTimeMillis() - first.getLastActiveMillis();
+                            if (idleMillis < minEvictableIdleTimeMillis) {
+                                long waitMillis = minEvictableIdleTimeMillis - idleMillis;
+                                idleTimeout.await(waitMillis, TimeUnit.MILLISECONDS);
                                 continue FOR_0;
                             }
 
