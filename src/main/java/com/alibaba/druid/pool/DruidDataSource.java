@@ -168,7 +168,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             if ("mysql".equals(dbType)) {
-//                this.validConnectionChecker = new MySqlValidConnectionChecker();
+                // this.validConnectionChecker = new MySqlValidConnectionChecker();
                 this.validConnectionChecker = null;
             } else if ("oracle".equals(dbType)) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
@@ -630,7 +630,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
-            for (;;) {
+            FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
                     if (timeBetweenEvictionRunsMillis > 0) {
@@ -649,21 +649,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     ConnectionHolder first = null;
                     lock.lock();
                     try {
-                        first = connections[0];
-
-                        if (first == null) {
-                            continue;
+                        int numTestsPerEvictionRun = DruidDataSource.this.numTestsPerEvictionRun;
+                        if (numTestsPerEvictionRun <= 0) {
+                            numTestsPerEvictionRun = 1;
                         }
 
-                        long millis = System.currentTimeMillis() - first.getLastActiveMillis();
-                        if (millis < minEvictableIdleTimeMillis) {
-                            idleTimeout.await(millis, TimeUnit.MILLISECONDS);
-                            continue;
-                        }
+                        for (int i = 0; i < numTestsPerEvictionRun; ++i) {
+                            first = connections[0];
 
-                        // removete first
-                        System.arraycopy(connections, 1, connections, 0, count - 1);
-                        connections[--count] = null;
+                            if (first == null) {
+                                continue FOR_0;
+                            }
+
+                            long millis = System.currentTimeMillis() - first.getLastActiveMillis();
+                            if (millis < minEvictableIdleTimeMillis) {
+                                idleTimeout.await(millis, TimeUnit.MILLISECONDS);
+                                continue FOR_0;
+                            }
+
+                            // removete first
+                            System.arraycopy(connections, 1, connections, 0, count - 1);
+                            connections[--count] = null;
+                        }
                     } finally {
                         lock.unlock();
                     }
