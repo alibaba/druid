@@ -40,6 +40,7 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.DruidLoaderUtils;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -649,7 +650,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public void setExceptionSorterClassName(String exceptionSorter) throws Exception {
         this.setExceptionSoter(exceptionSorter);
     }
-    
+
     public void setExceptionSoter(String exceptionSorter) throws Exception {
         if (exceptionSorter == null) {
             this.exceptionSoter = null;
@@ -753,20 +754,8 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
                     return false;
                 }
             } finally {
-                if (rset != null) {
-                    try {
-                        rset.close();
-                    } catch (Exception t) {
-                        // ignored
-                    }
-                }
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (Exception t) {
-                        // ignored
-                    }
-                }
+                JdbcUtils.close(rset);
+                JdbcUtils.close(stmt);
             }
 
             return true;

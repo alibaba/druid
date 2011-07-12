@@ -26,7 +26,7 @@ public class Case3 extends TestCase {
     private int     threadCount     = 40;
     private int     TEST_COUNT       = 3;
     final int       LOOP_COUNT      = 1000 * 100;
-    private boolean testOnBorrow    = false;
+    private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
 //        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
