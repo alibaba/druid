@@ -647,6 +647,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     int evictCount = 0;
+                    int idleCount = 0;
                     lock.lock();
                     try {
                         int numTestsPerEvictionRun = DruidDataSource.this.numTestsPerEvictionRun;
@@ -654,26 +655,54 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             numTestsPerEvictionRun = 1;
                         }
 
-                        for (int i = 0; i < numTestsPerEvictionRun; ++i) {
-                            ConnectionHolder first = connections[0];
+                        FOR_1: for (int i = 0; i < numTestsPerEvictionRun; ++i) {
+                            ConnectionHolder connection = connections[i];
 
-                            if (first == null) {
+                            if (evictCount == 0 && idleCount == 0 && connection == null) {
                                 continue FOR_0;
                             }
 
-                            long idleMillis = System.currentTimeMillis() - first.getLastActiveMillis();
+                            long idleMillis = System.currentTimeMillis() - connection.getLastActiveMillis();
                             if (idleMillis < minEvictableIdleTimeMillis) {
-                                long waitMillis = minEvictableIdleTimeMillis - idleMillis;
-                                idleTimeout.await(waitMillis, TimeUnit.MILLISECONDS);
-                                continue FOR_0;
+                                if (evictCount == 0 && idleCount == 0) {
+                                    long waitMillis = minEvictableIdleTimeMillis - idleMillis;
+                                    idleTimeout.await(waitMillis, TimeUnit.MILLISECONDS);
+                                    continue FOR_0;
+                                }
+                                break FOR_1;
                             }
 
-                            if (count > minIdle) {
-                                // removete first
-                                System.arraycopy(connections, 1, connections, 0, count - 1);
-                                connections[--count] = null;
-                                evictList.add(first);
+                            if (count > minIdle + evictCount) {
                                 evictCount++;
+                            } else {
+                                idleCount++;
+                            }
+                        }
+
+                        if (evictCount > 0) {
+                            System.arraycopy(connections, evictCount, connections, 0, count - evictCount);
+                            for (int i = 0; i < evictCount; ++i) {
+                                int index = --count;
+                                evictList.add(connections[index]);
+                                connections[index] = null;
+                            }
+                        }
+
+                        if (idleCount > 0) {
+                            ConnectionHolder[] idleConnections = new ConnectionHolder[idleCount];
+                            System.arraycopy(connections, 0, idleConnections, 0, idleCount);
+                            System.arraycopy(connections, idleCount, connections, 0, count - idleCount);
+                            for (int i = 0; i < evictCount; ++i) {
+                                connections[--count] = null;
+                            }
+
+                            for (ConnectionHolder idleConnection : idleConnections) {
+                                if (testConnection(idleConnection.getConnection())) {
+                                    connections[count++] = idleConnection;
+                                    idleConnection.setLastActiveMillis(System.currentTimeMillis());
+                                } else {
+                                    evictList.add(idleConnection);
+                                }
                             }
                         }
                     } finally {

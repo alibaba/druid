@@ -25,7 +25,7 @@ public class Case3 extends TestCase {
     private String  validationQuery = null; //"SELECT 1";
     private int     threadCount     = 40;
     private int     TEST_COUNT       = 3;
-    final int       LOOP_COUNT      = 1000 * 100;
+    final int       LOOP_COUNT      = 1000 * 1;
     private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
@@ -41,7 +41,7 @@ public class Case3 extends TestCase {
     
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
-            druid();
+            //druid();
             dbcp();
         }
     }
@@ -85,6 +85,7 @@ public class Case3 extends TestCase {
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
         }
+        dataSource.close();
         System.out.println();
     }
     
