@@ -566,7 +566,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return activeCount;
     }
 
-    public long getIdelCheckCount() {
+    public long getIdleCheckCount() {
         return idleCheckCount;
     }
 

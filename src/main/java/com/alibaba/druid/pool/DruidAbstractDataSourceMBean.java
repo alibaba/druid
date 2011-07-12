@@ -29,6 +29,8 @@ public interface DruidAbstractDataSourceMBean {
     long getRecycleCount();
 
     int getActiveCount();
+    
+    long getIdleCheckCount();
 
     long getCreateCount();
 
