@@ -566,6 +566,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return activeCount;
     }
 
+    public long getIdelCheckCount() {
+        return idleCheckCount;
+    }
+
     public class CreateConnectionThread extends Thread {
 
         public CreateConnectionThread(String name){
