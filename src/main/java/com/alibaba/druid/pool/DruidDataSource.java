@@ -45,7 +45,6 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
-import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
@@ -630,6 +629,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
+            final List<Connection> evictList = new ArrayList<Connection>();
             FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
@@ -646,6 +646,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
+                    int removeCount = 0;
                     ConnectionHolder first = null;
                     lock.lock();
                     try {
@@ -668,9 +669,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 continue FOR_0;
                             }
 
-                            // removete first
-                            System.arraycopy(connections, 1, connections, 0, count - 1);
-                            connections[--count] = null;
+                            if (count > minIdle) {
+                                // removete first
+                                System.arraycopy(connections, 1, connections, 0, count - 1);
+                                connections[--count] = null;
+                            }
                         }
                     } finally {
                         lock.unlock();
