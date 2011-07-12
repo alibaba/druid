@@ -118,7 +118,12 @@ public class MockConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        closed = true;
+        if (!closed) {
+            closed = true;
+            if (driver != null) {
+                driver.afterConnectionClose(this);
+            }
+        }
     }
 
     @Override

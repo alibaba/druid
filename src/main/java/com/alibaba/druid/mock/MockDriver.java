@@ -26,23 +26,39 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.mock.handler.MockExecuteHandler;
 import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
 public class MockDriver implements Driver {
 
-    public final static MockExecuteHandler DEFAULT_HANDLER = new MySqlMockExecuteHandlerImpl();
+    public final static MockExecuteHandler DEFAULT_HANDLER      = new MySqlMockExecuteHandlerImpl();
 
-    private String                         prefix          = "jdbc:fake:";
-    private String                         mockPrefix      = "jdbc:mock:";
+    private String                         prefix               = "jdbc:fake:";
+    private String                         mockPrefix           = "jdbc:mock:";
 
-    private MockExecuteHandler             executeHandler  = DEFAULT_HANDLER;
+    private MockExecuteHandler             executeHandler       = DEFAULT_HANDLER;
 
-    private final static MockDriver        instance        = new MockDriver();
+    private final static MockDriver        instance             = new MockDriver();
+
+    private final AtomicLong               connectCount         = new AtomicLong();
+    private final AtomicLong               connectionCloseCount = new AtomicLong();
 
     static {
         registerDriver(instance);
+    }
+
+    protected void incrementConnectionCloseCount() {
+        connectionCloseCount.incrementAndGet();
+    }
+
+    public long getConnectionCloseCount() {
+        return connectionCloseCount.get();
+    }
+
+    protected void afterConnectionClose(MockConnection conn) {
+        connectionCloseCount.incrementAndGet();
     }
 
     public static boolean registerDriver(Driver driver) {
@@ -74,6 +90,7 @@ public class MockDriver implements Driver {
         MockConnection conn = new MockConnection(this);
 
         if (url == null) {
+            connectCount.incrementAndGet();
             return conn;
         }
 
@@ -81,6 +98,7 @@ public class MockDriver implements Driver {
             String catalog = url.substring(prefix.length());
             conn.setCatalog(catalog);
 
+            connectCount.incrementAndGet();
             return conn;
         }
 
@@ -88,6 +106,7 @@ public class MockDriver implements Driver {
             String catalog = url.substring(mockPrefix.length());
             conn.setCatalog(catalog);
 
+            connectCount.incrementAndGet();
             return conn;
         }
 
