@@ -37,15 +37,16 @@ public class Case0 extends TestCase {
     private String   user;
     private String   password;
     private String   driverClass;
-    private int      initialSize     = 10;
-    private int      minIdle         = 0;
-    private int      maxIdle         = 8;
-    private int      maxActive       = 8;
-    private String   validationQuery = "SELECT 1";
-    private boolean  testOnBorrow    = false;
+    private int      initialSize                = 10;
+    private int      minIdle                    = 3;
+    private int      maxIdle                    = 8;
+    private int      maxActive                  = 8;
+    private String   validationQuery            = "SELECT 1";
+    private boolean  testOnBorrow               = false;
 
-    public final int LOOP_COUNT      = 5;
-    public final int COUNT           = 1000 * 1;
+    private long     minEvictableIdleTimeMillis = 3000;
+    public final int LOOP_COUNT                 = 5;
+    public final int COUNT                      = 1000 * 1;
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -73,6 +74,7 @@ public class Case0 extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "druid");
@@ -95,6 +97,7 @@ public class Case0 extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "dbcp");

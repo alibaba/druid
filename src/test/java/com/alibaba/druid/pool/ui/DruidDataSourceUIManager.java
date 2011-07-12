@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JButton;
@@ -72,17 +74,24 @@ public class DruidDataSourceUIManager extends JFrame {
 
     private DruidDataStatusPanel                    statusPanel                   = new DruidDataStatusPanel();
 
-    private JLabel                                  lbConnecting                  = new JLabel("Connecting : ");
-    private JTextField                              txtConnecting                 = new JTextField("0");
-    
-    private JLabel                                  lbValidationQuery                  = new JLabel("ValidationQuery : ");
-    private JTextField                              txtValidationQuery                 = new JTextField("");
+    private JLabel                                  lbValidationQuery             = new JLabel("ValidationQuery : ");
+    private JTextField                              txtValidationQuery            = new JTextField("");
+
+    private JLabel                                  lbTestWhileIdle               = new JLabel("TestWhileIdle : ");
+    private JTextField                              txtTestWhileIdle              = new JTextField("false");
+
+    private JTextField                              txtGetStep                    = new JTextField("1");
+    private JTextField                              txtReleaseStep                = new JTextField("1");
 
     private AtomicInteger                           connectingCount               = new AtomicInteger();
+    private AtomicInteger                           connectCount                  = new AtomicInteger();
+    private AtomicInteger                           closeCount                    = new AtomicInteger();
 
     private Thread                                  statusThread;
 
     private final ConcurrentLinkedQueue<Connection> activeConnections             = new ConcurrentLinkedQueue<Connection>();
+
+    private ExecutorService                         executor;
 
     public DruidDataSourceUIManager(){
         this.setLayout(new BorderLayout());
@@ -219,35 +228,46 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMaxWait, 0, SpringLayout.VERTICAL_CENTER, lbMaxWait);
         layout.putConstraint(SpringLayout.WEST, txtMaxWait, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, txtUrl);
-        
+
         // ////
-        
+
         mainPanel.add(lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.NORTH, lbMinEvictableIdleTimeMillis, 10, SpringLayout.SOUTH, lbMaxWait);
         layout.putConstraint(SpringLayout.WEST, lbMinEvictableIdleTimeMillis, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, lbMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, lbUrl);
-        
+
         mainPanel.add(txtMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMinEvictableIdleTimeMillis, 0, SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, txtUrl);
-        
+
         // ////
-        
+
         mainPanel.add(lbValidationQuery);
         layout.putConstraint(SpringLayout.NORTH, lbValidationQuery, 10, SpringLayout.SOUTH, lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, lbValidationQuery, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, lbValidationQuery, 0, SpringLayout.EAST, lbUrl);
-        
+
         mainPanel.add(txtValidationQuery);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtValidationQuery, 0, SpringLayout.VERTICAL_CENTER, lbValidationQuery);
         layout.putConstraint(SpringLayout.WEST, txtValidationQuery, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtValidationQuery, 0, SpringLayout.EAST, txtUrl);
+        // ////
+
+        mainPanel.add(lbTestWhileIdle);
+        layout.putConstraint(SpringLayout.NORTH, lbTestWhileIdle, 10, SpringLayout.SOUTH, lbValidationQuery);
+        layout.putConstraint(SpringLayout.WEST, lbTestWhileIdle, 0, SpringLayout.WEST, lbUrl);
+        layout.putConstraint(SpringLayout.EAST, lbTestWhileIdle, 0, SpringLayout.EAST, lbUrl);
+
+        mainPanel.add(txtTestWhileIdle);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER, lbTestWhileIdle);
+        layout.putConstraint(SpringLayout.WEST, txtTestWhileIdle, 0, SpringLayout.WEST, txtUrl);
+        layout.putConstraint(SpringLayout.EAST, txtTestWhileIdle, 0, SpringLayout.EAST, txtUrl);
 
         // ////
 
         mainPanel.add(btnInitDataSource);
-        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbValidationQuery);
+        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, btnInitDataSource, 0, SpringLayout.WEST, lbUrl);
         btnInitDataSource.addActionListener(new ActionListener() {
 
@@ -268,6 +288,8 @@ public class DruidDataSourceUIManager extends JFrame {
             }
         });
         btnCloseDataSource.setEnabled(false);
+        btnConnect.setEnabled(false);
+        btnClose.setEnabled(false);
 
         mainPanel.add(btnConnect);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnConnect, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
@@ -280,64 +302,80 @@ public class DruidDataSourceUIManager extends JFrame {
             }
         });
 
+        mainPanel.add(txtGetStep);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtGetStep, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.WEST, txtGetStep, 10, SpringLayout.EAST, btnConnect);
+        layout.putConstraint(SpringLayout.EAST, txtGetStep, 40, SpringLayout.WEST, txtGetStep);
+
+        // txtGetStep
+
         mainPanel.add(btnClose);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnClose, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
-        layout.putConstraint(SpringLayout.WEST, btnClose, 10, SpringLayout.EAST, btnConnect);
+        layout.putConstraint(SpringLayout.WEST, btnClose, 10, SpringLayout.EAST, txtGetStep);
         btnClose.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Connection conn = activeConnections.poll();
-                if (conn != null) {
-                    try {
-                        conn.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
+                int step = Integer.parseInt(txtReleaseStep.getText().trim());
+                for (int i = 0; i < step; ++i) {
+                    Connection conn = activeConnections.poll();
+                    if (conn != null) {
+                        try {
+                            conn.close();
+                            closeCount.incrementAndGet();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        // System.out.println("close connection is null");
                     }
                 }
             }
         });
 
+        mainPanel.add(txtReleaseStep);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtReleaseStep, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.WEST, txtReleaseStep, 10, SpringLayout.EAST, btnClose);
+        layout.putConstraint(SpringLayout.EAST, txtReleaseStep, 40, SpringLayout.WEST, txtReleaseStep);
+        // txtReleaseStep
+
         mainPanel.add(statusPanel);
         layout.putConstraint(SpringLayout.NORTH, statusPanel, 10, SpringLayout.SOUTH, btnInitDataSource);
-        layout.putConstraint(SpringLayout.SOUTH, statusPanel, 90, SpringLayout.NORTH, statusPanel);
+        layout.putConstraint(SpringLayout.SOUTH, statusPanel, 120, SpringLayout.NORTH, statusPanel);
         layout.putConstraint(SpringLayout.WEST, statusPanel, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, mainPanel);
 
         // ////
 
-        mainPanel.add(lbConnecting);
-        layout.putConstraint(SpringLayout.NORTH, lbConnecting, 10, SpringLayout.SOUTH, statusPanel);
-        layout.putConstraint(SpringLayout.WEST, lbConnecting, 0, SpringLayout.WEST, lbUrl);
-        layout.putConstraint(SpringLayout.EAST, lbConnecting, 0, SpringLayout.EAST, lbUrl);
-
-        mainPanel.add(txtConnecting);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtConnecting, 0, SpringLayout.VERTICAL_CENTER, lbConnecting);
-        layout.putConstraint(SpringLayout.WEST, txtConnecting, 0, SpringLayout.WEST, txtUrl);
-        layout.putConstraint(SpringLayout.EAST, txtConnecting, 100, SpringLayout.WEST, txtConnecting);
-        txtConnecting.setEditable(false);
     }
 
     public void connect_actionPerformed(ActionEvent e) {
-        Thread connectThread = new Thread() {
+        int step = Integer.parseInt(txtGetStep.getText().trim());
+        for (int i = 0; i < step; ++i) {
+            final Runnable task = new Runnable() {
 
-            public void run() {
-                try {
-                    connectingCount.incrementAndGet();
-                    txtConnecting.setText(Integer.toString(connectingCount.get()));
+                public void run() {
+                    try {
+                        connectingCount.incrementAndGet();
 
-                    Connection conn = dataSource.getConnection();
+                        Connection conn = dataSource.getConnection();
 
-                    connectingCount.decrementAndGet();
-                    txtConnecting.setText(Integer.toString(connectingCount.get()));
+                        connectCount.incrementAndGet();
+                        connectingCount.decrementAndGet();
 
-                    activeConnections.add(conn);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                        if (conn == null) {
+                            System.out.println("get connection is null");
+                            return;
+                        }
+
+                        activeConnections.add(conn);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
-            }
-        };
-        connectThread.start();
+            };
+            executor.submit(task);
+        }
     }
 
     public void closeDataSource_actionPerformed(ActionEvent e) {
@@ -357,7 +395,9 @@ public class DruidDataSourceUIManager extends JFrame {
 
         btnInitDataSource.setEnabled(true);
         btnCloseDataSource.setEnabled(false);
-
+        btnConnect.setEnabled(false);
+        btnClose.setEnabled(false);
+        
         statusThread.interrupt();
     }
 
@@ -375,9 +415,14 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setMinIdle(Integer.parseInt(txtMinIdle.getText().trim()));
             dataSource.setMaxWait(Integer.parseInt(txtMaxWait.getText().trim()));
             dataSource.setMinEvictableIdleTimeMillis(Integer.parseInt(txtMinEvictableIdleTimeMillis.getText().trim()));
+            dataSource.setTestWhileIdle(Boolean.parseBoolean(txtTestWhileIdle.getText().trim()));
 
             Connection conn = dataSource.getConnection();
+            connectCount.incrementAndGet();
             conn.close();
+            closeCount.incrementAndGet();
+
+            executor = Executors.newCachedThreadPool();
 
             txtDriverClass.setText(dataSource.getDriverClassName());
             txtMinEvictableIdleTimeMillis.setText(Long.toString(dataSource.getMinEvictableIdleTimeMillis()));
@@ -396,6 +441,8 @@ public class DruidDataSourceUIManager extends JFrame {
 
             btnInitDataSource.setEnabled(false);
             btnCloseDataSource.setEnabled(true);
+            btnConnect.setEnabled(true);
+            btnClose.setEnabled(true);
 
             statusThread = new Thread("Watch Status") {
 
@@ -412,6 +459,10 @@ public class DruidDataSourceUIManager extends JFrame {
                         statusPanel.set("RecycleCount", dataSource.getRecycleCount());
                         statusPanel.set("ActiveCount", dataSource.getActiveCount());
                         statusPanel.set("PoolingCount", dataSource.getPoolingCount());
+                        statusPanel.set("IdleCheckCount", dataSource.getIdleCheckCount());
+                        statusPanel.set("UI_GettingCount", connectingCount.get());
+                        statusPanel.set("UI_GetCount", connectCount.get());
+                        statusPanel.set("UI_ReleaseCount", closeCount.get());
 
                         try {
                             Thread.sleep(100);

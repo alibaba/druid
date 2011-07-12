@@ -143,6 +143,15 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected ValidConnectionChecker validConnectionChecker                    = null;
 
     protected final AtomicLong       errorCount                                = new AtomicLong();
+    protected final AtomicLong       dupCloseCount                             = new AtomicLong();
+
+    public long getDupCloseCount() {
+        return dupCloseCount.get();
+    }
+
+    public void incrementDupCloseCount() {
+        dupCloseCount.incrementAndGet();
+    }
 
     public ValidConnectionChecker getValidConnectionChecker() {
         return validConnectionChecker;

@@ -38,6 +38,8 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.PooledConnection;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 
@@ -45,6 +47,8 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PoolableConnection implements PooledConnection, Connection {
+
+    private final static Log   LOG = LogFactory.getLog(PoolableConnection.class);
 
     protected Connection       conn;
     protected ConnectionHolder holder;
@@ -116,6 +120,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void close() throws SQLException {
         if (holder == null) {
+            LOG.warn("dup close");
             return;
         }
 
@@ -156,8 +161,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         checkOpen();
 
         if (holder.isPoolPreparedStatements()) {
@@ -181,8 +185,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-                                              int resultSetHoldability) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         checkOpen();
 
         if (holder.isPoolPreparedStatements()) {
@@ -195,8 +198,7 @@ public class PoolableConnection implements PooledConnection, Connection {
                 return poolableStatement;
             }
 
-            PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency,
-                                                           resultSetHoldability);
+            PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 
             holder.getDataSource().initStatement(stmt);
 
@@ -305,8 +307,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-                                         int resultSetHoldability) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         checkOpen();
 
         if (holder.isPoolPreparedStatements()) {
@@ -370,8 +371,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-                                                                                                           throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         checkOpen();
 
         Statement stmt = conn.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
