@@ -629,7 +629,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
-            final List<Connection> evictList = new ArrayList<Connection>();
+            final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
             FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
@@ -646,8 +646,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    int removeCount = 0;
-                    ConnectionHolder first = null;
+                    int evictCount = 0;
                     lock.lock();
                     try {
                         int numTestsPerEvictionRun = DruidDataSource.this.numTestsPerEvictionRun;
@@ -656,7 +655,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
 
                         for (int i = 0; i < numTestsPerEvictionRun; ++i) {
-                            first = connections[0];
+                            ConnectionHolder first = connections[0];
 
                             if (first == null) {
                                 continue FOR_0;
@@ -673,17 +672,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 // removete first
                                 System.arraycopy(connections, 1, connections, 0, count - 1);
                                 connections[--count] = null;
+                                evictList.add(first);
+                                evictCount++;
                             }
                         }
                     } finally {
                         lock.unlock();
                     }
 
-                    Connection connection = first.getConnection();
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        LOG.error("create connection error", e);
+                    for (ConnectionHolder item : evictList) {
+                        Connection connection = item.getConnection();
+                        try {
+                            connection.close();
+                        } catch (SQLException e) {
+                            LOG.error("create connection error", e);
+                        }
                     }
 
                     destroyCount++;
