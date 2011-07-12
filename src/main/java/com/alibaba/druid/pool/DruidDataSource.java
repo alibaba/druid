@@ -693,7 +693,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
                         }
 
-                        if (idleCount > 0) {
+                        if (idleCount > 0 && isTestWhileIdle()) {
                             ConnectionHolder[] idleConnections = new ConnectionHolder[idleCount];
                             System.arraycopy(connections, 0, idleConnections, 0, idleCount);
                             System.arraycopy(connections, idleCount, connections, 0, count - idleCount);
