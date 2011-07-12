@@ -83,6 +83,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ConnectionHolder[]                                                   connections;
     private int                                                                  count                       = 0;
     private int                                                                  activeCount                 = 0;
+    private long                                                                 idleCheckCount              = 0;
 
     // threads
     private CreateConnectionThread                                               createConnectionThread;
@@ -703,6 +704,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 } else {
                                     evictList.add(idleConnection);
                                 }
+                                idleCheckCount++;
                             }
                         }
                     } finally {

@@ -27,6 +27,7 @@ public class Case3 extends TestCase {
     private int     TEST_COUNT       = 3;
     final int       LOOP_COUNT      = 1000 * 1;
     private boolean testOnBorrow    = true;
+    private String connectionProperties = "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -41,7 +42,7 @@ public class Case3 extends TestCase {
     
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
-            //druid();
+            druid();
             dbcp();
         }
     }
@@ -60,6 +61,7 @@ public class Case3 extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setConnectionProperties(connectionProperties);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
@@ -81,6 +83,7 @@ public class Case3 extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setConnectionProperties(connectionProperties);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
