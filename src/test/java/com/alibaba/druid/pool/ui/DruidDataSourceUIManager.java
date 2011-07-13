@@ -96,6 +96,7 @@ public class DruidDataSourceUIManager extends JFrame {
     private AtomicInteger                           connectingCount               = new AtomicInteger();
     private AtomicInteger                           connectCount                  = new AtomicInteger();
     private AtomicInteger                           closeCount                    = new AtomicInteger();
+    private AtomicInteger                           executingCount                = new AtomicInteger();
 
     private Thread                                  statusThread;
 
@@ -406,15 +407,20 @@ public class DruidDataSourceUIManager extends JFrame {
                             return;
                         }
 
-                        Statement stmt = conn.createStatement();
-                        stmt.setQueryTimeout(5);
-                        ResultSet rs = stmt.executeQuery("SELECT * FROM address LIMIT 10");
-                        while (rs.next()) {
-                            rs.getObject(1);
+                        executingCount.incrementAndGet();
+                        try {
+                            Statement stmt = conn.createStatement();
+                            stmt.setQueryTimeout(5);
+                            ResultSet rs = stmt.executeQuery("SELECT 1");
+                            while (rs.next()) {
+                                rs.getObject(1);
+                            }
+                            Thread.sleep(1000 * 3);
+                            rs.close();
+                            stmt.close();
+                        } finally {
+                            executingCount.decrementAndGet();
                         }
-                        rs.close();
-
-                        stmt.close();
 
                         activeConnections.add(conn);
                     } catch (Exception ex) {
@@ -514,6 +520,7 @@ public class DruidDataSourceUIManager extends JFrame {
                         statusPanel.set("UI_GettingCount", connectingCount.get());
                         statusPanel.set("UI_GetCount", connectCount.get());
                         statusPanel.set("UI_ReleaseCount", closeCount.get());
+                        statusPanel.set("UI_ExecutingCount", executingCount.get());
 
                         try {
                             Thread.sleep(100);
@@ -555,6 +562,8 @@ public class DruidDataSourceUIManager extends JFrame {
                                     rs.close();
                                     stmt.close();
 
+                                    Thread.sleep(1);
+
                                     conn.close();
                                 }
                             } catch (Exception ex) {
@@ -583,7 +592,7 @@ public class DruidDataSourceUIManager extends JFrame {
                 System.out.println("thread " + threadCount + " druid millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
             }
         };
-        
+
         executor.submit(task);
     }
 

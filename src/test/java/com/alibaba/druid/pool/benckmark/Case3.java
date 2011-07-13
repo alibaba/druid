@@ -31,7 +31,7 @@ public class Case3 extends TestCase {
     private String  validationQuery               = "SELECT 1"; // "SELECT 1";
     private int     threadCount                   = 10;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 10;
+    final int       LOOP_COUNT                    = 1000 * 1;
     private boolean testOnBorrow                  = false;
     private String  connectionProperties          = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                           = "SELECT 1";
@@ -43,11 +43,11 @@ public class Case3 extends TestCase {
         user = "dragoon25";
         password = "dragoon25";
         //driverClass = "com.alibaba.druid.mock.MockDriver";
-        connectionProperties = "connectSleep=3;executeSleep=0";
+//        connectionProperties = "connectSleep=3;executeSleep=0";
         
-         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-         user = "root";
-         password = "root";
+//         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+//         user = "root";
+//         password = "root";
     }
 
     public void test_perf() throws Exception {
@@ -160,6 +160,8 @@ public class Case3 extends TestCase {
                             }
                             rs.close();
                             stmt.close();
+                            
+                            Thread.sleep(1);
 
                             conn.close();
                         }

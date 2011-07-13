@@ -74,7 +74,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
                     return executeQueryFromDual(statement, query);
                 }
             }
-            throw new SQLException("TODO");
+            throw new SQLException("TODO : " + query);
         } else if (from == null) {
             return executeQueryFromDual(statement, query);
         } else {
