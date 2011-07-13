@@ -505,9 +505,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 //        if (count <= minIdle - 1) {
 //            lowWater.signal();
 //        }
-        if (count == 0) {
-            lowWater.signal();
-        }
+//        if (count == 0) {
+//            lowWater.signal();
+//        }
 
         return last;
     }
@@ -547,9 +547,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connections[lastIndex] = null;
             count--;
 
-            if (lastIndex == minIdle - 1) {
-                lowWater.signal();
-            }
+//            if (lastIndex == minIdle - 1) {
+//                lowWater.signal();
+//            }
+//            if (count == 0) {
+//                lowWater.signal();
+//            }
 
             return last;
         }
