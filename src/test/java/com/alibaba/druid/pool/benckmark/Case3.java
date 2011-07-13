@@ -41,22 +41,22 @@ public class Case3 extends TestCase {
     private long    minEvictableIdleTimeMillis    = 60000;
 
     protected void setUp() throws Exception {
-//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-//        user = "dragoon25";
-//        password = "dragoon25";
-//        driverClass = "com.alibaba.druid.mock.MockDriver";
-//        connectionProperties = "connectSleep=3;executeSleep=0";
+        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        user = "dragoon25";
+        password = "dragoon25";
+        driverClass = "com.alibaba.druid.mock.MockDriver";
+        connectionProperties = "connectSleep=3;executeSleep=1";
 
-        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        user = "root";
-        password = "root";
-        driverClass = "com.mysql.jdbc.Driver";
+//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+//        user = "root";
+//        password = "root";
+//        driverClass = "com.mysql.jdbc.Driver";
     }
 
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             druid();
-            dbcp();
+//            dbcp();
             // boneCP();
         }
     }
