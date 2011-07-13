@@ -188,6 +188,6 @@ public class Case3 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC + ", TX " + count.get());
+        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC + ", TX " + count.get() + ", error " + errorCount.get());
     }
 }
