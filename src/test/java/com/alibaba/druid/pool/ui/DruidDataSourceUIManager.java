@@ -10,7 +10,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
+import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
 public class DruidDataSourceUIManager extends JFrame {
@@ -37,6 +40,8 @@ public class DruidDataSourceUIManager extends JFrame {
     private JButton                                 btnCloseDataSource            = new JButton("Close Pool");
     private JButton                                 btnConnect                    = new JButton("Get Connection");
     private JButton                                 btnClose                      = new JButton("Close Connection");
+
+    private JButton                                 btnCase_0                     = new JButton("Case 0");
 
     private JPanel                                  mainPanel                     = new JPanel();
     private JScrollPane                             scrollPane                    = new JScrollPane(mainPanel);
@@ -268,12 +273,12 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER, lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, txtTestWhileIdle, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestWhileIdle, 0, SpringLayout.EAST, txtUrl);
-        
+
         mainPanel.add(lbTestOnBorrow);
         layout.putConstraint(SpringLayout.NORTH, lbTestOnBorrow, 10, SpringLayout.SOUTH, lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, lbTestOnBorrow, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, lbTestOnBorrow, 0, SpringLayout.EAST, lbUrl);
-        
+
         mainPanel.add(txtTestOnBorrow);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestOnBorrow, 0, SpringLayout.VERTICAL_CENTER, lbTestOnBorrow);
         layout.putConstraint(SpringLayout.WEST, txtTestOnBorrow, 0, SpringLayout.WEST, txtUrl);
@@ -305,6 +310,7 @@ public class DruidDataSourceUIManager extends JFrame {
         btnCloseDataSource.setEnabled(false);
         btnConnect.setEnabled(false);
         btnClose.setEnabled(false);
+        btnCase_0.setEnabled(false);
 
         mainPanel.add(btnConnect);
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnConnect, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
@@ -352,6 +358,23 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtReleaseStep, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, txtReleaseStep, 10, SpringLayout.EAST, btnClose);
         layout.putConstraint(SpringLayout.EAST, txtReleaseStep, 40, SpringLayout.WEST, txtReleaseStep);
+
+        mainPanel.add(btnCase_0);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnCase_0, 0, SpringLayout.VERTICAL_CENTER, txtReleaseStep);
+        layout.putConstraint(SpringLayout.WEST, btnCase_0, 10, SpringLayout.EAST, txtReleaseStep);
+        btnCase_0.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    case_0();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
+        });
+
         // txtReleaseStep
 
         mainPanel.add(statusPanel);
@@ -382,7 +405,7 @@ public class DruidDataSourceUIManager extends JFrame {
                             System.out.println("get connection is null");
                             return;
                         }
-                        
+
                         Statement stmt = conn.createStatement();
                         stmt.setQueryTimeout(5);
                         ResultSet rs = stmt.executeQuery("SELECT * FROM address LIMIT 10");
@@ -390,7 +413,7 @@ public class DruidDataSourceUIManager extends JFrame {
                             rs.getObject(1);
                         }
                         rs.close();
-                        
+
                         stmt.close();
 
                         activeConnections.add(conn);
@@ -422,6 +445,7 @@ public class DruidDataSourceUIManager extends JFrame {
         btnCloseDataSource.setEnabled(false);
         btnConnect.setEnabled(false);
         btnClose.setEnabled(false);
+        btnCase_0.setEnabled(false);
 
         statusThread.interrupt();
     }
@@ -469,6 +493,7 @@ public class DruidDataSourceUIManager extends JFrame {
             btnCloseDataSource.setEnabled(true);
             btnConnect.setEnabled(true);
             btnClose.setEnabled(true);
+            btnCase_0.setEnabled(true);
 
             statusThread = new Thread("Watch Status") {
 
@@ -502,6 +527,64 @@ public class DruidDataSourceUIManager extends JFrame {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void case_0() throws Exception {
+        Runnable task = new Runnable() {
+
+            public void run() {
+                final int threadCount = 40;
+                final int LOOP_COUNT = 1000 * 1000;
+                final String sql = "SELECT 1";
+                final CountDownLatch startLatch = new CountDownLatch(1);
+                final CountDownLatch endLatch = new CountDownLatch(1);
+                for (int i = 0; i < threadCount; ++i) {
+                    Thread thread = new Thread() {
+
+                        public void run() {
+                            try {
+                                startLatch.await();
+
+                                for (int i = 0; i < LOOP_COUNT; ++i) {
+                                    Connection conn = dataSource.getConnection();
+                                    Statement stmt = conn.createStatement();
+                                    ResultSet rs = stmt.executeQuery(sql);
+                                    while (rs.next()) {
+                                        rs.getInt(1);
+                                    }
+                                    rs.close();
+                                    stmt.close();
+
+                                    conn.close();
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            endLatch.countDown();
+                        }
+                    };
+                    thread.start();
+                }
+                long startMillis = System.currentTimeMillis();
+                long startYGC = TestUtil.getYoungGC();
+                long startFullGC = TestUtil.getFullGC();
+                startLatch.countDown();
+                try {
+                    endLatch.await();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                long millis = System.currentTimeMillis() - startMillis;
+                long ygc = TestUtil.getYoungGC() - startYGC;
+                long fullGC = TestUtil.getFullGC() - startFullGC;
+
+                System.out.println("thread " + threadCount + " druid millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+            }
+        };
+        
+        executor.submit(task);
     }
 
     public static void main(String[] args) {
