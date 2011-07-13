@@ -486,7 +486,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         try {
             while (count == 0) {
-                if (minIdle == 0) {
+                if (minIdle == 0 || activeCount < maxActive) {
                     lowWater.signal();
                 }
 
@@ -505,9 +505,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 //        if (count <= minIdle - 1) {
 //            lowWater.signal();
 //        }
-        if (count == 0) {
-            lowWater.signal();
-        }
+//        if (count == 0) {
+//            lowWater.signal();
+//        }
 
         return last;
     }
