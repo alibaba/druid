@@ -31,6 +31,7 @@ public class Case3 extends TestCase {
     private boolean testOnBorrow         = false;
     private String  connectionProperties = ""; //"bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                  = "SELECT 1";
+    
 
     protected void setUp() throws Exception {
 //        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
