@@ -22,6 +22,7 @@ public class Case3 extends TestCase {
     private String  password;
     private String  driverClass;
     private int     maxIdle              = 40;
+    private int     minIdle              = 10;
     private int     maxActive            = 40;
     private int     maxWait              = -1;
     private String  validationQuery      = "SELECT 1";                                                                                      // "SELECT 1";
@@ -57,6 +58,7 @@ public class Case3 extends TestCase {
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
+        dataSource.setMinIdle(minIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
@@ -80,6 +82,7 @@ public class Case3 extends TestCase {
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
+        dataSource.setMinIdle(minIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
