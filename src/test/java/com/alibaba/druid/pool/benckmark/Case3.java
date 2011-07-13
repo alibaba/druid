@@ -187,6 +187,8 @@ public class Case3 extends TestCase {
         long millis = System.currentTimeMillis() - startMillis;
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
+        
+        Thread.sleep(1);
 
         System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC + ", TX " + count.get() + ", error " + errorCount.get());
     }
