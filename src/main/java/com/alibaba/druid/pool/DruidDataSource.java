@@ -259,7 +259,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             PoolableConnection poolalbeConnection = getConnectionInternal();
 
             if (isTestOnBorrow()) {
-                boolean validate = testConnection(poolalbeConnection.getRawConnection());
+                boolean validate = testConnection(poolalbeConnection.getConnection());
                 if (!validate) {
                     LOG.debug("skip not validate connection.");
                     Connection realConnection = poolalbeConnection.getConnection();

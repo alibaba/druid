@@ -104,10 +104,6 @@ public class PoolableConnection implements PooledConnection, Connection {
         this.holder.getStatementPool().put(stmt);
     }
 
-    public Connection getRawConnection() {
-        return conn;
-    }
-
     public ConnectionHolder getConnectionHolder() {
         return holder;
     }

@@ -41,6 +41,10 @@ public class PoolableCallableStatement extends PoolablePreparedStatement impleme
         this.stmt = stmt;
     }
 
+    public CallableStatement getCallableStatementRaw() {
+        return stmt;
+    }
+
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
         try {
