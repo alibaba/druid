@@ -22,13 +22,13 @@ public class Case3 extends TestCase {
     private String  password;
     private String  driverClass;
     private int     maxIdle              = 40;
-    private int     maxActive            = 50;
-    private int     maxWait              = -1;
-    private String  validationQuery      = null;                                                                                      // "SELECT 1";
+    private int     maxActive            = 40;
+    private int     maxWait              = 500;
+    private String  validationQuery      = "SELECT 1";                                                                                      // "SELECT 1";
     private int     threadCount          = 40;
     private int     TEST_COUNT           = 3;
     final int       LOOP_COUNT           = 1000 * 10;
-    private boolean testOnBorrow         = true;
+    private boolean testOnBorrow         = false;
     private String  connectionProperties = ""; //"bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                  = "SELECT 1";
     
