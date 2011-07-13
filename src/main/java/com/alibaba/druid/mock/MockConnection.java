@@ -45,16 +45,27 @@ public class MockConnection implements Connection {
 
     private MockDriver driver;
 
-    public MockConnection(){
+    private Properties connectProperties;
 
+    public MockConnection(){
+        this(null);
     }
 
     public MockConnection(MockDriver driver){
+        this(driver, new Properties());
+    }
+
+    public MockConnection(MockDriver driver, Properties connectProperties){
         this.driver = driver;
+        this.connectProperties = connectProperties;
     }
 
     public MockDriver getDriver() {
         return driver;
+    }
+
+    public Properties getConnectProperties() {
+        return connectProperties;
     }
 
     public void setDriver(MockDriver driver) {

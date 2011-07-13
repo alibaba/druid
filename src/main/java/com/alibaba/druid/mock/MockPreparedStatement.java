@@ -60,8 +60,8 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        if (fakeConnection != null && fakeConnection.getDriver() != null) {
-            return fakeConnection.getDriver().createResultSet(this);
+        if (mockConnection != null && mockConnection.getDriver() != null) {
+            return mockConnection.getDriver().createResultSet(this);
         }
 
         return new MockResultSet(this);

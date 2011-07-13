@@ -29,20 +29,21 @@ public class Case3 extends TestCase {
     private String  validationQuery      = "SELECT 1"; // "SELECT 1";
     private int     threadCount          = 10;
     private int     TEST_COUNT           = 3;
-    final int       LOOP_COUNT           = 1000 * 10;
+    final int       LOOP_COUNT           = 1000 * 1;
     private boolean testOnBorrow         = false;
     private String  connectionProperties = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                  = "SELECT 1";
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        // user = "dragoon25";
-        // password = "dragoon25";
-        // driverClass = "com.alibaba.druid.mock.MockDriver";
-
-        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        user = "root";
-        password = "root";
+        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        user = "dragoon25";
+        password = "dragoon25";
+        driverClass = "com.alibaba.druid.mock.MockDriver";
+        connectionProperties = "connectSleep=3;executeSleep=1";
+        //
+        // jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        // user = "root";
+        // password = "root";
     }
 
     public void test_perf() throws Exception {

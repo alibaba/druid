@@ -26,23 +26,23 @@ public class MockStatement implements Statement {
     public final static String ERROR_SQL = "THROW ERROR";
 
     private Connection         connection;
-    protected MockConnection   fakeConnection;
+    protected MockConnection   mockConnection;
 
     public MockStatement(Connection connection){
         super();
         this.connection = connection;
 
         if (connection instanceof MockConnection) {
-            fakeConnection = (MockConnection) connection;
+            mockConnection = (MockConnection) connection;
         }
     }
 
-    public MockConnection getFakeConnection() {
-        return fakeConnection;
+    public MockConnection getMockConnection() {
+        return mockConnection;
     }
 
     public void setFakeConnection(MockConnection fakeConnection) {
-        this.fakeConnection = fakeConnection;
+        this.mockConnection = fakeConnection;
         this.connection = fakeConnection;
     }
 
@@ -58,8 +58,8 @@ public class MockStatement implements Statement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        if (fakeConnection != null && fakeConnection.getDriver() != null) {
-            return fakeConnection.getDriver().executeQuery(this, sql);
+        if (mockConnection != null && mockConnection.getDriver() != null) {
+            return mockConnection.getDriver().executeQuery(this, sql);
         }
 
         return new MockResultSet(this);

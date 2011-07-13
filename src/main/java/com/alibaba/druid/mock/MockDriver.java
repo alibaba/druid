@@ -87,7 +87,19 @@ public class MockDriver implements Driver {
             return null;
         }
 
-        MockConnection conn = new MockConnection(this);
+        if (info != null) {
+            Object val = info.get("connectSleep");
+            if (val != null) {
+                long millis = Long.parseLong(val.toString());
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                    // skip
+                }
+            }
+        }
+
+        MockConnection conn = new MockConnection(this, info);
 
         if (url == null) {
             connectCount.incrementAndGet();
@@ -143,6 +155,23 @@ public class MockDriver implements Driver {
     }
 
     protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
+        MockConnection conn = stmt.getMockConnection();
+
+        if (conn != null) {
+            if (conn.getConnectProperties() != null) {
+                Object propertyValue = conn.getConnectProperties().get("executeSleep");
+
+                if (propertyValue != null) {
+                    long millis = Long.parseLong(propertyValue.toString());
+                    try {
+                        Thread.sleep(millis);
+                    } catch (InterruptedException e) {
+                        // skip
+                    }
+                }
+            }
+        }
+
         if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
             MockResultSet rs = new MockResultSet(stmt);
 
