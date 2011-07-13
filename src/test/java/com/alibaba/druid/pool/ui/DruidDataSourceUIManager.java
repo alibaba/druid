@@ -534,7 +534,7 @@ public class DruidDataSourceUIManager extends JFrame {
 
             public void run() {
                 final int threadCount = 10;
-                final int LOOP_COUNT = 1000 * 1000;
+                final int LOOP_COUNT = 1000 * 100;
                 final String sql = "SELECT 1";
                 final CountDownLatch startLatch = new CountDownLatch(1);
                 final CountDownLatch endLatch = new CountDownLatch(1);

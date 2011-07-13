@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.NumberFormat;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import javax.sql.DataSource;
@@ -14,6 +15,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
 
 public class Case3 extends TestCase {
 
@@ -21,39 +23,70 @@ public class Case3 extends TestCase {
     private String  user;
     private String  password;
     private String  driverClass;
-    private int     initialSize          = 1;
-    private int     minIdle              = 1;
-    private int     maxIdle              = 14;
-    private int     maxActive            = 14;
-    private int     maxWait              = -1;
-    private String  validationQuery      = "SELECT 1"; // "SELECT 1";
-    private int     threadCount          = 10;
-    private int     TEST_COUNT           = 3;
-    final int       LOOP_COUNT           = 1000 * 1;
-    private boolean testOnBorrow         = false;
-    private String  connectionProperties = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
-    private String  sql                  = "SELECT 1";
+    private int     initialSize                   = 1;
+    private int     minIdle                       = 1;
+    private int     maxIdle                       = 14;
+    private int     maxActive                     = 14;
+    private int     maxWait                       = -1;
+    private String  validationQuery               = "SELECT 1"; // "SELECT 1";
+    private int     threadCount                   = 1;
+    private int     TEST_COUNT                    = 3;
+    final int       LOOP_COUNT                    = 1000 * 10;
+    private boolean testOnBorrow                  = false;
+    private String  connectionProperties          = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
+    private String  sql                           = "SELECT 1";
+    private long    timeBetweenEvictionRunsMillis = 60000;
+    private long    minEvictableIdleTimeMillis    = 60000;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
         user = "dragoon25";
         password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
-        connectionProperties = "connectSleep=3;executeSleep=1";
-        //
-        // jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        // user = "root";
-        // password = "root";
+        //driverClass = "com.alibaba.druid.mock.MockDriver";
+        connectionProperties = "connectSleep=3;executeSleep=0";
+        
+         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+         user = "root";
+         password = "root";
     }
 
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             druid();
             dbcp();
+            //boneCP();
         }
+    }
+    
+    public void boneCP() throws Exception {
+        BoneCPDataSource dataSource = new BoneCPDataSource();
+        // dataSource.(10);
+        // dataSource.setMaxActive(50);
+        dataSource.setMinConnectionsPerPartition(minIdle);
+        dataSource.setMaxConnectionsPerPartition(maxIdle);
+
+        dataSource.setDriverClass(driverClass);
+        dataSource.setJdbcUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        dataSource.setConnectionTestStatement(validationQuery);
+        dataSource.setPartitionCount(1);
+        Properties connectionProperties = new Properties();
+        connectionProperties.put("connectSleep", "3");
+        connectionProperties.put("executeSleep", "1");
+        dataSource.setDriverProperties(connectionProperties);
+        
+
+        for (int i = 0; i < TEST_COUNT; ++i) {
+            p0(dataSource, "boneCP", threadCount);
+        }
+        System.out.println();
     }
 
     public void druid() throws Exception {
+        
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -70,6 +103,8 @@ public class Case3 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
         dataSource.setConnectionProperties(connectionProperties);
+        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
@@ -95,6 +130,8 @@ public class Case3 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
         dataSource.setConnectionProperties(connectionProperties);
+        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
