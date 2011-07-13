@@ -31,7 +31,7 @@ public class Case3 extends TestCase {
     private String  validationQuery               = "SELECT 1"; // "SELECT 1";
     private int     threadCount                   = 1;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 10;
+    final int       LOOP_COUNT                    = 1000 * 100;
     private boolean testOnBorrow                  = false;
     private String  connectionProperties          = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                           = "SELECT 1";
