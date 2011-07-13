@@ -23,7 +23,7 @@ public class Case3 extends TestCase {
     private String  driverClass;
     private int     maxIdle              = 40;
     private int     maxActive            = 40;
-    private int     maxWait              = 500;
+    private int     maxWait              = -1;
     private String  validationQuery      = "SELECT 1";                                                                                      // "SELECT 1";
     private int     threadCount          = 40;
     private int     TEST_COUNT           = 3;
