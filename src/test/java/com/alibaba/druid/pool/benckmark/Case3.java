@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -39,25 +40,25 @@ public class Case3 extends TestCase {
     private long    minEvictableIdleTimeMillis    = 60000;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        user = "dragoon25";
-        password = "dragoon25";
-        //driverClass = "com.alibaba.druid.mock.MockDriver";
-//        connectionProperties = "connectSleep=3;executeSleep=0";
-        
-//         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-//         user = "root";
-//         password = "root";
+//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+//        user = "dragoon25";
+//        password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
+        // connectionProperties = "connectSleep=3;executeSleep=0";
+
+         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+         user = "root";
+         password = "root";
     }
 
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             druid();
             dbcp();
-            //boneCP();
+            // boneCP();
         }
     }
-    
+
     public void boneCP() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
@@ -77,7 +78,6 @@ public class Case3 extends TestCase {
         connectionProperties.put("connectSleep", "3");
         connectionProperties.put("executeSleep", "1");
         dataSource.setDriverProperties(connectionProperties);
-        
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "boneCP", threadCount);
@@ -86,7 +86,7 @@ public class Case3 extends TestCase {
     }
 
     public void druid() throws Exception {
-        
+
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -141,6 +141,7 @@ public class Case3 extends TestCase {
     }
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
+        final AtomicInteger count = new AtomicInteger();
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(1);
@@ -160,7 +161,7 @@ public class Case3 extends TestCase {
                             }
                             rs.close();
                             stmt.close();
-                            
+
                             Thread.sleep(1);
 
                             conn.close();
@@ -183,6 +184,6 @@ public class Case3 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC + ", TX " + count.get());
     }
 }
