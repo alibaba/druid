@@ -23,7 +23,7 @@ public class PasswordCallbackTest extends TestCase {
         conn.close();
         
         Assert.assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
-        Assert.assertEquals(dataSource.getConnectionProperties(), passwordCallback.getProperties());
+        Assert.assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
     }
 
     public static class TestPasswordCallback extends PasswordCallback {

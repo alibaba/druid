@@ -526,11 +526,11 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         this.password = password;
     }
 
-    public Properties getConnectionProperties() {
+    public Properties getConnectProperties() {
         return connectionProperties;
     }
 
-    public void setConnectionProperties(Properties connectionProperties) {
+    public void setConnectProperties(Properties connectionProperties) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
@@ -827,7 +827,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             this.dataSource = dataSource;
             this.url = dataSource.getUrl();
 
-            Properties properties = dataSource.getConnectionProperties();
+            Properties properties = dataSource.getConnectProperties();
             String user;
             if (dataSource.getUserCallback() != null) {
                 user = dataSource.getUserCallback().getName();
@@ -870,7 +870,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
                 password = dataSource.getPassword();
             }
 
-            this.info = new Properties(dataSource.getConnectionProperties());
+            this.info = new Properties(dataSource.getConnectProperties());
 
             if (properties != null) {
                 info.putAll(properties);
