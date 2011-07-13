@@ -38,6 +38,7 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -662,13 +663,13 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     public void setExceptionSoter(String exceptionSorter) throws Exception {
         if (exceptionSorter == null) {
-            this.exceptionSoter = null;
+            this.exceptionSoter = NullExceptionSorter.getInstance();
             return;
         }
 
         exceptionSorter = exceptionSorter.trim();
         if (exceptionSorter.length() == 0) {
-            this.exceptionSoter = null;
+            this.exceptionSoter = NullExceptionSorter.getInstance();
             return;
         }
 

@@ -44,8 +44,13 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
+import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -168,12 +173,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
             if ("mysql".equals(dbType)) {
-                // this.validConnectionChecker = new MySqlValidConnectionChecker();
-                this.validConnectionChecker = null;
+                this.validConnectionChecker = new MySqlValidConnectionChecker();
+                this.exceptionSoter = new MySqlExceptionSorter();
             } else if ("oracle".equals(dbType)) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
+                this.exceptionSoter = new OracleExceptionSorter();
             } else if ("sqlserver".equals(dbType)) {
                 this.validConnectionChecker = new MSSQLValidConnectionChecker();
+            } else if ("informix".equals(dbType)) {
+                this.exceptionSoter = new InformixExceptionSorter();
+            } else if ("sybase".equals(dbType)) {
+                this.exceptionSoter = new SybaseExceptionSorter();
             }
 
             for (Filter filter : filters) {

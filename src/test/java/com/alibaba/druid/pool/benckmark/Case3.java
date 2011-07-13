@@ -42,7 +42,7 @@ public class Case3 extends TestCase {
     
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
-            druid();
+           // druid();
             dbcp();
         }
     }
@@ -66,6 +66,7 @@ public class Case3 extends TestCase {
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
         }
+        dataSource.close();
         System.out.println();
     }
 
@@ -88,7 +89,7 @@ public class Case3 extends TestCase {
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
         }
-        dataSource.close();
+        //dataSource.close();
         System.out.println();
     }
     
