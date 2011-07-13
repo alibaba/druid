@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -40,15 +41,16 @@ public class Case3 extends TestCase {
     private long    minEvictableIdleTimeMillis    = 60000;
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        // user = "dragoon25";
-        // password = "dragoon25";
-        // driverClass = "com.alibaba.druid.mock.MockDriver";
-        // connectionProperties = "connectSleep=3;executeSleep=0";
+//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+//        user = "dragoon25";
+//        password = "dragoon25";
+//        driverClass = "com.alibaba.druid.mock.MockDriver";
+//        connectionProperties = "connectSleep=3;executeSleep=0";
 
         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
         user = "root";
         password = "root";
+        driverClass = "com.mysql.jdbc.Driver";
     }
 
     public void test_perf() throws Exception {
@@ -145,7 +147,7 @@ public class Case3 extends TestCase {
         final AtomicInteger errorCount = new AtomicInteger();
 
         final CountDownLatch startLatch = new CountDownLatch(1);
-        final CountDownLatch endLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
 
@@ -188,8 +190,9 @@ public class Case3 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
         
+        Assert.assertEquals(LOOP_COUNT * threadCount, count.get());
         Thread.sleep(1);
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC + ", TX " + count.get() + ", error " + errorCount.get());
+        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

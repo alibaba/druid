@@ -110,7 +110,7 @@ public class CaseKylin extends TestCase {
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
 
         final CountDownLatch startLatch = new CountDownLatch(1);
-        final CountDownLatch endLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(threadCount);
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
 
