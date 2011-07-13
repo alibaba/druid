@@ -165,6 +165,7 @@ public class Case3 extends TestCase {
                             Thread.sleep(1);
 
                             conn.close();
+                            count.incrementAndGet();
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
