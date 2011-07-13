@@ -545,7 +545,8 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         }
 
         if (connectionProperties == null) {
-            throw new NullPointerException("connectionProperties is null");
+            this.connectionProperties.clear();
+            return;
         }
 
         String[] entries = connectionProperties.split(";");

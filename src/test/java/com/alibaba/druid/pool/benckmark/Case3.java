@@ -25,11 +25,12 @@ public class Case3 extends TestCase {
     private int     maxActive            = 50;
     private int     maxWait              = -1;
     private String  validationQuery      = null;                                                                                      // "SELECT 1";
-    private int     threadCount          = 5;
+    private int     threadCount          = 40;
     private int     TEST_COUNT           = 3;
-    final int       LOOP_COUNT           = 1000 * 1000;
+    final int       LOOP_COUNT           = 1000 * 10;
     private boolean testOnBorrow         = false;
-    private String  connectionProperties = "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
+    private String  connectionProperties = ""; //"bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
+    private String  sql                  = "SELECT 1";
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -45,7 +46,7 @@ public class Case3 extends TestCase {
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
             druid();
-            // dbcp();
+            dbcp();
         }
     }
 
@@ -109,7 +110,7 @@ public class Case3 extends TestCase {
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
                             Statement stmt = conn.createStatement();
-                            ResultSet rs = stmt.executeQuery("SELECT 1");
+                            ResultSet rs = stmt.executeQuery(sql);
                             while (rs.next()) {
                                 rs.getInt(1);
                             }
