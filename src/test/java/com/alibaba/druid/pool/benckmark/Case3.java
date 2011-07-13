@@ -40,15 +40,15 @@ public class Case3 extends TestCase {
     private long    minEvictableIdleTimeMillis    = 60000;
 
     protected void setUp() throws Exception {
-//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-//        user = "dragoon25";
-//        password = "dragoon25";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
         // driverClass = "com.alibaba.druid.mock.MockDriver";
         // connectionProperties = "connectSleep=3;executeSleep=0";
 
-         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-         user = "root";
-         password = "root";
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
     }
 
     public void test_perf() throws Exception {
@@ -142,6 +142,7 @@ public class Case3 extends TestCase {
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
         final AtomicInteger count = new AtomicInteger();
+        final AtomicInteger errorCount = new AtomicInteger();
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(1);
@@ -167,10 +168,12 @@ public class Case3 extends TestCase {
                             conn.close();
                             count.incrementAndGet();
                         }
-                    } catch (Exception ex) {
+                    } catch (Throwable ex) {
+                        errorCount.incrementAndGet();
                         ex.printStackTrace();
+                    } finally {
+                        endLatch.countDown();
                     }
-                    endLatch.countDown();
                 }
             };
             thread.start();
