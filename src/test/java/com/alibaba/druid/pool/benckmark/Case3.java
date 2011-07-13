@@ -28,7 +28,7 @@ public class Case3 extends TestCase {
     private int     threadCount          = 40;
     private int     TEST_COUNT           = 3;
     final int       LOOP_COUNT           = 1000 * 10;
-    private boolean testOnBorrow         = false;
+    private boolean testOnBorrow         = true;
     private String  connectionProperties = ""; //"bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                  = "SELECT 1";
     
