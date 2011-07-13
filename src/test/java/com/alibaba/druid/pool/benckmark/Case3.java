@@ -21,24 +21,24 @@ public class Case3 extends TestCase {
     private String  user;
     private String  password;
     private String  driverClass;
-    private int     maxIdle              = 40;
-    private int     minIdle              = 10;
-    private int     maxActive            = 40;
+    private int     initialSize          = 1;
+    private int     minIdle              = 1;
+    private int     maxIdle              = 14;
+    private int     maxActive            = 14;
     private int     maxWait              = -1;
-    private String  validationQuery      = "SELECT 1";                                                                                      // "SELECT 1";
+    private String  validationQuery      = "SELECT 1"; // "SELECT 1";
     private int     threadCount          = 10;
     private int     TEST_COUNT           = 3;
     final int       LOOP_COUNT           = 1000 * 10;
     private boolean testOnBorrow         = false;
-    private String  connectionProperties = ""; //"bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
+    private String  connectionProperties = "";        // "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
     private String  sql                  = "SELECT 1";
-    
 
     protected void setUp() throws Exception {
-//        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-//        user = "dragoon25";
-//        password = "dragoon25";
-//        driverClass = "com.alibaba.druid.mock.MockDriver";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
 
         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
         user = "root";
@@ -55,6 +55,7 @@ public class Case3 extends TestCase {
     public void druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
+        dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
@@ -79,6 +80,7 @@ public class Case3 extends TestCase {
     public void dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
+        dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
