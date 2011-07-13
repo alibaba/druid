@@ -365,18 +365,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             // 第四步，检查是符合MaxIdle的设定
-            if (count >= maxIdle) {
-                lock.lock();
-                try {
-                    JdbcUtils.close(conn);
-                    destroyCount++;
-                    closeCount++;
-                    decrementActiveCount();
-                } finally {
-                    lock.unlock();
-                }
-                return;
-            }
+//            if (count >= maxIdle) {
+//                lock.lock();
+//                try {
+//                    JdbcUtils.close(conn);
+//                    destroyCount++;
+//                    closeCount++;
+//                    decrementActiveCount();
+//                } finally {
+//                    lock.unlock();
+//                }
+//                return;
+//            }
 
             //
             if (isTestOnReturn()) {

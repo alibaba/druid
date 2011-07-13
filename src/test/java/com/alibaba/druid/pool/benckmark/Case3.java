@@ -1,6 +1,8 @@
 package com.alibaba.druid.pool.benckmark;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
@@ -19,31 +21,31 @@ public class Case3 extends TestCase {
     private String  user;
     private String  password;
     private String  driverClass;
-    private int     maxIdle         = 40;
-    private int     maxActive       = 50;
-    private int     maxWait         = -1;
-    private String  validationQuery = null; //"SELECT 1";
-    private int     threadCount     = 40;
-    private int     TEST_COUNT       = 3;
-    final int       LOOP_COUNT      = 1000 * 1;
-    private boolean testOnBorrow    = true;
-    private String connectionProperties = "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
+    private int     maxIdle              = 40;
+    private int     maxActive            = 50;
+    private int     maxWait              = -1;
+    private String  validationQuery      = null;                                                                                      // "SELECT 1";
+    private int     threadCount          = 5;
+    private int     TEST_COUNT           = 3;
+    final int       LOOP_COUNT           = 1000 * 1000;
+    private boolean testOnBorrow         = false;
+    private String  connectionProperties = "bigStringTryClob=true;clientEncoding=GBK;defaultRowPrefetch=50;serverEncoding=ISO-8859-1";
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        user = "dragoon25";
-        password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
-        
-//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-//        user = "root";
-//        password = "root";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
+
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
     }
-    
+
     public void test_perf() throws Exception {
         for (int i = 0; i < 10; ++i) {
-           // druid();
-            dbcp();
+            druid();
+            // dbcp();
         }
     }
 
@@ -89,10 +91,9 @@ public class Case3 extends TestCase {
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
         }
-        //dataSource.close();
+        // dataSource.close();
         System.out.println();
     }
-    
 
     private void p0(final DataSource dataSource, String name, int threadCount) throws Exception {
 
@@ -107,6 +108,14 @@ public class Case3 extends TestCase {
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
+                            Statement stmt = conn.createStatement();
+                            ResultSet rs = stmt.executeQuery("SELECT 1");
+                            while (rs.next()) {
+                                rs.getInt(1);
+                            }
+                            rs.close();
+                            stmt.close();
+
                             conn.close();
                         }
                     } catch (Exception ex) {

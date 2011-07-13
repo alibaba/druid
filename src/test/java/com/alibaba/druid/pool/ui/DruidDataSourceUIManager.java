@@ -7,7 +7,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,6 +81,9 @@ public class DruidDataSourceUIManager extends JFrame {
 
     private JLabel                                  lbTestWhileIdle               = new JLabel("TestWhileIdle : ");
     private JTextField                              txtTestWhileIdle              = new JTextField("false");
+
+    private JLabel                                  lbTestOnBorrow                = new JLabel("TestOnBorrow : ");
+    private JTextField                              txtTestOnBorrow               = new JTextField("false");
 
     private JTextField                              txtGetStep                    = new JTextField("1");
     private JTextField                              txtReleaseStep                = new JTextField("1");
@@ -263,11 +268,21 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER, lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, txtTestWhileIdle, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestWhileIdle, 0, SpringLayout.EAST, txtUrl);
+        
+        mainPanel.add(lbTestOnBorrow);
+        layout.putConstraint(SpringLayout.NORTH, lbTestOnBorrow, 10, SpringLayout.SOUTH, lbTestWhileIdle);
+        layout.putConstraint(SpringLayout.WEST, lbTestOnBorrow, 0, SpringLayout.WEST, lbUrl);
+        layout.putConstraint(SpringLayout.EAST, lbTestOnBorrow, 0, SpringLayout.EAST, lbUrl);
+        
+        mainPanel.add(txtTestOnBorrow);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestOnBorrow, 0, SpringLayout.VERTICAL_CENTER, lbTestOnBorrow);
+        layout.putConstraint(SpringLayout.WEST, txtTestOnBorrow, 0, SpringLayout.WEST, txtUrl);
+        layout.putConstraint(SpringLayout.EAST, txtTestOnBorrow, 0, SpringLayout.EAST, txtUrl);
 
         // ////
 
         mainPanel.add(btnInitDataSource);
-        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbTestWhileIdle);
+        layout.putConstraint(SpringLayout.NORTH, btnInitDataSource, 10, SpringLayout.SOUTH, lbTestOnBorrow);
         layout.putConstraint(SpringLayout.WEST, btnInitDataSource, 0, SpringLayout.WEST, lbUrl);
         btnInitDataSource.addActionListener(new ActionListener() {
 
@@ -367,6 +382,16 @@ public class DruidDataSourceUIManager extends JFrame {
                             System.out.println("get connection is null");
                             return;
                         }
+                        
+                        Statement stmt = conn.createStatement();
+                        stmt.setQueryTimeout(5);
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM address LIMIT 10");
+                        while (rs.next()) {
+                            rs.getObject(1);
+                        }
+                        rs.close();
+                        
+                        stmt.close();
 
                         activeConnections.add(conn);
                     } catch (Exception ex) {
@@ -397,7 +422,7 @@ public class DruidDataSourceUIManager extends JFrame {
         btnCloseDataSource.setEnabled(false);
         btnConnect.setEnabled(false);
         btnClose.setEnabled(false);
-        
+
         statusThread.interrupt();
     }
 
@@ -416,6 +441,7 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setMaxWait(Integer.parseInt(txtMaxWait.getText().trim()));
             dataSource.setMinEvictableIdleTimeMillis(Integer.parseInt(txtMinEvictableIdleTimeMillis.getText().trim()));
             dataSource.setTestWhileIdle(Boolean.parseBoolean(txtTestWhileIdle.getText().trim()));
+            dataSource.setTestOnBorrow(Boolean.parseBoolean(txtTestOnBorrow.getText().trim()));
 
             Connection conn = dataSource.getConnection();
             connectCount.incrementAndGet();
