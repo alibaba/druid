@@ -26,8 +26,8 @@ public class StatisticTest extends TestCase {
         JdbcConnectionStat stat = new JdbcConnectionStat();
         Assert.assertEquals(null, stat.getConnectLastTime());
         stat.setActiveCount(1);
-        Assert.assertEquals(1, stat.getConnectingMax());
+        Assert.assertEquals(1, stat.getActiveMax());
         stat.setActiveCount(2);
-        Assert.assertEquals(2, stat.getConnectingMax());
+        Assert.assertEquals(2, stat.getActiveMax());
     }
 }

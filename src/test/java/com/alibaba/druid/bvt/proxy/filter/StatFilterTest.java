@@ -47,7 +47,7 @@ public class StatFilterTest extends TestCase {
             if (url.equals((String) row.get("URL"))) {
                 count++;
             }
-            Assert.assertEquals(0, row.get("Count_50000_more"));
+            Assert.assertEquals(0L, row.get("ExecuteCount_30_more_Minutes"));
         }
         Assert.assertEquals(true, count > 0);
 
