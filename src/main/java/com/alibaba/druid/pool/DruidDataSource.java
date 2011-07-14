@@ -199,13 +199,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             connections = new ConnectionHolder[capacity];
-            // pool = new ConnectionPool(this, this.minIdle, this.maxIdle,
-            // this.maxActive, this.maxIdleTimeMillis);
 
-            for (int i = 0, size = getInitialSize(); i < size; ++i) {
-                Connection conn = connectionFactory.createConnection();
-                conn.setAutoCommit(true);
-                connections[count++] = new ConnectionHolder(this, conn);
+            SQLException connectError = null;
+
+            try {
+                for (int i = 0, size = getInitialSize(); i < size; ++i) {
+                    Connection conn = connectionFactory.createConnection();
+                    conn.setAutoCommit(true);
+                    connections[count++] = new ConnectionHolder(this, conn);
+                }
+            } catch (SQLException ex) {
+                connectError = ex;
             }
 
             createConnectionThread = new CreateConnectionThread("Druid-ConnectionPool-Create");
@@ -225,6 +229,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             createdTime = new Date();
             instances.put(this, PRESENT);
+
+            if (connectError != null) {
+                throw connectError;
+            }
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } finally {
@@ -434,7 +442,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (createConnectionThread != null) {
                 createConnectionThread.interrupt();
             }
-            
+
             if (destoryConnectionThread != null) {
                 destoryConnectionThread.interrupt();
             }
