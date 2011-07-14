@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -113,7 +112,9 @@ public final class ConnectionHolder {
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
-        for (Statement stmt : statementTrace) {
+        
+        for (Object item : statementTrace.toArray()) {
+            PoolableStatement stmt = (PoolableStatement) item;
             try {
                 if (!stmt.isClosed()) {
                     stmt.close();
