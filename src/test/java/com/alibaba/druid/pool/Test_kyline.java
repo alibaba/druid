@@ -1,6 +1,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 
 import junit.framework.TestCase;
 
@@ -18,7 +19,7 @@ public class Test_kyline extends TestCase {
         ds.setPassword(password);
         ds.setDriverClassName(driver);
 
-        //DriverManager.getConnection(url, user, password);
+        DriverManager.getConnection(url, user, password);
 
         Connection conn = ds.getConnection();
         conn.close();

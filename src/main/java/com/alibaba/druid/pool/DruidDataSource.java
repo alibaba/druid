@@ -431,8 +431,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void close() {
         lock.lock();
         try {
-            createConnectionThread.interrupt();
-            destoryConnectionThread.interrupt();
+            if (createConnectionThread != null) {
+                createConnectionThread.interrupt();
+            }
+            
+            if (destoryConnectionThread != null) {
+                destoryConnectionThread.interrupt();
+            }
 
             for (int i = 0; i < count; ++i) {
                 try {
@@ -502,12 +507,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         connections[lastIndex] = null;
         count--;
 
-//        if (count <= minIdle - 1) {
-//            lowWater.signal();
-//        }
-//        if (count == 0) {
-//            lowWater.signal();
-//        }
+        // if (count <= minIdle - 1) {
+        // lowWater.signal();
+        // }
+        // if (count == 0) {
+        // lowWater.signal();
+        // }
 
         return last;
     }
@@ -547,9 +552,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connections[lastIndex] = null;
             count--;
 
-//            if (lastIndex == minIdle - 1) {
-//                lowWater.signal();
-//            }
+            // if (lastIndex == minIdle - 1) {
+            // lowWater.signal();
+            // }
             if (count == 0) {
                 lowWater.signal();
             }
