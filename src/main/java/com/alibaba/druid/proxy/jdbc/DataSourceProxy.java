@@ -35,7 +35,7 @@ public interface DataSourceProxy {
 
     String getRawJdbcUrl();
 
-    List<Filter> getFilters();
+    List<Filter> getProxyFilters();
 
     long createConnectionId();
 

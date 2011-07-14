@@ -13,35 +13,35 @@ public class DruidDataSourceFilterTest extends TestCase {
     public void test_filter() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
-        Assert.assertEquals(0, dataSource.getFilters().size());
+        Assert.assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
-        Assert.assertEquals(1, dataSource.getFilters().size());
+        Assert.assertEquals(1, dataSource.getProxyFilters().size());
     }
 
     public void test_filter_2() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
-        Assert.assertEquals(0, dataSource.getFilters().size());
+        Assert.assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat,trace");
 
-        Assert.assertEquals(2, dataSource.getFilters().size());
+        Assert.assertEquals(2, dataSource.getProxyFilters().size());
     }
 
     public void test_filter_3() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
 
-        Assert.assertEquals(0, dataSource.getFilters().size());
+        Assert.assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
         JdbcStatManager.getInstance().reset();
 
         Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, dataSource.getFilters().size());
+        Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         for (int i = 0; i < 2; ++i) {
             Connection conn = dataSource.getConnection();

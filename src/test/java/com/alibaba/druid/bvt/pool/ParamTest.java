@@ -14,14 +14,14 @@ public class ParamTest extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
 
-        Assert.assertEquals(0, dataSource.getFilters().size());
+        Assert.assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
         JdbcStatManager.getInstance().reset();
 
         Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, dataSource.getFilters().size());
+        Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         for (int i = 0; i < 2; ++i) {
             Connection conn = dataSource.getConnection();
@@ -55,14 +55,14 @@ public class ParamTest extends TestCase {
         dataSource.setMinIdle(0);
         dataSource.setMaxIdle(0);
 
-        Assert.assertEquals(0, dataSource.getFilters().size());
+        Assert.assertEquals(0, dataSource.getProxyFilters().size());
 
         dataSource.setFilters("stat");
 
         JdbcStatManager.getInstance().reset();
 
         Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, dataSource.getFilters().size());
+        Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         Exception error = null;
         try {
@@ -82,7 +82,7 @@ public class ParamTest extends TestCase {
         dataSource.setMaxIdle(10);
 
         dataSource.setFilters("stat");
-        Assert.assertEquals(1, dataSource.getFilters().size());
+        Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         JdbcStatManager.getInstance().reset();
 

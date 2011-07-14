@@ -45,7 +45,7 @@ public class WrapImplTest extends TestCase {
 
         DataSourceProxyImpl dataSource = (DataSourceProxyImpl) connection.getDirectDataSource();
         dataSource.getId();
-        Assert.assertEquals(4, dataSource.getFilters().size());
+        Assert.assertEquals(4, dataSource.getProxyFilters().size());
         Assert.assertEquals(4, dataSource.getFilterClasses().length);
         Assert.assertNotNull(dataSource.getCreatedTime());
         Assert.assertTrue(dataSource.getCreatedTime().getTime() != 0);

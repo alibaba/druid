@@ -653,7 +653,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public static StatFilter getStatFilter(DataSourceProxy dataSource) {
-        for (Filter filter : dataSource.getFilters()) {
+        for (Filter filter : dataSource.getProxyFilters()) {
             if (filter instanceof StatFilter) {
                 return (StatFilter) filter;
             }

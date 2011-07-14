@@ -287,7 +287,7 @@ public class FilterChainImpl implements FilterChain {
     }
 
     public List<Filter> getFilters() {
-        return dataSource.getFilters();
+        return dataSource.getProxyFilters();
     }
 
     @Override

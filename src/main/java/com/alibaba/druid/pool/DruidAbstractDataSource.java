@@ -679,11 +679,11 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     }
 
     @Override
-    public List<Filter> getFilters() {
+    public List<Filter> getProxyFilters() {
         return filters;
     }
 
-    public void setFilters(List<Filter> filters) {
+    public void setProxyFilters(List<Filter> filters) {
         this.filters = filters;
     }
 
@@ -902,7 +902,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             long startNano = System.nanoTime();
 
             try {
-                if (dataSource.getFilters().size() != 0) {
+                if (dataSource.getProxyFilters().size() != 0) {
                     conn = new FilterChainImpl(dataSource).connection_connect(info);
                 } else {
                     conn = dataSource.getDriver().connect(url, info);

@@ -880,7 +880,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public String[] getFilterClasses() {
-        List<Filter> filterConfigList = getFilters();
+        List<Filter> filterConfigList = getProxyFilters();
 
         List<String> classes = new ArrayList<String>();
         for (Filter filter : filterConfigList) {
@@ -893,7 +893,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public CompositeDataSupport getCompositeData() throws JMException {
         StatFilter statFilter = null;
         JdbcDataSourceStat stat = null;
-        for (Filter filter : this.getFilters()) {
+        for (Filter filter : this.getProxyFilters()) {
             if (filter instanceof StatFilter) {
                 statFilter = (StatFilter) filter;
             }

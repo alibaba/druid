@@ -66,28 +66,28 @@ public class DriverTest extends TestCase {
         Connection connection_1 = DriverManager.getConnection(url_1);
         ConnectionProxy connection_wrapper_1 = connection_1.unwrap(ConnectionProxy.class);
         DataSourceProxy dataSource_1 = connection_wrapper_1.getDirectDataSource();
-        Assert.assertEquals(1, dataSource_1.getFilters().size());
+        Assert.assertEquals(1, dataSource_1.getProxyFilters().size());
 
         {
             Connection connection_2 = DriverManager.getConnection(url_2);
             ConnectionProxy connection_wrapper_2 = connection_2.unwrap(ConnectionProxy.class);
             DataSourceProxy dataSource_2 = connection_wrapper_2.getDirectDataSource();
-            Assert.assertEquals(1, dataSource_2.getFilters().size());
+            Assert.assertEquals(1, dataSource_2.getProxyFilters().size());
         }
 
         {
             Connection connection_3 = DriverManager.getConnection(url_3);
             ConnectionProxy connection_wrapper_3 = connection_3.unwrap(ConnectionProxy.class);
             DataSourceProxy dataSource_3 = connection_wrapper_3.getDirectDataSource();
-            Assert.assertEquals(1, dataSource_3.getFilters().size());
+            Assert.assertEquals(1, dataSource_3.getProxyFilters().size());
         }
 
         {
             Connection connection_4 = DriverManager.getConnection(url_4);
             ConnectionProxy connection_wrapper_4 = connection_4.unwrap(ConnectionProxy.class);
             DataSourceProxy dataSource_4 = connection_wrapper_4.getDirectDataSource();
-            dataSource_4.getFilters().toString();
-            Assert.assertEquals(1, dataSource_4.getFilters().size());
+            dataSource_4.getProxyFilters().toString();
+            Assert.assertEquals(1, dataSource_4.getProxyFilters().size());
         }
     }
 

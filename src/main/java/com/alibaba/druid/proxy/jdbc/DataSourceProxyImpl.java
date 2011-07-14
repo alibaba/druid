@@ -123,7 +123,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         return config.getUrl();
     }
 
-    public List<Filter> getFilters() {
+    public List<Filter> getProxyFilters() {
         return config.getFilters();
     }
 
@@ -183,7 +183,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     public CompositeDataSupport getCompositeData() throws JMException {
         StatFilter statFilter = null;
         JdbcDataSourceStat stat = null;
-        for (Filter filter : this.getFilters()) {
+        for (Filter filter : this.getProxyFilters()) {
             if (filter instanceof StatFilter) {
                 statFilter = (StatFilter) filter;
             }
