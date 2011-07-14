@@ -18,7 +18,10 @@ package com.alibaba.druid.filter.encoding;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Properties;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -86,7 +89,28 @@ public class EncodingConvertFilter extends FilterAdapter {
 
     @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
-        Object value = super.resultSet_getObject(chain, result, columnIndex);
+        ResultSet rawResultSet = result.getResultSetRaw();
+        ResultSetMetaData metadata = rawResultSet.getMetaData();
+        int columnType = metadata.getColumnType(columnIndex);
+        
+        Object value = null;
+        switch (columnType) {
+            case Types.CHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.CLOB:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.LONGVARCHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.VARCHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            default:
+                value = super.resultSet_getObject(chain, result, columnIndex);
+        }
+        
         return decodeObject(result.getStatementProxy().getConnectionProxy(), value);
     }
 
