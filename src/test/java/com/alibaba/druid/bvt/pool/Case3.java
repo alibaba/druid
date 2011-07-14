@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -27,6 +28,9 @@ public class Case3 extends TestCase {
         rs.next();
 
         conn.close();
+        
+        Assert.assertEquals(true, stmt.isClosed());
+        Assert.assertEquals(true, rs.isClosed());
 
         dataSource.close();
     }
