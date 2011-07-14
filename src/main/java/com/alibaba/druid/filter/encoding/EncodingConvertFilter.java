@@ -116,19 +116,83 @@ public class EncodingConvertFilter extends FilterAdapter {
 
     @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex, java.util.Map<String, Class<?>> map) throws SQLException {
-        Object value = super.resultSet_getObject(chain, result, columnIndex, map);
+        ResultSet rawResultSet = result.getResultSetRaw();
+        ResultSetMetaData metadata = rawResultSet.getMetaData();
+        int columnType = metadata.getColumnType(columnIndex);
+        
+        Object value = null;
+        switch (columnType) {
+            case Types.CHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.CLOB:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.LONGVARCHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            case Types.VARCHAR:
+                value = super.resultSet_getString(chain, result, columnIndex);
+                break;
+            default:
+                value = super.resultSet_getObject(chain, result, columnIndex, map);
+        }
+        
         return decodeObject(result.getStatementProxy().getConnectionProxy(), value);
     }
 
     @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
-        Object value = super.resultSet_getObject(chain, result, columnLabel);
+        ResultSet rawResultSet = result.getResultSetRaw();
+        ResultSetMetaData metadata = rawResultSet.getMetaData();
+        int columnIndex = rawResultSet.findColumn(columnLabel);
+        int columnType = metadata.getColumnType(columnIndex);
+        
+        Object value = null;
+        switch (columnType) {
+            case Types.CHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.CLOB:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.LONGVARCHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.VARCHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            default:
+                value = super.resultSet_getObject(chain, result, columnLabel);
+        }
         return decodeObject(result.getStatementProxy().getConnectionProxy(), value);
     }
 
     @Override
     public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel, java.util.Map<String, Class<?>> map) throws SQLException {
-        Object value = super.resultSet_getObject(chain, result, columnLabel, map);
+        ResultSet rawResultSet = result.getResultSetRaw();
+        ResultSetMetaData metadata = rawResultSet.getMetaData();
+        int columnIndex = rawResultSet.findColumn(columnLabel);
+        int columnType = metadata.getColumnType(columnIndex);
+        
+        Object value = null;
+        switch (columnType) {
+            case Types.CHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.CLOB:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.LONGVARCHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            case Types.VARCHAR:
+                value = super.resultSet_getString(chain, result, columnLabel);
+                break;
+            default:
+                value = super.resultSet_getObject(chain, result, columnLabel, map);
+        }
+        
         return decodeObject(result.getStatementProxy().getConnectionProxy(), value);
     }
 
