@@ -107,8 +107,6 @@ public class DruidDataSourceUIManager extends JFrame {
     public DruidDataSourceUIManager(){
         this.setLayout(new BorderLayout());
 
-        this.setSize(800, 600);
-
         Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
         Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺寸
         int screenWidth = screenSize.width / 2; // 获取屏幕的宽
@@ -382,7 +380,7 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.NORTH, statusPanel, 10, SpringLayout.SOUTH, btnInitDataSource);
         layout.putConstraint(SpringLayout.SOUTH, statusPanel, 120, SpringLayout.NORTH, statusPanel);
         layout.putConstraint(SpringLayout.WEST, statusPanel, 0, SpringLayout.WEST, lbUrl);
-        layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, mainPanel);
+        //layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, mainPanel);
 
         // ////
 
@@ -603,6 +601,10 @@ public class DruidDataSourceUIManager extends JFrame {
                 DruidDataSourceUIManager manager = new DruidDataSourceUIManager();
 
                 manager.pack();
+                manager.setSize(820, 580);
+                int w = (Toolkit.getDefaultToolkit().getScreenSize().width - manager.getWidth()) / 2;
+                int h = (Toolkit.getDefaultToolkit().getScreenSize().height - manager.getHeight()) / 2;
+                manager.setLocation(w, h);
 
                 manager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 manager.setVisible(true);
