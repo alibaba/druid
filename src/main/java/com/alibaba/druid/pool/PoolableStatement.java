@@ -93,12 +93,12 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public void close() throws SQLException {
-        clearResultSet();
-
-        stmt.close();
-        this.closed = true;
-
-        conn.getConnectionHolder().removeTrace(this);
+        if (!this.closed) {
+            clearResultSet();
+            stmt.close();
+            this.closed = true;
+            conn.getConnectionHolder().removeTrace(this);
+        }
     }
 
     @Override

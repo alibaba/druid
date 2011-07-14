@@ -31,6 +31,9 @@ public class Case3 extends TestCase {
         
         Assert.assertEquals(true, stmt.isClosed());
         Assert.assertEquals(true, rs.isClosed());
+        
+        rs.close();
+        stmt.close();
 
         dataSource.close();
     }
