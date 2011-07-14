@@ -471,11 +471,15 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setTestWhileIdle(Boolean.parseBoolean(txtTestWhileIdle.getText().trim()));
             dataSource.setTestOnBorrow(Boolean.parseBoolean(txtTestOnBorrow.getText().trim()));
 
-            Connection conn = dataSource.getConnection();
-            connectCount.incrementAndGet();
-            conn.close();
-            closeCount.incrementAndGet();
-
+            try {
+                Connection conn = dataSource.getConnection();
+                connectCount.incrementAndGet();
+                conn.close();
+                closeCount.incrementAndGet();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            
             executor = Executors.newCachedThreadPool();
 
             txtDriverClass.setText(dataSource.getDriverClassName());
