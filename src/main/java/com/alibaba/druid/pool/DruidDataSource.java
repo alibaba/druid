@@ -931,9 +931,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (lastConnectionConnectError != null) {
                 map.put("ConnectionConnectErrorLastTime", stat.getConnectionStat().getErrorLastTime());
                 map.put("ConnectionConnectErrorLastMessage", lastConnectionConnectError.getMessage());
-                StringWriter buf = new StringWriter();
-                lastConnectionConnectError.printStackTrace(new PrintWriter(buf));
-                map.put("ConnectionConnectErrorLastStackTrace", buf.toString());
+                map.put("ConnectionConnectErrorLastStackTrace", JdbcUtils.getStackTrace(lastConnectionConnectError));
             } else {
                 map.put("ConnectionConnectErrorLastTime", null);
                 map.put("ConnectionConnectErrorLastMessage", null);
@@ -954,9 +952,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 map.put("StatementLastErrorTime", stat.getStatementStat().getLastErrorTime());
                 map.put("StatementLastErrorMessage", lastStatementError.getMessage());
 
-                StringWriter buf = new StringWriter();
-                lastStatementError.printStackTrace(new PrintWriter(buf));
-                map.put("StatementLastErrorStackTrace", buf.toString());
+                map.put("StatementLastErrorStackTrace", JdbcUtils.getStackTrace(lastStatementError));
             } else {
                 map.put("StatementLastErrorTime", null);
                 map.put("StatementLastErrorMessage", null);
@@ -980,9 +976,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Throwable lastResultSetError = stat.getResultSetStat().getLastError();
             if (lastResultSetError != null) {
                 map.put("ResultSetLastErrorMessage", lastResultSetError.getMessage());
-                StringWriter buf = new StringWriter();
-                lastResultSetError.printStackTrace(new PrintWriter(buf));
-                map.put("ResultSetLastErrorStackTrace", buf.toString());
+                map.put("ResultSetLastErrorStackTrace", JdbcUtils.getStackTrace(lastResultSetError));
             } else {
                 map.put("ResultSetLastErrorMessage", null);
                 map.put("ResultSetLastErrorStackTrace", null);
@@ -992,9 +986,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
             if (lastConnectionError != null) {
                 map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
-                StringWriter buf = new StringWriter();
-                lastConnectionError.printStackTrace(new PrintWriter(buf));
-                map.put("ConnectionErrorLastStackTrace", buf.toString());
+                map.put("ConnectionErrorLastStackTrace", JdbcUtils.getStackTrace(lastConnectionError));
             } else {
                 map.put("ConnectionErrorLastMessage", null);
                 map.put("ConnectionErrorLastStackTrace", null);

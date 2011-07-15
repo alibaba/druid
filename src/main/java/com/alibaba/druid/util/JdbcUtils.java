@@ -19,6 +19,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -39,7 +40,8 @@ import com.alibaba.druid.logging.LogFactory;
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class JdbcUtils {
-    private final static Log LOG = LogFactory.getLog(JdbcUtils.class);
+
+    private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties driverUrlMapping = new Properties();
 
@@ -426,12 +428,12 @@ public final class JdbcUtils {
             throw new SQLException("unkow jdbc driver : " + rawUrl);
         }
     }
-    
+
     public static String getDbType(String rawUrl, String driverClassName) {
         if (rawUrl == null) {
             return null;
         }
-        
+
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "derby";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
@@ -487,5 +489,12 @@ public final class JdbcUtils {
         } else {
             return null;
         }
+    }
+
+    public static String getStackTrace(Throwable ex) {
+        StringWriter buf = new StringWriter();
+        ex.printStackTrace(new PrintWriter(buf));
+
+        return buf.toString();
     }
 }

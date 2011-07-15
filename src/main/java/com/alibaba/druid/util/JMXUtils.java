@@ -74,8 +74,7 @@ public final class JMXUtils {
 
     public static CompositeType getThrowableCompositeType() throws JMException {
         if (THROWABLE_COMPOSITE_TYPE == null) {
-            THROWABLE_COMPOSITE_TYPE = new CompositeType("Throwable", "Throwable", THROWABLE_COMPOSITE_INDEX_NAMES, THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS,
-                                                         THROWABLE_COMPOSITE_INDEX_TYPES);
+            THROWABLE_COMPOSITE_TYPE = new CompositeType("Throwable", "Throwable", THROWABLE_COMPOSITE_INDEX_NAMES, THROWABLE_COMPOSITE_INDEX_DESCRIPTIONS, THROWABLE_COMPOSITE_INDEX_TYPES);
         }
 
         return THROWABLE_COMPOSITE_TYPE;
@@ -91,10 +90,7 @@ public final class JMXUtils {
         map.put("class", error.getClass().getName());
         map.put("message", error.getMessage());
 
-        StringWriter buf = new StringWriter();
-        error.printStackTrace(new PrintWriter(buf));
-
-        map.put("stackTrace", buf.toString());
+        map.put("stackTrace", JdbcUtils.getStackTrace(error));
 
         return new CompositeDataSupport(getThrowableCompositeType(), map);
     }
