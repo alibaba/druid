@@ -21,6 +21,9 @@ import java.util.List;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 
 /**
@@ -29,7 +32,8 @@ import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
  * @author gang.su
  */
 public class DruidLoaderUtils {
-
+    private final static Log LOG = LogFactory.getLog(DruidLoaderUtils.class);
+    
     public static void loadFilter(List<Filter> filterList, List<AbstractDruidFilterConfig> druidFilterConfigList) throws SQLException {
         for (Iterator<AbstractDruidFilterConfig> iterator = druidFilterConfigList.iterator(); iterator.hasNext();) {
             AbstractDruidFilterConfig druidFilterConfig = iterator.next();
@@ -131,7 +135,7 @@ public class DruidLoaderUtils {
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LOG.error("load class error", e);
         }
 
         if (clazz == null) {
@@ -149,7 +153,7 @@ public class DruidLoaderUtils {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            // skip
         }
 
         return null;

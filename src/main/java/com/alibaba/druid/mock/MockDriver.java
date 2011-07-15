@@ -28,10 +28,14 @@ import java.sql.SQLXML;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.alibaba.druid.jconsole.SQLPanel;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.mock.handler.MockExecuteHandler;
 import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
 public class MockDriver implements Driver {
+    private final static Log LOG = LogFactory.getLog(MockDriver.class);
 
     public final static MockExecuteHandler DEFAULT_HANDLER      = new MySqlMockExecuteHandlerImpl();
 
@@ -67,7 +71,7 @@ public class MockDriver implements Driver {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("registerDriver error", e);
         }
 
         return false;

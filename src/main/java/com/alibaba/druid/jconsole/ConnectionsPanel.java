@@ -10,7 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+
 public class ConnectionsPanel extends JPanel {
+    private final static Log LOG = LogFactory.getLog(ConnectionsPanel.class);
 
     private static final long     serialVersionUID = 1L;
 
@@ -61,7 +65,7 @@ public class ConnectionsPanel extends JPanel {
             this.setLayout(new BorderLayout());
             this.add(tableScrollPane, BorderLayout.CENTER);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 

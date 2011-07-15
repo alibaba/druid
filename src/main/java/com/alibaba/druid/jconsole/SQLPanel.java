@@ -25,8 +25,12 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-public class SQLPanel extends JPanel {
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 
+public class SQLPanel extends JPanel {
+    private final static Log LOG = LogFactory.getLog(SQLPanel.class);
+    
     private static final long     serialVersionUID = 1L;
 
     private MBeanServerConnection connection;
@@ -108,7 +112,7 @@ public class SQLPanel extends JPanel {
             this.setLayout(new BorderLayout());
             this.add(tableScrollPane, BorderLayout.CENTER);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -159,7 +163,7 @@ public class SQLPanel extends JPanel {
             tableModel.setRowData(rows);
             tableModel.fireTableRowsInserted(0, rows.length);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 

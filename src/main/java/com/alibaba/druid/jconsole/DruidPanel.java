@@ -30,12 +30,15 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.sun.tools.jconsole.JConsoleContext;
 
 public class DruidPanel extends JPanel {
-
+    private final static Log LOG = LogFactory.getLog(DruidPanel.class);
+    
     private static final long        serialVersionUID = 1L;
 
     protected JSplitPane             mainSplit;
@@ -208,7 +211,7 @@ public class DruidPanel extends JPanel {
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setVisible(true);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.error(e.getMessage(), e);
                 }
             }
         });

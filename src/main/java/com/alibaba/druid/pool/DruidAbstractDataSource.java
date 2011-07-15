@@ -601,13 +601,6 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         return logWriter;
     }
 
-    protected void printStackTrace(Throwable e) {
-        if (logWriter != null) {
-            e.printStackTrace(logWriter);
-            logWriter.flush();
-        }
-    }
-
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
         this.logWriter = out;

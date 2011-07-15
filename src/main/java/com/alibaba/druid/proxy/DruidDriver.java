@@ -29,6 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.PoolableStatement;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.config.DruidFilterConfigLoader;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -43,7 +46,8 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
-
+    private final static Log LOG = LogFactory.getLog(DruidDriver.class);
+    
     private final static DruidDriver                                instance                 = new DruidDriver();
 
     private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
@@ -75,7 +79,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("registerDriver error", e);
         }
 
         return false;

@@ -24,11 +24,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PoolableStatement extends PoolableWrapper implements Statement {
-
+    private final static Log LOG = LogFactory.getLog(PoolableStatement.class);
+    
     private final Statement         stmt;
     protected PoolableConnection    conn;
     protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
@@ -62,7 +66,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
                     rs.close();
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace(); //
+                LOG.error("clearResultSet error", ex);
             }
         }
         resultSetTrace.clear();

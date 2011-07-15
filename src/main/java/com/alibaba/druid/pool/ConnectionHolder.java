@@ -24,11 +24,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class ConnectionHolder {
-
+    private final static Log LOG = LogFactory.getLog(ConnectionHolder.class);
+    
     private final DruidAbstractDataSource               dataSource;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
@@ -120,7 +124,7 @@ public final class ConnectionHolder {
                     stmt.close();
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace(); //
+                LOG.error("close statement error", ex);
             }
         }
         statementTrace.clear();
