@@ -203,12 +203,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             SQLException connectError = null;
 
             try {
+                // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = connectionFactory.createConnection();
                     conn.setAutoCommit(true);
                     connections[count++] = new ConnectionHolder(this, conn);
                 }
             } catch (SQLException ex) {
+                LOG.error("init datasource error", ex);
                 connectError = ex;
             }
 
@@ -230,7 +232,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             createdTime = new Date();
             instances.put(this, PRESENT);
 
-            if (connectError != null) {
+            if (connectError != null && count == 0) {
                 throw connectError;
             }
         } catch (InterruptedException e) {
