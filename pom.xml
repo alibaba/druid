@@ -186,8 +186,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc5</artifactId>
-			<version>11.2.0.2.0</version>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.3.0</version>
 			<scope>test</scope>
 		</dependency>
 
