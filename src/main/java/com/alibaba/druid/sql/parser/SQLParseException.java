@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import com.alibaba.druid.DruidRuntimeException;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class SQLParseException extends RuntimeException {
+public class SQLParseException extends DruidRuntimeException {
 
     private static final long serialVersionUID = 1L;
 
