@@ -23,7 +23,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="maxActive">
 			<value>20</value>
 		</property>
-		<property name="filters">
+		<property name="proxyFilters">
 			<list>
 				<ref bean="test-filter"/>
 				<ref bean="stat-filter"/>
