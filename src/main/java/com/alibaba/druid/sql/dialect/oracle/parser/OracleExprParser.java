@@ -21,7 +21,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -45,26 +47,13 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
 
-
-
-
-
-
     public boolean                allowStringAdditive = false;
 
     /**
      * @formatter:off
      */
-    private static final String[] _aggregateFunctions = { 
-            "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT"
-            , "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE"
-            , "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX"
-            , "MIN", "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC"
-            , "RANK", "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT"
-            , "REGR_R2", "REGR_AVGX", "REGR_AVGY", "REGR_SXX", "REGR_SYY"
-            , "REGR_SXY", "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP"
-            , "SUM", "VAR_POP", "VAR_SAMP", "VARIANCE" 
-            };
+    private static final String[] _aggregateFunctions = { "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT", "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE", "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX", "MIN", "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT", "REGR_R2", "REGR_AVGX",
+            "REGR_AVGY", "REGR_SXX", "REGR_SYY", "REGR_SXY", "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP", "SUM", "VAR_POP", "VAR_SAMP", "VARIANCE" };
 
     public OracleExprParser(Lexer lexer){
         super(lexer);
@@ -115,18 +104,18 @@ public class OracleExprParser extends SQLExprParser {
             case EXTRACT:
                 lexer.nextToken();
                 OracleExtractExpr extract = new OracleExtractExpr();
-                
+
                 accept(Token.LPAREN);
-                
+
                 extract.setUnit(OracleDateTimeUnit.valueOf(lexer.stringVal()));
                 lexer.nextToken();
-                
+
                 accept(Token.FROM);
-                
+
                 extract.setFrom(expr());
-                
+
                 accept(Token.RPAREN);
-                
+
                 return primaryRest(extract);
             case TIMESTAMP:
                 return primaryRest(parseTimestamp());
@@ -140,7 +129,7 @@ public class OracleExprParser extends SQLExprParser {
             case BINARY_DOUBLE:
                 OracleBinaryDoubleExpr doubleExpr = new OracleBinaryDoubleExpr();
                 doubleExpr.setValue(Double.parseDouble(lexer.numberString()));
-                
+
                 lexer.nextToken();
                 return primaryRest(doubleExpr);
             case TABLE:
@@ -214,57 +203,68 @@ public class OracleExprParser extends SQLExprParser {
                 return super.primary();
         }
     }
-    
-    
+
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.MONKEYS_AT) {
             lexer.nextToken();
-            
+
             OracleDbLinkExpr dblink = new OracleDbLinkExpr();
             dblink.setExpr(expr);
-            
+
             String link = lexer.stringVal();
             accept(Token.IDENTIFIER);
             dblink.setDbLink(link);
-            
+
             expr = dblink;
         }
-        
+
         return super.primaryRest(expr);
     }
-    
+
+    protected SQLExpr dotRest(SQLExpr expr) {
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            String name = '"' + lexer.stringVal() + '"';
+            lexer.nextToken();
+            expr = new SQLPropertyExpr(expr, name);
+            expr = primaryRest(expr);
+
+            return expr;
+        }
+
+        return super.dotRest(expr);
+    }
+
     public OracleDateExpr parseDate() {
         accept(Token.DATE);
-        
+
         OracleDateExpr timestamp = new OracleDateExpr();
-        
+
         String literal = lexer.stringVal();
         timestamp.setLiteral(literal);
         accept(Token.LITERAL_CHARS);
-        
-        
+
         return timestamp;
     }
-    
+
     public OracleTimestampExpr parseTimestamp() {
         accept(Token.TIMESTAMP);
-        
+
         OracleTimestampExpr timestamp = new OracleTimestampExpr();
-        
+
         String literal = lexer.stringVal();
         timestamp.setLiteral(literal);
         accept(Token.LITERAL_CHARS);
-        
+
         if (identifierEquals("AT")) {
             lexer.nextToken();
             acceptIdentifier("TIME");
             acceptIdentifier("ZONE");
-            
+
             String timezone = lexer.stringVal();
             timestamp.setTimeZone(timezone);
             accept(Token.LITERAL_CHARS);
         }
-        
+
         return timestamp;
     }
 
@@ -428,24 +428,24 @@ public class OracleExprParser extends SQLExprParser {
 
         return item;
     }
-    
+
     protected SQLExpr parseInterval() {
         accept(Token.INTERVAL);
-        
+
         OracleIntervalExpr interval = new OracleIntervalExpr();
         if (lexer.token() != Token.LITERAL_CHARS) {
             throw new ParserException("syntax error : " + lexer.token());
         }
         interval.setValue(lexer.stringVal());
         lexer.nextToken();
-        
+
         if (lexer.token() != Token.IDENTIFIER) {
             throw new ParserException("syntax error : " + lexer.token());
         }
         OracleIntervalType type = OracleIntervalType.valueOf(lexer.stringVal());
         interval.setType(type);
         lexer.nextToken();
-        
+
         return interval;
     }
 }

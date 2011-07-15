@@ -16,11 +16,11 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSQLParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        for (int i = 0; i <= 53; ++i) {
-            String resource = "bvt/parser/oracle-" + i + ".txt";
-            exec_test(resource);
-        }
-        // exec_test("bvt/parser/oracle-0.txt");
+//        for (int i = 0; i <= 53; ++i) {
+//            String resource = "bvt/parser/oracle-" + i + ".txt";
+//            exec_test(resource);
+//        }
+        exec_test("bvt/parser/oracle-54.txt");
     }
 
     public void exec_test(String resource) throws Exception {
