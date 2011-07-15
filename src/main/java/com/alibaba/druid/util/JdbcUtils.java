@@ -32,10 +32,14 @@ import java.sql.Types;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class JdbcUtils {
+    private final static Log LOG = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties driverUrlMapping = new Properties();
 
@@ -57,7 +61,7 @@ public final class JdbcUtils {
                 driverUrlMapping.putAll(property);
             }
         } catch (Exception e) {
-            e.printStackTrace(); // error skip
+            LOG.error("load druid-driver.properties error", e);
         }
     }
 
@@ -65,8 +69,8 @@ public final class JdbcUtils {
         if (x != null) {
             try {
                 x.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOG.error("close connection error", e);
             }
         }
     }
@@ -75,8 +79,8 @@ public final class JdbcUtils {
         if (x != null) {
             try {
                 x.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOG.error("close statement error", e);
             }
         }
     }
@@ -85,8 +89,8 @@ public final class JdbcUtils {
         if (x != null) {
             try {
                 x.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOG.error("close resultset error", e);
             }
         }
     }
@@ -95,8 +99,8 @@ public final class JdbcUtils {
         if (x != null) {
             try {
                 x.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LOG.error("close error", e);
             }
         }
     }
