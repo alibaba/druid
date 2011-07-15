@@ -23,9 +23,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterManager {
+
+    private final static Log                               LOG      = LogFactory.getLog(FilterManager.class);
 
     private static final ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>();
 
@@ -39,8 +43,8 @@ public class FilterManager {
                     aliasMap.put(name, (String) entry.getValue());
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOG.error("load filter config error", e);
         }
     }
 
