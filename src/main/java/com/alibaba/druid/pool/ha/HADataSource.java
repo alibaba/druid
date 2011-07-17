@@ -18,7 +18,7 @@ public class HADataSource implements DataSource {
     private int                         loginTimeout = 0;
     private PrintWriter                 logWriter    = new PrintWriter(System.out);
 
-    private AtomicInteger                  requestCount        = new AtomicInteger();
+    private AtomicInteger               requestCount = new AtomicInteger();
 
     public List<DruidDataSource> getDataSources() {
         return dataSources;
@@ -76,9 +76,11 @@ public class HADataSource implements DataSource {
         int requestNumber = requestCount.getAndIncrement();
         int size = dataSources.size();
         int index = requestNumber % size;
-        
+
         DruidDataSource dataSource = dataSources.get(index);
-        return dataSource.getConnection();
+        Connection conn = dataSource.getConnection();
+
+        return conn;
     }
 
     @Override
