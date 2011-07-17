@@ -36,7 +36,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
         return statementIdSeed.getAndIncrement();
     }
 
-    public Connection getConnectionInternal(int requestNumber) throws SQLException {
+    public Connection getConnectionInternal(int connectionId, String sql) throws SQLException {
         int tryCount = 0;
 
         for (;;) {
@@ -46,7 +46,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
                 throw new SQLException("can not get connection, no availabe datasources");
             }
 
-            int index = requestNumber % size;
+            int index = connectionId % size;
 
             DruidDataSource dataSource = null;
 

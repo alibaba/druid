@@ -54,7 +54,7 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
 
     public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
-            conn = haDataSource.getConnectionInternal(id);
+            conn = haDataSource.getConnectionInternal(id, sql);
         }
 
         if (autoCommit != null) {
