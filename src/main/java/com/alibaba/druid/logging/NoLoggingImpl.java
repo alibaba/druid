@@ -17,6 +17,9 @@ public class NoLoggingImpl implements Log {
 
     public void debug(String s) {
     }
+    
+    public void debug(String s, Throwable e) {
+    }
 
     public void warn(String s) {
     }

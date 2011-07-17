@@ -26,6 +26,10 @@ public class Jdk14LoggingImpl implements Log {
     public void debug(String s) {
         log.log(Level.FINE, s);
     }
+    
+    public void debug(String s, Throwable e) {
+        log.log(Level.FINE, s, e);
+    }
 
     public void warn(String s) {
         log.log(Level.WARNING, s);

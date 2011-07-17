@@ -25,6 +25,10 @@ public class Log4jImpl implements Log {
     public void debug(String s) {
         log.debug(s);
     }
+    
+    public void debug(String s, Throwable e) {
+        log.debug(s, e);
+    }
 
     public void warn(String s) {
         log.warn(s);

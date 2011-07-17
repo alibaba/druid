@@ -27,6 +27,10 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log 
     public void debug(String s) {
         log.debug(s);
     }
+    
+    public void debug(String s, Throwable e) {
+        log.debug(s, e);
+    }
 
     public void warn(String s) {
         log.warn(s);

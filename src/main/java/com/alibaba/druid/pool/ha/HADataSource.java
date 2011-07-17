@@ -2,7 +2,6 @@ package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,14 +16,14 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
 
-    private AtomicInteger                 requestCount            = new AtomicInteger();
+    private final AtomicInteger           requestCount            = new AtomicInteger();
+    private final AtomicInteger           indexErrorCount         = new AtomicInteger();
 
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
-    
-    public HADataSource() {
-        super(new ArrayList<DruidDataSource>());
+
+    public HADataSource(){
     }
-    
+
     @Override
     public Connection getConnection() throws SQLException {
         int tryCount = 0;
@@ -32,15 +31,34 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
         for (;;) {
             int size = dataSources.size();
+
+            if (size == 0) {
+                throw new SQLException("can not get connection, no availabe datasources");
+            }
+
             int index = requestNumber % size;
 
-            DruidDataSource dataSource = dataSources.get(index);
+            DruidDataSource dataSource = null;
+
+            try {
+                // 处理并发时的错误
+                dataSource = dataSources.get(index);
+            } catch (Exception ex) {
+                indexErrorCount.incrementAndGet();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("getDataSource error, index : " + index, ex);
+                }
+                continue;
+            }
+
+            assert dataSource != null;
 
             if (!dataSource.isEnable()) {
                 boolean removed = dataSources.remove(dataSource);
                 if (removed) {
                     notAvailableDatasources.add(dataSource);
                 }
+                continue;
             }
 
             Connection conn = null;
@@ -60,6 +78,10 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
             return conn;
         }
+    }
+
+    public long getIndexErrorCount() {
+        return indexErrorCount.get();
     }
 
 }
