@@ -2,6 +2,8 @@ package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,9 +20,19 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     private final AtomicInteger           indexErrorCount         = new AtomicInteger();
 
+    protected ArrayList<DruidDataSource>  dataSources;
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
 
     public HADataSource(){
+        dataSources = new ArrayList<DruidDataSource>();
+    }
+
+    public List<DruidDataSource> getDataSources() {
+        return Collections.unmodifiableList(dataSources);
+    }
+
+    public void setDataSources(List<DruidDataSource> dataSources) {
+        this.dataSources = new ArrayList<DruidDataSource>(dataSources);
     }
 
     @Override
