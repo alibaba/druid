@@ -6,21 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.balance.Balancer;
 import com.alibaba.druid.pool.ha.balance.RoundRobinBlancer;
 
 public class HADataSource extends MultiDataSource implements DataSource {
-
-    private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
-
-    private final AtomicInteger           indexErrorCount         = new AtomicInteger();
 
     protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
@@ -52,71 +45,17 @@ public class HADataSource extends MultiDataSource implements DataSource {
         this.balancer = balancer;
     }
 
-    protected int indexFor(MultiDataSourceConnection connection, String sql) throws SQLException {
-        return balancer.indexFor(connection, sql);
+    public Connection getConnectionInternal(MultiDataSourceConnection connection, String sql) throws SQLException {
+        return this.balancer.getConnection(connection, sql);
     }
 
-    public Connection getConnectionInternal(MultiDataSourceConnection multiDataSourceConnection, String sql) throws SQLException {
-
-        int tryCount = 0;
-
-        for (;;) {
-            int size = dataSources.size();
-
-            if (size == 0) {
-                throw new SQLException("can not get connection, no availabe datasources");
-            }
-
-            int index = indexFor(multiDataSourceConnection, sql);
-
-            DruidDataSource dataSource = null;
-
-            try {
-                // 处理并发时的错误
-                dataSource = dataSources.get(index);
-            } catch (Exception ex) {
-                indexErrorCount.incrementAndGet();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("getDataSource error, index : " + index, ex);
-                }
-                continue;
-            }
-
-            assert dataSource != null;
-
-            if (!dataSource.isEnable()) {
-                handleNotAwailableDatasource(dataSource);
-                continue;
-            }
-
-            Connection conn = null;
-
-            try {
-                tryCount++;
-                conn = dataSource.getConnection();
-            } catch (SQLException ex) {
-                LOG.error("getConnection error", ex);
-
-                if (tryCount >= size) {
-                    throw ex;
-                }
-
-                continue;
-            }
-
-            return conn;
-        }
-    }
-
-    void handleNotAwailableDatasource(DruidDataSource dataSource) {
+    public void handleNotAwailableDatasource(DruidDataSource dataSource) {
         boolean removed = dataSources.remove(dataSource);
         if (removed) {
             notAvailableDatasources.add(dataSource);
         }
     }
 
-    public long getIndexErrorCount() {
-        return indexErrorCount.get();
-    }
+
 
 }

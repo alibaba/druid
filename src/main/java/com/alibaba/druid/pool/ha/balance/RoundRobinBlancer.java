@@ -1,20 +1,81 @@
 package com.alibaba.druid.pool.ha.balance;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
 public class RoundRobinBlancer implements Balancer {
 
-    @Override
-    public int indexFor(MultiDataSourceConnection connection, String sql) throws SQLException {
-        MultiDataSource dataSource = connection.getHaDataSource();
+    private final static Log    LOG             = LogFactory.getLog(RoundRobinBlancer.class);
 
-        int size = dataSource.getDataSources().size();
-        long connectionId = (int) connection.getId();
+    private final AtomicInteger indexErrorCount = new AtomicInteger();
 
-        return (int) (connectionId % size);
+    public RoundRobinBlancer(){
+
     }
 
+    @Override
+    public Connection getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException {
+        MultiDataSource multiDataSource = connectionProxy.getHaDataSource();
+
+        int tryCount = 0;
+
+        for (;;) {
+            int size = multiDataSource.getDataSources().size();
+            long connectionId = (int) connectionProxy.getId();
+
+            if (size == 0) {
+                throw new SQLException("can not get connection, no availabe datasources");
+            }
+
+            int index = (int) (connectionId % size);
+
+            DruidDataSource dataSource = null;
+
+            try {
+                // 处理并发时的错误
+                dataSource = multiDataSource.getDataSources().get(index);
+            } catch (Exception ex) {
+                indexErrorCount.incrementAndGet();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("getDataSource error, index : " + index, ex);
+                }
+                continue;
+            }
+
+            assert dataSource != null;
+
+            if (!dataSource.isEnable()) {
+                multiDataSource.handleNotAwailableDatasource(dataSource);
+                continue;
+            }
+
+            Connection conn = null;
+
+            try {
+                tryCount++;
+                conn = dataSource.getConnection();
+            } catch (SQLException ex) {
+                LOG.error("getConnection error", ex);
+
+                if (tryCount >= size) {
+                    throw ex;
+                }
+
+                continue;
+            }
+
+            return conn;
+        }
+    }
+
+    public long getIndexErrorCount() {
+        return indexErrorCount.get();
+    }
 }

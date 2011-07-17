@@ -1,9 +1,10 @@
 package com.alibaba.druid.pool.ha.balance;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
 public interface Balancer {
-    int indexFor(MultiDataSourceConnection connection, String sql) throws SQLException;
+    Connection getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException;
 }

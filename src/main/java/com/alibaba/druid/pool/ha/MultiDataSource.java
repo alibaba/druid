@@ -41,4 +41,6 @@ public abstract class MultiDataSource extends DataSourceAdapter {
     public abstract Connection getConnection() throws SQLException;
 
     public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
+    
+    public abstract void handleNotAwailableDatasource(DruidDataSource dataSource);
 }

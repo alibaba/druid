@@ -51,7 +51,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         this.haDataSource = haDataSource;
         this.id = id;
     }
-
+    
     public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
             conn = haDataSource.getConnectionInternal(this, sql);
