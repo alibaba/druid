@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.proxy.jdbc;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;

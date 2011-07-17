@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.util;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;

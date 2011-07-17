@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

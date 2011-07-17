@@ -28,7 +28,6 @@ import java.sql.SQLXML;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.alibaba.druid.jconsole.SQLPanel;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.mock.handler.MockExecuteHandler;

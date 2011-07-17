@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.PoolableStatement;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.config.DruidFilterConfigLoader;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;

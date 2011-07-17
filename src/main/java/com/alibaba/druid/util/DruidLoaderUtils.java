@@ -23,7 +23,6 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 
 /**
