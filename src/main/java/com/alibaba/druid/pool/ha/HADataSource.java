@@ -16,8 +16,6 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
 
-    private final AtomicInteger           connectionIdSeed        = new AtomicInteger();
-    private final AtomicInteger           statementIdSeed         = new AtomicInteger();
     private final AtomicInteger           indexErrorCount         = new AtomicInteger();
 
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
@@ -27,13 +25,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        int requestNumber = connectionIdSeed.getAndIncrement();
-
-        return new HAConnection(this, requestNumber);
-    }
-
-    public int createStatementId() {
-        return statementIdSeed.getAndIncrement();
+        return new HAConnection(this, createConnectionId());
     }
 
     public Connection getConnectionInternal(int connectionId, String sql) throws SQLException {

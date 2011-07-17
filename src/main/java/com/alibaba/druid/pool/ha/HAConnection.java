@@ -28,7 +28,7 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 
 public class HAConnection extends WrapperAdapter implements Connection, ConnectionProxy {
 
-    private final HADataSource    haDataSource;
+    private final MultiDataSource    haDataSource;
 
     private Connection            conn;
 
@@ -88,7 +88,7 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
         connectedTime = new Date();
     }
 
-    public HADataSource getHaDataSource() {
+    public MultiDataSource getHaDataSource() {
         return haDataSource;
     }
 
