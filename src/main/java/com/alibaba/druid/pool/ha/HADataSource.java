@@ -2,6 +2,9 @@ package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
@@ -12,19 +15,34 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public class HADataSource extends MultiDataSource implements DataSource {
 
-    private final static Log LOG          = LogFactory.getLog(HADataSource.class);
+    private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
 
-    private AtomicInteger    requestCount = new AtomicInteger();
+    private AtomicInteger                 requestCount            = new AtomicInteger();
 
+    protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
+    
+    public HADataSource() {
+        super(new ArrayList<DruidDataSource>());
+    }
+    
     @Override
     public Connection getConnection() throws SQLException {
         int tryCount = 0;
+        int requestNumber = requestCount.getAndIncrement();
+
         for (;;) {
-            int requestNumber = requestCount.getAndIncrement();
             int size = dataSources.size();
             int index = requestNumber % size;
 
             DruidDataSource dataSource = dataSources.get(index);
+
+            if (!dataSource.isEnable()) {
+                boolean removed = dataSources.remove(dataSource);
+                if (removed) {
+                    notAvailableDatasources.add(dataSource);
+                }
+            }
+
             Connection conn = null;
 
             try {
@@ -38,12 +56,6 @@ public class HADataSource extends MultiDataSource implements DataSource {
                 }
 
                 continue;
-            }
-
-            if (conn != null) {
-                if (!dataSource.isTestOnBorrow()) {
-                    dataSource.testConnection(conn);
-                }
             }
 
             return conn;

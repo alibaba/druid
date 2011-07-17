@@ -12,10 +12,18 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public abstract class MultiDataSource implements DataSource {
 
-    protected final List<DruidDataSource> dataSources  = new CopyOnWriteArrayList<DruidDataSource>();
+    protected final List<DruidDataSource> dataSources;
 
     private int                           loginTimeout = 0;
     private PrintWriter                   logWriter    = new PrintWriter(System.out);
+    
+    public MultiDataSource() {
+        dataSources  = new CopyOnWriteArrayList<DruidDataSource>();
+    }
+    
+    public MultiDataSource(List<DruidDataSource> dataSources) {
+        this.dataSources  = dataSources;
+    }
 
     public List<DruidDataSource> getDataSources() {
         return dataSources;
