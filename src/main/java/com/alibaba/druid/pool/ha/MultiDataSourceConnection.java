@@ -26,7 +26,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 
-public class HAConnection extends WrapperAdapter implements Connection, ConnectionProxy {
+public class MultiDataSourceConnection extends WrapperAdapter implements Connection, ConnectionProxy {
 
     private final MultiDataSource    haDataSource;
 
@@ -47,7 +47,7 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
 
     private Date                  connectedTime    = null;
 
-    public HAConnection(HADataSource haDataSource, int id){
+    public MultiDataSourceConnection(HADataSource haDataSource, int id){
         this.haDataSource = haDataSource;
         this.id = id;
     }
@@ -317,14 +317,14 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         long stmtId = haDataSource.createStatementId();
-        HAStatement stmt = new HAStatement(this, stmtId, resultSetType, resultSetConcurrency);
+        MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency);
         return stmt;
     }
 
     @Override
     public Statement createStatement() throws SQLException {
         long stmtId = haDataSource.createStatementId();
-        HAStatement stmt = new HAStatement(this, stmtId);
+        MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId);
         return stmt;
     }
 
@@ -371,7 +371,7 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
         long stmtId = haDataSource.createStatementId();
-        HAStatement stmt = new HAStatement(this, stmtId, resultSetType, resultSetConcurrency, resultSetHoldability);
+        MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency, resultSetHoldability);
         return stmt;
     }
 

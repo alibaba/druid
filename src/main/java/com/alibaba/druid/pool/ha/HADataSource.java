@@ -25,7 +25,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return new HAConnection(this, createConnectionId());
+        return new MultiDataSourceConnection(this, createConnectionId());
     }
 
     public Connection getConnectionInternal(int connectionId, String sql) throws SQLException {

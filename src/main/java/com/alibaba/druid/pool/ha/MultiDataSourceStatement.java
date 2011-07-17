@@ -7,9 +7,9 @@ import java.sql.Statement;
 
 import com.alibaba.druid.pool.WrapperAdapter;
 
-public class HAStatement extends WrapperAdapter implements Statement {
+public class MultiDataSourceStatement extends WrapperAdapter implements Statement {
 
-    private final HAConnection conn;
+    private final MultiDataSourceConnection conn;
     private final long         id;
     private Integer            resultSetType;
     private Integer            resultSetConcurrency;
@@ -59,13 +59,13 @@ public class HAStatement extends WrapperAdapter implements Statement {
     }
 
 
-    public HAStatement(HAConnection conn, long id){
+    public MultiDataSourceStatement(MultiDataSourceConnection conn, long id){
         super();
         this.conn = conn;
         this.id = id;
     }
 
-    public HAStatement(HAConnection conn, long id, int resultSetType, int resultSetConcurrency){
+    public MultiDataSourceStatement(MultiDataSourceConnection conn, long id, int resultSetType, int resultSetConcurrency){
         super();
         this.conn = conn;
         this.id = id;
@@ -73,7 +73,7 @@ public class HAStatement extends WrapperAdapter implements Statement {
         this.resultSetConcurrency = resultSetConcurrency;
     }
 
-    public HAStatement(HAConnection conn, long id, int resultSetType, int resultSetConcurrency, int resultSetHoldability){
+    public MultiDataSourceStatement(MultiDataSourceConnection conn, long id, int resultSetType, int resultSetConcurrency, int resultSetHoldability){
         super();
         this.conn = conn;
         this.id = id;
@@ -335,7 +335,7 @@ public class HAStatement extends WrapperAdapter implements Statement {
     }
 
     @Override
-    public HAConnection getConnection() throws SQLException {
+    public MultiDataSourceConnection getConnection() throws SQLException {
         return conn;
     }
 
