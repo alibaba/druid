@@ -20,11 +20,11 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     private final AtomicInteger           indexErrorCount         = new AtomicInteger();
 
-    protected ArrayList<DruidDataSource>  dataSources;
+    protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
 
     public HADataSource(){
-        dataSources = new ArrayList<DruidDataSource>();
+
     }
 
     public List<DruidDataSource> getDataSources() {
@@ -40,7 +40,15 @@ public class HADataSource extends MultiDataSource implements DataSource {
         return new MultiDataSourceConnection(this, createConnectionId());
     }
 
-    public Connection getConnectionInternal(int connectionId, String sql) throws SQLException {
+    protected int indexFor(MultiDataSourceConnection multiDataSourceConnection, String sql) {
+        int size = dataSources.size();
+        int connectionId = (int) multiDataSourceConnection.getId();
+
+        return connectionId % size;
+    }
+
+    public Connection getConnectionInternal(MultiDataSourceConnection multiDataSourceConnection, String sql) throws SQLException {
+
         int tryCount = 0;
 
         for (;;) {
@@ -50,7 +58,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
                 throw new SQLException("can not get connection, no availabe datasources");
             }
 
-            int index = connectionId % size;
+            int index = indexFor(multiDataSourceConnection, sql);
 
             DruidDataSource dataSource = null;
 

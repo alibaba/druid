@@ -40,5 +40,5 @@ public abstract class MultiDataSource extends DataSourceAdapter {
     @Override
     public abstract Connection getConnection() throws SQLException;
 
-    public abstract Connection getConnectionInternal(int connectionId, String sql) throws SQLException;
+    public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
 }
