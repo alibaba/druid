@@ -39,6 +39,7 @@ import javax.sql.DataSource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -730,8 +731,20 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             }
         }
     }
+    
+    public boolean testConnection(Connection conn) {
+        if (conn instanceof PoolableConnection) {
+            conn = ((PoolableConnection) conn).getConnection();
+        }
+        
+        if (conn instanceof ConnectionProxy) {
+            conn = ((ConnectionProxy) conn).getConnectionRaw();
+        }
+        
+        return testConnectionInternal(conn);
+    }
 
-    protected boolean testConnection(Connection conn) {
+    protected boolean testConnectionInternal(Connection conn) {
         try {
             if (validConnectionChecker != null) {
                 return validConnectionChecker.isValidConnection(conn);

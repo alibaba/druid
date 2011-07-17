@@ -272,7 +272,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             PoolableConnection poolalbeConnection = getConnectionInternal();
 
             if (isTestOnBorrow()) {
-                boolean validate = testConnection(poolalbeConnection.getConnection());
+                boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                 if (!validate) {
                     LOG.debug("skip not validate connection.");
                     Connection realConnection = poolalbeConnection.getConnection();
@@ -393,7 +393,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             //
             if (isTestOnReturn()) {
-                boolean validate = testConnection(conn);
+                boolean validate = testConnectionInternal(conn);
                 if (!validate) {
                     lock.lock();
                     try {
@@ -753,7 +753,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
 
                             for (ConnectionHolder idleConnection : idleConnections) {
-                                if (testConnection(idleConnection.getConnection())) {
+                                if (testConnectionInternal(idleConnection.getConnection())) {
                                     connections[count++] = idleConnection;
                                     idleConnection.setLastActiveMillis(System.currentTimeMillis());
                                     idleCheckCount++;

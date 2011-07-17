@@ -109,7 +109,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         return conn;
     }
 
