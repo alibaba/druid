@@ -15,8 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
