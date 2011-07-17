@@ -54,10 +54,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
             assert dataSource != null;
 
             if (!dataSource.isEnable()) {
-                boolean removed = dataSources.remove(dataSource);
-                if (removed) {
-                    notAvailableDatasources.add(dataSource);
-                }
+                handleNotAwailableDatasource(dataSource);
                 continue;
             }
 
@@ -77,6 +74,13 @@ public class HADataSource extends MultiDataSource implements DataSource {
             }
 
             return conn;
+        }
+    }
+    
+    void handleNotAwailableDatasource(DruidDataSource dataSource) {
+        boolean removed = dataSources.remove(dataSource);
+        if (removed) {
+            notAvailableDatasources.add(dataSource);
         }
     }
 
