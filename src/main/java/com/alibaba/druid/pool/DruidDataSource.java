@@ -172,17 +172,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
 
-            if ("mysql".equals(dbType)) {
+            String realDriverClassName = driver.getClass().getName();
+            if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
                 this.validConnectionChecker = new MySqlValidConnectionChecker();
                 this.exceptionSoter = new MySqlExceptionSorter();
-            } else if ("oracle".equals(dbType)) {
+                
+            } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
                 this.exceptionSoter = new OracleExceptionSorter();
-            } else if ("sqlserver".equals(dbType)) {
+                
+            } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
                 this.validConnectionChecker = new MSSQLValidConnectionChecker();
-            } else if ("informix".equals(dbType)) {
+                
+            } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
                 this.exceptionSoter = new InformixExceptionSorter();
-            } else if ("sybase".equals(dbType)) {
+                
+            } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSoter = new SybaseExceptionSorter();
             }
 
