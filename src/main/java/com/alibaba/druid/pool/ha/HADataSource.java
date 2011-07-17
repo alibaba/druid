@@ -13,6 +13,8 @@ import javax.sql.DataSource;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ha.balance.Balancer;
+import com.alibaba.druid.pool.ha.balance.RoundRobinBlancer;
 
 public class HADataSource extends MultiDataSource implements DataSource {
 
@@ -22,7 +24,9 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
-    
+
+    protected Balancer                    balancer                = new RoundRobinBlancer();
+
     public HADataSource(){
 
     }
@@ -40,11 +44,16 @@ public class HADataSource extends MultiDataSource implements DataSource {
         return new MultiDataSourceConnection(this, createConnectionId());
     }
 
-    protected int indexFor(MultiDataSourceConnection multiDataSourceConnection, String sql) throws SQLException {
-        int size = dataSources.size();
-        int connectionId = (int) multiDataSourceConnection.getId();
+    public Balancer getBalancer() {
+        return balancer;
+    }
 
-        return connectionId % size;
+    public void setBalancer(Balancer balancer) {
+        this.balancer = balancer;
+    }
+
+    protected int indexFor(MultiDataSourceConnection connection, String sql) throws SQLException {
+        return balancer.indexFor(connection, sql);
     }
 
     public Connection getConnectionInternal(MultiDataSourceConnection multiDataSourceConnection, String sql) throws SQLException {

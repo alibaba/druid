@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
-public class RoundRobinBlancePolicy implements BalancePolicy {
+public class RoundRobinBlancer implements Balancer {
 
     @Override
     public int indexFor(MultiDataSourceConnection connection, String sql) throws SQLException {
