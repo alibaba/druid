@@ -45,21 +45,51 @@ public class HAConnection extends WrapperAdapter implements Connection, Connecti
 
     private Map<String, Object>   attributes       = null;
 
-    private Date                  connectedTime    = new Date();
+    private Date                  connectedTime    = null;
 
     public HAConnection(HADataSource haDataSource, int id){
         this.haDataSource = haDataSource;
         this.id = id;
     }
 
-    public HADataSource getHaDataSource() {
-        return haDataSource;
-    }
-
-    private void checkConnection(String sql) throws SQLException {
+    public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
             conn = haDataSource.getConnectionInternal(id);
         }
+
+        if (autoCommit != null) {
+            conn.setAutoCommit(autoCommit);
+        }
+
+        if (readOnly != null) {
+            conn.setReadOnly(readOnly);
+        }
+
+        if (catalog != null) {
+            conn.setCatalog(catalog);
+        }
+
+        if (transactionLeval != null) {
+            conn.setTransactionIsolation(transactionLeval);
+        }
+
+        if (typeMap != null) {
+            conn.setTypeMap(typeMap);
+        }
+
+        if (holdability != null) {
+            conn.setHoldability(holdability);
+        }
+
+        if (clientInfo != null) {
+            conn.setClientInfo(clientInfo);
+        }
+
+        connectedTime = new Date();
+    }
+
+    public HADataSource getHaDataSource() {
+        return haDataSource;
     }
 
     @Override
