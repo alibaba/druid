@@ -22,7 +22,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
-
+    
     public HADataSource(){
 
     }
@@ -40,7 +40,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
         return new MultiDataSourceConnection(this, createConnectionId());
     }
 
-    protected int indexFor(MultiDataSourceConnection multiDataSourceConnection, String sql) {
+    protected int indexFor(MultiDataSourceConnection multiDataSourceConnection, String sql) throws SQLException {
         int size = dataSources.size();
         int connectionId = (int) multiDataSourceConnection.getId();
 
