@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -14,8 +15,10 @@ public class HADataSource implements DataSource {
 
     private final List<DruidDataSource> dataSources  = new CopyOnWriteArrayList<DruidDataSource>();
 
-    private int                    loginTimeout = 0;
-    private PrintWriter            logWriter    = new PrintWriter(System.out);
+    private int                         loginTimeout = 0;
+    private PrintWriter                 logWriter    = new PrintWriter(System.out);
+
+    private AtomicInteger                  requestCount        = new AtomicInteger();
 
     public List<DruidDataSource> getDataSources() {
         return dataSources;
@@ -70,7 +73,12 @@ public class HADataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        int requestNumber = requestCount.getAndIncrement();
+        int size = dataSources.size();
+        int index = requestNumber % size;
+        
+        DruidDataSource dataSource = dataSources.get(index);
+        return dataSource.getConnection();
     }
 
     @Override
