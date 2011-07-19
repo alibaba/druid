@@ -30,14 +30,17 @@ import com.alibaba.druid.logging.LogFactory;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PoolableStatement extends PoolableWrapper implements Statement {
-    private final static Log LOG = LogFactory.getLog(PoolableStatement.class);
-    
+
+    private final static Log        LOG            = LogFactory.getLog(PoolableStatement.class);
+
     private final Statement         stmt;
     protected PoolableConnection    conn;
     protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
     protected boolean               closed         = false;
 
     public PoolableStatement(PoolableConnection conn, Statement stmt){
+        super(stmt);
+
         this.conn = conn;
         this.stmt = stmt;
     }

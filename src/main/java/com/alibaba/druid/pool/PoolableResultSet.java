@@ -42,6 +42,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     private boolean                 closed = false;
 
     public PoolableResultSet(PoolableStatement stmt, ResultSet rs){
+        super(rs);
         this.stmt = stmt;
         this.rs = rs;
     }

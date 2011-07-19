@@ -447,15 +447,14 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        checkOpen();
-
+        if (conn == null) {
+            return null;
+        }
         return conn.unwrap(iface);
     }
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        checkOpen();
-
         return conn.isWrapperFor(iface);
     }
 
