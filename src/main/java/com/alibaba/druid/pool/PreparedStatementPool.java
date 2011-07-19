@@ -65,4 +65,8 @@ public class PreparedStatementPool {
         list.add(poolableStatement);
     }
 
+    public HashMap<PreparedStatementKey, List<PoolablePreparedStatement>> getMap() {
+        return map;
+    }
+
 }

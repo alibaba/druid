@@ -16,7 +16,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,6 +26,7 @@ import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -44,7 +45,7 @@ public final class ConnectionHolder {
     private final boolean                       poolPreparedStatements;
     private final PreparedStatementPool         statementPool;
 
-    private final List<PoolableStatement>       statementTrace           = new ArrayList<PoolableStatement>();
+    private final List<Statement>       statementTrace           = new ArrayList<Statement>();
 
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn){
         this.dataSource = dataSource;
@@ -68,11 +69,11 @@ public final class ConnectionHolder {
         this.lastActiveMillis = lastActiveMillis;
     }
 
-    public void addTrace(PoolableStatement stmt) {
+    public void addTrace(Statement stmt) {
         statementTrace.add(stmt);
     }
 
-    public void removeTrace(PoolableStatement stmt) {
+    public void removeTrace(Statement stmt) {
         statementTrace.remove(stmt);
     }
 
@@ -118,14 +119,8 @@ public final class ConnectionHolder {
 
         
         for (Object item : statementTrace.toArray()) {
-            PoolableStatement stmt = (PoolableStatement) item;
-            try {
-                if (!stmt.isClosed()) {
-                    stmt.close();
-                }
-            } catch (SQLException ex) {
-                LOG.error("close statement error", ex);
-            }
+            Statement stmt = (Statement) item;
+            JdbcUtils.close(stmt);
         }
         statementTrace.clear();
     }

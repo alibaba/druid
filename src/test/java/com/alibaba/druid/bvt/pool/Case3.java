@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -11,29 +12,52 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public class Case3 extends TestCase {
 
-    public void test_0() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.close();
-    }
+    // public void test_0() throws Exception {
+    // DruidDataSource dataSource = new DruidDataSource();
+    // dataSource.setUrl("jdbc:mock:xxx");
+    // dataSource.setPoolPreparedStatements(true);
+    // dataSource.close();
+    // }
+    //
+    // public void test_1() throws Exception {
+    // DruidDataSource dataSource = new DruidDataSource();
+    // dataSource.setUrl("jdbc:mock:xxx");
+    //
+    // Connection conn = dataSource.getConnection();
+    // Statement stmt = conn.createStatement();
+    // ResultSet rs = stmt.executeQuery("SELECT 1");
+    // rs.next();
+    //
+    // conn.close();
+    //
+    // Assert.assertEquals(true, stmt.isClosed());
+    // Assert.assertEquals(true, rs.isClosed());
+    //
+    // rs.close();
+    // stmt.close();
+    //
+    // dataSource.close();
+    // }
 
-    public void test_1() throws Exception {
+    public void test_2() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
+
+        String sql = "SELECT 1";
 
         Connection conn = dataSource.getConnection();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT 1");
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
         rs.next();
 
         conn.close();
-        
+
         Assert.assertEquals(true, stmt.isClosed());
         Assert.assertEquals(true, rs.isClosed());
-        
+
         rs.close();
         stmt.close();
+        
 
         dataSource.close();
     }

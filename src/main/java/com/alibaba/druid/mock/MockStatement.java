@@ -25,6 +25,8 @@ public class MockStatement implements Statement {
 
     public final static String ERROR_SQL = "THROW ERROR";
 
+    private boolean            closed    = false;
+
     private Connection         connection;
     protected MockConnection   mockConnection;
 
@@ -72,7 +74,7 @@ public class MockStatement implements Statement {
 
     @Override
     public void close() throws SQLException {
-
+        this.closed = true;
     }
 
     @Override
@@ -261,8 +263,7 @@ public class MockStatement implements Statement {
 
     @Override
     public boolean isClosed() throws SQLException {
-
-        return false;
+        return closed;
     }
 
     @Override

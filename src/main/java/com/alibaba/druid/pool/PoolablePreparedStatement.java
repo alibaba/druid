@@ -66,9 +66,19 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
     @Override
     public void close() throws SQLException {
-        clearResultSet();
+        if (isClosed()) {
+            return;
+        }
 
         conn.closePoolableStatement(this);
+    }
+
+    void closeInternal() throws SQLException {
+        super.close();
+    }
+
+    void setClosed(boolean value) {
+        this.closed = value;
     }
 
     @Override
