@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -54,7 +55,7 @@ public class Case3 extends TestCase {
         Assert.assertEquals(false, mockStmt.isClosed());
 
         conn.close();
-        
+
         Assert.assertEquals(true, mockStmt.isClosed());
 
         Assert.assertEquals(true, stmt.isClosed());
@@ -63,8 +64,14 @@ public class Case3 extends TestCase {
         rs.close();
         stmt.close();
 
-        stmt.execute("SELECT 1");
-
+        SQLException error = null;
+        try {
+            stmt.execute("SELECT 1");
+        } catch (SQLException ex) {
+            error = ex;
+        }
+        Assert.assertNotNull(error);
+        
         dataSource.close();
     }
 }
