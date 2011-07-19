@@ -61,6 +61,12 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         return stmt;
     }
 
+    protected void checkOpen() throws SQLException {
+        if (closed) {
+            throw new SQLException("statement is closed");
+        }
+    }
+
     void clearResultSet() {
         for (ResultSet rs : resultSetTrace) {
             try {
@@ -76,6 +82,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final ResultSet executeQuery(String sql) throws SQLException {
+        checkOpen();
+
         try {
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -90,6 +98,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int executeUpdate(String sql) throws SQLException {
+        checkOpen();
+
         try {
             return stmt.executeUpdate(sql);
         } catch (Throwable t) {
@@ -109,6 +119,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getMaxFieldSize() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getMaxFieldSize();
         } catch (Throwable t) {
@@ -118,6 +130,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setMaxFieldSize(int max) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setMaxFieldSize(max);
         } catch (Throwable t) {
@@ -127,6 +141,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getMaxRows() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getMaxRows();
         } catch (Throwable t) {
@@ -136,6 +152,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setMaxRows(int max) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setMaxRows(max);
         } catch (Throwable t) {
@@ -145,6 +163,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setEscapeProcessing(boolean enable) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setEscapeProcessing(enable);
         } catch (Throwable t) {
@@ -154,6 +174,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getQueryTimeout() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getQueryTimeout();
         } catch (Throwable t) {
@@ -163,6 +185,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setQueryTimeout(int seconds) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setQueryTimeout(seconds);
         } catch (Throwable t) {
@@ -172,6 +196,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void cancel() throws SQLException {
+        checkOpen();
+
         try {
             stmt.cancel();
         } catch (Throwable t) {
@@ -181,6 +207,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final SQLWarning getWarnings() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getWarnings();
         } catch (Throwable t) {
@@ -190,6 +218,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void clearWarnings() throws SQLException {
+        checkOpen();
+
         try {
             stmt.clearWarnings();
         } catch (Throwable t) {
@@ -199,6 +229,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setCursorName(String name) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setCursorName(name);
         } catch (Throwable t) {
@@ -208,6 +240,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean execute(String sql) throws SQLException {
+        checkOpen();
+
         try {
             return stmt.execute(sql);
         } catch (Throwable t) {
@@ -217,6 +251,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final ResultSet getResultSet() throws SQLException {
+        checkOpen();
+
         try {
             ResultSet rs = stmt.getResultSet();
 
@@ -231,6 +267,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getUpdateCount() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getUpdateCount();
         } catch (Throwable t) {
@@ -240,6 +278,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean getMoreResults() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getMoreResults();
         } catch (Throwable t) {
@@ -249,6 +289,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setFetchDirection(int direction) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setFetchDirection(direction);
         } catch (Throwable t) {
@@ -258,6 +300,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getFetchDirection() throws SQLException {
+        checkOpen();
+
         try {
             return stmt.getFetchDirection();
         } catch (Throwable t) {
@@ -267,6 +311,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setFetchSize(int rows) throws SQLException {
+        checkOpen();
+
         try {
             stmt.setFetchSize(rows);
         } catch (Throwable t) {
@@ -276,6 +322,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getFetchSize() throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.getFetchSize();
         } catch (Throwable t) {
@@ -285,6 +333,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getResultSetConcurrency() throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.getResultSetConcurrency();
         } catch (Throwable t) {
@@ -294,6 +344,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getResultSetType() throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.getResultSetType();
         } catch (Throwable t) {
@@ -303,6 +355,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void addBatch(String sql) throws SQLException {
+        checkOpen();
+        
         try {
             stmt.addBatch(sql);
         } catch (Throwable t) {
@@ -312,6 +366,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void clearBatch() throws SQLException {
+        checkOpen();
+        
         try {
             stmt.clearBatch();
         } catch (Throwable t) {
@@ -321,6 +377,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int[] executeBatch() throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.executeBatch();
         } catch (Throwable t) {
@@ -330,11 +388,15 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final Connection getConnection() throws SQLException {
+        checkOpen();
+        
         return conn;
     }
 
     @Override
     public final boolean getMoreResults(int current) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.getMoreResults(current);
         } catch (Throwable t) {
@@ -344,6 +406,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final ResultSet getGeneratedKeys() throws SQLException {
+        checkOpen();
+        
         try {
             ResultSet rs = stmt.getGeneratedKeys();
 
@@ -359,6 +423,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.executeUpdate(sql, autoGeneratedKeys);
         } catch (Throwable t) {
@@ -368,6 +434,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int executeUpdate(String sql, int columnIndexes[]) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.executeUpdate(sql, columnIndexes);
         } catch (Throwable t) {
@@ -377,6 +445,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int executeUpdate(String sql, String columnNames[]) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.executeUpdate(sql, columnNames);
         } catch (Throwable t) {
@@ -386,6 +456,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.execute(sql, autoGeneratedKeys);
         } catch (Throwable t) {
@@ -395,6 +467,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean execute(String sql, int columnIndexes[]) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.execute(sql, columnIndexes);
         } catch (Throwable t) {
@@ -404,6 +478,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final boolean execute(String sql, String columnNames[]) throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.execute(sql, columnNames);
         } catch (Throwable t) {
@@ -413,6 +489,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final int getResultSetHoldability() throws SQLException {
+        checkOpen();
+        
         try {
             return stmt.getResultSetHoldability();
         } catch (Throwable t) {
