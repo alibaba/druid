@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.Clob;
-import java.sql.Driver;
 import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
@@ -1362,35 +1361,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
 
     @Override
     public boolean isClosed() throws SQLException {
-        if (this.closed) {
-            return true;
-        }
-        
-        Driver driver = null;
-        {
-            PoolableConnection conn = stmt.getPoolableConnection();
-            ConnectionHolder holder = conn.getConnectionHolder();
-            if (holder != null) {
-                DruidAbstractDataSource dataSource = holder.getDataSource();
-                if (dataSource != null) {
-                    driver = dataSource.getDriver();
-                }
-            }
-        }
-        // Oracle Driver 10.x is JDBC 3.0
-        if (driver != null) {
-            if ("oracle.jdbc.driver.OracleDriver".equals(driver.getClass().getName())) {
-                if (driver.getMajorVersion() <= 10) {
-                    return closed;
-                }
-            }
-        }
-        
-        try {
-            return rs.isClosed();
-        } catch (Throwable t) {
-            throw checkException(t);
-        }
+        return this.closed;
     }
 
     @Override
