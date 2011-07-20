@@ -1,6 +1,8 @@
 package com.alibaba.druid.pool.benckmark;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
 
@@ -21,19 +23,22 @@ public class CaseKylin extends TestCase {
     private String  driverClass;
     private int     initialSize                   = 1;
     private int     minIdle                       = 1;
-    private int     maxIdle                       = 14;
-    private int     maxActive                     = 14;
+    private int     maxIdle                       = 20;
+    private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
     private String  validationQuery               = null;      // "SELECT 1";
     private int     threadCount                   = 40;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 100;
-    private boolean testOnBorrow                  = true;
+    final int       LOOP_COUNT                    = 1000 * 1;
+    private boolean testWhileIdle                 = true;
+    private boolean testOnBorrow                  = false;
+    private boolean testOnReturn                  = false;
 
     private boolean removeAbandoned               = true;
     private int     removeAbandonedTimeout        = 180;
     private long    timeBetweenEvictionRunsMillis = 60000;
-    private long    minEvictableIdleTimeMillis    = 60000;
+    private long    minEvictableIdleTimeMillis    = 1800000;
+    private int     numTestsPerEvictionRun        = 20;
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -44,11 +49,12 @@ public class CaseKylin extends TestCase {
         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
         user = "root";
         password = "root";
+        driverClass = "com.mysql.jdbc.Driver";
     }
 
     public void test_perf() throws Exception {
-        for (int i = 0; i < 10; ++i) {
-            druid();
+        for (int i = 0; i < 100; ++i) {
+            //druid();
             dbcp();
         }
     }
@@ -69,10 +75,13 @@ public class CaseKylin extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setTestOnBorrow(testWhileIdle);
+        dataSource.setTestOnBorrow(testOnReturn);
         dataSource.setRemoveAbandoned(removeAbandoned);
         dataSource.setRemoveAbandonedTimeout(removeAbandonedTimeout);
         dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
         dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
@@ -96,10 +105,13 @@ public class CaseKylin extends TestCase {
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setTestOnBorrow(testWhileIdle);
+        dataSource.setTestOnBorrow(testOnReturn);
         dataSource.setRemoveAbandoned(removeAbandoned);
         dataSource.setRemoveAbandonedTimeout(removeAbandonedTimeout);
         dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
         dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
 
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "dbcp", threadCount);
@@ -120,6 +132,12 @@ public class CaseKylin extends TestCase {
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
+                            PreparedStatement stmt = conn.prepareStatement("SELECT 1");
+                            ResultSet rs = stmt.executeQuery();
+                            rs.next();
+                            rs.getInt(1);
+                            rs.close();
+                            stmt.close();
                             conn.close();
                         }
                     } catch (Exception ex) {
