@@ -51,7 +51,7 @@ public class CaseKylin extends TestCase {
 //        password = "root";
 //        driverClass = "com.mysql.jdbc.Driver";
         
-        jdbcUrl = "jdbc:oracle:thin:10.20.153.104:1521:orcl";
+        jdbcUrl = "jdbc:oracle:thin:@10.20.144.80:1521:orcl";
         user = "DRUID";
         password = "DRUID";
         driverClass = "oracle.jdbc.driver.OracleDriver";
@@ -137,7 +137,7 @@ public class CaseKylin extends TestCase {
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
-                            PreparedStatement stmt = conn.prepareStatement("SELECT 1");
+                            PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM DUAL");
                             ResultSet rs = stmt.executeQuery();
                             rs.next();
                             rs.getInt(1);
