@@ -27,7 +27,7 @@ public class CaseKylin extends TestCase {
     private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
     private String  validationQuery               = null;      // "SELECT 1";
-    private int     threadCount                   = 40;
+    private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
     final int       LOOP_COUNT                    = 1000 * 10;
     private boolean testWhileIdle                 = true;
