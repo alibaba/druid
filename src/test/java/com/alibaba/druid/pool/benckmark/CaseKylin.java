@@ -29,7 +29,7 @@ public class CaseKylin extends TestCase {
     private String  validationQuery               = null;      // "SELECT 1";
     private int     threadCount                   = 40;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 1;
+    final int       LOOP_COUNT                    = 1000 * 10;
     private boolean testWhileIdle                 = true;
     private boolean testOnBorrow                  = false;
     private boolean testOnReturn                  = false;
@@ -53,8 +53,8 @@ public class CaseKylin extends TestCase {
     }
 
     public void test_perf() throws Exception {
-        for (int i = 0; i < 100; ++i) {
-            //druid();
+        for (int i = 0; i < 5; ++i) {
+            druid();
             dbcp();
         }
     }
