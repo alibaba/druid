@@ -54,7 +54,7 @@ public class CaseKylin extends TestCase {
         jdbcUrl = "dbc:oracle:thin:@A010.20.153.104:1521:orcl";
         user = "DRUID";
         password = "DRUID";
-        driverClass = "racle.jdbc.driver.OracleDriver";
+        driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
     public void test_perf() throws Exception {
