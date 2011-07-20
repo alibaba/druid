@@ -46,10 +46,15 @@ public class CaseKylin extends TestCase {
         // password = "dragoon25";
         // driverClass = "com.alibaba.druid.mock.MockDriver";
 
-        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        user = "root";
-        password = "root";
-        driverClass = "com.mysql.jdbc.Driver";
+//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+//        user = "root";
+//        password = "root";
+//        driverClass = "com.mysql.jdbc.Driver";
+        
+        jdbcUrl = "dbc:oracle:thin:@A010.20.153.104:1521:orcl";
+        user = "DRUID";
+        password = "DRUID";
+        driverClass = "racle.jdbc.driver.OracleDriver";
     }
 
     public void test_perf() throws Exception {
