@@ -51,7 +51,7 @@ public class CaseKylin extends TestCase {
 //        password = "root";
 //        driverClass = "com.mysql.jdbc.Driver";
         
-        jdbcUrl = "dbc:oracle:thin:@10.20.153.104:1521:orcl";
+        jdbcUrl = "jdbc:oracle:thin:10.20.153.104:1521:orcl";
         user = "DRUID";
         password = "DRUID";
         driverClass = "oracle.jdbc.driver.OracleDriver";
