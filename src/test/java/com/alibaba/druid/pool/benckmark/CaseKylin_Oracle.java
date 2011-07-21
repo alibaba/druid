@@ -29,7 +29,7 @@ public class CaseKylin_Oracle extends TestCase {
     private String  validationQuery               = null;               // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 10;
+    final int       LOOP_COUNT                    = 1000 * 100;
     private boolean testWhileIdle                 = true;
     private boolean testOnBorrow                  = true;
     private boolean testOnReturn                  = false;
