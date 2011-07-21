@@ -15,7 +15,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class CaseKylin extends TestCase {
+public class CaseKylin_mysql extends TestCase {
 
     private String  jdbcUrl;
     private String  user;
@@ -46,15 +46,15 @@ public class CaseKylin extends TestCase {
 //         password = "dragoon25";
 //         driverClass = "com.alibaba.druid.mock.MockDriver";
 
-//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-//        user = "root";
-//        password = "root";
-//        driverClass = "com.mysql.jdbc.Driver";
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
+        driverClass = "com.mysql.jdbc.Driver";
         
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-        user = "alibaba";
-        password = "ccbuauto";
-        driverClass = "oracle.jdbc.driver.OracleDriver";
+//        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+//        user = "alibaba";
+//        password = "ccbuauto";
+//        driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
     public void test_perf() throws Exception {
