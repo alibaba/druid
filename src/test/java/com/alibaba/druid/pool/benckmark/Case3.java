@@ -47,15 +47,15 @@ public class Case3 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
 //        connectionProperties = "connectSleep=3;executeSleep=1";
 
-        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        user = "root";
-        password = "root";
-        driverClass = "com.mysql.jdbc.Driver";
+//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+//        user = "root";
+//        password = "root";
+//        driverClass = "com.mysql.jdbc.Driver";
     }
 
     public void test_perf() throws Exception {
         for (int i = 0; i < 5; ++i) {
-            druid();
+//            druid();
             dbcp();
             // boneCP();
         }

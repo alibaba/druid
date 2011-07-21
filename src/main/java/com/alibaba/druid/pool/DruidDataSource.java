@@ -274,7 +274,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (isTestOnBorrow()) {
                 boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                 if (!validate) {
-                    LOG.debug("skip not validate connection.");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("skip not validate connection.");
+                    }
+                    
                     Connection realConnection = poolalbeConnection.getConnection();
                     JdbcUtils.close(realConnection);
                     continue;

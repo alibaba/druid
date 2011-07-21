@@ -36,19 +36,32 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
         }
     }
 
-    public boolean isValidConnection(Connection c, String valiateQuery, int validationQueryTimeout) {
+    public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
+        try {
+            if (conn.isClosed()) {
+                return false;
+            }
+        } catch (SQLException ex) {
+         // skip 
+            return false;
+        }
+        
+        if (valiateQuery == null) {
+            return true;
+        }
+        
         if (driverHasPingMethod) {
-            if (c instanceof PoolableConnection) {
-                c = ((PoolableConnection) c).getConnection();
+            if (conn instanceof PoolableConnection) {
+                conn = ((PoolableConnection) conn).getConnection();
             }
 
-            if (c instanceof ConnectionProxy) {
-                c = ((ConnectionProxy) c).getConnectionRaw();
+            if (conn instanceof ConnectionProxy) {
+                conn = ((ConnectionProxy) conn).getConnectionRaw();
             }
 
-            if (clazz.isAssignableFrom(c.getClass())) {
+            if (clazz.isAssignableFrom(conn.getClass())) {
                 try {
-                    ping.invoke(c);
+                    ping.invoke(conn);
                     return true;
                 } catch (Exception e) {
                     LOG.warn("Unexpected error in ping", e);
@@ -60,7 +73,7 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            stmt = c.createStatement();
+            stmt = conn.createStatement();
             stmt.setQueryTimeout(validationQueryTimeout);
             rs = stmt.executeQuery(valiateQuery);
             return true;

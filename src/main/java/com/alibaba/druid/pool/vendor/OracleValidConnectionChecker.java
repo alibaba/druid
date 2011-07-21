@@ -55,19 +55,32 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
         }
     }
 
-    public boolean isValidConnection(Connection c, String valiateQuery, int validationQueryTimeout) {
+    public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
         try {
-            if (c instanceof PoolableConnection) {
-                c = ((PoolableConnection) c).getConnection();
+            if (conn.isClosed()) {
+                return false;
+            }
+        } catch (SQLException ex) {
+            // skip 
+            return false;
+        }
+        
+        if (valiateQuery == null) {
+            return true;
+        }
+        
+        try {
+            if (conn instanceof PoolableConnection) {
+                conn = ((PoolableConnection) conn).getConnection();
             }
 
-            if (c instanceof ConnectionProxy) {
-                c = ((ConnectionProxy) c).getConnectionRaw();
+            if (conn instanceof ConnectionProxy) {
+                conn = ((ConnectionProxy) conn).getConnectionRaw();
             }
 
             // unwrap
-            if (clazz.isAssignableFrom(c.getClass())) {
-                Integer status = (Integer) ping.invoke(c, params);
+            if (clazz.isAssignableFrom(conn.getClass())) {
+                Integer status = (Integer) ping.invoke(conn, params);
 
                 // Error
                 if (status.intValue() < 0) {
@@ -80,7 +93,7 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
             Statement stmt = null;
             ResultSet rs = null;
             try {
-                stmt = c.createStatement();
+                stmt = conn.createStatement();
                 rs = stmt.executeQuery(valiateQuery);
                 return true;
             } catch (SQLException e) {

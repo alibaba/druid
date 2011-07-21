@@ -21,6 +21,19 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
     private static final Log    LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
 
     public boolean isValidConnection(final Connection c, String valiateQuery, int validationQueryTimeout) {
+        try {
+            if (c.isClosed()) {
+                return false;
+            }
+        } catch (SQLException ex) {
+         // skip 
+            return false;
+        }
+
+        if (valiateQuery == null) {
+            return true;
+        }
+
         Statement stmt = null;
 
         try {
