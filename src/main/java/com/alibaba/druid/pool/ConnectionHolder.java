@@ -24,17 +24,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class ConnectionHolder {
-    private final static Log LOG = LogFactory.getLog(ConnectionHolder.class);
-    
-    private final DruidAbstractDataSource               dataSource;
+
+    private final DruidAbstractDataSource       dataSource;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
@@ -45,7 +42,7 @@ public final class ConnectionHolder {
     private final boolean                       poolPreparedStatements;
     private final PreparedStatementPool         statementPool;
 
-    private final List<Statement>       statementTrace           = new ArrayList<Statement>();
+    private final List<Statement>               statementTrace           = new ArrayList<Statement>();
 
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn){
         this.dataSource = dataSource;
@@ -117,7 +114,6 @@ public final class ConnectionHolder {
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
-        
         for (Object item : statementTrace.toArray()) {
             Statement stmt = (Statement) item;
             JdbcUtils.close(stmt);
