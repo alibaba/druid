@@ -9,7 +9,9 @@ import java.sql.Statement;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -37,27 +39,24 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
     public boolean isValidConnection(Connection c, String valiateQuery, int validationQueryTimeout) {
         Connection conn = null;
 
-        if (clazz.isAssignableFrom(c.getClass())) {
-            conn = c;
-        } else {
-            try {
-                conn = (Connection) c.unwrap(clazz);
-            } catch (SQLException e) {
-                LOG.warn("Unexpected error in ping", e);
-                return false;
-            }
-        }
-
-        // if there is a ping method then use it, otherwise just use a 'SELECT 1' statement
-        if (conn != null && driverHasPingMethod) {
-            try {
-                ping.invoke(conn);
-                return true;
-            } catch (Exception e) {
-                LOG.warn("Unexpected error in ping", e);
-                return false;
+        if (driverHasPingMethod) {
+            if (c instanceof PoolableConnection) {
+                c = ((PoolableConnection) c).getConnection();
             }
 
+            if (c instanceof ConnectionProxy) {
+                c = ((ConnectionProxy) c).getConnectionRaw();
+            }
+
+            if (clazz.isAssignableFrom(c.getClass())) {
+                try {
+                    ping.invoke(conn);
+                    return true;
+                } catch (Exception e) {
+                    LOG.warn("Unexpected error in ping", e);
+                    return false;
+                }
+            }
         }
 
         Statement stmt = null;

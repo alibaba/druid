@@ -29,7 +29,7 @@ public class CaseKylin_Oracle extends TestCase {
     private String  validationQuery               = null;               // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 100;
+    final int       LOOP_COUNT                    = 1000 * 10;
     private boolean testWhileIdle                 = true;
     private boolean testOnBorrow                  = true;
     private boolean testOnReturn                  = false;
@@ -39,7 +39,7 @@ public class CaseKylin_Oracle extends TestCase {
     private long    timeBetweenEvictionRunsMillis = 60000;
     private long    minEvictableIdleTimeMillis    = 1800000;
     private int     numTestsPerEvictionRun        = 20;
-    private String  validateQuery                 = "SELECT @@SQL_MODE";
+    private String  validateQuery                 = "SELECT 1 FROM DUAL";
     
     private String oracleDriverClass = "com.alibaba.china.jdbc.SimpleDriver";
 
@@ -70,6 +70,7 @@ public class CaseKylin_Oracle extends TestCase {
     public void druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
+        dataSource.setFilters("encoding");
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
