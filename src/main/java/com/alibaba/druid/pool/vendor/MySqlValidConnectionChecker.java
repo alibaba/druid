@@ -37,8 +37,6 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
     }
 
     public boolean isValidConnection(Connection c, String valiateQuery, int validationQueryTimeout) {
-        Connection conn = null;
-
         if (driverHasPingMethod) {
             if (c instanceof PoolableConnection) {
                 c = ((PoolableConnection) c).getConnection();
@@ -50,7 +48,7 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
 
             if (clazz.isAssignableFrom(c.getClass())) {
                 try {
-                    ping.invoke(conn);
+                    ping.invoke(c);
                     return true;
                 } catch (Exception e) {
                     LOG.warn("Unexpected error in ping", e);
