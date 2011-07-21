@@ -26,7 +26,7 @@ public class CaseKylin_Oracle extends TestCase {
     private int     maxIdle                       = 14;
     private int     maxActive                     = 14;
     private int     maxWait                       = 60000;
-    private String  validationQuery               = null;               // "SELECT 1";
+    private String  validationQuery               = null;                                 // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
     final int       LOOP_COUNT                    = 1000 * 100;
@@ -39,9 +39,9 @@ public class CaseKylin_Oracle extends TestCase {
     private long    timeBetweenEvictionRunsMillis = 60000;
     private long    minEvictableIdleTimeMillis    = 1800000;
     private int     numTestsPerEvictionRun        = 20;
-    private String  validateQuery                 = "SELECT 1 FROM DUAL";
-    
-    private String oracleDriverClass = "com.alibaba.china.jdbc.SimpleDriver";
+    private String  validateQuery                 = null;
+
+    private String  oracleDriverClass             = "com.alibaba.china.jdbc.SimpleDriver";
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
