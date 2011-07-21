@@ -40,6 +40,8 @@ public class CaseKylin_Oracle extends TestCase {
     private long    minEvictableIdleTimeMillis    = 1800000;
     private int     numTestsPerEvictionRun        = 20;
     private String  validateQuery                 = "SELECT @@SQL_MODE";
+    
+    private String oracleDriverClass = "com.alibaba.china.jdbc.SimpleDriver";
 
     protected void setUp() throws Exception {
         // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -105,7 +107,7 @@ public class CaseKylin_Oracle extends TestCase {
         dataSource.setMinIdle(minIdle);
         dataSource.setMaxWait(maxWait);
         dataSource.setPoolPreparedStatements(true);
-        dataSource.setDriverClassName(driverClass);
+        dataSource.setDriverClassName(oracleDriverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);

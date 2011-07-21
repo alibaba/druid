@@ -20,11 +20,12 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
     private static final String QUERY            = "SELECT 1";
     private static final Log    LOG              = LogFactory.getLog(MSSQLValidConnectionChecker.class);
 
-    public boolean isValidConnection(final Connection c) {
+    public boolean isValidConnection(final Connection c, String valiateQuery, int validationQueryTimeout) {
         Statement stmt = null;
 
         try {
             stmt = c.createStatement();
+            stmt.setQueryTimeout(validationQueryTimeout);
             stmt.execute(QUERY);
             return true;
         } catch (SQLException e) {

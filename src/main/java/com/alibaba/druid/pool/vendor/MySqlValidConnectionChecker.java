@@ -34,7 +34,7 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
         }
     }
 
-    public boolean isValidConnection(Connection c) {
+    public boolean isValidConnection(Connection c, String valiateQuery, int validationQueryTimeout) {
         Connection conn = null;
 
         if (clazz.isAssignableFrom(c.getClass())) {
@@ -64,7 +64,8 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
         ResultSet rs = null;
         try {
             stmt = c.createStatement();
-            rs = stmt.executeQuery("SELECT 1");
+            stmt.setQueryTimeout(validationQueryTimeout);
+            rs = stmt.executeQuery(valiateQuery);
             return true;
         } catch (SQLException e) {
             return false;

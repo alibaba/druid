@@ -701,6 +701,13 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             throw new SQLException("validateConnection: connection closed");
         }
 
+        if (validConnectionChecker != null) {
+            if (!validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout)) {
+                throw new SQLException("validateConnection false");
+            }
+            return;
+        }
+
         if (null != query) {
             Statement stmt = null;
             ResultSet rset = null;
@@ -731,23 +738,23 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             }
         }
     }
-    
+
     public boolean testConnection(Connection conn) {
         if (conn instanceof PoolableConnection) {
             conn = ((PoolableConnection) conn).getConnection();
         }
-        
+
         if (conn instanceof ConnectionProxy) {
             conn = ((ConnectionProxy) conn).getConnectionRaw();
         }
-        
+
         return testConnectionInternal(conn);
     }
 
     protected boolean testConnectionInternal(Connection conn) {
         try {
             if (validConnectionChecker != null) {
-                return validConnectionChecker.isValidConnection(conn);
+                return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
             }
 
             String query = getValidationQuery();
