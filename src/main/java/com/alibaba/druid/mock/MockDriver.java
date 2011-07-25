@@ -51,10 +51,16 @@ public class MockDriver implements Driver {
     private final AtomicLong               connectCount         = new AtomicLong();
     private final AtomicLong               connectionCloseCount = new AtomicLong();
 
+    private final AtomicLong               connectionIdSeed     = new AtomicLong(1000L);
+
     private final List<MockConnection>     connections          = new CopyOnWriteArrayList<MockConnection>();
 
     static {
         registerDriver(instance);
+    }
+
+    public long generateConnectionId() {
+        return connectionIdSeed.incrementAndGet();
     }
 
     public List<MockConnection> getConnections() {
@@ -75,7 +81,7 @@ public class MockDriver implements Driver {
         connections.remove(conn);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("close");
+            LOG.debug("conn-" + conn.getId() + " close");
         }
     }
 
@@ -183,7 +189,7 @@ public class MockDriver implements Driver {
         if (LOG.isDebugEnabled()) {
             LOG.debug("executeQuery " + sql);
         }
-        
+
         MockConnection conn = stmt.getMockConnection();
 
         if (conn != null) {

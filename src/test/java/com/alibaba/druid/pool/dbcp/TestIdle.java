@@ -1,30 +1,33 @@
 package com.alibaba.druid.pool.dbcp;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdle extends TestCase {
 
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 
-        BasicDataSource dataSource = new BasicDataSource();
+//        BasicDataSource dataSource = new BasicDataSource();
+        DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriverClassName("com.alibaba.druid.mock.MockDriver");
-        dataSource.setInitialSize(0);
+        dataSource.setInitialSize(1);
         dataSource.setMaxActive(4);
         dataSource.setMaxIdle(4);
-        dataSource.setMinIdle(1);
-        dataSource.setMinEvictableIdleTimeMillis(50 * 1);
-        dataSource.setTimeBetweenEvictionRunsMillis(10);
-        dataSource.setTestWhileIdle(false);
+        dataSource.setMinIdle(0);
+        dataSource.setMinEvictableIdleTimeMillis(5000 * 1);
+        dataSource.setTimeBetweenEvictionRunsMillis(1000);
+        dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
 
@@ -34,10 +37,15 @@ public class TestIdle extends TestCase {
             // Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             System.out.println("raw size : " + driver.getConnections().size());
 
+            PreparedStatement stmt = conn.prepareStatement("SELECT 1");
+            ResultSet rs = stmt.executeQuery();
+            rs.close();
+            stmt.close();
+
             conn.close();
             System.out.println("raw size : " + driver.getConnections().size());
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
 
@@ -60,7 +68,7 @@ public class TestIdle extends TestCase {
             }
             System.out.println("raw size : " + driver.getConnections().size());
 
-            System.out.println("----------sleep for evict");    
+            System.out.println("----------sleep for evict");
             Thread.sleep(dataSource.getMinEvictableIdleTimeMillis() * 2);
             System.out.println("raw size : " + driver.getConnections().size());
         }

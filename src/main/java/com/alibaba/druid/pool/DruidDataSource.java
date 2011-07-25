@@ -72,7 +72,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final Condition                                                      notEmpty                    = lock.newCondition();
     private final Condition                                                      notMaxActive                = lock.newCondition();
     private final Condition                                                      lowWater                    = lock.newCondition();
-    private final Condition                                                      idleTimeout                 = lock.newCondition();
 
     // stats
     private long                                                                 connectCount                = 0;
@@ -692,6 +691,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.countDown();
 
             final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
+            final List<ConnectionHolder> idleList = new ArrayList<ConnectionHolder>();
+            List<ConnectionHolder> checkList = new ArrayList<ConnectionHolder>();
             FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
@@ -719,7 +720,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             numTestsPerEvictionRun = 1;
                         }
 
-                        FOR_1: for (int i = 0; i < numTestsPerEvictionRun; ++i) {
+                        for (int i = 0; i < numTestsPerEvictionRun; ++i) {
                             ConnectionHolder connection = connections[i];
 
                             if (evictCount == 0 && idleCount == 0 && connection == null) {
@@ -727,63 +728,49 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
 
                             long idleMillis = System.currentTimeMillis() - connection.getLastActiveMillis();
-                            if (idleMillis < minEvictableIdleTimeMillis) {
-                                if (evictCount == 0 && idleCount == 0) {
-                                    long waitMillis = minEvictableIdleTimeMillis - idleMillis;
-                                    idleTimeout.await(waitMillis, TimeUnit.MILLISECONDS);
-                                    continue FOR_0;
-                                }
-                                break FOR_1;
-                            }
-
-                            if (count > minIdle + evictCount) {
-                                evictCount++;
+                            if (idleMillis >= minEvictableIdleTimeMillis) {
+                                evictList.add(connection);
                             } else {
-                                idleCount++;
+                                idleList.add(connection);
                             }
                         }
-
-                        if (evictCount > 0) {
-                            for (int i = 0; i < evictCount; ++i) {
-                                evictList.add(connections[i]);
-                            }
-                            System.arraycopy(connections, evictCount, connections, 0, count - evictCount);
-                            for (int i = 0; i < evictCount; ++i) {
-                                connections[--count] = null;
-                            }
-                        }
-
-                        if (idleCount > 0 && isTestWhileIdle()) {
-                            ConnectionHolder[] idleConnections = new ConnectionHolder[idleCount];
-                            System.arraycopy(connections, 0, idleConnections, 0, idleCount);
-                            System.arraycopy(connections, idleCount, connections, 0, count - idleCount);
-                            for (int i = 0; i < idleCount; ++i) {
-                                connections[--count] = null;
-                            }
-
-                            for (ConnectionHolder idleConnection : idleConnections) {
-                                if (testConnectionInternal(idleConnection.getConnection())) {
-                                    connections[count++] = idleConnection;
-                                    idleConnection.setLastActiveMillis(System.currentTimeMillis());
-                                    idleCheckCount++;
-                                } else {
-                                    evictList.add(idleConnection);
-                                }
-                            }
+                        System.arraycopy(connections, numTestsPerEvictionRun, connections, 0, count - numTestsPerEvictionRun);
+                        for (int i = 0; i < numTestsPerEvictionRun; ++i) {
+                            connections[--count] = null;
                         }
                     } finally {
                         lock.unlock();
                     }
 
-                    for (ConnectionHolder item : evictList) {
-                        Connection connection = item.getConnection();
-                        try {
-                            connection.close();
-                            destroyCount++;
-                        } catch (SQLException e) {
-                            LOG.error("create connection error", e);
+                    for (ConnectionHolder idleConnection : idleList) {
+                        if (!testConnectionInternal(idleConnection.getConnection())) {
+                            evictList.add(idleConnection);
+                        } else {
+                            checkList.add(idleConnection);
                         }
                     }
+
+                    int size = checkList.size();
+                    if (size > 0) {
+                        lock.lock();
+                        try {
+                            for (int i = 0; i < size; ++i) {
+                                ConnectionHolder connection = checkList.get(i);
+                                connections[count++] = connection;
+                            }
+                        } finally {
+                            lock.unlock();
+                        }
+                    }
+
+                    for (ConnectionHolder item : evictList) {
+                        Connection connection = item.getConnection();
+                        JdbcUtils.close(connection);
+                        destroyCount++;
+                    }
+
+                    idleList.clear();
+                    checkList.clear();
                     evictList.clear();
                 } catch (InterruptedException e) {
                     break;

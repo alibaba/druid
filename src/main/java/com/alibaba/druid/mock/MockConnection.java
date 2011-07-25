@@ -52,6 +52,8 @@ public class MockConnection implements Connection {
 
     private Properties       connectProperties;
 
+    private long             id;
+
     public MockConnection(){
         this(null);
     }
@@ -63,6 +65,12 @@ public class MockConnection implements Connection {
     public MockConnection(MockDriver driver, Properties connectProperties){
         this.driver = driver;
         this.connectProperties = connectProperties;
+
+        this.id = driver.generateConnectionId();
+    }
+
+    public long getId() {
+        return id;
     }
 
     public MockDriver getDriver() {
@@ -145,7 +153,7 @@ public class MockConnection implements Connection {
     @Override
     public boolean isClosed() throws SQLException {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("check close " + closed);
+            LOG.debug("conn-" + id + " isClose : " + closed);
         }
 
         return closed;
