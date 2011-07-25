@@ -55,7 +55,7 @@ public class Case3 extends TestCase {
 
     public void test_perf() throws Exception {
         for (int i = 0; i < 5; ++i) {
-//            druid();
+            druid();
             dbcp();
             // boneCP();
         }
