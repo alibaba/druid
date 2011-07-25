@@ -33,19 +33,24 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
+
 public class MockConnection implements Connection {
 
-    private boolean    autoCommit = false;
-    private boolean    closed     = false;
-    private boolean    readOnly   = false;
-    private String     catalog    = null;
-    private int        transactionIsolation;
-    private SQLWarning warning;
-    private int        holdability;
+    private final static Log LOG        = LogFactory.getLog(MockConnection.class);
 
-    private MockDriver driver;
+    private boolean          autoCommit = false;
+    private boolean          closed     = false;
+    private boolean          readOnly   = false;
+    private String           catalog    = null;
+    private int              transactionIsolation;
+    private SQLWarning       warning;
+    private int              holdability;
 
-    private Properties connectProperties;
+    private MockDriver       driver;
+
+    private Properties       connectProperties;
 
     public MockConnection(){
         this(null);
@@ -139,6 +144,10 @@ public class MockConnection implements Connection {
 
     @Override
     public boolean isClosed() throws SQLException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("check close " + closed);
+        }
+
         return closed;
     }
 

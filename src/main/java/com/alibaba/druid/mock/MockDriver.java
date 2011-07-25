@@ -25,7 +25,9 @@ import java.sql.NClob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLXML;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.logging.Log;
@@ -34,7 +36,8 @@ import com.alibaba.druid.mock.handler.MockExecuteHandler;
 import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
 public class MockDriver implements Driver {
-    private final static Log LOG = LogFactory.getLog(MockDriver.class);
+
+    private final static Log               LOG                  = LogFactory.getLog(MockDriver.class);
 
     public final static MockExecuteHandler DEFAULT_HANDLER      = new MySqlMockExecuteHandlerImpl();
 
@@ -43,13 +46,19 @@ public class MockDriver implements Driver {
 
     private MockExecuteHandler             executeHandler       = DEFAULT_HANDLER;
 
-    private final static MockDriver        instance             = new MockDriver();
+    public final static MockDriver         instance             = new MockDriver();
 
     private final AtomicLong               connectCount         = new AtomicLong();
     private final AtomicLong               connectionCloseCount = new AtomicLong();
 
+    private final List<MockConnection>     connections          = new CopyOnWriteArrayList<MockConnection>();
+
     static {
         registerDriver(instance);
+    }
+
+    public List<MockConnection> getConnections() {
+        return connections;
     }
 
     protected void incrementConnectionCloseCount() {
@@ -62,6 +71,12 @@ public class MockDriver implements Driver {
 
     protected void afterConnectionClose(MockConnection conn) {
         connectionCloseCount.incrementAndGet();
+
+        connections.remove(conn);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("close");
+        }
     }
 
     public static boolean registerDriver(Driver driver) {
@@ -90,6 +105,10 @@ public class MockDriver implements Driver {
             return null;
         }
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("connect, url " + url);
+        }
+
         if (info != null) {
             Object val = info.get("connectSleep");
             if (val != null) {
@@ -106,6 +125,7 @@ public class MockDriver implements Driver {
 
         if (url == null) {
             connectCount.incrementAndGet();
+            connections.add(conn);
             return conn;
         }
 
@@ -114,6 +134,7 @@ public class MockDriver implements Driver {
             conn.setCatalog(catalog);
 
             connectCount.incrementAndGet();
+            connections.add(conn);
             return conn;
         }
 
@@ -122,6 +143,7 @@ public class MockDriver implements Driver {
             conn.setCatalog(catalog);
 
             connectCount.incrementAndGet();
+            connections.add(conn);
             return conn;
         }
 
@@ -158,6 +180,10 @@ public class MockDriver implements Driver {
     }
 
     protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("executeQuery " + sql);
+        }
+        
         MockConnection conn = stmt.getMockConnection();
 
         if (conn != null) {
