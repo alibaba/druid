@@ -66,7 +66,9 @@ public class MockConnection implements Connection {
         this.driver = driver;
         this.connectProperties = connectProperties;
 
-        this.id = driver.generateConnectionId();
+        if (driver != null) {
+            this.id = driver.generateConnectionId();
+        }
     }
 
     public long getId() {

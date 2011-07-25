@@ -22,11 +22,11 @@ public class TestIdle extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriverClassName("com.alibaba.druid.mock.MockDriver");
         dataSource.setInitialSize(1);
-        dataSource.setMaxActive(4);
-        dataSource.setMaxIdle(4);
+        dataSource.setMaxActive(5);
+        dataSource.setMaxIdle(5);
         dataSource.setMinIdle(0);
         dataSource.setMinEvictableIdleTimeMillis(5000 * 1);
-        dataSource.setTimeBetweenEvictionRunsMillis(1000);
+        dataSource.setTimeBetweenEvictionRunsMillis(500);
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");

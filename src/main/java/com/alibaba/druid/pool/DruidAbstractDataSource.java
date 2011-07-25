@@ -62,7 +62,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public final static boolean      DEFAULT_WHILE_IDLE                        = false;
     public static final long         DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
     public static final long         DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
-    public static final int          DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 1;
+    public static final int          DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
     /**
      * The default value for {@link #getMinEvictableIdleTimeMillis}.

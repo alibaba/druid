@@ -761,6 +761,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         } finally {
                             lock.unlock();
                         }
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("checked " + size);
+                        }
                     }
 
                     for (ConnectionHolder item : evictList) {
