@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.security.auth.callback.NameCallback;
@@ -38,9 +39,11 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.pool.DruidDataSource.ActiveConnectionTraceInfo;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -49,20 +52,20 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public abstract class DruidAbstractDataSource implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 
-    private static final long        serialVersionUID                          = 1L;
+    private static final long                                                                serialVersionUID                          = 1L;
 
-    public final static int          DEFAULT_INITIAL_SIZE                      = 0;
-    public final static int          DEFAULT_MAX_ACTIVE_SIZE                   = 8;
-    public final static int          DEFAULT_MAX_IDLE                          = 8;
-    public final static int          DEFAULT_MIN_IDLE                          = 0;
-    public final static int          DEFAULT_MAX_WAIT                          = -1;
-    public final static String       DEFAULT_VALIDATION_QUERY                  = null;                                     //
-    public final static boolean      DEFAULT_TEST_ON_BORROW                    = true;
-    public final static boolean      DEFAULT_TEST_ON_RETURN                    = false;
-    public final static boolean      DEFAULT_WHILE_IDLE                        = false;
-    public static final long         DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
-    public static final long         DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
-    public static final int          DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
+    public final static int                                                                  DEFAULT_INITIAL_SIZE                      = 0;
+    public final static int                                                                  DEFAULT_MAX_ACTIVE_SIZE                   = 8;
+    public final static int                                                                  DEFAULT_MAX_IDLE                          = 8;
+    public final static int                                                                  DEFAULT_MIN_IDLE                          = 0;
+    public final static int                                                                  DEFAULT_MAX_WAIT                          = -1;
+    public final static String                                                               DEFAULT_VALIDATION_QUERY                  = null;                                                                          //
+    public final static boolean                                                              DEFAULT_TEST_ON_BORROW                    = true;
+    public final static boolean                                                              DEFAULT_TEST_ON_RETURN                    = false;
+    public final static boolean                                                              DEFAULT_WHILE_IDLE                        = false;
+    public static final long                                                                 DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
+    public static final long                                                                 DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
+    public static final int                                                                  DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;
 
     /**
      * The default value for {@link #getMinEvictableIdleTimeMillis}.
@@ -70,82 +73,84 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
      * @see #getMinEvictableIdleTimeMillis
      * @see #setMinEvictableIdleTimeMillis
      */
-    public static final long         DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
+    public static final long                                                                 DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
 
-    protected boolean                defaultAutoCommit                         = false;
-    protected Boolean                defaultReadOnly;
-    protected Integer                defaultTransactionIsolation;
-    protected String                 defaultCatalog                            = null;
+    protected boolean                                                                        defaultAutoCommit                         = false;
+    protected Boolean                                                                        defaultReadOnly;
+    protected Integer                                                                        defaultTransactionIsolation;
+    protected String                                                                         defaultCatalog                            = null;
 
-    protected String                 name;
+    protected String                                                                         name;
 
-    protected String                 username;
-    protected String                 password;
-    protected String                 jdbcUrl;
-    protected String                 driverClass;
-    protected Properties             connectionProperties                      = new Properties();
+    protected String                                                                         username;
+    protected String                                                                         password;
+    protected String                                                                         jdbcUrl;
+    protected String                                                                         driverClass;
+    protected Properties                                                                     connectionProperties                      = new Properties();
 
-    protected PasswordCallback       passwordCallback;
-    protected NameCallback           userCallback;
+    protected PasswordCallback                                                               passwordCallback;
+    protected NameCallback                                                                   userCallback;
 
-    protected ConnectionFactory      connectionFactory;
+    protected ConnectionFactory                                                              connectionFactory;
 
-    protected int                    initialSize                               = DEFAULT_INITIAL_SIZE;
-    protected int                    maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
-    protected int                    minIdle                                   = DEFAULT_MIN_IDLE;
-    protected int                    maxIdle                                   = DEFAULT_MAX_IDLE;
-    protected long                   maxWait                                   = DEFAULT_MAX_WAIT;
+    protected int                                                                            initialSize                               = DEFAULT_INITIAL_SIZE;
+    protected int                                                                            maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
+    protected int                                                                            minIdle                                   = DEFAULT_MIN_IDLE;
+    protected int                                                                            maxIdle                                   = DEFAULT_MAX_IDLE;
+    protected long                                                                           maxWait                                   = DEFAULT_MAX_WAIT;
 
-    protected String                 validationQuery                           = DEFAULT_VALIDATION_QUERY;
-    protected int                    validationQueryTimeout                    = -1;
-    private boolean                  testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
-    private boolean                  testOnReturn                              = DEFAULT_TEST_ON_RETURN;
-    private boolean                  testWhileIdle                             = DEFAULT_WHILE_IDLE;
-    protected boolean                poolPreparedStatements                    = false;
+    protected String                                                                         validationQuery                           = DEFAULT_VALIDATION_QUERY;
+    protected int                                                                            validationQueryTimeout                    = -1;
+    private boolean                                                                          testOnBorrow                              = DEFAULT_TEST_ON_BORROW;
+    private boolean                                                                          testOnReturn                              = DEFAULT_TEST_ON_RETURN;
+    private boolean                                                                          testWhileIdle                             = DEFAULT_WHILE_IDLE;
+    protected boolean                                                                        poolPreparedStatements                    = false;
 
-    protected boolean                inited                                    = false;
+    protected boolean                                                                        inited                                    = false;
 
-    protected PrintWriter            logWriter                                 = new PrintWriter(System.out);
+    protected PrintWriter                                                                    logWriter                                 = new PrintWriter(System.out);
 
-    protected List<Filter>           filters                                   = new ArrayList<Filter>();
-    protected ExceptionSorter        exceptionSoter                            = null;
+    protected List<Filter>                                                                   filters                                   = new ArrayList<Filter>();
+    protected ExceptionSorter                                                                exceptionSoter                            = null;
 
-    protected Driver                 driver;
+    protected Driver                                                                         driver;
 
-    protected int                    queryTimeout;
+    protected int                                                                            queryTimeout;
 
-    protected long                   createErrorCount;
+    protected long                                                                           createErrorCount;
 
-    protected long                   createTimespan;
+    protected long                                                                           createTimespan;
 
-    protected int                    maxWaitThreadCount                        = -1;
+    protected int                                                                            maxWaitThreadCount                        = -1;
 
-    protected boolean                accessToUnderlyingConnectionAllowed       = true;
+    protected boolean                                                                        accessToUnderlyingConnectionAllowed       = true;
 
-    protected long                   timeBetweenEvictionRunsMillis             = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
+    protected long                                                                           timeBetweenEvictionRunsMillis             = DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS;
 
-    protected int                    numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
+    protected int                                                                            numTestsPerEvictionRun                    = DEFAULT_NUM_TESTS_PER_EVICTION_RUN;
 
-    protected long                   minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
+    protected long                                                                           minEvictableIdleTimeMillis                = DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS;
 
-    protected boolean                removeAbandoned;
+    protected boolean                                                                        removeAbandoned;
 
-    protected int                    removeAbandonedTimeout;
+    protected int                                                                            removeAbandonedTimeout;
 
-    protected boolean                logAbandoned;
+    protected boolean                                                                        logAbandoned;
 
-    protected int                    maxOpenPreparedStatements                 = -1;
+    protected int                                                                            maxOpenPreparedStatements                 = -1;
 
-    protected List<String>           connectionInitSqls;
+    protected List<String>                                                                   connectionInitSqls;
 
-    protected String                 dbType;
+    protected String                                                                         dbType;
 
-    protected long                   timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
+    protected long                                                                           timeBetweenConnectErrorMillis             = DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
 
-    protected ValidConnectionChecker validConnectionChecker                    = null;
+    protected ValidConnectionChecker                                                         validConnectionChecker                    = null;
 
-    protected final AtomicLong       errorCount                                = new AtomicLong();
-    protected final AtomicLong       dupCloseCount                             = new AtomicLong();
+    protected final AtomicLong                                                               errorCount                                = new AtomicLong();
+    protected final AtomicLong                                                               dupCloseCount                             = new AtomicLong();
+
+    protected final ConcurrentIdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections                         = new ConcurrentIdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
     public long getDupCloseCount() {
         return dupCloseCount.get();
@@ -787,6 +792,28 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             // skip
             return false;
         }
+    }
+
+    public Set<PoolableConnection> getActiveConnections() {
+        return this.activeConnections.keySet();
+    }
+
+    void removeActiveConnection(PoolableConnection conn) {
+        activeConnections.remove(conn);
+    }
+
+    public List<String> getActiveConnectionStackTrace() {
+        List<String> list = new ArrayList<String>();
+        for (ActiveConnectionTraceInfo traceInfo : this.activeConnections.values()) {
+            StringBuilder buf = new StringBuilder();
+            for (StackTraceElement item : traceInfo.getStackTrace()) {
+                buf.append(item.toString());
+                buf.append("\n");
+            }
+            list.add(buf.toString());
+        }
+
+        return list;
     }
 
     public long getCreateTimespanNano() {

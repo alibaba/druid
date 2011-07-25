@@ -135,7 +135,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
         if (dataSource.isRemoveAbandoned()) {
-            dataSource.getActiveConnectionStackTrace().remove(this);
+            dataSource.removeActiveConnection(this);
         }
 
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
