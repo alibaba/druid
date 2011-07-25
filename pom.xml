@@ -189,6 +189,7 @@
 			<artifactId>ojdbc14</artifactId>
 			<version>10.2.0.3.0</version>
 			<scope>test</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
