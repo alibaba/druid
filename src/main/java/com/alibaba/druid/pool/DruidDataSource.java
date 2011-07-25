@@ -174,17 +174,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
                 this.validConnectionChecker = new MySqlValidConnectionChecker();
                 this.exceptionSoter = new MySqlExceptionSorter();
-                
+
             } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
                 this.exceptionSoter = new OracleExceptionSorter();
-                
+
             } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
                 this.validConnectionChecker = new MSSQLValidConnectionChecker();
-                
+
             } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
                 this.exceptionSoter = new InformixExceptionSorter();
-                
+
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSoter = new SybaseExceptionSorter();
             }
@@ -277,8 +277,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("skip not validate connection.");
                     }
-                    
+
                     Connection realConnection = poolalbeConnection.getConnection();
+                    JdbcUtils.close(realConnection);
+                    continue;
+                }
+            } else {
+                Connection realConnection = poolalbeConnection.getConnection();
+                if (realConnection.isClosed()) {
                     JdbcUtils.close(realConnection);
                     continue;
                 }
