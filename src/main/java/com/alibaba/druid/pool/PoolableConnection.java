@@ -43,7 +43,6 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -124,10 +123,6 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public void close() throws SQLException {
-        close(true);
-    }
-
-    public void close(boolean recyle) throws SQLException {
         if (holder == null) {
             LOG.warn("dup close");
             return;
@@ -152,11 +147,8 @@ public class PoolableConnection implements PooledConnection, Connection {
         }
 
         holder.reset();
-        if (recyle) {
-            holder.getDataSource().recycle(this);
-        } else {
-            JdbcUtils.close(holder.getConnection());
-        }
+        holder.getDataSource().recycle(this);
+
         holder = null;
         conn = null;
     }

@@ -261,7 +261,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         LOG.debug("skip not validate connection.");
                     }
 
-                    poolalbeConnection.close(false);
+                    Connection realConnection = poolalbeConnection.getConnection();
+                    JdbcUtils.close(realConnection);
                     continue;
                 }
             } else {
@@ -270,6 +271,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(realConnection);
                     continue;
                 }
+            }
+
+            if (isRemoveAbandoned()) {
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
 
             return poolalbeConnection;
@@ -311,11 +317,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activeCount++;
 
             poolalbeConnection = new PoolableConnection(holder);
-
-            if (isRemoveAbandoned()) {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
-            }
         } catch (InterruptedException e) {
             connectErrorCount++;
             throw new SQLException(e.getMessage(), e);
