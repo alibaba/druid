@@ -91,8 +91,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private CreateConnectionThread                                               createConnectionThread;
     private DestroyConnectionThread                                              destoryConnectionThread;
 
-    private boolean                                                              removeAbandoned       = false;
-
     private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections     = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
     private final CountDownLatch                                                 initedLatch           = new CountDownLatch(2);
@@ -269,8 +267,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         LOG.debug("skip not validate connection.");
                     }
 
-                    Connection realConnection = poolalbeConnection.getConnection();
-                    JdbcUtils.close(realConnection);
+                    poolalbeConnection.close(false);
                     continue;
                 }
             } else {
@@ -279,11 +276,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(realConnection);
                     continue;
                 }
-            }
-
-            if (removeAbandoned) {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
 
             return poolalbeConnection;
@@ -325,6 +317,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activeCount++;
 
             poolalbeConnection = new PoolableConnection(holder);
+
+            if (removeAbandoned) {
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
+            }
         } catch (InterruptedException e) {
             connectErrorCount++;
             throw new SQLException(e.getMessage(), e);
@@ -347,10 +344,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         assert holder != null;
 
         try {
-            if (removeAbandoned) {
-                activeConnections.remove(pooledConnection);
-            }
-
             // 第一步，检查连接是否关闭
             if (conn == null || conn.isClosed()) {
                 lock.lock();
