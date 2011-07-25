@@ -60,47 +60,47 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable {
 
-    private final static Log                                                     LOG                         = LogFactory.getLog(DruidDataSource.class);
+    private final static Log                                                     LOG                   = LogFactory.getLog(DruidDataSource.class);
 
-    private static final Object                                                  PRESENT                     = new Object();
-    private static final IdentityHashMap<DruidDataSource, Object>                instances                   = new IdentityHashMap<DruidDataSource, Object>();
+    private static final Object                                                  PRESENT               = new Object();
+    private static final IdentityHashMap<DruidDataSource, Object>                instances             = new IdentityHashMap<DruidDataSource, Object>();
 
-    private static final long                                                    serialVersionUID            = 1L;
+    private static final long                                                    serialVersionUID      = 1L;
 
-    private final ReentrantLock                                                  lock                        = new ReentrantLock();
+    private final ReentrantLock                                                  lock                  = new ReentrantLock();
 
-    private final Condition                                                      notEmpty                    = lock.newCondition();
-    private final Condition                                                      notMaxActive                = lock.newCondition();
-    private final Condition                                                      lowWater                    = lock.newCondition();
+    private final Condition                                                      notEmpty              = lock.newCondition();
+    private final Condition                                                      notMaxActive          = lock.newCondition();
+    private final Condition                                                      lowWater              = lock.newCondition();
 
     // stats
-    private long                                                                 connectCount                = 0;
-    private long                                                                 closeCount                  = 0;
-    private long                                                                 connectErrorCount           = 0;
-    private long                                                                 recycleCount                = 0;
-    private long                                                                 createConnectionCount       = 0L;
-    private long                                                                 destroyCount                = 0;
+    private long                                                                 connectCount          = 0;
+    private long                                                                 closeCount            = 0;
+    private long                                                                 connectErrorCount     = 0;
+    private long                                                                 recycleCount          = 0;
+    private long                                                                 createConnectionCount = 0L;
+    private long                                                                 destroyCount          = 0;
 
     // store
     private ConnectionHolder[]                                                   connections;
-    private int                                                                  count                       = 0;
-    private int                                                                  activeCount                 = 0;
-    private long                                                                 idleCheckCount              = 0;
+    private int                                                                  count                 = 0;
+    private int                                                                  activeCount           = 0;
+    private long                                                                 idleCheckCount        = 0;
 
     // threads
     private CreateConnectionThread                                               createConnectionThread;
     private DestroyConnectionThread                                              destoryConnectionThread;
 
-    private boolean                                                              activeConnectionTraceEnable = false;
+    private boolean                                                              removeAbandoned       = false;
 
-    private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections           = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
+    private final IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections     = new IdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
 
-    private final CountDownLatch                                                 initedLatch                 = new CountDownLatch(2);
+    private final CountDownLatch                                                 initedLatch           = new CountDownLatch(2);
 
     private long                                                                 id;
     private Date                                                                 createdTime;
 
-    private boolean                                                              enable                      = true;
+    private boolean                                                              enable                = true;
 
     public DruidDataSource(){
     }
@@ -244,14 +244,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    public boolean isActiveConnectionTraceEnable() {
-        return activeConnectionTraceEnable;
-    }
-
-    public void setActiveConnectionTraceEnable(boolean connectionTraceEnable) {
-        this.activeConnectionTraceEnable = connectionTraceEnable;
-    }
-
     public Set<PoolableConnection> getActiveConnections() {
         return this.activeConnections.keySet();
     }
@@ -287,6 +279,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(realConnection);
                     continue;
                 }
+            }
+
+            if (removeAbandoned) {
+                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
             }
 
             return poolalbeConnection;
@@ -328,11 +325,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activeCount++;
 
             poolalbeConnection = new PoolableConnection(holder);
-
-            if (activeConnectionTraceEnable) {
-                StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
-            }
         } catch (InterruptedException e) {
             connectErrorCount++;
             throw new SQLException(e.getMessage(), e);
@@ -355,7 +347,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         assert holder != null;
 
         try {
-            if (activeConnectionTraceEnable) {
+            if (removeAbandoned) {
                 activeConnections.remove(pooledConnection);
             }
 

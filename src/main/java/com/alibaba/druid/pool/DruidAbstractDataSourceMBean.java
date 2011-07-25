@@ -29,7 +29,7 @@ public interface DruidAbstractDataSourceMBean {
     long getRecycleCount();
 
     int getActiveCount();
-    
+
     long getIdleCheckCount();
 
     long getCreateCount();
@@ -50,9 +50,7 @@ public interface DruidAbstractDataSourceMBean {
 
     long getMinEvictableIdleTimeMillis();
 
-    boolean isActiveConnectionTraceEnable();
-
-    void setActiveConnectionTraceEnable(boolean connectStackTraceEnable);
+    boolean isRemoveAbandoned();
 
     List<String> getActiveConnectionStackTrace();
 
