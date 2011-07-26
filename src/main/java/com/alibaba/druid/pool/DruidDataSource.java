@@ -266,6 +266,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(realConnection);
                     continue;
                 }
+                poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
             } else {
                 Connection realConnection = poolalbeConnection.getConnection();
                 if (realConnection.isClosed()) {
@@ -395,6 +396,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     return;
                 }
+                holder.setLastCheckTimeMillis(System.currentTimeMillis());
             }
 
             lock.lockInterruptibly();
@@ -480,7 +482,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw new NullPointerException();
         }
 
-        e.setLastActiveMillis(System.currentTimeMillis());
+        e.setLastActiveTimeMillis(System.currentTimeMillis());
         connections[count++] = e;
 
         notEmpty.signal();
@@ -716,7 +718,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 continue FOR_0;
                             }
 
-                            long idleMillis = System.currentTimeMillis() - connection.getLastActiveMillis();
+                            long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
                             if (idleMillis >= minEvictableIdleTimeMillis && count - evictList.size() > minIdle) {
                                 evictList.add(connection);
                             } else {
@@ -735,6 +737,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         if (!testConnectionInternal(idleConnection.getConnection())) {
                             evictList.add(idleConnection);
                         } else {
+                            idleConnection.setLastCheckTimeMillis(System.currentTimeMillis());
                             checkList.add(idleConnection);
                         }
                     }
@@ -751,7 +754,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             lock.unlock();
                         }
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug("checked " + size);
+                            StringBuilder buf = new StringBuilder();
+                            buf.append("checked ");
+                            buf.append(size);
+                            buf.append(", idleCount ");
+                            buf.append(count);
+                            buf.append(", [");
+                            for (int i = 0; i < size; ++i) {
+                                if (i != 0) {
+                                    buf.append(",");
+                                }
+                                buf.append(System.identityHashCode(checkList.get(i)));
+                            }
+                            buf.append("]");
+                            LOG.debug(buf.toString());
                         }
                     }
 
@@ -759,6 +775,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         Connection connection = item.getConnection();
                         JdbcUtils.close(connection);
                         destroyCount++;
+                    }
+
+                    if (evictList.size() > 0) {
+                        if (LOG.isDebugEnabled()) {
+                            StringBuilder buf = new StringBuilder();
+                            buf.append("evict ");
+                            buf.append(evictList.size());
+                            buf.append(", [");
+                            for (int i = 0; i < size; ++i) {
+                                if (i != 0) {
+                                    buf.append(",");
+                                }
+                                buf.append(System.identityHashCode(checkList.get(i)));
+                            }
+                            buf.append("]");
+                            LOG.debug(buf.toString());
+                        }
                     }
 
                     idleList.clear();

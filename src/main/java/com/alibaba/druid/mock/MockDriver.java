@@ -55,8 +55,18 @@ public class MockDriver implements Driver {
 
     private final List<MockConnection>     connections          = new CopyOnWriteArrayList<MockConnection>();
 
+    private long                           idleTimeCount        = 1000 * 60 * 3;
+
     static {
         registerDriver(instance);
+    }
+
+    public long getIdleTimeCount() {
+        return idleTimeCount;
+    }
+
+    public void setIdleTimeCount(long idleTimeCount) {
+        this.idleTimeCount = idleTimeCount;
     }
 
     public long generateConnectionId() {
@@ -191,6 +201,13 @@ public class MockDriver implements Driver {
         }
 
         MockConnection conn = stmt.getMockConnection();
+
+        long idleTimeMillis = System.currentTimeMillis() - conn.getLastActiveTimeMillis();
+        if (idleTimeMillis >= this.idleTimeCount) {
+            throw new SQLException("connection is idle time count");
+        }
+
+        conn.setLastActiveTimeMillis(System.currentTimeMillis());
 
         if (conn != null) {
             if (conn.getConnectProperties() != null) {

@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class CaseKylin_mysql_idle extends TestCase {
+public class CaseKylin_mysql_idle_1 extends TestCase {
 
     private String  jdbcUrl;
     private String  user;
@@ -27,7 +27,7 @@ public class CaseKylin_mysql_idle extends TestCase {
     private String  validationQuery               = null;    // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 1000 * 1;
+    final int       LOOP_COUNT                    = 1000 * 10;
     private boolean testWhileIdle                 = true;
     private boolean testOnBorrow                  = false;
     private boolean testOnReturn                  = false;

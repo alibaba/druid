@@ -38,12 +38,12 @@ import com.alibaba.druid.logging.LogFactory;
 
 public class MockConnection implements Connection {
 
-    private final static Log LOG        = LogFactory.getLog(MockConnection.class);
+    private final static Log LOG                  = LogFactory.getLog(MockConnection.class);
 
-    private boolean          autoCommit = false;
-    private boolean          closed     = false;
-    private boolean          readOnly   = false;
-    private String           catalog    = null;
+    private boolean          autoCommit           = false;
+    private boolean          closed               = false;
+    private boolean          readOnly             = false;
+    private String           catalog              = null;
     private int              transactionIsolation;
     private SQLWarning       warning;
     private int              holdability;
@@ -54,8 +54,23 @@ public class MockConnection implements Connection {
 
     private long             id;
 
+    private final long       createdTimeMillis    = System.currentTimeMillis();
+    private long             lastActiveTimeMillis = System.currentTimeMillis();
+
     public MockConnection(){
         this(null);
+    }
+
+    public long getLastActiveTimeMillis() {
+        return lastActiveTimeMillis;
+    }
+
+    public void setLastActiveTimeMillis(long lastActiveTimeMillis) {
+        this.lastActiveTimeMillis = lastActiveTimeMillis;
+    }
+
+    public long getCreatedTimeMillis() {
+        return createdTimeMillis;
     }
 
     public MockConnection(MockDriver driver){

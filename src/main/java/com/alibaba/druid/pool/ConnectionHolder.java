@@ -36,7 +36,8 @@ public final class ConnectionHolder {
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     private final long                          connecttimeMillis;
-    private long                                lastActiveMillis;
+    private long                                lastActiveTimeMillis;
+    private long                                lastCheckTimeMillis      = 0;
     private long                                useCount                 = 0;
 
     private final boolean                       poolPreparedStatements;
@@ -49,7 +50,7 @@ public final class ConnectionHolder {
         this.conn = conn;
         this.poolPreparedStatements = dataSource.isPoolPreparedStatements();
         this.connecttimeMillis = System.currentTimeMillis();
-        this.lastActiveMillis = connecttimeMillis;
+        this.lastActiveTimeMillis = connecttimeMillis;
 
         if (this.poolPreparedStatements) {
             statementPool = new PreparedStatementPool();
@@ -58,12 +59,20 @@ public final class ConnectionHolder {
         }
     }
 
-    public long getLastActiveMillis() {
-        return lastActiveMillis;
+    public long getLastCheckTimeMillis() {
+        return lastCheckTimeMillis;
     }
 
-    public void setLastActiveMillis(long lastActiveMillis) {
-        this.lastActiveMillis = lastActiveMillis;
+    public void setLastCheckTimeMillis(long lastCheckTimeMillis) {
+        this.lastCheckTimeMillis = lastCheckTimeMillis;
+    }
+
+    public long getLastActiveTimeMillis() {
+        return lastActiveTimeMillis;
+    }
+
+    public void setLastActiveTimeMillis(long lastActiveMillis) {
+        this.lastActiveTimeMillis = lastActiveMillis;
     }
 
     public void addTrace(Statement stmt) {
