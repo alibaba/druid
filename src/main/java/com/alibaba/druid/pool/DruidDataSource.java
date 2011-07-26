@@ -699,8 +699,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         if (numTestsPerEvictionRun <= 0) {
                             numTestsPerEvictionRun = 1;
                         }
+                        
 
-                        for (int i = 0; i < numTestsPerEvictionRun && i < count; ++i) {
+                        final int testCount;
+                        if (numTestsPerEvictionRun <= count) {
+                            testCount = numTestsPerEvictionRun; 
+                        } else {
+                            testCount = count;
+                        }
+                        
+                        for (int i = 0; i < testCount; ++i) {
                             ConnectionHolder connection = connections[i];
 
                             if (evictCount == 0 && idleCount == 0 && connection == null) {
@@ -708,14 +716,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
 
                             long idleMillis = System.currentTimeMillis() - connection.getLastActiveMillis();
-                            if (idleMillis >= minEvictableIdleTimeMillis) {
+                            if (idleMillis >= minEvictableIdleTimeMillis && count - evictList.size() > minIdle) {
                                 evictList.add(connection);
                             } else {
                                 idleList.add(connection);
                             }
                         }
-                        System.arraycopy(connections, numTestsPerEvictionRun, connections, 0, count - numTestsPerEvictionRun);
-                        for (int i = 0; i < numTestsPerEvictionRun; ++i) {
+                        System.arraycopy(connections, testCount, connections, 0, count - testCount);
+                        for (int i = 0; i < testCount; ++i) {
                             connections[--count] = null;
                         }
                     } finally {
