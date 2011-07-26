@@ -16,9 +16,21 @@
 			<layout>default</layout>
 		</repository>
 		<repository>
+			<id>vars.sourceforge.net</id>
+			<name>vars.sourceforge.net</name>
+			<url>http://vars.sourceforge.net/maven2/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
 			<id>bonecp</id>
 			<name>bonecp</name>
 			<url>http://jolbox.com/bonecp/downloads/maven/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>alibaba</id>
+			<name>alibaba</name>
+			<url>http://code.alibabatech.com/mvn/releases/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
@@ -185,9 +197,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.3.0</version>
+			<groupId>oracle</groupId>
+			<artifactId>oracle-jdbc</artifactId>
+			<version>10.1.0.2.0</version>
 			<scope>test</scope>
 			<optional>true</optional>
 		</dependency>
