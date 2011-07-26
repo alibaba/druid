@@ -12,20 +12,20 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class TestIdle extends TestCase {
+public class TestIdleForKylin extends TestCase {
 
     public void test_idle() throws Exception {
         MockDriver driver = MockDriver.instance;
 
-        BasicDataSource dataSource = new BasicDataSource();
-//        DruidDataSource dataSource = new DruidDataSource();
+//        BasicDataSource dataSource = new BasicDataSource();
+        DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriverClassName("com.alibaba.druid.mock.MockDriver");
         dataSource.setInitialSize(1);
-        dataSource.setMaxActive(5);
-        dataSource.setMaxIdle(5);
+        dataSource.setMaxActive(10);
+        dataSource.setMaxIdle(10);
         dataSource.setMinIdle(0);
-        dataSource.setMinEvictableIdleTimeMillis(5000 * 1);
+        dataSource.setMinEvictableIdleTimeMillis(50000 * 1);
         dataSource.setTimeBetweenEvictionRunsMillis(500);
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);

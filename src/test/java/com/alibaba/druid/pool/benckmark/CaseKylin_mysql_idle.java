@@ -87,7 +87,7 @@ public class CaseKylin_mysql_idle extends TestCase {
         p0(dataSource, "druid", threadCount);
 
         long startMillis = System.currentTimeMillis();
-        for (int i = 0; i < TEST_COUNT; ++i) {
+        for (int i = 0; i < 1000; ++i) {
             p0(dataSource, "druid", threadCount);
 
             long seconds = (System.currentTimeMillis() - startMillis) / 1000L;

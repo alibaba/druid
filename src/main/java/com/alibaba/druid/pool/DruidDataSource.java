@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -699,16 +700,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         if (numTestsPerEvictionRun <= 0) {
                             numTestsPerEvictionRun = 1;
                         }
-                        
 
-                        final int testCount;
-                        if (numTestsPerEvictionRun <= count) {
-                            testCount = numTestsPerEvictionRun; 
-                        } else {
-                            testCount = count;
-                        }
-                        
-                        for (int i = 0; i < testCount; ++i) {
+                        for (int i = 0;; ++i) {
+                            if (i >= count) {
+                                break;
+                            }
+
+                            if (idleList.size() >= numTestsPerEvictionRun) {
+                                break;
+                            }
+
                             ConnectionHolder connection = connections[i];
 
                             if (evictCount == 0 && idleCount == 0 && connection == null) {
@@ -722,10 +723,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 idleList.add(connection);
                             }
                         }
-                        System.arraycopy(connections, testCount, connections, 0, count - testCount);
-                        for (int i = 0; i < testCount; ++i) {
-                            connections[--count] = null;
-                        }
+                        int removeCount = idleList.size() + evictList.size();
+                        System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
+                        Arrays.fill(connections, count - removeCount, count, null);
+                        count -= removeCount;
                     } finally {
                         lock.unlock();
                     }
