@@ -10,8 +10,6 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -26,7 +24,7 @@ public class CaseKylin_mysql_idle extends TestCase {
     private int     maxIdle                       = 20;
     private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
-    private String  validationQuery               = null;      // "SELECT 1";
+    private String  validationQuery               = null;    // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
     final int       LOOP_COUNT                    = 1000 * 1;
@@ -59,6 +57,7 @@ public class CaseKylin_mysql_idle extends TestCase {
 
     public void test_perf() throws Exception {
         druid();
+
     }
 
     public void druid() throws Exception {
@@ -84,46 +83,15 @@ public class CaseKylin_mysql_idle extends TestCase {
         dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
         dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
         dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
-        
-        p0(dataSource, "druid", threadCount);
-        
-        for (int i = 0; i < 30; ++i) {
-            Thread.sleep(1000 * 30);
-            System.out.println("sleep " + i);
-        }
 
+        p0(dataSource, "druid", threadCount);
+
+        long startMillis = System.currentTimeMillis();
         for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
-        }
-        System.out.println();
-    }
 
-    public void dbcp() throws Exception {
-        final BasicDataSource dataSource = new BasicDataSource();
-
-        dataSource.setInitialSize(initialSize);
-        dataSource.setMaxActive(maxActive);
-        dataSource.setMaxIdle(maxIdle);
-        dataSource.setMinIdle(minIdle);
-        dataSource.setMaxWait(maxWait);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setDriverClassName(driverClass);
-        dataSource.setUrl(jdbcUrl);
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setUsername(user);
-        dataSource.setPassword(password);
-        dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(testOnBorrow);
-        dataSource.setTestOnBorrow(testWhileIdle);
-        dataSource.setTestOnBorrow(testOnReturn);
-        dataSource.setRemoveAbandoned(removeAbandoned);
-        dataSource.setRemoveAbandonedTimeout(removeAbandonedTimeout);
-        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
-
-        for (int i = 0; i < TEST_COUNT; ++i) {
-            p0(dataSource, "dbcp", threadCount);
+            long seconds = (System.currentTimeMillis() - startMillis) / 1000L;
+            System.out.println("seconds : " + seconds);
         }
         System.out.println();
     }
