@@ -59,7 +59,7 @@ public class TestIdle extends TestCase {
 
         Thread.sleep(dataSource.getMinEvictableIdleTimeMillis() * 2);
         Assert.assertEquals(0, driver.getConnections().size());
-        Assert.assertEquals(0, dataSource.getPoolingCount());
+        Assert.assertEquals(1, dataSource.getPoolingCount());
         {
             Connection conn = dataSource.getConnection();
             Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
