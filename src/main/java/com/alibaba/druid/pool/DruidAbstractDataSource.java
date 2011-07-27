@@ -74,7 +74,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
      */
     public static final long                                                                 DEFAULT_MIN_EVICTABLE_IDLE_TIME_MILLIS    = 1000L * 60L * 30L;
 
-    protected boolean                                                                        defaultAutoCommit                         = false;
+    protected boolean                                                                        defaultAutoCommit                         = true;
     protected Boolean                                                                        defaultReadOnly;
     protected Integer                                                                        defaultTransactionIsolation;
     protected String                                                                         defaultCatalog                            = null;
