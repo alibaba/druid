@@ -241,12 +241,6 @@
 			<version>1.0.6</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.alibaba.china.shared</groupId>
-			<artifactId>headquarters.jdbc.proxy</artifactId>
-			<version>1.1</version>
-			<scope>test</scope>
-		</dependency>
 
 	</dependencies>
 </project>
