@@ -23,15 +23,15 @@ public class TestClose_2 extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
         Assert.assertEquals(false, rs.isClosed());
-        
+
         Assert.assertEquals(false, stmt.isClosed());
         stmt.close();
         Assert.assertEquals(true, stmt.isClosed());
         Assert.assertEquals(true, rs.isClosed());
-        
+
         CallableStatement stmt2 = conn.prepareCall(sql);
         Assert.assertEquals(false, stmt.isClosed());
-        
+
         Assert.assertEquals(stmt, stmt2);
 
         conn.close();
@@ -41,7 +41,7 @@ public class TestClose_2 extends TestCase {
 
         rs.close();
         stmt.close();
-        
+
         dataSource.close();
     }
 }

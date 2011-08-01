@@ -31,9 +31,11 @@ import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
  * @author gang.su
  */
 public class DruidLoaderUtils {
+
     private final static Log LOG = LogFactory.getLog(DruidLoaderUtils.class);
-    
-    public static void loadFilter(List<Filter> filterList, List<AbstractDruidFilterConfig> druidFilterConfigList) throws SQLException {
+
+    public static void loadFilter(List<Filter> filterList, List<AbstractDruidFilterConfig> druidFilterConfigList)
+                                                                                                                 throws SQLException {
         for (Iterator<AbstractDruidFilterConfig> iterator = druidFilterConfigList.iterator(); iterator.hasNext();) {
             AbstractDruidFilterConfig druidFilterConfig = iterator.next();
             String filterItem = druidFilterConfig.getClazz();

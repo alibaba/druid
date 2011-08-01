@@ -79,7 +79,8 @@ public class CastFunctionsAndOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci\nFROM tbl_name;", text);
+        Assert.assertEquals("SELECT 'A' LIKE CONVERT(blob_col USING latin1) COLLATE latin1_german1_ci\nFROM tbl_name;",
+                            text);
     }
 
     public void test_5() throws Exception {

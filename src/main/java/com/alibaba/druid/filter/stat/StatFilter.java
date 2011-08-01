@@ -170,7 +170,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint) throws SQLException {
+    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
+                                                                                                       throws SQLException {
         super.connection_rollback(chain, connection, savepoint);
 
         connectStat.incrementConnectionRollbackCount();
@@ -467,7 +468,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
 
         if (counter == null) {
-            connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT, new JdbcConnectionStat.Entry(this.dataSource.getName(), connection.getId()));
+            connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT,
+                                           new JdbcConnectionStat.Entry(this.dataSource.getName(), connection.getId()));
             counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
         }
 

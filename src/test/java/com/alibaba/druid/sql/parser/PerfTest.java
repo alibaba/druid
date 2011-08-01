@@ -21,7 +21,7 @@ public class PerfTest extends TestCase {
             // perf("SELECT * FROM my_table WHERE TRUNC(SYSDATE) = DATE '2002-10-03';");
             perfOracle("SELECT * FROM T");
             perfMySql("SELECT * FROM T");
-            //perf(loadSql("bvt/parser/oracle-23.txt"));
+            // perf(loadSql("bvt/parser/oracle-23.txt"));
         }
     }
 
@@ -44,7 +44,7 @@ public class PerfTest extends TestCase {
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("Oracle\t" + millis);
     }
-    
+
     void perfMySql(String sql) {
         long startMillis = System.currentTimeMillis();
         for (int i = 0; i < 1000 * 1000; ++i) {

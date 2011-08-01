@@ -21,16 +21,17 @@ public class PasswordCallbackTest extends TestCase {
 
         Connection conn = dataSource.getConnection();
         conn.close();
-        
+
         Assert.assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
         Assert.assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
     }
 
     public static class TestPasswordCallback extends PasswordCallback {
+
         private static final long serialVersionUID = 1L;
-        
-        private String     url;
-        private Properties properties;
+
+        private String            url;
+        private Properties        properties;
 
         public TestPasswordCallback(){
             super("test", false);

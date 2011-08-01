@@ -35,7 +35,8 @@ public class FullTextSearchesWithQueryExpansionTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT *\nFROM articles\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE);", text);
+        Assert.assertEquals("SELECT *\nFROM articles\nWHERE MATCH (title, body) AGAINST ('database' IN NATURAL LANGUAGE MODE);",
+                            text);
     }
 
     private String output(List<SQLStatement> stmtList) {

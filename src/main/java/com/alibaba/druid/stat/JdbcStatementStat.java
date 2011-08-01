@@ -44,23 +44,23 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
 
     private long                lastSampleTime        = 0;
 
-    private AtomicLong          count_0_1_Millis             = new AtomicLong();
-    private AtomicLong          count_1_2_Millis             = new AtomicLong();
-    private AtomicLong          count_2_5_Millis             = new AtomicLong();
-    private AtomicLong          count_5_10_Millis            = new AtomicLong();
-    private AtomicLong          count_10_20_Millis           = new AtomicLong();
+    private AtomicLong          count_0_1_Millis      = new AtomicLong();
+    private AtomicLong          count_1_2_Millis      = new AtomicLong();
+    private AtomicLong          count_2_5_Millis      = new AtomicLong();
+    private AtomicLong          count_5_10_Millis     = new AtomicLong();
+    private AtomicLong          count_10_20_Millis    = new AtomicLong();
 
-    private AtomicLong          count_20_50_Millis           = new AtomicLong();
-    private AtomicLong          count_50_100_Millis          = new AtomicLong();
-    private AtomicLong          count_100_200_Millis         = new AtomicLong();
-    private AtomicLong          count_200_500_Millis         = new AtomicLong();
-    private AtomicLong          count_500_1000_Millis        = new AtomicLong();
+    private AtomicLong          count_20_50_Millis    = new AtomicLong();
+    private AtomicLong          count_50_100_Millis   = new AtomicLong();
+    private AtomicLong          count_100_200_Millis  = new AtomicLong();
+    private AtomicLong          count_200_500_Millis  = new AtomicLong();
+    private AtomicLong          count_500_1000_Millis = new AtomicLong();
 
-    private AtomicLong          count_1_2_Seconds       = new AtomicLong();
-    private AtomicLong          count_2_5_Seconds       = new AtomicLong();
-    private AtomicLong          count_5_10_Seconds      = new AtomicLong();
-    private AtomicLong          count_10_30_Seconds     = new AtomicLong();
-    private AtomicLong          count_30_60_Seconds     = new AtomicLong();
+    private AtomicLong          count_1_2_Seconds     = new AtomicLong();
+    private AtomicLong          count_2_5_Seconds     = new AtomicLong();
+    private AtomicLong          count_5_10_Seconds    = new AtomicLong();
+    private AtomicLong          count_10_30_Seconds   = new AtomicLong();
+    private AtomicLong          count_30_60_Seconds   = new AtomicLong();
 
     private AtomicLong          count_1_2_minutes     = new AtomicLong();
     private AtomicLong          count_2_5_minutes     = new AtomicLong();
@@ -148,7 +148,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
             count_10_30_Seconds.incrementAndGet();
         } else if (nanoSpan < 60 * SECOND) {
             count_30_60_Seconds.incrementAndGet();
-            
+
         } else if (nanoSpan < 2 * MINUTE) {
             count_1_2_minutes.incrementAndGet();
         } else if (nanoSpan < 5 * MINUTE) {

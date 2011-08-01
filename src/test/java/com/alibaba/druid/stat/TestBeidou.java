@@ -30,10 +30,10 @@ public class TestBeidou extends TestCase {
 
         PreparedStatement stmt = conn.prepareStatement("select sysdate");
         stmt.executeBatch();
-        
+
         String catalog = conn.getCatalog();
         System.out.println(catalog);
-        
+
         stmt.close();
         conn.close();
     }

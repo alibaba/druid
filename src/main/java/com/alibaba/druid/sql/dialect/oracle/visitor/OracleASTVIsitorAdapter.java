@@ -80,10 +80,10 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     public boolean visit(OracleSelect x) {
         return true;
     }
-    
+
     public void endVisit(OracleSelect x) {
     }
-    
+
     @Override
     public void endVisit(OracleAggregateExpr astNode) {
 

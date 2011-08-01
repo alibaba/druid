@@ -33,8 +33,6 @@ public class CallTest extends TestCase {
 
         output(statementList);
     }
-    
-
 
     private void output(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
@@ -44,7 +42,7 @@ public class CallTest extends TestCase {
             stmt.accept(visitor);
             visitor.println();
         }
-        
+
         System.out.println(out.toString());
     }
 }

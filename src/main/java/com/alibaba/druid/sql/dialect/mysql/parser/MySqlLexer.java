@@ -29,8 +29,9 @@ import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlLexer extends Lexer {
-    public final static Keywords           DEFAULT_MYSQL_KEYWORDS;
-    
+
+    public final static Keywords DEFAULT_MYSQL_KEYWORDS;
+
     static {
         Map<String, Token> map = new HashMap<String, Token>();
         map.put("EXISTS", Token.EXISTS);
@@ -102,11 +103,11 @@ public class MySqlLexer extends Lexer {
         map.put("LOCK", Token.LOCK);
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
-        
+
         map.put("TRUE", Token.TRUE);
         map.put("FALSE", Token.FALSE);
         map.put("LIMIT", Token.LIMIT);
-        
+
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
 

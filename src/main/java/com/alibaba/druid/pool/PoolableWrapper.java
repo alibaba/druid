@@ -38,7 +38,7 @@ public class PoolableWrapper implements Wrapper {
         if (iface.isInstance(this)) {
             return true;
         }
-        
+
         if (iface.isInstance(wraaper)) {
             return true;
         }
@@ -56,7 +56,7 @@ public class PoolableWrapper implements Wrapper {
         if (iface.isInstance(this)) {
             return (T) this;
         }
-        
+
         if (iface.isInstance(wraaper)) {
             return (T) wraaper;
         }

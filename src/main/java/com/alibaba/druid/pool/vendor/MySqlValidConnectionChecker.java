@@ -42,14 +42,14 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
                 return false;
             }
         } catch (SQLException ex) {
-         // skip 
+            // skip
             return false;
         }
-        
+
         if (valiateQuery == null) {
             return true;
         }
-        
+
         if (driverHasPingMethod) {
             if (conn instanceof PoolableConnection) {
                 conn = ((PoolableConnection) conn).getConnection();

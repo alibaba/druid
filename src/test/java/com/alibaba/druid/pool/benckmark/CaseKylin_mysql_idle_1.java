@@ -24,7 +24,7 @@ public class CaseKylin_mysql_idle_1 extends TestCase {
     private int     maxIdle                       = 20;
     private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
-    private String  validationQuery               = null;    // "SELECT 1";
+    private String  validationQuery               = null;     // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
     final int       LOOP_COUNT                    = 1000 * 10;
@@ -135,6 +135,7 @@ public class CaseKylin_mysql_idle_1 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

@@ -11,14 +11,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public abstract class MultiDataSource extends DataSourceAdapter {
 
+    private Properties          properties       = new Properties();
 
-    private Properties                   properties       = new Properties();
-
-    private final AtomicInteger          connectionIdSeed = new AtomicInteger();
-    private final AtomicInteger          statementIdSeed  = new AtomicInteger();
+    private final AtomicInteger connectionIdSeed = new AtomicInteger();
+    private final AtomicInteger statementIdSeed  = new AtomicInteger();
 
     public MultiDataSource(){
-        
+
     }
 
     public int createConnectionId() {
@@ -41,6 +40,6 @@ public abstract class MultiDataSource extends DataSourceAdapter {
     public abstract Connection getConnection() throws SQLException;
 
     public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
-    
+
     public abstract void handleNotAwailableDatasource(DruidDataSource dataSource);
 }

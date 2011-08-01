@@ -8,7 +8,7 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 
-    private Float            value;
+    private Float             value;
 
     public OracleBinaryFloatExpr(){
 

@@ -446,7 +446,7 @@ public class Lexer {
 
     private final void scanAlias() {
         np = bp;
-        
+
         for (;;) {
             if (bp >= buflen) {
                 lexError(tokenPos, "unclosed.str.lit");
@@ -467,7 +467,7 @@ public class Lexer {
                 sbuf[sp++] = ch;
             }
         }
-        
+
         stringVal = new String(buf, np + 1, sp);
     }
 
@@ -483,14 +483,14 @@ public class Lexer {
         np = bp;
         sp = 1;
         char ch;
-        
+
         if (buf[bp + 1] == '@') {
             ch = buf[++bp];
             hash = 31 * hash + ch;
 
             sp++;
         }
-        
+
         for (;;) {
             ch = buf[++bp];
 

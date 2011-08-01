@@ -81,18 +81,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                                                            recycleCount          = 0;
     private long                                                            createConnectionCount = 0L;
     private long                                                            destroyCount          = 0;
+    private long                                                            idleCheckCount        = 0;
 
     // store
     private ConnectionHolder[]                                              connections;
     private int                                                             count                 = 0;
     private int                                                             activeCount           = 0;
-    private long                                                            idleCheckCount        = 0;
 
     // threads
     private CreateConnectionThread                                          createConnectionThread;
     private DestroyConnectionThread                                         destoryConnectionThread;
 
-    private final CountDownLatch                                            initedLatch           = new CountDownLatch(2);
+    private final CountDownLatch                                            initedLatch           = new CountDownLatch(
+                                                                                                                       2);
 
     private long                                                            id;
     private Date                                                            createdTime;
@@ -248,7 +249,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (lock.getQueueLength() > maxWaitThreadCount) {
-                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count " + lock.getQueueLength());
+                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                                       + lock.getQueueLength());
             }
         }
 
@@ -277,7 +279,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (isRemoveAbandoned()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(), stackTrace));
+                activeConnections.put(poolalbeConnection,
+                                      new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
+                                                                    stackTrace));
             }
 
             return poolalbeConnection;

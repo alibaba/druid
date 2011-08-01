@@ -39,7 +39,7 @@ public class OracleSchemaStatVisitorTest1 extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "name")));
 
     }
-    
+
     public void test_1() throws Exception {
         String sql = "select a.name, b.name FROM users a, usergroups b on a.groupId = b.id where a.groupID = ?";
 

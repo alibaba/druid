@@ -77,7 +77,8 @@ public class PreparedStatementTest extends TestCase {
         try {
             conn = DriverManager.getConnection(create_url);
 
-            pstmt = conn.prepareStatement("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            pstmt = conn.prepareStatement("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (?, ?, ?)",
+                                          Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setShort(1, (short) 1);
             pstmt.setString(2, "A");
@@ -164,7 +165,8 @@ public class PreparedStatementTest extends TestCase {
             }
             pstmt.execute();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
+                                           ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.getCursorName();
             rs.clearWarnings();
@@ -194,14 +196,15 @@ public class PreparedStatementTest extends TestCase {
             rs.last();
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
+                                           ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.first();
             rs.last();
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
-                                           ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_SENSITIVE,
+                                           ResultSet.CONCUR_UPDATABLE, ResultSet.CLOSE_CURSORS_AT_COMMIT);
             rs = pstmt2.executeQuery();
             rs.first();
             rs.last();
@@ -282,7 +285,8 @@ public class PreparedStatementTest extends TestCase {
             JdbcUtils.printResultSet(rs, System.out);
             rs.close();
 
-            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            pstmt2 = conn.prepareStatement("SELECT * FROM T_PRE_STMT_TEST ORDER BY 2",
+                                           ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             rs = pstmt2.executeQuery();
             rs.next();
             try {

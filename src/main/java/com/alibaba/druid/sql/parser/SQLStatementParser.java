@@ -138,7 +138,7 @@ public class SQLStatementParser extends SQLParser {
 
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
-        
+
         if (lexer.token() == Token.IDENTIFIER) {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();

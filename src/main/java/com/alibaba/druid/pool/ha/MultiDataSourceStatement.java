@@ -10,20 +10,20 @@ import com.alibaba.druid.pool.WrapperAdapter;
 public class MultiDataSourceStatement extends WrapperAdapter implements Statement {
 
     private final MultiDataSourceConnection conn;
-    private final long         id;
-    private Integer            resultSetType;
-    private Integer            resultSetConcurrency;
-    private Integer            resultSetHoldability;
-    private Statement          stmt;
+    private final long                      id;
+    private Integer                         resultSetType;
+    private Integer                         resultSetConcurrency;
+    private Integer                         resultSetHoldability;
+    private Statement                       stmt;
 
-    private Integer            maxFieldSize;
-    private Integer            maxRows;
-    private Boolean            escapeProcessing;
-    private Integer            queryTimeout;
-    private String             cursorName;
-    private Integer            fetchDirection;
-    private Integer            fetchSize;
-    
+    private Integer                         maxFieldSize;
+    private Integer                         maxRows;
+    private Boolean                         escapeProcessing;
+    private Integer                         queryTimeout;
+    private String                          cursorName;
+    private Integer                         fetchDirection;
+    private Integer                         fetchSize;
+
     void checkStatement(String sql) throws SQLException {
         conn.checkConnection(sql);
 
@@ -58,7 +58,6 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         }
     }
 
-
     public MultiDataSourceStatement(MultiDataSourceConnection conn, long id){
         super();
         this.conn = conn;
@@ -73,7 +72,8 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         this.resultSetConcurrency = resultSetConcurrency;
     }
 
-    public MultiDataSourceStatement(MultiDataSourceConnection conn, long id, int resultSetType, int resultSetConcurrency, int resultSetHoldability){
+    public MultiDataSourceStatement(MultiDataSourceConnection conn, long id, int resultSetType,
+                                    int resultSetConcurrency, int resultSetHoldability){
         super();
         this.conn = conn;
         this.id = id;
@@ -85,7 +85,6 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
     public long getId() {
         return id;
     }
-
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
@@ -116,7 +115,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         if (maxFieldSize == null) {
             return 0;
         }
-        
+
         return maxFieldSize;
     }
 
@@ -135,7 +134,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         if (stmt != null) {
             return stmt.getMaxRows();
         }
-        
+
         if (maxRows == null) {
             return 0;
         }
@@ -168,7 +167,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         if (stmt != null) {
             return stmt.getQueryTimeout();
         }
-        
+
         if (queryTimeout == null) {
             return 0;
         }
@@ -299,7 +298,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         if (resultSetConcurrency != null) {
             return resultSetConcurrency;
         }
-        
+
         return 0;
     }
 

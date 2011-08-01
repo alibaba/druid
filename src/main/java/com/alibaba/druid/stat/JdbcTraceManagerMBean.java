@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.stat;
 
-
 public interface JdbcTraceManagerMBean {
 
     void setNotificationEnable(boolean notificationEnable);

@@ -12,8 +12,9 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 
 public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
+
     private static final String ATTR_PARAMS_SKIP = "_params.skip_";
-    
+
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
@@ -33,13 +34,13 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
         return false;
     }
-    
+
     public boolean visit(SQLBinaryOpExpr x) {
         x = merge(x);
 
         return super.visit(x);
     }
-    
+
     public SQLBinaryOpExpr merge(SQLBinaryOpExpr x) {
         if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
             if (x.getOperator() == SQLBinaryOperator.Equality || x.getOperator() == SQLBinaryOperator.NotEqual) {
@@ -128,12 +129,12 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
         return false;
     }
-    
+
     public boolean visit(SQLIntegerExpr x) {
         if (Boolean.TRUE.equals(x.getAttribute(ATTR_PARAMS_SKIP))) {
             return super.visit(x);
         }
-        
+
         print('?');
         return false;
     }
@@ -142,7 +143,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         if (Boolean.TRUE.equals(x.getAttribute(ATTR_PARAMS_SKIP))) {
             return super.visit(x);
         }
-        
+
         print('?');
         return false;
     }
@@ -151,7 +152,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         if (Boolean.TRUE.equals(x.getAttribute(ATTR_PARAMS_SKIP))) {
             return super.visit(x);
         }
-        
+
         print('?');
         return false;
     }
@@ -160,7 +161,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
         if (Boolean.TRUE.equals(x.getAttribute(ATTR_PARAMS_SKIP))) {
             return super.visit(x);
         }
-        
+
         print('?');
         return false;
     }

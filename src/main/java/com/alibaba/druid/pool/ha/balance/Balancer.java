@@ -6,5 +6,6 @@ import java.sql.SQLException;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
 public interface Balancer {
+
     Connection getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException;
 }

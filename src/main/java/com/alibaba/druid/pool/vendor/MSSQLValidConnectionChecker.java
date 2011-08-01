@@ -26,7 +26,7 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
                 return false;
             }
         } catch (SQLException ex) {
-         // skip 
+            // skip
             return false;
         }
 

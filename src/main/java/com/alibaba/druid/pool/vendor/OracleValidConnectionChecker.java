@@ -61,14 +61,14 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
                 return false;
             }
         } catch (SQLException ex) {
-            // skip 
+            // skip
             return false;
         }
-        
+
         if (valiateQuery == null) {
             return true;
         }
-        
+
         try {
             if (conn instanceof PoolableConnection) {
                 conn = ((PoolableConnection) conn).getConnection();

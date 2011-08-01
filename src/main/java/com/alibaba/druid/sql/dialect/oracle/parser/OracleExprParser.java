@@ -46,6 +46,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
 
+
     public boolean                allowStringAdditive = false;
 
     /**

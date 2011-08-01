@@ -3,8 +3,8 @@ package com.alibaba.druid.filter.logging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class Slf4jLogFilter extends LogFilter {
+
     private String dataSourceLoggerName = "druid.sql.DataSource";
     private String connectionLoggerName = "druid.sql.Connection";
     private String statementLoggerName  = "druid.sql.Statement";
@@ -106,7 +106,7 @@ public class Slf4jLogFilter extends LogFilter {
 
     @Override
     public boolean isResultSetLogErrorEnabled() {
-        return  resultSetLogger.isErrorEnabled() && super.isResultSetLogErrorEnabled();
+        return resultSetLogger.isErrorEnabled() && super.isResultSetLogErrorEnabled();
     }
 
     @Override

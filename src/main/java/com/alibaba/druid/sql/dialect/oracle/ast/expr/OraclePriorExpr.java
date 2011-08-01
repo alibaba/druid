@@ -9,12 +9,12 @@ public class OraclePriorExpr extends SQLExprImpl {
 
     private static final long serialVersionUID = 1L;
     private SQLExpr           expr;
-    
-    public OraclePriorExpr() {
-        
+
+    public OraclePriorExpr(){
+
     }
-    
-    public OraclePriorExpr(SQLExpr expr) {
+
+    public OraclePriorExpr(SQLExpr expr){
         this.expr = expr;
     }
 
@@ -25,7 +25,7 @@ public class OraclePriorExpr extends SQLExprImpl {
     public void setExpr(SQLExpr expr) {
         this.expr = expr;
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);

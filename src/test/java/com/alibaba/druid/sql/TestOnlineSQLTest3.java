@@ -25,11 +25,11 @@ public class TestOnlineSQLTest3 extends TestCase {
             conn = null;
         }
     }
-    
-    public void test_0 () throws Exception {
+
+    public void test_0() throws Exception {
         String sql = "SELECT * FROM m_sql_const";
         Statement stmt = conn.createStatement();
-        
+
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             long id = rs.getLong(1);
@@ -37,15 +37,13 @@ public class TestOnlineSQLTest3 extends TestCase {
             handle(id, value);
         }
         rs.close();
-        
+
         stmt.close();
     }
-    
+
     void handle(long id, String value) {
         String sql = value.toString();
-        
-        
-        
+
         System.out.println(sql);
     }
 }

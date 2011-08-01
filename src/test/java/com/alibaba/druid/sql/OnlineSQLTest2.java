@@ -63,8 +63,8 @@ public class OnlineSQLTest2 extends TestCase {
         sql = sql.trim();
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
-        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate") || lowerSql.startsWith("delete")
-            || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
+            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 

@@ -48,7 +48,7 @@ public class DataSourceProxyConfig {
     public void setJmxOption(boolean jmx) {
         this.jmx = jmx;
     }
-    
+
     public void setJmxOption(String jmx) {
         this.jmx = Boolean.parseBoolean(jmx);
     }

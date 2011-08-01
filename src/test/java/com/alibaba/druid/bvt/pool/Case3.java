@@ -71,7 +71,7 @@ public class Case3 extends TestCase {
             error = ex;
         }
         Assert.assertNotNull(error);
-        
+
         dataSource.close();
     }
 }

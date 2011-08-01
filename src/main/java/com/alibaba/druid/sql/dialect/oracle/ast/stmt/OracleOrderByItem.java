@@ -37,7 +37,7 @@ public class OracleOrderByItem extends SQLSelectOrderByItem {
     public void setNullsOrderType(NullsOrderType nullsOrderType) {
         this.nullsOrderType = nullsOrderType;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }

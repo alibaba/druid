@@ -90,7 +90,8 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name\n\t(a, b, c)\nVALUES\n(1, 2, 3);", text);
+        Assert.assertEquals("INSERT LOW_PRIORITY DELAYED HIGH_PRIORITY IGNORE INTO tbl_name\n\t(a, b, c)\nVALUES\n(1, 2, 3);",
+                            text);
     }
 
     public void test_6() throws Exception {
@@ -101,7 +102,8 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO tbl_name\n\t(a, b, c)\nVALUES\n(1, 2, 3) ON DUPLICATE KEY UPDATE c = c + 1;", text);
+        Assert.assertEquals("INSERT INTO tbl_name\n\t(a, b, c)\nVALUES\n(1, 2, 3) ON DUPLICATE KEY UPDATE c = c + 1;",
+                            text);
     }
 
     private String output(List<SQLStatement> stmtList) {

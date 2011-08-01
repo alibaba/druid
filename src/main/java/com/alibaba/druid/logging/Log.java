@@ -9,11 +9,11 @@ public interface Log {
     void error(String s);
 
     public void debug(String s);
-    
+
     public void debug(String s, Throwable e);
 
     public void warn(String s);
-    
+
     void warn(String s, Throwable e);
 
 }

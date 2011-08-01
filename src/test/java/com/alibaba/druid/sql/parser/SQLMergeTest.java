@@ -51,6 +51,7 @@ public class SQLMergeTest extends TestCase {
     private String merge() {
         StringBuilder out = new StringBuilder();
         OracleOutputVisitor visitor = new OracleOutputVisitor(out) {
+
             public boolean visit(SQLInListExpr x) {
                 x.getExpr().accept(this);
 

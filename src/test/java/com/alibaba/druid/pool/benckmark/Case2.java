@@ -30,25 +30,25 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
- * TestOnBo
- * 类Case1.java的实现描述：TODO 类实现描述 
+ * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
+ * 
  * @author admin 2011-5-28 下午03:47:40
  */
 public class Case2 extends TestCase {
 
-    private String jdbcUrl;
-    private String user;
-    private String password;
-    private String driverClass;
-    private int    initialSize     = 10;
-    private int    minPoolSize     = 10;
-    private int    maxPoolSize     = 50;
-    private int    maxActive       = 50;
-    private String validationQuery = "SELECT 1";
-    private int    threadCount     = 100;
-    private int    executeCount       = 4;
-    final int      LOOP_COUNT      = (1000 * 1000) / executeCount;
-    private boolean testOnBorrow = true;
+    private String  jdbcUrl;
+    private String  user;
+    private String  password;
+    private String  driverClass;
+    private int     initialSize     = 10;
+    private int     minPoolSize     = 10;
+    private int     maxPoolSize     = 50;
+    private int     maxActive       = 50;
+    private String  validationQuery = "SELECT 1";
+    private int     threadCount     = 100;
+    private int     executeCount    = 4;
+    final int       LOOP_COUNT      = (1000 * 1000) / executeCount;
+    private boolean testOnBorrow    = true;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -160,6 +160,7 @@ public class Case2 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

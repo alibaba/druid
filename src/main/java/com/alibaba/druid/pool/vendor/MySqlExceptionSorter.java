@@ -15,7 +15,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
 
         final int errorCode = e.getErrorCode();
         switch (errorCode) {
-            // Communications Errors
+        // Communications Errors
             case 1040: // ER_CON_COUNT_ERROR
             case 1042: // ER_BAD_HOST_ERROR
             case 1043: // ER_HANDSHAKE_ERROR
@@ -38,7 +38,7 @@ public class MySqlExceptionSorter implements ExceptionSorter {
             case 1037: // ER_OUTOFMEMORY
             case 1038: // ER_OUT_OF_SORTMEMORY
                 return true;
-                
+
             default:
                 break;
         }

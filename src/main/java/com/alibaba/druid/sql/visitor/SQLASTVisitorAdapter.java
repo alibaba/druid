@@ -546,19 +546,19 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLListExpr x) {
-        
+
     }
 
     @Override
     public boolean visit(SQLListExpr x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLSubqueryTableSource x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLSubqueryTableSource x) {
         return true;

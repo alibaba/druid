@@ -15,12 +15,12 @@ public class Case0 extends TestCase {
 
     public void test_0() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
-        
+
         dataSource.setDriver(new MockDriver() {
-            
+
         });
         dataSource.setUrl("jdbc:mock:");
-        
+
         dataSource.setMinIdle(0);
         dataSource.setMaxActive(2);
         dataSource.setMaxIdle(2);
@@ -32,6 +32,7 @@ public class Case0 extends TestCase {
         final CountDownLatch completeLatch = new CountDownLatch(1);
         final AtomicInteger waitCount = new AtomicInteger();
         Thread t = new Thread() {
+
             public void run() {
                 try {
                     startLatch.countDown();
@@ -39,7 +40,7 @@ public class Case0 extends TestCase {
                     Connection conn = dataSource.getConnection();
                     waitCount.decrementAndGet();
                     conn.close();
-                    
+
                     completeLatch.countDown();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -47,14 +48,14 @@ public class Case0 extends TestCase {
             }
         };
         t.start();
-        
+
         startLatch.await();
         Assert.assertFalse(completeLatch.await(1, TimeUnit.SECONDS));
         conn1.close();
         Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
         conn2.close();
         Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
-        
+
         dataSource.close();
     }
 }

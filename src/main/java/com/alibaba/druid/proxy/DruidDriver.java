@@ -45,8 +45,9 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDriver implements Driver, DruidDriverMBean {
-    private final static Log LOG = LogFactory.getLog(DruidDriver.class);
-    
+
+    private final static Log                                        LOG                      = LogFactory.getLog(DruidDriver.class);
+
     private final static DruidDriver                                instance                 = new DruidDriver();
 
     private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();

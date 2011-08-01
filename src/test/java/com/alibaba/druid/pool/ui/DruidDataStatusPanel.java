@@ -15,7 +15,8 @@ public class DruidDataStatusPanel extends JPanel {
     private final Map<String, JTextField> fields           = new HashMap<String, JTextField>();
 
     private final String[]                fieldNames       = new String[] { //
-                                                           "CreateCount", "CreateErrorCount", "CreateTimespanMillis", "CreateTimespanNano", "DestroyCount", //
+                                                           "CreateCount", "CreateErrorCount", "CreateTimespanMillis",
+            "CreateTimespanNano", "DestroyCount", //
             "ConnectCount", "ConnectErrorCount", "CloseCount", "RecycleCount", "ActiveCount", //
             "PoolingCount", "IdleCheckCount", "UI_GettingCount", "UI_GetCount", "UI_ReleaseCount" //
             , "UI_ExecutingCount" //

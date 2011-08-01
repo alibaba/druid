@@ -59,30 +59,30 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
-    
-    private AtomicLong          count_0_1_Millis             = new AtomicLong();
-    private AtomicLong          count_1_2_Millis             = new AtomicLong();
-    private AtomicLong          count_2_5_Millis             = new AtomicLong();
-    private AtomicLong          count_5_10_Millis            = new AtomicLong();
-    private AtomicLong          count_10_20_Millis           = new AtomicLong();
 
-    private AtomicLong          count_20_50_Millis           = new AtomicLong();
-    private AtomicLong          count_50_100_Millis          = new AtomicLong();
-    private AtomicLong          count_100_200_Millis         = new AtomicLong();
-    private AtomicLong          count_200_500_Millis         = new AtomicLong();
-    private AtomicLong          count_500_1000_Millis        = new AtomicLong();
+    private AtomicLong       count_0_1_Millis      = new AtomicLong();
+    private AtomicLong       count_1_2_Millis      = new AtomicLong();
+    private AtomicLong       count_2_5_Millis      = new AtomicLong();
+    private AtomicLong       count_5_10_Millis     = new AtomicLong();
+    private AtomicLong       count_10_20_Millis    = new AtomicLong();
 
-    private AtomicLong          count_1_2_Seconds       = new AtomicLong();
-    private AtomicLong          count_2_5_Seconds       = new AtomicLong();
-    private AtomicLong          count_5_10_Seconds      = new AtomicLong();
-    private AtomicLong          count_10_30_Seconds     = new AtomicLong();
-    private AtomicLong          count_30_60_Seconds     = new AtomicLong();
+    private AtomicLong       count_20_50_Millis    = new AtomicLong();
+    private AtomicLong       count_50_100_Millis   = new AtomicLong();
+    private AtomicLong       count_100_200_Millis  = new AtomicLong();
+    private AtomicLong       count_200_500_Millis  = new AtomicLong();
+    private AtomicLong       count_500_1000_Millis = new AtomicLong();
 
-    private AtomicLong          count_1_2_minutes     = new AtomicLong();
-    private AtomicLong          count_2_5_minutes     = new AtomicLong();
-    private AtomicLong          count_5_10_minutes    = new AtomicLong();
-    private AtomicLong          count_10_30_minutes   = new AtomicLong();
-    private AtomicLong          count_30_more_minutes = new AtomicLong();
+    private AtomicLong       count_1_2_Seconds     = new AtomicLong();
+    private AtomicLong       count_2_5_Seconds     = new AtomicLong();
+    private AtomicLong       count_5_10_Seconds    = new AtomicLong();
+    private AtomicLong       count_10_30_Seconds   = new AtomicLong();
+    private AtomicLong       count_30_60_Seconds   = new AtomicLong();
+
+    private AtomicLong       count_1_2_minutes     = new AtomicLong();
+    private AtomicLong       count_2_5_minutes     = new AtomicLong();
+    private AtomicLong       count_5_10_minutes    = new AtomicLong();
+    private AtomicLong       count_10_30_minutes   = new AtomicLong();
+    private AtomicLong       count_30_more_minutes = new AtomicLong();
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
@@ -179,7 +179,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         updateCount.set(0);
         fetchRowCount.set(0);
-        
+
         count_0_1_Millis.set(0);
         count_1_2_Millis.set(0);
         count_2_5_Millis.set(0);
@@ -336,7 +336,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 break;
             }
         }
-        
 
         final long MILLIS = 1000 * 1000;
         final long SECOND = 1000 * MILLIS;
@@ -373,7 +372,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             count_10_30_Seconds.incrementAndGet();
         } else if (nanoSpan < 60 * SECOND) {
             count_30_60_Seconds.incrementAndGet();
-            
+
         } else if (nanoSpan < 2 * MINUTE) {
             count_1_2_minutes.incrementAndGet();
         } else if (nanoSpan < 5 * MINUTE) {
@@ -403,7 +402,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteBatchSizeMax() {
         return executeBatchSizeMax.get();
     }
-    
 
     public long getCount_0_1_Millis() {
         return count_0_1_Millis.get();
@@ -485,7 +483,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return count_30_more_minutes.get();
     }
 
-
     private static CompositeType COMPOSITE_TYPE = null;
 
     public static CompositeType getCompositeType() throws JMException {
@@ -494,28 +491,56 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.LONG,
-                SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
-                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
-                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-        
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG  //     
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG  //     
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG  //     
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG  //     
+        OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
+                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
+                JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
+                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING,
+                SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.DATE,
+                SimpleType.STRING, SimpleType.STRING //
+
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
         };
 
-        String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount" //
-                                , "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount" //
-                                , "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax" //
-                                , "RunningCount", "Name", "File" , "LastErrorMessage", "LastErrorClass" //
-                                , "LastErrorStackTrace", "LastErrorTime", "DbType", "URL" //
-                
-                , "ExecuteCount_0_1_Millis", "ExecuteCount_1_2_Millis", "ExecuteCount_2_5_Millis", "ExecuteCount_5_10_Millis", "ExecuteCount_10_20_Millis"
-                , "ExecuteCount_20_50_Millis", "ExecuteCount_50_100_Millis", "ExecuteCount_100_200_Millis", "ExecuteCount_200_500_Millis", "ExecuteCount_500_1000_Millis" 
-                , "ExecuteCount_1_2_Seconds", "ExecuteCount_2_5_Seconds", "ExecuteCount_5_10_Seconds", "ExecuteCount_10_30_Seconds", "ExecuteCount_30_60_Seconds"
-                , "ExecuteCount_1_2_Minutes", "ExecuteCount_2_5_Minutes", "ExecuteCount_5_10_Minutes", "ExecuteCount_10_30_Minutes", "ExecuteCount_30_more_Minutes"
-        };
+        String[] indexNames = {
+                "ID",
+                "DataSource",
+                "SQL",
+                "ExecuteCount",
+                "ErrorCount" //
+                ,
+                "TotalTime",
+                "LastTime",
+                "MaxTimespan",
+                "LastError",
+                "EffectedRowCount" //
+                ,
+                "FetchRowCount",
+                "MaxTimespanOccurTime",
+                "BatchSizeMax",
+                "BatchSizeTotal",
+                "ConcurrentMax" //
+                ,
+                "RunningCount",
+                "Name",
+                "File",
+                "LastErrorMessage",
+                "LastErrorClass" //
+                ,
+                "LastErrorStackTrace",
+                "LastErrorTime",
+                "DbType",
+                "URL" //
+
+                , "ExecuteCount_0_1_Millis", "ExecuteCount_1_2_Millis", "ExecuteCount_2_5_Millis",
+                "ExecuteCount_5_10_Millis", "ExecuteCount_10_20_Millis", "ExecuteCount_20_50_Millis",
+                "ExecuteCount_50_100_Millis", "ExecuteCount_100_200_Millis", "ExecuteCount_200_500_Millis",
+                "ExecuteCount_500_1000_Millis", "ExecuteCount_1_2_Seconds", "ExecuteCount_2_5_Seconds",
+                "ExecuteCount_5_10_Seconds", "ExecuteCount_10_30_Seconds", "ExecuteCount_30_60_Seconds",
+                "ExecuteCount_1_2_Minutes", "ExecuteCount_2_5_Minutes", "ExecuteCount_5_10_Minutes",
+                "ExecuteCount_10_30_Minutes", "ExecuteCount_30_more_Minutes" };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -525,7 +550,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteCount() {
         return getErrorCount() + getExecuteSuccessCount();
     }
-    
+
     public Map<String, Object> getData() throws JMException {
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -567,31 +592,31 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         map.put("DbType", dbType);
         map.put("URL", null);
-        
+
         map.put("ExecuteCount_0_1_Millis", this.getCount_0_1_Millis());
         map.put("ExecuteCount_1_2_Millis", this.getCount_1_2_Millis());
         map.put("ExecuteCount_2_5_Millis", this.getCount_2_5_Millis());
         map.put("ExecuteCount_5_10_Millis", this.getCount_5_10_Millis());
         map.put("ExecuteCount_10_20_Millis", this.getCount_10_20_Millis());
-        
+
         map.put("ExecuteCount_20_50_Millis", this.getCount_20_50_Millis());
         map.put("ExecuteCount_50_100_Millis", this.getCount_50_100_Millis());
         map.put("ExecuteCount_100_200_Millis", this.getCount_100_200_Millis());
         map.put("ExecuteCount_200_500_Millis", this.getCount_200_500_Millis());
         map.put("ExecuteCount_500_1000_Millis", this.getCount_500_1000_Millis());
-        
+
         map.put("ExecuteCount_1_2_Seconds", this.getCount_1_2_Seconds());
         map.put("ExecuteCount_2_5_Seconds", this.getCount_2_5_Seconds());
         map.put("ExecuteCount_5_10_Seconds", this.getCount_5_10_Seconds());
         map.put("ExecuteCount_10_30_Seconds", this.getCount_10_30_Seconds());
         map.put("ExecuteCount_30_60_Seconds", this.getCount_30_60_Seconds());
-        
+
         map.put("ExecuteCount_1_2_Minutes", this.getCount_1_2_minutes());
         map.put("ExecuteCount_2_5_Minutes", this.getCount_2_5_minutes());
         map.put("ExecuteCount_5_10_Minutes", this.getCount_5_10_minutes());
         map.put("ExecuteCount_10_30_Minutes", this.getCount_10_30_minutes());
         map.put("ExecuteCount_30_more_Minutes", this.getCount_30_more_minutes());
-        
+
         return map;
     }
 

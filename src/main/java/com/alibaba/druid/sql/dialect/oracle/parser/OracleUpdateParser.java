@@ -109,7 +109,7 @@ public class OracleUpdateParser extends SQLStatementParser {
 
         update.setSetClause(setListClause);
     }
-    
+
     protected SQLExprParser createExprParser() {
         return new OracleExprParser(lexer);
     }

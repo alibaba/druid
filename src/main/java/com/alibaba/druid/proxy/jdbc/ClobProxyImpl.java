@@ -118,7 +118,7 @@ public class ClobProxyImpl implements ClobProxy {
     public void truncate(long len) throws SQLException {
         createChain().clob_truncate(this, len);
     }
-    
+
     public String toString() {
         return clob.toString();
     }

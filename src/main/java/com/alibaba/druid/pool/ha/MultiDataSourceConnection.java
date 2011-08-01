@@ -28,7 +28,7 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxyImpl;
 
 public class MultiDataSourceConnection extends WrapperAdapter implements Connection, ConnectionProxy {
 
-    private final MultiDataSource    haDataSource;
+    private final MultiDataSource haDataSource;
 
     private Connection            conn;
 
@@ -51,7 +51,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         this.haDataSource = haDataSource;
         this.id = id;
     }
-    
+
     public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
             conn = haDataSource.getConnectionInternal(this, sql);
@@ -349,7 +349,8 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+                                                                                                      throws SQLException {
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
@@ -369,14 +370,17 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+                                                                                                           throws SQLException {
         long stmtId = haDataSource.createStatementId();
-        MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency, resultSetHoldability);
+        MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency,
+                                                                     resultSetHoldability);
         return stmt;
     }
 
     @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+                                              int resultSetHoldability) throws SQLException {
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
@@ -386,7 +390,8 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     }
 
     @Override
-    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
+                                         int resultSetHoldability) throws SQLException {
         checkConnection(sql);
 
         CallableStatement stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);

@@ -62,7 +62,7 @@ public class MySqlTableIndex extends SQLObjectImpl implements SQLTableElement {
             accept0((MySqlASTVisitor) visitor);
             return;
         }
-        
+
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, columns);

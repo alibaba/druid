@@ -58,7 +58,8 @@ public class DruidDataSourceUIManager extends JFrame {
     private JLabel                                  lbPassword                    = new JLabel("Password : ");
     private JTextField                              txtPassword                   = new JTextField();
 
-    private JLabel                                  lbConnectionProperties        = new JLabel("Connection Properties : ");
+    private JLabel                                  lbConnectionProperties        = new JLabel(
+                                                                                               "Connection Properties : ");
     private JTextField                              txtConnectionProperties       = new JTextField();
 
     private JLabel                                  lbInitialSize                 = new JLabel("InitialSize : ");
@@ -76,7 +77,8 @@ public class DruidDataSourceUIManager extends JFrame {
     private JLabel                                  lbMaxWait                     = new JLabel("MaxWait : ");
     private JTextField                              txtMaxWait                    = new JTextField("-1");
 
-    private JLabel                                  lbMinEvictableIdleTimeMillis  = new JLabel("MinEvictableIdleTimeMillis : ");
+    private JLabel                                  lbMinEvictableIdleTimeMillis  = new JLabel(
+                                                                                               "MinEvictableIdleTimeMillis : ");
     private JTextField                              txtMinEvictableIdleTimeMillis = new JTextField("1800000");
 
     private DruidDataStatusPanel                    statusPanel                   = new DruidDataStatusPanel();
@@ -138,7 +140,8 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbDriverClass, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtDriverClass);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtDriverClass, 0, SpringLayout.VERTICAL_CENTER, lbDriverClass);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtDriverClass, 0, SpringLayout.VERTICAL_CENTER,
+                             lbDriverClass);
         layout.putConstraint(SpringLayout.WEST, txtDriverClass, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtDriverClass, 0, SpringLayout.EAST, txtUrl);
 
@@ -174,7 +177,8 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbConnectionProperties, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtConnectionProperties);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtConnectionProperties, 0, SpringLayout.VERTICAL_CENTER, lbConnectionProperties);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtConnectionProperties, 0, SpringLayout.VERTICAL_CENTER,
+                             lbConnectionProperties);
         layout.putConstraint(SpringLayout.WEST, txtConnectionProperties, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtConnectionProperties, 0, SpringLayout.EAST, txtUrl);
 
@@ -186,7 +190,8 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbInitialSize, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtInitialSize);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtInitialSize, 0, SpringLayout.VERTICAL_CENTER, lbInitialSize);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtInitialSize, 0, SpringLayout.VERTICAL_CENTER,
+                             lbInitialSize);
         layout.putConstraint(SpringLayout.WEST, txtInitialSize, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtInitialSize, 0, SpringLayout.EAST, txtUrl);
 
@@ -246,19 +251,22 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtMinEvictableIdleTimeMillis);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMinEvictableIdleTimeMillis, 0, SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtMinEvictableIdleTimeMillis, 0,
+                             SpringLayout.VERTICAL_CENTER, lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtMinEvictableIdleTimeMillis, 0, SpringLayout.EAST, txtUrl);
 
         // ////
 
         mainPanel.add(lbValidationQuery);
-        layout.putConstraint(SpringLayout.NORTH, lbValidationQuery, 10, SpringLayout.SOUTH, lbMinEvictableIdleTimeMillis);
+        layout.putConstraint(SpringLayout.NORTH, lbValidationQuery, 10, SpringLayout.SOUTH,
+                             lbMinEvictableIdleTimeMillis);
         layout.putConstraint(SpringLayout.WEST, lbValidationQuery, 0, SpringLayout.WEST, lbUrl);
         layout.putConstraint(SpringLayout.EAST, lbValidationQuery, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtValidationQuery);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtValidationQuery, 0, SpringLayout.VERTICAL_CENTER, lbValidationQuery);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtValidationQuery, 0, SpringLayout.VERTICAL_CENTER,
+                             lbValidationQuery);
         layout.putConstraint(SpringLayout.WEST, txtValidationQuery, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtValidationQuery, 0, SpringLayout.EAST, txtUrl);
         // ////
@@ -269,7 +277,8 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbTestWhileIdle, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtTestWhileIdle);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER, lbTestWhileIdle);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestWhileIdle, 0, SpringLayout.VERTICAL_CENTER,
+                             lbTestWhileIdle);
         layout.putConstraint(SpringLayout.WEST, txtTestWhileIdle, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestWhileIdle, 0, SpringLayout.EAST, txtUrl);
 
@@ -279,7 +288,8 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.EAST, lbTestOnBorrow, 0, SpringLayout.EAST, lbUrl);
 
         mainPanel.add(txtTestOnBorrow);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestOnBorrow, 0, SpringLayout.VERTICAL_CENTER, lbTestOnBorrow);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtTestOnBorrow, 0, SpringLayout.VERTICAL_CENTER,
+                             lbTestOnBorrow);
         layout.putConstraint(SpringLayout.WEST, txtTestOnBorrow, 0, SpringLayout.WEST, txtUrl);
         layout.putConstraint(SpringLayout.EAST, txtTestOnBorrow, 0, SpringLayout.EAST, txtUrl);
 
@@ -297,7 +307,8 @@ public class DruidDataSourceUIManager extends JFrame {
         });
 
         mainPanel.add(btnCloseDataSource);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnCloseDataSource, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnCloseDataSource, 0, SpringLayout.VERTICAL_CENTER,
+                             btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, btnCloseDataSource, 10, SpringLayout.EAST, btnInitDataSource);
         btnCloseDataSource.addActionListener(new ActionListener() {
 
@@ -312,7 +323,8 @@ public class DruidDataSourceUIManager extends JFrame {
         btnCase_0.setEnabled(false);
 
         mainPanel.add(btnConnect);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnConnect, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, btnConnect, 0, SpringLayout.VERTICAL_CENTER,
+                             btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, btnConnect, 10, SpringLayout.EAST, btnCloseDataSource);
         btnConnect.addActionListener(new ActionListener() {
 
@@ -323,7 +335,8 @@ public class DruidDataSourceUIManager extends JFrame {
         });
 
         mainPanel.add(txtGetStep);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtGetStep, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtGetStep, 0, SpringLayout.VERTICAL_CENTER,
+                             btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, txtGetStep, 10, SpringLayout.EAST, btnConnect);
         layout.putConstraint(SpringLayout.EAST, txtGetStep, 40, SpringLayout.WEST, txtGetStep);
 
@@ -354,7 +367,8 @@ public class DruidDataSourceUIManager extends JFrame {
         });
 
         mainPanel.add(txtReleaseStep);
-        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtReleaseStep, 0, SpringLayout.VERTICAL_CENTER, btnInitDataSource);
+        layout.putConstraint(SpringLayout.VERTICAL_CENTER, txtReleaseStep, 0, SpringLayout.VERTICAL_CENTER,
+                             btnInitDataSource);
         layout.putConstraint(SpringLayout.WEST, txtReleaseStep, 10, SpringLayout.EAST, btnClose);
         layout.putConstraint(SpringLayout.EAST, txtReleaseStep, 40, SpringLayout.WEST, txtReleaseStep);
 
@@ -380,7 +394,7 @@ public class DruidDataSourceUIManager extends JFrame {
         layout.putConstraint(SpringLayout.NORTH, statusPanel, 10, SpringLayout.SOUTH, btnInitDataSource);
         layout.putConstraint(SpringLayout.SOUTH, statusPanel, 120, SpringLayout.NORTH, statusPanel);
         layout.putConstraint(SpringLayout.WEST, statusPanel, 0, SpringLayout.WEST, lbUrl);
-        //layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, mainPanel);
+        // layout.putConstraint(SpringLayout.EAST, txtMaxWait, 0, SpringLayout.EAST, mainPanel);
 
         // ////
 
@@ -479,7 +493,7 @@ public class DruidDataSourceUIManager extends JFrame {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            
+
             executor = Executors.newCachedThreadPool();
 
             txtDriverClass.setText(dataSource.getDriverClassName());
@@ -591,7 +605,8 @@ public class DruidDataSourceUIManager extends JFrame {
                 long ygc = TestUtil.getYoungGC() - startYGC;
                 long fullGC = TestUtil.getFullGC() - startFullGC;
 
-                System.out.println("thread " + threadCount + " druid millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                System.out.println("thread " + threadCount + " druid millis : "
+                                   + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
             }
         };
 

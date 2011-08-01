@@ -22,7 +22,8 @@ public class DruidLobCreator implements LobCreator {
     }
 
     @Override
-    public void setBlobAsBinaryStream(PreparedStatement ps, int paramIndex, InputStream contentStream, int contentLength) throws SQLException {
+    public void setBlobAsBinaryStream(PreparedStatement ps, int paramIndex, InputStream contentStream, int contentLength)
+                                                                                                                         throws SQLException {
         ps.setBlob(paramIndex, contentStream, contentLength);
     }
 
@@ -34,7 +35,8 @@ public class DruidLobCreator implements LobCreator {
     }
 
     @Override
-    public void setClobAsAsciiStream(PreparedStatement ps, int paramIndex, InputStream asciiStream, int contentLength) throws SQLException {
+    public void setClobAsAsciiStream(PreparedStatement ps, int paramIndex, InputStream asciiStream, int contentLength)
+                                                                                                                      throws SQLException {
         if (asciiStream != null) {
             Clob clob = ps.getConnection().createClob();
 
@@ -64,7 +66,8 @@ public class DruidLobCreator implements LobCreator {
     }
 
     @Override
-    public void setClobAsCharacterStream(PreparedStatement ps, int paramIndex, Reader characterStream, int contentLength) throws SQLException {
+    public void setClobAsCharacterStream(PreparedStatement ps, int paramIndex, Reader characterStream, int contentLength)
+                                                                                                                         throws SQLException {
         ps.setClob(paramIndex, characterStream, contentLength);
     }
 

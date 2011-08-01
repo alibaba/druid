@@ -7,18 +7,20 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 
 public class MySqlValdConnectionTest extends TestCase {
+
     private String jdbcUrl;
     private String user;
     private String password;
     private String driverClass;
-    
-    public void setUp () throws Exception {
+
+    public void setUp() throws Exception {
         jdbcUrl = "jdbc:mysql://10.20.129.146/dragoon_v25masterdb?useUnicode=true&characterEncoding=UTF-8";
         user = "dragoon25";
         password = "dragoon25";
         driverClass = "com.mysql.jdbc.Driver";
     }
-    public void test_0 () throws Exception {
+
+    public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
@@ -26,7 +28,7 @@ public class MySqlValdConnectionTest extends TestCase {
         dataSource.setPassword(password);
         dataSource.setFilters("stat");
         dataSource.setExceptionSoter(MySqlExceptionSorter.class.getName());
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
     }

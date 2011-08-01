@@ -72,13 +72,18 @@ public class StatementTest extends TestCase {
 
             stmt = conn.createStatement();
             stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (1, 'A', NULL)");
-            stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (11, 'A1', NULL)", Statement.NO_GENERATED_KEYS);
+            stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (11, 'A1', NULL)",
+                         Statement.NO_GENERATED_KEYS);
             stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (12, 'A2', NULL)", new int[] { 1 });
-            stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (12, 'A3', NULL)", new String[] { "ID" });
+            stmt.execute("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (12, 'A3', NULL)",
+                         new String[] { "ID" });
             stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (2, 'B', NULL)");
-            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (3, 'C', NULL)", Statement.NO_GENERATED_KEYS);
-            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (4, 'D', NULL)", new int[] { 1 });
-            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (5, 'E', NULL)", new String[] { "ID" });
+            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (3, 'C', NULL)",
+                               Statement.NO_GENERATED_KEYS);
+            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (4, 'D', NULL)",
+                               new int[] { 1 });
+            stmt.executeUpdate("INSERT INTO T_PRE_STMT_TEST (ID, NAME, BIRTHDATE) VALUES (5, 'E', NULL)",
+                               new String[] { "ID" });
             try {
                 stmt.cancel();
             } catch (SQLFeatureNotSupportedException ex) {

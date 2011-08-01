@@ -363,8 +363,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleBinaryDoubleExpr x);
 
     void endVisit(OracleBinaryDoubleExpr x);
-    
+
     boolean visit(OracleSelect x);
-    
+
     void endVisit(OracleSelect x);
 }

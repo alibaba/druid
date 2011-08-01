@@ -786,7 +786,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 }
                 print(", ");
             }
-            
+
             x.getValues().get(i).accept(this);
         }
         decrementIndent();
@@ -861,7 +861,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         println();
         decrementIndent();
         print(")");
-        
+
         if (x.getAlias() != null) {
             print(' ');
             print(x.getAlias());

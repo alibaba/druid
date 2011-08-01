@@ -77,11 +77,12 @@ public class PrecallTest extends TestCase {
         try {
             conn = DriverManager.getConnection(create_url);
 
-            cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY);
+            cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD,
+                                     ResultSet.CONCUR_READ_ONLY);
             cstmt.close();
 
-            cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
-                                     ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)", ResultSet.FETCH_FORWARD,
+                                     ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
             cstmt.close();
 
             cstmt = conn.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)");

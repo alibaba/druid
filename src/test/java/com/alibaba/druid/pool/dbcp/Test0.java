@@ -37,7 +37,7 @@ public class Test0 extends TestCase {
             conn.close();
             System.out.println("raw size : " + driver.getConnections().size());
         }
-        
+
         {
             Connection conn = dataSource.getConnection();
 
@@ -48,7 +48,6 @@ public class Test0 extends TestCase {
             System.out.println("raw size : " + driver.getConnections().size());
         }
 
-     
         dataSource.close();
     }
 }

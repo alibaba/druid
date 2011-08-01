@@ -18,21 +18,22 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 public class SQLDetailDialog extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    
-    private JTextArea textArea;
 
-    public SQLDetailDialog(CompositeData rowData) {
+    private JTextArea         textArea;
+
+    public SQLDetailDialog(CompositeData rowData){
         textArea = new JTextArea();
-        JScrollPane textAreaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane textAreaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.getContentPane().add(textAreaScrollPane);
-        
+
         String sql = (String) rowData.get("SQL");
-        
+
         sql = format(sql);
-        
+
         textArea.setText(sql);
     }
-    
+
     public static String format(String sql) {
         if (sql == null || sql.length() == 0) {
             return sql;
@@ -52,7 +53,7 @@ public class SQLDetailDialog extends JDialog {
 
         return sql; // 返回原来的SQL
     }
-    
+
     public static String mergeMySql(String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

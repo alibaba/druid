@@ -31,7 +31,6 @@ import com.alibaba.druid.util.JMXUtils;
  */
 public class Case2 extends TestCase {
 
-
     public void test_singleThread() throws Exception {
 
         Class.forName("com.alibaba.druid.mock.MockDriver");
@@ -56,7 +55,7 @@ public class Case2 extends TestCase {
         for (int i = 0; i < COUNT; ++i) {
             connections[i] = dataSource.getConnection();
         }
-        
+
         for (int i = 0; i < COUNT; ++i) {
             connections[i].close();
         }

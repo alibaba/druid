@@ -106,7 +106,8 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         }
 
         OpenType<?>[] indexTypes = new OpenType<?>[] { //
-        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
+        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
+                new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
                 SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
                 , SimpleType.LONG, SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
                 , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
@@ -130,30 +131,105 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         //
         };
 
-        String[] indexNames = { "ID", "URL", "Name", "FilterClasses", "CreatedTime", //
-                "RawUrl", "RawDriverClassName", "RawDriverMajorVersion", "RawDriverMinorVersion", "Properties" //
-                , "ConnectionActiveCount", "ConnectionActiveCountMax", "ConnectionCloseCount", "ConnectionCommitCount", "ConnectionRollbackCount" //
-                , "ConnectionConnectLastTime", "ConnectionConnectErrorCount", "ConnectionConnectErrorLastTime", "ConnectionConnectErrorLastMessage", "ConnectionConnectErrorLastStackTrace" //
-                , "StatementCreateCount", "StatementPrepareCount", "StatementPreCallCount", "StatementExecuteCount", "StatementRunningCount" //
-                , "StatementConcurrentMax", "StatementCloseCount", "StatementErrorCount", "StatementLastErrorTime", "StatementLastErrorMessage" //
-                , "StatementLastErrorStackTrace", "StatementExecuteMillisTotal", "ConnectionConnectingCount", "StatementExecuteLastTime", "ResultSetCloseCount" //
-                , "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount", "ResultSetLastOpenTime" //
-                , "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime", "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace", "ConnectionConnectCount", "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace", "ConnectionConnectMillisTotal", "ConnectionConnectingCountMax" //
-                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax", "ConnectionAliveMillisMin" //
+        String[] indexNames = {
+                "ID",
+                "URL",
+                "Name",
+                "FilterClasses",
+                "CreatedTime", //
+                "RawUrl",
+                "RawDriverClassName",
+                "RawDriverMajorVersion",
+                "RawDriverMinorVersion",
+                "Properties" //
+                ,
+                "ConnectionActiveCount",
+                "ConnectionActiveCountMax",
+                "ConnectionCloseCount",
+                "ConnectionCommitCount",
+                "ConnectionRollbackCount" //
+                ,
+                "ConnectionConnectLastTime",
+                "ConnectionConnectErrorCount",
+                "ConnectionConnectErrorLastTime",
+                "ConnectionConnectErrorLastMessage",
+                "ConnectionConnectErrorLastStackTrace" //
+                ,
+                "StatementCreateCount",
+                "StatementPrepareCount",
+                "StatementPreCallCount",
+                "StatementExecuteCount",
+                "StatementRunningCount" //
+                ,
+                "StatementConcurrentMax",
+                "StatementCloseCount",
+                "StatementErrorCount",
+                "StatementLastErrorTime",
+                "StatementLastErrorMessage" //
+                ,
+                "StatementLastErrorStackTrace",
+                "StatementExecuteMillisTotal",
+                "ConnectionConnectingCount",
+                "StatementExecuteLastTime",
+                "ResultSetCloseCount" //
+                ,
+                "ResultSetOpenCount",
+                "ResultSetOpenningCount",
+                "ResultSetOpenningMax",
+                "ResultSetFetchRowCount",
+                "ResultSetLastOpenTime" //
+                ,
+                "ResultSetErrorCount",
+                "ResultSetOpenningMillisTotal",
+                "ResultSetLastErrorTime",
+                "ResultSetLastErrorMessage",
+                "ResultSetLastErrorStackTrace",
+                "ConnectionConnectCount",
+                "ConnectionErrorLastMessage",
+                "ConnectionErrorLastStackTrace",
+                "ConnectionConnectMillisTotal",
+                "ConnectionConnectingCountMax" //
+                ,
+                "ConnectionConnectMillisMax",
+                "ConnectionErrorLastTime",
+                "ConnectionAliveMillisMax",
+                "ConnectionAliveMillisMin" //
                 //
-                , "ConnectionCount_Alive_0_1_Seconds", "ConnectionCount_Alive_1_5_Seconds", "ConnectionCount_Alive_5_10_Seconds", "ConnectionCount_Alive_10_30_Seconds", "ConnectionCount_Alive_30_60_Seconds" //
-                , "ConnectionCount_Alive_1_5_Minutes", "ConnectionCount_Alive_5_10_Minutes", "ConnectionCount_Alive_10_30_Minutes", "ConnectionCount_Alive_30_60_Minutes", "ConnectionCount_Alive_1_6_Hours" //
-                , "ConnectionCount_Alive_6_24_Hours", "ConnectionCount_Alive_1_7_Day", "ConnectionCount_Alive_7_30_Day", "ConnectionCount_Alive_30_90_Day", "ConnectionCount_Alive_90_more_Day" //
+                ,
+                "ConnectionCount_Alive_0_1_Seconds",
+                "ConnectionCount_Alive_1_5_Seconds",
+                "ConnectionCount_Alive_5_10_Seconds",
+                "ConnectionCount_Alive_10_30_Seconds",
+                "ConnectionCount_Alive_30_60_Seconds" //
+                ,
+                "ConnectionCount_Alive_1_5_Minutes",
+                "ConnectionCount_Alive_5_10_Minutes",
+                "ConnectionCount_Alive_10_30_Minutes",
+                "ConnectionCount_Alive_30_60_Minutes",
+                "ConnectionCount_Alive_1_6_Hours" //
+                ,
+                "ConnectionCount_Alive_6_24_Hours",
+                "ConnectionCount_Alive_1_7_Day",
+                "ConnectionCount_Alive_7_30_Day",
+                "ConnectionCount_Alive_30_90_Day",
+                "ConnectionCount_Alive_90_more_Day" //
                 //
-                , "StatementExecuteCount_0_1_Millis", "StatementExecuteCount_1_2_Millis", "StatementExecuteCount_2_5_Millis", "StatementExecuteCount_5_10_Millis", "StatementExecuteCount_10_20_Millis"
-                , "StatementExecuteCount_20_50_Millis", "StatementExecuteCount_50_100_Millis", "StatementExecuteCount_100_200_Millis", "StatementExecuteCount_200_500_Millis", "StatementExecuteCount_500_1000_Millis" 
-                , "StatementExecuteCount_1_2_Seconds", "StatementExecuteCount_2_5_Seconds", "StatementExecuteCount_5_10_Seconds", "StatementExecuteCount_10_30_Seconds", "StatementExecuteCount_30_60_Seconds"
-                , "StatementExecuteCount_1_2_Minutes", "StatementExecuteCount_2_5_Minutes", "StatementExecuteCount_5_10_Minutes", "StatementExecuteCount_10_30_Minutes", "StatementExecuteCount_30_more_Minutes"
+                , "StatementExecuteCount_0_1_Millis", "StatementExecuteCount_1_2_Millis",
+                "StatementExecuteCount_2_5_Millis", "StatementExecuteCount_5_10_Millis",
+                "StatementExecuteCount_10_20_Millis", "StatementExecuteCount_20_50_Millis",
+                "StatementExecuteCount_50_100_Millis", "StatementExecuteCount_100_200_Millis",
+                "StatementExecuteCount_200_500_Millis", "StatementExecuteCount_500_1000_Millis",
+                "StatementExecuteCount_1_2_Seconds", "StatementExecuteCount_2_5_Seconds",
+                "StatementExecuteCount_5_10_Seconds", "StatementExecuteCount_10_30_Seconds",
+                "StatementExecuteCount_30_60_Seconds", "StatementExecuteCount_1_2_Minutes",
+                "StatementExecuteCount_2_5_Minutes", "StatementExecuteCount_5_10_Minutes",
+                "StatementExecuteCount_10_30_Minutes", "StatementExecuteCount_30_more_Minutes"
         //
         };
 
         String[] indexDescriptions = indexNames;
-        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames, indexDescriptions, indexTypes);
+        COMPOSITE_TYPE = new CompositeType("DataSourceStatistic", "DataSource Statistic", indexNames,
+                                           indexDescriptions, indexTypes);
 
         return COMPOSITE_TYPE;
     }

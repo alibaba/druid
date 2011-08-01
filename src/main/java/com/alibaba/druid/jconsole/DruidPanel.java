@@ -37,8 +37,9 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.sun.tools.jconsole.JConsoleContext;
 
 public class DruidPanel extends JPanel {
-    private final static Log LOG = LogFactory.getLog(DruidPanel.class);
-    
+
+    private final static Log         LOG              = LogFactory.getLog(DruidPanel.class);
+
     private static final long        serialVersionUID = 1L;
 
     protected JSplitPane             mainSplit;
@@ -55,7 +56,9 @@ public class DruidPanel extends JPanel {
         mainSplit.setBorder(BorderFactory.createEmptyBorder());
 
         rootNode = new DefaultMutableTreeNode("root", true);
-        dataSourcesNode = new DefaultMutableTreeNode(new NodeInfo(null, null, NodeType.DataSources, null, "DataSources"), true);
+        dataSourcesNode = new DefaultMutableTreeNode(
+                                                     new NodeInfo(null, null, NodeType.DataSources, null, "DataSources"),
+                                                     true);
         rootNode.add(dataSourcesNode);
 
         tree = new JTree(rootNode);
@@ -70,7 +73,8 @@ public class DruidPanel extends JPanel {
             }
         });
 
-        JScrollPane theScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane theScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         JPanel treePanel = new JPanel(new BorderLayout());
         treePanel.add(theScrollPane, BorderLayout.CENTER);
         mainSplit.setLeftComponent(treePanel);
@@ -99,11 +103,13 @@ public class DruidPanel extends JPanel {
             mainSplit.setRightComponent(new DataSourcePanel(dataSourceInfo));
         } else if (nodeInfo.getType() == NodeType.Connections) {
             DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
-            ConnectionsPanel connectionsPanel = new ConnectionsPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(), dataSourceInfo);
+            ConnectionsPanel connectionsPanel = new ConnectionsPanel(nodeInfo.getConnection(),
+                                                                     nodeInfo.getObjectInstance(), dataSourceInfo);
             mainSplit.setRightComponent(connectionsPanel);
         } else if (nodeInfo.getType() == NodeType.SQL) {
             DataSourceInfo dataSourceInfo = (DataSourceInfo) nodeInfo.getData();
-            SQLPanel connectionsPanel = new SQLPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(), dataSourceInfo);
+            SQLPanel connectionsPanel = new SQLPanel(nodeInfo.getConnection(), nodeInfo.getObjectInstance(),
+                                                     dataSourceInfo);
             mainSplit.setRightComponent(connectionsPanel);
         } else {
             mainSplit.setRightComponent(sheet);
@@ -112,11 +118,14 @@ public class DruidPanel extends JPanel {
 
     public void init() {
         try {
-            ManagementFactory.getPlatformMBeanServer().registerMBean(JdbcStatManager.getInstance(), new ObjectName("com.alibaba.druid:type=JdbcStatManager"));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(JdbcStatManager.getInstance(),
+                                                                     new ObjectName(
+                                                                                    "com.alibaba.druid:type=JdbcStatManager"));
 
             DruidDataSource dataSource = new DruidDataSource();
 
-            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DataSource"));
+            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+                                                                     new ObjectName("com.alibaba.druid:type=DataSource"));
 
             dataSource.setUrl("jdbc:mock:");
             dataSource.setFilters("stat,trace");
@@ -167,10 +176,12 @@ public class DruidPanel extends JPanel {
 
                 DataSourceInfo dataSourceInfo = new DataSourceInfo(conn, rowData);
 
-                NodeInfo dataSourceNodeInfo = new NodeInfo(conn, statInstance, NodeType.DataSource, dataSourceInfo, dataSourceInfo.getName());
+                NodeInfo dataSourceNodeInfo = new NodeInfo(conn, statInstance, NodeType.DataSource, dataSourceInfo,
+                                                           dataSourceInfo.getName());
                 DefaultMutableTreeNode dataSourceNode = new DefaultMutableTreeNode(dataSourceNodeInfo, true);
 
-                NodeInfo connectionsNodeInfo = new NodeInfo(conn, statInstance, NodeType.Connections, dataSourceInfo, "Connections");
+                NodeInfo connectionsNodeInfo = new NodeInfo(conn, statInstance, NodeType.Connections, dataSourceInfo,
+                                                            "Connections");
                 DefaultMutableTreeNode connections = new DefaultMutableTreeNode(connectionsNodeInfo, true);
                 {
                 }

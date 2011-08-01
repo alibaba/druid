@@ -41,20 +41,20 @@ public class CaseKylin_mysql extends TestCase {
     private int     numTestsPerEvictionRun        = 20;
 
     protected void setUp() throws Exception {
-//         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-//         user = "dragoon25";
-//         password = "dragoon25";
-//         driverClass = "com.alibaba.druid.mock.MockDriver";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
 
         jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
         user = "root";
         password = "root";
         driverClass = "com.mysql.jdbc.Driver";
-        
-//        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-//        user = "alibaba";
-//        password = "ccbuauto";
-//        driverClass = "oracle.jdbc.driver.OracleDriver";
+
+        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // user = "alibaba";
+        // password = "ccbuauto";
+        // driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
     public void test_perf() throws Exception {
@@ -163,6 +163,7 @@ public class CaseKylin_mysql extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

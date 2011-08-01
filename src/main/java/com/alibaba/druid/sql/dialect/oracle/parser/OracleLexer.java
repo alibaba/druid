@@ -11,8 +11,9 @@ import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleLexer extends Lexer {
-    public final static Keywords           DEFAULT_ORACLE_KEYWORDS;
-    
+
+    public final static Keywords DEFAULT_ORACLE_KEYWORDS;
+
     static {
         Map<String, Token> map = new HashMap<String, Token>();
         map.put("EXISTS", Token.EXISTS);
@@ -84,7 +85,7 @@ public class OracleLexer extends Lexer {
         map.put("LOCK", Token.LOCK);
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
-        
+
         map.put("START", Token.START);
         map.put("CONNECT", Token.CONNECT);
         map.put("PRIOR", Token.PRIOR);
@@ -92,7 +93,7 @@ public class OracleLexer extends Lexer {
         map.put("EXTRACT", Token.EXTRACT);
         map.put("DATE", Token.DATE);
         map.put("TIMESTAMP", Token.TIMESTAMP);
-        
+
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
 
@@ -105,14 +106,14 @@ public class OracleLexer extends Lexer {
         super(input);
         super.keywods = DEFAULT_ORACLE_KEYWORDS;
     }
-    
+
     public void scanVariable() {
         if (ch == '@') {
             scanChar();
             token = Token.MONKEYS_AT;
             return;
         }
-        
+
         if (ch != ':') {
             throw new SQLParseException("illegal variable");
         }
@@ -122,7 +123,7 @@ public class OracleLexer extends Lexer {
         np = bp;
         sp = 1;
         char ch;
-        
+
         for (;;) {
             ch = buf[++bp];
 
@@ -157,16 +158,16 @@ public class OracleLexer extends Lexer {
         scanChar();
         sp++;
 
-        // /*+  */
+        // /*+ */
         if (ch == '*') {
             scanChar();
             sp++;
-            
+
             while (ch == ' ') {
                 scanChar();
                 sp++;
             }
-            
+
             boolean isHint = false;
             int startHintSp = sp + 1;
             if (ch == '+') {
@@ -187,8 +188,6 @@ public class OracleLexer extends Lexer {
                 sp++;
             }
 
-            
-            
             if (isHint) {
                 stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 2).trim();
                 token = Token.HINT;
@@ -196,7 +195,7 @@ public class OracleLexer extends Lexer {
                 stringVal = new String(buf, np, sp);
                 token = Token.MULTI_LINE_COMMENT;
             }
-           
+
             return;
         }
 
@@ -230,7 +229,7 @@ public class OracleLexer extends Lexer {
             return;
         }
     }
-    
+
     public void scanNumber() {
         np = bp;
 
@@ -285,13 +284,13 @@ public class OracleLexer extends Lexer {
 
             isDouble = true;
         }
-        
+
         if (ch == 'f' || ch == 'F') {
             token = Token.BINARY_FLOAT;
             scanChar();
             return;
         }
-        
+
         if (ch == 'd' || ch == 'D') {
             token = Token.BINARY_DOUBLE;
             scanChar();

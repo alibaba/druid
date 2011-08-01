@@ -25,7 +25,7 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
     private int     maxIdle                       = 20;
     private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
-    private String  validationQuery               = null;    // "SELECT 1";
+    private String  validationQuery               = null;     // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
     final int       LOOP_COUNT                    = 10 * 1;
@@ -44,13 +44,13 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
         user = "dragoon25";
         password = "dragoon25";
         driverClass = "com.alibaba.druid.mock.MockDriver";
-        
+
         MockDriver.instance.setIdleTimeCount(50 * 60 * 10);
 
-//        jdbcUrl = "jdbc:mysql://10.20.141.150:8066/amoeba";
-//        user = "root";
-//        password = "12345";
-//        driverClass = "com.mysql.jdbc.Driver";
+        // jdbcUrl = "jdbc:mysql://10.20.141.150:8066/amoeba";
+        // user = "root";
+        // password = "12345";
+        // driverClass = "com.mysql.jdbc.Driver";
 
         // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
         // user = "alibaba";
@@ -138,6 +138,7 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

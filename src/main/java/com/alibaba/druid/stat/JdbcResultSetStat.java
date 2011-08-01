@@ -21,22 +21,22 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
-    private final AtomicInteger openningCount = new AtomicInteger();
+    private final AtomicInteger openningCount  = new AtomicInteger();
     private final AtomicInteger opeeningtMax   = new AtomicInteger();
 
-    private final AtomicLong    openCount           = new AtomicLong();
-    private final AtomicLong    errorCount      = new AtomicLong();
+    private final AtomicLong    openCount      = new AtomicLong();
+    private final AtomicLong    errorCount     = new AtomicLong();
 
-    private final AtomicLong    aliveNanoTotal       = new AtomicLong();
-    private final AtomicLong    aliveNanoMax       = new AtomicLong();
-    private final AtomicLong    aliveNanoMin       = new AtomicLong();
+    private final AtomicLong    aliveNanoTotal = new AtomicLong();
+    private final AtomicLong    aliveNanoMax   = new AtomicLong();
+    private final AtomicLong    aliveNanoMin   = new AtomicLong();
     private Throwable           lastError;
     private long                lastErrorTime;
 
-    private long                lastOpenTime  = 0;
+    private long                lastOpenTime   = 0;
 
-    private final AtomicLong    fetchRowCount = new AtomicLong(0);  // 总共读取的行数
-    private final AtomicLong    closeCount      = new AtomicLong(0);  // ResultSet打开的计数
+    private final AtomicLong    fetchRowCount  = new AtomicLong(0);  // 总共读取的行数
+    private final AtomicLong    closeCount     = new AtomicLong(0);  // ResultSet打开的计数
 
     public void reset() {
         opeeningtMax.set(0);
@@ -99,15 +99,15 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
     public long getAliveNanoTotal() {
         return aliveNanoTotal.get();
     }
-    
+
     public long getAliveMillisTotal() {
         return aliveNanoTotal.get() / (1000 * 1000);
     }
-    
+
     public long getAliveMilisMin() {
         return aliveNanoMin.get() / (1000 * 1000);
     }
-    
+
     public long getAliveMilisMax() {
         return aliveNanoMax.get() / (1000 * 1000);
     }
@@ -116,7 +116,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         openningCount.decrementAndGet();
 
         aliveNanoTotal.addAndGet(aliveNano);
-        
+
         for (;;) {
             long max = aliveNanoMax.get();
             if (aliveNano > max) {
@@ -129,7 +129,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
                 break;
             }
         }
-        
+
         for (;;) {
             long min = aliveNanoMin.get();
             if (aliveNano < min) {

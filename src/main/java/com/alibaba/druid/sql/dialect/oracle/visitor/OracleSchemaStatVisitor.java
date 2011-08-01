@@ -129,7 +129,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
             }
             return false;
         }
-        
+
         accept(x.getExpr());
 
         return false;
@@ -419,7 +419,7 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
         if ("SYSDATE".equalsIgnoreCase(x.getName())) {
             return false;
         }
-        
+
         if ("+".equalsIgnoreCase(x.getName())) {
             return false;
         }

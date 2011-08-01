@@ -30,18 +30,18 @@ import com.alibaba.druid.filter.trace.TraceEventListener;
 
 public class JdbcTraceManager extends NotificationBroadcasterSupport implements JdbcTraceManagerMBean {
 
-    public final static Log                LOG                  = LogFactory.getLog(JdbcTraceManager.class);
+    public final static Log                      LOG                  = LogFactory.getLog(JdbcTraceManager.class);
 
-    private boolean                        traceEnable          = false;
+    private boolean                              traceEnable          = false;
 
-    private final static JdbcTraceManager  instance             = new JdbcTraceManager();
+    private final static JdbcTraceManager        instance             = new JdbcTraceManager();
 
-    private final List<TraceEventListener> eventListeners       = new ArrayList<TraceEventListener>();
+    private final List<TraceEventListener>       eventListeners       = new ArrayList<TraceEventListener>();
 
-    private final AtomicLong               fireEventCount       = new AtomicLong();
-    private final AtomicLong               skipEventCount       = new AtomicLong();
+    private final AtomicLong                     fireEventCount       = new AtomicLong();
+    private final AtomicLong                     skipEventCount       = new AtomicLong();
 
-    private boolean                        notificationEnable   = false;
+    private boolean                              notificationEnable   = false;
     private final NotificationTraceEventListener notificationListener = new NotificationTraceEventListener();
 
     public boolean isNotificationEnable() {
@@ -87,7 +87,7 @@ public class JdbcTraceManager extends NotificationBroadcasterSupport implements 
             skipEventCount.incrementAndGet();
             return;
         }
-        
+
         if (isNotificationEnable()) {
             notificationListener.fireEvent(event);
         }
@@ -111,7 +111,8 @@ public class JdbcTraceManager extends NotificationBroadcasterSupport implements 
 
         @Override
         public void fireEvent(TraceEvent event) {
-            Notification notification = new Notification(event.getEventType(), JdbcTraceManager.class.getName(), sequenceNumber++);
+            Notification notification = new Notification(event.getEventType(), JdbcTraceManager.class.getName(),
+                                                         sequenceNumber++);
             notification.setTimeStamp(event.getEventTime().getTime());
             notification.setUserData(event.getContext());
 

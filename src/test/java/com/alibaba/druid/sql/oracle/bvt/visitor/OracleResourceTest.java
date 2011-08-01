@@ -21,9 +21,9 @@ public class OracleResourceTest extends TestCase {
     public void test_0() throws Exception {
         // 13
         exec_test("bvt/parser/oracle-53.txt");
-//        for (int i = 0; i <= 53; ++i) {
-//            exec_test("bvt/parser/oracle-" + i + ".txt");
-//        }
+        // for (int i = 0; i <= 53; ++i) {
+        // exec_test("bvt/parser/oracle-" + i + ".txt");
+        // }
     }
 
     public void exec_test(String resource) throws Exception {

@@ -29,8 +29,9 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 
 public class SQLPanel extends JPanel {
-    private final static Log LOG = LogFactory.getLog(SQLPanel.class);
-    
+
+    private final static Log      LOG              = LogFactory.getLog(SQLPanel.class);
+
     private static final long     serialVersionUID = 1L;
 
     private MBeanServerConnection connection;
@@ -43,9 +44,10 @@ public class SQLPanel extends JPanel {
 
     private String[]              columnNames      = { "ID", "File", "Name", "SQL", "ExecCount",
 
-                                                   "TotalTime", "EffectedRows", "FetchRowCount", "Running", "ConcurrentMax", 
+                                                   "TotalTime", "EffectedRows", "FetchRowCount", "Running",
+            "ConcurrentMax",
 
-                                                   "MaxTimespan", "LastTime", "LastError","ErrorCount",  };
+            "MaxTimespan", "LastTime", "LastError", "ErrorCount", };
 
     public SQLPanel(MBeanServerConnection connection, ObjectInstance objectInstance, DataSourceInfo dataSourceInfo){
         super();
@@ -54,7 +56,8 @@ public class SQLPanel extends JPanel {
         this.dataSourceInfo = dataSourceInfo;
 
         try {
-            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "SqlList");
+            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(),
+                                                                                      "SqlList");
 
             List<Object[]> rowList = new ArrayList<Object[]>();
 
@@ -74,13 +77,13 @@ public class SQLPanel extends JPanel {
                 row[columnIndex++] = rowData.get("Name");
                 row[columnIndex++] = rowData.get("SQL");
                 row[columnIndex++] = rowData.get("ExecuteCount");
-                
+
                 row[columnIndex++] = rowData.get("TotalTime");
                 row[columnIndex++] = rowData.get("EffectedRowCount");
                 row[columnIndex++] = rowData.get("FetchRowCount");
                 row[columnIndex++] = rowData.get("RunningCount");
                 row[columnIndex++] = rowData.get("ConcurrentMax");
-                
+
                 row[columnIndex++] = rowData.get("MaxTimespan");
                 row[columnIndex++] = rowData.get("LastTime");
                 row[columnIndex++] = rowData.get("LastError");
@@ -107,7 +110,8 @@ public class SQLPanel extends JPanel {
 
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-            JScrollPane tableScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            JScrollPane tableScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                                          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
             this.setLayout(new BorderLayout());
             this.add(tableScrollPane, BorderLayout.CENTER);
@@ -118,7 +122,8 @@ public class SQLPanel extends JPanel {
 
     void refresh() {
         try {
-            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(), "SqlList");
+            TabularData connectionTabularData = (TabularData) connection.getAttribute(objectInstance.getObjectName(),
+                                                                                      "SqlList");
 
             List<Object[]> rowList = new ArrayList<Object[]>();
 
@@ -360,7 +365,7 @@ public class SQLPanel extends JPanel {
         public int compare(Object a, Object b) {
             long aValue = Long.parseLong(a.toString());
             long bValue = Long.parseLong(b.toString());
-            
+
             if (aValue == bValue) {
                 return 0;
             }

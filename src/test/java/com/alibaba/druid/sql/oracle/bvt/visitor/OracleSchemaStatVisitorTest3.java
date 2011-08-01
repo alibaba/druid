@@ -40,6 +40,5 @@ public class OracleSchemaStatVisitorTest3 extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users2", "id2")));
 
     }
-    
-   
+
 }

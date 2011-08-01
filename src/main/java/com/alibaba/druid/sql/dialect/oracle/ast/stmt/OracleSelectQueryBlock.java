@@ -55,7 +55,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             accept0((OracleASTVisitor) visitor);
             return;
         }
-        
+
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);

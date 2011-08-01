@@ -30,8 +30,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
- * TestOnBo
- * 类Case1.java的实现描述：TODO 类实现描述 
+ * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
+ * 
  * @author admin 2011-5-28 下午03:47:40
  */
 public class Case1 extends TestCase {
@@ -113,7 +113,7 @@ public class Case1 extends TestCase {
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        //dataSource.setConnectionTestStatement("SELECT 1");
+        // dataSource.setConnectionTestStatement("SELECT 1");
         dataSource.setPartitionCount(1);
         dataSource.setAcquireIncrement(5);
         dataSource.setIdleConnectionTestPeriod(0L);
@@ -158,6 +158,7 @@ public class Case1 extends TestCase {
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

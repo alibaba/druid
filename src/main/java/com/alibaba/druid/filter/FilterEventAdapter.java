@@ -77,8 +77,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType, int resultSetConcurrency)
-                                                                                                                                                throws SQLException {
+    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
+                                                     int resultSetConcurrency) throws SQLException {
         StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetType);
 
         statementCreateAfter(statement);
@@ -87,9 +87,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType, int resultSetConcurrency,
-                                                     int resultSetHoldability) throws SQLException {
-        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetType, resultSetHoldability);
+    public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
+                                                     int resultSetConcurrency, int resultSetHoldability)
+                                                                                                        throws SQLException {
+        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetType,
+                                                                    resultSetHoldability);
 
         statementCreateAfter(statement);
 
@@ -97,7 +99,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql) throws SQLException {
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql)
+                                                                                                                   throws SQLException {
         CallableStatementProxy statement = super.connection_prepareCall(chain, connection, sql);
 
         statementPrepareCallAfter(statement);
@@ -106,9 +109,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                                                                                throws SQLException {
-        CallableStatementProxy statement = super.connection_prepareCall(chain, connection, sql, resultSetType, resultSetConcurrency);
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql,
+                                                         int resultSetType, int resultSetConcurrency)
+                                                                                                     throws SQLException {
+        CallableStatementProxy statement = super.connection_prepareCall(chain, connection, sql, resultSetType,
+                                                                        resultSetConcurrency);
 
         statementPrepareCallAfter(statement);
 
@@ -116,9 +121,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
-                                                         int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        CallableStatementProxy statement = super.connection_prepareCall(chain, connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+    public CallableStatementProxy connection_prepareCall(FilterChain chain, ConnectionProxy connection, String sql,
+                                                         int resultSetType, int resultSetConcurrency,
+                                                         int resultSetHoldability) throws SQLException {
+        CallableStatementProxy statement = super.connection_prepareCall(chain, connection, sql, resultSetType,
+                                                                        resultSetConcurrency, resultSetHoldability);
 
         statementPrepareCallAfter(statement);
 
@@ -126,7 +133,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql) throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql)
+                                                                                                                        throws SQLException {
         PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql);
 
         statementPrepareAfter(statement);
@@ -135,8 +143,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int autoGeneratedKeys)
-                                                                                                                                               throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
+                                                              String sql, int autoGeneratedKeys) throws SQLException {
         PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, autoGeneratedKeys);
 
         statementPrepareAfter(statement);
@@ -145,9 +153,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
-                                                              int resultSetConcurrency) throws SQLException {
-        PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, resultSetType, resultSetConcurrency);
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
+                                                              String sql, int resultSetType, int resultSetConcurrency)
+                                                                                                                      throws SQLException {
+        PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, resultSetType,
+                                                                             resultSetConcurrency);
 
         statementPrepareAfter(statement);
 
@@ -155,9 +165,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int resultSetType,
-                                                              int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
+                                                              String sql, int resultSetType, int resultSetConcurrency,
+                                                              int resultSetHoldability) throws SQLException {
+        PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, resultSetType,
+                                                                             resultSetConcurrency, resultSetHoldability);
 
         statementPrepareAfter(statement);
 
@@ -165,8 +177,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, int[] columnIndexes)
-                                                                                                                                             throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
+                                                              String sql, int[] columnIndexes) throws SQLException {
         PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, columnIndexes);
 
         statementPrepareAfter(statement);
@@ -175,8 +187,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection, String sql, String[] columnNames)
-                                                                                                                                              throws SQLException {
+    public PreparedStatementProxy connection_prepareStatement(FilterChain chain, ConnectionProxy connection,
+                                                              String sql, String[] columnNames) throws SQLException {
         PreparedStatementProxy statement = super.connection_prepareStatement(chain, connection, sql, columnNames);
 
         statementPrepareAfter(statement);
@@ -207,7 +219,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys) throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
+                                                                                                                    throws SQLException {
         statementExecuteBefore(statement, sql);
 
         try {
@@ -229,7 +242,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[]) throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
+                                                                                                                  throws SQLException {
         statementExecuteBefore(statement, sql);
 
         try {
@@ -251,7 +265,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[]) throws SQLException {
+    public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
+                                                                                                                   throws SQLException {
         statementExecuteBefore(statement, sql);
 
         try {
@@ -295,7 +310,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql) throws SQLException {
+    public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
+                                                                                                         throws SQLException {
         statementExecuteQueryBefore(statement, sql);
 
         try {
@@ -340,7 +356,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys) throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int autoGeneratedKeys)
+                                                                                                                      throws SQLException {
         statementExecuteUpdateBefore(statement, sql);
 
         try {
@@ -362,7 +379,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[]) throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, int columnIndexes[])
+                                                                                                                    throws SQLException {
         statementExecuteUpdateBefore(statement, sql);
 
         try {
@@ -384,7 +402,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String columnNames[]) throws SQLException {
+    public int statement_executeUpdate(FilterChain chain, StatementProxy statement, String sql, String columnNames[])
+                                                                                                                     throws SQLException {
         statementExecuteUpdateBefore(statement, sql);
 
         try {
@@ -452,7 +471,8 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     }
 
     @Override
-    public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
+    public ResultSetProxy preparedStatement_executeQuery(FilterChain chain, PreparedStatementProxy statement)
+                                                                                                             throws SQLException {
         try {
             statementExecuteQueryBefore(statement, statement.getSql());
 
@@ -547,326 +567,363 @@ public abstract class FilterEventAdapter extends FilterAdapter {
 
     // ////
     @Override
-    public void preparedStatement_setArray(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Array x) throws SQLException {
+    public void preparedStatement_setArray(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           Array x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.ARRAY, x);
         super.preparedStatement_setArray(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x) throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
+                                                 int parameterIndex, InputStream x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.AsciiInputStream, x);
         super.preparedStatement_setAsciiStream(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x, int length)
-                                                                                                                                                    throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
+                                                 int parameterIndex, InputStream x, int length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.AsciiInputStream, x, length);
         super.preparedStatement_setAsciiStream(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x, long length)
-                                                                                                                                                     throws SQLException {
+    public void preparedStatement_setAsciiStream(FilterChain chain, PreparedStatementProxy statement,
+                                                 int parameterIndex, InputStream x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.AsciiInputStream, x, length);
         super.preparedStatement_setAsciiStream(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setBigDecimal(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, BigDecimal x) throws SQLException {
+    public void preparedStatement_setBigDecimal(FilterChain chain, PreparedStatementProxy statement,
+                                                int parameterIndex, BigDecimal x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.DECIMAL, x);
         super.preparedStatement_setBigDecimal(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x) throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
+                                                  int parameterIndex, InputStream x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.BinaryInputStream, x);
         super.preparedStatement_setBinaryStream(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x, int length)
-                                                                                                                                                     throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
+                                                  int parameterIndex, InputStream x, int length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.BinaryInputStream, x, length);
         super.preparedStatement_setBinaryStream(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x, long length)
-                                                                                                                                                      throws SQLException {
+    public void preparedStatement_setBinaryStream(FilterChain chain, PreparedStatementProxy statement,
+                                                  int parameterIndex, InputStream x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.BinaryInputStream, x, length);
         super.preparedStatement_setBinaryStream(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Blob x) throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Blob x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BLOB, x);
         super.preparedStatement_setBlob(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x) throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          InputStream x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BLOB, x);
         super.preparedStatement_setBlob(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, InputStream x, long length)
-                                                                                                                                              throws SQLException {
+    public void preparedStatement_setBlob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          InputStream x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BLOB, x, length);
         super.preparedStatement_setBlob(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setBoolean(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, boolean x) throws SQLException {
+    public void preparedStatement_setBoolean(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                             boolean x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BOOLEAN, x);
         super.preparedStatement_setBoolean(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setByte(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, byte x) throws SQLException {
+    public void preparedStatement_setByte(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          byte x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.TINYINT, x);
         super.preparedStatement_setByte(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setBytes(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, byte[] x) throws SQLException {
+    public void preparedStatement_setBytes(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           byte[] x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BINARY, x);
         super.preparedStatement_setBytes(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x) throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
+                                                     int parameterIndex, Reader x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.CharacterInputStream, x);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x, int length)
-                                                                                                                                                   throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
+                                                     int parameterIndex, Reader x, int length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.CharacterInputStream, x, length);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x, long length)
-                                                                                                                                                    throws SQLException {
+    public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
+                                                     int parameterIndex, Reader x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.CharacterInputStream, x, length);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, x, length);
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Clob x) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Clob x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.CLOB, x);
         super.preparedStatement_setClob(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Reader x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.CLOB, x);
         super.preparedStatement_setClob(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x, long length) throws SQLException {
+    public void preparedStatement_setClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Reader x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.CLOB, x, length);
         super.preparedStatement_setClob(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Date x) throws SQLException {
+    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Date x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.DATE, x);
         super.preparedStatement_setDate(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Date x, Calendar cal) throws SQLException {
+    public void preparedStatement_setDate(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Date x, Calendar cal) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.DATE, x, cal);
         super.preparedStatement_setDate(chain, statement, parameterIndex, x, cal);
 
     }
 
     @Override
-    public void preparedStatement_setDouble(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, double x) throws SQLException {
+    public void preparedStatement_setDouble(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            double x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.DOUBLE, x);
         super.preparedStatement_setDouble(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setFloat(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, float x) throws SQLException {
+    public void preparedStatement_setFloat(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           float x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.FLOAT, x);
         super.preparedStatement_setFloat(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setInt(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int x) throws SQLException {
+    public void preparedStatement_setInt(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int x)
+                                                                                                                        throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.INTEGER, x);
         super.preparedStatement_setInt(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setLong(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, long x) throws SQLException {
+    public void preparedStatement_setLong(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          long x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.BIGINT, x);
         super.preparedStatement_setLong(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x) throws SQLException {
+    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement,
+                                                      int parameterIndex, Reader x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.NCharacterInputStream, x);
         super.preparedStatement_setNCharacterStream(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x, long length)
-                                                                                                                                                     throws SQLException {
+    public void preparedStatement_setNCharacterStream(FilterChain chain, PreparedStatementProxy statement,
+                                                      int parameterIndex, Reader x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.NCharacterInputStream, x, length);
         super.preparedStatement_setNCharacterStream(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, NClob x) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           NClob x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NCLOB, x);
         super.preparedStatement_setNClob(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           Reader x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NCLOB, x);
         super.preparedStatement_setNClob(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Reader x, long length) throws SQLException {
+    public void preparedStatement_setNClob(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           Reader x, long length) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NCLOB, x, length);
         super.preparedStatement_setNClob(chain, statement, parameterIndex, x, length);
 
     }
 
     @Override
-    public void preparedStatement_setNString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, String x) throws SQLException {
+    public void preparedStatement_setNString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                             String x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NVARCHAR, x);
         super.preparedStatement_setNString(chain, statement, parameterIndex, x);
 
     }
 
     @Override
-    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int sqlType) throws SQLException {
+    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          int sqlType) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NULL);
         super.preparedStatement_setNull(chain, statement, parameterIndex, sqlType);
     }
 
     @Override
-    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, int sqlType, String typeName)
-                                                                                                                                                throws SQLException {
+    public void preparedStatement_setNull(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          int sqlType, String typeName) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.NULL, sqlType, typeName);
         super.preparedStatement_setNull(chain, statement, parameterIndex, sqlType, typeName);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x) throws SQLException {
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            Object x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.JAVA_OBJECT, x);
         super.preparedStatement_setObject(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x, int targetSqlType)
-                                                                                                                                                 throws SQLException {
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            Object x, int targetSqlType) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.JAVA_OBJECT, x, targetSqlType);
         super.preparedStatement_setObject(chain, statement, parameterIndex, x, targetSqlType);
     }
 
     @Override
-    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Object x, int targetSqlType,
-                                            int scaleOrLength) throws SQLException {
-        preparedStatement_setParameterBefore(statement, parameterIndex, Types.JAVA_OBJECT, x, targetSqlType, scaleOrLength);
+    public void preparedStatement_setObject(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            Object x, int targetSqlType, int scaleOrLength) throws SQLException {
+        preparedStatement_setParameterBefore(statement, parameterIndex, Types.JAVA_OBJECT, x, targetSqlType,
+                                             scaleOrLength);
         super.preparedStatement_setObject(chain, statement, parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
-    public void preparedStatement_setRef(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Ref x) throws SQLException {
+    public void preparedStatement_setRef(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Ref x)
+                                                                                                                        throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.REF, x);
         super.preparedStatement_setRef(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setRowId(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, RowId x) throws SQLException {
+    public void preparedStatement_setRowId(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           RowId x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.ROWID, x);
         super.preparedStatement_setRowId(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setSQLXML(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, SQLXML x) throws SQLException {
+    public void preparedStatement_setSQLXML(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            SQLXML x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.SQLXML, x);
         super.preparedStatement_setSQLXML(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setShort(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, short x) throws SQLException {
+    public void preparedStatement_setShort(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                           short x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.SMALLINT, x);
         super.preparedStatement_setShort(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, String x) throws SQLException {
+    public void preparedStatement_setString(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                            String x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.VARCHAR, x);
         super.preparedStatement_setString(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Time x) throws SQLException {
+    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Time x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.TIME, x);
         super.preparedStatement_setTime(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Time x, Calendar cal) throws SQLException {
+    public void preparedStatement_setTime(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                          Time x, Calendar cal) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.TIME, x, cal);
         super.preparedStatement_setTime(chain, statement, parameterIndex, x, cal);
     }
 
     @Override
-    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Timestamp x) throws SQLException {
+    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                               Timestamp x) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.TIMESTAMP, x);
         super.preparedStatement_setTimestamp(chain, statement, parameterIndex, x);
     }
 
     @Override
-    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, Timestamp x, Calendar cal)
-                                                                                                                                                  throws SQLException {
+    public void preparedStatement_setTimestamp(FilterChain chain, PreparedStatementProxy statement, int parameterIndex,
+                                               Timestamp x, Calendar cal) throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, Types.TIMESTAMP, x, cal);
         super.preparedStatement_setTimestamp(chain, statement, parameterIndex, x, cal);
     }
 
     @Override
-    public void preparedStatement_setURL(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, URL x) throws SQLException {
+    public void preparedStatement_setURL(FilterChain chain, PreparedStatementProxy statement, int parameterIndex, URL x)
+                                                                                                                        throws SQLException {
         preparedStatement_setParameterBefore(statement, parameterIndex, TYPE.URL, x);
         super.preparedStatement_setURL(chain, statement, parameterIndex, x);
     }
 
-    protected void preparedStatement_setParameterBefore(PreparedStatementProxy statement, int parameterIndex, int sqlType, Object... values) {
+    protected void preparedStatement_setParameterBefore(PreparedStatementProxy statement, int parameterIndex,
+                                                        int sqlType, Object... values) {
     }
 
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {

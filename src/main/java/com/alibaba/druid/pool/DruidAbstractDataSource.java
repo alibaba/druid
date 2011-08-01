@@ -107,7 +107,8 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean                                                                        inited                                    = false;
 
-    protected PrintWriter                                                                    logWriter                                 = new PrintWriter(System.out);
+    protected PrintWriter                                                                    logWriter                                 = new PrintWriter(
+                                                                                                                                                         System.out);
 
     protected List<Filter>                                                                   filters                                   = new ArrayList<Filter>();
     protected ExceptionSorter                                                                exceptionSoter                            = null;

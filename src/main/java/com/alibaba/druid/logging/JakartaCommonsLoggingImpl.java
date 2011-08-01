@@ -3,7 +3,6 @@ package com.alibaba.druid.logging;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log {
 
     private Log log;
@@ -27,7 +26,7 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log 
     public void debug(String s) {
         log.debug(s);
     }
-    
+
     public void debug(String s, Throwable e) {
         log.debug(s, e);
     }

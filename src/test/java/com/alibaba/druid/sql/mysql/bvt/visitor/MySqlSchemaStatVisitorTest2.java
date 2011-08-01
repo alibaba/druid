@@ -36,7 +36,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
 
     }
-    
+
     public void test_2() throws Exception {
         String sql = "select id, name FROM users a";
 
@@ -61,7 +61,7 @@ public class MySqlSchemaStatVisitorTest2 extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
 
     }
-    
+
     public void test_3() throws Exception {
         String sql = "select id, a.name FROM users a";
 

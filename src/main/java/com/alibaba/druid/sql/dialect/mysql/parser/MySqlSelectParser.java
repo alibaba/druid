@@ -38,7 +38,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
     }
-    
+
     @Override
     protected SQLSelectQuery query() throws ParserException {
         if (lexer.token() == (Token.LPAREN)) {

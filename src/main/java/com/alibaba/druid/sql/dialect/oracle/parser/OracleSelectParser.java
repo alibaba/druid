@@ -521,7 +521,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     clause.setType(AsOfFlashbackQueryClause.Type.SCN);
                     lexer.nextToken();
                 } else {
-                   accept(Token.TIMESTAMP);
+                    accept(Token.TIMESTAMP);
                     clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
                 }
 
@@ -576,7 +576,7 @@ public class OracleSelectParser extends SQLSelectParser {
             accept(Token.JOIN);
             joinType = OracleSelectJoin.JoinType.FULL_OUTER_JOIN;
         }
-        
+
         if (lexer.token() == Token.INNER) {
             lexer.nextToken();
             accept(Token.JOIN);

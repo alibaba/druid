@@ -325,8 +325,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLListExpr x);
 
     boolean visit(SQLListExpr x);
-    
+
     void endVisit(SQLSubqueryTableSource x);
-    
+
     boolean visit(SQLSubqueryTableSource x);
 }

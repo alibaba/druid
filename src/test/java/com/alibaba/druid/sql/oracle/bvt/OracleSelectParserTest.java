@@ -33,13 +33,13 @@ public class OracleSelectParserTest extends TestCase {
 
         output(statementList);
     }
-    
+
     public void test_hinits() throws Exception {
         String sql = "SELECT /*+FIRST_ROWS*/ * FROM T";
-        
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        
+
         output(statementList);
     }
 
@@ -51,7 +51,7 @@ public class OracleSelectParserTest extends TestCase {
             stmt.accept(visitor);
             visitor.println();
         }
-        
+
         System.out.println(out.toString());
     }
 }

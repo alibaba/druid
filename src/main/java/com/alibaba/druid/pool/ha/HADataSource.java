@@ -56,6 +56,4 @@ public class HADataSource extends MultiDataSource implements DataSource {
         }
     }
 
-
-
 }

@@ -45,12 +45,12 @@ public class Case3 extends TestCase {
         user = "dragoon25";
         password = "dragoon25";
         driverClass = "com.alibaba.druid.mock.MockDriver";
-//        connectionProperties = "connectSleep=3;executeSleep=1";
+        // connectionProperties = "connectSleep=3;executeSleep=1";
 
-//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-//        user = "root";
-//        password = "root";
-//        driverClass = "com.mysql.jdbc.Driver";
+        // jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        // user = "root";
+        // password = "root";
+        // driverClass = "com.mysql.jdbc.Driver";
     }
 
     public void test_perf() throws Exception {
@@ -187,10 +187,11 @@ public class Case3 extends TestCase {
         long millis = System.currentTimeMillis() - startMillis;
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
-        
+
         Assert.assertEquals(LOOP_COUNT * threadCount, count.get());
         Thread.sleep(1);
 
-        System.out.println("thread " + threadCount + " " + name + " millis : " + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+        System.out.println("thread " + threadCount + " " + name + " millis : "
+                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
     }
 }

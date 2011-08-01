@@ -37,7 +37,7 @@ public class OracleOrderBy extends SQLOrderBy {
     public void setSibings(boolean sibings) {
         this.sibings = sibings;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }

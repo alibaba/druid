@@ -38,7 +38,7 @@ public class OracleStatementParser extends SQLStatementParser {
     public OracleStatementParser(Lexer lexer){
         super(lexer);
     }
-    
+
     protected SQLExprParser createExprParser() {
         return new OracleExprParser(lexer);
     }
@@ -102,12 +102,12 @@ public class OracleStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.ALTER) {
                 throw new ParserException("TODO");
             }
-            
+
             if (lexer.token() == Token.WITH) {
                 statementList.add(new SQLSelectStatement(new OracleSelectParser(this.lexer).select()));
                 continue;
             }
-            
+
             if (identifierEquals("CALL")) {
                 statementList.add(this.parseCall());
                 continue;
@@ -116,7 +116,7 @@ public class OracleStatementParser extends SQLStatementParser {
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
-    
+
     public OracleCreateTableStatement parseOracleCreateTable() throws ParserException {
         // OracleCreateTableParser parser = new OracleCreateTableParser(this.tokenList);
         // return parser.parseCrateTable();

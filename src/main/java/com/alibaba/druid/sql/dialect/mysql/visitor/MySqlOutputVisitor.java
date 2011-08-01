@@ -131,7 +131,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 print(select.getOutFileCharset());
             }
 
-            if (select.getOutFileColumnsTerminatedBy() != null || select.getOutFileColumnsEnclosedBy() != null || select.getOutFileColumnsEscaped() != null) {
+            if (select.getOutFileColumnsTerminatedBy() != null || select.getOutFileColumnsEnclosedBy() != null
+                || select.getOutFileColumnsEscaped() != null) {
                 print(" COLUMNS");
                 if (select.getOutFileColumnsTerminatedBy() != null) {
                     print(" TERMINATED BY ");

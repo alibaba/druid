@@ -10,8 +10,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class GroupingSetExpr extends SQLExprImpl {
 
-    private static final long serialVersionUID = 1L;
-    private final List<SQLExpr>     parameters       = new ArrayList<SQLExpr>();
+    private static final long   serialVersionUID = 1L;
+    private final List<SQLExpr> parameters       = new ArrayList<SQLExpr>();
 
     public List<SQLExpr> getParameters() {
         return parameters;
@@ -21,7 +21,7 @@ public class GroupingSetExpr extends SQLExprImpl {
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }
-    
+
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, parameters);

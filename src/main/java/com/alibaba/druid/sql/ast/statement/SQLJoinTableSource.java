@@ -91,7 +91,8 @@ public class SQLJoinTableSource extends SQLTableSource {
     }
 
     public static enum JoinType {
-        COMMA, JOIN, INNER_JOIN, CROSS_JOIN, NATURAL_JOIN, NATURAL_INNER_JOIN, LEFT_OUTER_JOIN, RIGHT_OUTER_JOIN, FULL_OUTER_JOIN;
+        COMMA, JOIN, INNER_JOIN, CROSS_JOIN, NATURAL_JOIN, NATURAL_INNER_JOIN, LEFT_OUTER_JOIN, RIGHT_OUTER_JOIN,
+        FULL_OUTER_JOIN;
 
         public static String toString(JoinType joinType) {
             if (JOIN.equals(joinType)) return "JOIN";

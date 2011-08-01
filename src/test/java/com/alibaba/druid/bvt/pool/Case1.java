@@ -17,14 +17,15 @@ public class Case1 extends TestCase {
 
         final long startTime = System.currentTimeMillis();
         final long okTime = startTime + 1000 * 1;
-        
+
         dataSource.setDriver(new MockDriver() {
+
             @Override
             public Connection connect(String url, Properties info) throws SQLException {
                 if (System.currentTimeMillis() < okTime) {
-                    throw new SQLException();                    
+                    throw new SQLException();
                 }
-                
+
                 return super.connect(url, info);
             }
         });

@@ -87,7 +87,7 @@ public class SQLParser {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
         }
-        
+
         switch (lexer.token()) {
             case KEY:
                 alias = lexer.token().name();
@@ -96,7 +96,7 @@ public class SQLParser {
             default:
                 break;
         }
-        
+
         return alias;
     }
 

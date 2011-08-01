@@ -42,7 +42,7 @@ public class MySqlResourceTest extends TestCase {
         String[] items = input.split("---------------------------");
         String sql = items[0].trim();
         String expect = items[1].trim();
-        
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -55,7 +55,7 @@ public class MySqlResourceTest extends TestCase {
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getFields());
-        
+
         System.out.println();
         System.out.println();
     }

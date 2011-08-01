@@ -39,7 +39,7 @@ public class TestOracle_DruidDataSource extends TestCase {
         final int THREAD_COUNT = 10;
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
-        
+
         for (int i = 0; i < THREAD_COUNT; ++i) {
             Thread thread = new Thread() {
 

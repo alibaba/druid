@@ -25,27 +25,27 @@ public class OnlineSQLTest extends TestCase {
 
     public void test_list_sql() throws Exception {
         // reset();
-        
+
         // 这些中文括号
-        //update(7216, "", 4);
-        //update(7223, "", 4);
-        //update(8387, "", 4);
-        
+        // update(7216, "", 4);
+        // update(7223, "", 4);
+        // update(8387, "", 4);
+
         // 语法错误
-//        update(17018, "", 4); //alarm_type&?
-//        update(17841, "", 4); //alarm_type&?
-//        update(17845, "", 4); //alarm_type&?
-//        update(18247, "", 4); //alarm_type&?
-//        update(19469, "", 4); //alarm_type&?
-        update(19730, "", 4); //alarm_type&?
-        update(20164, "", 4); //alarm_type&?
-        update(20386, "", 4); //alarm_type&?
-        update(20440, "", 4); //alarm_type&?
-        update(21208, "", 4); //alarm_type&?
-        
-        //  IBATIS NAME
-        update(18035, "", 4); //alarm_type&?
-        
+        // update(17018, "", 4); //alarm_type&?
+        // update(17841, "", 4); //alarm_type&?
+        // update(17845, "", 4); //alarm_type&?
+        // update(18247, "", 4); //alarm_type&?
+        // update(19469, "", 4); //alarm_type&?
+        update(19730, "", 4); // alarm_type&?
+        update(20164, "", 4); // alarm_type&?
+        update(20386, "", 4); // alarm_type&?
+        update(20440, "", 4); // alarm_type&?
+        update(21208, "", 4); // alarm_type&?
+
+        // IBATIS NAME
+        update(18035, "", 4); // alarm_type&?
+
         Connection conn = DriverManager.getConnection(url, user, password);
 
         int count = 0;
@@ -55,12 +55,12 @@ public class OnlineSQLTest extends TestCase {
         while (rs.next()) {
             int id = rs.getInt(1);
             String value = rs.getString(2);
-            
+
             if (value.indexOf('（') != -1) {
                 update(id, "", 4);
                 continue;
             }
-            
+
             System.out.println(value);
             System.out.println();
             try {
@@ -109,8 +109,8 @@ public class OnlineSQLTest extends TestCase {
         sql = sql.trim();
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
-        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate") || lowerSql.startsWith("delete")
-            || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
+            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 
@@ -138,8 +138,8 @@ public class OnlineSQLTest extends TestCase {
         sql = sql.trim();
         boolean sqlFlag = false;
         String lowerSql = sql.toLowerCase();
-        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate") || lowerSql.startsWith("delete")
-            || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
+        if (lowerSql.startsWith("insert") || lowerSql.startsWith("select") || lowerSql.startsWith("upate")
+            || lowerSql.startsWith("delete") || lowerSql.startsWith("create") || lowerSql.startsWith("drop")) {
             sqlFlag = true;
         }
 

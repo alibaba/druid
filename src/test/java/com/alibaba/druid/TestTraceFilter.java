@@ -16,9 +16,9 @@ public class TestTraceFilter extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("stat,trace");
         dataSource.setUrl("jdbc:mock:");
-        
+
         JMXUtils.register("com.alibaba.dragoon:type=JdbcTraceManager", JdbcTraceManager.getInstance());
-        
+
         for (int i = 0; i < 1000; ++i) {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -27,7 +27,7 @@ public class TestTraceFilter extends TestCase {
             rs.close();
             stmt.close();
             conn.close();
-            
+
             Thread.sleep(1000);
         }
     }
