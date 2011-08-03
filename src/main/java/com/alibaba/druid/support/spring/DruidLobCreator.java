@@ -44,12 +44,10 @@ public class DruidLobCreator implements LobCreator {
 
             final int BUFFER_SIZE = 4096;
             try {
-                int byteCount = 0;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytesRead = -1;
                 while ((bytesRead = asciiStream.read(buffer)) != -1) {
                     out.write(buffer, 0, bytesRead);
-                    byteCount += bytesRead;
                 }
                 out.flush();
             } catch (Exception e) {
