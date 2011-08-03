@@ -30,8 +30,6 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlCreateTableParser extends SQLCreateTableParser {
 
-    private static final long serialVersionUID = 1L;
-
     public MySqlCreateTableParser(String sql) throws ParserException{
         super(sql);
     }
