@@ -336,11 +336,9 @@ public final class JdbcUtils {
             StringWriter writer = new StringWriter();
 
             char[] buffer = new char[DEFAULT_BUFFER_SIZE];
-            long count = 0;
             int n = 0;
             while (-1 != (n = reader.read(buffer))) {
                 writer.write(buffer, 0, n);
-                count += n;
             }
 
             return writer.toString();
