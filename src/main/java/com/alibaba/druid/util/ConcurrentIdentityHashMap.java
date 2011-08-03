@@ -1100,8 +1100,6 @@ public final class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> imp
      */
     static class SimpleEntry<K, V> implements Entry<K, V> {
 
-        private static final long serialVersionUID = -8144765946475398746L;
-
         private final K           key;
 
         private V                 value;
