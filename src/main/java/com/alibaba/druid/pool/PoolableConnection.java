@@ -479,7 +479,11 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         checkOpen();
 
-        conn.setAutoCommit(autoCommit);
+        try {
+            conn.setAutoCommit(autoCommit);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
@@ -493,14 +497,22 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void commit() throws SQLException {
         checkOpen();
 
-        conn.commit();
+        try {
+            conn.commit();
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
     public void rollback() throws SQLException {
         checkOpen();
 
-        conn.rollback();
+        try {
+            conn.rollback();
+        } catch (SQLException ex) {
+            handleException(ex);
+        } 
     }
 
     @Override
@@ -620,15 +632,21 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         checkOpen();
-
-        conn.rollback(savepoint);
+        try {
+            conn.rollback(savepoint);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         checkOpen();
-
-        conn.releaseSavepoint(savepoint);
+        try {
+            conn.releaseSavepoint(savepoint);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
     }
 
     @Override
