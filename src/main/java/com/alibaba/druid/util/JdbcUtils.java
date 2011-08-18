@@ -378,6 +378,8 @@ public final class JdbcUtils {
             return "oracle.jdbc.driver.OracleDriver";
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+        } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
+            return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
             return "com.sybase.jdbc2.jdbc.SybDriver";
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
