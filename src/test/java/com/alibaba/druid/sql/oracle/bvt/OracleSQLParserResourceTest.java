@@ -20,7 +20,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         // String resource = "bvt/parser/oracle-" + i + ".txt";
         // exec_test(resource);
         // }
-        exec_test("bvt/parser/oracle-54.txt");
+        exec_test("bvt/parser/oracle-55.txt");
     }
 
     public void exec_test(String resource) throws Exception {

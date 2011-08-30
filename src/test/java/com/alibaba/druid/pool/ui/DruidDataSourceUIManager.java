@@ -47,7 +47,7 @@ public class DruidDataSourceUIManager extends JFrame {
     private JScrollPane                             scrollPane                    = new JScrollPane(mainPanel);
 
     private JLabel                                  lbUrl                         = new JLabel("URL : ");
-    private JTextField                              txtUrl                        = new JTextField("jdbc:mock:");
+    private JTextField                              txtUrl                        = new JTextField("jdbc:oracle:thin:@10.20.36.18:1521:ocndb");
 
     private JLabel                                  lbDriverClass                 = new JLabel("DriverClassName : ");
     private JTextField                              txtDriverClass                = new JTextField();
@@ -63,16 +63,16 @@ public class DruidDataSourceUIManager extends JFrame {
     private JTextField                              txtConnectionProperties       = new JTextField();
 
     private JLabel                                  lbInitialSize                 = new JLabel("InitialSize : ");
-    private JTextField                              txtInitialSize                = new JTextField("0");
+    private JTextField                              txtInitialSize                = new JTextField("1");
 
     private JLabel                                  lbMaxActive                   = new JLabel("MaxActive : ");
-    private JTextField                              txtMaxActive                  = new JTextField("8");
+    private JTextField                              txtMaxActive                  = new JTextField("14");
 
     private JLabel                                  lbMaxIdle                     = new JLabel("MaxIdle : ");
-    private JTextField                              txtMaxIdle                    = new JTextField("8");
+    private JTextField                              txtMaxIdle                    = new JTextField("14");
 
     private JLabel                                  lbMinIdle                     = new JLabel("MinIdle : ");
-    private JTextField                              txtMinIdle                    = new JTextField("0");
+    private JTextField                              txtMinIdle                    = new JTextField("1");
 
     private JLabel                                  lbMaxWait                     = new JLabel("MaxWait : ");
     private JTextField                              txtMaxWait                    = new JTextField("-1");
@@ -423,7 +423,7 @@ public class DruidDataSourceUIManager extends JFrame {
                         try {
                             Statement stmt = conn.createStatement();
                             stmt.setQueryTimeout(5);
-                            ResultSet rs = stmt.executeQuery("SELECT 1");
+                            ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
                             while (rs.next()) {
                                 rs.getObject(1);
                             }
@@ -484,6 +484,9 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setMinEvictableIdleTimeMillis(Integer.parseInt(txtMinEvictableIdleTimeMillis.getText().trim()));
             dataSource.setTestWhileIdle(Boolean.parseBoolean(txtTestWhileIdle.getText().trim()));
             dataSource.setTestOnBorrow(Boolean.parseBoolean(txtTestOnBorrow.getText().trim()));
+            
+            dataSource.setTimeBetweenEvictionRunsMillis(60000);
+            dataSource.setNumTestsPerEvictionRun(20);
 
             try {
                 Connection conn = dataSource.getConnection();
@@ -556,9 +559,9 @@ public class DruidDataSourceUIManager extends JFrame {
         Runnable task = new Runnable() {
 
             public void run() {
-                final int threadCount = 10;
-                final int LOOP_COUNT = 1000 * 10;
-                final String sql = "SELECT 1";
+                final int threadCount = 20;
+                final int LOOP_COUNT = 1000 * 1;
+                final String sql = "SELECT 1 FROM DUAL";
                 final CountDownLatch startLatch = new CountDownLatch(1);
                 final CountDownLatch endLatch = new CountDownLatch(threadCount);
                 for (int i = 0; i < threadCount; ++i) {

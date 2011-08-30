@@ -1,0 +1,9 @@
+UPDATE company_approved SET gmt_modified = NULL WHERE ID = ?; 				 			 		 	
+---------------------------
+UPDATE company_approved
+SET gmt_modified = NULL
+WHERE ID = ?;
+---------------------------
+UPDATE company_approved
+SET gmt_modified = ?
+WHERE ID = ?;

@@ -18,6 +18,7 @@ package com.alibaba.druid.filter.stat;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
 
@@ -50,6 +51,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public final static String         ATTR_SQL                   = "stat.sql";
     public final static String         ATTR_UPDATE_COUNT          = "stat.updteCount";
+    public final static String         ATTR_TRANSACTION          = "stat.tx";
 
     protected JdbcDataSourceStat       dataSourceStat;
 
@@ -90,6 +92,26 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             stat = dataSourceStats.get(url);
         }
         this.dataSourceStat = stat;
+    }
+    
+    @Override
+    public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
+                                                                                                           throws SQLException {
+        Map<String, Object> attributes = connection.getAttributes();
+        
+        if (!autoCommit) {
+            TransactionInfo transInfo = (TransactionInfo) attributes.get(ATTR_TRANSACTION);
+            if (transInfo == null) {
+                long transactionId = connection.getDirectDataSource().createTransactionId();
+                transInfo = new TransactionInfo(transactionId); 
+                attributes.put(ATTR_TRANSACTION, transInfo);
+                dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
+            }
+        } else {
+            attributes.remove(ATTR_TRANSACTION);
+        }
+        
+        chain.connection_setAutoCommit(connection, autoCommit);
     }
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
@@ -154,14 +176,27 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public void connection_commit(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_commit(chain, connection);
+        
+        handleEndTransaction(connection);
 
         connectStat.incrementConnectionCommitCount();
         dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
     }
 
+    private void handleEndTransaction(ConnectionProxy connection) {
+        Map<String, Object> attributes = connection.getAttributes();
+        
+        TransactionInfo transInfo = (TransactionInfo) attributes.remove(ATTR_TRANSACTION);
+        if (transInfo != null) {
+            transInfo.setEndTimeMillis(System.currentTimeMillis());
+        }
+    }
+
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_rollback(chain, connection);
+        
+        handleEndTransaction(connection);
 
         connectStat.incrementConnectionRollbackCount();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
@@ -173,6 +208,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
                                                                                                        throws SQLException {
         super.connection_rollback(chain, connection, savepoint);
+        
+        handleEndTransaction(connection);
 
         connectStat.incrementConnectionRollbackCount();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();

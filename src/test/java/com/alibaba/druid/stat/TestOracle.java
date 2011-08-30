@@ -16,18 +16,23 @@
 package com.alibaba.druid.stat;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import junit.framework.TestCase;
+
+import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOracle extends TestCase {
 
     public void test_0() throws Exception {
         String url = "jdbc:oracle:thin:@10.20.144.80:1521:orcl";
         Class.forName("oracle.jdbc.driver.OracleDriver");
-        Connection conn = DriverManager.getConnection(url, "druid", "druid123");
+        Connection conn = DriverManager.getConnection(url, "DRUID", "DRUID");
 
+        conn.setAutoCommit(false);
         PreparedStatement stmt = conn.prepareStatement("select sysdate");
         stmt.executeBatch();
 
