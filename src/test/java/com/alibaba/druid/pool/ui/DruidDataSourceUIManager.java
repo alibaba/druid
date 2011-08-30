@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -446,6 +451,12 @@ public class DruidDataSourceUIManager extends JFrame {
 
     public void closeDataSource_actionPerformed(ActionEvent e) {
         dataSource.close();
+        
+        try {
+            ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba.druid:type=DruidDataSource"));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
 
         txtUrl.setEnabled(true);
         txtDriverClass.setEnabled(true);
@@ -487,6 +498,8 @@ public class DruidDataSourceUIManager extends JFrame {
             
             dataSource.setTimeBetweenEvictionRunsMillis(60000);
             dataSource.setNumTestsPerEvictionRun(20);
+            
+            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DruidDataSource"));
 
             try {
                 Connection conn = dataSource.getConnection();

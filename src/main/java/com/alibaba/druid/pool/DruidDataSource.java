@@ -743,9 +743,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
                         }
                         int removeCount = evictList.size();
-                        System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
-                        Arrays.fill(connections, count - removeCount, count, null);
-                        count -= removeCount;
+                        if (removeCount > 0) {
+                            System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
+                            Arrays.fill(connections, count - removeCount, count, null);
+                            count -= removeCount;
+                        }
                     } finally {
                         lock.unlock();
                     }
@@ -1128,6 +1130,32 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public void shrink() {
-        throw new UnsupportedOperationException();
+        final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
+        lock.lock();
+        try {
+            for (int i = 0; i < count; ++i) {
+                ConnectionHolder connection = connections[i];
+
+                if (count - evictList.size() <= minIdle) {
+                    break;
+                }
+
+                evictList.add(connection);
+            }
+            int removeCount = evictList.size();
+            if (removeCount > 0) {
+                System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
+                Arrays.fill(connections, count - removeCount, count, null);
+                count -= removeCount;
+            }
+        } finally {
+            lock.unlock();
+        }
+        
+        for (ConnectionHolder item : evictList) {
+            Connection connection = item.getConnection();
+            JdbcUtils.close(connection);
+            destroyCount++;
+        }
     }
 }
