@@ -683,12 +683,12 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     }
 
     public void setProxyFilters(List<Filter> filters) {
-        this.filters = filters;
+        if (filters != null) {
+            this.filters.addAll(filters);            
+        }
     }
 
     public void setFilters(String filters) throws SQLException {
-        this.filters.clear();
-
         if (filters == null || filters.length() == 0) {
             return;
         }
@@ -820,6 +820,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     private final AtomicLong connectionIdSeed = new AtomicLong(10000);
     private final AtomicLong statementIdSeed  = new AtomicLong(20000);
     private final AtomicLong resultSetIdSeed  = new AtomicLong(50000);
+    private final AtomicLong transactionIdSeed  = new AtomicLong(50000);
 
     public long createConnectionId() {
         return connectionIdSeed.incrementAndGet();
@@ -831,6 +832,11 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     public long createResultSetId() {
         return resultSetIdSeed.getAndIncrement();
+    }
+    
+    @Override
+    public long createTransactionId() {
+        return transactionIdSeed.getAndIncrement();
     }
 
     void initStatement(Statement stmt) throws SQLException {

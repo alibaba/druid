@@ -57,6 +57,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private long                connectLastTime           = 0;
 
     private final AtomicLong    closeCount                = new AtomicLong(0);  // 执行Connection.close的计数
+    private final AtomicLong    transactionStartCount     = new AtomicLong(0);
     private final AtomicLong    commitCount               = new AtomicLong(0);  // 执行commit的计数
     private final AtomicLong    rollbackCount             = new AtomicLong(0);  // 执行rollback的计数
 
@@ -94,6 +95,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
         connectCount.set(0);
         closeCount.set(0);
+        transactionStartCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
         connectNanoTotal.set(0);
@@ -378,6 +380,14 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
 
     public void incrementConnectionRollbackCount() {
         rollbackCount.incrementAndGet();
+    }
+    
+    public void incrementTransactionStartCount() {
+        transactionStartCount.incrementAndGet();
+    }
+    
+    public long getTransactionStartCount() {
+        return transactionStartCount.get();
     }
 
     public static class Entry implements EntryMBean {

@@ -42,4 +42,6 @@ public interface DataSourceProxy {
     long createStatementId();
 
     long createResultSetId();
+    
+    long createTransactionId();
 }

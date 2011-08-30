@@ -275,6 +275,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(realConnection);
                     continue;
                 }
+                
+                if (isTestWhileIdle()) {
+                    long idleMillis = System.currentTimeMillis() - poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
+                    if (idleMillis >= this.getTimeBetweenEvictionRunsMillis()) {
+                        boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
+                        if (!validate) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("skip not validate connection.");
+                            }
+
+                            JdbcUtils.close(realConnection);
+                            continue;
+                        }
+                        poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());                        
+                    }
+                }
             }
 
             if (isRemoveAbandoned()) {
@@ -679,7 +695,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
             final List<ConnectionHolder> idleList = new ArrayList<ConnectionHolder>();
-            List<ConnectionHolder> checkList = new ArrayList<ConnectionHolder>();
             FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
@@ -740,40 +755,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     for (ConnectionHolder idleConnection : idleList) {
                         if (!testConnectionInternal(idleConnection.getConnection())) {
                             evictList.add(idleConnection);
-                        } else {
-                            idleConnection.setLastCheckTimeMillis(System.currentTimeMillis());
-                            checkList.add(idleConnection);
                         }
                     }
 
-                    int size = checkList.size();
-                    if (size > 0) {
-                        lock.lock();
-                        try {
-                            for (int i = 0; i < size; ++i) {
-                                ConnectionHolder connection = checkList.get(i);
-                                connections[count++] = connection;
-                            }
-                        } finally {
-                            lock.unlock();
-                        }
-                        if (LOG.isDebugEnabled()) {
-                            StringBuilder buf = new StringBuilder();
-                            buf.append("checked ");
-                            buf.append(size);
-                            buf.append(", idleCount ");
-                            buf.append(count);
-                            buf.append(", [");
-                            for (int i = 0; i < size; ++i) {
-                                if (i != 0) {
-                                    buf.append(",");
-                                }
-                                buf.append(System.identityHashCode(checkList.get(i)));
-                            }
-                            buf.append("]");
-                            LOG.debug(buf.toString());
-                        }
-                    }
 
                     for (ConnectionHolder item : evictList) {
                         Connection connection = item.getConnection();
@@ -787,11 +771,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             buf.append("evict ");
                             buf.append(evictList.size());
                             buf.append(", [");
-                            for (int i = 0; i < size; ++i) {
+                            for (int i = 0; i < evictList.size(); ++i) {
                                 if (i != 0) {
                                     buf.append(",");
                                 }
-                                buf.append(System.identityHashCode(checkList.get(i)));
+                                buf.append(System.identityHashCode(evictList.get(i)));
                             }
                             buf.append("]");
                             LOG.debug(buf.toString());
@@ -799,7 +783,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     idleList.clear();
-                    checkList.clear();
                     evictList.clear();
                 } catch (InterruptedException e) {
                     break;
