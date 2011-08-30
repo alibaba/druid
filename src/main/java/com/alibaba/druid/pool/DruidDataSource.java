@@ -266,6 +266,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     Connection realConnection = poolalbeConnection.getConnection();
                     JdbcUtils.close(realConnection);
+                    this.decrementActiveCountWithLock();
                     continue;
                 }
                 poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
@@ -273,6 +274,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Connection realConnection = poolalbeConnection.getConnection();
                 if (realConnection.isClosed()) {
                     JdbcUtils.close(realConnection);
+                    this.decrementActiveCountWithLock();
                     continue;
                 }
                 
@@ -286,6 +288,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             }
 
                             JdbcUtils.close(realConnection);
+                            this.decrementActiveCountWithLock();
                             continue;
                         }
                         poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());                        
