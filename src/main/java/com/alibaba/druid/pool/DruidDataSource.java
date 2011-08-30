@@ -694,7 +694,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.countDown();
 
             final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
-            final List<ConnectionHolder> idleList = new ArrayList<ConnectionHolder>();
             FOR_0: for (;;) {
                 // 从前面开始删除
                 try {
@@ -727,37 +726,29 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 break;
                             }
 
-                            if (idleList.size() >= numTestsPerEvictionRun) {
-                                break;
-                            }
 
                             ConnectionHolder connection = connections[i];
 
                             if (evictCount == 0 && idleCount == 0 && connection == null) {
                                 continue FOR_0;
                             }
+                            
+                            if (count - evictList.size() <= minIdle) {
+                                break;
+                            }
 
                             long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
-                            if (idleMillis >= minEvictableIdleTimeMillis && count - evictList.size() > minIdle) {
+                            if (idleMillis >= minEvictableIdleTimeMillis) {
                                 evictList.add(connection);
-                            } else {
-                                idleList.add(connection);
                             }
                         }
-                        int removeCount = idleList.size() + evictList.size();
+                        int removeCount = evictList.size();
                         System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
                         Arrays.fill(connections, count - removeCount, count, null);
                         count -= removeCount;
                     } finally {
                         lock.unlock();
                     }
-
-                    for (ConnectionHolder idleConnection : idleList) {
-                        if (!testConnectionInternal(idleConnection.getConnection())) {
-                            evictList.add(idleConnection);
-                        }
-                    }
-
 
                     for (ConnectionHolder item : evictList) {
                         Connection connection = item.getConnection();
@@ -782,7 +773,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
                     }
 
-                    idleList.clear();
                     evictList.clear();
                 } catch (InterruptedException e) {
                     break;
