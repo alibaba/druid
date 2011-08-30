@@ -28,12 +28,17 @@ public class TestIdle extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
 
         {
+            Assert.assertEquals(0, dataSource.getCreateCount());
+            Assert.assertEquals(0, dataSource.getActiveCount());
+            
             Connection conn = dataSource.getConnection();
 
+            Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
             Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             Assert.assertEquals(1, dataSource.getActiveCount());
 
             conn.close();
+            Assert.assertEquals(0, dataSource.getDestroyCount());
             Assert.assertEquals(dataSource.getInitialSize(), driver.getConnections().size());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
@@ -45,11 +50,13 @@ public class TestIdle extends TestCase {
                 connections[i] = dataSource.getConnection();
                 Assert.assertEquals(i + 1, dataSource.getActiveCount());
             }
+            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
             Assert.assertEquals(4, driver.getConnections().size());
             for (int i = 0; i < count; ++i) {
                 connections[i].close();
                 Assert.assertEquals(count - i - 1, dataSource.getActiveCount());
             }
+            Assert.assertEquals(dataSource.getMaxActive(), dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(4, driver.getConnections().size());
 
