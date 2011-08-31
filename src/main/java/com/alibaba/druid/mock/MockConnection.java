@@ -33,12 +33,9 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
-
 public class MockConnection implements Connection {
 
-    private final static Log LOG                  = LogFactory.getLog(MockConnection.class);
+    // private final static Log LOG                  = LogFactory.getLog(MockConnection.class);
 
     private boolean          autoCommit           = false;
     private boolean          closed               = false;
@@ -169,10 +166,6 @@ public class MockConnection implements Connection {
 
     @Override
     public boolean isClosed() throws SQLException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("conn-" + id + " isClose : " + closed);
-        }
-
         return closed;
     }
 
