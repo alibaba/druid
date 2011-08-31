@@ -548,7 +548,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         long nanos = unit.toNanos(timeout);
 
         for (;;) {
-            if (activeCount == maxActive) {
+            if (activeCount >= maxActive) {
                 long startNano = System.nanoTime();
                 notMaxActive.awaitNanos(nanos);
                 nanos -= (System.nanoTime() - startNano);
