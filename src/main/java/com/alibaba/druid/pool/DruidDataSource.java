@@ -519,7 +519,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             while (count == 0) {
                 if (minIdle == 0 || activeCount < maxActive) {
-                    lowWater.signal();
+                    lowWater.signal(); // send signal to CreateThread create connection 
                 }
 
                 notEmpty.await();
