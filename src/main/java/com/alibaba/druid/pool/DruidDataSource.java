@@ -652,6 +652,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     } else if (count >= minIdle) {
                         lowWater.await();
                     }
+                    
+                    if (activeCount >= maxActive) {
+                        break;
+                    }
 
                     Connection connection = connectionFactory.createConnection();
                     ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
