@@ -18,6 +18,7 @@ package com.alibaba.druid.pool;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -128,5 +129,27 @@ public final class ConnectionHolder {
             JdbcUtils.close(stmt);
         }
         statementTrace.clear();
+    }
+    
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("{ID:");
+        buf.append(System.identityHashCode(conn));
+        buf.append(", ConnectTime:\"");
+        buf.append(JdbcUtils.toString(new Date(this.connecttimeMillis)));
+        
+        buf.append("\", UseCount:");
+        buf.append(useCount);
+        
+        if (lastActiveTimeMillis > 0) {
+            buf.append(", LastActiveTime:\"");
+            buf.append(JdbcUtils.toString(new Date(this.lastActiveTimeMillis)));
+            buf.append("\"");
+        }
+        
+        buf.append("}");
+        
+        return buf.toString();
     }
 }

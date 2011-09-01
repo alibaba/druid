@@ -30,6 +30,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -496,5 +497,10 @@ public final class JdbcUtils {
         ex.printStackTrace(new PrintWriter(buf));
 
         return buf.toString();
+    }
+    
+    public static String toString(java.util.Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(date);
     }
 }

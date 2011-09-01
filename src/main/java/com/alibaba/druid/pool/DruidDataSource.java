@@ -277,9 +277,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.decrementActiveCountWithLock();
                     continue;
                 }
-                
+
                 if (isTestWhileIdle()) {
-                    long idleMillis = System.currentTimeMillis() - poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
+                    long idleMillis = System.currentTimeMillis()
+                                      - poolalbeConnection.getConnectionHolder().getLastActiveTimeMillis();
                     if (idleMillis >= this.getTimeBetweenEvictionRunsMillis()) {
                         boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
                         if (!validate) {
@@ -291,7 +292,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             this.decrementActiveCountWithLock();
                             continue;
                         }
-                        poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());                        
+                        poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
                     }
                 }
             }
@@ -519,7 +520,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             while (count == 0) {
                 if (minIdle == 0 || activeCount < maxActive) {
-                    lowWater.signal(); // send signal to CreateThread create connection 
+                    lowWater.signal(); // send signal to CreateThread create connection
                 }
 
                 notEmpty.await();
@@ -652,7 +653,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     } else if (count >= minIdle) {
                         lowWater.await();
                     }
-                    
+
                     // 防止创建超过maxActive数量的连接
                     if (activeCount >= maxActive) {
                         continue;
@@ -734,13 +735,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 break;
                             }
 
-
                             ConnectionHolder connection = connections[i];
 
                             if (evictCount == 0 && idleCount == 0 && connection == null) {
                                 continue FOR_0;
                             }
-                            
+
                             if (count - evictList.size() <= minIdle) {
                                 break;
                             }
@@ -1159,11 +1159,56 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-        
+
         for (ConnectionHolder item : evictList) {
             Connection connection = item.getConnection();
             JdbcUtils.close(connection);
             destroyCount++;
         }
+    }
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("{");
+
+        buf.append("\n\tCreateTime:\"");
+        buf.append(getCreatedTime());
+        buf.append("\"");
+
+        buf.append(",\n\tActiveCount:");
+        buf.append(getActiveCount());
+
+        buf.append(",\n\tPoolingCount:");
+        buf.append(getPoolingCount());
+
+        buf.append(",\n\tCreateCount:");
+        buf.append(getCreateCount());
+
+        buf.append(",\n\tDestroyCount:");
+        buf.append(getDestroyCount());
+
+        buf.append(",\n\tCloseCount:");
+        buf.append(getCloseCount());
+
+        buf.append(",\n\tConnectCount:");
+        buf.append(getConnectCount());
+        
+        buf.append(",\n\tConnections:[");
+        for (int i = 0; i < count; ++i) {
+            ConnectionHolder conn = connections[i];
+            if (conn != null) {
+                if (i != 0) {
+                    buf.append(",");
+                }
+                buf.append("\n\t\t");
+                buf.append(conn.toString());
+            }
+        }
+        buf.append("\n\t]");
+
+        buf.append("\n}");
+
+        return buf.toString();
     }
 }

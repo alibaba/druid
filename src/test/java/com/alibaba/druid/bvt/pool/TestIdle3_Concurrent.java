@@ -26,14 +26,14 @@ public class TestIdle3_Concurrent extends TestCase {
         dataSource.setMaxActive(14);
         dataSource.setMaxIdle(14);
         dataSource.setMinIdle(1);
-        dataSource.setMinEvictableIdleTimeMillis(30 * 100); // 300 / 10
-        dataSource.setTimeBetweenEvictionRunsMillis(18 * 100); // 180 / 10
+        dataSource.setMinEvictableIdleTimeMillis(30 * 10); // 300 / 10
+        dataSource.setTimeBetweenEvictionRunsMillis(18 * 10); // 180 / 10
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
         
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba:type=DataSource"));
+        // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {
@@ -66,7 +66,8 @@ public class TestIdle3_Concurrent extends TestCase {
             Assert.assertEquals(1, dataSource.getActiveCount());
             conn.close();
         }
-        Assert.assertEquals(2, dataSource.getPoolingCount());
+        Thread.sleep(1000);
+        Assert.assertEquals(1, dataSource.getPoolingCount());
 
         dataSource.close();
     }
@@ -86,11 +87,11 @@ public class TestIdle3_Concurrent extends TestCase {
                             Connection conn = dataSource.getConnection();
                             {
                                 AtomicInteger c = new AtomicInteger();
-                                for (int j = 0; j < 1000 * 100; ++j) {
+                                for (int j = 0; j < 1000 * 1; ++j) {
                                     c.incrementAndGet();
                                 }
                                 c.set(0);
-                                Thread.sleep(5);
+                                Thread.sleep(1);
                             }
                             conn.close();
                         }
