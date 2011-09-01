@@ -297,6 +297,19 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 }
             }
         }
+        
+        for (DruidDataSource instance : DruidDataSource.getInstances()) {
+            for (Filter filter : instance.getProxyFilters()) {
+                if (filter instanceof StatFilter) {
+                    StatFilter countFilter = (StatFilter) filter;
+
+                    ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = countFilter.getConnections();
+                    for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
+                        data.put(entry.getValue().getCompositeData());
+                    }
+                }
+            }
+        }
 
         return data;
     }
