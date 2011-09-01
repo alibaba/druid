@@ -148,6 +148,11 @@ public final class ConnectionHolder {
             buf.append("\"");
         }
         
+        if (this.getStatementPool() != null) {
+            buf.append("\", CachedStatementCount:");
+            buf.append(this.getStatementPool().getMap().size());
+        }
+        
         buf.append("}");
         
         return buf.toString();
