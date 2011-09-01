@@ -653,8 +653,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         lowWater.await();
                     }
                     
+                    // 防止创建超过maxActive数量的连接
                     if (activeCount >= maxActive) {
-                        break;
+                        continue;
                     }
 
                     Connection connection = connectionFactory.createConnection();
