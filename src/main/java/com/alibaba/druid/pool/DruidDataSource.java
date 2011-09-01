@@ -1173,7 +1173,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("{");
 
         buf.append("\n\tCreateTime:\"");
-        buf.append(getCreatedTime());
+        buf.append(JdbcUtils.toString(getCreatedTime()));
         buf.append("\"");
 
         buf.append(",\n\tActiveCount:");
