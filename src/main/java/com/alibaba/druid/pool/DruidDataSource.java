@@ -186,9 +186,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initConnectionFactory();
 
-            int capacity = maxActive;
-
-            connections = new ConnectionHolder[capacity];
+            connections = new ConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
