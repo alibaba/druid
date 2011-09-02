@@ -426,7 +426,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             JdbcUtils.close(conn);
 
             throw new SQLException(e.getMessage(), e);
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            JdbcUtils.close(conn);
+            
             lock.lock();
             try {
                 decrementActiveCount();
@@ -435,9 +437,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.unlock();
             }
             
-            JdbcUtils.close(conn);
-
-            throw e;
+            throw new SQLException("recyle error", e);
         }
     }
 
