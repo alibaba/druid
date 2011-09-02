@@ -57,6 +57,7 @@ import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
+ * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable {
@@ -1112,15 +1113,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
         lock.lock();
         try {
-            for (int i = 0; i < poolingCount; ++i) {
+            final int checkCount = poolingCount - minIdle;
+            for (int i = 0; i < checkCount; ++i) {
                 ConnectionHolder connection = connections[i];
-
-                if (poolingCount - evictList.size() <= minIdle) {
-                    break;
-                }
-
                 evictList.add(connection);
             }
+            
             int removeCount = evictList.size();
             if (removeCount > 0) {
                 System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
