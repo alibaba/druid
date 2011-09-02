@@ -379,21 +379,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 conn.setAutoCommit(true);
             }
 
-            // 第四步，检查是符合MaxIdle的设定
-            if (poolingCount >= maxIdle) {
-                lock.lock();
-                try {
-                    JdbcUtils.close(conn);
-                    destroyCount++;
-                    closeCount++;
-                    decrementActiveCount();
-                } finally {
-                    lock.unlock();
-                }
-                return;
-            }
-
-            //
             if (isTestOnReturn()) {
                 boolean validate = testConnectionInternal(conn);
                 if (!validate) {
