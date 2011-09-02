@@ -358,7 +358,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      */
     protected void recycle(PoolableConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
-        ConnectionHolder holder = pooledConnection.getConnectionHolder();
+        final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         assert holder != null;
 
@@ -375,8 +375,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 return;
             }
 
-            boolean isAutoCommit = conn.getAutoCommit();
-            boolean isReadOnly = conn.isReadOnly();
+            final boolean isAutoCommit = conn.getAutoCommit();
+            final boolean isReadOnly = conn.isReadOnly();
 
             // 第二步，检查是否需要回滚
             if ((!isAutoCommit) && (!isReadOnly)) {
@@ -715,8 +715,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    int evictCount = 0;
-                    int idleCount = 0;
                     lock.lock();
                     try {
                         int numTestsPerEvictionRun = DruidDataSource.this.numTestsPerEvictionRun;
@@ -731,7 +729,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                             ConnectionHolder connection = connections[i];
 
-                            if (evictCount == 0 && idleCount == 0 && connection == null) {
+                            if (connection == null) {
                                 continue FOR_0;
                             }
 
