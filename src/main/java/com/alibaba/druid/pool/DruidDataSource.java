@@ -85,7 +85,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     // store
     private ConnectionHolder[]                                              connections;
-    private int                                                             poolingCount          = 0;
+    private volatile int                                                             poolingCount          = 0;
     private int                                                             activeCount           = 0;
 
     // threads
@@ -532,9 +532,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         connections[lastIndex] = null;
         poolingCount--;
 
-        // if (count <= minIdle - 1) {
-        // lowWater.signal();
-        // }
+         if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
+             lowWater.signal();
+         }
         // if (count == 0) {
         // lowWater.signal();
         // }
@@ -580,7 +580,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             // if (lastIndex == minIdle - 1) {
             // lowWater.signal();
             // }
-            if (poolingCount == 0) {
+            if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
                 lowWater.signal();
             }
 
@@ -645,10 +645,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         // not wait
                     } else if (poolingCount >= minIdle) {
                         lowWater.await();
+                        continue;
                     }
 
                     // 防止创建超过maxActive数量的连接
                     if (activeCount >= maxActive) {
+                        lowWater.await();
                         continue;
                     }
 
