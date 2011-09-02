@@ -686,7 +686,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
-            final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
             for (;;) {
                 // 从前面开始删除
                 try {
@@ -705,54 +704,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    lock.lock();
-                    try {
-                        final int checkCount = poolingCount - minIdle;
-                        
-                        for (int i = 0; i < checkCount; ++i) {
-                            ConnectionHolder connection = connections[i];
-
-                            long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
-                            if (idleMillis >= minEvictableIdleTimeMillis) {
-                                evictList.add(connection);
-                            } else {
-                                break;
-                            }
-                        }
-                        int removeCount = evictList.size();
-                        if (removeCount > 0) {
-                            System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
-                            Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
-                            poolingCount -= removeCount;
-                        }
-                    } finally {
-                        lock.unlock();
-                    }
-
-                    for (ConnectionHolder item : evictList) {
-                        Connection connection = item.getConnection();
-                        JdbcUtils.close(connection);
-                        destroyCount++;
-                    }
-
-                    if (evictList.size() > 0) {
-                        if (LOG.isDebugEnabled()) {
-                            StringBuilder buf = new StringBuilder();
-                            buf.append("evict ");
-                            buf.append(evictList.size());
-                            buf.append(", [");
-                            for (int i = 0; i < evictList.size(); ++i) {
-                                if (i != 0) {
-                                    buf.append(",");
-                                }
-                                buf.append(System.identityHashCode(evictList.get(i)));
-                            }
-                            buf.append("]");
-                            LOG.debug(buf.toString());
-                        }
-                    }
-
-                    evictList.clear();
+                    shrink(true);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -1104,16 +1056,30 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);
     }
-
+    
     @Override
     public void shrink() {
+        shrink(false);
+    }
+
+    public void shrink(boolean checkTime) {
         final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
         lock.lock();
         try {
             final int checkCount = poolingCount - minIdle;
             for (int i = 0; i < checkCount; ++i) {
                 ConnectionHolder connection = connections[i];
-                evictList.add(connection);
+
+                if (checkTime) {
+                    long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
+                    if (idleMillis >= minEvictableIdleTimeMillis) {
+                        evictList.add(connection);
+                    } else {
+                        break;
+                    }
+                } else {
+                    evictList.add(connection);
+                }
             }
             
             int removeCount = evictList.size();
