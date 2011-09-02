@@ -714,11 +714,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             numTestsPerEvictionRun = 1;
                         }
 
-                        for (int i = 0;; ++i) {
-                            if (i >= poolingCount) {
-                                break;
-                            }
-
+                        for (int i = 0; i < poolingCount; ++i) {
                             ConnectionHolder connection = connections[i];
 
                             if (connection == null) {
