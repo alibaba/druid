@@ -500,8 +500,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     ConnectionHolder takeLast() throws InterruptedException {
-        if (activeCount >= maxActive) {
-            notMaxActive.await(); // signal by recycle
+        while (activeCount >= maxActive) {
+            try {
+                notMaxActive.await(); // signal by recycle
+            } catch (InterruptedException ie) {
+                notMaxActive.signal(); // propagate to non-interrupted thread
+                throw ie;
+            }
         }
 
         try {
@@ -525,8 +530,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         long estimate = unit.toNanos(timeout);
 
         for (;;) {
-            if (activeCount >= maxActive) {
-                estimate = notMaxActive.awaitNanos(estimate); // signal by recycle
+            while (activeCount >= maxActive) {
+                try {
+                    estimate = notMaxActive.awaitNanos(estimate); // signal by recycle
+                } catch (InterruptedException ie) {
+                    notMaxActive.signal(); // propagate to non-interrupted thread
+                    throw ie;
+                }
             }
 
             if (poolingCount == 0) {
