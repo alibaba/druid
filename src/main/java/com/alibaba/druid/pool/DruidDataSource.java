@@ -629,12 +629,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.lock();
                 try {
                     // 必须存在线程等待，才创建连接
-                    if (lock.getWaitQueueLength(notEmpty) == 0) {
+                    int waitThreadCount = lock.getWaitQueueLength(notEmpty); 
+                    if (waitThreadCount == 0) {
                         lowWater.await();
                         continue;
                     }
                     
-                    if (minIdle > 0 && poolingCount >= minIdle) {
+                    if (minIdle > 0 && (poolingCount - waitThreadCount) >= minIdle) {
                         lowWater.await();
                         continue;
                     }
