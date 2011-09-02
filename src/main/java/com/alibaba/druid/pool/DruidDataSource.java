@@ -76,12 +76,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final Condition                                                 lowWater              = lock.newCondition();
 
     // stats
-    private long                                                            connectCount          = 0;
-    private long                                                            closeCount            = 0;
-    private long                                                            connectErrorCount     = 0;
-    private long                                                            recycleCount          = 0;
+    private long                                                            connectCount          = 0L;
+    private long                                                            closeCount            = 0L;
+    private long                                                            connectErrorCount     = 0L;
+    private long                                                            recycleCount          = 0L;
     private long                                                            createConnectionCount = 0L;
-    private long                                                            destroyCount          = 0;
+    private long                                                            destroyCount          = 0L;
 
     // store
     private ConnectionHolder[]                                              connections;
@@ -92,8 +92,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private CreateConnectionThread                                          createConnectionThread;
     private DestroyConnectionThread                                         destoryConnectionThread;
 
-    private final CountDownLatch                                            initedLatch           = new CountDownLatch(
-                                                                                                                       2);
+    private final CountDownLatch                                            initedLatch           = new CountDownLatch(2);
 
     private long                                                            id;
     private Date                                                            createdTime;
