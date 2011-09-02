@@ -184,10 +184,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             int capacity = maxActive;
 
-            if (capacity < getInitialSize()) {
-                capacity = getInitialSize();
-            }
-
             connections = new ConnectionHolder[capacity];
 
             SQLException connectError = null;
