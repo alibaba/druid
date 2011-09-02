@@ -546,6 +546,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (poolingCount == 0) {
                 lowWater.signal(); // send signal to CreateThread create connection
                 
+                if (estimate <= 0) {
+                    return null;
+                }
+                
                 try {
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
                 } catch (InterruptedException ie) {
