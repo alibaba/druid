@@ -63,6 +63,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private final static Log                                                LOG                   = LogFactory.getLog(DruidDataSource.class);
 
+    // global instances
     private static final Object                                             PRESENT               = new Object();
     private static final ConcurrentIdentityHashMap<DruidDataSource, Object> instances             = new ConcurrentIdentityHashMap<DruidDataSource, Object>();
 
@@ -85,7 +86,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     // store
     private ConnectionHolder[]                                              connections;
-    private int                                                             count                 = 0;
+    private int                                                             poolingCount          = 0;
     private int                                                             activeCount           = 0;
 
     // threads
@@ -207,7 +208,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = connectionFactory.createConnection();
                     conn.setAutoCommit(true);
-                    connections[count++] = new ConnectionHolder(this, conn);
+                    connections[poolingCount++] = new ConnectionHolder(this, conn);
                 }
             } catch (SQLException ex) {
                 LOG.error("init datasource error", ex);
@@ -225,14 +226,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
             inited = true;
 
-            if (count == 0) {
+            if (poolingCount == 0) {
                 lowWater.signal();
             }
 
             createdTime = new Date();
             instances.put(this, PRESENT);
 
-            if (connectError != null && count == 0) {
+            if (connectError != null && poolingCount == 0) {
                 throw connectError;
             }
         } catch (InterruptedException e) {
@@ -392,7 +393,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             // 第四步，检查是符合MaxIdle的设定
-            if (count >= maxIdle) {
+            if (poolingCount >= maxIdle) {
                 lock.lock();
                 try {
                     JdbcUtils.close(conn);
@@ -467,7 +468,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 destoryConnectionThread.interrupt();
             }
 
-            for (int i = 0; i < count; ++i) {
+            for (int i = 0; i < poolingCount; ++i) {
                 try {
                     connections[i].getConnection().close();
                     connections[i] = null;
@@ -476,7 +477,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     LOG.warn("close connection error", ex);
                 }
             }
-            count = 0;
+            poolingCount = 0;
             instances.remove(this);
         } finally {
             lock.unlock();
@@ -507,7 +508,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         e.setLastActiveTimeMillis(System.currentTimeMillis());
-        connections[count++] = e;
+        connections[poolingCount++] = e;
 
         notEmpty.signal();
     }
@@ -518,7 +519,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         try {
-            while (count == 0) {
+            while (poolingCount == 0) {
                 if (minIdle == 0 || activeCount < maxActive) {
                     lowWater.signal(); // send signal to CreateThread create connection
                 }
@@ -530,10 +531,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw ie;
         }
 
-        int lastIndex = count - 1;
+        int lastIndex = poolingCount - 1;
         ConnectionHolder last = connections[lastIndex];
         connections[lastIndex] = null;
-        count--;
+        poolingCount--;
 
         // if (count <= minIdle - 1) {
         // lowWater.signal();
@@ -555,14 +556,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 nanos -= (System.nanoTime() - startNano);
             }
 
-            if (count == 0) {
+            if (poolingCount == 0) {
                 lowWater.signal();
 
                 long estimate = nanos;
                 for (;;) {
                     estimate = notEmpty.awaitNanos(estimate);
 
-                    if (count == 0) {
+                    if (poolingCount == 0) {
                         if (estimate > 0) {
                             nanos = estimate;
                             continue;
@@ -575,15 +576,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            int lastIndex = count - 1;
+            int lastIndex = poolingCount - 1;
             ConnectionHolder last = connections[lastIndex];
             connections[lastIndex] = null;
-            count--;
+            poolingCount--;
 
             // if (lastIndex == minIdle - 1) {
             // lowWater.signal();
             // }
-            if (count == 0) {
+            if (poolingCount == 0) {
                 lowWater.signal();
             }
 
@@ -618,7 +619,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public int getPoolingCount() {
-        return count;
+        return poolingCount;
     }
 
     public long getRecycleCount() {
@@ -648,9 +649,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // addLast
                 lock.lock();
                 try {
-                    if (count == 0 && minIdle == 0 && lock.getWaitQueueLength(notEmpty) > 0) {
+                    if (poolingCount == 0 && minIdle == 0 && lock.getWaitQueueLength(notEmpty) > 0) {
                         // not wait
-                    } else if (count >= minIdle) {
+                    } else if (poolingCount >= minIdle) {
                         lowWater.await();
                     }
 
@@ -661,7 +662,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     Connection connection = connectionFactory.createConnection();
                     ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
-                    connections[count++] = poolableConnection;
+                    connections[poolingCount++] = poolableConnection;
 
                     errorCount = 0; // reset errorCount
 
@@ -716,7 +717,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         break;
                     }
 
-                    if (count <= 0) {
+                    if (poolingCount <= 0) {
                         Thread.sleep(minEvictableIdleTimeMillis);
                         continue;
                     }
@@ -731,7 +732,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
 
                         for (int i = 0;; ++i) {
-                            if (i >= count) {
+                            if (i >= poolingCount) {
                                 break;
                             }
 
@@ -741,7 +742,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 continue FOR_0;
                             }
 
-                            if (count - evictList.size() <= minIdle) {
+                            if (poolingCount - evictList.size() <= minIdle) {
                                 break;
                             }
 
@@ -752,9 +753,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         }
                         int removeCount = evictList.size();
                         if (removeCount > 0) {
-                            System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
-                            Arrays.fill(connections, count - removeCount, count, null);
-                            count -= removeCount;
+                            System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
+                            Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
+                            poolingCount -= removeCount;
                         }
                     } finally {
                         lock.unlock();
@@ -1141,10 +1142,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
         lock.lock();
         try {
-            for (int i = 0; i < count; ++i) {
+            for (int i = 0; i < poolingCount; ++i) {
                 ConnectionHolder connection = connections[i];
 
-                if (count - evictList.size() <= minIdle) {
+                if (poolingCount - evictList.size() <= minIdle) {
                     break;
                 }
 
@@ -1152,9 +1153,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             int removeCount = evictList.size();
             if (removeCount > 0) {
-                System.arraycopy(connections, removeCount, connections, 0, count - removeCount);
-                Arrays.fill(connections, count - removeCount, count, null);
-                count -= removeCount;
+                System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
+                Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
+                poolingCount -= removeCount;
             }
         } finally {
             lock.unlock();
@@ -1193,9 +1194,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         buf.append(",\n\tConnectCount:");
         buf.append(getConnectCount());
-        
+
         buf.append(",\n\tConnections:[");
-        for (int i = 0; i < count; ++i) {
+        for (int i = 0; i < poolingCount; ++i) {
             ConnectionHolder conn = connections[i];
             if (conn != null) {
                 if (i != 0) {
