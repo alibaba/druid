@@ -504,9 +504,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notMaxActive.await(); // signal by recycle
         }
 
-        if (poolingCount == 0) {
-            lowWater.signal(); // send signal to CreateThread create connection
-            notEmpty.await(); // signal by recycle or creator
+        try {
+            while (poolingCount == 0) {
+                lowWater.signal(); // send signal to CreateThread create connection
+                notEmpty.await(); // signal by recycle or creator
+            }
+        } catch (InterruptedException ie) {
+            notEmpty.signal(); // propagate to non-interrupted thread
+            throw ie;
         }
 
         poolingCount--;
