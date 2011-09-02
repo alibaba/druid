@@ -500,12 +500,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     ConnectionHolder takeLast() throws InterruptedException {
-        while (activeCount >= maxActive) {
+        if (activeCount >= maxActive) {
             notMaxActive.await(); // signal by recycle
         }
 
         try {
-            while (poolingCount == 0) {
+            if (poolingCount == 0) {
                 lowWater.signal(); // send signal to CreateThread create connection
                 notEmpty.await(); // signal by recycle or creator
             }
