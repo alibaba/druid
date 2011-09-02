@@ -426,7 +426,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             JdbcUtils.close(conn);
 
             throw new SQLException(e.getMessage(), e);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             JdbcUtils.close(conn);
             
             lock.lock();
