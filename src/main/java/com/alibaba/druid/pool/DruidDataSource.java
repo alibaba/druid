@@ -223,10 +223,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
             inited = true;
 
-            if (poolingCount == 0) {
-                lowWater.signal();
-            }
-
             createdTime = new Date();
             instances.put(this, PRESENT);
 
@@ -516,10 +512,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         try {
             while (poolingCount == 0) {
-                if (minIdle == 0 || activeCount < maxActive) {
-                    lowWater.signal(); // send signal to CreateThread create connection
-                }
-
+                lowWater.signal(); // send signal to CreateThread create connection
                 notEmpty.await();
             }
         } catch (InterruptedException ie) {
