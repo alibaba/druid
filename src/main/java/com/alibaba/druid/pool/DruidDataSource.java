@@ -436,6 +436,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } finally {
                 lock.unlock();
             }
+            
+            JdbcUtils.close(conn);
 
             throw e;
         }
