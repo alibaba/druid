@@ -119,7 +119,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
             
-            if (maxActive <= minIdle) {
+            if (maxActive < minIdle) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
 
