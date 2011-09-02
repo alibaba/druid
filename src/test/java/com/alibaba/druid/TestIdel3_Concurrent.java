@@ -59,9 +59,10 @@ public class TestIdel3_Concurrent extends TestCase {
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
 
-        {
+        for (int i = 0; i < 100; ++i) {
             concurrent(20);
             Assert.assertEquals(14, dataSource.getPoolingCount());
+            dataSource.shrink();
         }
 
         // 连续打开关闭单个连接
@@ -89,7 +90,7 @@ public class TestIdel3_Concurrent extends TestCase {
                     try {
                         startLatch.await();
                         Connection conn = dataSource.getConnection();
-                        long millis = new Random().nextInt(10) + 1000;
+                        long millis = new Random().nextInt(10) + 10;
                         Thread.sleep(millis);
                         conn.close();
                     } catch (Exception e) {
