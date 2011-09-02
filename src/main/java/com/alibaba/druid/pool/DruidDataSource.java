@@ -182,7 +182,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initConnectionFactory();
 
-            int capacity = maxIdle + maxActive;
+            int capacity = maxActive;
 
             if (capacity < getInitialSize()) {
                 capacity = getInitialSize();
