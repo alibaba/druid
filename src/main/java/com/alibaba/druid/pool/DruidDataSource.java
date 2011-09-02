@@ -689,7 +689,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.countDown();
 
             final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
-            FOR_0: for (;;) {
+            for (;;) {
                 // 从前面开始删除
                 try {
                     if (timeBetweenEvictionRunsMillis > 0) {
@@ -716,10 +716,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                         for (int i = 0; i < poolingCount; ++i) {
                             ConnectionHolder connection = connections[i];
-
-                            if (connection == null) {
-                                continue FOR_0;
-                            }
 
                             if (poolingCount - evictList.size() <= minIdle) {
                                 break;
