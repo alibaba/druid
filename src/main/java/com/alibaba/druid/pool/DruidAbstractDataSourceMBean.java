@@ -30,8 +30,6 @@ public interface DruidAbstractDataSourceMBean {
 
     int getActiveCount();
 
-    long getIdleCheckCount();
-
     long getCreateCount();
 
     long getDestroyCount();

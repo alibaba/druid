@@ -82,7 +82,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                                                            recycleCount          = 0;
     private long                                                            createConnectionCount = 0L;
     private long                                                            destroyCount          = 0;
-    private long                                                            idleCheckCount        = 0;
 
     // store
     private ConnectionHolder[]                                              connections;
@@ -628,10 +627,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public int getActiveCount() {
         return activeCount;
-    }
-
-    public long getIdleCheckCount() {
-        return idleCheckCount;
     }
 
     public class CreateConnectionThread extends Thread {

@@ -18,9 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -548,7 +545,6 @@ public class DruidDataSourceUIManager extends JFrame {
                         statusPanel.set("RecycleCount", dataSource.getRecycleCount());
                         statusPanel.set("ActiveCount", dataSource.getActiveCount());
                         statusPanel.set("PoolingCount", dataSource.getPoolingCount());
-                        statusPanel.set("IdleCheckCount", dataSource.getIdleCheckCount());
                         statusPanel.set("UI_GettingCount", connectingCount.get());
                         statusPanel.set("UI_GetCount", connectCount.get());
                         statusPanel.set("UI_ReleaseCount", closeCount.get());
