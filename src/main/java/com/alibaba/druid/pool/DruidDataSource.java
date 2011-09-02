@@ -632,9 +632,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
                     
-                    if ((poolingCount == 0 && minIdle == 0) || lock.getWaitQueueLength(notEmpty) > 0) {
-                        // not wait
-                    } else if (poolingCount >= minIdle) {
+                    if (poolingCount >= minIdle) {
                         lowWater.await();
                         continue;
                     }
