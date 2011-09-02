@@ -709,21 +709,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     lock.lock();
                     try {
-                        int numTestsPerEvictionRun = DruidDataSource.this.numTestsPerEvictionRun;
-                        if (numTestsPerEvictionRun <= 0) {
-                            numTestsPerEvictionRun = 1;
-                        }
-
-                        for (int i = 0; i < poolingCount; ++i) {
+                        final int checkCount = poolingCount - minIdle;
+                        
+                        for (int i = 0; i < checkCount; ++i) {
                             ConnectionHolder connection = connections[i];
-
-                            if (poolingCount - evictList.size() <= minIdle) {
-                                break;
-                            }
 
                             long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
                             if (idleMillis >= minEvictableIdleTimeMillis) {
                                 evictList.add(connection);
+                            } else {
+                                break;
                             }
                         }
                         int removeCount = evictList.size();
