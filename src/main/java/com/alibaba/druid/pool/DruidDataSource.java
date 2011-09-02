@@ -555,7 +555,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            ConnectionHolder last = connections[--poolingCount];
+            poolingCount--;
+            ConnectionHolder last = connections[poolingCount];
             connections[poolingCount] = null;
 
             return last;
