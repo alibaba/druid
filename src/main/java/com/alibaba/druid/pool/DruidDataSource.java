@@ -305,10 +305,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private PoolableConnection getConnectionInternal() throws SQLException {
         PoolableConnection poolalbeConnection;
 
-        if (!enable) {
-            throw new DataSourceDisableException();
-        }
-
         lock.lock();
         try {
             connectCount++;
