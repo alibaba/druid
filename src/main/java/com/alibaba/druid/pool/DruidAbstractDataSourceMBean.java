@@ -12,8 +12,6 @@ public interface DruidAbstractDataSourceMBean {
 
     String getUsername();
 
-    String getPassword();
-
     String getUrl();
 
     String getDriverClassName();
