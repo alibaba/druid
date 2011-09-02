@@ -533,13 +533,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (;;) {
             if (activeCount >= maxActive) {
-                estimate = notMaxActive.awaitNanos(estimate);
+                estimate = notMaxActive.awaitNanos(estimate); // signal by recycle
             }
 
             if (poolingCount == 0) {
                 lowWater.signal();
                 
-                estimate = notEmpty.awaitNanos(estimate);
+                estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
 
                 if (poolingCount == 0) {
                     if (estimate > 0) {
