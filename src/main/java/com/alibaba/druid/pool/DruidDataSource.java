@@ -635,7 +635,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
                     
-                    if (minIdle > 0 && (poolingCount - waitThreadCount) >= minIdle) {
+                    if (poolingCount - waitThreadCount >= 0) {
                         lowWater.await();
                         continue;
                     }
