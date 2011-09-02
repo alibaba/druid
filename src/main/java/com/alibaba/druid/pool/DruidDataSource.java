@@ -514,10 +514,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw ie;
         }
 
-        int lastIndex = poolingCount - 1;
-        ConnectionHolder last = connections[lastIndex];
-        connections[lastIndex] = null;
         poolingCount--;
+        ConnectionHolder last = connections[poolingCount];
+        connections[poolingCount] = null;
 
 //         if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
 //             lowWater.signal();
@@ -532,6 +531,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException {
         long estimate = unit.toNanos(timeout);
 
+        FOR_0:
         for (;;) {
             if (activeCount >= maxActive) {
                 estimate = notMaxActive.awaitNanos(estimate);
@@ -545,7 +545,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     if (poolingCount == 0) {
                         if (estimate > 0) {
-                            continue;
+                            continue FOR_0;
                         }
 
                         return null;
