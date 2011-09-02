@@ -38,8 +38,8 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     public void test_idle2() throws Exception {
 
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName("com.alibaba:type=DataSource"));
+//        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+//                                                                 new ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {
@@ -54,14 +54,14 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
             conn.close();
             Assert.assertEquals(0, dataSource.getDestroyCount());
-            //Assert.assertEquals(2, driver.getConnections().size());
-            //Assert.assertEquals(2, dataSource.getCreateCount());
+            Assert.assertEquals(1, driver.getConnections().size());
+            Assert.assertEquals(1, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
 
-        for (int i = 0; i < 100; ++i) {
-            concurrent(20);
-            Assert.assertEquals(14, dataSource.getPoolingCount());
+        for (int i = 0; i < 1000; ++i) {
+            concurrent(200);
+            Assert.assertEquals("" + i, dataSource.getMaxActive(), dataSource.getPoolingCount());
             dataSource.shrink();
         }
 
@@ -90,7 +90,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
                     try {
                         startLatch.await();
                         Connection conn = dataSource.getConnection();
-                        long millis = new Random().nextInt(10) + 10;
+                        long millis = new Random().nextInt(5) + 5;
                         Thread.sleep(millis);
                         conn.close();
                     } catch (Exception e) {

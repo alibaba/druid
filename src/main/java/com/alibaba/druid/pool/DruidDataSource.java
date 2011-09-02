@@ -85,7 +85,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     // store
     private ConnectionHolder[]                                              connections;
-    private volatile int                                                             poolingCount          = 0;
+    private int                                                             poolingCount          = 0;
     private int                                                             activeCount           = 0;
 
     // threads
@@ -532,9 +532,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         connections[lastIndex] = null;
         poolingCount--;
 
-         if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
-             lowWater.signal();
-         }
+//         if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
+//             lowWater.signal();
+//         }
         // if (count == 0) {
         // lowWater.signal();
         // }
@@ -580,9 +580,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             // if (lastIndex == minIdle - 1) {
             // lowWater.signal();
             // }
-            if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
-                lowWater.signal();
-            }
+//            if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
+//                lowWater.signal();
+//            }
 
             return last;
         }
@@ -641,7 +641,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // addLast
                 lock.lock();
                 try {
-                    if (poolingCount == 0 && minIdle == 0 && lock.getWaitQueueLength(notEmpty) > 0) {
+                    if (lock.getWaitQueueLength(notEmpty) == 0) {
+                        lowWater.await();
+                        continue;
+                    }
+                    
+                    if ((poolingCount == 0 && minIdle == 0) || lock.getWaitQueueLength(notEmpty) > 0) {
                         // not wait
                     } else if (poolingCount >= minIdle) {
                         lowWater.await();
@@ -649,7 +654,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     // 防止创建超过maxActive数量的连接
-                    if (activeCount >= maxActive) {
+                    if (activeCount + poolingCount >= maxIdle) {
                         lowWater.await();
                         continue;
                     }
