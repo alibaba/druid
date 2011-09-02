@@ -315,18 +315,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connectCount++;
 
             ConnectionHolder holder;
-            for (;;) {
-                if (maxWait > 0) {
-                    holder = pollLast(maxWait, TimeUnit.MILLISECONDS);
-                } else {
-                    holder = takeLast();
-                }
 
-                if (holder == null) {
-                    throw new SQLException("can not get connection");
-                }
+            if (maxWait > 0) {
+                holder = pollLast(maxWait, TimeUnit.MILLISECONDS);
+            } else {
+                holder = takeLast();
+            }
 
-                break;
+            if (holder == null) {
+                throw new SQLException("can not get connection");
             }
 
             holder.incrementUseCount();
