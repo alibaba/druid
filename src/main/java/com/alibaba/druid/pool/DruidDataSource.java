@@ -307,11 +307,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         lock.lock();
         try {
-            connectCount++;
-
             if (!enable) {
                 throw new DataSourceDisableException();
             }
+            
+            connectCount++;
 
             ConnectionHolder holder;
             for (;;) {
