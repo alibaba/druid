@@ -627,6 +627,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // addLast
                 lock.lock();
                 try {
+                    // 必须存在线程等待，才创建连接
                     if (lock.getWaitQueueLength(notEmpty) == 0) {
                         lowWater.await();
                         continue;
