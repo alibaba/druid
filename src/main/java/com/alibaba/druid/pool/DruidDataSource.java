@@ -534,9 +534,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (;;) {
             if (activeCount >= maxActive) {
-                long startNano = System.nanoTime();
-                notMaxActive.awaitNanos(nanos);
-                nanos -= (System.nanoTime() - startNano);
+                nanos = notMaxActive.awaitNanos(nanos);
             }
 
             if (poolingCount == 0) {
