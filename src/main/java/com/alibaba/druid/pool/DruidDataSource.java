@@ -120,9 +120,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        lock.lock();
         try {
-            lock.lockInterruptibly();
-
             if (inited) {
                 return;
             }
@@ -315,9 +314,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw new DataSourceDisableException();
         }
 
+        lock.lock();
         try {
-            lock.lockInterruptibly();
-
             connectCount++;
 
             if (!enable) {
@@ -423,7 +421,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 holder.setLastCheckTimeMillis(System.currentTimeMillis());
             }
 
-            lock.lockInterruptibly();
+            lock.lock();
             try {
                 decrementActiveCount();
                 closeCount++;
