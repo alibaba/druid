@@ -531,6 +531,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (;;) {
             while (activeCount >= maxActive) {
+                if (estimate <= 0) {
+                    return null;
+                }
+                
                 try {
                     estimate = notMaxActive.awaitNanos(estimate); // signal by recycle
                 } catch (InterruptedException ie) {
