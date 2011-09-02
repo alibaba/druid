@@ -501,13 +501,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     ConnectionHolder takeLast() throws InterruptedException {
         while (activeCount >= maxActive) {
-            notMaxActive.await();
+            notMaxActive.await(); // signal by recycle
         }
 
         try {
             while (poolingCount == 0) {
                 lowWater.signal(); // send signal to CreateThread create connection
-                notEmpty.await();
+                notEmpty.await(); // signal by recycle or creator
             }
         } catch (InterruptedException ie) {
             notEmpty.signal(); // propagate to non-interrupted thread
@@ -517,13 +517,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         poolingCount--;
         ConnectionHolder last = connections[poolingCount];
         connections[poolingCount] = null;
-
-//         if ((minIdle == 0 && poolingCount == 0) || poolingCount <= minIdle - 1) {
-//             lowWater.signal();
-//         }
-        // if (count == 0) {
-        // lowWater.signal();
-        // }
 
         return last;
     }
@@ -537,7 +530,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (poolingCount == 0) {
-                lowWater.signal();
+                lowWater.signal(); // send signal to CreateThread create connection
                 
                 estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
 
