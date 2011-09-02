@@ -510,7 +510,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmpty.await(); // signal by recycle or creator
             }
         } catch (InterruptedException ie) {
-            notEmpty.signal(); // propagate to non-interrupted thread
             throw ie;
         }
 
