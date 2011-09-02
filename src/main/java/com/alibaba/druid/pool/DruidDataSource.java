@@ -423,9 +423,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.unlock();
             }
         } catch (InterruptedException e) {
-            if (!conn.isClosed()) {
-                conn.close();
-            }
+            JdbcUtils.close(conn);
 
             throw new SQLException(e.getMessage(), e);
         } catch (SQLException e) {
