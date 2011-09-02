@@ -1,4 +1,4 @@
-package com.alibaba.druid;
+package com.alibaba.druid.bvt.pool;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class TestIdel3_Concurrent extends TestCase {
+public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
