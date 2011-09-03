@@ -376,7 +376,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (conn == null || conn.isClosed()) {
                 lock.lock();
                 try {
-                    decrementActiveCount();
+                    activeCount--;
                     closeCount++;
                 } finally {
                     lock.unlock();
@@ -406,7 +406,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         JdbcUtils.close(conn);
                         destroyCount++;
                         closeCount++;
-                        decrementActiveCount();
+                        activeCount--;
                     } finally {
                         lock.unlock();
                     }
@@ -417,7 +417,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             lock.lock();
             try {
-                decrementActiveCount();
+                activeCount--;
                 closeCount++;
 
                 // 第六步，加入队列中(putLast)
@@ -431,7 +431,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             lock.lock();
             try {
-                decrementActiveCount();
+                activeCount--;
                 closeCount++;
             } finally {
                 lock.unlock();
@@ -475,14 +475,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createConnectionCount++;
     }
 
-    void decrementActiveCount() {
-        activeCount--;
-    }
-
     void decrementActiveCountWithLock() {
         lock.lock();
         try {
-            decrementActiveCount();
+            activeCount--;
         } finally {
             lock.unlock();
         }
