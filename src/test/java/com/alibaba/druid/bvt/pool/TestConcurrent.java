@@ -102,13 +102,40 @@ public class TestConcurrent extends TestCase {
             Assert.assertEquals(COUNT, dataSource.getPoolingCount());
         }
 
-        for (int i = 0; i < 1000; ++i) {
+        // 2个并发
+        for (int i = 0; i < 10; ++i) {
+            concurrent(2);
+        }
+
+        // 5个并发
+        for (int i = 0; i < 10; ++i) {
+            concurrent(5);
+        }
+
+        // 10并发
+        for (int i = 0; i < 10; ++i) {
             concurrent(10);
+        }
+
+        // 20并发
+        for (int i = 0; i < 10; ++i) {
+            concurrent(20);
+        }
+
+        // 50并发
+        for (int i = 0; i < 10; ++i) {
+            concurrent(50);
+        }
+
+        // 100并发
+        for (int i = 0; i < 10; ++i) {
+            concurrent(100);
         }
     }
 
     /**
      * 并发执行10000次
+     * 
      * @param threadCount
      * @throws InterruptedException
      */
@@ -141,16 +168,16 @@ public class TestConcurrent extends TestCase {
             };
             threads[i].start();
         }
-        
+
         dataSource.shrink();
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
-        
+
         System.out.println(threadCount + "-threads start");
         startLatch.countDown();
-        endLatch.await(); 
+        endLatch.await();
         System.out.println(threadCount + "-threads complete");
-        
+
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertTrue(threadCount >= dataSource.getPoolingCount());
     }
