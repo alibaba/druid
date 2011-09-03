@@ -33,6 +33,8 @@ import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
@@ -330,6 +332,33 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
         return poolalbeConnection;
+    }
+    
+    public void handleConnectionException(PoolableConnection pooledConnection, Throwable t) throws SQLException {
+        final ConnectionHolder holder = pooledConnection.getConnectionHolder();
+
+        errorCount.incrementAndGet();
+
+        if (t instanceof SQLException) {
+            SQLException sqlEx = (SQLException) t;
+
+            // broadcastConnectionError
+            ConnectionEvent event = new ConnectionEvent(pooledConnection, sqlEx);
+            for (ConnectionEventListener eventListener : holder.getConnectionEventListeners()) {
+                eventListener.connectionErrorOccurred(event);
+            }
+
+            // exceptionSorter.isExceptionFatal
+            if (exceptionSoter != null && exceptionSoter.isExceptionFatal(sqlEx)) {
+                decrementActiveCountWithLock();
+                JdbcUtils.close(holder.getConnection());
+                pooledConnection.disable();
+            }
+
+            throw sqlEx;
+        } else {
+            throw new SQLException("Error", t);
+        }
     }
 
     /**

@@ -868,11 +868,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         }
     }
 
-    protected void handleException(Throwable e) throws SQLException {
-        errorCount.incrementAndGet();
-    }
-    
-    abstract void decrementActiveCountWithLock();
+    public abstract void handleConnectionException(PoolableConnection pooledConnection, Throwable t) throws SQLException;
 
     protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
 

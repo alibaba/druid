@@ -66,38 +66,15 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder != null) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
             if (dataSource != null) {
-                holder.getDataSource().handleException(t);
+                holder.getDataSource().handleConnectionException(this, t);
             }
         }
-
+        
         if (t instanceof SQLException) {
-            SQLException sqlEx = (SQLException) t;
-
-            // broadcastConnectionError
-            ConnectionEvent event = new ConnectionEvent(this, sqlEx);
-            for (ConnectionEventListener eventListener : holder.getConnectionEventListeners()) {
-                eventListener.connectionErrorOccurred(event);
-            }
-
-            // exceptionSorter.isExceptionFatal
-            if (holder != null) {
-                DruidAbstractDataSource dataSource = holder.getDataSource();
-
-                if (dataSource != null) {
-                    ExceptionSorter exceptionSorter = dataSource.getExceptionSoter();
-                    if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
-                        if (holder != null) {
-                            dataSource.decrementActiveCountWithLock();
-                            this.holder = null; // isClosed() is true
-                        }
-                    }
-                }
-            }
-
-            throw sqlEx;
-        } else {
-            throw new SQLException("Error", t);
+            throw (SQLException) t;
         }
+        
+        throw new SQLException("Error", t);
     }
 
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
@@ -122,6 +99,10 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public Connection getConnection() {
         return conn;
+    }
+    
+    void disable() {
+        this.holder = null;
     }
 
     @Override
