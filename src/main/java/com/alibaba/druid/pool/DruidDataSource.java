@@ -68,8 +68,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final ReentrantLock                                             lock                  = new ReentrantLock();
 
     private final Condition                                                 notEmpty              = lock.newCondition();
-    private final Condition                                                 notMaxActive          = lock.newCondition();
-    private final Condition                                                 lowWater              = lock.newCondition();
+    private final Condition                                                 empty                 = lock.newCondition();
 
     // stats
     private long                                                            connectCount          = 0L;
@@ -88,8 +87,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private CreateConnectionThread                                          createConnectionThread;
     private DestroyConnectionThread                                         destoryConnectionThread;
 
-    private final CountDownLatch                                            initedLatch           = new CountDownLatch(2);
-
+    private final CountDownLatch                                            initedLatch           = new CountDownLatch(
+                                                                                                                       2);
 
     private boolean                                                         enable                = false;
 
@@ -116,13 +115,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             this.id = DruidDriver.createDataSourceId();
-            
+
             enable = true;
 
             if (maxActive <= 0) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
-            
+
             if (maxActive < minIdle) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
@@ -130,7 +129,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (maxIdle <= 0 || maxIdle < minIdle) {
                 throw new IllegalArgumentException("illegal maxPoolSize");
             }
-            
+
             if (getInitialSize() > maxActive) {
                 throw new IllegalArgumentException("illegal initialSize");
             }
@@ -305,7 +304,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 connectErrorCount++;
                 throw new DataSourceDisableException();
             }
-            
+
             connectCount++;
 
             ConnectionHolder holder;
@@ -335,7 +334,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
         return poolalbeConnection;
     }
-    
+
     public void handleConnectionException(PoolableConnection pooledConnection, Throwable t) throws SQLException {
         final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
@@ -429,7 +428,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         } catch (Throwable e) {
             JdbcUtils.close(conn);
-            
+
             lock.lock();
             try {
                 decrementActiveCount();
@@ -437,7 +436,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } finally {
                 lock.unlock();
             }
-            
+
             throw new SQLException("recyle error", e);
         }
     }
@@ -478,7 +477,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     void decrementActiveCount() {
         activeCount--;
-        notMaxActive.signal();
     }
 
     void decrementActiveCountWithLock() {
@@ -502,18 +500,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     ConnectionHolder takeLast() throws InterruptedException {
-        while (activeCount >= maxActive) {
-            try {
-                notMaxActive.await(); // signal by recycle
-            } catch (InterruptedException ie) {
-                notMaxActive.signal(); // propagate to non-interrupted thread
-                throw ie;
-            }
-        }
-
         try {
             while (poolingCount == 0) {
-                lowWater.signal(); // send signal to CreateThread create connection
+                empty.signal(); // send signal to CreateThread create connection
                 notEmpty.await(); // signal by recycle or creator
             }
         } catch (InterruptedException ie) {
@@ -532,33 +521,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         long estimate = unit.toNanos(timeout);
 
         for (;;) {
-            while (activeCount >= maxActive) {
-                if (estimate <= 0) {
-                    return null;
-                }
-                
-                try {
-                    estimate = notMaxActive.awaitNanos(estimate); // signal by recycle
-                } catch (InterruptedException ie) {
-                    notMaxActive.signal(); // propagate to non-interrupted thread
-                    throw ie;
-                }
-            }
-
             if (poolingCount == 0) {
-                lowWater.signal(); // send signal to CreateThread create connection
-                
+                empty.signal(); // send signal to CreateThread create connection
+
                 if (estimate <= 0) {
                     return null;
                 }
-                
+
                 try {
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
                     throw ie;
                 }
-                
+
                 if (poolingCount == 0) {
                     if (estimate > 0) {
                         continue;
@@ -630,16 +606,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.lock();
                 try {
                     // 必须存在线程等待，才创建连接
-                    int waitThreadCount = lock.getWaitQueueLength(notEmpty); 
-                    
+                    int waitThreadCount = lock.getWaitQueueLength(notEmpty);
+
                     if (poolingCount - waitThreadCount >= 0) {
-                        lowWater.await();
+                        empty.await();
                         continue;
                     }
 
                     // 防止创建超过maxActive数量的连接
                     if (activeCount + poolingCount >= maxActive) {
-                        lowWater.await();
+                        empty.await();
                         continue;
                     }
 
@@ -818,7 +794,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     evictList.add(connection);
                 }
             }
-            
+
             int removeCount = evictList.size();
             if (removeCount > 0) {
                 System.arraycopy(connections, removeCount, connections, 0, poolingCount - removeCount);
