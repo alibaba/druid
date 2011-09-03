@@ -16,10 +16,10 @@ public class TestIdle2 extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
-        dataSource.setInitialSize(1);
+        dataSource.setInitialSize(14);
         dataSource.setMaxActive(14);
         dataSource.setMaxIdle(14);
-        dataSource.setMinIdle(1);
+        dataSource.setMinIdle(14);
         dataSource.setMinEvictableIdleTimeMillis(50 * 1);
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setTestWhileIdle(true);
@@ -38,8 +38,7 @@ public class TestIdle2 extends TestCase {
 
             conn.close();
             Assert.assertEquals(0, dataSource.getDestroyCount());
-            Assert.assertEquals(true, driver.getConnections().size() == 2 || driver.getConnections().size() == 1);
-            Assert.assertEquals(true, dataSource.getCreateCount() == 2 || dataSource.getCreateCount() == 1);
+            Assert.assertEquals(true, dataSource.getPoolingCount() == driver.getConnections().size());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
         
@@ -73,7 +72,7 @@ public class TestIdle2 extends TestCase {
             Thread.sleep(1);
             conn.close();
         }
-        Assert.assertEquals(true, dataSource.getPoolingCount() == 2 || dataSource.getPoolingCount() == 1);
+        Assert.assertEquals(true, dataSource.getPoolingCount() == dataSource.getMaxActive());
         
         dataSource.close();
     }

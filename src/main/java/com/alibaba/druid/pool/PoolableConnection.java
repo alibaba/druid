@@ -86,7 +86,10 @@ public class PoolableConnection implements PooledConnection, Connection {
                 if (dataSource != null) {
                     ExceptionSorter exceptionSorter = dataSource.getExceptionSoter();
                     if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
-                        this.holder = null; // isClosed() is true
+                        if (holder != null) {
+                            dataSource.decrementActiveCountWithLock();
+                            this.holder = null; // isClosed() is true
+                        }
                     }
                 }
             }
