@@ -56,6 +56,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
+ * @author ljw<ljw2083@alibaba-inc.com>
  */
 public abstract class DruidAbstractDataSource implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 

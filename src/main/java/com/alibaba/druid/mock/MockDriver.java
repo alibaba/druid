@@ -37,28 +37,38 @@ import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
 public class MockDriver implements Driver {
 
-    private final static Log               LOG                  = LogFactory.getLog(MockDriver.class);
+    private final static Log               LOG                   = LogFactory.getLog(MockDriver.class);
 
-    public final static MockExecuteHandler DEFAULT_HANDLER      = new MySqlMockExecuteHandlerImpl();
+    public final static MockExecuteHandler DEFAULT_HANDLER       = new MySqlMockExecuteHandlerImpl();
 
-    private String                         prefix               = "jdbc:fake:";
-    private String                         mockPrefix           = "jdbc:mock:";
+    private String                         prefix                = "jdbc:fake:";
+    private String                         mockPrefix            = "jdbc:mock:";
 
-    private MockExecuteHandler             executeHandler       = DEFAULT_HANDLER;
+    private MockExecuteHandler             executeHandler        = DEFAULT_HANDLER;
 
-    public final static MockDriver         instance             = new MockDriver();
+    public final static MockDriver         instance              = new MockDriver();
 
-    private final AtomicLong               connectCount         = new AtomicLong();
-    private final AtomicLong               connectionCloseCount = new AtomicLong();
+    private final AtomicLong               connectCount          = new AtomicLong();
+    private final AtomicLong               connectionCloseCount  = new AtomicLong();
 
-    private final AtomicLong               connectionIdSeed     = new AtomicLong(1000L);
+    private final AtomicLong               connectionIdSeed      = new AtomicLong(1000L);
 
-    private final List<MockConnection>     connections          = new CopyOnWriteArrayList<MockConnection>();
+    private final List<MockConnection>     connections           = new CopyOnWriteArrayList<MockConnection>();
 
-    private long                           idleTimeCount        = 1000 * 60 * 3;
+    private long                           idleTimeCount         = 1000 * 60 * 3;
+
+    private boolean                        logExecuteQueryEnable = true;
 
     static {
         registerDriver(instance);
+    }
+
+    public boolean isLogExecuteQueryEnable() {
+        return logExecuteQueryEnable;
+    }
+
+    public void setLogExecuteQueryEnable(boolean logExecuteQueryEnable) {
+        this.logExecuteQueryEnable = logExecuteQueryEnable;
     }
 
     public long getIdleTimeCount() {
@@ -134,7 +144,7 @@ public class MockDriver implements Driver {
         }
 
         MockConnection conn = new MockConnection(this, info);
-        
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("connect, url " + url + ", id " + conn.getId());
         }
@@ -196,7 +206,7 @@ public class MockDriver implements Driver {
     }
 
     protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
-        if (LOG.isDebugEnabled()) {
+        if (logExecuteQueryEnable && LOG.isDebugEnabled()) {
             LOG.debug("executeQuery " + sql);
         }
 
