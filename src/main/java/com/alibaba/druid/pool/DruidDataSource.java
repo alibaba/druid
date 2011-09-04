@@ -536,7 +536,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmpty.await(); // signal by recycle or creator
                 
                 if (!enable) {
-                    throw new SQLException("dataSource disabled");
+                    throw new DataSourceDisableException();
                 }
             }
         } catch (InterruptedException ie) {
@@ -566,7 +566,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
                     
                     if (!enable) {
-                        throw new SQLException("dataSource disabled");
+                        throw new DataSourceDisableException();
                     }
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
