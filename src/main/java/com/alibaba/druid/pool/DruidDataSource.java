@@ -384,7 +384,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             // 第一步，检查连接是否关闭
             if (conn == null || conn.isClosed()) {
-                lock.lock();
+                lock.lockInterruptibly();
                 try {
                     activeCount--;
                     closeCount++;
@@ -411,7 +411,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (isTestOnReturn()) {
                 boolean validate = testConnectionInternal(conn);
                 if (!validate) {
-                    lock.lock();
+                    lock.lockInterruptibly();
                     try {
                         JdbcUtils.close(conn);
                         destroyCount++;
@@ -425,7 +425,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 holder.setLastCheckTimeMillis(System.currentTimeMillis());
             }
 
-            lock.lock();
+            lock.lockInterruptibly();
             try {
                 activeCount--;
                 closeCount++;
@@ -439,7 +439,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (Throwable e) {
             JdbcUtils.close(conn);
 
-            lock.lock();
+            try {
+                lock.lockInterruptibly();
+            } catch (InterruptedException interruptEx) {
+                throw new SQLException("interrupt", interruptEx);
+            }
+            
             try {
                 activeCount--;
                 closeCount++;
@@ -485,8 +490,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createConnectionCount++;
     }
 
-    void decrementActiveCountWithLock() {
-        lock.lock();
+    void decrementActiveCountWithLock() throws SQLException {
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            throw new SQLException("interrupt", e);
+        }
+        
         try {
             activeCount--;
         } finally {
