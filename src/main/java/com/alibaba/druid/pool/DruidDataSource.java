@@ -257,16 +257,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     Connection realConnection = poolalbeConnection.getConnection();
-                    JdbcUtils.close(realConnection);
-                    this.decrementActiveCountWithLock();
+                    discardConnection(realConnection);
                     continue;
                 }
                 poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
             } else {
                 Connection realConnection = poolalbeConnection.getConnection();
                 if (realConnection.isClosed()) {
-                    JdbcUtils.close(realConnection);
-                    this.decrementActiveCountWithLock();
+                    discardConnection(realConnection);
                     continue;
                 }
 
@@ -280,8 +278,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 LOG.debug("skip not validate connection.");
                             }
 
-                            JdbcUtils.close(realConnection);
-                            this.decrementActiveCountWithLock();
+                            discardConnection(realConnection);
                             continue;
                         }
                         poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
@@ -297,6 +294,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             return poolalbeConnection;
+        }
+    }
+
+    private void discardConnection(Connection realConnection) throws SQLException {
+        JdbcUtils.close(realConnection);
+        
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            throw new SQLException("interrupt", e);
+        }
+        
+        try {
+            activeCount--;
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -361,8 +374,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             // exceptionSorter.isExceptionFatal
             if (exceptionSoter != null && exceptionSoter.isExceptionFatal(sqlEx)) {
-                decrementActiveCountWithLock();
-                JdbcUtils.close(holder.getConnection());
+                this.discardConnection(holder.getConnection());
                 pooledConnection.disable();
             }
 
@@ -488,20 +500,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     void incrementCreateCount() {
         createConnectionCount++;
-    }
-
-    void decrementActiveCountWithLock() throws SQLException {
-        try {
-            lock.lockInterruptibly();
-        } catch (InterruptedException e) {
-            throw new SQLException("interrupt", e);
-        }
-        
-        try {
-            activeCount--;
-        } finally {
-            lock.unlock();
-        }
     }
 
     void putLast(ConnectionHolder e) {
