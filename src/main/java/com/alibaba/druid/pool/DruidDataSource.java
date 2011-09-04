@@ -493,6 +493,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             poolingCount = 0;
             instances.remove(this);
+            
+            enable = false;
+            notEmpty.signalAll();
         } finally {
             lock.unlock();
         }
@@ -502,9 +505,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         createConnectionCount++;
     }
 
-    void putLast(ConnectionHolder e) {
+    void putLast(ConnectionHolder e) throws SQLException {
         if (e == null) {
             throw new NullPointerException();
+        }
+        
+        if (!enable) {
+            discardConnection(e.getConnection());
         }
 
         e.setLastActiveTimeMillis(System.currentTimeMillis());
@@ -513,11 +520,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         notEmpty.signal();
     }
 
-    ConnectionHolder takeLast() throws InterruptedException {
+    ConnectionHolder takeLast() throws InterruptedException, SQLException {
         try {
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
                 notEmpty.await(); // signal by recycle or creator
+                
+                if (!enable) {
+                    throw new SQLException("dataSource disabled");
+                }
             }
         } catch (InterruptedException ie) {
             notEmpty.signal(); // propagate to non-interrupted thread
@@ -531,7 +542,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return last;
     }
 
-    ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException {
+    ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
         long estimate = unit.toNanos(timeout);
 
         for (;;) {
@@ -544,6 +555,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
+                    
+                    if (!enable) {
+                        throw new SQLException("dataSource disabled");
+                    }
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
                     throw ie;
