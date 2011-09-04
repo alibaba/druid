@@ -536,6 +536,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmpty.await(); // signal by recycle or creator
                 
                 if (!enable) {
+                    connectErrorCount++;
                     throw new DataSourceDisableException();
                 }
             }
@@ -566,6 +567,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
                     
                     if (!enable) {
+                        connectErrorCount++;
                         throw new DataSourceDisableException();
                     }
                 } catch (InterruptedException ie) {
