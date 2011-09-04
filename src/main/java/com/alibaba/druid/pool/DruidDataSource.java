@@ -103,6 +103,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         lock.lock();
         try {
             this.enable = enable;
+            if (!enable) {
+                notEmpty.signalAll();
+            }
         } finally {
             lock.unlock();
         }
