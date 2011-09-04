@@ -100,7 +100,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void setEnable(boolean enable) {
-        this.enable = enable;
+        lock.lock();
+        try {
+            this.enable = enable;
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void init() throws SQLException {
@@ -512,6 +517,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         
         if (!enable) {
             discardConnection(e.getConnection());
+            return;
         }
 
         e.setLastActiveTimeMillis(System.currentTimeMillis());
