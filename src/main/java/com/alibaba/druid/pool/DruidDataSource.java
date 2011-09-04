@@ -108,7 +108,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
-        lock.lock();
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            throw new SQLException("interrupt", e);
+        }
+        
         try {
             if (inited) {
                 return;
@@ -298,7 +303,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private PoolableConnection getConnectionInternal() throws SQLException {
         PoolableConnection poolalbeConnection;
 
-        lock.lock();
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            throw new SQLException("interrupt", e);
+        }
+        
         try {
             if (!enable) {
                 connectErrorCount++;
@@ -484,7 +494,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    void putLast(ConnectionHolder e) throws InterruptedException {
+    void putLast(ConnectionHolder e) {
         if (e == null) {
             throw new NullPointerException();
         }
@@ -599,7 +609,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             int errorCount = 0;
             for (;;) {
                 // addLast
-                lock.lock();
+                try {
+                    lock.lockInterruptibly();
+                } catch (InterruptedException e2) {
+                    break;
+                }
+                
                 try {
                     // 必须存在线程等待，才创建连接
                     int waitThreadCount = lock.getWaitQueueLength(notEmpty);
@@ -773,7 +788,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void shrink(boolean checkTime) {
         final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
-        lock.lock();
+        try {
+            lock.lockInterruptibly();
+        } catch (InterruptedException e) {
+            return;
+        }
+        
         try {
             final int checkCount = poolingCount - minIdle;
             for (int i = 0; i < checkCount; ++i) {
