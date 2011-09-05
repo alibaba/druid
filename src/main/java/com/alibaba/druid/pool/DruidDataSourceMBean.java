@@ -22,8 +22,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     boolean isEnable();
 
-    void setEnable(boolean enable);
-
     void shrink();
     
     String toString();

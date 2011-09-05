@@ -651,7 +651,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     int waitThreadCount = lock.getWaitQueueLength(notEmpty);
 
                     if (poolingCount - waitThreadCount >= 0) {
-                        empty.await(1, TimeUnit.SECONDS); // 防止信号丢失引起的等待
+                        empty.await(3, TimeUnit.SECONDS); // 防止信号丢失引起的等待
                         continue;
                     }
 
