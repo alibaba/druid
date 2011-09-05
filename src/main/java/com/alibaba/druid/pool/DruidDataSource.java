@@ -429,12 +429,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (isTestOnReturn()) {
                 boolean validate = testConnectionInternal(conn);
                 if (!validate) {
+                    JdbcUtils.close(conn);
+                    
                     lock.lockInterruptibly();
                     try {
-                        JdbcUtils.close(conn);
                         destroyCount++;
-                        closeCount++;
                         activeCount--;
+                        closeCount++;
                     } finally {
                         lock.unlock();
                     }
@@ -511,10 +512,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     void putLast(ConnectionHolder e) throws SQLException {
-        if (e == null) {
-            throw new NullPointerException();
-        }
-        
         if (!enable) {
             discardConnection(e.getConnection());
             return;
