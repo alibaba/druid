@@ -272,7 +272,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else {
                 Connection realConnection = poolalbeConnection.getConnection();
                 if (realConnection.isClosed()) {
-                    discardConnection(realConnection);
+                    discardConnection(null); // 传入null，避免重复关闭
                     continue;
                 }
 
