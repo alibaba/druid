@@ -38,7 +38,6 @@ public final class ConnectionHolder {
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     private final long                          connecttimeMillis;
     private long                                lastActiveTimeMillis;
-    private long                                lastCheckTimeMillis      = 0;
     private long                                useCount                 = 0;
 
     private final boolean                       poolPreparedStatements;
@@ -58,14 +57,6 @@ public final class ConnectionHolder {
         } else {
             statementPool = null;
         }
-    }
-
-    public long getLastCheckTimeMillis() {
-        return lastCheckTimeMillis;
-    }
-
-    public void setLastCheckTimeMillis(long lastCheckTimeMillis) {
-        this.lastCheckTimeMillis = lastCheckTimeMillis;
     }
 
     public long getLastActiveTimeMillis() {

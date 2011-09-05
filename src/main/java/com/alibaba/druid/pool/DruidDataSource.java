@@ -268,7 +268,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     discardConnection(realConnection);
                     continue;
                 }
-                poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
             } else {
                 Connection realConnection = poolalbeConnection.getConnection();
                 if (realConnection.isClosed()) {
@@ -289,7 +288,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             discardConnection(realConnection);
                             continue;
                         }
-                        poolalbeConnection.getConnectionHolder().setLastCheckTimeMillis(System.currentTimeMillis());
                     }
                 }
             }
@@ -442,7 +440,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     return;
                 }
-                holder.setLastCheckTimeMillis(System.currentTimeMillis());
             }
 
             lock.lockInterruptibly();
