@@ -660,8 +660,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                     Connection connection = connectionFactory.createConnection();
-                    ConnectionHolder poolableConnection = new ConnectionHolder(DruidDataSource.this, connection);
-                    connections[poolingCount++] = poolableConnection;
+                    connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
 
                     errorCount = 0; // reset errorCount
 
