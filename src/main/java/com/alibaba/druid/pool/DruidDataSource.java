@@ -560,7 +560,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
-                    return null;
+                    throw new GetConnectionTimeoutException();
                 }
 
                 try {
@@ -580,7 +580,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    return null;
+                    throw new GetConnectionTimeoutException();
                 }
             }
 
