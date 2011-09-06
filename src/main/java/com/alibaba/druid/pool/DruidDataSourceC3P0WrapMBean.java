@@ -1,6 +1,6 @@
 package com.alibaba.druid.pool;
 
-public interface DruidC3P0WrapDataSourceMBean {
+public interface DruidDataSourceC3P0WrapMBean {
 
     String getUser();
 

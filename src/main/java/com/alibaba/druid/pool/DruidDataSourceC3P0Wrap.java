@@ -6,11 +6,11 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSourceMBean {
+public class DruidDataSourceC3P0Wrap implements DataSource, DruidDataSourceC3P0WrapMBean {
 
     private DruidDataSource dataSource;
 
-    public DruidC3P0WrapDataSource(){
+    public DruidDataSourceC3P0Wrap(){
         dataSource = new DruidDataSource();
     }
 
@@ -37,7 +37,7 @@ public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSou
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == DruidC3P0WrapDataSource.class) {
+        if (iface == DruidDataSourceC3P0Wrap.class) {
             return (T) this;
         }
 
@@ -46,7 +46,7 @@ public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSou
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        if (iface == DruidC3P0WrapDataSource.class) {
+        if (iface == DruidDataSourceC3P0Wrap.class) {
             return true;
         }
 
