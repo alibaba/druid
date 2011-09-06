@@ -1,6 +1,14 @@
 package com.alibaba.druid.pool;
 
+import java.util.Properties;
+
 public interface DruidDataSourceC3P0AdapterMBean {
+
+    String getDriverClass();
+
+    String getJdbcUrl();
+
+    Properties getProperties();
 
     String getUser();
 
@@ -23,13 +31,13 @@ public interface DruidDataSourceC3P0AdapterMBean {
     boolean isTestConnectionOnCheckin();
 
     String getPreferredTestQuery();
-    
+
     int getNumIdleConnections();
-    
+
     int getNumConnections();
-    
+
     String getDataSourceName();
-    
+
     int getNumBusyConnections();
 
     // //////////
@@ -43,6 +51,6 @@ public interface DruidDataSourceC3P0AdapterMBean {
     int getWaitThreadCount();
 
     int getLockQueueLength();
-    
+
     void close();
 }

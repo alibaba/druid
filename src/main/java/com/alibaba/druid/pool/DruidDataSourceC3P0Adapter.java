@@ -3,6 +3,7 @@ package com.alibaba.druid.pool;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -63,6 +64,30 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         return dataSource.getConnection(username, password);
     }
 
+    public String getDriverClass() {
+        return dataSource.getDriverClassName();
+    }
+
+    public void setDriverClass(String driverClass) {
+        dataSource.setDriverClassName(driverClass);
+    }
+
+    public String getJdbcUrl() {
+        return dataSource.getUrl();
+    }
+
+    public void setJdbcUrl(String jdbcUrl) {
+        dataSource.setUrl(jdbcUrl);
+    }
+
+    public Properties getProperties() {
+        return dataSource.getConnectProperties();
+    }
+
+    public void setProperties(Properties properties) {
+        dataSource.setConnectProperties(properties);
+    }
+
     public String getUser() {
         return dataSource.getUsername();
     }
@@ -96,11 +121,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getIdleConnectionTestPeriod() {
-        return (int) dataSource.getTimeBetweenEvictionRunsMillis();
+        return (int) (dataSource.getTimeBetweenEvictionRunsMillis() / 1000);
     }
 
     public void setIdleConnectionTestPeriod(int idleConnectionTestPeriod) {
-        dataSource.setTimeBetweenEvictionRunsMillis(idleConnectionTestPeriod);
+        dataSource.setTimeBetweenEvictionRunsMillis(((long) idleConnectionTestPeriod) * 1000L);
     }
 
     public int getInitialPoolSize() {
@@ -112,11 +137,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getMaxIdleTime() {
-        return (int) dataSource.getMinEvictableIdleTimeMillis();
+        return (int) dataSource.getMinEvictableIdleTimeMillis() / 1000;
     }
 
     public void setMaxIdleTime(int maxIdleTime) {
-        dataSource.setMinEvictableIdleTimeMillis(maxIdleTime);
+        dataSource.setMinEvictableIdleTimeMillis(((long) maxIdleTime) * 1000L);
     }
 
     public int getMaxPoolSize() {
