@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-public class DruidC3P0WrapDataSource implements DataSource {
+public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSourceMBean {
 
     private DruidDataSource dataSource;
 
@@ -157,6 +157,28 @@ public class DruidC3P0WrapDataSource implements DataSource {
 
     public void setPreferredTestQuery(String preferredTestQuery) {
         dataSource.setValidationQuery(preferredTestQuery);
+    }
+
+    // /////////////////
+
+    @Override
+    public boolean isEnable() {
+        return dataSource.isEnable();
+    }
+
+    @Override
+    public void shrink() {
+        dataSource.shrink();
+    }
+
+    @Override
+    public int getWaitThreadCount() {
+        return dataSource.getWaitThreadCount();
+    }
+
+    @Override
+    public int getLockQueueLength() {
+        return dataSource.getLockQueueLength();
     }
 
     // ///////////////
@@ -352,7 +374,5 @@ public class DruidC3P0WrapDataSource implements DataSource {
     public void setBreakAfterAcquireFailure(boolean breakAfterAcquireFailure) {
         this.breakAfterAcquireFailure = breakAfterAcquireFailure;
     }
-
-    // ////////////////
 
 }
