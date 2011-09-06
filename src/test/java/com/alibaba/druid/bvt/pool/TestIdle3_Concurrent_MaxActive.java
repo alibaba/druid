@@ -34,12 +34,16 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-    }
-
-    public void test_idle2() throws Exception {
 
         ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
                                                                  new ObjectName("com.alibaba:type=DataSource"));
+    }
+
+    protected void tearDown() throws Exception {
+        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba:type=DataSource"));
+    }
+
+    public void test_idle2() throws Exception {
 
         // 第一次创建连接
         {
