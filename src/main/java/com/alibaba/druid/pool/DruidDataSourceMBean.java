@@ -25,4 +25,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void shrink();
     
     String toString();
+    
+    int getWaitThreadCount();
+    
+    int getLockQueueLength();
 }

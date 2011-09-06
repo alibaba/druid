@@ -855,6 +855,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             destroyCount++;
         }
     }
+    
+    public int getWaitThreadCount() {
+        return lock.getWaitQueueLength(notEmpty);
+    }
+    
+    public int getLockQueueLength() {
+        return lock.getQueueLength();
+    }
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
