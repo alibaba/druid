@@ -857,7 +857,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
     
     public int getWaitThreadCount() {
-        return lock.getWaitQueueLength(notEmpty);
+        lock.lock();
+        try {
+            return lock.getWaitQueueLength(notEmpty);
+        } finally {
+            lock.unlock();
+        }
     }
     
     public int getLockQueueLength() {
