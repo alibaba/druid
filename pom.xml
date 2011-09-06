@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.1.8</version>
+	<version>0.1.9-SNAPSHOT</version>
 
 	<name>druid</name>
 
@@ -236,11 +236,16 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>c3p0</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.0.6</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 </project>
