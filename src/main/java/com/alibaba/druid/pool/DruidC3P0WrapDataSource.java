@@ -159,6 +159,38 @@ public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSou
         dataSource.setValidationQuery(preferredTestQuery);
     }
 
+    public String getDataSourceName() {
+        return dataSource.getName();
+    }
+
+    public int getNumConnections() {
+        return dataSource.getActiveCount() + dataSource.getPoolingCount();
+    }
+
+    public int getNumIdleConnections() {
+        return dataSource.getPoolingCount();
+    }
+
+    public int getNumBusyConnections() {
+        return dataSource.getActiveCount();
+    }
+
+    public int getNumUnclosedOrphanedConnections() {
+        return 0;
+    }
+
+    public int getNumConnectionsDefaultUser() {
+        return getNumConnections();
+    }
+
+    public int getNumIdleConnectionsDefaultUser() {
+        return getNumIdleConnections();
+    }
+
+    public int getNumBusyConnectionsDefaultUser() {
+        return getNumBusyConnections();
+    }
+
     // /////////////////
 
     @Override
@@ -179,6 +211,11 @@ public class DruidC3P0WrapDataSource implements DataSource, DruidC3P0WrapDataSou
     @Override
     public int getLockQueueLength() {
         return dataSource.getLockQueueLength();
+    }
+
+    @Override
+    public void close() {
+        dataSource.close();
     }
 
     // ///////////////

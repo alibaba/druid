@@ -23,6 +23,14 @@ public interface DruidC3P0WrapDataSourceMBean {
     boolean isTestConnectionOnCheckin();
 
     String getPreferredTestQuery();
+    
+    int getNumIdleConnections();
+    
+    int getNumConnections();
+    
+    String getDataSourceName();
+    
+    int getNumBusyConnections();
 
     // //////////
 
@@ -35,4 +43,6 @@ public interface DruidC3P0WrapDataSourceMBean {
     int getWaitThreadCount();
 
     int getLockQueueLength();
+    
+    void close();
 }
