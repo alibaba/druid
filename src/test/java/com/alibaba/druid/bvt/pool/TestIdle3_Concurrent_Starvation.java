@@ -35,12 +35,16 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
+        
+        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+                                                                 new ObjectName("com.alibaba:type=DataSource"));
+    }
+    
+    protected void tearDown() throws Exception {
+        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba:type=DataSource"));
     }
 
     public void test_idle2() throws Exception {
-
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {
