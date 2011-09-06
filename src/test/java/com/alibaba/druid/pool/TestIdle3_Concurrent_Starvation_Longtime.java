@@ -26,8 +26,8 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
-        dataSource.setMaxActive(100);
-        dataSource.setMaxIdle(100);
+        dataSource.setMaxActive(1000);
+        dataSource.setMaxIdle(1000);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
@@ -65,7 +65,7 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         }
 
         for (int i = 0; i < 1; ++i) {
-            final int threadCount = 100;
+            final int threadCount = 1000;
             concurrent(threadCount);
         }
 
@@ -112,7 +112,7 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
                 public void run() {
                     try {
                         startLatch.await();
-                        for (int i = 0; i < 1000 * 1; ++i) {
+                        for (int i = 0; i < 1000 * 1000 * 10; ++i) {
                             
                             Connection conn = dataSource.getConnection();
                             closeBarrier.await();
