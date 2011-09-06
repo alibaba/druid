@@ -659,15 +659,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    Connection connection = connectionFactory.createConnection();
-                    connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
-
-                    errorCount = 0; // reset errorCount
-
-                    notEmpty.signal();
+                   
 
                 } catch (InterruptedException e) {
                     break;
+                } catch (RuntimeException e) {
+                    LOG.error("create connection error", e);
+                } catch (Error e) {
+                    LOG.error("create connection error", e);
+                    break;
+                } finally {
+                    lock.unlock();
+                }
+                
+                Connection connection = null;
+                
+                try {
+                    connection = connectionFactory.createConnection();
                 } catch (SQLException e) {
                     LOG.error("create connection error", e);
 
@@ -682,9 +690,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 } catch (RuntimeException e) {
                     LOG.error("create connection error", e);
+                    continue;
                 } catch (Error e) {
                     LOG.error("create connection error", e);
                     break;
+                }
+                
+                if (connection == null) {
+                    continue;
+                }
+                
+                lock.lock();
+                try {
+                    connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
+
+                    errorCount = 0; // reset errorCount
+
+                    notEmpty.signal();
                 } finally {
                     lock.unlock();
                 }
