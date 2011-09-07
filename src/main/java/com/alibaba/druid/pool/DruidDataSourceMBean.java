@@ -32,5 +32,9 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     long getNotEmptyWaitCount();
 
+    long getNotEmptyWaitMillis();
+
+    long getNotEmptyWaitNanos();
+
     void resetStat();
 }

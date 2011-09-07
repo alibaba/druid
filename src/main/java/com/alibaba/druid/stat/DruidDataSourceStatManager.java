@@ -98,6 +98,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("RemoveAbandonedCount", dataSource.getRemoveAbandonedCount());
         
         map.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
+        map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -117,7 +118,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.BOOLEAN, SimpleType.BOOLEAN, //
                 SimpleType.BOOLEAN, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, //
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
-                SimpleType.LONG,
+                SimpleType.LONG, SimpleType.LONG,
         //
         };
 
@@ -128,7 +129,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements", "TestOnBorrow", //
                 "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis", "DbType", //
                 "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username", "RemoveAbandonedCount", //
-                "NotEmptyWaitCount"
+                "NotEmptyWaitCount", "NotEmptyWaitNanos"
         //
         };
 
