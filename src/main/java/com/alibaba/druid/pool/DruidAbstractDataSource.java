@@ -1108,6 +1108,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
                 map.put("ResultSetLastErrorStackTrace", null);
             }
 
+            // 35 - 39
             map.put("ConnectionConnectCount", stat.getConnectionStat().getConnectCount());
             Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
             if (lastConnectionError != null) {
@@ -1120,6 +1121,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             map.put("ConnectionConnectMillisTotal", stat.getConnectionStat().getConnectMillis());
             map.put("ConnectionConnectingCountMax", stat.getConnectionStat().getConnectingMax());
 
+            // 40 - 44
             map.put("ConnectionConnectMillisMax", stat.getConnectionStat().getConnectMillisMax());
             map.put("ConnectionErrorLastTime", stat.getConnectionStat().getErrorLastTime());
             map.put("ConnectionAliveMillisMax", stat.getConnectionConnectAliveMillisMax());
