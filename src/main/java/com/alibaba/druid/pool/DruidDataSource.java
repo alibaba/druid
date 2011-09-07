@@ -677,15 +677,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 try {
-                    // 必须存在线程等待，才创建连接
-                    int waitThreadCount = lock.getWaitQueueLength(notEmpty);
-
                     // 防止创建超过maxActive数量的连接
                     if (activeCount + poolingCount >= maxActive) {
                         empty.await();
                         continue;
                     }
-                    
+
+                    // 必须存在线程等待，才创建连接
+                    int waitThreadCount = lock.getWaitQueueLength(notEmpty);
+
                     if (poolingCount >= waitThreadCount) {
                         notEmpty.signal(); // 防止信号丢失引起的等待
                         empty.await();
@@ -950,7 +950,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public long getNotEmptyWaitCount() {
         return notEmptyWaitCount;
     }
-    
+
     public long getNotEmptyWaitMillis() {
         return notEmptyWaitNanos / (1000 * 1000);
     }
