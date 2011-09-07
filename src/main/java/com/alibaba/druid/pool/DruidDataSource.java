@@ -74,7 +74,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                    recycleCount          = 0L;
     private long                    createConnectionCount = 0L;
     private long                    destroyCount          = 0L;
-    private long                    removeAbandonedCount          = 0L;
+    private long                    removeAbandonedCount  = 0L;
+    private long                    notEmptyWaitCount     = 0L;
 
     // store
     private ConnectionHolder[]      connections;
@@ -102,6 +103,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             createConnectionCount = 0;
             destroyCount = 0;
             removeAbandonedCount = 0;
+            notEmptyWaitCount = 0;
         } finally {
             lock.unlock();
         }
@@ -550,6 +552,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
                 notEmpty.await(); // signal by recycle or creator
+                notEmptyWaitCount++;
 
                 if (!enable) {
                     connectErrorCount++;
@@ -581,6 +584,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
+                    notEmptyWaitCount++;
 
                     if (!enable) {
                         connectErrorCount++;
@@ -937,6 +941,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+    }
+
+    public long getNotEmptyWaitCount() {
+        return notEmptyWaitCount;
     }
 
     public int getLockQueueLength() {
