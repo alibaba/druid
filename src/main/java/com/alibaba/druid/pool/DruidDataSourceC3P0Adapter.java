@@ -216,6 +216,14 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         return getNumBusyConnections();
     }
 
+    public int getMaxStatementsPerConnection() {
+        return dataSource.getMaxPoolPreparedStatementPerConnectionSize();
+    }
+
+    public void setMaxStatementsPerConnection(int maxStatementsPerConnection) {
+        dataSource.setMaxPoolPreparedStatementPerConnectionSize(maxStatementsPerConnection);
+    }
+
     // /////////////////
 
     @Override
@@ -245,7 +253,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     // ///////////////
 
-    private int     maxStatementsPerConnection;
     private String  overrideDefaultUser;
     private String  overrideDefaultPassword;
     private int     propertyCycle;
@@ -273,14 +280,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public void setMaxStatements(int maxStatements) {
         this.maxStatements = maxStatements;
-    }
-
-    public int getMaxStatementsPerConnection() {
-        return maxStatementsPerConnection;
-    }
-
-    public void setMaxStatementsPerConnection(int maxStatementsPerConnection) {
-        this.maxStatementsPerConnection = maxStatementsPerConnection;
     }
 
     public String getConnectionTesterClassName() {

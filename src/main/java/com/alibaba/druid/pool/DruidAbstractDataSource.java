@@ -113,6 +113,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     private boolean                                                                          testOnReturn                              = DEFAULT_TEST_ON_RETURN;
     private boolean                                                                          testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected boolean                                                                        poolPreparedStatements                    = false;
+    protected int                                                                            maxPoolPreparedStatementPerConnectionSize              = -1;
 
     protected boolean                                                                        inited                                    = false;
 
@@ -163,10 +164,18 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected long                                                                           id;
 
-    protected Date                                                                             createdTime;
+    protected Date                                                                           createdTime;
 
     public long getDupCloseCount() {
         return dupCloseCount.get();
+    }
+
+    public int getMaxPoolPreparedStatementPerConnectionSize() {
+        return maxPoolPreparedStatementPerConnectionSize;
+    }
+
+    public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
+        this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
     }
 
     public void incrementDupCloseCount() {
@@ -869,7 +878,8 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         }
     }
 
-    public abstract void handleConnectionException(PoolableConnection pooledConnection, Throwable t) throws SQLException;
+    public abstract void handleConnectionException(PoolableConnection pooledConnection, Throwable t)
+                                                                                                    throws SQLException;
 
     protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
 
@@ -1253,14 +1263,14 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public long getID() {
         return this.id;
     }
-    
+
     public Date getCreatedTime() {
         return createdTime;
     }
-    
+
     public abstract int getRawDriverMajorVersion();
-    
+
     public abstract int getRawDriverMinorVersion();
-    
+
     public abstract String getProperties();
 }
