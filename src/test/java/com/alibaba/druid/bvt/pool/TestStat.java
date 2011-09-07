@@ -1,8 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -23,6 +26,7 @@ public class TestStat extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_stat() throws Exception {
@@ -43,7 +47,9 @@ public class TestStat extends TestCase {
         stmt.close();
         
         JdbcStatManager.getInstance().getDataSourceList();
-        DruidDataSourceStatManager.getInstance().getDataSourceList();
+        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
+        ManagementFactory.getPlatformMBeanServer().registerMBean(DruidDataSourceStatManager.getInstance(), new ObjectName("com.alibaba.druid:type=DruidDataSourceStat"));
+        
     }
 }
