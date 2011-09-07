@@ -249,7 +249,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
 
-        final Set<DruidDataSource> dataSources = DruidDataSourceStatManager.getInstances();
+        final Set<DruidDataSource> dataSources = DruidDataSourceStatManager.getDruidDataSourceInstances();
         for (DruidDataSource dataSource : dataSources) {
             data.put(dataSource.getCompositeData());
         }
@@ -298,7 +298,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
         
-        for (DruidDataSource instance : DruidDataSourceStatManager.getInstances()) {
+        for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (Filter filter : instance.getProxyFilters()) {
                 if (filter instanceof StatFilter) {
                     StatFilter countFilter = (StatFilter) filter;
@@ -332,7 +332,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
             }
         }
         
-        for (DruidDataSource instance : DruidDataSourceStatManager.getInstances()) {
+        for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (Filter filter : instance.getProxyFilters()) {
                 if (filter instanceof StatFilter) {
                     StatFilter countFilter = (StatFilter) filter;

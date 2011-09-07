@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class TestStat extends TestCase {
@@ -42,6 +43,7 @@ public class TestStat extends TestCase {
         stmt.close();
         
         JdbcStatManager.getInstance().getDataSourceList();
+        DruidDataSourceStatManager.getInstance().getDataSourceList();
 
     }
 }
