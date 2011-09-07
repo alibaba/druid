@@ -40,6 +40,13 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instances.keySet();
     }
 
+    public void reset() {
+        final Set<DruidDataSource> dataSources = getDruidDataSourceInstances();
+        for (DruidDataSource dataSource : dataSources) {
+            dataSource.resetStat();
+        }
+    }
+
     public TabularData getDataSourceList() throws JMException {
         CompositeType rowType = getDruidDataSourceCompositeType();
         String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);

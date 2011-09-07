@@ -88,6 +88,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public DruidDataSource(){
     }
+    
+    public void resetStat() {
+        lock.lock();
+        try {
+            connectCount = 0;
+            closeCount = 0;
+            connectErrorCount = 0;
+            recycleCount = 0;
+            createConnectionCount = 0;
+            destroyCount = 0;
+        } finally {
+            lock.unlock();
+        }
+    }
 
     public boolean isEnable() {
         return enable;
