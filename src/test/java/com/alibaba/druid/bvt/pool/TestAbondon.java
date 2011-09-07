@@ -16,6 +16,7 @@ public class TestAbondon extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(10);
+        dataSource.setLogAbandoned(true);
         dataSource.setTimeBetweenEvictionRunsMillis(1);
         dataSource.setUrl("jdbc:mock:xxx");
 

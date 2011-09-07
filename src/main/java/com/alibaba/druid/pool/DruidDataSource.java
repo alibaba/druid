@@ -771,6 +771,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             if (timeMillis >= removeAbandonedTimeoutMillis) {
                                 PoolableConnection pooledConnection = entry.getKey();
                                 JdbcUtils.close(pooledConnection);
+
+                                if (isLogAbandoned()) {
+                                    StringBuilder buf = new StringBuilder();
+                                    buf.append("abondon connection, open stackTrace\n");
+
+                                    StackTraceElement[] trace = activeInfo.getStackTrace();
+                                    for (int i = 0; i < trace.length; i++) {
+                                        buf.append("\tat ");
+                                        buf.append(trace[i].toString());
+                                        buf.append("\n");
+                                    }
+
+                                    LOG.warn(buf.toString());
+                                }
                             }
                         }
                     }
