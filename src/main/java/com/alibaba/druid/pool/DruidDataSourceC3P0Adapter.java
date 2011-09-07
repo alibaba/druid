@@ -13,7 +13,7 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public DruidDataSourceC3P0Adapter(){
         dataSource = new DruidDataSource();
-        
+
         // setDefault
         this.setInitialPoolSize(3);
         this.setAcquireIncrement(3);
@@ -281,6 +281,14 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         dataSource.setTimeBetweenConnectErrorMillis(acquireRetryDelay);
     }
 
+    public boolean isBreakAfterAcquireFailure() {
+        return dataSource.isBreakAfterAcquireFailure();
+    }
+
+    public void setBreakAfterAcquireFailure(boolean breakAfterAcquireFailure) {
+        dataSource.setBreakAfterAcquireFailure(breakAfterAcquireFailure);
+    }
+
     // /////////////////
 
     @Override
@@ -313,7 +321,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     private String  overrideDefaultUser;
     private String  overrideDefaultPassword;
     private int     propertyCycle;
-    private boolean breakAfterAcquireFailure;
     private boolean usesTraditionalReflectiveProxies;
     private String  userOverridesAsString;
     private int     maxAdministrativeTaskTime;
@@ -438,14 +445,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public void setPropertyCycle(int propertyCycle) {
         this.propertyCycle = propertyCycle;
-    }
-
-    public boolean isBreakAfterAcquireFailure() {
-        return breakAfterAcquireFailure;
-    }
-
-    public void setBreakAfterAcquireFailure(boolean breakAfterAcquireFailure) {
-        this.breakAfterAcquireFailure = breakAfterAcquireFailure;
     }
 
 }

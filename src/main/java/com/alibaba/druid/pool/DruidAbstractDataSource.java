@@ -166,7 +166,17 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected Date                                                                           createdTime;
 
-    protected int                                                                              connectionErrorRetryAttempts              = 30;
+    protected int                                                                            connectionErrorRetryAttempts              = 30;
+
+    protected boolean                                                                        breakAfterAcquireFailure                  = false;
+
+    public boolean isBreakAfterAcquireFailure() {
+        return breakAfterAcquireFailure;
+    }
+
+    public void setBreakAfterAcquireFailure(boolean breakAfterAcquireFailure) {
+        this.breakAfterAcquireFailure = breakAfterAcquireFailure;
+    }
 
     public int getConnectionErrorRetryAttempts() {
         return connectionErrorRetryAttempts;

@@ -699,9 +699,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     errorCount++;
 
                     if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
+                        if (breakAfterAcquireFailure) {
+                            break;
+                        }
+                        
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);
-                        } catch (InterruptedException e1) {
+                        } catch (InterruptedException interruptEx) {
                             break;
                         }
                     }
