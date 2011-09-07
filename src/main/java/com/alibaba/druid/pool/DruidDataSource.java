@@ -48,7 +48,6 @@ import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
-import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -57,40 +56,35 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable {
 
-    private final static Log                                                LOG                   = LogFactory.getLog(DruidDataSource.class);
+    private final static Log        LOG                   = LogFactory.getLog(DruidDataSource.class);
 
-    // global instances
-    private static final Object                                             PRESENT               = new Object();
-    private static final ConcurrentIdentityHashMap<DruidDataSource, Object> instances             = new ConcurrentIdentityHashMap<DruidDataSource, Object>();
+    private static final long       serialVersionUID      = 1L;
 
-    private static final long                                               serialVersionUID      = 1L;
+    private final ReentrantLock     lock                  = new ReentrantLock();
 
-    private final ReentrantLock                                             lock                  = new ReentrantLock();
-
-    private final Condition                                                 notEmpty              = lock.newCondition();
-    private final Condition                                                 empty                 = lock.newCondition();
+    private final Condition         notEmpty              = lock.newCondition();
+    private final Condition         empty                 = lock.newCondition();
 
     // stats
-    private long                                                            connectCount          = 0L;
-    private long                                                            closeCount            = 0L;
-    private long                                                            connectErrorCount     = 0L;
-    private long                                                            recycleCount          = 0L;
-    private long                                                            createConnectionCount = 0L;
-    private long                                                            destroyCount          = 0L;
+    private long                    connectCount          = 0L;
+    private long                    closeCount            = 0L;
+    private long                    connectErrorCount     = 0L;
+    private long                    recycleCount          = 0L;
+    private long                    createConnectionCount = 0L;
+    private long                    destroyCount          = 0L;
 
     // store
-    private ConnectionHolder[]                                              connections;
-    private int                                                             poolingCount          = 0;
-    private int                                                             activeCount           = 0;
+    private ConnectionHolder[]      connections;
+    private int                     poolingCount          = 0;
+    private int                     activeCount           = 0;
 
     // threads
-    private CreateConnectionThread                                          createConnectionThread;
-    private DestroyConnectionThread                                         destoryConnectionThread;
+    private CreateConnectionThread  createConnectionThread;
+    private DestroyConnectionThread destoryConnectionThread;
 
-    private final CountDownLatch                                            initedLatch           = new CountDownLatch(
-                                                                                                                       2);
+    private final CountDownLatch    initedLatch           = new CountDownLatch(2);
 
-    private boolean                                                         enable                = false;
+    private boolean                 enable                = false;
 
     public DruidDataSource(){
     }
@@ -121,7 +115,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (InterruptedException e) {
             throw new SQLException("interrupt", e);
         }
-        
+
         try {
             if (inited) {
                 return;
@@ -230,7 +224,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             inited = true;
 
             createdTime = new Date();
-            instances.put(this, PRESENT);
+            Global.add(this);
 
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
@@ -305,13 +299,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private void discardConnection(Connection realConnection) throws SQLException {
         JdbcUtils.close(realConnection);
-        
+
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
             throw new SQLException("interrupt", e);
         }
-        
+
         try {
             activeCount--;
         } finally {
@@ -327,7 +321,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (InterruptedException e) {
             throw new SQLException("interrupt", e);
         }
-        
+
         try {
             if (!enable) {
                 connectErrorCount++;
@@ -430,7 +424,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 boolean validate = testConnectionInternal(conn);
                 if (!validate) {
                     JdbcUtils.close(conn);
-                    
+
                     lock.lockInterruptibly();
                     try {
                         destroyCount++;
@@ -462,7 +456,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } catch (InterruptedException interruptEx) {
                 throw new SQLException("interrupt", interruptEx);
             }
-            
+
             try {
                 activeCount--;
                 closeCount++;
@@ -498,8 +492,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             poolingCount = 0;
-            instances.remove(this);
-            
+            Global.remove(this);
+
             enable = false;
             notEmpty.signalAll();
         } finally {
@@ -528,7 +522,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
                 notEmpty.await(); // signal by recycle or creator
-                
+
                 if (!enable) {
                     connectErrorCount++;
                     throw new DataSourceDisableException();
@@ -559,7 +553,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
-                    
+
                     if (!enable) {
                         connectErrorCount++;
                         throw new DataSourceDisableException();
@@ -642,14 +636,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } catch (InterruptedException e2) {
                     break;
                 }
-                
+
                 try {
                     // 必须存在线程等待，才创建连接
                     int waitThreadCount = lock.getWaitQueueLength(notEmpty);
 
                     if (poolingCount >= waitThreadCount) {
                         notEmpty.signal(); // 防止信号丢失引起的等待
-                        empty.await(); 
+                        empty.await();
                         continue;
                     }
 
@@ -658,8 +652,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         empty.await();
                         continue;
                     }
-
-                   
 
                 } catch (InterruptedException e) {
                     break;
@@ -671,9 +663,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 } finally {
                     lock.unlock();
                 }
-                
+
                 Connection connection = null;
-                
+
                 try {
                     connection = connectionFactory.createConnection();
                 } catch (SQLException e) {
@@ -695,11 +687,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     LOG.error("create connection error", e);
                     break;
                 }
-                
+
                 if (connection == null) {
                     continue;
                 }
-                
+
                 lock.lock();
                 try {
                     connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
@@ -800,7 +792,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public static Set<DruidDataSource> getInstances() {
-        return instances.keySet();
+        return Global.getInstances();
     }
 
     public int getRawDriverMajorVersion() {
@@ -843,7 +835,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (InterruptedException e) {
             return;
         }
-        
+
         try {
             final int checkCount = poolingCount - minIdle;
             for (int i = 0; i < checkCount; ++i) {
@@ -877,7 +869,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             destroyCount++;
         }
     }
-    
+
     public int getWaitThreadCount() {
         lock.lock();
         try {
@@ -886,7 +878,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public int getLockQueueLength() {
         return lock.getQueueLength();
     }
