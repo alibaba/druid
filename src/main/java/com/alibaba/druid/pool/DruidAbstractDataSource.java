@@ -113,7 +113,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     private boolean                                                                          testOnReturn                              = DEFAULT_TEST_ON_RETURN;
     private boolean                                                                          testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected boolean                                                                        poolPreparedStatements                    = false;
-    protected int                                                                            maxPoolPreparedStatementPerConnectionSize              = -1;
+    protected int                                                                            maxPoolPreparedStatementPerConnectionSize = -1;
 
     protected boolean                                                                        inited                                    = false;
 
@@ -165,6 +165,16 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected long                                                                           id;
 
     protected Date                                                                           createdTime;
+
+    protected int                                                                              connectionErrorRetryAttempts              = 30;
+
+    public int getConnectionErrorRetryAttempts() {
+        return connectionErrorRetryAttempts;
+    }
+
+    public void setConnectionErrorRetryAttempts(int connectionErrorRetryAttempts) {
+        this.connectionErrorRetryAttempts = connectionErrorRetryAttempts;
+    }
 
     public long getDupCloseCount() {
         return dupCloseCount.get();
@@ -269,7 +279,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
         this.removeAbandonedTimeoutMillis = removeAbandonedTimeout * 1000;
     }
-    
+
     public void setRemoveAbandonedTimeoutMillis(int removeAbandonedTimeoutMillis) {
         this.removeAbandonedTimeoutMillis = removeAbandonedTimeoutMillis;
     }

@@ -653,7 +653,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         public void run() {
             initedLatch.countDown();
 
-            final int MAX_ERRRO_TRY = 3;
             int errorCount = 0;
             for (;;) {
                 // addLast
@@ -699,7 +698,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     errorCount++;
 
-                    if (errorCount > MAX_ERRRO_TRY && timeBetweenConnectErrorMillis > 0) {
+                    if (errorCount > connectionErrorRetryAttempts && timeBetweenConnectErrorMillis > 0) {
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);
                         } catch (InterruptedException e1) {

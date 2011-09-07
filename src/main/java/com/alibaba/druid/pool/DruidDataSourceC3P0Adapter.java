@@ -105,11 +105,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getCheckoutTimeout() {
-        return (int) dataSource.getMaxWait();
+        return (int) dataSource.getMaxWait() / 1000;
     }
 
     public void setCheckoutTimeout(int checkoutTimeout) {
-        dataSource.setMaxWait(checkoutTimeout);
+        dataSource.setMaxWait(checkoutTimeout * 1000);
     }
 
     public boolean isAutoCommitOnClose() {
@@ -224,6 +224,46 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(maxStatementsPerConnection);
     }
 
+    public int getMaxStatements() {
+        return dataSource.getMaxOpenPreparedStatements();
+    }
+
+    public void setMaxStatements(int maxStatements) {
+        dataSource.setMaxOpenPreparedStatements(maxStatements);
+    }
+
+    public int getUnreturnedConnectionTimeout() {
+        return dataSource.getRemoveAbandonedTimeout();
+    }
+
+    public void setUnreturnedConnectionTimeout(int unreturnedConnectionTimeout) {
+        dataSource.setRemoveAbandonedTimeout(unreturnedConnectionTimeout);
+    }
+
+    public boolean isDebugUnreturnedConnectionStackTraces() {
+        return dataSource.isLogAbandoned();
+    }
+
+    public void setDebugUnreturnedConnectionStackTraces(boolean debugUnreturnedConnectionStackTraces) {
+        dataSource.setLogAbandoned(debugUnreturnedConnectionStackTraces);
+    }
+
+    public int getAcquireRetryAttempts() {
+        return dataSource.getConnectionErrorRetryAttempts();
+    }
+
+    public void setAcquireRetryAttempts(int acquireRetryAttempts) {
+        dataSource.setConnectionErrorRetryAttempts(acquireRetryAttempts);
+    }
+
+    public int getAcquireRetryDelay() {
+        return (int) (dataSource.getTimeBetweenConnectErrorMillis() / 1000L);
+    }
+
+    public void setAcquireRetryDelay(int acquireRetryDelay) {
+        dataSource.setTimeBetweenConnectErrorMillis(((long) acquireRetryDelay) * 1000);
+    }
+
     // /////////////////
 
     @Override
@@ -263,24 +303,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     private int     maxIdleTimeExcessConnections;
     private int     maxConnectionAge;
     private String  connectionCustomizerClassName;
-    private int     unreturnedConnectionTimeout;
-    private boolean debugUnreturnedConnectionStackTraces;
     private String  factoryClassLocation;
     private int     acquireIncrement = 1;
-    private int     acquireRetryDelay;
-    private int     acquireRetryAttempts;
 
     private String  connectionTesterClassName;
     private String  automaticTestTable;
-    private int     maxStatements;
-
-    public int getMaxStatements() {
-        return maxStatements;
-    }
-
-    public void setMaxStatements(int maxStatements) {
-        this.maxStatements = maxStatements;
-    }
 
     public String getConnectionTesterClassName() {
         return connectionTesterClassName;
@@ -356,22 +383,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         this.connectionCustomizerClassName = connectionCustomizerClassName;
     }
 
-    public int getUnreturnedConnectionTimeout() {
-        return unreturnedConnectionTimeout;
-    }
-
-    public void setUnreturnedConnectionTimeout(int unreturnedConnectionTimeout) {
-        this.unreturnedConnectionTimeout = unreturnedConnectionTimeout;
-    }
-
-    public boolean isDebugUnreturnedConnectionStackTraces() {
-        return debugUnreturnedConnectionStackTraces;
-    }
-
-    public void setDebugUnreturnedConnectionStackTraces(boolean debugUnreturnedConnectionStackTraces) {
-        this.debugUnreturnedConnectionStackTraces = debugUnreturnedConnectionStackTraces;
-    }
-
     public String getFactoryClassLocation() {
         return factoryClassLocation;
     }
@@ -386,22 +397,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public void setAcquireIncrement(int acquireIncrement) {
         this.acquireIncrement = acquireIncrement;
-    }
-
-    public int getAcquireRetryAttempts() {
-        return acquireRetryAttempts;
-    }
-
-    public void setAcquireRetryAttempts(int acquireRetryAttempts) {
-        this.acquireRetryAttempts = acquireRetryAttempts;
-    }
-
-    public int getAcquireRetryDelay() {
-        return acquireRetryDelay;
-    }
-
-    public void setAcquireRetryDelay(int acquireRetryDelay) {
-        this.acquireRetryDelay = acquireRetryDelay;
     }
 
     public String getOverrideDefaultUser() {
