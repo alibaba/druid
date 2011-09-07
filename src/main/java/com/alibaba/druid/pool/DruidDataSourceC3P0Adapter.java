@@ -13,6 +13,23 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public DruidDataSourceC3P0Adapter(){
         dataSource = new DruidDataSource();
+        
+        // setDefault
+        this.setInitialPoolSize(3);
+        this.setAcquireIncrement(3);
+        this.setAcquireIncrement(30);
+        this.setAcquireRetryDelay(1000);
+        this.setAutoCommitOnClose(false);
+        this.setAutomaticTestTable(null);
+        this.setCheckoutTimeout(0);
+        this.setDebugUnreturnedConnectionStackTraces(false);
+        this.setMaxIdleTime(0);
+        this.setMaxPoolSize(15);
+        this.setMaxStatements(0);
+        this.setMaxStatementsPerConnection(0);
+        this.setMinPoolSize(3);
+        this.setTestConnectionOnCheckin(false);
+        this.setTestConnectionOnCheckout(false);
     }
 
     @Override
@@ -257,11 +274,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public int getAcquireRetryDelay() {
-        return (int) (dataSource.getTimeBetweenConnectErrorMillis() / 1000L);
+        return (int) dataSource.getTimeBetweenConnectErrorMillis();
     }
 
     public void setAcquireRetryDelay(int acquireRetryDelay) {
-        dataSource.setTimeBetweenConnectErrorMillis(((long) acquireRetryDelay) * 1000);
+        dataSource.setTimeBetweenConnectErrorMillis(acquireRetryDelay);
     }
 
     // /////////////////
