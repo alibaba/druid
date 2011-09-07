@@ -79,4 +79,6 @@ public interface DruidAbstractDataSourceMBean {
     long getTimeBetweenConnectErrorMillis();
 
     int getMaxOpenPreparedStatements();
+
+    long getRemoveAbandonedCount();
 }

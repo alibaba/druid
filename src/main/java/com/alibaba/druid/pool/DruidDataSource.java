@@ -74,6 +74,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                    recycleCount          = 0L;
     private long                    createConnectionCount = 0L;
     private long                    destroyCount          = 0L;
+    private long                    removeAbandonedCount          = 0L;
 
     // store
     private ConnectionHolder[]      connections;
@@ -100,6 +101,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             recycleCount = 0;
             createConnectionCount = 0;
             destroyCount = 0;
+            removeAbandonedCount = 0;
         } finally {
             lock.unlock();
         }
@@ -644,6 +646,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return activeCount;
     }
 
+    public long getRemoveAbandonedCount() {
+        return removeAbandonedCount;
+    }
+
     public class CreateConnectionThread extends Thread {
 
         public CreateConnectionThread(String name){
@@ -702,7 +708,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         if (breakAfterAcquireFailure) {
                             break;
                         }
-                        
+
                         try {
                             Thread.sleep(timeBetweenConnectErrorMillis);
                         } catch (InterruptedException interruptEx) {
@@ -774,6 +780,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             if (timeMillis >= removeAbandonedTimeoutMillis) {
                                 PoolableConnection pooledConnection = entry.getKey();
                                 JdbcUtils.close(pooledConnection);
+                                removeAbandonedCount++;
 
                                 if (isLogAbandoned()) {
                                     StringBuilder buf = new StringBuilder();

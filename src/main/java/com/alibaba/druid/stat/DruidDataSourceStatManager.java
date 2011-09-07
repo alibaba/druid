@@ -95,6 +95,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("ValidationQueryTimeout", dataSource.getValidationQueryTimeout());
         map.put("DriverClassName", dataSource.getDriverClassName());
         map.put("Username", dataSource.getUsername());
+        map.put("RemoveAbandonedCount", dataSource.getRemoveAbandonedCount());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -113,7 +114,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, //
                 SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.BOOLEAN, SimpleType.BOOLEAN, //
                 SimpleType.BOOLEAN, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, //
-                SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING,
+                SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG,
         //
         };
 
@@ -123,7 +124,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "CloseCount", "ActiveCount", "PoolingCount", "LockQueueLength", "WaitThreadCount", //
                 "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements", "TestOnBorrow", //
                 "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis", "DbType", //
-                "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username"
+                "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username", "RemoveAbandonedCount"
         //
         };
 
