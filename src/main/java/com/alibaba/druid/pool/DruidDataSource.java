@@ -297,6 +297,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
+    /**
+     * 抛弃连接，不进行回收，而是抛弃
+     * @param realConnection
+     * @throws SQLException
+     */
     private void discardConnection(Connection realConnection) throws SQLException {
         JdbcUtils.close(realConnection);
 
