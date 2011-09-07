@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -88,7 +90,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public DruidDataSource(){
     }
-    
+
     public void resetStat() {
         lock.lock();
         try {
@@ -313,6 +315,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     /**
      * 抛弃连接，不进行回收，而是抛弃
+     * 
      * @param realConnection
      * @throws SQLException
      */
@@ -411,6 +414,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         assert holder != null;
+
+        if (isRemoveAbandoned()) {
+            activeConnections.remove(pooledConnection);
+        }
 
         try {
             // 第一步，检查连接是否关闭
@@ -747,12 +754,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         break;
                     }
 
-                    if (poolingCount <= 0) {
-                        Thread.sleep(minEvictableIdleTimeMillis);
-                        continue;
-                    }
-
                     shrink(true);
+
+                    if (isRemoveAbandoned()) {
+                        Iterator<Map.Entry<PoolableConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
+
+                        long currentMillis = 0;
+                        for (; iter.hasNext();) {
+                            if (currentMillis == 0) {
+                                System.currentTimeMillis();
+                            }
+                            Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
+                            ActiveConnectionTraceInfo activeInfo = entry.getValue();
+                            long timeMillis = activeInfo.getConnectTime() - currentMillis;
+
+                            if (timeMillis >= removeAbandonedTimeoutMillis) {
+                                PoolableConnection pooledConnection = entry.getKey();
+                                JdbcUtils.close(pooledConnection);
+                            }
+                        }
+                    }
                 } catch (InterruptedException e) {
                     break;
                 }
