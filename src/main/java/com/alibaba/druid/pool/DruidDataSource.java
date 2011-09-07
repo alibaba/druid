@@ -680,14 +680,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     // 必须存在线程等待，才创建连接
                     int waitThreadCount = lock.getWaitQueueLength(notEmpty);
 
-                    if (poolingCount >= waitThreadCount) {
-                        notEmpty.signal(); // 防止信号丢失引起的等待
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
                         empty.await();
                         continue;
                     }
-
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
+                    
+                    if (poolingCount >= waitThreadCount) {
+                        notEmpty.signal(); // 防止信号丢失引起的等待
                         empty.await();
                         continue;
                     }
