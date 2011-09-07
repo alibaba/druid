@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -48,6 +47,7 @@ import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -224,7 +224,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             inited = true;
 
             createdTime = new Date();
-            Global.add(this);
+            DruidDataSourceStatManager.add(this);
 
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
@@ -497,7 +497,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             poolingCount = 0;
-            Global.remove(this);
+            DruidDataSourceStatManager.remove(this);
 
             enable = false;
             notEmpty.signalAll();
@@ -794,10 +794,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             names.add(filter.getClass().getName());
         }
         return names;
-    }
-
-    public static Set<DruidDataSource> getInstances() {
-        return Global.getInstances();
     }
 
     public int getRawDriverMajorVersion() {
