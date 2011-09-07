@@ -233,6 +233,11 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
 
         return COMPOSITE_TYPE;
     }
+    
+    @Override
+    public TabularData getDruidDataSourceList() throws JMException {
+        return DruidDataSourceStatManager.getInstance().getDataSourceList();
+    }
 
     @Override
     public TabularData getDataSourceList() throws JMException {
@@ -340,6 +345,8 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 }
             }
         }
+        
+        DruidDataSourceStatManager.getInstance().reset();
     }
 
     @Override
