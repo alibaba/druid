@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.ConnectionEventListener;
+import javax.sql.PooledConnection;
 import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.util.JdbcUtils;
@@ -30,7 +32,7 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public final class ConnectionHolder {
+public final class ConnectionHolder implements PooledConnection {
 
     private final DruidAbstractDataSource       dataSource;
     private final Connection                    conn;
@@ -147,5 +149,31 @@ public final class ConnectionHolder {
         buf.append("}");
         
         return buf.toString();
+    }
+
+    @Override
+    public void close() throws SQLException {
+        this.reset();
+        JdbcUtils.close(this.conn);
+    }
+
+    @Override
+    public void addConnectionEventListener(ConnectionEventListener listener) {
+        connectionEventListeners.add(listener);
+    }
+
+    @Override
+    public void removeConnectionEventListener(ConnectionEventListener listener) {
+        connectionEventListeners.remove(listener);
+    }
+
+    @Override
+    public void addStatementEventListener(StatementEventListener listener) {
+        statementEventListeners.add(listener);
+    }
+
+    @Override
+    public void removeStatementEventListener(StatementEventListener listener) {
+        statementEventListeners.remove(listener);
     }
 }
