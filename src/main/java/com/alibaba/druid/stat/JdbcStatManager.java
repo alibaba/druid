@@ -331,6 +331,15 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 }
             }
         }
+        
+        for (DruidDataSource instance : DruidDataSource.getInstances()) {
+            for (Filter filter : instance.getProxyFilters()) {
+                if (filter instanceof StatFilter) {
+                    StatFilter countFilter = (StatFilter) filter;
+                    countFilter.reset();
+                }
+            }
+        }
     }
 
     @Override
