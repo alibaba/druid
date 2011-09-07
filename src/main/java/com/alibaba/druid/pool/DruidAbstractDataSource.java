@@ -1039,12 +1039,14 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         map.put("Properties", getProperties());
 
         if (stat != null) {
+            // 0 - 4
             map.put("ConnectionActiveCount", stat.getConnectionActiveCount());
             map.put("ConnectionActiveCountMax", stat.getConnectionStat().getActiveMax());
             map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
             map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
             map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
 
+            // 5 - 9
             map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
             map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getConnectErrorCount());
             Throwable lastConnectionConnectError = stat.getConnectionStat().getConnectErrorLast();
@@ -1058,12 +1060,14 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
                 map.put("ConnectionConnectErrorLastStackTrace", null);
             }
 
+            // 10 - 14
             map.put("StatementCreateCount", stat.getStatementStat().getCreateCount());
             map.put("StatementPrepareCount", stat.getStatementStat().getPrepareCount());
             map.put("StatementPreCallCount", stat.getStatementStat().getPrepareCallCount());
             map.put("StatementExecuteCount", stat.getStatementStat().getExecuteCount());
             map.put("StatementRunningCount", stat.getStatementStat().getRunningCount());
 
+            // 15 -24
             map.put("StatementConcurrentMax", stat.getStatementStat().getConcurrentMax());
             map.put("StatementCloseCount", stat.getStatementStat().getCloseCount());
             map.put("StatementErrorCount", stat.getStatementStat().getErrorCount());
@@ -1084,12 +1088,14 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
             map.put("ResultSetCloseCount", stat.getResultSetStat().getCloseCount());
 
+            // 25 - 29
             map.put("ResultSetOpenCount", stat.getResultSetStat().getOpenCount());
             map.put("ResultSetOpenningCount", stat.getResultSetStat().getOpenningCount());
             map.put("ResultSetOpenningMax", stat.getResultSetStat().getOpenningMax());
             map.put("ResultSetFetchRowCount", stat.getResultSetStat().getFetchRowCount());
             map.put("ResultSetLastOpenTime", stat.getResultSetStat().getLastOpenTime());
 
+            // 30 - 34
             map.put("ResultSetErrorCount", stat.getResultSetStat().getErrorCount());
             map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getAliveMillisTotal());
             map.put("ResultSetLastErrorTime", stat.getResultSetStat().getLastErrorTime());
@@ -1161,43 +1167,50 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
             map.put("StatementExecuteCount_10_30_Minutes", stat.getStatementStat().getCount_10_30_minutes());
             map.put("StatementExecuteCount_30_more_Minutes", stat.getStatementStat().getCount_30_more_minutes());
         } else {
+            // 0 - 4
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);
             map.put("ConnectionCloseCount", null);
             map.put("ConnectionCommitCount", null);
             map.put("ConnectionRollbackCount", null);
 
+            // 5 - 9
             map.put("ConnectionConnectLastTime", null);
             map.put("ConnectionConnectErrorCount", null);
             map.put("ConnectionConnectErrorLastTime", null);
             map.put("ConnectionConnectErrorLastMessage", null);
             map.put("ConnectionConnectErrorLastStackTrace", null);
 
+            // 10 - 14
             map.put("StatementCreateCount", null);
             map.put("StatementPrepareCount", null);
             map.put("StatementPreCallCount", null);
             map.put("StatementExecuteCount", null);
             map.put("StatementRunningCount", null);
 
+            // 15 - 19
             map.put("StatementConcurrentMax", null);
             map.put("StatementCloseCount", null);
             map.put("StatementErrorCount", null);
             map.put("StatementLastErrorTime", null);
             map.put("StatementLastErrorMessage", null);
 
+            // 20 - 24
             map.put("StatementLastErrorStackTrace", null);
             map.put("StatementExecuteMillisTotal", null);
             map.put("ConnectionConnectingCount", null);
             map.put("StatementExecuteLastTime", null);
             map.put("ResultSetCloseCount", null);
 
+            // 25 - 29
             map.put("ResultSetOpenCount", null);
             map.put("ResultSetOpenningCount", null);
             map.put("ResultSetOpenningMax", null);
             map.put("ResultSetFetchRowCount", null);
             map.put("ResultSetLastOpenTime", null);
 
-            map.put("ResultSetLastErrorCount", null);
+            // 30 - 34
+            map.put("ResultSetErrorCount", null);
             map.put("ResultSetOpenningMillisTotal", null);
             map.put("ResultSetLastErrorTime", null);
             map.put("ResultSetLastErrorMessage", null);
