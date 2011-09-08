@@ -675,7 +675,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public int getPoolingCount() {
-        return poolingCount;
+        lock.lock();
+        try {
+            return poolingCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getRecycleCount() {
@@ -683,7 +688,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public int getActiveCount() {
-        return activeCount;
+        lock.lock();
+        try {
+            return activeCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getRemoveAbandonedCount() {
