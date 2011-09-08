@@ -1,10 +1,13 @@
 package com.alibaba.druid.stat;
 
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.CompositeType;
 import javax.management.openmbean.OpenType;
@@ -13,27 +16,66 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
-    private final static DruidDataSourceStatManager                         instance  = new DruidDataSourceStatManager();
+    private final static Log                                                LOG        = LogFactory.getLog(DruidDataSourceStatManager.class);
+
+    private final static DruidDataSourceStatManager                         instance   = new DruidDataSourceStatManager();
 
     // global instances
-    private static final Object                                             PRESENT   = new Object();
-    private static final ConcurrentIdentityHashMap<DruidDataSource, Object> instances = new ConcurrentIdentityHashMap<DruidDataSource, Object>();
+    private static final Object                                             PRESENT    = new Object();
+    private static final ConcurrentIdentityHashMap<DruidDataSource, Object> instances  = new ConcurrentIdentityHashMap<DruidDataSource, Object>();
+
+    private final static String                                             MBEAN_NAME = "com.alibaba.druid:type=DruidDataSourceStat";
 
     public static DruidDataSourceStatManager getInstance() {
         return instance;
     }
 
-    public static void add(DruidDataSource dataSource) {
+    public synchronized static void add(DruidDataSource dataSource) {
         instances.put(dataSource, PRESENT);
+
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+        if (instances.size() == 0) {
+            try {
+                mbeanServer.registerMBean(instance, new ObjectName(MBEAN_NAME));
+            } catch (JMException ex) {
+                LOG.error("register mbean error", ex);
+            }
+        }
+
+        try {
+            int id = System.identityHashCode(dataSource);
+            mbeanServer.registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id));
+        } catch (JMException ex) {
+            LOG.error("register mbean error", ex);
+        }
     }
 
-    public static void remove(DruidDataSource dataSource) {
+    public synchronized static void remove(DruidDataSource dataSource) {
         instances.remove(dataSource);
+
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+        try {
+            int id = System.identityHashCode(dataSource);
+            mbeanServer.unregisterMBean(new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id));
+        } catch (JMException ex) {
+            LOG.error("unregister mbean error", ex);
+        }
+
+        if (instances.size() == 0) {
+            try {
+                mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
+            } catch (JMException ex) {
+                LOG.error("unregister mbean error", ex);
+            }
+        }
     }
 
     public static Set<DruidDataSource> getDruidDataSourceInstances() {
@@ -96,7 +138,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("DriverClassName", dataSource.getDriverClassName());
         map.put("Username", dataSource.getUsername());
         map.put("RemoveAbandonedCount", dataSource.getRemoveAbandonedCount());
-        
+
         map.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
         map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
 
