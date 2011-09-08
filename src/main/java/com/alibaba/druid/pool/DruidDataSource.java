@@ -37,6 +37,7 @@ import javax.naming.StringRefAddr;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -1043,5 +1044,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("\n}");
 
         return buf.toString();
+    }
+
+    @Override
+    public String getVersion() {
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
     }
 }

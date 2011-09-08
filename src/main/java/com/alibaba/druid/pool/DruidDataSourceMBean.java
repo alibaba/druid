@@ -43,4 +43,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     boolean isResetStatEnable();
     
     void setResetStatEnable(boolean resetStatEnable);
+    
+    String getVersion();
 }

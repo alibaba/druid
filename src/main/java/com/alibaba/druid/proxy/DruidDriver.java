@@ -135,63 +135,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         DataSourceProxyImpl dataSource = proxyDataSources.get(url);
 
         if (dataSource == null) {
-            String restUrl = url.substring(DEFAULT_PREFIX.length());
-
-            DataSourceProxyConfig config;
-
-            config = new DataSourceProxyConfig();
-
-            List<AbstractDruidFilterConfig> druidFilterConfigList = new ArrayList<AbstractDruidFilterConfig>();
-            String configFile = info.getProperty(CONFIG_PREFIX);
-            if (configFile != null) {
-                DruidFilterConfigLoader.loadConfig(configFile.trim(), druidFilterConfigList);
-            }
-
-            if (restUrl.startsWith(DRIVER_PREFIX)) {
-                int pos = restUrl.indexOf(':', DRIVER_PREFIX.length());
-                String driverText = restUrl.substring(DRIVER_PREFIX.length(), pos);
-                if (driverText.length() > 0) {
-                    config.setRawDriverClassName(driverText.trim());
-                }
-                restUrl = restUrl.substring(pos + 1);
-            }
-
-            if (restUrl.startsWith(FILTERS_PREFIX)) {
-                int pos = restUrl.indexOf(':', FILTERS_PREFIX.length());
-                String filtersText = restUrl.substring(FILTERS_PREFIX.length(), pos);
-                for (String filterItem : filtersText.split(",")) {
-                    DruidLoaderUtils.loadFilter(config.getFilters(), filterItem);
-                }
-                restUrl = restUrl.substring(pos + 1);
-            }
-            // 如果url中并无定义filter 采用配置
-            if (config.getFilters().size() <= 0) {
-                DruidLoaderUtils.loadFilter(config.getFilters(), druidFilterConfigList);
-            }
-
-            if (restUrl.startsWith(NAME_PREFIX)) {
-                int pos = restUrl.indexOf(':', NAME_PREFIX.length());
-                String name = restUrl.substring(NAME_PREFIX.length(), pos);
-                config.setName(name);
-                restUrl = restUrl.substring(pos + 1);
-            }
-
-            if (restUrl.startsWith(JMX_PREFIX)) {
-                int pos = restUrl.indexOf(':', JMX_PREFIX.length());
-                String jmxOption = restUrl.substring(JMX_PREFIX.length(), pos);
-                config.setJmxOption(jmxOption);
-                restUrl = restUrl.substring(pos + 1);
-            }
-
-            String rawUrl = restUrl;
-            config.setRawUrl(rawUrl);
-
-            if (config.getRawDriverClassName() == null) {
-                String rawDriverClassname = JdbcUtils.getDriverClassName(rawUrl);
-                config.setRawDriverClassName(rawDriverClassname);
-            }
-
-            config.setUrl(url);
+            DataSourceProxyConfig config = parseConfig(url, info);
 
             Driver rawDriver = createDriver(config.getRawDriverClassName());
 
@@ -216,6 +160,68 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             dataSource = proxyDataSources.get(url);
         }
         return dataSource;
+    }
+
+    public static DataSourceProxyConfig parseConfig(String url, Properties info) throws SQLException {
+        String restUrl = url.substring(DEFAULT_PREFIX.length());
+
+        DataSourceProxyConfig config = new DataSourceProxyConfig();
+
+        List<AbstractDruidFilterConfig> druidFilterConfigList = new ArrayList<AbstractDruidFilterConfig>();
+
+        if (info != null) {
+            String configFile = info.getProperty(CONFIG_PREFIX);
+            if (configFile != null) {
+                DruidFilterConfigLoader.loadConfig(configFile.trim(), druidFilterConfigList);
+            }
+        }
+
+        if (restUrl.startsWith(DRIVER_PREFIX)) {
+            int pos = restUrl.indexOf(':', DRIVER_PREFIX.length());
+            String driverText = restUrl.substring(DRIVER_PREFIX.length(), pos);
+            if (driverText.length() > 0) {
+                config.setRawDriverClassName(driverText.trim());
+            }
+            restUrl = restUrl.substring(pos + 1);
+        }
+
+        if (restUrl.startsWith(FILTERS_PREFIX)) {
+            int pos = restUrl.indexOf(':', FILTERS_PREFIX.length());
+            String filtersText = restUrl.substring(FILTERS_PREFIX.length(), pos);
+            for (String filterItem : filtersText.split(",")) {
+                DruidLoaderUtils.loadFilter(config.getFilters(), filterItem);
+            }
+            restUrl = restUrl.substring(pos + 1);
+        }
+        // 如果url中并无定义filter 采用配置
+        if (config.getFilters().size() <= 0) {
+            DruidLoaderUtils.loadFilter(config.getFilters(), druidFilterConfigList);
+        }
+
+        if (restUrl.startsWith(NAME_PREFIX)) {
+            int pos = restUrl.indexOf(':', NAME_PREFIX.length());
+            String name = restUrl.substring(NAME_PREFIX.length(), pos);
+            config.setName(name);
+            restUrl = restUrl.substring(pos + 1);
+        }
+
+        if (restUrl.startsWith(JMX_PREFIX)) {
+            int pos = restUrl.indexOf(':', JMX_PREFIX.length());
+            String jmxOption = restUrl.substring(JMX_PREFIX.length(), pos);
+            config.setJmxOption(jmxOption);
+            restUrl = restUrl.substring(pos + 1);
+        }
+
+        String rawUrl = restUrl;
+        config.setRawUrl(rawUrl);
+
+        if (config.getRawDriverClassName() == null) {
+            String rawDriverClassname = JdbcUtils.getDriverClassName(rawUrl);
+            config.setRawDriverClassName(rawDriverClassname);
+        }
+
+        config.setUrl(url);
+        return config;
     }
 
     public Driver createDriver(String className) throws SQLException {
