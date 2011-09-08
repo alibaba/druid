@@ -20,8 +20,6 @@ import javax.management.openmbean.TabularData;
 
 public interface JdbcStatManagerMBean {
 
-    public TabularData getDruidDataSourceList() throws JMException;
-
     TabularData getDataSourceList() throws JMException;
 
     TabularData getSqlList() throws JMException;
