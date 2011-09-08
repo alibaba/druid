@@ -8,4 +8,6 @@ public interface DruidDataSourceStatManagerMBean {
     void reset();
 
     TabularData getDataSourceList() throws JMException;
+
+    long getResetCount();
 }

@@ -4,6 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
@@ -24,14 +25,16 @@ import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
-    private final static Log                                                    LOG        = LogFactory.getLog(DruidDataSourceStatManager.class);
+    private final static Log                                                    LOG         = LogFactory.getLog(DruidDataSourceStatManager.class);
 
-    private final static DruidDataSourceStatManager                             instance   = new DruidDataSourceStatManager();
+    private final static DruidDataSourceStatManager                             instance    = new DruidDataSourceStatManager();
+
+    private final AtomicLong                                                    resetCount  = new AtomicLong();
 
     // global instances
-    private static final ConcurrentIdentityHashMap<DruidDataSource, ObjectName> instances  = new ConcurrentIdentityHashMap<DruidDataSource, ObjectName>();
+    private static final ConcurrentIdentityHashMap<DruidDataSource, ObjectName> dataSources = new ConcurrentIdentityHashMap<DruidDataSource, ObjectName>();
 
-    private final static String                                                 MBEAN_NAME = "com.alibaba.druid:type=DruidDataSourceStat";
+    private final static String                                                 MBEAN_NAME  = "com.alibaba.druid:type=DruidDataSourceStat";
 
     public static DruidDataSourceStatManager getInstance() {
         return instance;
@@ -39,7 +42,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public synchronized static void add(DruidDataSource dataSource) {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-        if (instances.size() == 0) {
+        if (dataSources.size() == 0) {
             try {
                 mbeanServer.registerMBean(instance, new ObjectName(MBEAN_NAME));
             } catch (JMException ex) {
@@ -69,11 +72,11 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
             }
         }
 
-        instances.put(dataSource, objectName);
+        dataSources.put(dataSource, objectName);
     }
 
     public synchronized static void remove(DruidDataSource dataSource) {
-        ObjectName objectName = instances.remove(dataSource);
+        ObjectName objectName = dataSources.remove(dataSource);
 
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
@@ -85,7 +88,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
             }
         }
 
-        if (instances.size() == 0) {
+        if (dataSources.size() == 0) {
             try {
                 mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
             } catch (JMException ex) {
@@ -95,7 +98,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     }
 
     public static Set<DruidDataSource> getDruidDataSourceInstances() {
-        return instances.keySet();
+        return dataSources.keySet();
     }
 
     public void reset() {
@@ -103,6 +106,12 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         for (DruidDataSource dataSource : dataSources) {
             dataSource.resetStat();
         }
+
+        resetCount.incrementAndGet();
+    }
+
+    public long getResetCount() {
+        return resetCount.get();
     }
 
     public TabularData getDataSourceList() throws JMException {
