@@ -76,6 +76,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                    destroyCount          = 0L;
     private long                    removeAbandonedCount  = 0L;
     private long                    notEmptyWaitCount     = 0L;
+    private long                    notEmptySignalCount   = 0L;
     private long                    notEmptyWaitNanos     = 0L;
 
     // store
@@ -121,6 +122,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.enable = enable;
             if (!enable) {
                 notEmpty.signalAll();
+                notEmptySignalCount++;
             }
         } finally {
             lock.unlock();
@@ -528,6 +530,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             enable = false;
             notEmpty.signalAll();
+            notEmptySignalCount++;
         } finally {
             lock.unlock();
         }
@@ -547,6 +550,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         connections[poolingCount++] = e;
 
         notEmpty.signal();
+        notEmptySignalCount++;
     }
 
     ConnectionHolder takeLast() throws InterruptedException, SQLException {
@@ -563,6 +567,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         } catch (InterruptedException ie) {
             notEmpty.signal(); // propagate to non-interrupted thread
+            notEmptySignalCount++;
             throw ie;
         }
 
@@ -596,6 +601,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
+                    notEmptySignalCount++;
                     throw ie;
                 }
 
@@ -677,17 +683,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 try {
-                    // 防止创建超过maxActive数量的连接
-                    if (activeCount + poolingCount >= maxActive) {
-                        empty.await();
-                        continue;
-                    }
-
                     // 必须存在线程等待，才创建连接
                     int waitThreadCount = lock.getWaitQueueLength(notEmpty);
 
                     if (poolingCount >= waitThreadCount) {
                         notEmpty.signal(); // 防止信号丢失引起的等待
+                        notEmptySignalCount++;
+                        empty.await();
+                        continue;
+                    }
+
+                    // 防止创建超过maxActive数量的连接
+                    if (activeCount + poolingCount >= maxActive) {
                         empty.await();
                         continue;
                     }
@@ -742,6 +749,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     errorCount = 0; // reset errorCount
 
                     notEmpty.signal();
+                    notEmptySignalCount++;
                 } finally {
                     lock.unlock();
                 }
@@ -949,6 +957,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public long getNotEmptyWaitCount() {
         return notEmptyWaitCount;
+    }
+
+    public long getNotEmptySignalCount() {
+        return notEmptySignalCount;
     }
 
     public long getNotEmptyWaitMillis() {

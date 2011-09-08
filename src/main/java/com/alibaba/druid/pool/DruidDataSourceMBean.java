@@ -31,6 +31,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     int getLockQueueLength();
 
     long getNotEmptyWaitCount();
+    
+    long getNotEmptySignalCount();
 
     long getNotEmptyWaitMillis();
 

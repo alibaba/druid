@@ -47,7 +47,7 @@ public class Case1 extends TestCase {
     private String validationQuery = "SELECT 1";
     private int    threadCount     = 40;
     private int    loopCount       = 4;
-    final int      LOOP_COUNT      = 1000 * 10;
+    final int      LOOP_COUNT      = 1000 * 100;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -78,7 +78,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void ftest_1() throws Exception {
+    public void f_test_1() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -100,7 +100,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void test_2() throws Exception {
+    public void f_test_2() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
