@@ -106,6 +106,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             destroyCount = 0;
             removeAbandonedCount = 0;
             notEmptyWaitCount = 0;
+            notEmptySignalCount = 0L;
             notEmptyWaitNanos = 0;
         } finally {
             lock.unlock();
