@@ -186,6 +186,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
+
+                if (jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
+                    DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
+                    this.driverClass = config.getRawDriverClassName();
+                    this.jdbcUrl = config.getRawUrl();
+                    if (this.name == null) {
+                        this.name = config.getName();
+                    }
+                    this.filters.addAll(config.getFilters());
+                }
             }
 
             if (this.driver == null) {
