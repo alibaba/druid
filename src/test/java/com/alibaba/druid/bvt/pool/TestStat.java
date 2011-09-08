@@ -1,11 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -21,6 +18,7 @@ public class TestStat extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setName("com.alibaba.dragoon.monitor");
 
     }
 
@@ -49,7 +47,6 @@ public class TestStat extends TestCase {
         JdbcStatManager.getInstance().getDataSourceList();
         Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
-        ManagementFactory.getPlatformMBeanServer().registerMBean(DruidDataSourceStatManager.getInstance(), new ObjectName("com.alibaba.druid:type=DruidDataSourceStat"));
         
     }
 }

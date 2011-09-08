@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.filter.FilterAdapter;
@@ -20,7 +19,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 public class SpringFilterTest extends TestCase {
 
     public void test_spring() throws Exception {
-        ApplicationContext context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/spring-config-1.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/spring-config-1.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
@@ -28,6 +27,8 @@ public class SpringFilterTest extends TestCase {
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");
         Assert.assertEquals(1, filter.getConnectCount());
+        
+        context.close();
     }
 
     public static class TestFilter extends FilterAdapter {

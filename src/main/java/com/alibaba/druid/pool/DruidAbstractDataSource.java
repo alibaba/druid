@@ -474,6 +474,10 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         }
         return name;
     }
+    
+    public String getNameInternal() {
+        return this.name;
+    }
 
     public void setName(String name) {
         this.name = name;

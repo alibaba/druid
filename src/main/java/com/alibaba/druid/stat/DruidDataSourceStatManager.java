@@ -24,23 +24,20 @@ import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
-    private final static Log                                                LOG        = LogFactory.getLog(DruidDataSourceStatManager.class);
+    private final static Log                                                    LOG        = LogFactory.getLog(DruidDataSourceStatManager.class);
 
-    private final static DruidDataSourceStatManager                         instance   = new DruidDataSourceStatManager();
+    private final static DruidDataSourceStatManager                             instance   = new DruidDataSourceStatManager();
 
     // global instances
-    private static final Object                                             PRESENT    = new Object();
-    private static final ConcurrentIdentityHashMap<DruidDataSource, Object> instances  = new ConcurrentIdentityHashMap<DruidDataSource, Object>();
+    private static final ConcurrentIdentityHashMap<DruidDataSource, ObjectName> instances  = new ConcurrentIdentityHashMap<DruidDataSource, ObjectName>();
 
-    private final static String                                             MBEAN_NAME = "com.alibaba.druid:type=DruidDataSourceStat";
+    private final static String                                                 MBEAN_NAME = "com.alibaba.druid:type=DruidDataSourceStat";
 
     public static DruidDataSourceStatManager getInstance() {
         return instance;
     }
 
     public synchronized static void add(DruidDataSource dataSource) {
-        instances.put(dataSource, PRESENT);
-
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         if (instances.size() == 0) {
             try {
@@ -50,23 +47,42 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
             }
         }
 
-        try {
-            int id = System.identityHashCode(dataSource);
-            mbeanServer.registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id));
-        } catch (JMException ex) {
-            LOG.error("register mbean error", ex);
+        ObjectName objectName = null;
+        if (dataSource.getNameInternal() != null) {
+            try {
+                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + dataSource.getNameInternal());
+                mbeanServer.registerMBean(dataSource, objectName);
+            } catch (JMException ex) {
+                LOG.error("register mbean error", ex);
+                objectName = null;
+            }
         }
+
+        if (objectName == null) {
+            try {
+                int id = System.identityHashCode(dataSource);
+                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
+                mbeanServer.registerMBean(dataSource, objectName);
+            } catch (JMException ex) {
+                LOG.error("register mbean error", ex);
+                objectName = null;
+            }
+        }
+
+        instances.put(dataSource, objectName);
     }
 
     public synchronized static void remove(DruidDataSource dataSource) {
-        instances.remove(dataSource);
+        ObjectName objectName = instances.remove(dataSource);
 
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-        try {
-            int id = System.identityHashCode(dataSource);
-            mbeanServer.unregisterMBean(new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id));
-        } catch (JMException ex) {
-            LOG.error("unregister mbean error", ex);
+
+        if (objectName != null) {
+            try {
+                mbeanServer.unregisterMBean(objectName);
+            } catch (JMException ex) {
+                LOG.error("unregister mbean error", ex);
+            }
         }
 
         if (instances.size() == 0) {

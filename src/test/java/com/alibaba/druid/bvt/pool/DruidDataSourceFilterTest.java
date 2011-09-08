@@ -18,6 +18,8 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat");
 
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
+        
+        dataSource.close();
     }
 
     public void test_filter_2() throws Exception {
@@ -28,6 +30,8 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat,trace");
 
         Assert.assertEquals(2, dataSource.getProxyFilters().size());
+        
+        dataSource.close();
     }
 
     public void test_filter_3() throws Exception {

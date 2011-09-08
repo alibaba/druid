@@ -1,13 +1,14 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-
-import junit.framework.TestCase;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 
 public class TestDisable extends TestCase {
@@ -32,6 +33,11 @@ public class TestDisable extends TestCase {
         dataSource.setFilters("stat");
     }
     
+    protected void tearDown() throws Exception {
+        dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+
     public void test_close() throws Exception {
         final int threadCount = 100;
         Thread[] threads = new Thread[threadCount];

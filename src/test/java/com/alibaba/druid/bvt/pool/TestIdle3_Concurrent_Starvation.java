@@ -36,12 +36,10 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
         
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-                                                                 new ObjectName("com.alibaba:type=DataSource"));
     }
     
     protected void tearDown() throws Exception {
-        ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba:type=DataSource"));
+        dataSource.close();
     }
 
     public void test_idle2() throws Exception {
@@ -79,7 +77,6 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         }
         // Assert.assertEquals(2, dataSource.getPoolingCount());
 
-        dataSource.close();
     }
 
     private void concurrent(final int threadCount) throws Exception {
