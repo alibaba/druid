@@ -92,10 +92,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private boolean                 enable                = false;
 
+    private boolean                 resetStatEnable       = true;
+
     public DruidDataSource(){
     }
 
+    public boolean isResetStatEnable() {
+        return resetStatEnable;
+    }
+
+    public void setResetStatEnable(boolean resetStatEnable) {
+        this.resetStatEnable = resetStatEnable;
+    }
+
     public void resetStat() {
+        if (!resetStatEnable) {
+            return;
+        }
+
         lock.lock();
         try {
             connectCount = 0;
