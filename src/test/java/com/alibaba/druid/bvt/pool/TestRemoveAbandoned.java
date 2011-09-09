@@ -46,6 +46,7 @@ public class TestRemoveAbandoned extends TestCase {
         Thread.sleep(100);
         Assert.assertTrue(conn.isClosed());
         
+        Assert.assertEquals(1, dataSource.getRemoveAbandonedCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());
     }
