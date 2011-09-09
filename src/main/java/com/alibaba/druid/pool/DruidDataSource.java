@@ -838,7 +838,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         for (; iter.hasNext();) {
             Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
             ActiveConnectionTraceInfo activeInfo = entry.getValue();
-            long timeMillis = activeInfo.getConnectTime() - currentMillis;
+            long timeMillis = currentMillis - activeInfo.getConnectTime();
 
             if (timeMillis >= removeAbandonedTimeoutMillis) {
                 PoolableConnection pooledConnection = entry.getKey();
