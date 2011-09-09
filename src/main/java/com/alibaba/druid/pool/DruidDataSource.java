@@ -834,7 +834,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                                 if (isLogAbandoned()) {
                                     StringBuilder buf = new StringBuilder();
-                                    buf.append("abondon connection, open stackTrace\n");
+                                    buf.append("abandon connection, open stackTrace\n");
 
                                     StackTraceElement[] trace = activeInfo.getStackTrace();
                                     for (int i = 0; i < trace.length; i++) {
