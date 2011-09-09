@@ -83,4 +83,6 @@ public interface DruidAbstractDataSourceMBean {
     int getMaxOpenPreparedStatements();
 
     long getRemoveAbandonedCount();
+    
+    boolean isLogAbandoned();
 }
