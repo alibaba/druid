@@ -143,7 +143,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean                                                                        removeAbandoned;
 
-    protected long                                                                           removeAbandonedTimeoutMillis;
+    protected long                                                                           removeAbandonedTimeoutMillis              = 300 * 1000;
 
     protected boolean                                                                        logAbandoned;
 
