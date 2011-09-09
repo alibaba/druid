@@ -47,6 +47,8 @@ public interface DruidAbstractDataSourceMBean {
     long getMinEvictableIdleTimeMillis();
 
     boolean isRemoveAbandoned();
+    
+    int getRemoveAbandonedTimeoutMillis();
 
     List<String> getActiveConnectionStackTrace();
 

@@ -294,6 +294,10 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         this.removeAbandonedTimeoutMillis = removeAbandonedTimeoutMillis;
     }
 
+    public int getRemoveAbandonedTimeoutMillis() {
+        return removeAbandonedTimeoutMillis;
+    }
+
     public boolean isRemoveAbandoned() {
         return removeAbandoned;
     }
@@ -474,7 +478,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
         }
         return name;
     }
-    
+
     public String getNameInternal() {
         return this.name;
     }
