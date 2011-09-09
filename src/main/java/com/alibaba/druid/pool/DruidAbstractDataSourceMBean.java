@@ -1,5 +1,6 @@
 package com.alibaba.druid.pool;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DruidAbstractDataSourceMBean {
@@ -85,4 +86,20 @@ public interface DruidAbstractDataSourceMBean {
     long getRemoveAbandonedCount();
     
     boolean isLogAbandoned();
+    
+    long getDupCloseCount();
+    
+    boolean isBreakAfterAcquireFailure();
+    
+    int getConnectionErrorRetryAttempts();
+    
+    int getMaxPoolPreparedStatementPerConnectionSize();
+    
+    String getProperties();
+
+    int getRawDriverMinorVersion();
+
+    int getRawDriverMajorVersion();
+
+    Date getCreatedTime();
 }

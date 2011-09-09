@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -47,4 +48,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void setResetStatEnable(boolean resetStatEnable);
 
     String getVersion();
+
+
 }
