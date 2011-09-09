@@ -818,41 +818,51 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     shrink(true);
 
                     if (isRemoveAbandoned()) {
-                        Iterator<Map.Entry<PoolableConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
-
-                        long currentMillis = System.currentTimeMillis();
-                        
-                        for (; iter.hasNext();) {
-                            Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
-                            ActiveConnectionTraceInfo activeInfo = entry.getValue();
-                            long timeMillis = activeInfo.getConnectTime() - currentMillis;
-
-                            if (timeMillis >= removeAbandonedTimeoutMillis) {
-                                PoolableConnection pooledConnection = entry.getKey();
-                                JdbcUtils.close(pooledConnection);
-                                removeAbandonedCount++;
-
-                                if (isLogAbandoned()) {
-                                    StringBuilder buf = new StringBuilder();
-                                    buf.append("abandon connection, open stackTrace\n");
-
-                                    StackTraceElement[] trace = activeInfo.getStackTrace();
-                                    for (int i = 0; i < trace.length; i++) {
-                                        buf.append("\tat ");
-                                        buf.append(trace[i].toString());
-                                        buf.append("\n");
-                                    }
-
-                                    LOG.error(buf.toString());
-                                }
-                            }
-                        }
+                        removeAbandoned();
                     }
                 } catch (InterruptedException e) {
                     break;
                 }
             }
         }
+
+    }
+
+    public int removeAbandoned() {
+        int removeCount = 0;
+
+        Iterator<Map.Entry<PoolableConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
+
+        long currentMillis = System.currentTimeMillis();
+
+        for (; iter.hasNext();) {
+            Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
+            ActiveConnectionTraceInfo activeInfo = entry.getValue();
+            long timeMillis = activeInfo.getConnectTime() - currentMillis;
+
+            if (timeMillis >= removeAbandonedTimeoutMillis) {
+                PoolableConnection pooledConnection = entry.getKey();
+                JdbcUtils.close(pooledConnection);
+                removeAbandonedCount++;
+                removeCount++;
+
+                if (isLogAbandoned()) {
+                    StringBuilder buf = new StringBuilder();
+                    buf.append("abandon connection, open stackTrace\n");
+
+                    StackTraceElement[] trace = activeInfo.getStackTrace();
+                    for (int i = 0; i < trace.length; i++) {
+                        buf.append("\tat ");
+                        buf.append(trace[i].toString());
+                        buf.append("\n");
+                    }
+
+                    LOG.error(buf.toString());
+                }
+            }
+        }
+
+        return removeCount;
     }
 
     public DataSourceProxyConfig getConfig() {

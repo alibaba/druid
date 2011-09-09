@@ -24,6 +24,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     void shrink();
 
+    int removeAbandoned();
+
     String toString();
 
     int getWaitThreadCount();
@@ -31,7 +33,7 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     int getLockQueueLength();
 
     long getNotEmptyWaitCount();
-    
+
     long getNotEmptySignalCount();
 
     long getNotEmptyWaitMillis();
@@ -39,10 +41,10 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     long getNotEmptyWaitNanos();
 
     void resetStat();
-    
+
     boolean isResetStatEnable();
-    
+
     void setResetStatEnable(boolean resetStatEnable);
-    
+
     String getVersion();
 }

@@ -19,6 +19,8 @@ public class TestStat extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setName("com.alibaba.dragoon.monitor");
+        dataSource.setMinIdle(0);
+        dataSource.setPoolPreparedStatements(false);
 
     }
 
@@ -43,6 +45,8 @@ public class TestStat extends TestCase {
 
         rs.close();
         stmt.close();
+        
+        dataSource.shrink();
         
         JdbcStatManager.getInstance().getDataSourceList();
         Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());

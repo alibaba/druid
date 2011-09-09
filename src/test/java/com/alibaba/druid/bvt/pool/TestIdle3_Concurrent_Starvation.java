@@ -1,12 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -35,9 +34,9 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        
+
     }
-    
+
     protected void tearDown() throws Exception {
         dataSource.close();
     }
@@ -83,10 +82,11 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         Thread[] threads = new Thread[threadCount];
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
-        
+
         final AtomicInteger pass = new AtomicInteger();
 
         final CyclicBarrier closedBarrier = new CyclicBarrier(threadCount, new Runnable() {
+
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getPoolingCount());
                 dataSource.shrink(false);
@@ -98,6 +98,7 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
             }
         });
         final CyclicBarrier closeBarrier = new CyclicBarrier(threadCount, new Runnable() {
+
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getActiveCount());
             }
@@ -110,10 +111,14 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
                     try {
                         startLatch.await();
                         for (int i = 0; i < 1000 * 1; ++i) {
-                            
+
                             Connection conn = dataSource.getConnection();
                             closeBarrier.await();
-                            
+                            PreparedStatement stmt = conn.prepareStatement("SELECT 1");
+                            ResultSet rs = stmt.executeQuery();
+                            rs.next();
+                            rs.close();
+                            stmt.close();
                             conn.close();
                             closedBarrier.await();
                         }

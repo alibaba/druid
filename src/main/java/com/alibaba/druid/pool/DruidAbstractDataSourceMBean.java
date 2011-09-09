@@ -48,7 +48,7 @@ public interface DruidAbstractDataSourceMBean {
 
     boolean isRemoveAbandoned();
     
-    int getRemoveAbandonedTimeoutMillis();
+    long getRemoveAbandonedTimeoutMillis();
 
     List<String> getActiveConnectionStackTrace();
 

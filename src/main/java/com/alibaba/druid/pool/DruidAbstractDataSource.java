@@ -143,7 +143,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean                                                                        removeAbandoned;
 
-    protected int                                                                            removeAbandonedTimeoutMillis;
+    protected long                                                                           removeAbandonedTimeoutMillis;
 
     protected boolean                                                                        logAbandoned;
 
@@ -283,18 +283,18 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     }
 
     public int getRemoveAbandonedTimeout() {
-        return removeAbandonedTimeoutMillis / 1000;
+        return (int) (removeAbandonedTimeoutMillis / 1000);
     }
 
     public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
         this.removeAbandonedTimeoutMillis = removeAbandonedTimeout * 1000;
     }
 
-    public void setRemoveAbandonedTimeoutMillis(int removeAbandonedTimeoutMillis) {
+    public void setRemoveAbandonedTimeoutMillis(long removeAbandonedTimeoutMillis) {
         this.removeAbandonedTimeoutMillis = removeAbandonedTimeoutMillis;
     }
 
-    public int getRemoveAbandonedTimeoutMillis() {
+    public long getRemoveAbandonedTimeoutMillis() {
         return removeAbandonedTimeoutMillis;
     }
 
