@@ -107,11 +107,13 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public void close() throws SQLException {
+        ConnectionHolder holder = this.holder;
+        
         if (holder == null) {
-            LOG.warn("dup close");
+            LOG.error("dup close");
             return;
         }
-
+        
         DruidAbstractDataSource dataSource = holder.getDataSource();
         if (dataSource.isRemoveAbandoned()) {
             dataSource.removeActiveConnection(this);
@@ -133,7 +135,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         holder.reset();
         holder.getDataSource().recycle(this);
 
-        holder = null;
+        this.holder = null;
         conn = null;
     }
 

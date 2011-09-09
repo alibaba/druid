@@ -71,8 +71,8 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     @Override
     public void close() throws SQLException {
         try {
-            rs.close();
             this.closed = true;
+            rs.close();
         } catch (Throwable t) {
             throw checkException(t);
         }

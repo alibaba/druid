@@ -845,7 +845,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                         buf.append("\n");
                                     }
 
-                                    LOG.warn(buf.toString());
+                                    LOG.error(buf.toString());
                                 }
                             }
                         }
