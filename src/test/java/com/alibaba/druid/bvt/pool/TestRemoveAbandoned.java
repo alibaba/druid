@@ -26,7 +26,7 @@ public class TestRemoveAbandoned extends TestCase {
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(10); // 180 / 10
         dataSource.setRemoveAbandoned(true);
-        dataSource.setRemoveAbandonedTimeoutMillis(1);
+        dataSource.setRemoveAbandonedTimeoutMillis(10);
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
@@ -41,6 +41,8 @@ public class TestRemoveAbandoned extends TestCase {
         Connection conn = dataSource.getConnection();
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
+        
+        // 超时之后，连接自动关闭
         Thread.sleep(100);
         Assert.assertTrue(conn.isClosed());
         
