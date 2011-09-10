@@ -1009,6 +1009,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return notEmptyWaitCount;
     }
 
+    public int getNotEmptyWaitThreadCount() {
+        return notEmptyWaitThreadCount;
+    }
+
     public long getNotEmptySignalCount() {
         return notEmptySignalCount;
     }

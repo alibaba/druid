@@ -62,7 +62,7 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         }
 
         for (int i = 0; i < 1; ++i) {
-            final int threadCount = 10;
+            final int threadCount = 5;
             concurrent(threadCount);
         }
 
