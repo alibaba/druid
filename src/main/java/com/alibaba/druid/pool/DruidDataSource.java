@@ -59,41 +59,42 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable {
 
-    private final static Log        LOG                   = LogFactory.getLog(DruidDataSource.class);
+    private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
-    private static final long       serialVersionUID      = 1L;
+    private static final long       serialVersionUID        = 1L;
 
-    private final ReentrantLock     lock                  = new ReentrantLock();
+    private final ReentrantLock     lock                    = new ReentrantLock();
 
-    private final Condition         notEmpty              = lock.newCondition();
-    private final Condition         empty                 = lock.newCondition();
+    private final Condition         notEmpty                = lock.newCondition();
+    private final Condition         empty                   = lock.newCondition();
 
     // stats
-    private long                    connectCount          = 0L;
-    private long                    closeCount            = 0L;
-    private long                    connectErrorCount     = 0L;
-    private long                    recycleCount          = 0L;
-    private long                    createConnectionCount = 0L;
-    private long                    destroyCount          = 0L;
-    private long                    removeAbandonedCount  = 0L;
-    private long                    notEmptyWaitCount     = 0L;
-    private long                    notEmptySignalCount   = 0L;
-    private long                    notEmptyWaitNanos     = 0L;
+    private long                    connectCount            = 0L;
+    private long                    closeCount              = 0L;
+    private long                    connectErrorCount       = 0L;
+    private long                    recycleCount            = 0L;
+    private long                    createConnectionCount   = 0L;
+    private long                    destroyCount            = 0L;
+    private long                    removeAbandonedCount    = 0L;
+    private long                    notEmptyWaitCount       = 0L;
+    private long                    notEmptySignalCount     = 0L;
+    private long                    notEmptyWaitNanos       = 0L;
 
     // store
     private ConnectionHolder[]      connections;
-    private int                     poolingCount          = 0;
-    private int                     activeCount           = 0;
+    private int                     poolingCount            = 0;
+    private int                     activeCount             = 0;
+    private int                     notEmptyWaitThreadCount = 0;
 
     // threads
     private CreateConnectionThread  createConnectionThread;
     private DestroyConnectionThread destoryConnectionThread;
 
-    private final CountDownLatch    initedLatch           = new CountDownLatch(2);
+    private final CountDownLatch    initedLatch             = new CountDownLatch(2);
 
-    private boolean                 enable                = false;
+    private boolean                 enable                  = false;
 
-    private boolean                 resetStatEnable       = true;
+    private boolean                 resetStatEnable         = true;
 
     public DruidDataSource(){
     }
@@ -583,7 +584,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
-                notEmpty.await(); // signal by recycle or creator
+                notEmptyWaitThreadCount++;
+                try {
+                    notEmpty.await(); // signal by recycle or creator
+                } finally {
+                    notEmptyWaitThreadCount--;
+                }
                 notEmptyWaitCount++;
 
                 if (!enable) {
@@ -615,6 +621,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     throw new GetConnectionTimeoutException();
                 }
 
+                notEmptyWaitThreadCount++;
                 try {
                     long startEstimate = estimate;
                     estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
@@ -629,6 +636,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     notEmpty.signal(); // propagate to non-interrupted thread
                     notEmptySignalCount++;
                     throw ie;
+                } finally {
+                    notEmptyWaitThreadCount--;
                 }
 
                 if (poolingCount == 0) {
@@ -720,10 +729,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 try {
                     // 必须存在线程等待，才创建连接
-                    int waitThreadCount = lock.getWaitQueueLength(notEmpty);
-
-                    if (poolingCount >= waitThreadCount) {
-                        notEmpty.signal(); // 防止信号丢失引起的等待
+                    if (poolingCount >= notEmptyWaitThreadCount) {
                         notEmptySignalCount++;
                         empty.await();
                         continue;
