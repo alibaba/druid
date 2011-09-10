@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestConcurrent extends TestCase {
 
@@ -41,6 +42,7 @@ public class TestConcurrent extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_0() throws Exception {
@@ -79,7 +81,7 @@ public class TestConcurrent extends TestCase {
         }
 
         // 使用单个线程模拟并发打开10个连接
-        for (int i = 0; i < 1000 * 10; ++i) {
+        for (int i = 0; i < 1000 * 1; ++i) {
             final int COUNT = 10;
             Connection[] connections = new Connection[COUNT];
 
