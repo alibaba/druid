@@ -1,13 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-
 import junit.framework.TestCase;
+
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DataSourceDisableException;
+import com.alibaba.druid.pool.DruidDataSource;
 
 
 public class TestGraceShutdown extends TestCase {
@@ -45,6 +45,7 @@ public class TestGraceShutdown extends TestCase {
                     try {
                         startLatch.await();
                         Connection conn = dataSource.getConnection();
+                    } catch (DataSourceDisableException ex) {
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
