@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
 import javax.management.openmbean.CompositeData;
@@ -51,7 +52,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public final static String         ATTR_SQL                   = "stat.sql";
     public final static String         ATTR_UPDATE_COUNT          = "stat.updteCount";
-    public final static String         ATTR_TRANSACTION          = "stat.tx";
+    public final static String         ATTR_TRANSACTION           = "stat.tx";
 
     protected JdbcDataSourceStat       dataSourceStat;
 
@@ -62,6 +63,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     private boolean                    connectionStackTraceEnable = false;
 
     protected DataSourceProxy          dataSource;
+
+    protected final AtomicLong         resetCount                 = new AtomicLong();
 
     public boolean isConnectionStackTraceEnable() {
         return connectionStackTraceEnable;
@@ -77,6 +80,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public void reset() {
         dataSourceStat.reset();
+        
+        resetCount.incrementAndGet();
+    }
+    
+    public long getResetCount() {
+        return resetCount.get();
     }
 
     @Override
@@ -93,24 +102,24 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
         this.dataSourceStat = stat;
     }
-    
+
     @Override
     public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
                                                                                                            throws SQLException {
         Map<String, Object> attributes = connection.getAttributes();
-        
+
         if (!autoCommit) {
             TransactionInfo transInfo = (TransactionInfo) attributes.get(ATTR_TRANSACTION);
             if (transInfo == null) {
                 long transactionId = connection.getDirectDataSource().createTransactionId();
-                transInfo = new TransactionInfo(transactionId); 
+                transInfo = new TransactionInfo(transactionId);
                 attributes.put(ATTR_TRANSACTION, transInfo);
                 dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
             }
         } else {
             attributes.remove(ATTR_TRANSACTION);
         }
-        
+
         chain.connection_setAutoCommit(connection, autoCommit);
     }
 
@@ -176,7 +185,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public void connection_commit(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_commit(chain, connection);
-        
+
         handleEndTransaction(connection);
 
         connectStat.incrementConnectionCommitCount();
@@ -185,7 +194,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private void handleEndTransaction(ConnectionProxy connection) {
         Map<String, Object> attributes = connection.getAttributes();
-        
+
         TransactionInfo transInfo = (TransactionInfo) attributes.remove(ATTR_TRANSACTION);
         if (transInfo != null) {
             transInfo.setEndTimeMillis(System.currentTimeMillis());
@@ -195,7 +204,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_rollback(chain, connection);
-        
+
         handleEndTransaction(connection);
 
         connectStat.incrementConnectionRollbackCount();
@@ -208,7 +217,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
                                                                                                        throws SQLException {
         super.connection_rollback(chain, connection, savepoint);
-        
+
         handleEndTransaction(connection);
 
         connectStat.incrementConnectionRollbackCount();

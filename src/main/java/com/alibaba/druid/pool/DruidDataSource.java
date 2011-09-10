@@ -730,7 +730,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 try {
                     // 必须存在线程等待，才创建连接
                     if (poolingCount >= notEmptyWaitThreadCount) {
-                        notEmptySignalCount++;
                         empty.await();
                         continue;
                     }

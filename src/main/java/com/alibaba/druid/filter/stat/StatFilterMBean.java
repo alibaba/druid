@@ -85,4 +85,6 @@ public interface StatFilterMBean {
     TabularData getSqlList() throws JMException;
 
     TabularData getConnectionList() throws JMException;
+    
+    long getResetCount();
 }
