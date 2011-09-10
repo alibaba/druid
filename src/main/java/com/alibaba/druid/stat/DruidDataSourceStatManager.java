@@ -77,6 +77,10 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public synchronized static void remove(DruidDataSource dataSource) {
         ObjectName objectName = dataSources.remove(dataSource);
+        
+        if (objectName == null) {
+            return;
+        }
 
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
