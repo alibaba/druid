@@ -27,7 +27,7 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     int removeAbandoned();
 
-    String toString();
+    String dump();
 
     int getWaitThreadCount();
 

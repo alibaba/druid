@@ -1028,6 +1028,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int getLockQueueLength() {
         return lock.getQueueLength();
     }
+    
+    public String dump() {
+        lock.lock();
+        try {
+            return this.toString();
+        } finally {
+            lock.unlock();
+        }
+    }
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
