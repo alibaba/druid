@@ -22,6 +22,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JMXUtils;
 
 /**
@@ -30,7 +31,10 @@ import com.alibaba.druid.util.JMXUtils;
  * @author admin 2011-5-4 下午02:45:21
  */
 public class Case2 extends TestCase {
-
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     public void test_singleThread() throws Exception {
 
         Class.forName("com.alibaba.druid.mock.MockDriver");

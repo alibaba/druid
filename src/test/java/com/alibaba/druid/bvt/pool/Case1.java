@@ -6,11 +6,16 @@ import java.util.Properties;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class Case1 extends TestCase {
-
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     public void test_f() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setTimeBetweenConnectErrorMillis(100);
@@ -37,5 +42,7 @@ public class Case1 extends TestCase {
 
         Connection conn = dataSource.getConnection();
         conn.close();
+        
+        dataSource.close();
     }
 }
