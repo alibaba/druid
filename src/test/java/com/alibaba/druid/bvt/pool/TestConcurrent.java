@@ -105,32 +105,32 @@ public class TestConcurrent extends TestCase {
         }
 
         // 2个并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(2);
         }
 
         // 5个并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(5);
         }
 
         // 10并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(10);
         }
 
         // 20并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(20);
         }
 
         // 50并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(50);
         }
 
         // 100并发
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 3; ++i) {
             concurrent(100);
         }
     }
