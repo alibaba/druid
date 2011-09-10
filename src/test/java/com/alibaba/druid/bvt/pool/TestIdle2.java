@@ -7,9 +7,14 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle2 extends TestCase {
+
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -25,11 +30,11 @@ public class TestIdle2 extends TestCase {
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
-        
+
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
-            
+
             Connection conn = dataSource.getConnection();
 
             Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
@@ -41,10 +46,10 @@ public class TestIdle2 extends TestCase {
             Assert.assertEquals(true, dataSource.getPoolingCount() == driver.getConnections().size());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
-        
+
         String text = dataSource.toString();
         System.out.println(text);
-        
+
         {
             int count = 14;
             Connection[] connections = new Connection[count];
@@ -62,18 +67,18 @@ public class TestIdle2 extends TestCase {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(14, driver.getConnections().size());
         }
-        
+
         for (int i = 0; i < 100; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
-            
+
             Assert.assertEquals(1, dataSource.getActiveCount());
-            
+
             Thread.sleep(1);
             conn.close();
         }
         Assert.assertEquals(true, dataSource.getPoolingCount() == dataSource.getMaxActive());
-        
+
         dataSource.close();
     }
 }

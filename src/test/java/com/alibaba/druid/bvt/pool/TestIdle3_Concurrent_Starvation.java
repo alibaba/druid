@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent_Starvation extends TestCase {
 
@@ -25,8 +26,8 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
-        dataSource.setMaxActive(1000);
-        dataSource.setMaxIdle(1000);
+        dataSource.setMaxActive(100);
+        dataSource.setMaxIdle(100);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
@@ -39,6 +40,7 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_idle2() throws Exception {
@@ -62,12 +64,12 @@ public class TestIdle3_Concurrent_Starvation extends TestCase {
         }
 
         for (int i = 0; i < 1; ++i) {
-            final int threadCount = 1000;
+            final int threadCount = 100;
             concurrent(threadCount);
         }
 
         // 连续打开关闭单个连接
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 100; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 

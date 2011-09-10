@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
@@ -51,6 +52,8 @@ public class TestDisable extends TestCase {
                     try {
                         startLatch.await();
                         Connection conn = dataSource.getConnection();
+                    } catch (DataSourceDisableException e) {
+                        // skip
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {

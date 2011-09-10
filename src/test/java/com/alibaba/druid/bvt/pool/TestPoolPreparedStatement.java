@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestPoolPreparedStatement extends TestCase {
 
@@ -36,6 +37,7 @@ public class TestPoolPreparedStatement extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_removeAbandoned() throws Exception {

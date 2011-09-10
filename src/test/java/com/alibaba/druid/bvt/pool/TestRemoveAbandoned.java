@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 
 public class TestRemoveAbandoned extends TestCase {
@@ -35,7 +36,9 @@ public class TestRemoveAbandoned extends TestCase {
     
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
+
     
     public void test_removeAbandoned() throws Exception {
         Connection conn = dataSource.getConnection();

@@ -6,10 +6,14 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DruidDataSourceFilterTest extends TestCase {
-
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     public void test_filter() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

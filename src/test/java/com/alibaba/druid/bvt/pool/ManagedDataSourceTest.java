@@ -9,6 +9,7 @@ import org.junit.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ManagedDataSourceTest extends TestCase {
 
@@ -21,6 +22,7 @@ public class ManagedDataSourceTest extends TestCase {
 
     public void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_managed() throws Exception {

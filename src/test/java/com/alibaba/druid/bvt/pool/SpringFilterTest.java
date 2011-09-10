@@ -15,10 +15,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class SpringFilterTest extends TestCase {
 
     public void test_spring() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/spring-config-1.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
@@ -29,6 +32,8 @@ public class SpringFilterTest extends TestCase {
         Assert.assertEquals(1, filter.getConnectCount());
         
         context.close();
+        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public static class TestFilter extends FilterAdapter {

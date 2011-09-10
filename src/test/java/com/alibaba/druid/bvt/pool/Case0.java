@@ -10,10 +10,13 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case0 extends TestCase {
 
     public void test_0() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
         final DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setDriver(new MockDriver() {
@@ -57,5 +60,6 @@ public class Case0 extends TestCase {
         Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
 
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 }
