@@ -61,7 +61,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
 
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 10; ++i) {
             concurrent(200);
             Assert.assertEquals(dataSource.getMaxActive(), dataSource.getPoolingCount());
             dataSource.shrink();
@@ -69,7 +69,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
         }
 
         // 连续打开关闭单个连接
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 10; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Connection conn = dataSource.getConnection();
 
