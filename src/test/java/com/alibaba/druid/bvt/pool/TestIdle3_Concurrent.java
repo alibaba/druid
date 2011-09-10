@@ -1,21 +1,22 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent extends TestCase {
-
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 

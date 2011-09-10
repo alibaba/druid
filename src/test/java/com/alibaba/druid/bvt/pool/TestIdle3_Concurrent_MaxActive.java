@@ -1,11 +1,8 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
-import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
