@@ -17,7 +17,8 @@ public class TestAbondon extends TestCase {
         dataSource.setRemoveAbandoned(true);
         dataSource.setRemoveAbandonedTimeoutMillis(10);
         dataSource.setLogAbandoned(true);
-        dataSource.setTimeBetweenEvictionRunsMillis(1);
+        dataSource.setTimeBetweenEvictionRunsMillis(10);
+        dataSource.setMinEvictableIdleTimeMillis(300 * 1000);
         dataSource.setUrl("jdbc:mock:xxx");
 
     }
@@ -30,7 +31,7 @@ public class TestAbondon extends TestCase {
     public void test_0() throws Exception {
         Connection conn = dataSource.getConnection();
         Assert.assertEquals(false, conn.isClosed());
-        Thread.sleep(100);
+        Thread.sleep(200);
         Assert.assertEquals(true, conn.isClosed());
     }
 }
