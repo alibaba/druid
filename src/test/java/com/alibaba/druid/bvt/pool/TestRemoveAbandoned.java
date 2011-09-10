@@ -32,6 +32,8 @@ public class TestRemoveAbandoned extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
+
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
     
     protected void tearDown() throws Exception {

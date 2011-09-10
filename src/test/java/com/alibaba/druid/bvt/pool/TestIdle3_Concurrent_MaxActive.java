@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
@@ -19,6 +20,8 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
         driver = new MockDriver();
 
         dataSource = new DruidDataSource();
@@ -39,6 +42,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_idle2() throws Exception {
