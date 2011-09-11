@@ -127,6 +127,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+        
+        commitCount.set(0);
+        rollbackCount.set(0);
+        startTransactionCount.set(0);
     }
 
     public boolean isEnable() {

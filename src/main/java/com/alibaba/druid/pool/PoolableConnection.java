@@ -528,6 +528,10 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         try {
+            if ((!autoCommit) && conn.getAutoCommit()) {
+                holder.getDataSource().incrementStartTransactionCount();
+            }
+            
             conn.setAutoCommit(autoCommit);
         } catch (SQLException ex) {
             handleException(ex);

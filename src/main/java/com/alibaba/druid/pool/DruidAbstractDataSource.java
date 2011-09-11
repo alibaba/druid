@@ -172,24 +172,33 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected boolean                                                                        breakAfterAcquireFailure                  = false;
 
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
+    protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
 
     public long getCommitCount() {
         return commitCount.get();
     }
-    
+
     public void incrementCommitCount() {
         commitCount.incrementAndGet();
     }
-    
+
     public long getRollbackCount() {
         return rollbackCount.get();
     }
-    
+
     public void incrementRollbackCount() {
         rollbackCount.incrementAndGet();
     }
     
+    public long getStartTransactionCount() {
+        return startTransactionCount.get();
+    }
+    
+    public void incrementStartTransactionCount() {
+        startTransactionCount.incrementAndGet();
+    }
+
     public boolean isBreakAfterAcquireFailure() {
         return breakAfterAcquireFailure;
     }

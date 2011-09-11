@@ -39,6 +39,8 @@ public interface DruidAbstractDataSourceMBean {
     long getCommitCount();
     
     long getRollbackCount();
+    
+    long getStartTransactionCount();
 
     int getQueryTimeout();
 
