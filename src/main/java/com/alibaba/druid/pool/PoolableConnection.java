@@ -545,6 +545,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void commit() throws SQLException {
         checkOpen();
 
+        holder.getDataSource().incrementCommitCount();
         try {
             conn.commit();
         } catch (SQLException ex) {
@@ -556,6 +557,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void rollback() throws SQLException {
         checkOpen();
 
+        holder.getDataSource().incrementRollbackCount();
         try {
             conn.rollback();
         } catch (SQLException ex) {

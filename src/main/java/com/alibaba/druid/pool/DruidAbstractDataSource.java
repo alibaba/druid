@@ -170,6 +170,26 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     protected boolean                                                                        breakAfterAcquireFailure                  = false;
 
+    protected final AtomicLong                                                               commitCount                               = new AtomicLong();
+    protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
+
+    
+    public long getCommitCount() {
+        return commitCount.get();
+    }
+    
+    public void incrementCommitCount() {
+        commitCount.incrementAndGet();
+    }
+    
+    public long getRollbackCount() {
+        return rollbackCount.get();
+    }
+    
+    public void incrementRollbackCount() {
+        rollbackCount.incrementAndGet();
+    }
+    
     public boolean isBreakAfterAcquireFailure() {
         return breakAfterAcquireFailure;
     }
@@ -209,12 +229,12 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public void setValidConnectionChecker(ValidConnectionChecker validConnectionChecker) {
         this.validConnectionChecker = validConnectionChecker;
     }
-    
+
     public String getValidConnectionCheckerClassName() {
         if (validConnectionChecker == null) {
             return null;
         }
-        
+
         return validConnectionChecker.getClass().getName();
     }
 
