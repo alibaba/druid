@@ -49,10 +49,11 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
  */
 public class PoolableConnection implements PooledConnection, Connection {
 
-    private final static Log   LOG = LogFactory.getLog(PoolableConnection.class);
+    private final static Log   LOG                        = LogFactory.getLog(PoolableConnection.class);
 
     protected Connection       conn;
     protected ConnectionHolder holder;
+    protected long             startTransactionTimeMillis = 0;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -69,11 +70,11 @@ public class PoolableConnection implements PooledConnection, Connection {
                 holder.getDataSource().handleConnectionException(this, t);
             }
         }
-        
+
         if (t instanceof SQLException) {
             throw (SQLException) t;
         }
-        
+
         throw new SQLException("Error", t);
     }
 
@@ -100,7 +101,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     public Connection getConnection() {
         return conn;
     }
-    
+
     void disable() {
         this.holder = null;
     }
@@ -108,12 +109,12 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void close() throws SQLException {
         ConnectionHolder holder = this.holder;
-        
+
         if (holder == null) {
             LOG.error("dup close");
             return;
         }
-        
+
         DruidAbstractDataSource dataSource = holder.getDataSource();
         if (dataSource.isRemoveAbandoned()) {
             dataSource.removeActiveConnection(this);
@@ -158,15 +159,14 @@ public class PoolableConnection implements PooledConnection, Connection {
             }
         }
 
-        
         PreparedStatement stmt = null;
-        
+
         try {
             stmt = conn.prepareStatement(sql);
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -201,7 +201,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -235,7 +235,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -267,7 +267,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -293,13 +293,13 @@ public class PoolableConnection implements PooledConnection, Connection {
             }
         }
 
-        PreparedStatement stmt  = null;
+        PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql, columnNames);
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -331,7 +331,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
@@ -366,7 +366,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
@@ -399,7 +399,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
@@ -432,7 +432,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
@@ -453,7 +453,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
@@ -473,7 +473,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
@@ -492,7 +492,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         }
-        
+
         holder.getDataSource().initStatement(stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
@@ -530,8 +530,9 @@ public class PoolableConnection implements PooledConnection, Connection {
         try {
             if ((!autoCommit) && conn.getAutoCommit()) {
                 holder.getDataSource().incrementStartTransactionCount();
+                startTransactionTimeMillis = System.currentTimeMillis();
             }
-            
+
             conn.setAutoCommit(autoCommit);
         } catch (SQLException ex) {
             handleException(ex);
@@ -554,7 +555,13 @@ public class PoolableConnection implements PooledConnection, Connection {
             conn.commit();
         } catch (SQLException ex) {
             handleException(ex);
+        } finally {
+            startTransactionTimeMillis = 0;
         }
+    }
+
+    public long getStartTransactionTimeMillis() {
+        return startTransactionTimeMillis;
     }
 
     @Override
@@ -566,7 +573,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             conn.rollback();
         } catch (SQLException ex) {
             handleException(ex);
-        } 
+        }
     }
 
     @Override
