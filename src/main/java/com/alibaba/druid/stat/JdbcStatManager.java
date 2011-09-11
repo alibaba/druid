@@ -132,53 +132,65 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         };
 
         String[] indexNames = {
+                // 0 - 4
                 "ID",
                 "URL",
                 "Name",
                 "FilterClasses",
                 "CreatedTime", //
+                
+                // 5 - 9
                 "RawUrl",
                 "RawDriverClassName",
                 "RawDriverMajorVersion",
                 "RawDriverMinorVersion",
                 "Properties" //
                 ,
+                
+                // 10 - 14
                 "ConnectionActiveCount",
                 "ConnectionActiveCountMax",
                 "ConnectionCloseCount",
                 "ConnectionCommitCount",
                 "ConnectionRollbackCount" //
                 ,
+                // 15 - 19
                 "ConnectionConnectLastTime",
                 "ConnectionConnectErrorCount",
                 "ConnectionConnectErrorLastTime",
                 "ConnectionConnectErrorLastMessage",
                 "ConnectionConnectErrorLastStackTrace" //
                 ,
+                // 20 - 24
                 "StatementCreateCount",
                 "StatementPrepareCount",
                 "StatementPreCallCount",
                 "StatementExecuteCount",
                 "StatementRunningCount" //
                 ,
+                
+                // 25 - 29
                 "StatementConcurrentMax",
                 "StatementCloseCount",
                 "StatementErrorCount",
                 "StatementLastErrorTime",
                 "StatementLastErrorMessage" //
                 ,
+                // 30 - 34
                 "StatementLastErrorStackTrace",
                 "StatementExecuteMillisTotal",
                 "ConnectionConnectingCount",
                 "StatementExecuteLastTime",
                 "ResultSetCloseCount" //
                 ,
+                // 35 -39
                 "ResultSetOpenCount",
                 "ResultSetOpenningCount",
                 "ResultSetOpenningMax",
                 "ResultSetFetchRowCount",
                 "ResultSetLastOpenTime" //
                 ,
+                // 40 - 44
                 "ResultSetErrorCount",
                 "ResultSetOpenningMillisTotal",
                 "ResultSetLastErrorTime",
