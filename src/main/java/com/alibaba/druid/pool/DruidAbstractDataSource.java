@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -173,8 +174,6 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
 
-    private long loginTimeoutMillis = 0;
-    
     public long getCommitCount() {
         return commitCount.get();
     }
@@ -697,12 +696,12 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        loginTimeoutMillis = seconds * 1000;
+        DriverManager.setLoginTimeout(seconds);
     }
 
     @Override
     public int getLoginTimeout() {
-        return (int) loginTimeoutMillis * 1000;
+        return DriverManager.getLoginTimeout();
     }
 
     @Override
