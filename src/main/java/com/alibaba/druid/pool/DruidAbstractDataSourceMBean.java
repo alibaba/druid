@@ -102,4 +102,6 @@ public interface DruidAbstractDataSourceMBean {
     int getRawDriverMajorVersion();
 
     Date getCreatedTime();
+    
+    String getValidConnectionCheckerClassName();
 }

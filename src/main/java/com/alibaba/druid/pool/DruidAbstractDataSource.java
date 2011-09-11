@@ -209,8 +209,16 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     public void setValidConnectionChecker(ValidConnectionChecker validConnectionChecker) {
         this.validConnectionChecker = validConnectionChecker;
     }
+    
+    public String getValidConnectionCheckerClassName() {
+        if (validConnectionChecker == null) {
+            return null;
+        }
+        
+        return validConnectionChecker.getClass().getName();
+    }
 
-    public void setValidConnectionChecker(String validConnectionCheckerClass) throws Exception {
+    public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
         Class<?> clazz = DruidLoaderUtils.loadClass(validConnectionCheckerClass);
         ValidConnectionChecker validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
 
