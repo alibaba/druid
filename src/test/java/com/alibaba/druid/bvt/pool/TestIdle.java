@@ -14,6 +14,10 @@ public class TestIdle extends TestCase {
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
+    
+    protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
 
     public void test_idle() throws Exception {
         MockDriver driver = new MockDriver();

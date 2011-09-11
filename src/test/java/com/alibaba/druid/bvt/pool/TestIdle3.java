@@ -13,6 +13,10 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3 extends TestCase {
+    protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }

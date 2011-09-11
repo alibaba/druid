@@ -13,9 +13,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class Case0 extends TestCase {
+    protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+    }
+    
+    protected void tearDown() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+    }
 
     public void test_0() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
         
         final DruidDataSource dataSource = new DruidDataSource();
 
@@ -60,6 +66,5 @@ public class Case0 extends TestCase {
         Assert.assertTrue(completeLatch.await(1, TimeUnit.SECONDS));
 
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 }

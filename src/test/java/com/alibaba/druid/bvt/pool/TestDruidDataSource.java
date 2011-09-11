@@ -29,6 +29,10 @@ public class TestDruidDataSource extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
     
+    protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+    }
+    
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

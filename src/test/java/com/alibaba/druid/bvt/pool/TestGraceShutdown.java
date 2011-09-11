@@ -17,6 +17,8 @@ public class TestGraceShutdown extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
         driver = new MockDriver();
 
         dataSource = new DruidDataSource();
