@@ -695,7 +695,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     }
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
+    public void setLoginTimeout(int seconds) {
         DriverManager.setLoginTimeout(seconds);
     }
 
