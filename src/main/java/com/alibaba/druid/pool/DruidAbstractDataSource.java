@@ -173,6 +173,7 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
 
+    private long loginTimeoutMillis = 0;
     
     public long getCommitCount() {
         return commitCount.get();
@@ -696,12 +697,12 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-
+        loginTimeoutMillis = seconds * 1000;
     }
 
     @Override
-    public int getLoginTimeout() throws SQLException {
-        return 0;
+    public int getLoginTimeout() {
+        return (int) loginTimeoutMillis * 1000;
     }
 
     @Override

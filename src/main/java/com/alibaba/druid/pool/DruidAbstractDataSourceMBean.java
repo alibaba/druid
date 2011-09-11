@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface DruidAbstractDataSourceMBean {
+    int getLoginTimeout();
 
     String getDbType();
 
