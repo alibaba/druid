@@ -60,6 +60,10 @@ public class MockStatement implements Statement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().executeQuery(this, sql);
         }
@@ -69,6 +73,10 @@ public class MockStatement implements Statement {
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        
         return 0;
     }
 
@@ -133,6 +141,10 @@ public class MockStatement implements Statement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        
         if (ERROR_SQL.equals(sql)) {
             throw new SQLException();
         }
