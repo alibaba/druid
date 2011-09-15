@@ -3,9 +3,12 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.NClob;
+import java.sql.Ref;
 import java.sql.SQLException;
 import java.sql.SQLXML;
-import java.util.Collections;
 
 import junit.framework.TestCase;
 
@@ -472,13 +475,13 @@ public class ResultSetTest extends TestCase {
         }
 
     }
-    
+
     public void test_updateBinaryStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateBinaryStream(1, (InputStream) null);
         resultSet.updateBinaryStream("1", (InputStream) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -488,7 +491,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -499,13 +502,40 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
+    public void test_updateBinaryStream_2() throws Exception {
+        resultSet.next();
+
+        resultSet.updateBinaryStream(1, (InputStream) null, 1L);
+        resultSet.updateBinaryStream("1", (InputStream) null, 1L);
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBinaryStream("0", (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBinaryStream(0, (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
     public void test_updateCharacterStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateCharacterStream(1, (Reader) null);
         resultSet.updateCharacterStream("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -515,7 +545,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -526,13 +556,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_update_blob() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateBlob(1, (InputStream) null);
         resultSet.updateBlob("1", (InputStream) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -542,7 +572,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -556,10 +586,10 @@ public class ResultSetTest extends TestCase {
 
     public void test_update_clob() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateClob(1, (Reader) null);
         resultSet.updateClob("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -569,7 +599,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -580,13 +610,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_update_nclob() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateNClob(1, (Reader) null);
         resultSet.updateNClob("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -596,7 +626,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -607,13 +637,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_update_nclob_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateNClob(1, (Reader) null, 1);
         resultSet.updateNClob("1", (Reader) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -623,7 +653,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -634,13 +664,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_update_clob_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateClob(1, (Reader) null, 1);
         resultSet.updateClob("1", (Reader) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -650,7 +680,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -661,13 +691,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_update_blob_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateBlob(1, (InputStream) null, 1);
         resultSet.updateBlob("1", (InputStream) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -677,7 +707,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -688,13 +718,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateCharacterStream_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateCharacterStream(1, (Reader) null, 1);
         resultSet.updateCharacterStream("1", (Reader) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -704,7 +734,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -715,13 +745,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateAsciiStream_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateAsciiStream(1, (InputStream) null, 1);
         resultSet.updateAsciiStream("1", (InputStream) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -731,7 +761,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -742,14 +772,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
-    
+
     public void test_updateAsciiStream_2() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateAsciiStream(1, (InputStream) null, 1L);
         resultSet.updateAsciiStream("1", (InputStream) null, 1L);
-        
+
         {
             SQLException error = null;
             try {
@@ -759,25 +788,24 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
-                resultSet.updateBlob(0, (InputStream) null, 1L);
+                resultSet.updateAsciiStream(0, (InputStream) null, 1L);
             } catch (SQLException ex) {
                 error = ex;
             }
             Assert.assertNotNull(error);
         }
     }
-    
-    
+
     public void test_updateBinaryStream_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateBinaryStream(1, (InputStream) null, 1);
         resultSet.updateBinaryStream("1", (InputStream) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -787,7 +815,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -798,13 +826,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateAsciiStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateAsciiStream(1, (InputStream) null);
         resultSet.updateAsciiStream("1", (InputStream) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -814,7 +842,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -825,13 +853,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateNCharacterStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateNCharacterStream(1, (Reader) null);
         resultSet.updateNCharacterStream("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -841,7 +869,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -852,13 +880,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateNCharacterStream_1() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateNCharacterStream(1, (Reader) null, 1);
         resultSet.updateNCharacterStream("1", (Reader) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -868,7 +896,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -879,13 +907,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateSQLXML() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateSQLXML(1, (SQLXML) null);
         resultSet.updateSQLXML("1", (SQLXML) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -895,7 +923,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1250,13 +1278,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getSQLXML() throws Exception {
         resultSet.next();
-        
+
         resultSet.getSQLXML(1);
         resultSet.getSQLXML("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1266,7 +1294,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1277,13 +1305,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getNClob() throws Exception {
         resultSet.next();
-        
+
         resultSet.getNClob(1);
         resultSet.getNClob("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1293,7 +1321,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1304,13 +1332,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getNString() throws Exception {
         resultSet.next();
-        
+
         resultSet.getNString(1);
         resultSet.getNString("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1320,7 +1348,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1331,13 +1359,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getNCharacterStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.getNCharacterStream(1);
         resultSet.getNCharacterStream("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1347,7 +1375,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1358,13 +1386,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getCharacterStream() throws Exception {
         resultSet.next();
-        
+
         resultSet.getCharacterStream(1);
         resultSet.getCharacterStream("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1374,7 +1402,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1385,13 +1413,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateCharacterStream_2() throws Exception {
         resultSet.next();
-        
+
         resultSet.updateCharacterStream(1, (Reader) null, 1L);
         resultSet.updateCharacterStream("1", (Reader) null, 1L);
-        
+
         {
             SQLException error = null;
             try {
@@ -1401,7 +1429,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1412,13 +1440,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getURL() throws Exception {
         resultSet.next();
-        
+
         resultSet.getURL(1);
         resultSet.getURL("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1428,7 +1456,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1439,13 +1467,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getTimestamp() throws Exception {
         resultSet.next();
-        
+
         resultSet.getTimestamp(1, null);
         resultSet.getTimestamp("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1455,7 +1483,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1466,13 +1494,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getTime() throws Exception {
         resultSet.next();
-        
+
         resultSet.getTime(1, null);
         resultSet.getTime("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1482,7 +1510,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1493,13 +1521,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getDate() throws Exception {
         resultSet.next();
-        
+
         resultSet.getDate(1, null);
         resultSet.getDate("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1509,7 +1537,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1520,13 +1548,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getArray() throws Exception {
         resultSet.next();
-        
+
         resultSet.getArray(1);
         resultSet.getArray("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1536,7 +1564,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1547,13 +1575,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getClob() throws Exception {
         resultSet.next();
-        
+
         resultSet.getClob(1);
         resultSet.getClob("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1563,7 +1591,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1574,13 +1602,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getBlob() throws Exception {
         resultSet.next();
-        
+
         resultSet.getBlob(1);
         resultSet.getBlob("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1590,7 +1618,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1601,13 +1629,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getRef() throws Exception {
         resultSet.next();
-        
+
         resultSet.getRef(1);
         resultSet.getRef("1");
-        
+
         {
             SQLException error = null;
             try {
@@ -1617,7 +1645,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1628,13 +1656,13 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getObject() throws Exception {
         resultSet.next();
-        
+
         resultSet.getObject(1, null);
         resultSet.getObject("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1644,7 +1672,7 @@ public class ResultSetTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1655,6 +1683,193 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+
+    public void test_updateNClob() throws Exception {
+        resultSet.next();
+
+        resultSet.updateNClob(1, (NClob) null);
+        resultSet.updateNClob("1", (NClob) null);
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNClob(0, (NClob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNClob("0", (NClob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_updateNString() throws Exception {
+        resultSet.next();
+
+        resultSet.updateNString(1, null);
+        resultSet.updateNString("1", null);
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNString(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNString("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
     
+    public void test_updateRowId() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateRowId(1, null);
+        resultSet.updateRowId("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateRowId(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateRowId("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
     
+    public void test_updateArray() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateArray(1, null);
+        resultSet.updateArray("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateArray(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateArray("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateClob() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateClob(1, (Clob) null);
+        resultSet.updateClob("1", (Clob) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateClob(0, (Clob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateClob("0", (Clob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateBlob() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateBlob(1, (Blob) null);
+        resultSet.updateBlob("1", (Blob) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBlob(0, (Blob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBlob("0", (Blob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateRef() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateRef(1, (Ref) null);
+        resultSet.updateRef("1", (Ref) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateRef(0, (Ref) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateRef("0", (Ref) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }
