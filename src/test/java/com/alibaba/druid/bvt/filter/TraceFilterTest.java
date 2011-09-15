@@ -8,14 +8,19 @@ import java.sql.Statement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.filter.trace.TraceFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatContext;
+import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.stat.JdbcTraceManager;
 
 public class TraceFilterTest extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
+    private TraceFilter filter;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
@@ -35,11 +40,17 @@ public class TraceFilterTest extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("trace");
+        
+        filter = (TraceFilter) dataSource.getProxyFilters().get(0);
+        JdbcStatContext statContext = new JdbcStatContext();
+        statContext.setTraceEnable(true);
+        JdbcStatManager.getInstance().setStatContext(statContext);
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        JdbcStatManager.getInstance().setStatContext(null);
     }
 
     public void test_exuecute() throws Exception {
