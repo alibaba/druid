@@ -65,7 +65,6 @@ public class ResultSetProxyImplTest extends TestCase {
         rs.moveToCurrentRow();
         rs.next();
 
-        rs.getArray(1);
         rs.updateRef(1, null);
         rs.updateArray(1, null);
         rs.updateRowId(1, null);
