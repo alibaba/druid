@@ -38,17 +38,23 @@ public class TestDataSourceBasic extends TestCase {
     }
 
     protected void tearDown() throws Exception {
+        Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
-
+        conn.setAutoCommit(false);
+        conn.setAutoCommit(false);
         Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(1, dataSource.getActiveConnections().size());
-
+        conn.commit();
         conn.close();
+        
+        Assert.assertEquals(1, dataSource.getStartTransactionCount());
+        Assert.assertEquals(1, dataSource.getCommitCount());
+        Assert.assertEquals(0, dataSource.getRollbackCount());
         
         Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(0, dataSource.getActiveConnections().size());
