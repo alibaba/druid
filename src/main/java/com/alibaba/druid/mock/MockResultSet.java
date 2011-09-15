@@ -714,8 +714,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Object getObject(int columnIndex, Map<String, Class<?>> map) throws SQLException {
-
-        return null;
+        return getObject(columnIndex);
     }
 
     @Override
@@ -735,8 +734,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Array getArray(int columnIndex) throws SQLException {
-
-        return null;
+        return (Array) getObject(columnIndex);
     }
 
     @Override

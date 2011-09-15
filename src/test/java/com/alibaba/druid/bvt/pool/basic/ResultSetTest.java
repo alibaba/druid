@@ -1260,7 +1260,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getSQLXML("0");
+                resultSet.getSQLXML(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1287,7 +1287,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getNClob("0");
+                resultSet.getNClob(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1314,7 +1314,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getNString("0");
+                resultSet.getNString(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1341,7 +1341,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getNCharacterStream("0");
+                resultSet.getNCharacterStream(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1368,7 +1368,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getCharacterStream("0");
+                resultSet.getCharacterStream(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1422,7 +1422,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getURL("0");
+                resultSet.getURL(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1449,7 +1449,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getTimestamp("0", null);
+                resultSet.getTimestamp(0, null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1476,7 +1476,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getTime("0", null);
+                resultSet.getTime(0, null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1503,7 +1503,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getDate("0", null);
+                resultSet.getDate(0, null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1530,7 +1530,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getArray("0");
+                resultSet.getArray(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1557,7 +1557,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getClob("0");
+                resultSet.getClob(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1584,7 +1584,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getBlob("0");
+                resultSet.getBlob(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1611,7 +1611,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getRef("0");
+                resultSet.getRef(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1638,7 +1638,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getObject("0", null);
+                resultSet.getObject(0, null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1655,4 +1655,6 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    
 }
