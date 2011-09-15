@@ -32,116 +32,218 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class MockCallableStatement extends MockPreparedStatement implements CallableStatement {
+
+    private final List<Object> parameters = new ArrayList<Object>();
+    private boolean            wasNull    = false;
 
     public MockCallableStatement(Connection conn, String sql){
         super(conn, sql);
     }
 
+    public List<Object> getParameters() {
+        return parameters;
+    }
+
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType, int scale) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
     public boolean wasNull() throws SQLException {
-        return false;
+        return wasNull;
     }
 
     @Override
-    public String getString(int parameterIndex) throws SQLException {
-        return null;
+    public String getString(int columnIndex) throws SQLException {
+        return (String) getObject(columnIndex);
     }
 
     @Override
-    public boolean getBoolean(int parameterIndex) throws SQLException {
-        return false;
+    public boolean getBoolean(int columnIndex) throws SQLException {
+        Object obj = getObject(columnIndex);
+
+        if (obj == null) {
+            return false;
+        }
+
+        return ((Boolean) obj).booleanValue();
     }
 
     @Override
-    public byte getByte(int parameterIndex) throws SQLException {
+    public byte getByte(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.byteValue();
     }
 
     @Override
-    public short getShort(int parameterIndex) throws SQLException {
+    public short getShort(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.shortValue();
     }
 
     @Override
-    public int getInt(int parameterIndex) throws SQLException {
+    public int getInt(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.intValue();
     }
 
     @Override
-    public long getLong(int parameterIndex) throws SQLException {
+    public long getLong(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.longValue();
     }
 
     @Override
-    public float getFloat(int parameterIndex) throws SQLException {
+    public float getFloat(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.floatValue();
     }
 
     @Override
-    public double getDouble(int parameterIndex) throws SQLException {
+    public double getDouble(int columnIndex) throws SQLException {
+        Number number = (Number) getObject(columnIndex);
 
-        return 0;
+        if (number == null) {
+            return 0;
+        }
+
+        return number.doubleValue();
     }
 
     @Override
-    public BigDecimal getBigDecimal(int parameterIndex, int scale) throws SQLException {
-
-        return null;
+    public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
+        return (BigDecimal) getObject(columnIndex);
     }
 
     @Override
-    public byte[] getBytes(int parameterIndex) throws SQLException {
-
-        return null;
+    public byte[] getBytes(int columnIndex) throws SQLException {
+        return (byte[]) getObject(columnIndex);
     }
 
     @Override
-    public Date getDate(int parameterIndex) throws SQLException {
-
-        return null;
+    public Date getDate(int columnIndex) throws SQLException {
+        return (Date) getObject(columnIndex);
     }
 
     @Override
-    public Time getTime(int parameterIndex) throws SQLException {
-
-        return null;
+    public Time getTime(int columnIndex) throws SQLException {
+        return (Time) getObject(columnIndex);
     }
 
     @Override
-    public Timestamp getTimestamp(int parameterIndex) throws SQLException {
+    public Timestamp getTimestamp(int columnIndex) throws SQLException {
+        return (Timestamp) getObject(columnIndex);
+    }
 
-        return null;
+    @Override
+    public String getString(String columnLabel) throws SQLException {
+        return getString(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public boolean getBoolean(String columnLabel) throws SQLException {
+        return getBoolean(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public byte getByte(String columnLabel) throws SQLException {
+        return getByte(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public short getShort(String columnLabel) throws SQLException {
+        return getShort(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public int getInt(String columnLabel) throws SQLException {
+        return getInt(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public long getLong(String columnLabel) throws SQLException {
+        return getLong(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public float getFloat(String columnLabel) throws SQLException {
+        return getFloat(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public double getDouble(String columnLabel) throws SQLException {
+        return getDouble(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public byte[] getBytes(String columnLabel) throws SQLException {
+        return getBytes(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public Date getDate(String columnLabel) throws SQLException {
+        return getDate(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public Time getTime(String columnLabel) throws SQLException {
+        return getTime(Integer.parseInt(columnLabel));
+    }
+
+    @Override
+    public Timestamp getTimestamp(String columnLabel) throws SQLException {
+        return getTimestamp(Integer.parseInt(columnLabel));
     }
 
     @Override
     public Object getObject(int parameterIndex) throws SQLException {
+        Object obj = parameters.get(parameterIndex - 1);
 
-        return null;
+        wasNull = (obj == null);
+
+        return obj;
     }
 
     @Override
     public BigDecimal getBigDecimal(int parameterIndex) throws SQLException {
-
-        return null;
+        return (BigDecimal) getObject(parameterIndex);
     }
 
     @Override
@@ -194,22 +296,22 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType, String typeName) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType, int scale) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType, String typeName) throws SQLException {
-
+        parameters.add(null);
     }
 
     @Override
@@ -344,78 +446,6 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
     }
 
     @Override
-    public String getString(String parameterName) throws SQLException {
-
-        return null;
-    }
-
-    @Override
-    public boolean getBoolean(String parameterName) throws SQLException {
-
-        return false;
-    }
-
-    @Override
-    public byte getByte(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public short getShort(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public int getInt(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public long getLong(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public float getFloat(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public double getDouble(String parameterName) throws SQLException {
-
-        return 0;
-    }
-
-    @Override
-    public byte[] getBytes(String parameterName) throws SQLException {
-
-        return null;
-    }
-
-    @Override
-    public Date getDate(String parameterName) throws SQLException {
-
-        return null;
-    }
-
-    @Override
-    public Time getTime(String parameterName) throws SQLException {
-
-        return null;
-    }
-
-    @Override
-    public Timestamp getTimestamp(String parameterName) throws SQLException {
-
-        return null;
-    }
-
-    @Override
     public Object getObject(String parameterName) throws SQLException {
 
         return null;
@@ -423,8 +453,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public BigDecimal getBigDecimal(String parameterName) throws SQLException {
-
-        return null;
+        return getBigDecimal(Integer.parseInt(parameterName));
     }
 
     @Override
