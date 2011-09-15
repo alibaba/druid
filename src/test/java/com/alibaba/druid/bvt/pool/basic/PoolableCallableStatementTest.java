@@ -425,7 +425,7 @@ public class PoolableCallableStatementTest extends TestCase {
         {
             SQLException error = null;
             try {
-                stmt.getNClob("0");
+                stmt.getNClob(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -451,7 +451,7 @@ public class PoolableCallableStatementTest extends TestCase {
         {
             SQLException error = null;
             try {
-                stmt.getNString("0");
+                stmt.getNString(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -477,7 +477,7 @@ public class PoolableCallableStatementTest extends TestCase {
         {
             SQLException error = null;
             try {
-                stmt.getNCharacterStream("0");
+                stmt.getNCharacterStream(0);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -503,7 +503,7 @@ public class PoolableCallableStatementTest extends TestCase {
         {
             SQLException error = null;
             try {
-                stmt.getCharacterStream("0");
+                stmt.getCharacterStream(0);
             } catch (SQLException ex) {
                 error = ex;
             }
