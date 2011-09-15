@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -11,7 +12,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.mysql.jdbc.ResultSet;
 
-public class PrepareStatementTest extends TestCase {
+public class ConnectionStatementTest extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
@@ -81,6 +82,33 @@ public class PrepareStatementTest extends TestCase {
         Connection conn = dataSource.getConnection();
         
         PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+        stmt.close();
+        
+        conn.close();
+    }
+    
+    public void test_create() throws Exception {
+        Connection conn = dataSource.getConnection();
+        
+        Statement stmt = conn.createStatement();
+        stmt.close();
+        
+        conn.close();
+    }
+    
+    public void test_create1() throws Exception {
+        Connection conn = dataSource.getConnection();
+        
+        Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY);
+        stmt.close();
+        
+        conn.close();
+    }
+    
+    public void test_create2() throws Exception {
+        Connection conn = dataSource.getConnection();
+        
+        Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
         
         conn.close();
