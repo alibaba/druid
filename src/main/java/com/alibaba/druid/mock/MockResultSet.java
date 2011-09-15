@@ -213,102 +213,86 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-
-        return null;
+        return getString(Integer.parseInt(columnLabel));
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
-
-        return false;
+        return getBoolean(Integer.parseInt(columnLabel));
     }
 
     @Override
     public byte getByte(String columnLabel) throws SQLException {
-
-        return 0;
+        return getByte(Integer.parseInt(columnLabel));
     }
 
     @Override
     public short getShort(String columnLabel) throws SQLException {
-
-        return 0;
+        return getShort(Integer.parseInt(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        return 0;
+        return getInt(Integer.parseInt(columnLabel));
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
-
-        return 0;
+        return getLong(Integer.parseInt(columnLabel));
     }
 
     @Override
     public float getFloat(String columnLabel) throws SQLException {
-
-        return 0;
+        return getFloat(Integer.parseInt(columnLabel));
     }
 
     @Override
     public double getDouble(String columnLabel) throws SQLException {
-
-        return 0;
+        return getDouble(Integer.parseInt(columnLabel));
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-
-        return null;
+        return getBigDecimal(Integer.parseInt(columnLabel), scale);
     }
 
     @Override
     public byte[] getBytes(String columnLabel) throws SQLException {
-
-        return null;
+        return getBytes(Integer.parseInt(columnLabel));
     }
 
     @Override
     public Date getDate(String columnLabel) throws SQLException {
-
-        return null;
+        return getDate(Integer.parseInt(columnLabel));
     }
 
     @Override
     public Time getTime(String columnLabel) throws SQLException {
-
-        return null;
+        return getTime(Integer.parseInt(columnLabel));
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel) throws SQLException {
-
-        return null;
+        return getTimestamp(Integer.parseInt(columnLabel));
     }
 
     @Override
     public InputStream getAsciiStream(String columnLabel) throws SQLException {
-
-        return null;
+        return getAsciiStream(Integer.parseInt(columnLabel));
     }
 
     @Override
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-
-        return null;
+        return getUnicodeStream(Integer.parseInt(columnLabel));
     }
 
     @Override
     public InputStream getBinaryStream(String columnLabel) throws SQLException {
-
-        return null;
+        return getBinaryStream(Integer.parseInt(columnLabel));
     }
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-
         return null;
     }
 
@@ -373,8 +357,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-
-        return null;
+        return getBigDecimal(Integer.parseInt(columnLabel));
     }
 
     @Override
