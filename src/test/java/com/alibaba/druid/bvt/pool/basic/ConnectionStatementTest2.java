@@ -39,6 +39,8 @@ public class ConnectionStatementTest2 extends TestCase {
     }
 
     protected void tearDown() throws Exception {
+        dataSource.resetStat();
+        Assert.assertEquals(0, dataSource.getCreateCount());
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
