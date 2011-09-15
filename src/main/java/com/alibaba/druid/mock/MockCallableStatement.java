@@ -308,68 +308,67 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public URL getURL(int parameterIndex) throws SQLException {
-
-        return null;
+        return (URL) getObject(parameterIndex);
     }
 
     @Override
-    public void setURL(String parameterName, URL val) throws SQLException {
-
+    public void setURL(String parameterName, URL x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
     public void setNull(String parameterName, int sqlType) throws SQLException {
-
+        setObject(parameterName, null);
     }
 
     @Override
     public void setBoolean(String parameterName, boolean x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setByte(String parameterName, byte x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setShort(String parameterName, short x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setInt(String parameterName, int x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setLong(String parameterName, long x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setFloat(String parameterName, float x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setDouble(String parameterName, double x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setBigDecimal(String parameterName, BigDecimal x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setString(String parameterName, String x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setBytes(String parameterName, byte[] x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
@@ -379,62 +378,62 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void setTime(String parameterName, Time x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setTimestamp(String parameterName, Timestamp x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setAsciiStream(String parameterName, InputStream x, int length) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setBinaryStream(String parameterName, InputStream x, int length) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setObject(String parameterName, Object x, int targetSqlType, int scale) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setObject(String parameterName, Object x, int targetSqlType) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setObject(String parameterName, Object x) throws SQLException {
-
+        setObject(Integer.parseInt(parameterName), x);
     }
 
     @Override
-    public void setCharacterStream(String parameterName, Reader reader, int length) throws SQLException {
-
+    public void setCharacterStream(String parameterName, Reader x, int length) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
     public void setDate(String parameterName, Date x, Calendar cal) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setTime(String parameterName, Time x, Calendar cal) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setTimestamp(String parameterName, Timestamp x, Calendar cal) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setNull(String parameterName, int sqlType, String typeName) throws SQLException {
-
+        setObject(parameterName, null);
     }
 
     @Override
@@ -539,14 +538,12 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public NClob getNClob(int parameterIndex) throws SQLException {
-
-        return null;
+        return (NClob) getObject(parameterIndex);
     }
 
     @Override
     public NClob getNClob(String parameterName) throws SQLException {
-
-        return null;
+        return (NClob) getObject(parameterName);
     }
 
     @Override
@@ -562,104 +559,97 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public SQLXML getSQLXML(String parameterName) throws SQLException {
-
-        return null;
+        return (SQLXML) getObject(parameterName);
     }
 
     @Override
     public String getNString(int parameterIndex) throws SQLException {
-
-        return null;
+        return (String) getObject(parameterIndex);
     }
 
     @Override
     public String getNString(String parameterName) throws SQLException {
-
-        return null;
+        return (String) getObject(parameterName);
     }
 
     @Override
     public Reader getNCharacterStream(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Reader) getObject(parameterIndex);
     }
 
     @Override
     public Reader getNCharacterStream(String parameterName) throws SQLException {
-
-        return null;
+        return (Reader) getObject(parameterName);
     }
 
     @Override
     public Reader getCharacterStream(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Reader) getObject(parameterIndex);
     }
 
     @Override
     public Reader getCharacterStream(String parameterName) throws SQLException {
-
-        return null;
+        return (Reader) getObject(parameterName);
     }
 
     @Override
     public void setBlob(String parameterName, Blob x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setClob(String parameterName, Clob x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setAsciiStream(String parameterName, InputStream x, long length) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setBinaryStream(String parameterName, InputStream x, long length) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setCharacterStream(String parameterName, Reader reader, long length) throws SQLException {
-
+    public void setCharacterStream(String parameterName, Reader x, long length) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
     public void setAsciiStream(String parameterName, InputStream x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
     public void setBinaryStream(String parameterName, InputStream x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setCharacterStream(String parameterName, Reader reader) throws SQLException {
-
+    public void setCharacterStream(String parameterName, Reader x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNCharacterStream(String parameterName, Reader value) throws SQLException {
-
+    public void setNCharacterStream(String parameterName, Reader x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setClob(String parameterName, Reader reader) throws SQLException {
-
+    public void setClob(String parameterName, Reader x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setBlob(String parameterName, InputStream inputStream) throws SQLException {
-
+    public void setBlob(String parameterName, InputStream x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNClob(String parameterName, Reader reader) throws SQLException {
-
+    public void setNClob(String parameterName, Reader x) throws SQLException {
+        setObject(parameterName, x);
     }
 
 }

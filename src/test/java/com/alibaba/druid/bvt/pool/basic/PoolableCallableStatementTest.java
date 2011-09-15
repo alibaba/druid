@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.io.Reader;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -28,10 +29,10 @@ public class PoolableCallableStatementTest extends TestCase {
         };
 
         Assert.assertEquals(0, raw.getParameters().size());
-        raw.registerOutParameter(1, Types.INTEGER);
+        stmt.registerOutParameter(1, Types.INTEGER);
         Assert.assertEquals(1, raw.getParameters().size());
 
-        raw.registerOutParameter(2, Types.DECIMAL, 10);
+        stmt.registerOutParameter(2, Types.DECIMAL, 10);
         Assert.assertEquals(2, raw.getParameters().size());
     }
 
@@ -241,7 +242,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -403,7 +404,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -414,5 +415,135 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
 
+    }
+
+    public void test_getNClob() throws Exception {
+
+        stmt.getNClob(1);
+        stmt.getNClob("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getNString() throws Exception {
+
+        stmt.getNString(1);
+        stmt.getNString("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNString("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNString("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getNCharacterStream() throws Exception {
+
+        stmt.getNCharacterStream(1);
+        stmt.getNCharacterStream("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getNCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getCharacterStream() throws Exception {
+
+        stmt.getCharacterStream(1);
+        stmt.getCharacterStream("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_updateCharacterStream_2() throws Exception {
+
+        stmt.setCharacterStream(1, (Reader) null, 1L);
+        stmt.setCharacterStream("1", (Reader) null, 1L);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setCharacterStream("0", (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setCharacterStream(0, (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
     }
 }
