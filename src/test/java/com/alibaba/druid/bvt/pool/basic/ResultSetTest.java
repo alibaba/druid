@@ -128,6 +128,347 @@ public class ResultSetTest extends TestCase {
         Assert.assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp(1));
     }
 
+    public void test_set_error() throws Exception {
+        long currentMillis = System.currentTimeMillis();
+
+        Assert.assertTrue(resultSet.next());
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNull(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBoolean(0, true);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateByte(0, (byte) 12);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateShort(0, (short) 23);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateInt(0, 34);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateLong(0, 45);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateFloat(0, 1.0F);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateDouble(0, 2.0D);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBigDecimal(0, new BigDecimal("33"));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateString(0, "xxx");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBytes(0, new byte[0]);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateDate(0, new java.sql.Date(currentMillis));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateTime(0, new java.sql.Time(1000));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateTimestamp(0, new java.sql.Timestamp(currentMillis));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+    }
+
+    public void test_setByName() throws Exception {
+        long currentMillis = System.currentTimeMillis();
+
+        Assert.assertTrue(resultSet.next());
+
+        resultSet.updateNull("1");
+        Assert.assertNull(resultSet.getString(1));
+        resultSet.updateBoolean("1", true);
+        Assert.assertEquals(true, resultSet.getBoolean("1"));
+
+        resultSet.updateByte("1", (byte) 12);
+        Assert.assertEquals(12, resultSet.getByte("1"));
+
+        resultSet.updateShort("1", (short) 23);
+        Assert.assertEquals(23, resultSet.getShort("1"));
+
+        resultSet.updateInt("1", 34);
+        Assert.assertEquals(34, resultSet.getInt("1"));
+
+        resultSet.updateLong("1", 45);
+        Assert.assertEquals(45, resultSet.getLong("1"));
+
+        resultSet.updateFloat("1", 1.0F);
+        Assert.assertEquals(true, 1.0F == resultSet.getFloat("1"));
+
+        resultSet.updateDouble("1", 2.0D);
+        Assert.assertEquals(true, 2.0D == resultSet.getDouble("1"));
+
+        resultSet.updateBigDecimal("1", new BigDecimal("33"));
+        Assert.assertEquals(new BigDecimal("33"), resultSet.getBigDecimal("1"));
+
+        resultSet.updateString("1", "xxx");
+        Assert.assertEquals("xxx", resultSet.getString("1"));
+
+        resultSet.updateBytes("1", new byte[0]);
+        Assert.assertEquals(0, resultSet.getBytes("1").length);
+
+        resultSet.updateDate("1", new java.sql.Date(currentMillis));
+        Assert.assertEquals(new java.sql.Date(currentMillis), resultSet.getDate("1"));
+
+        resultSet.updateTime("1", new java.sql.Time(1000));
+        Assert.assertEquals(new java.sql.Time(1000), resultSet.getTime("1"));
+
+        resultSet.updateTimestamp("1", new java.sql.Timestamp(currentMillis));
+        Assert.assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp("1"));
+    }
+    
+    public void test_setByLabel_error() throws Exception {
+        long currentMillis = System.currentTimeMillis();
+
+        Assert.assertTrue(resultSet.next());
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNull("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBoolean("0", true);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateByte("0", (byte) 12);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateShort("0", (short) 23);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateInt("0", 34);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateLong("0", 45);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateFloat("0", 1.0F);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateDouble("0", 2.0D);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBigDecimal("0", new BigDecimal("33"));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateString("0", "xxx");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBytes("0", new byte[0]);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateDate("0", new java.sql.Date(currentMillis));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateTime("0", new java.sql.Time(1000));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateTimestamp("0", new java.sql.Timestamp(currentMillis));
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+    }
+
     public void test_get_error() throws Exception {
         {
             SQLException error = null;
