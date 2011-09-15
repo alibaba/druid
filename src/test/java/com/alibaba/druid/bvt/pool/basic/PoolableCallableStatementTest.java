@@ -36,7 +36,7 @@ public class PoolableCallableStatementTest extends TestCase {
     }
 
     public void test_basic() throws Exception {
-        Assert.assertEquals(raw, stmt.getRawPreparedStatement());
+        Assert.assertEquals(raw, stmt.getCallableStatementRaw());
     }
 
     public void test_callableStmt() throws Exception {

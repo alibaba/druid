@@ -1194,4 +1194,139 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_getSQLXML() throws Exception {
+        resultSet.next();
+        
+        resultSet.getSQLXML(1);
+        resultSet.getSQLXML("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getSQLXML("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getSQLXML("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getNClob() throws Exception {
+        resultSet.next();
+        
+        resultSet.getNClob(1);
+        resultSet.getNClob("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getNString() throws Exception {
+        resultSet.next();
+        
+        resultSet.getNString(1);
+        resultSet.getNString("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNString("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNString("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getNCharacterStream() throws Exception {
+        resultSet.next();
+        
+        resultSet.getNCharacterStream(1);
+        resultSet.getNCharacterStream("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getNCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getCharacterStream() throws Exception {
+        resultSet.next();
+        
+        resultSet.getCharacterStream(1);
+        resultSet.getCharacterStream("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getCharacterStream("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }

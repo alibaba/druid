@@ -328,26 +328,22 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Object getObject(String columnLabel) throws SQLException {
-
-        return null;
+        return getObject(findColumn(columnLabel));
     }
 
     @Override
     public int findColumn(String columnLabel) throws SQLException {
-
-        return 0;
+        return Integer.parseInt(columnLabel);
     }
 
     @Override
     public Reader getCharacterStream(int columnIndex) throws SQLException {
-
-        return null;
+        return (Reader) getObject(columnIndex);
     }
 
     @Override
     public Reader getCharacterStream(String columnLabel) throws SQLException {
-
-        return null;
+        return (Reader) getObject(columnLabel);
     }
 
     @Override
@@ -957,12 +953,12 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
-        return (Reader) getNCharacterStream(columnIndex);
+        return (Reader) getObject(columnIndex);
     }
 
     @Override
     public Reader getNCharacterStream(String columnLabel) throws SQLException {
-        return (Reader) getNCharacterStream(columnLabel);
+        return (Reader) getObject(columnLabel);
     }
 
     @Override
@@ -971,8 +967,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateNCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
-
+    public void updateNCharacterStream(String columnLabel, Reader x, long length) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
