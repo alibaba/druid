@@ -248,50 +248,42 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public Object getObject(int parameterIndex, Map<String, Class<?>> map) throws SQLException {
-
-        return null;
+        return getObject(parameterIndex);
     }
 
     @Override
     public Ref getRef(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Ref) getObject(parameterIndex);
     }
 
     @Override
     public Blob getBlob(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Blob) getObject(parameterIndex);
     }
 
     @Override
     public Clob getClob(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Clob) getObject(parameterIndex);
     }
 
     @Override
     public Array getArray(int parameterIndex) throws SQLException {
-
-        return null;
+        return (Array) getObject(parameterIndex);
     }
 
     @Override
     public Date getDate(int parameterIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Date) getObject(parameterIndex);
     }
 
     @Override
     public Time getTime(int parameterIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Time) getObject(parameterIndex);
     }
 
     @Override
     public Timestamp getTimestamp(int parameterIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Timestamp) getObject(parameterIndex);
     }
 
     @Override
@@ -447,8 +439,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public Object getObject(String parameterName) throws SQLException {
-
-        return null;
+        return getObject(Integer.parseInt(parameterName));
     }
 
     @Override
@@ -458,68 +449,57 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public Object getObject(String parameterName, Map<String, Class<?>> map) throws SQLException {
-
-        return null;
+        return getObject(parameterName);
     }
 
     @Override
     public Ref getRef(String parameterName) throws SQLException {
-
-        return null;
+        return (Ref) getObject(parameterName);
     }
 
     @Override
     public Blob getBlob(String parameterName) throws SQLException {
-
-        return null;
+        return (Blob) getObject(parameterName);
     }
 
     @Override
     public Clob getClob(String parameterName) throws SQLException {
-
-        return null;
+        return (Clob) getObject(parameterName);
     }
 
     @Override
     public Array getArray(String parameterName) throws SQLException {
-
-        return null;
+        return (Array) getObject(parameterName);
     }
 
     @Override
     public Date getDate(String parameterName, Calendar cal) throws SQLException {
-
-        return null;
+        return (Date) getObject(parameterName);
     }
 
     @Override
     public Time getTime(String parameterName, Calendar cal) throws SQLException {
-
-        return null;
+        return (Time) getObject(parameterName);
     }
 
     @Override
     public Timestamp getTimestamp(String parameterName, Calendar cal) throws SQLException {
-
-        return null;
+        return (Timestamp) getObject(parameterName);
     }
 
     @Override
     public URL getURL(String parameterName) throws SQLException {
-
-        return null;
+        return (URL) getObject(parameterName);
     }
 
     @Override
     public RowId getRowId(int parameterIndex) throws SQLException {
-
-        return null;
+        return (RowId) getObject(parameterIndex);
     }
 
     @Override
     public RowId getRowId(String parameterName) throws SQLException {
-
-        return null;
+        return (RowId) getObject(parameterName);
     }
 
     @Override
