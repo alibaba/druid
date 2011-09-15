@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
@@ -321,8 +323,8 @@ public class ResultSetTest extends TestCase {
         resultSet.updateTimestamp("1", new java.sql.Timestamp(currentMillis));
         Assert.assertEquals(new java.sql.Timestamp(currentMillis), resultSet.getTimestamp("1"));
     }
-    
-    public void test_setByLabel_error() throws Exception {
+
+    public void test_updateByLabel_error() throws Exception {
         long currentMillis = System.currentTimeMillis();
 
         Assert.assertTrue(resultSet.next());
@@ -467,6 +469,141 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
 
+    }
+    
+    public void test_updateBinaryStream() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateBinaryStream(1, (InputStream) null);
+        resultSet.updateBinaryStream("1", (InputStream) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBinaryStream("0", (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBinaryStream(0, (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateCharacterStream() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateCharacterStream(1, (Reader) null);
+        resultSet.updateCharacterStream("1", (Reader) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateCharacterStream("0", (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateCharacterStream(0, (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_update_blob() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateBlob(1, (InputStream) null);
+        resultSet.updateBlob("1", (InputStream) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBlob("0", (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBlob(0, (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_update_clob() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateClob(1, (Reader) null);
+        resultSet.updateClob("1", (Reader) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateClob("0", (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateClob(0, (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_update_nclob() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateNClob(1, (Reader) null);
+        resultSet.updateNClob("1", (Reader) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNClob("0", (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNClob(0, (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
     }
 
     public void test_get_error() throws Exception {
