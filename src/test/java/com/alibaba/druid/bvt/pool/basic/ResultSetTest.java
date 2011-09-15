@@ -743,6 +743,34 @@ public class ResultSetTest extends TestCase {
     }
     
     
+    public void test_updateAsciiStream_2() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateAsciiStream(1, (InputStream) null, 1L);
+        resultSet.updateAsciiStream("1", (InputStream) null, 1L);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateAsciiStream("0", (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateBlob(0, (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    
     public void test_updateBinaryStream_1() throws Exception {
         resultSet.next();
         
@@ -817,6 +845,33 @@ public class ResultSetTest extends TestCase {
             SQLException error = null;
             try {
                 resultSet.updateNCharacterStream(0, (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateNCharacterStream_1() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateNCharacterStream(1, (Reader) null, 1);
+        resultSet.updateNCharacterStream("1", (Reader) null, 1);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNCharacterStream("0", (Reader) null, 1);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateNCharacterStream(0, (Reader) null, 1);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1329,4 +1384,32 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_updateCharacterStream_2() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateCharacterStream(1, (Reader) null, 1L);
+        resultSet.updateCharacterStream("1", (Reader) null, 1L);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateCharacterStream("0", (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateCharacterStream(0, (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
 }
