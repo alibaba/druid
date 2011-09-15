@@ -487,192 +487,193 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void updateNull(int columnIndex) throws SQLException {
-
+        updateObject(columnIndex, null);
     }
 
     @Override
     public void updateBoolean(int columnIndex, boolean x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateByte(int columnIndex, byte x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateShort(int columnIndex, short x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateInt(int columnIndex, int x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateLong(int columnIndex, long x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateFloat(int columnIndex, float x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateDouble(int columnIndex, double x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateBigDecimal(int columnIndex, BigDecimal x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateString(int columnIndex, String x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateBytes(int columnIndex, byte[] x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateDate(int columnIndex, Date x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateTime(int columnIndex, Time x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateTimestamp(int columnIndex, Timestamp x) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateAsciiStream(int columnIndex, InputStream x, int length) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateBinaryStream(int columnIndex, InputStream x, int length) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateCharacterStream(int columnIndex, Reader x, int length) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateObject(int columnIndex, Object x, int scaleOrLength) throws SQLException {
-
+        updateObject(columnIndex, x);
     }
 
     @Override
     public void updateObject(int columnIndex, Object x) throws SQLException {
-
+        Object[] row = rows.get(rowIndex);
+        row[columnIndex - 1] = x;
     }
 
     @Override
     public void updateNull(String columnLabel) throws SQLException {
-
+        updateObject(columnLabel, null);
     }
 
     @Override
     public void updateBoolean(String columnLabel, boolean x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateByte(String columnLabel, byte x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateShort(String columnLabel, short x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateInt(String columnLabel, int x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateLong(String columnLabel, long x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateFloat(String columnLabel, float x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateDouble(String columnLabel, double x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateBigDecimal(String columnLabel, BigDecimal x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateString(String columnLabel, String x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateBytes(String columnLabel, byte[] x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateDate(String columnLabel, Date x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateTime(String columnLabel, Time x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateTimestamp(String columnLabel, Timestamp x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateAsciiStream(String columnLabel, InputStream x, int length) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateBinaryStream(String columnLabel, InputStream x, int length) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateCharacterStream(String columnLabel, Reader reader, int length) throws SQLException {
-
+        updateObject(columnLabel, reader);
     }
 
     @Override
     public void updateObject(String columnLabel, Object x, int scaleOrLength) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
     public void updateObject(String columnLabel, Object x) throws SQLException {
-
+        updateObject(Integer.parseInt(columnLabel), x);
     }
 
     @Override
