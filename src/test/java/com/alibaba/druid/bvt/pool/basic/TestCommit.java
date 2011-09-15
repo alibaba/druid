@@ -12,7 +12,7 @@ import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class TestDataSourceBasic2 extends TestCase {
+public class TestCommit extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
