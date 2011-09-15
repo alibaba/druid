@@ -60,7 +60,7 @@ public class TestIdle3_Concurrent extends TestCase {
 
         {
             // 并发创建14个
-            concurrent(driver, dataSource, 100);
+            concurrent(driver, dataSource, 30);
         }
 
         // 连续打开关闭单个连接
