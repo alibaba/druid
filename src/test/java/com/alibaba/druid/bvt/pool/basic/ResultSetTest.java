@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.SQLXML;
 
 import junit.framework.TestCase;
 
@@ -816,6 +817,33 @@ public class ResultSetTest extends TestCase {
             SQLException error = null;
             try {
                 resultSet.updateNCharacterStream(0, (Reader) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateSQLXML() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateSQLXML(1, (SQLXML) null);
+        resultSet.updateSQLXML("1", (SQLXML) null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateSQLXML("0", (SQLXML) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateSQLXML(0, (SQLXML) null);
             } catch (SQLException ex) {
                 error = ex;
             }

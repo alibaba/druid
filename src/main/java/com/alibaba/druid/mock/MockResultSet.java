@@ -896,81 +896,73 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateNString(int columnIndex, String nString) throws SQLException {
-
+    public void updateNString(int columnIndex, String x) throws SQLException {
+        updateObject(columnIndex, x);
     }
 
     @Override
-    public void updateNString(String columnLabel, String nString) throws SQLException {
-
+    public void updateNString(String columnLabel, String x) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
-    public void updateNClob(int columnIndex, NClob nClob) throws SQLException {
-
+    public void updateNClob(int columnIndex, NClob x) throws SQLException {
+        updateObject(columnIndex, x);
     }
 
     @Override
-    public void updateNClob(String columnLabel, NClob nClob) throws SQLException {
-
+    public void updateNClob(String columnLabel, NClob x) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
     public NClob getNClob(int columnIndex) throws SQLException {
-
-        return null;
+        return (NClob) getObject(columnIndex);
     }
 
     @Override
     public NClob getNClob(String columnLabel) throws SQLException {
-
-        return null;
+        return (NClob) getObject(columnLabel);
     }
 
     @Override
     public SQLXML getSQLXML(int columnIndex) throws SQLException {
-
-        return null;
+        return (SQLXML) getObject(columnIndex);
     }
 
     @Override
     public SQLXML getSQLXML(String columnLabel) throws SQLException {
-
-        return null;
+        return (SQLXML) getObject(columnLabel);
     }
 
     @Override
-    public void updateSQLXML(int columnIndex, SQLXML xmlObject) throws SQLException {
-
+    public void updateSQLXML(int columnIndex, SQLXML x) throws SQLException {
+        updateObject(columnIndex, x);
     }
 
     @Override
-    public void updateSQLXML(String columnLabel, SQLXML xmlObject) throws SQLException {
-
+    public void updateSQLXML(String columnLabel, SQLXML x) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
     public String getNString(int columnIndex) throws SQLException {
-
-        return null;
+        return (String) getObject(columnIndex);
     }
 
     @Override
     public String getNString(String columnLabel) throws SQLException {
-
-        return null;
+        return (String) getObject(columnLabel);
     }
 
     @Override
     public Reader getNCharacterStream(int columnIndex) throws SQLException {
-
-        return null;
+        return (Reader) getNCharacterStream(columnIndex);
     }
 
     @Override
     public Reader getNCharacterStream(String columnLabel) throws SQLException {
-
-        return null;
+        return (Reader) getNCharacterStream(columnLabel);
     }
 
     @Override
@@ -1000,7 +992,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void updateAsciiStream(String columnLabel, InputStream x, long length) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1009,8 +1001,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateCharacterStream(String columnLabel, Reader reader, long length) throws SQLException {
-
+    public void updateCharacterStream(String columnLabel, Reader x, long length) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1019,8 +1011,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateBlob(String columnLabel, InputStream inputStream, long length) throws SQLException {
-
+    public void updateBlob(String columnLabel, InputStream x, long length) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1029,8 +1021,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+    public void updateClob(String columnLabel, Reader x, long length) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1039,8 +1031,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateNClob(String columnLabel, Reader reader, long length) throws SQLException {
-
+    public void updateNClob(String columnLabel, Reader x, long length) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1049,8 +1041,8 @@ public class MockResultSet implements ResultSet {
     }
 
     @Override
-    public void updateNCharacterStream(String columnLabel, Reader reader) throws SQLException {
-
+    public void updateNCharacterStream(String columnLabel, Reader x) throws SQLException {
+        updateObject(columnLabel, x);
     }
 
     @Override
@@ -1070,7 +1062,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void updateAsciiStream(String columnLabel, InputStream x) throws SQLException {
-
+        updateObject(columnLabel, x);
     }
 
     @Override
