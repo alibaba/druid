@@ -1,8 +1,12 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Arrays;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -31,6 +35,7 @@ public class PoolablePreparedStatementTest extends TestCase {
 
     public void test_basic() throws Exception {
         Assert.assertEquals(raw, stmt.getRawPreparedStatement());
+        Assert.assertEquals(raw, stmt.getRawStatement());
     }
 
     public void test_setBoolean() throws Exception {
@@ -154,6 +159,142 @@ public class PoolablePreparedStatementTest extends TestCase {
             SQLException error = null;
             try {
                 stmt.setDouble(0, Double.MAX_VALUE);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setBigDecimal() throws Exception {
+        stmt.setBigDecimal(1, BigDecimal.TEN);
+        
+        Assert.assertEquals(BigDecimal.TEN, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setBigDecimal(0, BigDecimal.TEN);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setString() throws Exception {
+        stmt.setString(1, "中国");
+        
+        Assert.assertEquals("中国", raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setString(0, "中国");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setBytes() throws Exception {
+        byte[] bytes = "中国".getBytes();
+        stmt.setBytes(1, bytes);
+        
+        Assert.assertEquals(true, Arrays.equals(bytes, (byte[]) raw.getParameters().get(0)));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setBytes(0, bytes);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setDate() throws Exception {
+        Date value = new Date(System.currentTimeMillis());
+        stmt.setDate(1, value);
+        
+        Assert.assertEquals(value, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setDate(0, value);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setTimestamp() throws Exception {
+        Timestamp value = new Timestamp(System.currentTimeMillis());
+        stmt.setTimestamp(1, value);
+        
+        Assert.assertEquals(value, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setTimestamp(0, value);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setAsciiStream() throws Exception {
+        InputStream value = null;
+        stmt.setAsciiStream(1, value);
+        
+        Assert.assertEquals(value, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setAsciiStream(0, value);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    public void test_setUnicodeStream() throws Exception {
+        InputStream value = null;
+        stmt.setUnicodeStream(1, value, 0);
+        
+        Assert.assertEquals(value, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setUnicodeStream(0, value, 0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    public void test_setBinaryStream() throws Exception {
+        InputStream value = null;
+        stmt.setBinaryStream(1, value, 0);
+        
+        Assert.assertEquals(value, raw.getParameters().get(0));
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setBinaryStream(0, value, 0);
             } catch (SQLException ex) {
                 error = ex;
             }
