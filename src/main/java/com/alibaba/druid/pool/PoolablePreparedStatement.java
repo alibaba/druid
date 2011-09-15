@@ -692,7 +692,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         }
     }
 
-    static class PreparedStatementKey {
+    public static class PreparedStatementKey {
 
         protected final String     sql;
         protected final String     catalog;
