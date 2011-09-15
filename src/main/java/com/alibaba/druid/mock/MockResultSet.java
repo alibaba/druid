@@ -368,8 +368,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-
-        return null;
+        return (BigDecimal) getObject(columnIndex);
     }
 
     @Override
