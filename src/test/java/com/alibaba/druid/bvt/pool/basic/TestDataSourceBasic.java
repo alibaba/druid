@@ -1,16 +1,15 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.Statement;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.mysql.jdbc.ResultSet;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestDataSourceBasic extends TestCase {
 
@@ -46,22 +45,30 @@ public class TestDataSourceBasic extends TestCase {
 
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
+
+        {
+            PoolableConnection wrap = conn.unwrap(PoolableConnection.class);
+            Assert.assertTrue(conn.isWrapperFor(PoolableConnection.class));
+            Assert.assertNotNull(wrap);
+        }
         
-        PoolableConnection wrap = conn.unwrap(PoolableConnection.class);
-        Assert.assertTrue(wrap.isWrapperFor(PoolableConnection.class));
-        Assert.assertNotNull(wrap);
-        
+        {
+            Statement wrap = conn.unwrap(Statement.class);
+            Assert.assertTrue(!conn.isWrapperFor(Statement.class));
+            Assert.assertNull(wrap);
+        }
+
         conn.setAutoCommit(false);
         conn.setAutoCommit(false);
         Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(1, dataSource.getActiveConnections().size());
         conn.commit();
         conn.close();
-        
+
         Assert.assertEquals(1, dataSource.getStartTransactionCount());
         Assert.assertEquals(1, dataSource.getCommitCount());
         Assert.assertEquals(0, dataSource.getRollbackCount());
-        
+
         Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(0, dataSource.getActiveConnections().size());
     }
