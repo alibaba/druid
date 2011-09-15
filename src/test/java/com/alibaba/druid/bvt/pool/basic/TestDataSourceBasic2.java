@@ -12,7 +12,7 @@ import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class TestDataSourceBasic extends TestCase {
+public class TestDataSourceBasic2 extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
@@ -36,11 +36,6 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
         dataSource.setRemoveAbandoned(true);
-        dataSource.setExceptionSorterClassName(null);
-        
-        Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
-        dataSource.setExceptionSorterClassName("");
-        Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
     }
 
     protected void tearDown() throws Exception {
@@ -68,12 +63,12 @@ public class TestDataSourceBasic extends TestCase {
         conn.setAutoCommit(false);
         Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(1, dataSource.getActiveConnections().size());
-        conn.commit();
+        conn.rollback();
         conn.close();
 
         Assert.assertEquals(1, dataSource.getStartTransactionCount());
-        Assert.assertEquals(1, dataSource.getCommitCount());
-        Assert.assertEquals(0, dataSource.getRollbackCount());
+        Assert.assertEquals(0, dataSource.getCommitCount());
+        Assert.assertEquals(1, dataSource.getRollbackCount());
 
         Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(0, dataSource.getActiveConnections().size());
