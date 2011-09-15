@@ -741,80 +741,67 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public Object getObject(String columnLabel, Map<String, Class<?>> map) throws SQLException {
-
-        return null;
+        return getObject(columnLabel);
     }
 
     @Override
     public Ref getRef(String columnLabel) throws SQLException {
-
-        return null;
+        return (Ref) getObject(columnLabel);
     }
 
     @Override
     public Blob getBlob(String columnLabel) throws SQLException {
-
-        return null;
+        return (Blob) getObject(columnLabel);
     }
 
     @Override
     public Clob getClob(String columnLabel) throws SQLException {
-
-        return null;
+        return (Clob) getObject(columnLabel);
     }
 
     @Override
     public Array getArray(String columnLabel) throws SQLException {
-
-        return null;
+        return (Array) getObject(columnLabel);
     }
 
     @Override
     public Date getDate(int columnIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Date) getObject(columnIndex);
     }
 
     @Override
     public Date getDate(String columnLabel, Calendar cal) throws SQLException {
-
-        return null;
+        return (Date) getObject(columnLabel);
     }
 
     @Override
     public Time getTime(int columnIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Time) getObject(columnIndex);
     }
 
     @Override
     public Time getTime(String columnLabel, Calendar cal) throws SQLException {
-
-        return null;
+        return (Time) getObject(columnLabel);
     }
 
     @Override
     public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-
-        return null;
+        return (Timestamp) getObject(columnIndex);
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {
-
-        return null;
+        return (Timestamp) getObject(columnLabel);
     }
 
     @Override
     public URL getURL(int columnIndex) throws SQLException {
-
-        return null;
+        return (URL) getObject(columnIndex);
     }
 
     @Override
     public URL getURL(String columnLabel) throws SQLException {
-
-        return null;
+        return (URL) getObject(columnLabel);
     }
 
     @Override

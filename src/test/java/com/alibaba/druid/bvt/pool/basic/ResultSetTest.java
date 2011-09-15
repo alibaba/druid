@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.SQLXML;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 
@@ -1412,4 +1413,246 @@ public class ResultSetTest extends TestCase {
         }
     }
     
+    public void test_getURL() throws Exception {
+        resultSet.next();
+        
+        resultSet.getURL(1);
+        resultSet.getURL("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getURL("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getURL("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getTimestamp() throws Exception {
+        resultSet.next();
+        
+        resultSet.getTimestamp(1, null);
+        resultSet.getTimestamp("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getTimestamp("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getTimestamp("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getTime() throws Exception {
+        resultSet.next();
+        
+        resultSet.getTime(1, null);
+        resultSet.getTime("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getTime("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getTime("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getDate() throws Exception {
+        resultSet.next();
+        
+        resultSet.getDate(1, null);
+        resultSet.getDate("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getDate("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getDate("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getArray() throws Exception {
+        resultSet.next();
+        
+        resultSet.getArray(1);
+        resultSet.getArray("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getArray("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getArray("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getClob() throws Exception {
+        resultSet.next();
+        
+        resultSet.getClob(1);
+        resultSet.getClob("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getBlob() throws Exception {
+        resultSet.next();
+        
+        resultSet.getBlob(1);
+        resultSet.getBlob("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getBlob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getBlob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getRef() throws Exception {
+        resultSet.next();
+        
+        resultSet.getRef(1);
+        resultSet.getRef("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getRef("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getRef("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getObject() throws Exception {
+        resultSet.next();
+        
+        resultSet.getObject(1, null);
+        resultSet.getObject("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getObject("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getObject("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }
