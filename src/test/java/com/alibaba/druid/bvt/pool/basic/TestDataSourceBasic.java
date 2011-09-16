@@ -1,7 +1,10 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -44,7 +47,9 @@ public class TestDataSourceBasic extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+        if (dataSource.getCreateCount() > 0) {
+            Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
+        }
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
@@ -83,5 +88,10 @@ public class TestDataSourceBasic extends TestCase {
 
         Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(0, dataSource.getActiveConnections().size());
+    }
+    
+    public void test_wrap() throws Exception {
+        Assert.assertTrue(!dataSource.isWrapperFor(Date.class));
+        Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
     }
 }

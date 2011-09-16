@@ -59,7 +59,7 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author wenshao<szujobs@hotmail.com>
  * @author ljw<ljw2083@alibaba-inc.com>
  */
-public abstract class DruidAbstractDataSource implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
+public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
 
     private static final long                                                                serialVersionUID                          = 1L;
 
@@ -711,16 +711,6 @@ public abstract class DruidAbstractDataSource implements DruidAbstractDataSource
     @Override
     public int getLoginTimeout() {
         return DriverManager.getLoginTimeout();
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
     }
 
     protected void initConnectionFactory() throws SQLException {
