@@ -52,12 +52,20 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
-        parameters.add(null);
+        if (parameterIndex < 1) {
+            throw new SQLException();
+        }
+        
+        if (parameters.size() >= parameterIndex - 1) {
+            parameters.add(null);
+        } else {
+            throw new SQLException();
+        }
     }
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType, int scale) throws SQLException {
-        parameters.add(null);
+        registerOutParameter(parameterIndex, sqlType);
     }
 
     @Override
@@ -288,22 +296,22 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType, String typeName) throws SQLException {
-        parameters.add(null);
+        registerOutParameter(parameterIndex, sqlType);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType) throws SQLException {
-        parameters.add(null);
+        registerOutParameter(Integer.parseInt(parameterName), sqlType);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType, int scale) throws SQLException {
-        parameters.add(null);
+        registerOutParameter(parameterName, sqlType);
     }
 
     @Override
     public void registerOutParameter(String parameterName, int sqlType, String typeName) throws SQLException {
-        parameters.add(null);
+        registerOutParameter(parameterName, sqlType);
     }
 
     @Override

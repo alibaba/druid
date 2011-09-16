@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
+import java.sql.NClob;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLXML;
@@ -1854,7 +1855,7 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setNString() throws Exception {
 
         stmt.setNString(1, (String) null);
@@ -1880,7 +1881,7 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getObject() throws Exception {
 
         stmt.getObject(1, null);
@@ -1906,7 +1907,7 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setBoolean() throws Exception {
 
         stmt.setBoolean(1, true);
@@ -1932,7 +1933,7 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setURL() throws Exception {
 
         stmt.setURL(1, null);
@@ -1952,6 +1953,136 @@ public class PoolableCallableStatementTest extends TestCase {
             SQLException error = null;
             try {
                 stmt.setURL(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setNClob_2() throws Exception {
+
+        stmt.setNClob(1, (NClob) null);
+        stmt.setNClob("1", (NClob) null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNClob("0", (NClob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNClob(0, (NClob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setNull_1() throws Exception {
+
+        stmt.setNull(1, Types.INTEGER);
+        stmt.setNull("1", Types.INTEGER);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNull("0", Types.INTEGER);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNull(0, Types.INTEGER);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_registerOutParameter() throws Exception {
+
+        stmt.registerOutParameter(1, Types.INTEGER, "Int");
+        stmt.registerOutParameter("1", Types.INTEGER, "Int");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter("0", Types.INTEGER, "Int");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter(0, Types.INTEGER, "Int");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_registerOutParameter_1() throws Exception {
+
+        stmt.registerOutParameter(1, Types.INTEGER, 2);
+        stmt.registerOutParameter("1", Types.INTEGER, 2);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter("0", Types.INTEGER, 2);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter(0, Types.INTEGER, 2);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_registerOutParameter_2() throws Exception {
+        
+        stmt.registerOutParameter(1, Types.INTEGER);
+        stmt.registerOutParameter("1", Types.INTEGER);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter("0", Types.INTEGER);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.registerOutParameter(0, Types.INTEGER);
             } catch (SQLException ex) {
                 error = ex;
             }
