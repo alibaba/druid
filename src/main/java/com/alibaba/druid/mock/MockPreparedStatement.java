@@ -268,8 +268,8 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
     }
 
     @Override
-    public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
-
+    public void setClob(int parameterIndex, Reader value, long length) throws SQLException {
+        parameters.add(parameterIndex - 1, value);
     }
 
     @Override

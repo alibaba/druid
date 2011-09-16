@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.sql.Types;
 
@@ -547,12 +548,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setNClob() throws Exception {
-        
+
         stmt.setNClob(1, (Reader) null);
         stmt.setNClob("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -562,7 +563,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -573,12 +574,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setClob() throws Exception {
-        
+
         stmt.setClob(1, (Reader) null);
         stmt.setClob("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -588,7 +589,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -599,12 +600,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setNCharacterStream() throws Exception {
-        
+
         stmt.setNCharacterStream(1, (Reader) null);
         stmt.setNCharacterStream("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -614,7 +615,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -625,12 +626,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setCharacterStream() throws Exception {
-        
+
         stmt.setCharacterStream(1, (Reader) null);
         stmt.setCharacterStream("1", (Reader) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -640,7 +641,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -651,12 +652,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setBinaryStream() throws Exception {
-        
+
         stmt.setBinaryStream(1, (InputStream) null);
         stmt.setBinaryStream("1", (InputStream) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -666,7 +667,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -677,12 +678,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setBinaryStream_1() throws Exception {
-        
+
         stmt.setBinaryStream(1, (InputStream) null, 1);
         stmt.setBinaryStream("1", (InputStream) null, 1);
-        
+
         {
             SQLException error = null;
             try {
@@ -692,7 +693,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -703,13 +704,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
-    
+
     public void test_setBinaryStream_2() throws Exception {
-        
+
         stmt.setBinaryStream(1, (InputStream) null, 1L);
         stmt.setBinaryStream("1", (InputStream) null, 1L);
-        
+
         {
             SQLException error = null;
             try {
@@ -719,7 +719,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -730,12 +730,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setAsciiStream() throws Exception {
-        
+
         stmt.setAsciiStream(1, (InputStream) null);
         stmt.setAsciiStream("1", (InputStream) null);
-        
+
         {
             SQLException error = null;
             try {
@@ -745,11 +745,115 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
                 stmt.setAsciiStream(0, (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setBlob() throws Exception {
+
+        stmt.setBlob(1, (InputStream) null);
+        stmt.setBlob("1", (InputStream) null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setBlob("0", (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setBlob(0, (InputStream) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setClob_1() throws Exception {
+
+        stmt.setClob(1, (Clob) null);
+        stmt.setClob("1", (Clob) null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setClob("0", (Clob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setClob(0, (Clob) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setClob_2() throws Exception {
+
+        stmt.setClob(1, (Reader) null, 1L);
+        stmt.setClob("1", (Reader) null, 1L);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setClob("0", (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setClob(0, (Reader) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setAsciiStream_1() throws Exception {
+        
+        stmt.setAsciiStream(1, (InputStream) null, 1L);
+        stmt.setAsciiStream("1", (InputStream) null, 1L);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setAsciiStream("0", (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setAsciiStream(0, (InputStream) null, 1L);
             } catch (SQLException ex) {
                 error = ex;
             }

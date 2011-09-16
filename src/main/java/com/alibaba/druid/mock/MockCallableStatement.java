@@ -503,36 +503,36 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void setRowId(String parameterName, RowId x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNString(String parameterName, String value) throws SQLException {
-
+    public void setNString(String parameterName, String x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNCharacterStream(String parameterName, Reader value, long length) throws SQLException {
-
+    public void setNCharacterStream(String parameterName, Reader x, long length) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNClob(String parameterName, NClob value) throws SQLException {
-
+    public void setNClob(String parameterName, NClob x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setClob(String parameterName, Reader reader, long length) throws SQLException {
-
+    public void setClob(String parameterName, Reader x, long length) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setBlob(String parameterName, InputStream inputStream, long length) throws SQLException {
-
+    public void setBlob(String parameterName, InputStream x, long length) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
-    public void setNClob(String parameterName, Reader reader, long length) throws SQLException {
+    public void setNClob(String parameterName, Reader x, long length) throws SQLException {
 
     }
 
