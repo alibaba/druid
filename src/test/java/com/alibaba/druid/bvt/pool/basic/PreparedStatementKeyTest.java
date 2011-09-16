@@ -1,10 +1,12 @@
 package com.alibaba.druid.bvt.pool.basic;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
+import com.alibaba.druid.pool.PoolablePreparedStatement;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 
 
@@ -59,5 +61,13 @@ public class PreparedStatementKeyTest extends TestCase {
         Assert.assertFalse(k2.equals(k3));
         Assert.assertFalse(k3.equals(k2));
         Assert.assertFalse(k3.equals(k1));
+    }
+    
+    public void test_contains() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
+        PreparedStatementPool pool = new PreparedStatementPool();
+        pool.put(new PoolablePreparedStatement(null, null, k1));
+        Assert.assertTrue(pool.get(k1) != null);
+        Assert.assertTrue(pool.get(k1) == null);
     }
 }
