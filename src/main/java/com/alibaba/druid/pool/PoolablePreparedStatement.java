@@ -726,10 +726,6 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
                 }
             }
 
-            if (!this.sql.equals(that.sql)) {
-                return false;
-            }
-
             if (this.methodType != that.methodType) {
                 return false;
             }
