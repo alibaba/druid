@@ -25,7 +25,7 @@ public class MockStatement implements Statement {
 
     public final static String ERROR_SQL = "THROW ERROR";
 
-    private boolean            closed    = false;
+    protected boolean            closed    = false;
 
     private Connection         connection;
     protected MockConnection   mockConnection;

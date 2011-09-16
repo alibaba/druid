@@ -290,7 +290,6 @@ public class PoolablePreparedStatementTest extends TestCase {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void test_setBinaryStream() throws Exception {
         InputStream value = null;
         stmt.setBinaryStream(1, value, 0);
@@ -323,4 +322,5 @@ public class PoolablePreparedStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
 }

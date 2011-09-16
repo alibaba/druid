@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -753,5 +754,48 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_getMeta() throws Exception {
+        Connection conn = dataSource.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
+        
+        stmt.getMetaData();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getMetaData();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getParameterMetaData() throws Exception {
+        Connection conn = dataSource.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
+        
+        stmt.getParameterMetaData();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getParameterMetaData();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
     
 }

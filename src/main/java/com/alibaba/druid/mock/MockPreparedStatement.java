@@ -178,13 +178,17 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public boolean execute() throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
         return false;
     }
 
     @Override
     public void addBatch() throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
     }
 
     @Override
@@ -214,6 +218,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         return resultSetMetaData;
     }
 
@@ -244,6 +252,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         return metadata;
     }
 
