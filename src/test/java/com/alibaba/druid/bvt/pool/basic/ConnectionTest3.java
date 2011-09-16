@@ -11,6 +11,8 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatContext;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ConnectionTest3 extends TestCase {
 
@@ -35,11 +37,17 @@ public class ConnectionTest3 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat,trace");
+        
+        JdbcStatContext context = new JdbcStatContext();
+        context.setTraceEnable(true);
+        JdbcStatManager.getInstance().setStatContext(context);
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
+        JdbcStatManager.getInstance().setStatContext(null);
     }
 
     public void test_basic() throws Exception {

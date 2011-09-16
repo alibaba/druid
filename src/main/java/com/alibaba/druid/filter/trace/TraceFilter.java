@@ -335,8 +335,10 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
-            event.putContext("savepointId", savepoint.getSavepointId());
-            event.putContext("savepointName", savepoint.getSavepointName());
+            if (savepoint != null) {
+                event.putContext("savepointId", savepoint.getSavepointId());
+                event.putContext("savepointName", savepoint.getSavepointName());
+            }
             fireEvent(event);
         }
 
@@ -349,8 +351,10 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("savepointId", savepoint.getSavepointId());
-                event.putContext("savepointName", savepoint.getSavepointName());
+                if (savepoint != null) {
+                    event.putContext("savepointId", savepoint.getSavepointId());
+                    event.putContext("savepointName", savepoint.getSavepointName());
+                }
                 fireEvent(event);
             }
         } catch (SQLException ex) {
@@ -359,8 +363,10 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("savepointId", savepoint.getSavepointId());
-                event.putContext("savepointName", savepoint.getSavepointName());
+                if (savepoint != null) {
+                    event.putContext("savepointId", savepoint.getSavepointId());
+                    event.putContext("savepointName", savepoint.getSavepointName());
+                }
                 fireEvent(event);
             }
             throw ex;
@@ -370,8 +376,10 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("savepointId", savepoint.getSavepointId());
-                event.putContext("savepointName", savepoint.getSavepointName());
+                if (savepoint != null) {
+                    event.putContext("savepointId", savepoint.getSavepointId());
+                    event.putContext("savepointName", savepoint.getSavepointName());
+                }
                 fireEvent(event);
             }
             throw ex;
@@ -381,8 +389,10 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("savepointId", savepoint.getSavepointId());
-                event.putContext("savepointName", savepoint.getSavepointName());
+                if (savepoint != null) {
+                    event.putContext("savepointId", savepoint.getSavepointId());
+                    event.putContext("savepointName", savepoint.getSavepointName());
+                }
                 fireEvent(event);
             }
             throw ex;
