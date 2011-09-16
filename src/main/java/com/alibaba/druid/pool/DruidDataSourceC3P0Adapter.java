@@ -2,6 +2,7 @@ package com.alibaba.druid.pool;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -91,6 +92,14 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public String getJdbcUrl() {
         return dataSource.getUrl();
+    }
+    
+    public Driver getDriver() {
+        return dataSource.getDriver();
+    }
+    
+    public void setDriver(Driver driver) {
+        dataSource.setDriver(driver);
     }
 
     public void setJdbcUrl(String jdbcUrl) {
@@ -199,6 +208,10 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public void setPreferredTestQuery(String preferredTestQuery) {
         dataSource.setValidationQuery(preferredTestQuery);
+    }
+    
+    public void setFilters(String filters) throws SQLException {
+        dataSource.setFilters(filters);
     }
 
     public String getDataSourceName() {
