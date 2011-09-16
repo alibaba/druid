@@ -533,7 +533,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void setNClob(String parameterName, Reader x, long length) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
@@ -547,14 +547,13 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
     }
 
     @Override
-    public void setSQLXML(String parameterName, SQLXML xmlObject) throws SQLException {
-
+    public void setSQLXML(String parameterName, SQLXML x) throws SQLException {
+        setObject(parameterName, x);
     }
 
     @Override
     public SQLXML getSQLXML(int parameterIndex) throws SQLException {
-
-        return null;
+        return (SQLXML) getObject(parameterIndex);
     }
 
     @Override
