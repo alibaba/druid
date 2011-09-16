@@ -33,6 +33,9 @@ public class MockStatement implements Statement {
     private int                maxRows;
     private int                queryTimeout;
     private boolean            escapeProcessing;
+    private SQLWarning         warnings;
+    private String             cursorName;
+    private int                updateCount;
 
     public MockStatement(Connection connection){
         super();
@@ -163,17 +166,37 @@ public class MockStatement implements Statement {
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        return null;
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+
+        return warnings;
     }
 
     @Override
     public void clearWarnings() throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
 
+        warnings = null;
+    }
+
+    public void setWarning(SQLWarning warning) {
+        this.warnings = warning;
     }
 
     @Override
     public void setCursorName(String name) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
 
+        cursorName = name;
+    }
+
+    public String getCursorName() {
+        return cursorName;
     }
 
     @Override
@@ -191,13 +214,24 @@ public class MockStatement implements Statement {
 
     @Override
     public ResultSet getResultSet() throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+
         return new MockResultSet(this);
     }
 
     @Override
     public int getUpdateCount() throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
 
-        return 0;
+        return updateCount;
+    }
+
+    public void setUpdateCount(int updateCount) {
+        this.updateCount = updateCount;
     }
 
     @Override

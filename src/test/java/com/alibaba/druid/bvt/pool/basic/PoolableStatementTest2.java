@@ -213,4 +213,163 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_MaxRows() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setMaxRows(44);
+        Assert.assertEquals(44, stmt.getMaxRows());
+        
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getMaxRows();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setMaxRows(23);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_cancel() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.cancel();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.cancel();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getWarnings() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.getWarnings();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getWarnings();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_clearWarnings() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.clearWarnings();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.clearWarnings();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_setCursorName() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setCursorName("c_name");
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setCursorName("c_name");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getResultSet() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.getResultSet();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getResultSet();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getUpdateCount() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.getUpdateCount();
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getUpdateCount();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
 }

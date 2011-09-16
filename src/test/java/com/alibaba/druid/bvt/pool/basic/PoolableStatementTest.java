@@ -38,6 +38,9 @@ public class PoolableStatementTest extends TestCase {
         Assert.assertEquals(null, stmt.getConnection());
         Assert.assertEquals(false, stmt.isPoolable());
         stmt.toString();
+    }
+    
+    public void test_MaxRows() throws Exception {
         
     }
 }

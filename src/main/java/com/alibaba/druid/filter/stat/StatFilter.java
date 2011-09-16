@@ -375,7 +375,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             statement.getAttributes().put(ATTR_UPDATE_COUNT, updateCount);
 
             final JdbcSqlStat sqlStat = getSqlStat(statement);
-            sqlStat.addUpdateCount(updateCount);
+            if (sqlStat != null) {
+                sqlStat.addUpdateCount(updateCount);
+            }
         }
 
         return updateCount;
