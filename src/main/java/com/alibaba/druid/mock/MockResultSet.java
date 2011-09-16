@@ -404,7 +404,9 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public boolean isAfterLast() throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
         return false;
     }
 

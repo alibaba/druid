@@ -382,6 +382,150 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_isBeforeFirst() throws Exception {
+        resultSet.isBeforeFirst();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.isBeforeFirst();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_isAfterLast() throws Exception {
+        resultSet.isAfterLast();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.isAfterLast();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_isFirst() throws Exception {
+        resultSet.isFirst();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.isFirst();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_isLast() throws Exception {
+        resultSet.isLast();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.isLast();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_beforeFirst() throws Exception {
+        resultSet.beforeFirst();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.beforeFirst();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_first() throws Exception {
+        resultSet.first();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.first();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_afterLast() throws Exception {
+        resultSet.afterLast();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.afterLast();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_last() throws Exception {
+        resultSet.last();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.last();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getRow() throws Exception {
+        resultSet.getRow();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getRow();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
 
 }
