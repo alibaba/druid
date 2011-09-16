@@ -9,11 +9,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.balance.Balancer;
 import com.alibaba.druid.pool.ha.balance.RoundRobinBlancer;
 
 public class HADataSource extends MultiDataSource implements DataSource {
+
+    private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
 
     protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
@@ -28,8 +32,14 @@ public class HADataSource extends MultiDataSource implements DataSource {
         return Collections.unmodifiableList(dataSources);
     }
 
-    public void setDataSources(List<DruidDataSource> dataSources) {
+    public synchronized void setDataSources(List<DruidDataSource> dataSources) {
         this.dataSources = new ArrayList<DruidDataSource>(dataSources);
+    }
+    
+    public synchronized void addDataSource(DruidDataSource dataSource) {
+        ArrayList<DruidDataSource> newList = new ArrayList<DruidDataSource>(dataSources);
+        newList.add(dataSource);
+        this.dataSources = newList;
     }
 
     @Override
@@ -53,6 +63,23 @@ public class HADataSource extends MultiDataSource implements DataSource {
         boolean removed = dataSources.remove(dataSource);
         if (removed) {
             notAvailableDatasources.add(dataSource);
+        }
+    }
+
+    public void close() {
+        for (DruidDataSource item : dataSources) {
+            try {
+                item.close();
+            } catch (Exception ex) {
+                LOG.error("close dataSource error", ex);
+            }
+        }
+        for (DruidDataSource item : notAvailableDatasources) {
+            try {
+                item.close();
+            } catch (Exception ex) {
+                LOG.error("close dataSource error", ex);
+            }
         }
     }
 

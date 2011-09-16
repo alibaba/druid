@@ -92,6 +92,11 @@ public class TestDataSourceBasic extends TestCase {
     
     public void test_wrap() throws Exception {
         Assert.assertTrue(!dataSource.isWrapperFor(Date.class));
+        Assert.assertTrue(!dataSource.isWrapperFor(null));
         Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
+        
+        Assert.assertTrue(dataSource.unwrap(Date.class) == null);
+        Assert.assertTrue(dataSource.unwrap(null) == null);
+        Assert.assertTrue(dataSource.unwrap(DataSource.class) != null);
     }
 }

@@ -51,7 +51,7 @@ public class RoundRobinBlancer implements Balancer {
 
             assert dataSource != null;
 
-            if (!dataSource.isEnable()) {
+            if (dataSource.isInited() && !dataSource.isEnable()) {
                 multiDataSource.handleNotAwailableDatasource(dataSource);
                 continue;
             }

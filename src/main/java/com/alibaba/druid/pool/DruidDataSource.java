@@ -149,6 +149,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
+    
+    public boolean isInited() {
+        return this.inited;
+    }
 
     private void init() throws SQLException {
         if (inited) {
