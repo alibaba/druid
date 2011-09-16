@@ -1073,12 +1073,8 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     }
 
     @Override
-    public Statement getStatement() throws SQLException {
-        try {
-            return stmt;
-        } catch (Throwable t) {
-            throw checkException(t);
-        }
+    public Statement getStatement() {
+        return stmt;
     }
 
     @Override

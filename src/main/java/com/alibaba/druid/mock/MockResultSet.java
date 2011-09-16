@@ -739,41 +739,58 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void insertRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void updateRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void deleteRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void refreshRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void cancelRowUpdates() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void moveToInsertRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public void moveToCurrentRow() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
     }
 
     @Override
     public Statement getStatement() throws SQLException {
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
         return statement;
     }
 
@@ -909,14 +926,12 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public RowId getRowId(int columnIndex) throws SQLException {
-
-        return null;
+        return (RowId) getObject(columnIndex);
     }
 
     @Override
     public RowId getRowId(String columnLabel) throws SQLException {
-
-        return null;
+        return (RowId) getObject(columnLabel);
     }
 
     @Override
@@ -931,14 +946,16 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public int getHoldability() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
+        
         return 0;
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-
-        return false;
+        return closed;
     }
 
     @Override

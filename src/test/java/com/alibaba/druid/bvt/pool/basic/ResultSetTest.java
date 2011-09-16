@@ -1467,6 +1467,32 @@ public class ResultSetTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    public void test_getRowId() throws Exception {
+        resultSet.next();
+        
+        resultSet.getRowId(1);
+        resultSet.getRowId("1");
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getRowId(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getRowId("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
     public void test_getTimestamp() throws Exception {
         resultSet.next();
