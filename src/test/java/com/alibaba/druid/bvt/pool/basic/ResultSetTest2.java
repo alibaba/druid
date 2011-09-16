@@ -590,6 +590,22 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_findColumn() throws Exception {
+        resultSet.findColumn("1");
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.findColumn("xxxx");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
 
 }
