@@ -272,7 +272,7 @@ public class ResultSetTest2 extends TestCase {
     }
     
     public void test_updateRow() throws Exception {
-        resultSet.deleteRow();
+        resultSet.updateRow();
         
         raw.close();
         
@@ -288,7 +288,7 @@ public class ResultSetTest2 extends TestCase {
     }
     
     public void test_insertRow() throws Exception {
-        resultSet.deleteRow();
+        resultSet.insertRow();
         
         raw.close();
         
