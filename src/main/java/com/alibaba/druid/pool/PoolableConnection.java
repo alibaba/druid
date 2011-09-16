@@ -510,11 +510,11 @@ public class PoolableConnection implements PooledConnection, Connection {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (conn == null) {
+        if (iface == null) {
             return null;
         }
 
-        if (iface == PoolableConnection.class) {
+        if (iface.isInstance(this)) {
             return (T) this;
         }
 
@@ -523,7 +523,11 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        if (iface == PoolableConnection.class) {
+        if (iface == null) {
+            return false;
+        }
+
+        if (iface.isInstance(this)) {
             return true;
         }
 
