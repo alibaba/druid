@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
@@ -132,6 +133,31 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_FetchDirection() throws Exception {
+        resultSet.setFetchDirection(ResultSet.FETCH_REVERSE);
+        Assert.assertEquals(ResultSet.FETCH_REVERSE, resultSet.getFetchDirection());
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getFetchDirection();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        {
+            SQLException error = null;
+            try {
+                resultSet.setFetchDirection(ResultSet.FETCH_REVERSE);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
     public void test_getHoldability() throws Exception {
         resultSet.getHoldability();
@@ -222,6 +248,102 @@ public class ResultSetTest2 extends TestCase {
             SQLException error = null;
             try {
                 resultSet.refreshRow();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_deleteRow() throws Exception {
+        resultSet.deleteRow();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.deleteRow();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateRow() throws Exception {
+        resultSet.deleteRow();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateRow();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_insertRow() throws Exception {
+        resultSet.deleteRow();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.insertRow();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_previous() throws Exception {
+        resultSet.previous();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.previous();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_relative() throws Exception {
+        resultSet.relative(1);
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.relative(1);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_absolute() throws Exception {
+        resultSet.absolute(1);
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.absolute(1);
             } catch (SQLException ex) {
                 error = ex;
             }

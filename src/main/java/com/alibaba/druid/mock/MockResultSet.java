@@ -41,15 +41,16 @@ import java.util.Map;
 
 public class MockResultSet implements ResultSet {
 
-    private int                   rowIndex  = -1;
+    private int                   rowIndex       = -1;
     private Statement             statement;
-    private List<Object[]>        rows      = new ArrayList<Object[]>();
+    private List<Object[]>        rows           = new ArrayList<Object[]>();
 
-    private boolean               wasNull   = false;
+    private boolean               wasNull        = false;
 
-    private MockResultSetMetaData metaData  = new MockResultSetMetaData();
-    private boolean               closed    = false;
-    private int                   fetchSize = 0;
+    private MockResultSetMetaData metaData       = new MockResultSetMetaData();
+    private boolean               closed         = false;
+    private int                   fetchSize      = 0;
+    private int                   fetchDirection = 0;
 
     public MockResultSet(Statement statement){
         super();
@@ -459,6 +460,10 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public synchronized boolean previous() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         if (rowIndex > 0) {
             rowIndex--;
             return true;
@@ -472,6 +477,7 @@ public class MockResultSet implements ResultSet {
             throw new SQLException();
         }
 
+        this.fetchDirection = direction;
     }
 
     @Override
@@ -480,7 +486,7 @@ public class MockResultSet implements ResultSet {
             throw new SQLException();
         }
 
-        return 0;
+        return fetchDirection;
     }
 
     @Override
@@ -488,7 +494,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException();
         }
-        
+
         this.fetchSize = rows;
     }
 
@@ -949,7 +955,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException("resultSet closed");
         }
-        
+
         return 0;
     }
 
