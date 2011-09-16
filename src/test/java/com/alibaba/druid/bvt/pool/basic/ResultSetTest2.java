@@ -133,12 +133,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_FetchDirection() throws Exception {
         resultSet.setFetchDirection(ResultSet.FETCH_REVERSE);
         Assert.assertEquals(ResultSet.FETCH_REVERSE, resultSet.getFetchDirection());
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -190,7 +190,7 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_moveToCurrentRow() throws Exception {
         resultSet.moveToCurrentRow();
 
@@ -206,12 +206,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_moveToInsertRow() throws Exception {
         resultSet.moveToInsertRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -222,12 +222,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_cancelRowUpdates() throws Exception {
         resultSet.cancelRowUpdates();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -238,12 +238,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_refreshRow() throws Exception {
         resultSet.refreshRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -254,12 +254,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_deleteRow() throws Exception {
         resultSet.deleteRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -270,12 +270,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_updateRow() throws Exception {
         resultSet.updateRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -286,12 +286,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_insertRow() throws Exception {
         resultSet.insertRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -302,12 +302,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_previous() throws Exception {
         resultSet.previous();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -318,12 +318,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_relative() throws Exception {
         resultSet.relative(1);
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -334,12 +334,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_absolute() throws Exception {
         resultSet.absolute(1);
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -350,12 +350,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_next() throws Exception {
         resultSet.next();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -366,12 +366,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_wasNull() throws Exception {
         resultSet.wasNull();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -382,12 +382,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_isBeforeFirst() throws Exception {
         resultSet.isBeforeFirst();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -398,12 +398,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_isAfterLast() throws Exception {
         resultSet.isAfterLast();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -414,12 +414,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_isFirst() throws Exception {
         resultSet.isFirst();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -430,12 +430,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_isLast() throws Exception {
         resultSet.isLast();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -446,12 +446,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_beforeFirst() throws Exception {
         resultSet.beforeFirst();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -462,12 +462,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_first() throws Exception {
         resultSet.first();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -478,12 +478,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_afterLast() throws Exception {
         resultSet.afterLast();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -494,12 +494,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_last() throws Exception {
         resultSet.last();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -510,12 +510,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getRow() throws Exception {
         resultSet.getRow();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -526,12 +526,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getWarnings() throws Exception {
         resultSet.getWarnings();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -542,12 +542,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_clearWarnings() throws Exception {
         resultSet.clearWarnings();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -558,12 +558,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getCursorName() throws Exception {
         resultSet.getCursorName();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -574,12 +574,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_getMetaData() throws Exception {
         resultSet.getMetaData();
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -590,12 +590,12 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_findColumn() throws Exception {
         resultSet.findColumn("1");
-        
+
         raw.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -607,5 +607,23 @@ public class ResultSetTest2 extends TestCase {
         }
     }
 
+    public void test_closeError() throws Exception {
+        MockResultSet mock = new MockResultSet(null) {
 
+            public void close() throws SQLException {
+                throw new SQLException();
+            }
+        };
+
+        PoolableResultSet rs = new PoolableResultSet(stmt, mock);
+
+        SQLException error = null;
+        try {
+            rs.close();
+        } catch (SQLException ex) {
+            error = ex;
+        }
+        Assert.assertNotNull(error);
+
+    }
 }
