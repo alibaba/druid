@@ -51,6 +51,8 @@ public class MockResultSet implements ResultSet {
     private boolean               closed         = false;
     private int                   fetchSize      = 0;
     private int                   fetchDirection = 0;
+    private SQLWarning            warning;
+    private String                cursorName;
 
     public MockResultSet(Statement statement){
         super();
@@ -80,6 +82,10 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public synchronized boolean next() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+
         if (rowIndex < rows.size() - 1) {
             rowIndex++;
             return true;
@@ -94,6 +100,10 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public boolean wasNull() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+
         return wasNull;
     }
 
@@ -301,18 +311,37 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        return null;
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        return warning;
     }
 
     @Override
     public void clearWarnings() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        warning = null;
+    }
 
+    public void setWarning(SQLWarning warning) {
+        this.warning = warning;
     }
 
     @Override
     public String getCursorName() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        return cursorName;
+    }
 
-        return null;
+    public void setCursorName(String cursorName) {
+        this.cursorName = cursorName;
     }
 
     @Override
@@ -463,7 +492,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException();
         }
-        
+
         if (rowIndex > 0) {
             rowIndex--;
             return true;

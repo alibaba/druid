@@ -350,6 +350,38 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_next() throws Exception {
+        resultSet.next();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.next();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_wasNull() throws Exception {
+        resultSet.wasNull();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.wasNull();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
 
 }
