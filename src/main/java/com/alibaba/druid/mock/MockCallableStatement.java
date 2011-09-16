@@ -70,6 +70,10 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public boolean wasNull() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         return wasNull;
     }
 

@@ -323,4 +323,33 @@ public class PoolablePreparedStatementTest extends TestCase {
         }
     }
     
+    public void test_setRef() throws Exception {
+
+        stmt.setRef(1, null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setRef(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setArray() throws Exception {
+        
+        stmt.setArray(1, null);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setArray(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }

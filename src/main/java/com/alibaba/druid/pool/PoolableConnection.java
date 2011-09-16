@@ -81,8 +81,12 @@ public class PoolableConnection implements PooledConnection, Connection {
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
         PreparedStatement rawStatement = stmt.getRawPreparedStatement();
 
-        rawStatement.clearParameters();
-
+        try {
+            rawStatement.clearParameters();
+        } catch (SQLException ex) {
+            LOG.error("clear parameter error", ex);
+        }
+        
         if (holder.isPoolPreparedStatements()) {
             this.holder.getStatementPool().put(stmt);
             stmt.clearResultSet();

@@ -60,6 +60,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSet executeQuery() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().createResultSet(this);
         }
@@ -73,6 +77,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public int executeUpdate() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         return 0;
     }
 
@@ -163,6 +171,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public void clearParameters() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
         parameters.clear();
     }
 
