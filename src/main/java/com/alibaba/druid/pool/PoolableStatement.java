@@ -67,7 +67,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         }
     }
 
-    void clearResultSet() {
+    protected void clearResultSet() {
         for (ResultSet rs : resultSetTrace) {
             try {
                 if (!rs.isClosed()) {
