@@ -48,6 +48,12 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
+    
+    public void test_toCompositeData() throws Exception {
+        Connection conn = dataSource.getConnection();
+        conn.close();
+        dataSource.getCompositeData();
+    }
 
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
