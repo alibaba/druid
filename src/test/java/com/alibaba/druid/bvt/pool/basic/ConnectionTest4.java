@@ -397,6 +397,12 @@ public class ConnectionTest4 extends TestCase {
             stmt.close();
         }
 
+        conn.getConnectionHolder().toString();
+        conn.getConnectionHolder().setLastActiveTimeMillis(0);
+        conn.getConnectionHolder().toString();
+        conn.getConnectionHolder().getUseCount();
+        conn.getConnectionHolder().getTimeMillis();
+        
         conn.close();
     }
 
