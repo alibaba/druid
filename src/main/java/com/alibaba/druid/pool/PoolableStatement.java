@@ -505,7 +505,11 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void setPoolable(boolean poolable) throws SQLException {
-        throw new UnsupportedOperationException();
+        if (poolable) {
+            return;
+        }
+
+        throw new SQLException("not support");
     }
 
     @Override

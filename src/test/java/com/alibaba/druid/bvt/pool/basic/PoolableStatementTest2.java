@@ -931,4 +931,88 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_executeUpdate_5() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.executeUpdate("SET 1", Statement.RETURN_GENERATED_KEYS);
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.executeUpdate("SET 1", Statement.RETURN_GENERATED_KEYS);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_executeUpdate_6() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.executeUpdate("SET 1", new String[0]);
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.executeUpdate("SET 1", new String[0]);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_executeUpdate_7() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.executeUpdate("SET 1", new int[0]);
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.executeUpdate("SET 1", new int[0]);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    
+    public void test_setPoolable() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setPoolable(true);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setPoolable(false);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
 }
