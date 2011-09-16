@@ -346,6 +346,10 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
+        
         return metaData;
     }
 

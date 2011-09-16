@@ -526,6 +526,70 @@ public class ResultSetTest2 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_getWarnings() throws Exception {
+        resultSet.getWarnings();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getWarnings();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_clearWarnings() throws Exception {
+        resultSet.clearWarnings();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.clearWarnings();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getCursorName() throws Exception {
+        resultSet.getCursorName();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getCursorName();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_getMetaData() throws Exception {
+        resultSet.getMetaData();
+        
+        raw.close();
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.getMetaData();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 
 
 }
