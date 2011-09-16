@@ -126,4 +126,91 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
      }
+    
+    public void test_setEscapeProcessing() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setEscapeProcessing(true);
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setEscapeProcessing(true);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getMaxFieldSize() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setMaxFieldSize(23);
+        Assert.assertEquals(23, stmt.getMaxFieldSize());
+        
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getMaxFieldSize();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setMaxFieldSize(23);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_QueryTimeout() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.setQueryTimeout(33);
+        Assert.assertEquals(33, stmt.getQueryTimeout());
+        
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.getQueryTimeout();
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setQueryTimeout(23);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
 }

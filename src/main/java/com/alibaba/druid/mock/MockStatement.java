@@ -29,6 +29,10 @@ public class MockStatement implements Statement {
 
     private Connection         connection;
     protected MockConnection   mockConnection;
+    private int                maxFieldSize;
+    private int                maxRows;
+    private int                queryTimeout;
+    private boolean            escapeProcessing;
 
     public MockStatement(Connection connection){
         super();
@@ -63,7 +67,7 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        
+
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().executeQuery(this, sql);
         }
@@ -76,7 +80,7 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        
+
         return 0;
     }
 
@@ -87,41 +91,74 @@ public class MockStatement implements Statement {
 
     @Override
     public int getMaxFieldSize() throws SQLException {
-        return 0;
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+
+        return maxFieldSize;
     }
 
     @Override
     public void setMaxFieldSize(int max) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+
+        this.maxFieldSize = max;
     }
 
     @Override
     public int getMaxRows() throws SQLException {
-        return 0;
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+
+        return maxRows;
     }
 
     @Override
     public void setMaxRows(int max) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
 
+        this.maxRows = max;
     }
 
     @Override
     public void setEscapeProcessing(boolean enable) throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
 
+        this.escapeProcessing = enable;
+    }
+
+    public boolean isEscapeProcessing() {
+        return escapeProcessing;
     }
 
     @Override
     public int getQueryTimeout() throws SQLException {
-        return 0;
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        return queryTimeout;
     }
 
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
-
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        this.queryTimeout = seconds;
     }
 
     @Override
     public void cancel() throws SQLException {
-
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
     }
 
     @Override
@@ -144,7 +181,7 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        
+
         if (ERROR_SQL.equals(sql)) {
             throw new SQLException();
         }
