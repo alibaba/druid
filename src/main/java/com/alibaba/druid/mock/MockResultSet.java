@@ -41,13 +41,15 @@ import java.util.Map;
 
 public class MockResultSet implements ResultSet {
 
-    private int                   rowIndex = -1;
+    private int                   rowIndex  = -1;
     private Statement             statement;
-    private List<Object[]>        rows     = new ArrayList<Object[]>();
+    private List<Object[]>        rows      = new ArrayList<Object[]>();
 
-    private boolean               wasNull  = false;
+    private boolean               wasNull   = false;
 
-    private MockResultSetMetaData metaData = new MockResultSetMetaData();
+    private MockResultSetMetaData metaData  = new MockResultSetMetaData();
+    private boolean               closed    = false;
+    private int                   fetchSize = 0;
 
     public MockResultSet(Statement statement){
         super();
@@ -58,15 +60,20 @@ public class MockResultSet implements ResultSet {
         return rows;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-
+        if (iface == MockResultSet.class || iface == ResultSet.class) {
+            return (T) this;
+        }
         return null;
     }
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-
+        if (iface == MockResultSet.class || iface == ResultSet.class) {
+            return true;
+        }
         return false;
     }
 
@@ -81,7 +88,7 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void close() throws SQLException {
-
+        this.closed = true;
     }
 
     @Override
@@ -358,6 +365,9 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public boolean isBeforeFirst() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
@@ -370,52 +380,79 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public boolean isFirst() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public boolean isLast() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public void beforeFirst() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
     }
 
     @Override
     public void afterLast() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
     }
 
     @Override
     public boolean first() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public boolean last() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public int getRow() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return 0;
     }
 
     @Override
     public boolean absolute(int row) throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public boolean relative(int rows) throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
@@ -431,52 +468,80 @@ public class MockResultSet implements ResultSet {
 
     @Override
     public void setFetchDirection(int direction) throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
     }
 
     @Override
     public int getFetchDirection() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return 0;
     }
 
     @Override
     public void setFetchSize(int rows) throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        this.fetchSize = rows;
     }
 
     @Override
     public int getFetchSize() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
-        return 0;
+        return fetchSize;
     }
 
     @Override
     public int getType() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return 0;
     }
 
     @Override
     public int getConcurrency() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return 0;
     }
 
     @Override
     public boolean rowUpdated() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public boolean rowInserted() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }
 
     @Override
     public boolean rowDeleted() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
         return false;
     }

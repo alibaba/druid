@@ -765,7 +765,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.updateBlob(0, (InputStream) null, 1);
+                resultSet.updateAsciiStream(0, (InputStream) null, 1);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1866,6 +1866,60 @@ public class ResultSetTest extends TestCase {
             SQLException error = null;
             try {
                 resultSet.updateRef("0", (Ref) null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateObject() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateObject(1, null);
+        resultSet.updateObject("1", null);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateObject(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateObject("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_updateObject_1() throws Exception {
+        resultSet.next();
+        
+        resultSet.updateObject(1, null, 1);
+        resultSet.updateObject("1", null, 1);
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateObject(0, null, 1);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                resultSet.updateObject("0", null, 1);
             } catch (SQLException ex) {
                 error = ex;
             }
