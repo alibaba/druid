@@ -4,9 +4,12 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+
+import com.alibaba.druid.filter.Filter;
 
 public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3P0AdapterMBean {
 
@@ -212,6 +215,14 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     
     public void setFilters(String filters) throws SQLException {
         dataSource.setFilters(filters);
+    }
+    
+    public List<Filter> getProxyFilters() {
+        return dataSource.getProxyFilters();
+    }
+
+    public void setProxyFilters(List<Filter> filters) {
+        dataSource.setProxyFilters(filters);
     }
 
     public String getDataSourceName() {
