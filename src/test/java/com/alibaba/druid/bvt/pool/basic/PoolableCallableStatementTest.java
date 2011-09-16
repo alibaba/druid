@@ -3,7 +3,10 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.io.InputStream;
 import java.io.Reader;
 import java.sql.Clob;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.Types;
 
 import junit.framework.Assert;
@@ -834,12 +837,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setAsciiStream_1() throws Exception {
-        
+
         stmt.setAsciiStream(1, (InputStream) null, 1L);
         stmt.setAsciiStream("1", (InputStream) null, 1L);
-        
+
         {
             SQLException error = null;
             try {
@@ -849,11 +852,115 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
                 stmt.setAsciiStream(0, (InputStream) null, 1L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setNull() throws Exception {
+
+        stmt.setNull(1, Types.INTEGER, "Int");
+        stmt.setNull("1", Types.INTEGER, "Int");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNull("0", Types.INTEGER, "Int");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setNull(0, Types.INTEGER, "Int");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_setTimestamp() throws Exception {
+
+        stmt.setTimestamp(1, (Timestamp) null, null);
+        stmt.setTimestamp("1", (Timestamp) null, null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setTimestamp("0", (Timestamp) null, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.setTimestamp(0, (Timestamp) null, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setTime() throws Exception {
+        
+        stmt.setTime(1, (Time) null, null);
+        stmt.setTime("1", (Time) null, null);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setTime("0", (Time) null, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setTime(0, (Time) null, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_setDate() throws Exception {
+        
+        stmt.setDate(1, (Date) null, null);
+        stmt.setDate("1", (Date) null, null);
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setDate("0", (Date) null, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.setDate(0, (Date) null, null);
             } catch (SQLException ex) {
                 error = ex;
             }

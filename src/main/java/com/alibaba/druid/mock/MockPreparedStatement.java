@@ -224,7 +224,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
-
+        parameters.add(parameterIndex - 1, x);
     }
 
     @Override

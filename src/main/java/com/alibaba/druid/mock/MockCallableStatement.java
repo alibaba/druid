@@ -373,7 +373,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public void setDate(String parameterName, Date x) throws SQLException {
-
+        setObject(parameterName, x);
     }
 
     @Override
