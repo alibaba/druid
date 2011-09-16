@@ -34,7 +34,7 @@ public class ConnectionTest3 extends TestCase {
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,trace");
     }
 
     protected void tearDown() throws Exception {
