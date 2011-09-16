@@ -63,6 +63,36 @@ public class PreparedStatementKeyTest extends TestCase {
         Assert.assertFalse(k3.equals(k1));
     }
     
+    public void test_equals_5() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1);
+        PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M2);
+        PreparedStatementKey k3 = new PreparedStatementKey("x1", null, MethodType.M3);
+        
+        k1.hashCode();
+        
+        Assert.assertFalse(k1.equals(k2));
+        Assert.assertFalse(k1.equals(k3));
+        Assert.assertFalse(k2.equals(k1));
+        Assert.assertFalse(k2.equals(k3));
+        Assert.assertFalse(k3.equals(k2));
+        Assert.assertFalse(k3.equals(k1));
+    }
+    
+    public void test_equals_6() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1);
+        PreparedStatementKey k2 = new PreparedStatementKey("x2", null, MethodType.M1);
+        PreparedStatementKey k3 = new PreparedStatementKey("x3", null, MethodType.M1);
+        
+        k1.hashCode();
+        
+        Assert.assertFalse(k1.equals(k2));
+        Assert.assertFalse(k1.equals(k3));
+        Assert.assertFalse(k2.equals(k1));
+        Assert.assertFalse(k2.equals(k3));
+        Assert.assertFalse(k3.equals(k2));
+        Assert.assertFalse(k3.equals(k1));
+    }
+    
     public void test_contains() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementPool pool = new PreparedStatementPool();

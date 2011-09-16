@@ -845,7 +845,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         holder.getStatementEventListeners().remove(listener);
     }
 
-    protected void checkOpen() throws SQLException {
+    public void checkOpen() throws SQLException {
         if (holder == null) {
             throw new SQLException("connection is closed");
         }

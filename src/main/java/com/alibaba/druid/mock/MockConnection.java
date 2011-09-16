@@ -152,6 +152,10 @@ public class MockConnection implements Connection {
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
+
         this.autoCommit = autoCommit;
     }
 
@@ -162,11 +166,17 @@ public class MockConnection implements Connection {
 
     @Override
     public void commit() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
     }
 
     @Override
     public void rollback() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
 
     }
 
@@ -280,22 +290,32 @@ public class MockConnection implements Connection {
 
     @Override
     public Savepoint setSavepoint() throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
         return null;
     }
 
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
+        if (closed) {
+            throw new SQLException();
+        }
         return null;
     }
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-
+        if (closed) {
+            throw new SQLException();
+        }
     }
 
     @Override
