@@ -1201,12 +1201,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setString() throws Exception {
-        
+
         stmt.setString(1, null);
         stmt.setString("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1216,7 +1216,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1227,12 +1227,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setBigDecimal() throws Exception {
-        
+
         stmt.setBigDecimal(1, null);
         stmt.setBigDecimal("1", null);
-        
+
         {
             SQLException error = null;
             try {
@@ -1242,7 +1242,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1253,12 +1253,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setDouble() throws Exception {
-        
+
         stmt.setDouble(1, 1.0D);
         stmt.setDouble("1", 1.0D);
-        
+
         {
             SQLException error = null;
             try {
@@ -1268,7 +1268,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1279,12 +1279,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setFloat() throws Exception {
-        
+
         stmt.setFloat(1, 1.0F);
         stmt.setFloat("1", 1.0F);
-        
+
         {
             SQLException error = null;
             try {
@@ -1294,7 +1294,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1305,12 +1305,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setLong() throws Exception {
-        
+
         stmt.setLong(1, 2);
         stmt.setLong("1", 2);
-        
+
         {
             SQLException error = null;
             try {
@@ -1320,7 +1320,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1331,12 +1331,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setInt() throws Exception {
-        
+
         stmt.setInt(1, 2);
         stmt.setInt("1", 2);
-        
+
         {
             SQLException error = null;
             try {
@@ -1346,7 +1346,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1357,12 +1357,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setShort() throws Exception {
-        
+
         stmt.setShort(1, Short.MAX_VALUE);
         stmt.setShort("1", Short.MAX_VALUE);
-        
+
         {
             SQLException error = null;
             try {
@@ -1372,7 +1372,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1383,12 +1383,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setByte() throws Exception {
-        
+
         stmt.setByte(1, Byte.MAX_VALUE);
         stmt.setByte("1", Byte.MAX_VALUE);
-        
+
         {
             SQLException error = null;
             try {
@@ -1398,7 +1398,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {
@@ -1410,4 +1410,237 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    public void test_getClob() throws Exception {
+
+        stmt.getClob(1);
+        stmt.getClob("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getClob(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getClob("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getArray() throws Exception {
+
+        stmt.getArray(1);
+        stmt.getArray("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getArray(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getArray("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getDate() throws Exception {
+
+        stmt.getDate(1);
+        stmt.getDate("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getDate(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getDate("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getDate_1() throws Exception {
+
+        stmt.getDate(1, null);
+        stmt.getDate("1", null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getDate(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getDate("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getTime() throws Exception {
+
+        stmt.getTime(1);
+        stmt.getTime("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTime(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTime("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getTime_1() throws Exception {
+
+        stmt.getTime(1, null);
+        stmt.getTime("1", null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTime(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTime("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getTimestamp() throws Exception {
+
+        stmt.getTimestamp(1);
+        stmt.getTimestamp("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTimestamp(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTimestamp("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getTimestamp_1() throws Exception {
+
+        stmt.getTimestamp(1, null);
+        stmt.getTimestamp("1", null);
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTimestamp(0, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getTimestamp("0", null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+
+    public void test_getURL() throws Exception {
+
+        stmt.getURL(1);
+        stmt.getURL("1");
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getURL(0);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            SQLException error = null;
+            try {
+                stmt.getURL("0");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }
