@@ -190,11 +190,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void incrementRollbackCount() {
         rollbackCount.incrementAndGet();
     }
-    
+
     public long getStartTransactionCount() {
         return startTransactionCount.get();
     }
-    
+
     public void incrementStartTransactionCount() {
         startTransactionCount.incrementAndGet();
     }
@@ -249,7 +249,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
         Class<?> clazz = DruidLoaderUtils.loadClass(validConnectionCheckerClass);
-        ValidConnectionChecker validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
+        ValidConnectionChecker validConnectionChecker = null;
+        if (clazz != null) {
+            validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
+        }
 
         this.validConnectionChecker = validConnectionChecker;
     }
@@ -467,9 +470,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.passwordCallback = passwordCallback;
     }
 
-    public void setPasswordCallback(String passwordCallbackClassName) throws Exception {
-        Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(passwordCallbackClassName);
-        this.passwordCallback = (PasswordCallback) clazz.newInstance();
+    public void setPasswordCallbackClassName(String passwordCallbackClassName) throws Exception {
+        Class<?> clazz = DruidLoaderUtils.loadClass(passwordCallbackClassName);
+        if (clazz != null) {
+            this.passwordCallback = (PasswordCallback) clazz.newInstance();
+        } else {
+            this.passwordCallback = null;
+        }
     }
 
     public NameCallback getUserCallback() {
