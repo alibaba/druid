@@ -732,4 +732,26 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
+    
+    public void test_executeUpdate_3() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        
+        stmt.executeUpdate("SELECT 1", Statement.NO_GENERATED_KEYS);
+        ((PoolableStatement) stmt).getStatement().close();
+        
+        {
+            SQLException error = null;
+            try {
+                stmt.execute("SELECT 1", Statement.NO_GENERATED_KEYS);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        stmt.close();
+        conn.close();
+    }
+    
 }
