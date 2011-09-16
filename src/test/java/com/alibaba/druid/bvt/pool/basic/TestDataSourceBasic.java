@@ -34,7 +34,7 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,trace");
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
         

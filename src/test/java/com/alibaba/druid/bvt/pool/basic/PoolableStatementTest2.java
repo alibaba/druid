@@ -14,6 +14,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PoolableStatement;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcStatContext;
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class PoolableStatementTest2 extends TestCase {
 
@@ -37,19 +39,24 @@ public class PoolableStatementTest2 extends TestCase {
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,trace");
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
 
         Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
         Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
+        
+        JdbcStatContext context = new JdbcStatContext();
+        context.setTraceEnable(true);
+        JdbcStatManager.getInstance().setStatContext(context);
     }
 
     protected void tearDown() throws Exception {
         Assert.assertEquals(true, dataSource.getCreateTimespanNano() > 0);
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        JdbcStatManager.getInstance().setStatContext(null);
     }
 
     public void test_dupClose() throws Exception {
