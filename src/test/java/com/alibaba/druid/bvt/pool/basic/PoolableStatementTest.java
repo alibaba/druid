@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -40,7 +41,5 @@ public class PoolableStatementTest extends TestCase {
         stmt.toString();
     }
     
-    public void test_MaxRows() throws Exception {
-        
-    }
+  
 }
