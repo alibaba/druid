@@ -699,7 +699,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
         protected final MethodType methodType;
 
-        PreparedStatementKey(String sql, String catalog, MethodType methodType){
+        public PreparedStatementKey(String sql, String catalog, MethodType methodType){
             if (sql == null) {
                 throw new IllegalArgumentException("sql is null");
             }
