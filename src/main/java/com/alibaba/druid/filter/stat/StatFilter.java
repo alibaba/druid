@@ -44,6 +44,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.stat.JdbcStatementStat;
+import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

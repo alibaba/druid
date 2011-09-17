@@ -1,4 +1,4 @@
-package com.alibaba.druid.filter.stat;
+package com.alibaba.druid.util;
 
 import java.util.ArrayList;
 import java.util.List;
