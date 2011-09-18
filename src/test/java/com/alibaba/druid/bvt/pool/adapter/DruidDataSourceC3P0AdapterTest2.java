@@ -32,6 +32,37 @@ public class DruidDataSourceC3P0AdapterTest2 extends TestCase {
         
         dataSource.setProperties(dataSource.getProperties());
         dataSource.setUser(dataSource.getUser());
+        dataSource.setPassword(dataSource.getPassword());
+        dataSource.setCheckoutTimeout(dataSource.getCheckoutTimeout());
+        dataSource.setAutoCommitOnClose(dataSource.isAutoCommitOnClose());
+        dataSource.setIdleConnectionTestPeriod(dataSource.getIdleConnectionTestPeriod());
+        dataSource.setInitialPoolSize(dataSource.getInitialPoolSize());
+        dataSource.setMaxIdleTime(dataSource.getMaxIdleTime());
+        dataSource.setMaxPoolSize(dataSource.getMaxPoolSize());
+        dataSource.setMinPoolSize(dataSource.getMinPoolSize());
+        dataSource.setTestConnectionOnCheckout(dataSource.isTestConnectionOnCheckout());
+        dataSource.setTestConnectionOnCheckin(dataSource.isTestConnectionOnCheckin());
+        dataSource.setPreferredTestQuery(dataSource.getPreferredTestQuery());
+        dataSource.setProxyFilters(dataSource.getProxyFilters());
+        dataSource.getDataSourceName();
+        dataSource.getNumConnections();
+        dataSource.getNumIdleConnections();
+        dataSource.getNumBusyConnections();
+        dataSource.getNumUnclosedOrphanedConnections();
+        dataSource.getNumConnectionsDefaultUser();
+        dataSource.getNumIdleConnectionsDefaultUser();
+        dataSource.getNumBusyConnectionsDefaultUser();
+        dataSource.getMaxStatementsPerConnection();
+        dataSource.getMaxStatements();
+        dataSource.setUnreturnedConnectionTimeout(dataSource.getUnreturnedConnectionTimeout());
+        dataSource.isDebugUnreturnedConnectionStackTraces();
+        dataSource.setAcquireRetryAttempts(dataSource.getAcquireRetryAttempts());
+        dataSource.setAcquireRetryDelay(dataSource.getAcquireRetryDelay());
+        dataSource.setBreakAfterAcquireFailure(dataSource.isBreakAfterAcquireFailure());
+        dataSource.isEnable();
+        dataSource.shrink();
+        dataSource.getWaitThreadCount();
+        dataSource.getLockQueueLength();
 
         dataSource.close();
     }
