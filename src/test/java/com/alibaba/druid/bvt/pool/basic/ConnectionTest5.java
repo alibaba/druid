@@ -3,6 +3,9 @@ package com.alibaba.druid.bvt.pool.basic;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.sql.ConnectionEvent;
+import javax.sql.ConnectionEventListener;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -127,6 +130,37 @@ public class ConnectionTest5 extends TestCase {
         }
 
         Assert.assertEquals(true, conn.isClosed());
+    }
+    
+    public void test_handleException_5() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.addConnectionEventListener(new ConnectionEventListener() {
+
+            @Override
+            public void connectionClosed(ConnectionEvent event) {
+                
+            }
+
+            @Override
+            public void connectionErrorOccurred(ConnectionEvent event) {
+                
+            }
+            
+        });
+        conn.getConnection().close();
+        
+        {
+            SQLException error = null;
+            try {
+                conn.handleException(new RuntimeException());
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+        conn.close();
+        
     }
     
     
