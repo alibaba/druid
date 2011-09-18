@@ -23,10 +23,10 @@ import java.sql.Wrapper;
  */
 public class PoolableWrapper implements Wrapper {
 
-    private final Wrapper wraaper;
+    private final Wrapper wrapper;
 
     public PoolableWrapper(Wrapper wraaper){
-        this.wraaper = wraaper;
+        this.wrapper = wraaper;
     }
 
     @Override
@@ -39,11 +39,7 @@ public class PoolableWrapper implements Wrapper {
             return true;
         }
 
-        if (iface.isInstance(wraaper)) {
-            return true;
-        }
-
-        return wraaper.isWrapperFor(iface);
+        return wrapper.isWrapperFor(iface);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,11 +53,7 @@ public class PoolableWrapper implements Wrapper {
             return (T) this;
         }
 
-        if (iface.isInstance(wraaper)) {
-            return (T) wraaper;
-        }
-
-        return wraaper.unwrap(iface);
+        return wrapper.unwrap(iface);
     }
 
 }
