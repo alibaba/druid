@@ -66,9 +66,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         //
         if (holder != null) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
-            if (dataSource != null) {
-                holder.getDataSource().handleConnectionException(this, t);
-            }
+            dataSource.handleConnectionException(this, t);
         }
 
         if (t instanceof SQLException) {
@@ -86,7 +84,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             LOG.error("clear parameter error", ex);
         }
-        
+
         if (holder.isPoolPreparedStatements()) {
             this.holder.getStatementPool().put(stmt);
             stmt.clearResultSet();

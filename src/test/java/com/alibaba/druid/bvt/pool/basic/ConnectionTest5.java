@@ -147,7 +147,7 @@ public class ConnectionTest5 extends TestCase {
             }
             
         });
-        conn.getConnection().close();
+        conn.close();
         
         {
             SQLException error = null;
@@ -159,7 +159,6 @@ public class ConnectionTest5 extends TestCase {
             Assert.assertNotNull(error);
         }
         
-        conn.close();
         
     }
     
