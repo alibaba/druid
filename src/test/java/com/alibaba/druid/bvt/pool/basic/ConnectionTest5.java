@@ -36,7 +36,8 @@ public class ConnectionTest5 extends TestCase {
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
         dataSource.setTestWhileIdle(true);
-        dataSource.setTestOnBorrow(false);
+        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnReturn(true);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat,trace");
 

@@ -15,4 +15,12 @@ public class PoolableWrapperTest extends TestCase {
         Assert.assertEquals(true, wrapper.isWrapperFor(PoolableWrapper.class));
         Assert.assertEquals(true, wrapper.isWrapperFor(MockConnection.class));
     }
+    
+    public void test_unwrap() throws Exception {
+        PoolableWrapper wrapper = new PoolableWrapper(new MockConnection());
+        
+        Assert.assertEquals(null, wrapper.unwrap(null));
+        Assert.assertEquals(true, wrapper.unwrap(PoolableWrapper.class) != null);
+        Assert.assertEquals(true, wrapper.unwrap(MockConnection.class) != null);
+    }
 }
