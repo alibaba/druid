@@ -208,5 +208,67 @@ public class DataSourceTest3 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
+    
+    public void test_getValidConnectionCheckerClassName() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.close();
+        
+        dataSource.getValidConnectionCheckerClassName();
+    }
+    
+    public void test_setConnectionInitSqls() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.close();
+        
+        dataSource.setConnectionInitSqls(null);
+    }
+    
+    public void test_setConnectionProperties() throws Exception {
+        dataSource.setConnectionProperties(null);
+        dataSource.setLogWriter(null);
+        dataSource.getLogWriter();
+        
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.close();
+        
+        
+    }
 
+    
+    public void test_error_10() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.close();
+        
+        {
+            Exception error = null;
+            try {
+                dataSource.addConnectionProperty("x", "11");
+            } catch (Exception ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_error_11() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.close();
+        
+        dataSource.getUrl();
+        
+        {
+            Exception error = null;
+            try {
+                dataSource.setUrl("x");
+            } catch (Exception ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
 }
