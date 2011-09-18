@@ -308,12 +308,6 @@ public class DruidDataSourceFactory implements ObjectFactory {
             }
         }
 
-        // DBCP-215
-        // Trick to make sure that initialSize connections are created
-        if (dataSource.getInitialSize() > 0) {
-            dataSource.getLogWriter();
-        }
-
         // Return the configured DataSource instance
         return dataSource;
     }
