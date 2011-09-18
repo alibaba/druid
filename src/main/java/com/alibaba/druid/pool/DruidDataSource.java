@@ -16,7 +16,6 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,15 +213,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
                 }
 
-                try {
-                    driver = (Driver) Class.forName(this.driverClass).newInstance();
-                } catch (IllegalAccessException e) {
-                    throw new SQLException(e.getMessage(), e);
-                } catch (InstantiationException e) {
-                    throw new SQLException(e.getMessage(), e);
-                } catch (ClassNotFoundException e) {
-                    throw new SQLException(e.getMessage(), e);
-                }
+                driver = JdbcUtils.createDriver(driverClass);
             } else {
                 if (this.driverClass == null) {
                     this.driverClass = driver.getClass().getName();

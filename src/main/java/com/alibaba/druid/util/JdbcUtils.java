@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.Driver;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -498,9 +499,21 @@ public final class JdbcUtils {
 
         return buf.toString();
     }
-    
+
     public static String toString(java.util.Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(date);
+    }
+
+    public static Driver createDriver(String driverClassName) throws SQLException {
+        try {
+            return (Driver) Class.forName(driverClassName).newInstance();
+        } catch (IllegalAccessException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (InstantiationException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (ClassNotFoundException e) {
+            throw new SQLException(e.getMessage(), e);
+        }
     }
 }
