@@ -43,6 +43,7 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
+import com.alibaba.druid.pool.vendor.MockExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.OracleExceptionSorter;
@@ -247,6 +248,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSoter = new SybaseExceptionSorter();
+                
+            } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
+                this.exceptionSoter = new MockExceptionSorter();
             }
 
             for (Filter filter : filters) {

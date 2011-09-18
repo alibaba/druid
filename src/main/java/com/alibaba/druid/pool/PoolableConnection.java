@@ -60,7 +60,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         this.holder = holder;
     }
 
-    protected SQLException handleException(Throwable t) throws SQLException {
+    public SQLException handleException(Throwable t) throws SQLException {
         final ConnectionHolder holder = this.holder;
 
         //
@@ -766,7 +766,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
         if (holder == null) {
-            throw new IllegalStateException();
+            throw new SQLClientInfoException();
         }
 
         conn.setClientInfo(name, value);
@@ -775,7 +775,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
         if (holder == null) {
-            throw new IllegalStateException();
+            throw new SQLClientInfoException();
         }
 
         conn.setClientInfo(properties);

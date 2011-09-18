@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.sql.SQLException;
+import java.util.Properties;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -33,7 +36,7 @@ public class ConnectionTest5 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat,trace");
-        
+
         JdbcStatContext context = new JdbcStatContext();
         context.setTraceEnable(true);
         JdbcStatManager.getInstance().setStatContext(context);
@@ -42,26 +45,120 @@ public class ConnectionTest5 extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
     public void test_basic() throws Exception {
         PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
         conn.close();
-        
+
         Assert.assertEquals(true, dataSource.isResetStatEnable());
         dataSource.setResetStatEnable(false);
         Assert.assertEquals(false, dataSource.isResetStatEnable());
         Assert.assertEquals(1, dataSource.getConnectCount());
         dataSource.resetStat();
         Assert.assertEquals(1, dataSource.getConnectCount());
-        
+
         dataSource.setResetStatEnable(true);
         dataSource.resetStat();
         Assert.assertEquals(0, dataSource.getConnectCount());
-        
+
+    }
+
+    public void test_handleException() throws Exception {
+        PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
+        conn.close();
+
+        SQLException error = new SQLException();
+        try {
+            conn.handleException(error);
+        } catch (SQLException ex) {
+            Assert.assertEquals(error, ex);
+        }
+    }
+
+    public void test_handleException_2() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.getConnection().close();
+
+        {
+            SQLException error = null;
+            try {
+                conn.handleException(new RuntimeException());
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        conn.close();
     }
     
- 
+    public void test_handleException_3() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.getConnection().close();
+
+        {
+            SQLException error = null;
+            try {
+                conn.handleException(new RuntimeException());
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        conn.close();
+    }
+    
+    public void test_handleException_4() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.getConnection().close();
+
+        {
+            SQLException error = null;
+            try {
+                conn.prepareStatement("SELECT 1");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        Assert.assertEquals(true, conn.isClosed());
+    }
+    
+    
+    public void test_setClientInfo() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.close();
+
+        {
+            SQLException error = null;
+            try {
+                conn.setClientInfo("name", "xxx");
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+    }
+    
+    public void test_setClientInfo_1() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        conn.close();
+        
+        {
+            SQLException error = null;
+            try {
+                conn.setClientInfo(new Properties());
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+    }
 }

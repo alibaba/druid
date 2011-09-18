@@ -12,7 +12,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.mysql.jdbc.ResultSet;
 
-public class ConnectionStatementTest2 extends TestCase {
+public class ConnectionTest extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
@@ -35,12 +35,9 @@ public class ConnectionStatementTest2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        dataSource.setPoolPreparedStatements(true);
     }
 
     protected void tearDown() throws Exception {
-        dataSource.resetStat();
-        Assert.assertEquals(0, dataSource.getCreateCount());
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }

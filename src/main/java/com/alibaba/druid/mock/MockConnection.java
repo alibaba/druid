@@ -117,7 +117,7 @@ public class MockConnection implements Connection {
     @Override
     public Statement createStatement() throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockStatement(this);
@@ -126,7 +126,7 @@ public class MockConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
@@ -135,7 +135,7 @@ public class MockConnection implements Connection {
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockCallableStatement(this, sql);
@@ -144,7 +144,7 @@ public class MockConnection implements Connection {
     @Override
     public String nativeSQL(String sql) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return sql;
@@ -153,7 +153,7 @@ public class MockConnection implements Connection {
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         this.autoCommit = autoCommit;
@@ -167,7 +167,7 @@ public class MockConnection implements Connection {
     @Override
     public void commit() throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
     }
@@ -175,7 +175,7 @@ public class MockConnection implements Connection {
     @Override
     public void rollback() throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
     }
@@ -243,7 +243,7 @@ public class MockConnection implements Connection {
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockStatement(this);
@@ -253,7 +253,7 @@ public class MockConnection implements Connection {
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
                                                                                                       throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
@@ -262,7 +262,7 @@ public class MockConnection implements Connection {
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockCallableStatement(this, sql);
@@ -291,7 +291,7 @@ public class MockConnection implements Connection {
     @Override
     public Savepoint setSavepoint() throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
         return null;
     }
@@ -299,7 +299,7 @@ public class MockConnection implements Connection {
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
         return null;
     }
@@ -307,14 +307,14 @@ public class MockConnection implements Connection {
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
     }
 
@@ -322,7 +322,7 @@ public class MockConnection implements Connection {
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
                                                                                                            throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockStatement(this);
@@ -332,7 +332,7 @@ public class MockConnection implements Connection {
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
                                               int resultSetHoldability) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
@@ -342,7 +342,7 @@ public class MockConnection implements Connection {
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
                                          int resultSetHoldability) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockCallableStatement(this, sql);
@@ -351,7 +351,7 @@ public class MockConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
@@ -360,7 +360,7 @@ public class MockConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
@@ -369,7 +369,7 @@ public class MockConnection implements Connection {
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         if (closed) {
-            throw new SQLException();
+            throw new MockConnectionClosedException();
         }
 
         return new MockPreparedStatement(this, sql);
