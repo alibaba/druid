@@ -374,15 +374,5 @@ public class DataSourceTest3 extends TestCase {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
 
         dataSource.validateConnection(conn);
-        
-        {
-            Exception error = null;
-            try {
-                dataSource.validateConnection(conn);
-            } catch (SQLException ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
     }
 }
