@@ -24,6 +24,14 @@ public class DruidDataSourceC3P0AdapterTest2 extends TestCase {
         Assert.assertTrue(dataSource.isWrapperFor(DruidDataSource.class));
         Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
         Assert.assertFalse(dataSource.isWrapperFor(null));
+        
+        Assert.assertNotNull(dataSource.unwrap(DruidDataSourceC3P0Adapter.class));
+        Assert.assertNotNull(dataSource.unwrap(DruidDataSource.class));
+        Assert.assertNotNull(dataSource.unwrap(DataSource.class));
+        Assert.assertNull(dataSource.unwrap(null));
+        
+        dataSource.setProperties(dataSource.getProperties());
+        dataSource.setUser(dataSource.getUser());
 
         dataSource.close();
     }
