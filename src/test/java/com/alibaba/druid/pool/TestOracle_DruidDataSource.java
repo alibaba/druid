@@ -33,7 +33,7 @@ public class TestOracle_DruidDataSource extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setFilters("stat");
-        dataSource.setExceptionSoter(OracleExceptionSorter.class.getName());
+        dataSource.setExceptionSorter(OracleExceptionSorter.class.getName());
 
         final int COUNT = 100 * 100;
         final int THREAD_COUNT = 10;

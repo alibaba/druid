@@ -746,10 +746,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     // 兼容JBOSS
     public void setExceptionSorterClassName(String exceptionSorter) throws Exception {
-        this.setExceptionSoter(exceptionSorter);
+        this.setExceptionSorter(exceptionSorter);
     }
 
-    public void setExceptionSoter(String exceptionSorter) throws Exception {
+    public void setExceptionSorter(String exceptionSorter) throws Exception {
         if (exceptionSorter == null) {
             this.exceptionSoter = NullExceptionSorter.getInstance();
             return;

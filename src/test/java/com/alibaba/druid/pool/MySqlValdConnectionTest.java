@@ -27,7 +27,7 @@ public class MySqlValdConnectionTest extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setFilters("stat");
-        dataSource.setExceptionSoter(MySqlExceptionSorter.class.getName());
+        dataSource.setExceptionSorter(MySqlExceptionSorter.class.getName());
 
         Connection conn = dataSource.getConnection();
         conn.close();

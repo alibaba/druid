@@ -284,12 +284,12 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         value = properties.getProperty(PROP_EXCEPTION_SORTER);
         if (value != null) {
-            dataSource.setExceptionSoter(value);
+            dataSource.setExceptionSorter(value);
         }
 
         value = properties.getProperty(PROP_EXCEPTION_SORTER_CLASS_NAME);
         if (value != null) {
-            dataSource.setExceptionSoter(value);
+            dataSource.setExceptionSorter(value);
         }
 
         value = properties.getProperty(PROP_INITCONNECTIONSQLS);
