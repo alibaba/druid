@@ -799,7 +799,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
-    protected void validateConnection(Connection conn) throws SQLException {
+    public void validateConnection(Connection conn) throws SQLException {
         String query = getValidationQuery();
         if (conn.isClosed()) {
             throw new SQLException("validateConnection: connection closed");
@@ -814,31 +814,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         if (null != query) {
             Statement stmt = null;
-            ResultSet rset = null;
+            ResultSet rs = null;
             try {
                 stmt = conn.createStatement();
                 if (getValidationQueryTimeout() > 0) {
                     stmt.setQueryTimeout(getValidationQueryTimeout());
                 }
-                rset = stmt.executeQuery(query);
-                if (!rset.next()) {
+                rs = stmt.executeQuery(query);
+                if (!rs.next()) {
                     throw new SQLException("validationQuery didn't return a row");
                 }
             } finally {
-                if (rset != null) {
-                    try {
-                        rset.close();
-                    } catch (Exception t) {
-                        // ignored
-                    }
-                }
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (Exception t) {
-                        // ignored
-                    }
-                }
+                JdbcUtils.close(rs);
+                JdbcUtils.close(stmt);
             }
         }
     }

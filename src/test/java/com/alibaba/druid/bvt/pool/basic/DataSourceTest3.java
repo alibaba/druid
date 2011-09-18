@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -333,5 +334,55 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setProxyFilters(null);
         dataSource.setFilters(null);
         dataSource.setFilters("");
+    }
+    
+    public void test_error_validateConnection() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+
+        conn.close();
+
+        {
+            Exception error = null;
+            try {
+                dataSource.validateConnection(conn);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_error_validateConnection_2() throws Exception {
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+
+        conn.getConnection().close();
+
+        {
+            Exception error = null;
+            try {
+                dataSource.validateConnection(conn);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+    }
+    
+    public void test_error_validateConnection_3() throws Exception {
+        dataSource.setValidationQuery(null);
+        dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
+        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+
+        dataSource.validateConnection(conn);
+        
+        {
+            Exception error = null;
+            try {
+                dataSource.validateConnection(conn);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
     }
 }
