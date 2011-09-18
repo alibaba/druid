@@ -57,13 +57,30 @@ public class MockStatement implements Statement {
         this.connection = fakeConnection;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == null) {
+            return null;
+        }
+
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+
         return null;
     }
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        if (iface == null) {
+            return false;
+        }
+
+        if (iface.isInstance(this)) {
+            return true;
+        }
+
         return false;
     }
 
