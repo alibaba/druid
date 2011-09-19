@@ -111,4 +111,6 @@ public interface DruidAbstractDataSourceMBean {
     Date getCreatedTime();
     
     String getValidConnectionCheckerClassName();
+    
+    long[] getTransactionHistogramValues();
 }

@@ -186,6 +186,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }
+    
+    public long[] getTransactionHistogramValues() {
+        return transactionHistogram.toArray();
+    }
 
     public long getCommitCount() {
         return commitCount.get();
