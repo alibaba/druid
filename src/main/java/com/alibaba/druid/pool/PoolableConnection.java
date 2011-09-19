@@ -634,10 +634,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             long transactionMillis = currentTimeMillis - transactionInfo.getStartTimeMillis();
             dataSource.getTransactionHistogram().recode(transactionMillis);
 
-            final long transactionThresholdMillis = dataSource.getTransactionThresholdMillis();
-            if (transactionThresholdMillis > 0 && transactionMillis > transactionThresholdMillis) {
-
-            }
+            dataSource.logTransaction( transactionInfo);
 
             transactionInfo = null;
         }
