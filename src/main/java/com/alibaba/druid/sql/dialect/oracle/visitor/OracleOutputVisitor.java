@@ -61,7 +61,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -317,30 +316,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleRefDataType x) {
         print("REF ");
         x.getRefObject().accept(this);
-        return false;
-    }
-
-    public boolean visit(OracleReferencesConstaint node) {
-        if (node.getName() != null) {
-            print("CONSTAINT ");
-            node.getName().accept(this);
-            print(" ");
-        }
-        print("REFERENCES ");
-
-        node.getRefObject().accept(this);
-
-        if (node.getRefColumns().size() > 0) {
-            print("(");
-            printAndAccept(node.getRefColumns(), ", ");
-            print(")");
-        }
-
-        if (node.getState() != null) {
-            print(" ");
-            node.getState().accept(this);
-        }
-
         return false;
     }
 
@@ -799,11 +774,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OraclePLSQLCommitStatement astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleReferencesConstaint astNode) {
 
     }
 

@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -76,11 +75,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OraclePLSQLCommitStatement astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleReferencesConstaint astNode) {
 
     }
 
@@ -273,12 +267,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OraclePLSQLCommitStatement astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleReferencesConstaint astNode) {
 
         return true;
     }
