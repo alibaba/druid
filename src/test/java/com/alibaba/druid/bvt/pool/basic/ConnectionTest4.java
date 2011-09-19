@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -496,6 +497,10 @@ public class ConnectionTest4 extends TestCase {
     
     public void test_rollback() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        
+        conn.setAutoCommit(false);
+        Statement stmt = conn.createStatement();
+        stmt.execute("SELECT 1");
         
         conn.getConnection().close();
         {

@@ -249,6 +249,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     @Override
     public final boolean execute(String sql) throws SQLException {
         checkOpen();
+        
+        transactionRecord(sql);
 
         try {
             return stmt.execute(sql);

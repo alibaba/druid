@@ -583,7 +583,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction();
+            handleEndTransaction(dataSource);
         }
     }
 
@@ -593,11 +593,11 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public void rollback() throws SQLException {
+        checkOpen();
+        
         if (transactionInfo == null) {
             return;
         }
-    
-        checkOpen();
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementRollbackCount();
@@ -607,7 +607,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction();
+            handleEndTransaction(dataSource);
         }
     }
 
@@ -630,14 +630,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction();
+            handleEndTransaction(dataSource);
         }
     }
 
-    private void handleEndTransaction() {
+    private void handleEndTransaction(DruidAbstractDataSource dataSource) {
         if (transactionInfo != null) {
-            DruidAbstractDataSource dataSource = holder.getDataSource();
-
             long currentTimeMillis = System.currentTimeMillis();
             transactionInfo.setEndTimeMillis(currentTimeMillis);
 
