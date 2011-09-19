@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
@@ -89,11 +88,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleArrayAccessExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDataTypeInterval x) {
 
     }
 
@@ -279,12 +273,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleArrayAccessExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleDataTypeInterval x) {
 
         return true;
     }

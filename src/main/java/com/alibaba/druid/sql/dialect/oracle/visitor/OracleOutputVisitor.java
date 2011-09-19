@@ -29,7 +29,6 @@ import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
@@ -156,24 +155,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         print("]");
 
-        return false;
-    }
-
-    public boolean visit(OracleDataTypeInterval x) {
-        print("INTERVAL ");
-        print(x.getType().name());
-        if (x.getPrecision() != null) {
-            print(" (");
-            x.getPrecision().accept(this);
-            print(")");
-        }
-        print(" TO ");
-        print(x.getToType().name());
-        if (x.getFractionalSecondsPrecision() != null) {
-            print(" (");
-            x.getFractionalSecondsPrecision().accept(this);
-            print(")");
-        }
         return false;
     }
 
@@ -787,11 +768,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(SQLDataType x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleDataTypeInterval x) {
 
     }
 

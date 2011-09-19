@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeInterval;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
@@ -78,8 +77,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleAnalyticWindowing x);
 
     void endVisit(OracleArrayAccessExpr x);
-
-    void endVisit(OracleDataTypeInterval x);
 
     void endVisit(OracleDateExpr x);
 
@@ -152,8 +149,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAnalyticWindowing x);
 
     boolean visit(OracleArrayAccessExpr x);
-
-    boolean visit(OracleDataTypeInterval x);
 
     boolean visit(OracleDateExpr x);
 
