@@ -53,7 +53,7 @@ public class ConnectionTest3 extends TestCase {
     public void test_basic() throws Exception {
         PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
         
-        conn.getStartTransactionTimeMillis();
+        conn.getTransactionInfo();
         conn.getMetaData();
         conn.setReadOnly(true);
         Assert.assertEquals(true, conn.isReadOnly());

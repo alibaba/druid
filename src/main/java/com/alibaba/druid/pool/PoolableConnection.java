@@ -43,17 +43,18 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PoolableConnection implements PooledConnection, Connection {
 
-    private final static Log   LOG                        = LogFactory.getLog(PoolableConnection.class);
+    private final static Log   LOG = LogFactory.getLog(PoolableConnection.class);
 
     protected Connection       conn;
     protected ConnectionHolder holder;
-    protected long             startTransactionTimeMillis = 0;
+    protected TransactionInfo  transactionInfo;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -140,7 +141,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         this.holder = null;
         conn = null;
-        startTransactionTimeMillis = 0;
+        transactionInfo = null;
     }
 
     // ////////////////////
@@ -546,8 +547,9 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         try {
             if ((!autoCommit) && conn.getAutoCommit()) {
-                holder.getDataSource().incrementStartTransactionCount();
-                startTransactionTimeMillis = System.currentTimeMillis();
+                DruidAbstractDataSource dataSource = holder.getDataSource();
+                dataSource.incrementStartTransactionCount();
+                transactionInfo = new TransactionInfo(dataSource.createTransactionId());
             }
 
             conn.setAutoCommit(autoCommit);
@@ -575,14 +577,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
-            dataSource.getTransactionHistogram().recode(transactionMillis);
-            startTransactionTimeMillis = 0;
+            handleEndTransaction();
         }
     }
 
-    public long getStartTransactionTimeMillis() {
-        return startTransactionTimeMillis;
+    public TransactionInfo getTransactionInfo() {
+        return transactionInfo;
     }
 
     @Override
@@ -597,9 +597,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
-            dataSource.getTransactionHistogram().recode(transactionMillis);
-            startTransactionTimeMillis = 0;
+            handleEndTransaction();
         }
     }
 
@@ -613,18 +611,26 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         checkOpen();
-        
+
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementRollbackCount();
-        
+
         try {
             conn.rollback(savepoint);
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
+            handleEndTransaction();
+        }
+    }
+
+    private void handleEndTransaction() {
+        if (transactionInfo != null) {
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            
+            long transactionMillis = System.currentTimeMillis() - transactionInfo.getStartTimeMillis();
             dataSource.getTransactionHistogram().recode(transactionMillis);
-            startTransactionTimeMillis = 0;
+            transactionInfo = null;
         }
     }
 
