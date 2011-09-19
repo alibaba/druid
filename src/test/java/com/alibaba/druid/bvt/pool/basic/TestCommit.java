@@ -61,6 +61,9 @@ public class TestCommit extends TestCase {
 
         conn.setAutoCommit(false);
         conn.setAutoCommit(false);
+        Statement stmt = conn.createStatement();
+        stmt.execute("SELECT 1");
+        stmt.close();
         Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(1, dataSource.getActiveConnections().size());
         conn.rollback();
