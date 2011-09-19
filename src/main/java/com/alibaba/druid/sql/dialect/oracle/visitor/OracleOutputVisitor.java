@@ -57,7 +57,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
@@ -65,7 +64,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -81,7 +79,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableTypeDef;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
@@ -407,21 +404,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OraclePLSQLCommitStatement astNode) {
         print("/");
-        return false;
-    }
-
-    public boolean visit(OraclePrimaryKey node) {
-        if (node.getName() != null) {
-            print("CONSTAINT ");
-            node.getName().accept(this);
-            print(" ");
-        }
-        print("PRIMARY KEY");
-        if (node.getColumns().size() > 0) {
-            print(" (");
-            printAndAccept(node.getColumns(), ", ");
-            print(")");
-        }
         return false;
     }
 
@@ -784,45 +766,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleTableColumn x) {
-        print(x.getName());
-
-        if (x.getDataType() != null) {
-            print(" ");
-            x.getDataType().accept(this);
-        }
-
-        if (x.isSort()) {
-            print(" SORT");
-        }
-
-        if (x.isGeneratedAlways()) {
-            print(" GENERATED ALWAYS");
-        }
-
-        if (x.getDefaultValue() != null) {
-            print(" DEFAULT ");
-            x.getDefaultValue().accept(this);
-        }
-
-        if (x.getAs() != null) {
-            print(" AS ");
-            x.getAs().accept(this);
-        }
-
-        if (x.isVirtual()) {
-            print(" VIRTUAL");
-        }
-
-        int i = 0;
-        for (int size = x.getConstaints().size(); i < size; ++i) {
-            print(" ");
-            ((OracleConstraint) x.getConstaints().get(i)).accept(this);
-        }
-
-        return false;
-    }
-
     public boolean visit(OracleTableExpr x) {
         x.getTable().accept(this);
 
@@ -973,11 +916,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(OraclePrimaryKey astNode) {
-
-    }
-
-    @Override
     public void endVisit(OracleAnalytic x) {
 
     }
@@ -1124,11 +1062,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleTableCollectionExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleTableColumn x) {
 
     }
 

@@ -37,7 +37,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -51,7 +50,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableTypeDef;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
@@ -102,11 +100,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleCheck astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OraclePrimaryKey astNode) {
 
     }
 
@@ -251,11 +244,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public void endVisit(OracleTableColumn x) {
-
-    }
-
-    @Override
     public void endVisit(OracleTableExpr x) {
 
     }
@@ -333,12 +321,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleCheck astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OraclePrimaryKey astNode) {
 
         return true;
     }
@@ -507,12 +489,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleTableCollectionExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleTableColumn x) {
 
         return true;
     }

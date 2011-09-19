@@ -51,7 +51,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleReferencesConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -63,7 +62,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableTypeDef;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
@@ -88,8 +86,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleConstraintNull astNode);
 
     void endVisit(OracleCheck astNode);
-
-    void endVisit(OraclePrimaryKey astNode);
 
     void endVisit(OracleAnalytic x);
 
@@ -147,8 +143,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleTableCollectionExpr x);
 
-    void endVisit(OracleTableColumn x);
-
     void endVisit(OracleTableExpr x);
 
     void endVisit(OracleTableTypeDef x);
@@ -178,8 +172,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleConstraintNull astNode);
 
     boolean visit(OracleCheck astNode);
-
-    boolean visit(OraclePrimaryKey astNode);
 
     boolean visit(OracleAnalytic x);
 
@@ -236,8 +228,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSelectUnPivot x);
 
     boolean visit(OracleTableCollectionExpr x);
-
-    boolean visit(OracleTableColumn x);
 
     boolean visit(OracleTableExpr x);
 
