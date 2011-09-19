@@ -98,10 +98,8 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         }
     }
 
-    protected void transactionRecord(String sql) {
-        if (conn.getTransactionInfo() != null) {
-            conn.getTransactionInfo().getSqlList().add(sql);
-        }
+    protected void transactionRecord(String sql) throws SQLException {
+        conn.transactionRecord(sql);
     }
 
     @Override

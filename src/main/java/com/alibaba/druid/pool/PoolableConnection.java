@@ -546,15 +546,21 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         try {
-            if ((!autoCommit) && conn.getAutoCommit()) {
-                DruidAbstractDataSource dataSource = holder.getDataSource();
-                dataSource.incrementStartTransactionCount();
-                transactionInfo = new TransactionInfo(dataSource.createTransactionId());
-            }
-
             conn.setAutoCommit(autoCommit);
         } catch (SQLException ex) {
             handleException(ex);
+        }
+    }
+    
+    protected void transactionRecord(String sql) throws SQLException {
+        if (transactionInfo == null && (!conn.getAutoCommit())) {
+            DruidAbstractDataSource dataSource = holder.getDataSource();
+            dataSource.incrementStartTransactionCount();
+            transactionInfo = new TransactionInfo(dataSource.createTransactionId());
+        }
+        
+        if (transactionInfo != null) {
+            transactionInfo.getSqlList().add(sql);
         }
     }
 
