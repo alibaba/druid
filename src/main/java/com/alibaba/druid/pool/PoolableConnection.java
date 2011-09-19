@@ -587,6 +587,10 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public void rollback() throws SQLException {
+        if (transactionInfo == null) {
+            return;
+        }
+    
         checkOpen();
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
