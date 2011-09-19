@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,6 +36,7 @@ import javax.naming.StringRefAddr;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 
+import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
@@ -483,7 +483,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             // 第二步，检查是否需要回滚
             if ((!isAutoCommit) && (!isReadOnly)) {
-                conn.rollback();
+                pooledConnection.rollback();
             }
 
             // 第三步，清楚警告信息，重设autoCommit为true
@@ -1104,7 +1104,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 buf.append(sql);
                 buf.append(";");
             }
-            LOG.error(buf.toString(), new SQLTimeoutException());
+            LOG.error(buf.toString(), new TransactionTimeoutException());
         }
     }
 
