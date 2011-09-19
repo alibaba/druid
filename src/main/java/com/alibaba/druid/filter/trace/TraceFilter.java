@@ -135,13 +135,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionConnectError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, info.clone());
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -184,15 +177,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionCloseError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionCloseError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -250,15 +234,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionCommitError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -300,15 +275,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionRollbackError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionRollbackError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -383,19 +349,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionRollbackError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                if (savepoint != null) {
-                    event.putContext("savepointId", savepoint.getSavepointId());
-                    event.putContext("savepointName", savepoint.getSavepointName());
-                }
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -444,17 +397,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
                                                             ex);
@@ -528,18 +470,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.autoGeneratedKeys", autoGeneratedKeys);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -597,19 +527,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
                                                             ex);
@@ -697,20 +614,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -763,18 +666,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext(TRACE_STMT_COLUMN_INDEXES, columnIndexes);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
                                                             ex);
@@ -849,18 +740,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrepareStatementError", new Date(startMillis),
-                                                            ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -908,16 +787,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrecallError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionPrecallError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -982,18 +851,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrecallError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionPrecallError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1076,19 +933,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionPrecallError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -1133,15 +977,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionCreateStatementError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionCreateStatementError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1201,17 +1036,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionCreateStatementError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("ConnectionCreateStatementError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1291,18 +1115,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("ConnectionCreateStatementError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -1353,17 +1165,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1428,18 +1229,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.autoGeneratedKeys", autoGeneratedKeys);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1516,18 +1305,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext(TRACE_STMT_COLUMN_INDEXES, columnIndexes);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -1593,18 +1370,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext(TRACE_STMT_COLUMN_INDEXES, columnNames);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -1654,16 +1419,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteBatchError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteBatchError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1738,17 +1493,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteQueryError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -1801,17 +1545,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1878,18 +1611,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.autoGeneratedKeys", autoGeneratedKeys);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -1968,18 +1689,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext(TRACE_STMT_COLUMN_INDEXES, columnIndexes);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2036,18 +1745,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementExecuteUpdateError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -2118,17 +1815,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementAddBatchError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, sql);
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2175,16 +1861,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementCancelError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementCancelError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -2249,16 +1925,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementClearBatchError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2305,16 +1971,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("StatementCloseError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("StatementCloseError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
@@ -2424,18 +2080,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("PreparedStatementExecuteError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, statement.getSql());
-                event.putContext(TRACE_STMT_PARAMS, getParameters(statement));
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2495,19 +2139,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("PreparedStatementExecuteQueryError",
-                                                            new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, statement.getSql());
-                event.putContext(TRACE_STMT_PARAMS, getParameters(statement));
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("PreparedStatementExecuteQueryError",
                                                             new Date(startMillis), ex);
@@ -2588,19 +2219,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("PreparedStatementExecuteUpdateError",
-                                                            new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, statement.getSql());
-                event.putContext(TRACE_STMT_PARAMS, getParameters(statement));
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2668,19 +2286,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 fireEvent(event);
             }
             throw ex;
-        } catch (Error ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("PreparedStatementClearParametersError",
-                                                            new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, statement.getSql());
-                event.putContext(TRACE_STMT_PARAMS, getParameters(statement));
-                fireEvent(event);
-            }
-            throw ex;
         }
     }
 
@@ -2734,18 +2339,6 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             }
             throw ex;
         } catch (RuntimeException ex) {
-            {
-                TraceErrorEvent event = new TraceErrorEvent("PreparedStatementAddBatchError", new Date(startMillis), ex);
-                event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
-                event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
-                event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext(TRACE_STMT_SQL, statement.getSql());
-                event.putContext(TRACE_STMT_PARAMS, getParameters(statement));
-                fireEvent(event);
-            }
-            throw ex;
-        } catch (Error ex) {
             {
                 TraceErrorEvent event = new TraceErrorEvent("PreparedStatementAddBatchError", new Date(startMillis), ex);
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
