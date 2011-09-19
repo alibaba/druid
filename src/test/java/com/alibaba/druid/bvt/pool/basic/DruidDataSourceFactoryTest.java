@@ -63,6 +63,17 @@ public class DruidDataSourceFactoryTest extends TestCase {
         properties.setProperty("username", "user");
         properties.setProperty("validationQuery", "select 1");
         properties.setProperty("validationQueryTimeout", "30");
+        properties.setProperty("initConnectionSqls", "select 1");
+        properties.setProperty("accessToUnderlyingConnectionAllowed", "true");
+        properties.setProperty("removeAbandoned", "true");
+        properties.setProperty("removeAbandonedTimeout", "30");
+        properties.setProperty("logAbandoned", "true");
+        properties.setProperty("poolPreparedStatements", "true");
+        properties.setProperty("maxOpenPreparedStatements", "200");
+        properties.setProperty("connectionProperties", "x=1;y=2;;");
+        properties.setProperty("filters", "stat;trace");
+        properties.setProperty("exceptionSorter", "com.alibaba.druid.pool.vendor.NullExceptionSorter");
+        properties.setProperty("exception-sorter-class-name", "com.alibaba.druid.pool.vendor.NullExceptionSorter");
         
         DruidDataSourceFactory.createDataSource(properties);
     }
