@@ -60,7 +60,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRefDataType;
@@ -266,31 +265,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(" FROM ");
         x.getFrom().accept(this);
         print(")");
-        return false;
-    }
-
-    public boolean visit(OracleForeignKey node) {
-        if (node.getName() != null) {
-            print("CONSTAINT ");
-            node.getName().accept(this);
-            print(" ");
-        }
-        print("FOREIGN KEY (");
-
-        printAndAccept(node.getColumns(), ", ");
-
-        print(") REFERENCES ");
-
-        node.getRefObject().accept(this);
-        print("(");
-        printAndAccept(node.getColumns(), ", ");
-        print(")");
-
-        if (node.getState() != null) {
-            print(" ");
-            node.getState().accept(this);
-        }
-
         return false;
     }
 
@@ -862,11 +836,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleConstraintState astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleForeignKey astNode) {
 
     }
 
