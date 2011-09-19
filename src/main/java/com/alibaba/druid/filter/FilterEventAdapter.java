@@ -79,7 +79,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     @Override
     public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
                                                      int resultSetConcurrency) throws SQLException {
-        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetType);
+        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetConcurrency);
 
         statementCreateAfter(statement);
 
@@ -90,7 +90,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
     public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
                                                      int resultSetConcurrency, int resultSetHoldability)
                                                                                                         throws SQLException {
-        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetType,
+        StatementProxy statement = super.connection_createStatement(chain, connection, resultSetType, resultSetConcurrency,
                                                                     resultSetHoldability);
 
         statementCreateAfter(statement);

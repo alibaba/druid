@@ -125,13 +125,13 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return createChain().connection_createStatement(this, resultSetType, resultSetType);
+        return createChain().connection_createStatement(this, resultSetType, resultSetConcurrency);
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
                                                                                                            throws SQLException {
-        return createChain().connection_createStatement(this, resultSetType, resultSetType, resultSetHoldability);
+        return createChain().connection_createStatement(this, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override

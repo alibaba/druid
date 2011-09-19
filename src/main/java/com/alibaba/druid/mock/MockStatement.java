@@ -25,7 +25,7 @@ public class MockStatement implements Statement {
 
     public final static String ERROR_SQL = "THROW ERROR";
 
-    protected boolean            closed    = false;
+    protected boolean          closed    = false;
 
     private Connection         connection;
     protected MockConnection   mockConnection;
@@ -39,6 +39,9 @@ public class MockStatement implements Statement {
     private int                fetchDirection;
     private int                fetchSize;
 
+    private int                resultSetType;
+    private int                resultSetConcurrency;
+
     public MockStatement(Connection connection){
         super();
         this.connection = connection;
@@ -47,6 +50,23 @@ public class MockStatement implements Statement {
             mockConnection = (MockConnection) connection;
         }
     }
+
+    public int getResultSetType() throws SQLException {
+        if (closed) {
+            throw new SQLException("stmt closed.");
+        }
+        
+        return resultSetType;
+    }
+
+    public void setResultSetType(int resultType) {
+        this.resultSetType = resultType;
+    }
+
+    public void setResultSetConcurrency(int resultSetConcurrency) {
+        this.resultSetConcurrency = resultSetConcurrency;
+    }
+    
 
     public MockConnection getMockConnection() {
         return mockConnection;
@@ -300,16 +320,9 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        return 0;
+        return resultSetConcurrency;
     }
 
-    @Override
-    public int getResultSetType() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
-        return 0;
-    }
 
     @Override
     public void addBatch(String sql) throws SQLException {

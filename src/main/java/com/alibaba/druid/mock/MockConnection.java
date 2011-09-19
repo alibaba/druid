@@ -246,7 +246,12 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockStatement(this);
+        MockStatement stmt = new MockStatement(this);
+       
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+        
+        return stmt;
     }
 
     @Override
