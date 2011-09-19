@@ -56,7 +56,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -158,26 +157,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         printAndAccept(x.getArguments(), ", ");
 
         print("]");
-
-        return false;
-    }
-
-    public boolean visit(OracleConstraintNull node) {
-        if (node.getName() != null) {
-            print("CONSTAINT ");
-            node.getName().accept(this);
-            print(" ");
-        }
-
-        if (node.isNullable()) print("NULL");
-        else {
-            print("NOT NULL");
-        }
-
-        if (node.getState() != null) {
-            print(" ");
-            node.getState().accept(this);
-        }
 
         return false;
     }
@@ -825,11 +804,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleReferencesConstaint astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleConstraintNull astNode) {
 
     }
 
