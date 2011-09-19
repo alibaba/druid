@@ -247,10 +247,10 @@ public class MockConnection implements Connection {
         }
 
         MockStatement stmt = new MockStatement(this);
-       
+
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
-        
+
         return stmt;
     }
 
@@ -261,7 +261,12 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        MockPreparedStatement stmt = new MockPreparedStatement(this, sql);
+
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+
+        return stmt;
     }
 
     @Override
@@ -270,7 +275,12 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockCallableStatement(this, sql);
+        MockCallableStatement stmt = new MockCallableStatement(this, sql);
+
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+        
+        return stmt;
     }
 
     @Override
@@ -330,7 +340,13 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockStatement(this);
+        MockStatement stmt = new MockStatement(this);
+
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+        stmt.setResultSetHoldability(resultSetHoldability);
+
+        return stmt;
     }
 
     @Override
@@ -340,7 +356,13 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        MockPreparedStatement stmt = new MockPreparedStatement(this, sql);
+
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+        stmt.setResultSetHoldability(resultSetHoldability);
+
+        return stmt;
     }
 
     @Override
@@ -350,7 +372,13 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockCallableStatement(this, sql);
+        MockCallableStatement stmt = new MockCallableStatement(this, sql);
+
+        stmt.setResultSetType(resultSetType);
+        stmt.setResultSetConcurrency(resultSetConcurrency);
+        stmt.setResultSetHoldability(resultSetHoldability);
+
+        return stmt;
     }
 
     @Override

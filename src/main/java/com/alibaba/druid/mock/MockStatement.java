@@ -41,6 +41,7 @@ public class MockStatement implements Statement {
 
     private int                resultSetType;
     private int                resultSetConcurrency;
+    private int                resultSetHoldability;
 
     public MockStatement(Connection connection){
         super();
@@ -55,7 +56,7 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        
+
         return resultSetType;
     }
 
@@ -66,7 +67,6 @@ public class MockStatement implements Statement {
     public void setResultSetConcurrency(int resultSetConcurrency) {
         this.resultSetConcurrency = resultSetConcurrency;
     }
-    
 
     public MockConnection getMockConnection() {
         return mockConnection;
@@ -323,7 +323,6 @@ public class MockStatement implements Statement {
         return resultSetConcurrency;
     }
 
-
     @Override
     public void addBatch(String sql) throws SQLException {
         if (closed) {
@@ -423,7 +422,11 @@ public class MockStatement implements Statement {
         if (closed) {
             throw new SQLException("stmt closed.");
         }
-        return 0;
+        return resultSetHoldability;
+    }
+
+    public void setResultSetHoldability(int resultSetHoldability) {
+        this.resultSetHoldability = resultSetHoldability;
     }
 
     @Override
