@@ -18,7 +18,7 @@ public class Bug_for_happyday517 extends TestCase {
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat,trace,log,encoding");
+        dataSource.setFilters("stat,trace,log4j,encoding");
 
     }
 
