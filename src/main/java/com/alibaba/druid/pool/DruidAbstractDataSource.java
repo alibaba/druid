@@ -53,6 +53,7 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.DruidLoaderUtils;
+import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -122,7 +123,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                                                          System.out);
 
     protected List<Filter>                                                                   filters                                   = new ArrayList<Filter>();
-    protected ExceptionSorter                                                                exceptionSorter                            = null;
+    protected ExceptionSorter                                                                exceptionSorter                           = null;
 
     protected Driver                                                                         driver;
 
@@ -174,6 +175,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
+
+    protected final Histogram                                                                transactionHistogram                      = new Histogram(
+                                                                                                                                                       10,
+                                                                                                                                                       100,
+                                                                                                                                                       1000,
+                                                                                                                                                       10 * 1000,
+                                                                                                                                                       100 * 1000);
+
+    public Histogram getTransactionHistogram() {
+        return transactionHistogram;
+    }
 
     public long getCommitCount() {
         return commitCount.get();
@@ -1342,4 +1354,5 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public abstract int getRawDriverMinorVersion();
 
     public abstract String getProperties();
+    
 }

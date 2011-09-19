@@ -140,6 +140,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         this.holder = null;
         conn = null;
+        startTransactionTimeMillis = 0;
     }
 
     // ////////////////////
@@ -566,12 +567,16 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void commit() throws SQLException {
         checkOpen();
 
-        holder.getDataSource().incrementCommitCount();
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        dataSource.incrementCommitCount();
+
         try {
             conn.commit();
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
+            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
+            dataSource.getTransactionHistogram().recode(transactionMillis);
             startTransactionTimeMillis = 0;
         }
     }
@@ -584,12 +589,60 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void rollback() throws SQLException {
         checkOpen();
 
-        holder.getDataSource().incrementRollbackCount();
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        dataSource.incrementRollbackCount();
+
         try {
             conn.rollback();
         } catch (SQLException ex) {
             handleException(ex);
+        } finally {
+            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
+            dataSource.getTransactionHistogram().recode(transactionMillis);
+            startTransactionTimeMillis = 0;
         }
+    }
+
+    @Override
+    public Savepoint setSavepoint(String name) throws SQLException {
+        checkOpen();
+
+        return conn.setSavepoint(name);
+    }
+
+    @Override
+    public void rollback(Savepoint savepoint) throws SQLException {
+        checkOpen();
+        
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        dataSource.incrementRollbackCount();
+        
+        try {
+            conn.rollback(savepoint);
+        } catch (SQLException ex) {
+            handleException(ex);
+        } finally {
+            long transactionMillis = System.currentTimeMillis() - startTransactionTimeMillis;
+            dataSource.getTransactionHistogram().recode(transactionMillis);
+            startTransactionTimeMillis = 0;
+        }
+    }
+
+    @Override
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+        checkOpen();
+        try {
+            conn.releaseSavepoint(savepoint);
+        } catch (SQLException ex) {
+            handleException(ex);
+        }
+    }
+
+    @Override
+    public Clob createClob() throws SQLException {
+        checkOpen();
+
+        return conn.createClob();
     }
 
     @Override
@@ -697,40 +750,6 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         return conn.setSavepoint();
-    }
-
-    @Override
-    public Savepoint setSavepoint(String name) throws SQLException {
-        checkOpen();
-
-        return conn.setSavepoint(name);
-    }
-
-    @Override
-    public void rollback(Savepoint savepoint) throws SQLException {
-        checkOpen();
-        try {
-            conn.rollback(savepoint);
-        } catch (SQLException ex) {
-            handleException(ex);
-        }
-    }
-
-    @Override
-    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        checkOpen();
-        try {
-            conn.releaseSavepoint(savepoint);
-        } catch (SQLException ex) {
-            handleException(ex);
-        }
-    }
-
-    @Override
-    public Clob createClob() throws SQLException {
-        checkOpen();
-
-        return conn.createClob();
     }
 
     @Override
