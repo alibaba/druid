@@ -105,7 +105,7 @@ public class TestDataSourceBasic2 extends TestCase {
         dataSource.setConnectionProperties("a=1;b=2;c");
         Assert.assertEquals(3, dataSource.getConnectProperties().size());
         
-        dataSource.setExceptionSoter((ExceptionSorter) null);
+        dataSource.setExceptionSorter((ExceptionSorter) null);
         
         dataSource.close();
     }
