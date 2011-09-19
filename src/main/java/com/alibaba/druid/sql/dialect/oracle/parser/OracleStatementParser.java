@@ -19,8 +19,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -117,61 +115,4 @@ public class OracleStatementParser extends SQLStatementParser {
         }
     }
 
-    public OracleCreateTableStatement parseOracleCreateTable() throws ParserException {
-        // OracleCreateTableParser parser = new OracleCreateTableParser(this.tokenList);
-        // return parser.parseCrateTable();
-        throw new ParserException("TODO");
-    }
-
-    public OracleCreateViewStatement parseCreateView() throws ParserException {
-        OracleCreateViewStatement createView = new OracleCreateViewStatement();
-
-        accept(Token.CREATE);
-        if (lexer.token() == (Token.OR)) {
-            lexer.nextToken();
-
-            if (identifierEquals("REPLACE")) lexer.nextToken();
-            else {
-                throw new ParserException("syntax error");
-            }
-
-            createView.setReplace(true);
-        }
-
-        if (identifierEquals("NO")) {
-            lexer.nextToken();
-
-            if (identifierEquals("FORCE")) lexer.nextToken();
-            else {
-                throw new ParserException("syntax error");
-            }
-
-            createView.setForce(Boolean.FALSE);
-        }
-
-        if (identifierEquals("FORCE")) {
-            lexer.nextToken();
-            createView.setForce(Boolean.TRUE);
-        }
-
-        accept(Token.VIEW);
-
-        // createView.setName(new OracleExprParser(this.lexer).name());
-        //
-        //
-        // if (this.tokenList.lookup(1).equals(Token.OpenBraceToken)) {
-        // throw new ParserException("TODO");
-        // }
-        //
-        // if (this.tokenList.lookup(1).equals(Token.OfToken)) {
-        // throw new ParserException("TODO");
-        // }
-        //
-        // accept(Token.AsToken);
-        //
-        // createView.setSubQuery(new OracleSelectParser(this.tokenList).select());
-        // return createView;
-
-        throw new ParserException("TODO");
-    }
 }

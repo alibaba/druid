@@ -46,7 +46,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -92,8 +91,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleAnalyticWindowing x);
 
     void endVisit(OracleArrayAccessExpr x);
-
-    void endVisit(OracleCreateViewStatement x);
 
     void endVisit(OracleDataTypeInterval x);
 
@@ -178,8 +175,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAnalyticWindowing x);
 
     boolean visit(OracleArrayAccessExpr x);
-
-    boolean visit(OracleCreateViewStatement x);
 
     boolean visit(OracleDataTypeInterval x);
 

@@ -59,7 +59,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForeignKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -201,30 +200,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" ");
             node.getState().accept(this);
         }
-
-        return false;
-    }
-
-    public boolean visit(OracleCreateViewStatement x) {
-        print("CREATE ");
-        if (x.isReplace()) {
-            print("OR REPLACE ");
-        }
-
-        if (Boolean.TRUE.equals(x.getForce())) {
-            print("FORCE ");
-        } else if (Boolean.FALSE.equals(x.getForce())) {
-            print("NO FORCE ");
-        }
-
-        print("VIEW ");
-
-        x.getName().accept(this);
-
-        println();
-        print("AS");
-        println();
-        x.getSubQuery().accept(this);
 
         return false;
     }
@@ -927,11 +902,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleArrayAccessExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleCreateViewStatement x) {
 
     }
 
