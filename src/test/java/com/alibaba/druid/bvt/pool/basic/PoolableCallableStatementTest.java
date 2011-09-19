@@ -26,7 +26,7 @@ public class PoolableCallableStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         raw = new MockCallableStatement(null, null);
-        stmt = new PoolableCallableStatement(null, raw, null) {
+        stmt = new PoolableCallableStatement(null, raw, null, null) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {

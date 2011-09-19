@@ -96,7 +96,7 @@ public class PreparedStatementKeyTest extends TestCase {
     public void test_contains() throws Exception {
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
         PreparedStatementPool pool = new PreparedStatementPool();
-        pool.put(new PoolablePreparedStatement(null, null, k1));
+        pool.put(new PoolablePreparedStatement(null, null, k1, null));
         Assert.assertTrue(pool.get(k1) != null);
         Assert.assertTrue(pool.get(k1) == null);
     }

@@ -173,7 +173,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -208,7 +208,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -242,7 +242,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -274,7 +274,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -306,7 +306,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -338,7 +338,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key);
+        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -373,7 +373,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
+        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -406,7 +406,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
+        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -439,7 +439,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key);
+        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
         holder.addTrace(rtnVal);
 
         return rtnVal;

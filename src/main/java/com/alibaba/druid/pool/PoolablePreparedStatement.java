@@ -45,11 +45,18 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
     private PreparedStatement          stmt;
     private final PreparedStatementKey key;
+    private final String               sql;
 
-    public PoolablePreparedStatement(PoolableConnection conn, PreparedStatement stmt, PreparedStatementKey key){
+    public PoolablePreparedStatement(PoolableConnection conn, PreparedStatement stmt, PreparedStatementKey key,
+                                     String sql){
         super(conn, stmt);
         this.stmt = stmt;
         this.key = key;
+        this.sql = sql;
+    }
+
+    public String getSql() {
+        return sql;
     }
 
     public PreparedStatementKey getKey() {
@@ -84,6 +91,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public ResultSet executeQuery() throws SQLException {
         checkOpen();
+        
+        transactionRecord(sql);
 
         try {
             ResultSet rs = stmt.executeQuery();
@@ -100,6 +109,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public int executeUpdate() throws SQLException {
         checkOpen();
+        
+        transactionRecord(sql);
 
         try {
             return stmt.executeUpdate();
@@ -332,6 +343,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public boolean execute() throws SQLException {
         checkOpen();
+        
+        transactionRecord(sql);
 
         try {
             return stmt.execute();
@@ -349,6 +362,12 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         } catch (Throwable t) {
             throw checkException(t);
         }
+    }
+    
+    public int[] executeBatch() throws SQLException {
+        transactionRecord(sql);
+        
+        return super.executeBatch();
     }
 
     @Override

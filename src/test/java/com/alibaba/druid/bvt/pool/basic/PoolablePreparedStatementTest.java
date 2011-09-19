@@ -22,7 +22,7 @@ public class PoolablePreparedStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         raw = new MockPreparedStatement(null, null);
-        stmt = new PoolablePreparedStatement(null, raw, null) {
+        stmt = new PoolablePreparedStatement(null, raw, null, null) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
