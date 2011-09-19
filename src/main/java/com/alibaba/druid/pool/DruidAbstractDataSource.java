@@ -55,6 +55,7 @@ import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -172,6 +173,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                        breakAfterAcquireFailure                  = false;
 
+    protected long                                                                           transactionThresholdMillis                = 0L;
+
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
@@ -186,7 +189,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }
-    
+
+    public long getTransactionThresholdMillis() {
+        return transactionThresholdMillis;
+    }
+
+    public void setTransactionThresholdMillis(long transactionThresholdMillis) {
+        this.transactionThresholdMillis = transactionThresholdMillis;
+    }
+
+    public abstract void logTransaction(TransactionInfo info);
+
     public long[] getTransactionHistogramValues() {
         return transactionHistogram.toArray();
     }
@@ -1358,5 +1371,5 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public abstract int getRawDriverMinorVersion();
 
     public abstract String getProperties();
-    
+
 }

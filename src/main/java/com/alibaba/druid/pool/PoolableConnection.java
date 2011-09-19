@@ -627,9 +627,18 @@ public class PoolableConnection implements PooledConnection, Connection {
     private void handleEndTransaction() {
         if (transactionInfo != null) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
-            
-            long transactionMillis = System.currentTimeMillis() - transactionInfo.getStartTimeMillis();
+
+            long currentTimeMillis = System.currentTimeMillis();
+            transactionInfo.setEndTimeMillis(currentTimeMillis);
+
+            long transactionMillis = currentTimeMillis - transactionInfo.getStartTimeMillis();
             dataSource.getTransactionHistogram().recode(transactionMillis);
+
+            final long transactionThresholdMillis = dataSource.getTransactionThresholdMillis();
+            if (transactionThresholdMillis > 0 && transactionMillis > transactionThresholdMillis) {
+
+            }
+
             transactionInfo = null;
         }
     }

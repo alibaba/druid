@@ -17,6 +17,7 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -52,6 +53,7 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
@@ -127,7 +129,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-        
+
         commitCount.set(0);
         rollbackCount.set(0);
         startTransactionCount.set(0);
@@ -149,7 +151,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public boolean isInited() {
         return this.inited;
     }
@@ -239,7 +241,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
                 this.exceptionSorter = new SybaseExceptionSorter();
-                
+
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             }
@@ -1036,7 +1038,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int getLockQueueLength() {
         return lock.getQueueLength();
     }
-    
+
     public String dump() {
         lock.lock();
         try {
@@ -1089,6 +1091,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("\n}");
 
         return buf.toString();
+    }
+
+    public void logTransaction(TransactionInfo info) {
+        long transactionMillis = info.getEndTimeMillis() - info.getStartTimeMillis();
+        if (transactionThresholdMillis > 0 && transactionMillis > transactionThresholdMillis) {
+            StringBuilder buf = new StringBuilder();
+            buf.append("long time transaction, take ");
+            buf.append(transactionMillis);
+            buf.append(" ms : ");
+            for (String sql : info.getSqlList()) {
+                buf.append(sql);
+                buf.append(";");
+            }
+            LOG.error(buf.toString(), new SQLTimeoutException());
+        }
     }
 
     @Override

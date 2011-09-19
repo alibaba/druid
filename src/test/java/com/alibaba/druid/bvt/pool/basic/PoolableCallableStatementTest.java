@@ -49,6 +49,7 @@ public class PoolableCallableStatementTest extends TestCase {
         Assert.assertEquals(raw, stmt.getCallableStatementRaw());
     }
 
+    @SuppressWarnings("deprecation")
     public void test_callableStmt() throws Exception {
 
         Assert.assertTrue(stmt.wasNull() == false);
@@ -263,6 +264,7 @@ public class PoolableCallableStatementTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void test_get_error() {
         {
             SQLException error = null;
