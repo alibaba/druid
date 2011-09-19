@@ -41,9 +41,9 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
         
-        Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
+        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
-        Assert.assertTrue(dataSource.getExceptionSoter() instanceof NullExceptionSorter);
+        Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
     }
 
     protected void tearDown() throws Exception {

@@ -225,23 +225,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             String realDriverClassName = driver.getClass().getName();
             if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
                 this.validConnectionChecker = new MySqlValidConnectionChecker();
-                this.exceptionSoter = new MySqlExceptionSorter();
+                this.exceptionSorter = new MySqlExceptionSorter();
 
             } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
                 this.validConnectionChecker = new OracleValidConnectionChecker();
-                this.exceptionSoter = new OracleExceptionSorter();
+                this.exceptionSorter = new OracleExceptionSorter();
 
             } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
                 this.validConnectionChecker = new MSSQLValidConnectionChecker();
 
             } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
-                this.exceptionSoter = new InformixExceptionSorter();
+                this.exceptionSorter = new InformixExceptionSorter();
 
             } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
-                this.exceptionSoter = new SybaseExceptionSorter();
+                this.exceptionSorter = new SybaseExceptionSorter();
                 
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
-                this.exceptionSoter = new MockExceptionSorter();
+                this.exceptionSorter = new MockExceptionSorter();
             }
 
             for (Filter filter : filters) {
@@ -439,7 +439,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             // exceptionSorter.isExceptionFatal
-            if (exceptionSoter != null && exceptionSoter.isExceptionFatal(sqlEx)) {
+            if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
                 this.discardConnection(holder.getConnection());
                 pooledConnection.disable();
             }

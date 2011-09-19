@@ -122,7 +122,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                                                          System.out);
 
     protected List<Filter>                                                                   filters                                   = new ArrayList<Filter>();
-    protected ExceptionSorter                                                                exceptionSoter                            = null;
+    protected ExceptionSorter                                                                exceptionSorter                            = null;
 
     protected Driver                                                                         driver;
 
@@ -736,12 +736,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.driver = driver;
     }
 
-    public ExceptionSorter getExceptionSoter() {
-        return exceptionSoter;
+    public ExceptionSorter getExceptionSorter() {
+        return exceptionSorter;
     }
 
-    public void setExceptionSoter(ExceptionSorter exceptionSoter) {
-        this.exceptionSoter = exceptionSoter;
+    public void setExceptionSorter(ExceptionSorter exceptionSoter) {
+        this.exceptionSorter = exceptionSoter;
     }
 
     // 兼容JBOSS
@@ -751,18 +751,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void setExceptionSorter(String exceptionSorter) throws Exception {
         if (exceptionSorter == null) {
-            this.exceptionSoter = NullExceptionSorter.getInstance();
+            this.exceptionSorter = NullExceptionSorter.getInstance();
             return;
         }
 
         exceptionSorter = exceptionSorter.trim();
         if (exceptionSorter.length() == 0) {
-            this.exceptionSoter = NullExceptionSorter.getInstance();
+            this.exceptionSorter = NullExceptionSorter.getInstance();
             return;
         }
 
         Class<?> clazz = DruidLoaderUtils.loadClass(exceptionSorter);
-        this.exceptionSoter = (ExceptionSorter) clazz.newInstance();
+        this.exceptionSorter = (ExceptionSorter) clazz.newInstance();
     }
 
     @Override
