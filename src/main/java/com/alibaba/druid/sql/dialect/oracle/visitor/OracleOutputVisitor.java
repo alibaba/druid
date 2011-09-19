@@ -73,7 +73,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableTypeDef;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleColumnItem;
@@ -651,21 +650,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleTableTypeDef x) {
-        print("AS TABLE OF ");
-        x.getName().accept(this);
-
-        if (x.isType()) {
-            print("%TYPE");
-        }
-
-        if (x.isNotNull()) {
-            print(" NOT NULL");
-        }
-
-        return false;
-    }
-
     public boolean visit(OracleTimestampExpr x) {
         print("TIMESTAMP '");
 
@@ -888,11 +872,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleTableExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleTableTypeDef x) {
 
     }
 

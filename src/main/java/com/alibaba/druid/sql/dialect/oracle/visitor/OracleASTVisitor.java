@@ -56,7 +56,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableTypeDef;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleColumnItem;
@@ -123,8 +122,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleTableCollectionExpr x);
 
     void endVisit(OracleTableExpr x);
-
-    void endVisit(OracleTableTypeDef x);
 
     void endVisit(OracleTimestampExpr x);
 
@@ -195,8 +192,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleTableCollectionExpr x);
 
     boolean visit(OracleTableExpr x);
-
-    boolean visit(OracleTableTypeDef x);
 
     boolean visit(OracleTimestampExpr x);
 
