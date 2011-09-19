@@ -56,20 +56,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.AddColumnClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.AddConstraint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.DeallocateClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.DropColumn;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.EnableClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.EnableTrigger;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyCollectionRetrieval;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyColumnClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyConstaint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.NoParallelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ParallelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.RenameColumn;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.RenameConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
@@ -949,198 +935,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleAlterTableStatement.AddColumnClause x) {
-        print("ADD (");
-        printAndAccept(x.getColumns(), ", ");
-        print(")");
-
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.ModifyCollectionRetrieval x) {
-        print("MODIFY NESTED TABLE ");
-        x.getCollectionItem().accept(this);
-        print(" RETURN AS ");
-        print(x.getReturnAs().name());
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.NoParallelClause x) {
-        print("NOPARALLEL");
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.ParallelClause x) {
-        print("PARALLEL");
-        if (x.getValue() != null) {
-            print(" ");
-            x.getValue().accept(this);
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.EnableClause x) {
-        if (x.isEnable()) print("ENABLE");
-        else {
-            print("DISABLE");
-        }
-
-        if (x.getValidate() != null) {
-            if (x.getValidate().booleanValue()) print(" VALIDATE");
-            else {
-                print(" NOVALIDATE");
-            }
-        }
-
-        print(" ");
-        print(x.getType().name());
-
-        if (x.getType().equals(OracleAlterTableStatement.ConstraintType.UNIQUE)) {
-            print("(");
-            printAndAccept(x.getColumns(), ", ");
-            print(")");
-        } else if (x.getType().equals(OracleAlterTableStatement.ConstraintType.CONSTAINT)) {
-            print(" ");
-            x.getConstraintName().accept(this);
-        }
-
-        if (x.getUsingIndex() != null) {
-            print(" ");
-            x.getUsingIndex().accept(this);
-        }
-
-        if (x.getExceptions() != null) {
-            print(" EXCEPTIONS INTO ");
-            x.getExceptions().accept(this);
-        }
-
-        if (x.isCascade()) {
-            print(" CASCADE");
-        }
-
-        if (x.getIndexType() != null) {
-            print(" ");
-            print(x.getIndexType().toFormalString());
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement x) {
-        print("ALTER TABLE ");
-        x.getTable().accept(this);
-        if (x.getNode() != null) {
-            incrementIndent();
-            println();
-            x.getNode().accept(this);
-            decrementIndent();
-        }
-
-        if (x.getEnableClauses().size() > 0) {
-            incrementIndent();
-            int i = 0;
-            for (int size = x.getEnableClauses().size(); i < size; ++i) {
-                println();
-                ((OracleAlterTableStatement.EnableClause) x.getEnableClauses().get(i)).accept(this);
-            }
-            decrementIndent();
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.ModifyConstaint x) {
-        print("MODIFY ");
-        print(x.getType().toFormalString());
-
-        if (x.getType().equals(OracleAlterTableStatement.ConstraintType.UNIQUE)) {
-            print("(");
-            printAndAccept(x.getColumns(), ", ");
-            print(")");
-        } else if (x.getType().equals(OracleAlterTableStatement.ConstraintType.CONSTAINT)) {
-            print(" ");
-            x.getConstraintName().accept(this);
-        }
-
-        if (x.getState() != null) {
-            print(" ");
-            x.getState().accept(this);
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.AddConstraint x) {
-        print("ADD ");
-        printAndAccept(x.getConstraints(), " ");
-        return false;
-    }
-
-    public boolean visit(OracleConstraintState x) {
-        printlnAndAccept(x.getStates(), " ");
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.RenameConstaint x) {
-        print("RENAME CONSTRAINT ");
-        x.getOldName().accept(this);
-        print(" TO ");
-        x.getNewName().accept(this);
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.EnableTrigger x) {
-        if (x.isEnable()) {
-            print("ENABLE ALL TRIGGERS");
-        } else {
-            print("DISABLE ALL TRIGGERS");
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.DeallocateClause x) {
-        print("DEALLOCATE UNUSED");
-        if (x.getKeep() != null) {
-            print(" KEEP ");
-            x.getKeep().accept(this);
-        }
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.RenameColumn x) {
-        print("RENAME COLUMN ");
-        x.getOldName().accept(this);
-        print(" TO ");
-        x.getNewName().accept(this);
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.DropColumn x) {
-        print("DROP (");
-        printAndAccept(x.getColumns(), ", ");
-        print(")");
-
-        if (x.isCascade()) {
-            print(" CASCADE CONSTRAINTS");
-        }
-
-        if (x.isInvlidate()) {
-            print(" INVALIDATE");
-        }
-
-        if (x.getCheckPoint() != null) {
-            print(" CHECKPOINT ");
-            x.getCheckPoint().accept(this);
-        }
-
-        return false;
-    }
-
-    public boolean visit(OracleAlterTableStatement.ModifyColumnClause x) {
-        print("MODIFY (");
-        printAndAccept(x.getColumns(), ", ");
-        print(")");
-
-        return false;
-    }
-
     // ///////////////////
 
     @Override
@@ -1149,77 +943,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(ModifyColumnClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(DropColumn astNode) {
-
-    }
-
-    @Override
-    public void endVisit(RenameColumn astNode) {
-
-    }
-
-    @Override
-    public void endVisit(DeallocateClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(EnableTrigger astNode) {
-
-    }
-
-    @Override
-    public void endVisit(RenameConstaint astNode) {
-
-    }
-
-    @Override
-    public void endVisit(AddConstraint astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ModifyConstaint astNode) {
-
-    }
-
-    @Override
     public void endVisit(OracleConstraintState astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableStatement astNode) {
-
-    }
-
-    @Override
-    public void endVisit(EnableClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ParallelClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(NoParallelClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ModifyCollectionRetrieval astNode) {
-
-    }
-
-    @Override
-    public void endVisit(AddColumnClause astNode) {
 
     }
 
@@ -1676,6 +1400,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleSelect x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleConstraintState x) {
+        printlnAndAccept(x.getStates(), " ");
+        return false;
     }
 
 }

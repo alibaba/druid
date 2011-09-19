@@ -43,7 +43,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
@@ -78,35 +77,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAggregateExpr astNode);
 
-    void endVisit(OracleAlterTableStatement.ModifyColumnClause astNode);
-
-    void endVisit(OracleAlterTableStatement.DropColumn astNode);
-
-    void endVisit(OracleAlterTableStatement.RenameColumn astNode);
-
-    void endVisit(OracleAlterTableStatement.DeallocateClause astNode);
-
-    void endVisit(OracleAlterTableStatement.EnableTrigger astNode);
-
-    void endVisit(OracleAlterTableStatement.RenameConstaint astNode);
-
-    void endVisit(OracleAlterTableStatement.AddConstraint astNode);
-
-    void endVisit(OracleAlterTableStatement.ModifyConstaint astNode);
-
     void endVisit(OracleConstraintState astNode);
-
-    void endVisit(OracleAlterTableStatement astNode);
-
-    void endVisit(OracleAlterTableStatement.EnableClause astNode);
-
-    void endVisit(OracleAlterTableStatement.ParallelClause astNode);
-
-    void endVisit(OracleAlterTableStatement.NoParallelClause astNode);
-
-    void endVisit(OracleAlterTableStatement.ModifyCollectionRetrieval astNode);
-
-    void endVisit(OracleAlterTableStatement.AddColumnClause astNode);
 
     void endVisit(OracleForeignKey astNode);
 
@@ -196,35 +167,7 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     boolean visit(OracleAggregateExpr astNode);
 
-    boolean visit(OracleAlterTableStatement.ModifyColumnClause astNode);
-
-    boolean visit(OracleAlterTableStatement.DropColumn astNode);
-
-    boolean visit(OracleAlterTableStatement.RenameColumn astNode);
-
-    boolean visit(OracleAlterTableStatement.DeallocateClause astNode);
-
-    boolean visit(OracleAlterTableStatement.EnableTrigger astNode);
-
-    boolean visit(OracleAlterTableStatement.RenameConstaint astNode);
-
-    boolean visit(OracleAlterTableStatement.AddConstraint astNode);
-
-    boolean visit(OracleAlterTableStatement.ModifyConstaint astNode);
-
     boolean visit(OracleConstraintState astNode);
-
-    boolean visit(OracleAlterTableStatement astNode);
-
-    boolean visit(OracleAlterTableStatement.EnableClause astNode);
-
-    boolean visit(OracleAlterTableStatement.ParallelClause astNode);
-
-    boolean visit(OracleAlterTableStatement.NoParallelClause astNode);
-
-    boolean visit(OracleAlterTableStatement.ModifyCollectionRetrieval astNode);
-
-    boolean visit(OracleAlterTableStatement.AddColumnClause astNode);
 
     boolean visit(OracleForeignKey astNode);
 

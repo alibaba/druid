@@ -29,20 +29,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.AddColumnClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.AddConstraint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.DeallocateClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.DropColumn;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.EnableClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.EnableTrigger;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyCollectionRetrieval;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyColumnClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ModifyConstaint;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.NoParallelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.ParallelClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.RenameColumn;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement.RenameConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCheck;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintNull;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
@@ -90,77 +76,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public void endVisit(ModifyColumnClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(DropColumn astNode) {
-
-    }
-
-    @Override
-    public void endVisit(RenameColumn astNode) {
-
-    }
-
-    @Override
-    public void endVisit(DeallocateClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(EnableTrigger astNode) {
-
-    }
-
-    @Override
-    public void endVisit(RenameConstaint astNode) {
-
-    }
-
-    @Override
-    public void endVisit(AddConstraint astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ModifyConstaint astNode) {
-
-    }
-
-    @Override
     public void endVisit(OracleConstraintState astNode) {
-
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableStatement astNode) {
-
-    }
-
-    @Override
-    public void endVisit(EnableClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ParallelClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(NoParallelClause astNode) {
-
-    }
-
-    @Override
-    public void endVisit(ModifyCollectionRetrieval astNode) {
-
-    }
-
-    @Override
-    public void endVisit(AddColumnClause astNode) {
 
     }
 
@@ -386,91 +302,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(ModifyColumnClause astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(DropColumn astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(RenameColumn astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(DeallocateClause astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(EnableTrigger astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(RenameConstaint astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(AddConstraint astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(ModifyConstaint astNode) {
-
-        return true;
-    }
-
-    @Override
     public boolean visit(OracleConstraintState astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleAlterTableStatement astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(EnableClause astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(ParallelClause astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(NoParallelClause astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(ModifyCollectionRetrieval astNode) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(AddColumnClause astNode) {
 
         return true;
     }
