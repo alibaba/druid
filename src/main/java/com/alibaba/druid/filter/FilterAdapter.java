@@ -801,14 +801,14 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     @Override
     public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
                                                      int resultSetConcurrency) throws SQLException {
-        return chain.connection_createStatement(connection, resultSetType, resultSetType);
+        return chain.connection_createStatement(connection, resultSetType, resultSetConcurrency);
     }
 
     @Override
     public StatementProxy connection_createStatement(FilterChain chain, ConnectionProxy connection, int resultSetType,
                                                      int resultSetConcurrency, int resultSetHoldability)
                                                                                                         throws SQLException {
-        return chain.connection_createStatement(connection, resultSetType, resultSetType, resultSetHoldability);
+        return chain.connection_createStatement(connection, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
 
     @Override
