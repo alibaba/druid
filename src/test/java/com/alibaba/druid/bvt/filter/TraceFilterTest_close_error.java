@@ -55,7 +55,7 @@ public class TraceFilterTest_close_error extends TestCase {
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
-    public void test_exuecute() throws Exception {
+    public void test_close_error() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
         
         MockConnection conn = new MockConnection() {
@@ -74,5 +74,26 @@ public class TraceFilterTest_close_error extends TestCase {
             Assert.assertNotNull(error);
         }
 
+    }
+    
+    public void test_close_error_2() throws Exception {
+        FilterChainImpl chain = new FilterChainImpl(dataSource);
+        
+        MockConnection conn = new MockConnection() {
+            public void close() throws SQLException {
+                throw new RuntimeException();
+            }
+        };
+        
+        {
+            Exception error = null;
+            try {
+                filter.connection_close(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0));
+            } catch (Exception ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
     }
 }
