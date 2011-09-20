@@ -423,7 +423,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
     public boolean isPoolable() throws SQLException {
         return false;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -434,7 +434,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         if (iface.isInstance(this)) {
             return (T) this;
         }
-        
+
         if (stmt != null) {
             return stmt.unwrap(iface);
         }
@@ -442,4 +442,11 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         return null;
     }
 
+    public Boolean isEscapeProcessing() {
+        return escapeProcessing;
+    }
+
+    public String getCursorName() {
+        return cursorName;
+    }
 }

@@ -50,6 +50,14 @@ public class HADataSourceTest extends TestCase {
         {
             MultiDataSourceStatement dsStmt = stmt.unwrap(MultiDataSourceStatement.class);
             Assert.assertTrue(dsStmt.getId() > 0);
+
+            Assert.assertEquals(100, stmt.getMaxFieldSize());
+            Assert.assertEquals(201, stmt.getMaxRows());
+            Assert.assertEquals(true, dsStmt.isEscapeProcessing().booleanValue());
+            Assert.assertEquals(101, stmt.getQueryTimeout());
+            Assert.assertEquals("cName", dsStmt.getCursorName());
+            Assert.assertEquals(ResultSet.FETCH_REVERSE, stmt.getFetchDirection());
+            Assert.assertEquals(202, stmt.getFetchSize());
         }
 
         ResultSet rs = stmt.executeQuery("SELECT 1");
@@ -63,6 +71,19 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals("cName", mockStmt.getCursorName());
         Assert.assertEquals(ResultSet.FETCH_REVERSE, mockStmt.getFetchDirection());
         Assert.assertEquals(202, mockStmt.getFetchSize());
+        
+        {
+            MultiDataSourceStatement dsStmt = stmt.unwrap(MultiDataSourceStatement.class);
+            Assert.assertTrue(dsStmt.getId() > 0);
+
+            Assert.assertEquals(100, stmt.getMaxFieldSize());
+            Assert.assertEquals(201, stmt.getMaxRows());
+            Assert.assertEquals(true, dsStmt.isEscapeProcessing().booleanValue());
+            Assert.assertEquals(101, stmt.getQueryTimeout());
+            Assert.assertEquals("cName", dsStmt.getCursorName());
+            Assert.assertEquals(ResultSet.FETCH_REVERSE, stmt.getFetchDirection());
+            Assert.assertEquals(202, stmt.getFetchSize());
+        }
 
         stmt.close();
 
