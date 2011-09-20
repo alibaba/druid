@@ -34,7 +34,7 @@ public class OracleOutputVisitorTest_delete extends TestCase {
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("DELETE FROM employee WHERE id = 3;\n", buf.toString());
+        Assert.assertEquals("DELETE FROM employee\nWHERE id = 3;\n", buf.toString());
 
     }
 }

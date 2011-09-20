@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleDeleteStatement extends SQLDeleteStatement {
 
@@ -36,6 +37,10 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
 
     public List<OracleHint> getHints() {
         return this.hints;
+    }
+    
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
     }
 
     protected void accept0(OracleASTVisitor visitor) {
