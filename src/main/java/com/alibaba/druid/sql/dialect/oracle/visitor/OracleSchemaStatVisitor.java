@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -94,8 +95,9 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(OracleSelectTableReference x) {
-        if (x.getExpr() instanceof SQLName) {
-            String ident = ((SQLName) x.getExpr()).toString();
+        SQLExpr expr = x.getExpr();
+        if (expr instanceof SQLName) {
+            String ident = ((SQLName) expr).toString();
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
@@ -355,8 +357,8 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
 
         if (x.getFrom() instanceof SQLExprTableSource) {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
-            if (tableSource.getExpr() instanceof SQLIdentifierExpr) {
-                String ident = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
+            if (tableSource.getExpr() instanceof SQLName) {
+                String ident = ((SQLName) tableSource.getExpr()).toString();
                 currentTableLocal.set(ident);
                 x.putAttribute("_old_local_", originalTable);
             }
