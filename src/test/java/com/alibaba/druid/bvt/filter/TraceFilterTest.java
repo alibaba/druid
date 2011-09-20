@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.filter;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +16,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.stat.JdbcTraceManager;
 
 public class TraceFilterTest extends TestCase {
 
@@ -75,6 +76,35 @@ public class TraceFilterTest extends TestCase {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT ?");
         stmt.setInt(1, 123);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        rs.close();
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_set() throws Exception {
+        Connection conn = dataSource.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("SELECT ?");
+        stmt.setInt(1, 123);
+        stmt.setArray(1, null);
+        stmt.setAsciiStream(1, null);
+        stmt.setAsciiStream(1, null, 0);
+        stmt.setAsciiStream(1, null, 0L);
+        stmt.setBigDecimal(1, null);
+        stmt.setBinaryStream(1, null);
+        stmt.setBinaryStream(1, null, 0);
+        stmt.setBinaryStream(1, null, 0L);
+        stmt.setBlob(1, (Blob) null);
+        stmt.setBlob(1, (InputStream) null);
+        stmt.setBlob(1, (InputStream) null, 0);
+        stmt.setBoolean(1, true);
+        stmt.setByte(1, (byte) 12);
+        stmt.setBytes(1, null);
+        stmt.setCharacterStream(1, null);
+        stmt.setCharacterStream(1, null, 0);
+        stmt.setCharacterStream(1, null, 0L);
+        
         ResultSet rs = stmt.executeQuery();
         rs.next();
         rs.close();
