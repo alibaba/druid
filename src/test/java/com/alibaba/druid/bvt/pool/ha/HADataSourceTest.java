@@ -22,9 +22,11 @@ public class HADataSourceTest extends TestCase {
     protected void setUp() throws Exception {
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:x1");
+        dataSourceA.setFilters("trace");
 
         dataSourceB = new DruidDataSource();
         dataSourceB.setUrl("jdbc:mock:x1");
+        dataSourceB.setFilters("stat");
 
         dataSourceHA = new HADataSource();
         dataSourceHA.addDataSource(dataSourceA);
@@ -71,7 +73,7 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals("cName", mockStmt.getCursorName());
         Assert.assertEquals(ResultSet.FETCH_REVERSE, mockStmt.getFetchDirection());
         Assert.assertEquals(202, mockStmt.getFetchSize());
-        
+
         {
             MultiDataSourceStatement dsStmt = stmt.unwrap(MultiDataSourceStatement.class);
             Assert.assertTrue(dsStmt.getId() > 0);
@@ -145,6 +147,52 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, stmt.getResultSetConcurrency());
         Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, stmt.getResultSetHoldability());
 
+        stmt.close();
+
+        conn.close();
+    }
+
+    public void test_createStatement_4() throws Exception {
+        Connection conn = dataSourceHA.getConnection();
+
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
+                                              ResultSet.CLOSE_CURSORS_AT_COMMIT);
+        stmt.executeUpdate("SET @user = 'xxx'");
+
+        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, mockStmt.getResultSetType());
+        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
+        Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, stmt.getResultSetType());
+        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, stmt.getResultSetConcurrency());
+        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, stmt.getResultSetHoldability());
+
+        stmt.close();
+
+        conn.close();
+    }
+
+    public void test_close() throws Exception {
+        Connection conn = dataSourceHA.getConnection();
+
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
+                                              ResultSet.CLOSE_CURSORS_AT_COMMIT);
+
+        stmt.getMaxFieldSize();
+        stmt.getMaxRows();
+        stmt.cancel();
+        stmt.getWarnings();
+        stmt.clearWarnings();
+        stmt.getResultSet();
+        stmt.getUpdateCount();
+        stmt.getMoreResults();
+        stmt.getMoreResults(1);
+        stmt.getResultSetConcurrency();
+        stmt.getResultSetHoldability();
+        stmt.getResultSetType();
+        stmt.getConnection();
+        stmt.getGeneratedKeys();
+        stmt.isClosed();
         stmt.close();
 
         conn.close();
