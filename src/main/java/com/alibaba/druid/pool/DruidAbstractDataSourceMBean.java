@@ -113,4 +113,8 @@ public interface DruidAbstractDataSourceMBean {
     String getValidConnectionCheckerClassName();
     
     long[] getTransactionHistogramValues();
+    
+    void setTransactionThresholdMillis(long transactionThresholdMillis);
+    
+    long getTransactionThresholdMillis();
 }
