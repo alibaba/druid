@@ -1,11 +1,15 @@
 package com.alibaba.druid.bvt.filter;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.Connection;
+import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Types;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -101,9 +105,36 @@ public class TraceFilterTest extends TestCase {
         stmt.setBoolean(1, true);
         stmt.setByte(1, (byte) 12);
         stmt.setBytes(1, null);
+        
         stmt.setCharacterStream(1, null);
         stmt.setCharacterStream(1, null, 0);
         stmt.setCharacterStream(1, null, 0L);
+        
+        stmt.setClob(1, (Clob) null);
+        stmt.setClob(1, (Reader) null);
+        stmt.setClob(1, (Reader) null, 1);
+        
+        stmt.setDate(1, null);
+        stmt.setDate(1, null, null);
+        
+        stmt.setDouble(1, 1D);
+        stmt.setFloat(1, 1F);
+        stmt.setLong(1, 1L);
+        
+        stmt.setNCharacterStream(1, null);
+        stmt.setNCharacterStream(1, null, 0);
+        
+        stmt.setNClob(1, (NClob) null);
+        stmt.setNClob(1, (Reader) null);
+        stmt.setNClob(1, (Reader) null, 1);
+        
+        stmt.setNull(1, Types.INTEGER);
+        stmt.setNull(1, Types.INTEGER, "int");
+        stmt.setObject(1, null);
+        stmt.setObject(1, null, Types.INTEGER);
+        stmt.setObject(1, null, Types.INTEGER, 2);
+        
+        stmt.setRef(1, null);
         
         ResultSet rs = stmt.executeQuery();
         rs.next();
