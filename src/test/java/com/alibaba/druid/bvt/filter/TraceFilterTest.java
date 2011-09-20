@@ -135,8 +135,20 @@ public class TraceFilterTest extends TestCase {
         stmt.setObject(1, null, Types.INTEGER, 2);
         
         stmt.setRef(1, null);
+        stmt.setRowId(1, null);
+        stmt.setShort(1, (short) 1);
+        stmt.setSQLXML(1, null);
+        stmt.setString(1, null);
+        stmt.setTime(1, null);
+        stmt.setTime(1, null, null);
+        stmt.setTimestamp(1, null);
+        stmt.setTimestamp(1, null, null);
+        stmt.setUnicodeStream(1, null, 0);
+        stmt.setURL(1, null);
         
         ResultSet rs = stmt.executeQuery();
+        rs.next();
+        rs.previous();
         rs.next();
         rs.close();
         stmt.close();
