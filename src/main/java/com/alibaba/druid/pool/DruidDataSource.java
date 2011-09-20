@@ -556,7 +556,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             for (int i = 0; i < poolingCount; ++i) {
                 try {
-                    connections[i].getConnection().close();
+                    JdbcUtils.close(connections[i].getConnection());
                     connections[i] = null;
                     destroyCount++;
                 } catch (Exception ex) {
