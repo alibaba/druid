@@ -423,5 +423,23 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
     public boolean isPoolable() throws SQLException {
         return false;
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == null) {
+            return null;
+        }
+
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        
+        if (stmt != null) {
+            return stmt.unwrap(iface);
+        }
+
+        return null;
+    }
 
 }
