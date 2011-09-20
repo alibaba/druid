@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HADataSource;
+import com.alibaba.druid.pool.ha.MultiDataSourceStatement;
 
 public class HADataSourceTest extends TestCase {
 
@@ -34,18 +35,41 @@ public class HADataSourceTest extends TestCase {
         dataSourceHA.close();
     }
 
-    public void test_0() throws Exception {
+    public void test_createStatement_0() throws Exception {
         Connection conn = dataSourceHA.getConnection();
 
         Statement stmt = conn.createStatement();
+
+        stmt.setMaxFieldSize(100);
+        stmt.setMaxRows(201);
+        stmt.setEscapeProcessing(true);
+        stmt.setQueryTimeout(101);
+        stmt.setCursorName("cName");
+        stmt.setFetchDirection(ResultSet.FETCH_REVERSE);
+        stmt.setFetchSize(202);
+        {
+            MultiDataSourceStatement dsStmt = stmt.unwrap(MultiDataSourceStatement.class);
+            Assert.assertTrue(dsStmt.getId() > 0);
+        }
+
         ResultSet rs = stmt.executeQuery("SELECT 1");
         rs.close();
+
+        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Assert.assertEquals(100, mockStmt.getMaxFieldSize());
+        Assert.assertEquals(201, mockStmt.getMaxRows());
+        Assert.assertEquals(true, mockStmt.isEscapeProcessing());
+        Assert.assertEquals(101, mockStmt.getQueryTimeout());
+        Assert.assertEquals("cName", mockStmt.getCursorName());
+        Assert.assertEquals(ResultSet.FETCH_REVERSE, mockStmt.getFetchDirection());
+        Assert.assertEquals(202, mockStmt.getFetchSize());
+
         stmt.close();
 
         conn.close();
     }
 
-    public void test_1() throws Exception {
+    public void test_createStatement_1() throws Exception {
         Connection conn = dataSourceHA.getConnection();
 
         Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -57,19 +81,20 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
         Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, stmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, stmt.getResultSetConcurrency());
+
         stmt.close();
 
         conn.close();
     }
 
-    public void test_2() throws Exception {
+    public void test_createStatement_2() throws Exception {
         Connection conn = dataSourceHA.getConnection();
 
         Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
                                               ResultSet.CLOSE_CURSORS_AT_COMMIT);
         ResultSet rs = stmt.executeQuery("SELECT 1");
         rs.close();
-        
+
         MockStatement mockStmt = stmt.unwrap(MockStatement.class);
         Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, mockStmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
@@ -77,7 +102,28 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, stmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, stmt.getResultSetConcurrency());
         Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, stmt.getResultSetHoldability());
-        
+
+        stmt.close();
+
+        conn.close();
+    }
+
+    public void test_createStatement_3() throws Exception {
+        Connection conn = dataSourceHA.getConnection();
+
+        Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE,
+                                              ResultSet.CLOSE_CURSORS_AT_COMMIT);
+        ResultSet rs = stmt.executeQuery("SELECT 1");
+        rs.close();
+
+        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, mockStmt.getResultSetType());
+        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
+        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, mockStmt.getResultSetHoldability());
+        Assert.assertEquals(ResultSet.TYPE_SCROLL_INSENSITIVE, stmt.getResultSetType());
+        Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, stmt.getResultSetConcurrency());
+        Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, stmt.getResultSetHoldability());
+
         stmt.close();
 
         conn.close();

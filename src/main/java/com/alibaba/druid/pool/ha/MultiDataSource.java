@@ -25,7 +25,7 @@ public abstract class MultiDataSource extends DataSourceAdapter {
     }
 
     public int createStatementId() {
-        return statementIdSeed.getAndIncrement();
+        return statementIdSeed.incrementAndGet();
     }
 
     public abstract List<DruidDataSource> getDataSources();
