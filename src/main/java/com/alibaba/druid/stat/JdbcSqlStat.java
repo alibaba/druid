@@ -21,11 +21,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.management.JMException;
+import javax.management.openmbean.ArrayType;
 import javax.management.openmbean.CompositeDataSupport;
 import javax.management.openmbean.CompositeType;
 import javax.management.openmbean.OpenType;
 import javax.management.openmbean.SimpleType;
 
+import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -60,29 +62,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
 
-    private AtomicLong       count_0_1_Millis      = new AtomicLong();
-    private AtomicLong       count_1_2_Millis      = new AtomicLong();
-    private AtomicLong       count_2_5_Millis      = new AtomicLong();
-    private AtomicLong       count_5_10_Millis     = new AtomicLong();
-    private AtomicLong       count_10_20_Millis    = new AtomicLong();
-
-    private AtomicLong       count_20_50_Millis    = new AtomicLong();
-    private AtomicLong       count_50_100_Millis   = new AtomicLong();
-    private AtomicLong       count_100_200_Millis  = new AtomicLong();
-    private AtomicLong       count_200_500_Millis  = new AtomicLong();
-    private AtomicLong       count_500_1000_Millis = new AtomicLong();
-
-    private AtomicLong       count_1_2_Seconds     = new AtomicLong();
-    private AtomicLong       count_2_5_Seconds     = new AtomicLong();
-    private AtomicLong       count_5_10_Seconds    = new AtomicLong();
-    private AtomicLong       count_10_30_Seconds   = new AtomicLong();
-    private AtomicLong       count_30_60_Seconds   = new AtomicLong();
-
-    private AtomicLong       count_1_2_minutes     = new AtomicLong();
-    private AtomicLong       count_2_5_minutes     = new AtomicLong();
-    private AtomicLong       count_5_10_minutes    = new AtomicLong();
-    private AtomicLong       count_10_30_minutes   = new AtomicLong();
-    private AtomicLong       count_30_more_minutes = new AtomicLong();
+    private final Histogram  histogram             = new Histogram(new long[] { //
+                                                                                //
+            4, 15, 60, 250, // 
+            1000, 4 * 1000, 15 * 1000, 60 * 1000, 250 * 1000
+                                                                   });
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
@@ -180,29 +164,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         updateCount.set(0);
         fetchRowCount.set(0);
 
-        count_0_1_Millis.set(0);
-        count_1_2_Millis.set(0);
-        count_2_5_Millis.set(0);
-        count_5_10_Millis.set(0);
-        count_10_20_Millis.set(0);
-
-        count_20_50_Millis.set(0);
-        count_50_100_Millis.set(0);
-        count_100_200_Millis.set(0);
-        count_200_500_Millis.set(0);
-        count_500_1000_Millis.set(0);
-
-        count_1_2_Seconds.set(0);
-        count_2_5_Seconds.set(0);
-        count_5_10_Seconds.set(0);
-        count_10_30_Seconds.set(0);
-        count_30_60_Seconds.set(0);
-
-        count_1_2_minutes.set(0);
-        count_2_5_minutes.set(0);
-        count_5_10_minutes.set(0);
-        count_10_30_minutes.set(0);
-        count_30_more_minutes.set(0);
+        histogram.reset();
     }
 
     public long getConcurrentMax() {
@@ -337,53 +299,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             }
         }
 
-        final long MILLIS = 1000 * 1000;
-        final long SECOND = 1000 * MILLIS;
-        final long MINUTE = 60 * SECOND;
-        if (nanoSpan < MILLIS) {
-            count_0_1_Millis.incrementAndGet();
-        } else if (nanoSpan < 2 * MILLIS) {
-            count_1_2_Millis.incrementAndGet();
-        } else if (nanoSpan < 5 * MILLIS) {
-            count_2_5_Millis.incrementAndGet();
-        } else if (nanoSpan < 10 * MILLIS) {
-            count_5_10_Millis.incrementAndGet();
-        } else if (nanoSpan < 20 * MILLIS) {
-            count_10_20_Millis.incrementAndGet();
-
-        } else if (nanoSpan < 50 * MILLIS) {
-            count_20_50_Millis.incrementAndGet();
-        } else if (nanoSpan < 100 * MILLIS) {
-            count_50_100_Millis.incrementAndGet();
-        } else if (nanoSpan < 200 * MILLIS) {
-            count_100_200_Millis.incrementAndGet();
-        } else if (nanoSpan < 500 * MILLIS) {
-            count_200_500_Millis.incrementAndGet();
-        } else if (nanoSpan < 1000 * MILLIS) {
-            count_500_1000_Millis.incrementAndGet();
-
-        } else if (nanoSpan < 2 * SECOND) {
-            count_1_2_Seconds.incrementAndGet();
-        } else if (nanoSpan < 5 * SECOND) {
-            count_2_5_Seconds.incrementAndGet();
-        } else if (nanoSpan < 10 * SECOND) {
-            count_5_10_Seconds.incrementAndGet();
-        } else if (nanoSpan < 30 * SECOND) {
-            count_10_30_Seconds.incrementAndGet();
-        } else if (nanoSpan < 60 * SECOND) {
-            count_30_60_Seconds.incrementAndGet();
-
-        } else if (nanoSpan < 2 * MINUTE) {
-            count_1_2_minutes.incrementAndGet();
-        } else if (nanoSpan < 5 * MINUTE) {
-            count_2_5_minutes.incrementAndGet();
-        } else if (nanoSpan < 10 * MINUTE) {
-            count_5_10_minutes.incrementAndGet();
-        } else if (nanoSpan < 30 * MINUTE) {
-            count_10_30_minutes.incrementAndGet();
-        } else {
-            count_30_more_minutes.incrementAndGet();
-        }
+        long millis = nanoSpan / (1000 * 1000);
+        histogram.recode(millis);
     }
 
     public long getExecuteMillisTotal() {
@@ -403,86 +320,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return executeBatchSizeMax.get();
     }
 
-    public long getCount_0_1_Millis() {
-        return count_0_1_Millis.get();
-    }
-
-    public long getCount_1_2_Millis() {
-        return count_1_2_Millis.get();
-    }
-
-    public long getCount_2_5_Millis() {
-        return count_2_5_Millis.get();
-    }
-
-    public long getCount_5_10_Millis() {
-        return count_5_10_Millis.get();
-    }
-
-    public long getCount_10_20_Millis() {
-        return count_10_20_Millis.get();
-    }
-
-    public long getCount_20_50_Millis() {
-        return count_20_50_Millis.get();
-    }
-
-    public long getCount_50_100_Millis() {
-        return count_50_100_Millis.get();
-    }
-
-    public long getCount_100_200_Millis() {
-        return count_100_200_Millis.get();
-    }
-
-    public long getCount_200_500_Millis() {
-        return count_200_500_Millis.get();
-    }
-
-    public long getCount_500_1000_Millis() {
-        return count_500_1000_Millis.get();
-    }
-
-    public long getCount_1_2_Seconds() {
-        return count_1_2_Seconds.get();
-    }
-
-    public long getCount_2_5_Seconds() {
-        return count_2_5_Seconds.get();
-    }
-
-    public long getCount_5_10_Seconds() {
-        return count_5_10_Seconds.get();
-    }
-
-    public long getCount_10_30_Seconds() {
-        return count_10_30_Seconds.get();
-    }
-
-    public long getCount_30_60_Seconds() {
-        return count_30_60_Seconds.get();
-    }
-
-    public long getCount_1_2_minutes() {
-        return count_1_2_minutes.get();
-    }
-
-    public long getCount_2_5_minutes() {
-        return count_2_5_minutes.get();
-    }
-
-    public long getCount_5_10_minutes() {
-        return count_5_10_minutes.get();
-    }
-
-    public long getCount_10_30_minutes() {
-        return count_10_30_minutes.get();
-    }
-
-    public long getCount_30_more_minutes() {
-        return count_30_more_minutes.get();
-    }
-
     private static CompositeType COMPOSITE_TYPE = null;
 
     public static CompositeType getCompositeType() throws JMException {
@@ -498,10 +335,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.DATE,
                 SimpleType.STRING, SimpleType.STRING //
 
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , new ArrayType<Long>(1, SimpleType.LONG)
         };
 
         String[] indexNames = {
@@ -534,13 +368,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "DbType",
                 "URL" //
 
-                , "ExecuteCount_0_1_Millis", "ExecuteCount_1_2_Millis", "ExecuteCount_2_5_Millis",
-                "ExecuteCount_5_10_Millis", "ExecuteCount_10_20_Millis", "ExecuteCount_20_50_Millis",
-                "ExecuteCount_50_100_Millis", "ExecuteCount_100_200_Millis", "ExecuteCount_200_500_Millis",
-                "ExecuteCount_500_1000_Millis", "ExecuteCount_1_2_Seconds", "ExecuteCount_2_5_Seconds",
-                "ExecuteCount_5_10_Seconds", "ExecuteCount_10_30_Seconds", "ExecuteCount_30_60_Seconds",
-                "ExecuteCount_1_2_Minutes", "ExecuteCount_2_5_Minutes", "ExecuteCount_5_10_Minutes",
-                "ExecuteCount_10_30_Minutes", "ExecuteCount_30_more_Minutes" };
+                , "ExecuteCountHistogram"};
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -593,29 +421,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("DbType", dbType);
         map.put("URL", null);
 
-        map.put("ExecuteCount_0_1_Millis", this.getCount_0_1_Millis());
-        map.put("ExecuteCount_1_2_Millis", this.getCount_1_2_Millis());
-        map.put("ExecuteCount_2_5_Millis", this.getCount_2_5_Millis());
-        map.put("ExecuteCount_5_10_Millis", this.getCount_5_10_Millis());
-        map.put("ExecuteCount_10_20_Millis", this.getCount_10_20_Millis());
-
-        map.put("ExecuteCount_20_50_Millis", this.getCount_20_50_Millis());
-        map.put("ExecuteCount_50_100_Millis", this.getCount_50_100_Millis());
-        map.put("ExecuteCount_100_200_Millis", this.getCount_100_200_Millis());
-        map.put("ExecuteCount_200_500_Millis", this.getCount_200_500_Millis());
-        map.put("ExecuteCount_500_1000_Millis", this.getCount_500_1000_Millis());
-
-        map.put("ExecuteCount_1_2_Seconds", this.getCount_1_2_Seconds());
-        map.put("ExecuteCount_2_5_Seconds", this.getCount_2_5_Seconds());
-        map.put("ExecuteCount_5_10_Seconds", this.getCount_5_10_Seconds());
-        map.put("ExecuteCount_10_30_Seconds", this.getCount_10_30_Seconds());
-        map.put("ExecuteCount_30_60_Seconds", this.getCount_30_60_Seconds());
-
-        map.put("ExecuteCount_1_2_Minutes", this.getCount_1_2_minutes());
-        map.put("ExecuteCount_2_5_Minutes", this.getCount_2_5_minutes());
-        map.put("ExecuteCount_5_10_Minutes", this.getCount_5_10_minutes());
-        map.put("ExecuteCount_10_30_Minutes", this.getCount_10_30_minutes());
-        map.put("ExecuteCount_30_more_Minutes", this.getCount_30_more_minutes());
+        map.put("ExecuteCountHistogram", this.histogram.toArray());
 
         return map;
     }
