@@ -783,12 +783,15 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr andRest(SQLExpr expr) throws ParserException {
-        if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
-            lexer.nextToken();
-            SQLExpr rightExp = relational();
+        for (;;) {
+            if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
+                lexer.nextToken();
+                SQLExpr rightExp = relational();
 
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanAnd, rightExp);
-            expr = andRest(expr);
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanAnd, rightExp);
+            } else {
+                break;
+            }
         }
 
         return expr;
@@ -800,18 +803,21 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr orRest(SQLExpr expr) throws ParserException {
-        if (lexer.token() == Token.OR) {
-            lexer.nextToken();
-            SQLExpr rightExp = and();
 
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp);
-            expr = orRest(expr);
-        } else if (lexer.token() == Token.XOR) {
-            lexer.nextToken();
-            SQLExpr rightExp = and();
+        for (;;) {
+            if (lexer.token() == Token.OR) {
+                lexer.nextToken();
+                SQLExpr rightExp = and();
 
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanXor, rightExp);
-            expr = orRest(expr);
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp);
+            } else if (lexer.token() == Token.XOR) {
+                lexer.nextToken();
+                SQLExpr rightExp = and();
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanXor, rightExp);
+            } else {
+                break;
+            }
         }
 
         return expr;
