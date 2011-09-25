@@ -51,5 +51,15 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     String getVersion();
 
+    /**
+     * ActiveCount峰值
+     * @return
+     */
     int getActivePeak();
+    
+    /**
+     * PoolingCount峰值
+     * @return
+     */
+    int getPoolingPeak();
 }

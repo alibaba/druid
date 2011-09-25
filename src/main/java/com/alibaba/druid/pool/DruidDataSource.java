@@ -81,13 +81,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                    notEmptyWaitCount       = 0L;
     private long                    notEmptySignalCount     = 0L;
     private long                    notEmptyWaitNanos       = 0L;
+    private int                     activePeak              = 0;
+    private int                     poolingPeak             = 0;
 
     // store
     private ConnectionHolder[]      connections;
     private int                     poolingCount            = 0;
     private int                     activeCount             = 0;
     private int                     notEmptyWaitThreadCount = 0;
-    private int                     activePeak              = 0;
 
     // threads
     private CreateConnectionThread  createConnectionThread;
@@ -127,7 +128,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notEmptyWaitCount = 0;
             notEmptySignalCount = 0L;
             notEmptyWaitNanos = 0;
-            
+
             activePeak = 0;
         } finally {
             lock.unlock();
@@ -708,6 +709,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
+    
+    public int getPoolingPeak() {
+        return poolingPeak;
+    }
 
     public long getRecycleCount() {
         return recycleCount;
@@ -803,6 +808,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.lock();
                 try {
                     connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
+                    
+                    if (poolingCount > poolingPeak) {
+                        poolingPeak = poolingCount;
+                    }
 
                     errorCount = 0; // reset errorCount
 
@@ -1044,7 +1053,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int getLockQueueLength() {
         return lock.getQueueLength();
     }
-    
+
     public int getActivePeak() {
         return activePeak;
     }
