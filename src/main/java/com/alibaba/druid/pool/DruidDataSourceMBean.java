@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
+import java.util.Date;
+
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -62,4 +64,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
      * @return
      */
     int getPoolingPeak();
+    
+    Date getActivePeakTime();
+    
+    Date getPoolingPeakTime();
 }

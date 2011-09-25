@@ -81,8 +81,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                    notEmptyWaitCount       = 0L;
     private long                    notEmptySignalCount     = 0L;
     private long                    notEmptyWaitNanos       = 0L;
+
     private int                     activePeak              = 0;
+    private long                    activePeakTime          = 0;
     private int                     poolingPeak             = 0;
+    private long                    poolingPeakTime         = 0;
 
     // store
     private ConnectionHolder[]      connections;
@@ -130,6 +133,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notEmptyWaitNanos = 0;
 
             activePeak = 0;
+            activePeakTime = 0;
+            poolingPeak = 0;
         } finally {
             lock.unlock();
         }
@@ -418,6 +423,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activeCount++;
             if (activeCount > activePeak) {
                 activePeak = activeCount;
+                activePeakTime = System.currentTimeMillis();
             }
 
             poolalbeConnection = new PoolableConnection(holder);
@@ -709,9 +715,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public int getPoolingPeak() {
         return poolingPeak;
+    }
+
+    public Date getPoolingPeakTime() {
+        if (poolingPeakTime <= 0) {
+            return null;
+        }
+        
+        return new Date(poolingPeakTime);
     }
 
     public long getRecycleCount() {
@@ -808,9 +822,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 lock.lock();
                 try {
                     connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
-                    
+
                     if (poolingCount > poolingPeak) {
                         poolingPeak = poolingCount;
+                        poolingPeakTime = System.currentTimeMillis();
                     }
 
                     errorCount = 0; // reset errorCount
@@ -1056,6 +1071,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public int getActivePeak() {
         return activePeak;
+    }
+
+    public Date getActivePeakTime() {
+        if (activePeakTime <= 0) {
+            return null;
+        }
+
+        return new Date(activePeakTime);
     }
 
     public String dump() {
