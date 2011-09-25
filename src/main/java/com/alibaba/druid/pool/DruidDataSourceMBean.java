@@ -68,4 +68,6 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     Date getActivePeakTime();
     
     Date getPoolingPeakTime();
+    
+    long getErrorCount();
 }

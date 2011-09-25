@@ -139,6 +139,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
+        errorCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
         startTransactionCount.set(0);
@@ -1088,6 +1089,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+    }
+    
+    public long getErrorCount() {
+        return this.errorCount.get();
     }
 
     public String toString() {
