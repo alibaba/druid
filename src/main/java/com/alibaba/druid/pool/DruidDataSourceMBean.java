@@ -51,5 +51,5 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     String getVersion();
 
-
+    int getActivePeak();
 }

@@ -87,6 +87,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private int                     poolingCount            = 0;
     private int                     activeCount             = 0;
     private int                     notEmptyWaitThreadCount = 0;
+    private int                     activePeak              = 0;
 
     // threads
     private CreateConnectionThread  createConnectionThread;
@@ -126,6 +127,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notEmptyWaitCount = 0;
             notEmptySignalCount = 0L;
             notEmptyWaitNanos = 0;
+            
+            activePeak = 0;
         } finally {
             lock.unlock();
         }
@@ -412,6 +415,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             holder.incrementUseCount();
             activeCount++;
+            if (activeCount > activePeak) {
+                activePeak = activeCount;
+            }
 
             poolalbeConnection = new PoolableConnection(holder);
         } catch (InterruptedException e) {
@@ -1037,6 +1043,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public int getLockQueueLength() {
         return lock.getQueueLength();
+    }
+    
+    public int getActivePeak() {
+        return activePeak;
     }
 
     public String dump() {
