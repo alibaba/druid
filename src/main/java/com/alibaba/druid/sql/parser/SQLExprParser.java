@@ -122,17 +122,17 @@ public class SQLExprParser extends SQLParser {
     public SQLExpr multiplicativeRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.STAR) {
             lexer.nextToken();
-            SQLExpr rightExp = primary();
+            SQLExpr rightExp = bitXor();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Multiply, rightExp);
             expr = multiplicativeRest(expr);
         } else if (lexer.token() == Token.SLASH) {
             lexer.nextToken();
-            SQLExpr rightExp = primary();
+            SQLExpr rightExp = bitXor();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Divide, rightExp);
             expr = multiplicativeRest(expr);
         } else if (lexer.token() == Token.PERCENT) {
             lexer.nextToken();
-            SQLExpr rightExp = primary();
+            SQLExpr rightExp = bitXor();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Modulus, rightExp);
             expr = multiplicativeRest(expr);
         }
