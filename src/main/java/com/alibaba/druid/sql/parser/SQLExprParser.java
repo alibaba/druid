@@ -673,7 +673,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr equality() throws ParserException {
-        SQLExpr expr = additive();
+        SQLExpr expr = bitOr();
         return equalityRest(expr);
     }
 
@@ -681,14 +681,14 @@ public class SQLExprParser extends SQLParser {
         SQLExpr rightExp;
         if (lexer.token() == Token.EQ) {
             lexer.nextToken();
-            rightExp = additive();
+            rightExp = bitOr();
 
             rightExp = equalityRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp);
         } else if (lexer.token() == Token.BANGEQ) {
             lexer.nextToken();
-            rightExp = additive();
+            rightExp = bitOr();
 
             rightExp = equalityRest(rightExp);
 
@@ -834,63 +834,63 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token() == Token.LT) {
             lexer.nextToken();
-            rightExp = equality();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThan, rightExp);
         } else if (lexer.token() == Token.LTEQ) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrEqual, rightExp);
         } else if (lexer.token() == Token.LTEQGT) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrEqualOrGreaterThan, rightExp);
         } else if (lexer.token() == Token.GT) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.GreaterThan, rightExp);
         } else if (lexer.token() == Token.GTEQ) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.GreaterThanOrEqual, rightExp);
         } else if (lexer.token() == Token.BANGLT) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotLessThan, rightExp);
         } else if (lexer.token() == Token.BANGGT) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotGreaterThan, rightExp);
         } else if (lexer.token() == Token.LTGT) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrGreater, rightExp);
         } else if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
-            rightExp = shift();
+            rightExp = bitOr();
 
             rightExp = relationalRest(rightExp);
 
@@ -931,7 +931,7 @@ public class SQLExprParser extends SQLParser {
     public SQLExpr notRationalRest(SQLExpr expr) {
         if (lexer.token() == (Token.LIKE)) {
             lexer.nextToken();
-            SQLExpr rightExp = shift();
+            SQLExpr rightExp = equality();
 
             rightExp = relationalRest(rightExp);
 
