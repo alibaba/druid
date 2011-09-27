@@ -22,51 +22,38 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.management.JMException;
 import javax.management.openmbean.CompositeData;
 
+import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JMXUtils;
 
 public class JdbcStatementStat implements JdbcStatementStatMBean {
 
-    private final AtomicLong    createCount           = new AtomicLong(0);  // 执行createStatement的计数
-    private final AtomicLong    prepareCount          = new AtomicLong(0);  // 执行parepareStatement的计数
-    private final AtomicLong    prepareCallCount      = new AtomicLong(0);  // 执行preCall的计数
-    private final AtomicLong    closeCount            = new AtomicLong(0);  // Statement关闭的计数
+    private final AtomicLong    createCount      = new AtomicLong(0);                                     // 执行createStatement的计数
+    private final AtomicLong    prepareCount     = new AtomicLong(0);                                     // 执行parepareStatement的计数
+    private final AtomicLong    prepareCallCount = new AtomicLong(0);                                     // 执行preCall的计数
+    private final AtomicLong    closeCount       = new AtomicLong(0);                                     // Statement关闭的计数
 
-    private final AtomicInteger runningCount          = new AtomicInteger();
-    private final AtomicInteger concurrentMax         = new AtomicInteger();
+    private final AtomicInteger runningCount     = new AtomicInteger();
+    private final AtomicInteger concurrentMax    = new AtomicInteger();
 
-    private final AtomicLong    count                 = new AtomicLong();
-    private final AtomicLong    errorCount            = new AtomicLong();
+    private final AtomicLong    count            = new AtomicLong();
+    private final AtomicLong    errorCount       = new AtomicLong();
 
-    private final AtomicLong    nanoTotal             = new AtomicLong();
+    private final AtomicLong    nanoTotal        = new AtomicLong();
 
     private Throwable           lastError;
     private long                lastErrorTime;
 
-    private long                lastSampleTime        = 0;
+    private long                lastSampleTime   = 0;
 
-    private AtomicLong          count_0_1_Millis      = new AtomicLong();
-    private AtomicLong          count_1_2_Millis      = new AtomicLong();
-    private AtomicLong          count_2_5_Millis      = new AtomicLong();
-    private AtomicLong          count_5_10_Millis     = new AtomicLong();
-    private AtomicLong          count_10_20_Millis    = new AtomicLong();
+    private final Histogram     histogram        = new Histogram(new long[] { 10, 100, 1000, 1000 * 10 });
 
-    private AtomicLong          count_20_50_Millis    = new AtomicLong();
-    private AtomicLong          count_50_100_Millis   = new AtomicLong();
-    private AtomicLong          count_100_200_Millis  = new AtomicLong();
-    private AtomicLong          count_200_500_Millis  = new AtomicLong();
-    private AtomicLong          count_500_1000_Millis = new AtomicLong();
+    public long[] getHistogramRanges() {
+        return histogram.getRanges();
+    }
 
-    private AtomicLong          count_1_2_Seconds     = new AtomicLong();
-    private AtomicLong          count_2_5_Seconds     = new AtomicLong();
-    private AtomicLong          count_5_10_Seconds    = new AtomicLong();
-    private AtomicLong          count_10_30_Seconds   = new AtomicLong();
-    private AtomicLong          count_30_60_Seconds   = new AtomicLong();
-
-    private AtomicLong          count_1_2_minutes     = new AtomicLong();
-    private AtomicLong          count_2_5_minutes     = new AtomicLong();
-    private AtomicLong          count_5_10_minutes    = new AtomicLong();
-    private AtomicLong          count_10_30_minutes   = new AtomicLong();
-    private AtomicLong          count_30_more_minutes = new AtomicLong();
+    public long[] getHistogramValues() {
+        return histogram.toArray();
+    }
 
     public void reset() {
         runningCount.set(0);
@@ -83,29 +70,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
         prepareCallCount.set(0);
         closeCount.set(0);
 
-        count_0_1_Millis.set(0);
-        count_1_2_Millis.set(0);
-        count_2_5_Millis.set(0);
-        count_5_10_Millis.set(0);
-        count_10_20_Millis.set(0);
-
-        count_20_50_Millis.set(0);
-        count_50_100_Millis.set(0);
-        count_100_200_Millis.set(0);
-        count_200_500_Millis.set(0);
-        count_500_1000_Millis.set(0);
-
-        count_1_2_Seconds.set(0);
-        count_2_5_Seconds.set(0);
-        count_5_10_Seconds.set(0);
-        count_10_30_Seconds.set(0);
-        count_30_60_Seconds.set(0);
-
-        count_1_2_minutes.set(0);
-        count_2_5_minutes.set(0);
-        count_5_10_minutes.set(0);
-        count_10_30_minutes.set(0);
-        count_30_more_minutes.set(0);
+        histogram.reset();
     }
 
     public void afterExecute(long nanoSpan) {
@@ -113,53 +78,8 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
 
         nanoTotal.addAndGet(nanoSpan);
 
-        final long MILLIS = 1000 * 1000;
-        final long SECOND = 1000 * MILLIS;
-        final long MINUTE = 60 * SECOND;
-        if (nanoSpan < MILLIS) {
-            count_0_1_Millis.incrementAndGet();
-        } else if (nanoSpan < 2 * MILLIS) {
-            count_1_2_Millis.incrementAndGet();
-        } else if (nanoSpan < 5 * MILLIS) {
-            count_2_5_Millis.incrementAndGet();
-        } else if (nanoSpan < 10 * MILLIS) {
-            count_5_10_Millis.incrementAndGet();
-        } else if (nanoSpan < 20 * MILLIS) {
-            count_10_20_Millis.incrementAndGet();
-
-        } else if (nanoSpan < 50 * MILLIS) {
-            count_20_50_Millis.incrementAndGet();
-        } else if (nanoSpan < 100 * MILLIS) {
-            count_50_100_Millis.incrementAndGet();
-        } else if (nanoSpan < 200 * MILLIS) {
-            count_100_200_Millis.incrementAndGet();
-        } else if (nanoSpan < 500 * MILLIS) {
-            count_200_500_Millis.incrementAndGet();
-        } else if (nanoSpan < 1000 * MILLIS) {
-            count_500_1000_Millis.incrementAndGet();
-
-        } else if (nanoSpan < 2 * SECOND) {
-            count_1_2_Seconds.incrementAndGet();
-        } else if (nanoSpan < 5 * SECOND) {
-            count_2_5_Seconds.incrementAndGet();
-        } else if (nanoSpan < 10 * SECOND) {
-            count_5_10_Seconds.incrementAndGet();
-        } else if (nanoSpan < 30 * SECOND) {
-            count_10_30_Seconds.incrementAndGet();
-        } else if (nanoSpan < 60 * SECOND) {
-            count_30_60_Seconds.incrementAndGet();
-
-        } else if (nanoSpan < 2 * MINUTE) {
-            count_1_2_minutes.incrementAndGet();
-        } else if (nanoSpan < 5 * MINUTE) {
-            count_2_5_minutes.incrementAndGet();
-        } else if (nanoSpan < 10 * MINUTE) {
-            count_5_10_minutes.incrementAndGet();
-        } else if (nanoSpan < 30 * MINUTE) {
-            count_10_30_minutes.incrementAndGet();
-        } else {
-            count_30_more_minutes.incrementAndGet();
-        }
+        long millis = nanoSpan / (1000 * 1000);
+        histogram.recode(millis);
     }
 
     public void beforeExecute() {
@@ -281,86 +201,6 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
 
     public void incrementStatementCloseCounter() {
         closeCount.incrementAndGet();
-    }
-
-    public long getCount_0_1_Millis() {
-        return count_0_1_Millis.get();
-    }
-
-    public long getCount_1_2_Millis() {
-        return count_1_2_Millis.get();
-    }
-
-    public long getCount_2_5_Millis() {
-        return count_2_5_Millis.get();
-    }
-
-    public long getCount_5_10_Millis() {
-        return count_5_10_Millis.get();
-    }
-
-    public long getCount_10_20_Millis() {
-        return count_10_20_Millis.get();
-    }
-
-    public long getCount_20_50_Millis() {
-        return count_20_50_Millis.get();
-    }
-
-    public long getCount_50_100_Millis() {
-        return count_50_100_Millis.get();
-    }
-
-    public long getCount_100_200_Millis() {
-        return count_100_200_Millis.get();
-    }
-
-    public long getCount_200_500_Millis() {
-        return count_200_500_Millis.get();
-    }
-
-    public long getCount_500_1000_Millis() {
-        return count_500_1000_Millis.get();
-    }
-
-    public long getCount_1_2_Seconds() {
-        return count_1_2_Seconds.get();
-    }
-
-    public long getCount_2_5_Seconds() {
-        return count_2_5_Seconds.get();
-    }
-
-    public long getCount_5_10_Seconds() {
-        return count_5_10_Seconds.get();
-    }
-
-    public long getCount_10_30_Seconds() {
-        return count_10_30_Seconds.get();
-    }
-
-    public long getCount_30_60_Seconds() {
-        return count_30_60_Seconds.get();
-    }
-
-    public long getCount_1_2_minutes() {
-        return count_1_2_minutes.get();
-    }
-
-    public long getCount_2_5_minutes() {
-        return count_2_5_minutes.get();
-    }
-
-    public long getCount_5_10_minutes() {
-        return count_5_10_minutes.get();
-    }
-
-    public long getCount_10_30_minutes() {
-        return count_10_30_minutes.get();
-    }
-
-    public long getCount_30_more_minutes() {
-        return count_30_more_minutes.get();
     }
 
     public static class Entry {

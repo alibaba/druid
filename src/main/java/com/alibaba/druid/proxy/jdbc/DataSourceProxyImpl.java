@@ -286,47 +286,8 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionAliveMillisMax", stat.getConnectionConnectAliveMillisMax());
             map.put("ConnectionAliveMillisMin", stat.getConnectionConnectAliveMillisMin());
 
-            map.put("ConnectionCount_Alive_0_1_Seconds", stat.getConnectionCount_Alive_0_1_Seconds());
-            map.put("ConnectionCount_Alive_1_5_Seconds", stat.getConnectionCount_Alive_1_5_Seconds());
-            map.put("ConnectionCount_Alive_5_10_Seconds", stat.getConnectionCount_Alive_5_10_Seconds());
-            map.put("ConnectionCount_Alive_10_30_Seconds", stat.getConnectionCount_Alive_10_30_Seconds());
-            map.put("ConnectionCount_Alive_30_60_Seconds", stat.getConnectionCount_Alive_30_60_Seconds());
-
-            map.put("ConnectionCount_Alive_1_5_Minutes", stat.getConnectionCount_Alive_1_5_Minutes());
-            map.put("ConnectionCount_Alive_5_10_Minutes", stat.getConnectionCount_Alive_5_10_Minutes());
-            map.put("ConnectionCount_Alive_10_30_Minutes", stat.getConnectionCount_Alive_10_30_Minutes());
-            map.put("ConnectionCount_Alive_30_60_Minutes", stat.getConnectionCount_Alive_30_60_Minutes());
-            map.put("ConnectionCount_Alive_1_6_Hours", stat.getConnectionCount_Alive_1_6_Hours());
-
-            map.put("ConnectionCount_Alive_6_24_Hours", stat.getConnectionCount_Alive_6_24_Hours());
-            map.put("ConnectionCount_Alive_1_7_Day", stat.getConnectionCount_Alive_1_7_day());
-            map.put("ConnectionCount_Alive_7_30_Day", stat.getConnectionCount_Alive_7_30_Day());
-            map.put("ConnectionCount_Alive_30_90_Day", stat.getConnectionCount_Alive_30_90_Day());
-            map.put("ConnectionCount_Alive_90_more_Day", stat.getConnectionCount_Alive_90_more_Day());
-
-            map.put("StatementExecuteCount_0_1_Millis", stat.getStatementStat().getCount_0_1_Millis());
-            map.put("StatementExecuteCount_1_2_Millis", stat.getStatementStat().getCount_1_2_Millis());
-            map.put("StatementExecuteCount_2_5_Millis", stat.getStatementStat().getCount_2_5_Millis());
-            map.put("StatementExecuteCount_5_10_Millis", stat.getStatementStat().getCount_5_10_Millis());
-            map.put("StatementExecuteCount_10_20_Millis", stat.getStatementStat().getCount_10_20_Millis());
-
-            map.put("StatementExecuteCount_20_50_Millis", stat.getStatementStat().getCount_20_50_Millis());
-            map.put("StatementExecuteCount_50_100_Millis", stat.getStatementStat().getCount_50_100_Millis());
-            map.put("StatementExecuteCount_100_200_Millis", stat.getStatementStat().getCount_100_200_Millis());
-            map.put("StatementExecuteCount_200_500_Millis", stat.getStatementStat().getCount_200_500_Millis());
-            map.put("StatementExecuteCount_500_1000_Millis", stat.getStatementStat().getCount_500_1000_Millis());
-
-            map.put("StatementExecuteCount_1_2_Seconds", stat.getStatementStat().getCount_1_2_Seconds());
-            map.put("StatementExecuteCount_2_5_Seconds", stat.getStatementStat().getCount_2_5_Seconds());
-            map.put("StatementExecuteCount_5_10_Seconds", stat.getStatementStat().getCount_5_10_Seconds());
-            map.put("StatementExecuteCount_10_30_Seconds", stat.getStatementStat().getCount_10_30_Seconds());
-            map.put("StatementExecuteCount_30_60_Seconds", stat.getStatementStat().getCount_30_60_Seconds());
-
-            map.put("StatementExecuteCount_1_2_Minutes", stat.getStatementStat().getCount_1_2_minutes());
-            map.put("StatementExecuteCount_2_5_Minutes", stat.getStatementStat().getCount_2_5_minutes());
-            map.put("StatementExecuteCount_5_10_Minutes", stat.getStatementStat().getCount_5_10_minutes());
-            map.put("StatementExecuteCount_10_30_Minutes", stat.getStatementStat().getCount_10_30_minutes());
-            map.put("StatementExecuteCount_30_more_Minutes", stat.getStatementStat().getCount_30_more_minutes());
+            map.put("ConnectionHistogram", stat.getConnectionHistogramValues());
+            map.put("StatementHistogram", stat.getStatementStat().getHistogramValues());
         } else {
             map.put("ConnectionActiveCount", null);
             map.put("ConnectionActiveCountMax", null);
@@ -381,47 +342,8 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             map.put("ConnectionAliveMillisMax", null);
             map.put("ConnectionAliveMillisMin", null);
 
-            map.put("ConnectionCount_Alive_0_1_Seconds", null);
-            map.put("ConnectionCount_Alive_1_5_Seconds", null);
-            map.put("ConnectionCount_Alive_5_10_Seconds", null);
-            map.put("ConnectionCount_Alive_10_30_Seconds", null);
-            map.put("ConnectionCount_Alive_30_60_Seconds", null);
-
-            map.put("ConnectionCount_Alive_1_5_Minutes", null);
-            map.put("ConnectionCount_Alive_5_10_Minutes", null);
-            map.put("ConnectionCount_Alive_10_30_Minutes", null);
-            map.put("ConnectionCount_Alive_30_60_Minutes", null);
-            map.put("ConnectionCount_Alive_1_6_Hours", null);
-
-            map.put("ConnectionCount_Alive_6_24_Hours", null);
-            map.put("ConnectionCount_Alive_1_7_Day", null);
-            map.put("ConnectionCount_Alive_7_30_Day", null);
-            map.put("ConnectionCount_Alive_30_90_Day", null);
-            map.put("ConnectionCount_Alive_90_more_Day", null);
-
-            map.put("StatementExecuteCount_0_1_Millis", null);
-            map.put("StatementExecuteCount_1_2_Millis", null);
-            map.put("StatementExecuteCount_2_5_Millis", null);
-            map.put("StatementExecuteCount_5_10_Millis", null);
-            map.put("StatementExecuteCount_10_20_Millis", null);
-
-            map.put("StatementExecuteCount_20_50_Millis", null);
-            map.put("StatementExecuteCount_50_100_Millis", null);
-            map.put("StatementExecuteCount_100_200_Millis", null);
-            map.put("StatementExecuteCount_200_500_Millis", null);
-            map.put("StatementExecuteCount_500_1000_Millis", null);
-
-            map.put("StatementExecuteCount_1_2_Seconds", null);
-            map.put("StatementExecuteCount_2_5_Seconds", null);
-            map.put("StatementExecuteCount_5_10_Seconds", null);
-            map.put("StatementExecuteCount_10_30_Seconds", null);
-            map.put("StatementExecuteCount_30_60_Seconds", null);
-
-            map.put("StatementExecuteCount_1_2_Minutes", null);
-            map.put("StatementExecuteCount_2_5_Minutes", null);
-            map.put("StatementExecuteCount_5_10_Minutes", null);
-            map.put("StatementExecuteCount_10_30_Minutes", null);
-            map.put("StatementExecuteCount_30_more_Minutes", null);
+            map.put("ConnectionHistogram", new long[0]);
+            map.put("StatementHistogram", new long[0]);
         }
 
         return new CompositeDataSupport(JdbcStatManager.getDataSourceCompositeType(), map);

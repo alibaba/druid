@@ -119,14 +119,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
                 , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG //
                 //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
+                , new ArrayType<Long>(SimpleType.LONG, true), new ArrayType<Long>(SimpleType.LONG, true)
         //
         //
         };
@@ -138,7 +131,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "Name",
                 "FilterClasses",
                 "CreatedTime", //
-                
+
                 // 5 - 9
                 "RawUrl",
                 "RawDriverClassName",
@@ -146,7 +139,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "RawDriverMinorVersion",
                 "Properties" //
                 ,
-                
+
                 // 10 - 14
                 "ConnectionActiveCount",
                 "ConnectionActiveCountMax",
@@ -168,7 +161,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "StatementExecuteCount",
                 "StatementRunningCount" //
                 ,
-                
+
                 // 25 - 29
                 "StatementConcurrentMax",
                 "StatementCloseCount",
@@ -191,51 +184,15 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "ResultSetLastOpenTime" //
                 ,
                 // 40 - 44
-                "ResultSetErrorCount",
-                "ResultSetOpenningMillisTotal",
-                "ResultSetLastErrorTime",
-                "ResultSetLastErrorMessage",
-                "ResultSetLastErrorStackTrace",
-                "ConnectionConnectCount",
-                "ConnectionErrorLastMessage",
-                "ConnectionErrorLastStackTrace",
+                "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime",
+                "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace", "ConnectionConnectCount",
+                "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace",
                 "ConnectionConnectMillisTotal",
                 "ConnectionConnectingCountMax" //
-                ,
-                "ConnectionConnectMillisMax",
-                "ConnectionErrorLastTime",
-                "ConnectionAliveMillisMax",
+                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax",
                 "ConnectionAliveMillisMin" //
                 //
-                ,
-                "ConnectionCount_Alive_0_1_Seconds",
-                "ConnectionCount_Alive_1_5_Seconds",
-                "ConnectionCount_Alive_5_10_Seconds",
-                "ConnectionCount_Alive_10_30_Seconds",
-                "ConnectionCount_Alive_30_60_Seconds" //
-                ,
-                "ConnectionCount_Alive_1_5_Minutes",
-                "ConnectionCount_Alive_5_10_Minutes",
-                "ConnectionCount_Alive_10_30_Minutes",
-                "ConnectionCount_Alive_30_60_Minutes",
-                "ConnectionCount_Alive_1_6_Hours" //
-                ,
-                "ConnectionCount_Alive_6_24_Hours",
-                "ConnectionCount_Alive_1_7_Day",
-                "ConnectionCount_Alive_7_30_Day",
-                "ConnectionCount_Alive_30_90_Day",
-                "ConnectionCount_Alive_90_more_Day" //
-                //
-                , "StatementExecuteCount_0_1_Millis", "StatementExecuteCount_1_2_Millis",
-                "StatementExecuteCount_2_5_Millis", "StatementExecuteCount_5_10_Millis",
-                "StatementExecuteCount_10_20_Millis", "StatementExecuteCount_20_50_Millis",
-                "StatementExecuteCount_50_100_Millis", "StatementExecuteCount_100_200_Millis",
-                "StatementExecuteCount_200_500_Millis", "StatementExecuteCount_500_1000_Millis",
-                "StatementExecuteCount_1_2_Seconds", "StatementExecuteCount_2_5_Seconds",
-                "StatementExecuteCount_5_10_Seconds", "StatementExecuteCount_10_30_Seconds",
-                "StatementExecuteCount_30_60_Seconds", "StatementExecuteCount_1_2_Minutes",
-                "StatementExecuteCount_2_5_Minutes", "StatementExecuteCount_5_10_Minutes",
-                "StatementExecuteCount_10_30_Minutes", "StatementExecuteCount_30_more_Minutes"
+                , "ConnectionHistogram", "StatementHistogram",
         //
         };
 
@@ -245,7 +202,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
 
         return COMPOSITE_TYPE;
     }
-    
+
     @Override
     public TabularData getDataSourceList() throws JMException {
         CompositeType rowType = getDataSourceCompositeType();
@@ -309,7 +266,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 }
             }
         }
-        
+
         for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (Filter filter : instance.getProxyFilters()) {
                 if (filter instanceof StatFilter) {
@@ -343,7 +300,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 }
             }
         }
-        
+
         for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (Filter filter : instance.getProxyFilters()) {
                 if (filter instanceof StatFilter) {

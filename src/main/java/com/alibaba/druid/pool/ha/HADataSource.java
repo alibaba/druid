@@ -19,6 +19,8 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
 
+    private DruidDataSource               masterDataSource;
+
     protected ArrayList<DruidDataSource>  dataSources             = new ArrayList<DruidDataSource>();
     protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
 
@@ -35,7 +37,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
     public synchronized void setDataSources(List<DruidDataSource> dataSources) {
         this.dataSources = new ArrayList<DruidDataSource>(dataSources);
     }
-    
+
     public synchronized void addDataSource(DruidDataSource dataSource) {
         ArrayList<DruidDataSource> newList = new ArrayList<DruidDataSource>(dataSources);
         newList.add(dataSource);

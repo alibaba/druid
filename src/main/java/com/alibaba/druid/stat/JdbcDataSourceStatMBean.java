@@ -31,4 +31,8 @@ public interface JdbcDataSourceStatMBean {
     long getConnectionActiveCount();
 
     long getConnectionConnectAliveMillis();
+
+    long[] getConnectionHistogramValues();
+
+    long[] getConnectionHistogramRanges();
 }
