@@ -117,4 +117,6 @@ public interface DruidAbstractDataSourceMBean {
     void setTransactionThresholdMillis(long transactionThresholdMillis);
     
     long getTransactionThresholdMillis();
+    
+    long getReusePreparedStatement();
 }

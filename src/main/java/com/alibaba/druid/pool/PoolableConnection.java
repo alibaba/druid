@@ -42,6 +42,7 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.TransactionInfo;
 
 /**
@@ -103,6 +104,15 @@ public class PoolableConnection implements PooledConnection, Connection {
     public Connection getConnection() {
         return conn;
     }
+    
+    void closePoolableStatement() {
+        PreparedStatementPool statmentPool = holder.getStatementPool();
+        if (statmentPool != null) {
+            for (PreparedStatement stmt : statmentPool.getMap().values()) {
+                JdbcUtils.close(stmt);
+            }
+        }
+    }
 
     void disable() {
         this.holder = null;
@@ -155,6 +165,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -185,6 +197,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -215,6 +229,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -243,6 +259,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -271,6 +289,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -299,6 +319,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -330,6 +352,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -359,6 +383,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);
@@ -387,6 +413,8 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
+        } else {
+            holder.getDataSource().incrementPreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmt);

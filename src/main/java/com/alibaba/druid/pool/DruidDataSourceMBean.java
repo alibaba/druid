@@ -52,6 +52,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void setResetStatEnable(boolean resetStatEnable);
 
     String getVersion();
+    
+    void setPoolPreparedStatements(boolean poolPreparedStatements);
 
     /**
      * ActiveCount峰值

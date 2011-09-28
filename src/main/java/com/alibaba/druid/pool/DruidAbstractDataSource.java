@@ -178,6 +178,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
+    protected final AtomicLong                                                               reusePreparedStatement                    = new AtomicLong();
 
     protected final Histogram                                                                transactionHistogram                      = new Histogram(
                                                                                                                                                        10,
@@ -188,6 +189,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
+    }
+    
+    public void incrementPreparedStatementCount() {
+        reusePreparedStatement.incrementAndGet();
+    }
+    
+    public long getReusePreparedStatement() {
+        return reusePreparedStatement.get();
     }
 
     public long getTransactionThresholdMillis() {
@@ -203,7 +212,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public long[] getTransactionHistogramValues() {
         return transactionHistogram.toArray();
     }
-    
+
     public long[] getTransactionHistogramRanges() {
         return transactionHistogram.getRanges();
     }
@@ -569,10 +578,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPoolPreparedStatements(boolean poolPreparedStatements) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
-
         this.poolPreparedStatements = poolPreparedStatements;
     }
 
