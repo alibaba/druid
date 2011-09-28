@@ -53,7 +53,7 @@ public final class ConnectionHolder {
         this.lastActiveTimeMillis = connecttimeMillis;
 
         if (this.poolPreparedStatements) {
-            statementPool = new PreparedStatementPool();
+            statementPool = new PreparedStatementPool(dataSource.getMaxPoolPreparedStatementPerConnectionSize());
         } else {
             statementPool = null;
         }

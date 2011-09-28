@@ -16,16 +16,20 @@
 package com.alibaba.druid.pool;
 
 import java.sql.PreparedStatement;
-import java.util.HashMap;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.util.LRUCache;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PreparedStatementPool {
 
-    private HashMap<PreparedStatementKey, PreparedStatement> map = new HashMap<PreparedStatementKey, PreparedStatement>();
+    private final LRUCache<PreparedStatementKey, PreparedStatement> map;
+
+    public PreparedStatementPool(int maxSize){
+        map = new LRUCache<PreparedStatementKey, PreparedStatement>(maxSize);
+    }
 
     public static enum MethodType {
         M1, M2, M3, M4, M5, M6, Precall_1, Precall_2, Precall_3
@@ -40,7 +44,7 @@ public class PreparedStatementPool {
         map.put(key, poolableStatement.getRawPreparedStatement());
     }
 
-    public HashMap<PreparedStatementKey, PreparedStatement> getMap() {
+    public LRUCache<PreparedStatementKey, PreparedStatement> getMap() {
         return map;
     }
 

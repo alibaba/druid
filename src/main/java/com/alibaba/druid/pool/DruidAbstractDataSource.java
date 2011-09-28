@@ -118,7 +118,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     private boolean                                                                          testOnReturn                              = DEFAULT_TEST_ON_RETURN;
     private boolean                                                                          testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected boolean                                                                        poolPreparedStatements                    = false;
-    protected int                                                                            maxPoolPreparedStatementPerConnectionSize = -1;
+    protected int                                                                            maxPoolPreparedStatementPerConnectionSize = 10;
 
     protected boolean                                                                        inited                                    = false;
 
@@ -192,11 +192,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }
-    
+
     public void incrementPreparedStatementCount() {
         reusePreparedStatement.incrementAndGet();
     }
-    
+
     public long getReusePreparedStatement() {
         return reusePreparedStatement.get();
     }
