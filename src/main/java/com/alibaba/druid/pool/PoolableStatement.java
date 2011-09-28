@@ -126,7 +126,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final int getMaxFieldSize() throws SQLException {
+    public int getMaxFieldSize() throws SQLException {
         checkOpen();
 
         try {
@@ -137,7 +137,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final void setMaxFieldSize(int max) throws SQLException {
+    public void setMaxFieldSize(int max) throws SQLException {
         checkOpen();
 
         try {
@@ -159,7 +159,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final void setMaxRows(int max) throws SQLException {
+    public void setMaxRows(int max) throws SQLException {
         checkOpen();
 
         try {
@@ -192,7 +192,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final void setQueryTimeout(int seconds) throws SQLException {
+    public void setQueryTimeout(int seconds) throws SQLException {
         checkOpen();
 
         try {
@@ -298,7 +298,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final void setFetchDirection(int direction) throws SQLException {
+    public void setFetchDirection(int direction) throws SQLException {
         checkOpen();
 
         try {
@@ -320,7 +320,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     }
 
     @Override
-    public final void setFetchSize(int rows) throws SQLException {
+    public void setFetchSize(int rows) throws SQLException {
         checkOpen();
 
         try {

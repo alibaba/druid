@@ -15,9 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import java.util.HashMap;
-import java.util.List;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 
@@ -26,46 +25,22 @@ import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
  */
 public class PreparedStatementPool {
 
-    private HashMap<PreparedStatementKey, List<PoolablePreparedStatement>> map = new HashMap<PreparedStatementKey, List<PoolablePreparedStatement>>();
+    private HashMap<PreparedStatementKey, PreparedStatement> map = new HashMap<PreparedStatementKey, PreparedStatement>();
 
     public static enum MethodType {
         M1, M2, M3, M4, M5, M6, Precall_1, Precall_2, Precall_3
     }
 
-    public PoolablePreparedStatement get(PreparedStatementKey key) {
-        List<PoolablePreparedStatement> list = map.get(key);
-
-        if (list == null) {
-            list = new ArrayList<PoolablePreparedStatement>();
-            map.put(key, list);
-
-            return null;
-        }
-
-        int size = list.size();
-
-        if (size == 0) {
-            return null;
-        }
-
-        PoolablePreparedStatement last = list.remove(size - 1);
-
-        return last;
+    public PreparedStatement get(PreparedStatementKey key) {
+        return map.remove(key);
     }
 
     public void put(PoolablePreparedStatement poolableStatement) {
         PreparedStatementKey key = poolableStatement.getKey();
-        List<PoolablePreparedStatement> list = map.get(key);
-
-        if (list == null) {
-            list = new ArrayList<PoolablePreparedStatement>();
-            map.put(key, list);
-        }
-
-        list.add(poolableStatement);
+        map.put(key, poolableStatement.getRawPreparedStatement());
     }
 
-    public HashMap<PreparedStatementKey, List<PoolablePreparedStatement>> getMap() {
+    public HashMap<PreparedStatementKey, PreparedStatement> getMap() {
         return map;
     }
 

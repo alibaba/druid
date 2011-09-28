@@ -47,7 +47,8 @@ public class StatFilterTest extends TestCase {
             if (url.equals((String) row.get("URL"))) {
                 count++;
             }
-            Assert.assertEquals(0L, row.get("ExecuteCount_30_more_Minutes"));
+            long[] histogram = (long[]) row.get("Histogram");
+            Assert.assertEquals(0L, histogram[histogram.length - 1]);
         }
         Assert.assertEquals(true, count > 0);
 

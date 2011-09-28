@@ -30,7 +30,6 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -128,15 +127,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             listener.connectionClosed(new ConnectionEvent(this));
         }
 
-        PreparedStatementPool statementPool = holder.getStatementPool();
-        if (statementPool != null) {
-            for (List<PoolablePreparedStatement> stmtList : statementPool.getMap().values()) {
-                for (PoolablePreparedStatement stmt : stmtList) {
-                    stmt.close();
-                }
-            }
-        }
-
         holder.reset();
         holder.getDataSource().recycle(this);
 
@@ -153,28 +143,23 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M1);
 
-        if (holder.isPoolPreparedStatements()) {
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
-        }
-
         PreparedStatement stmt = null;
 
-        try {
-            stmt = conn.prepareStatement(sql);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (holder.isPoolPreparedStatements()) {
+            stmt = holder.getStatementPool().get(key);
+        }
+
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -188,28 +173,23 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M2);
 
+        PreparedStatement stmt = null;
+
         if (holder.isPoolPreparedStatements()) {
-
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = holder.getStatementPool().get(key);
         }
 
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -222,28 +202,24 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M3);
-        if (holder.isPoolPreparedStatements()) {
-
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
-        }
 
         PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
-        } catch (SQLException ex) {
-            handleException(ex);
+
+        if (holder.isPoolPreparedStatements()) {
+            stmt = holder.getStatementPool().get(key);
+        }
+
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -254,28 +230,24 @@ public class PoolableConnection implements PooledConnection, Connection {
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
         checkOpen();
 
+        PreparedStatement stmt = null;
+
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M4);
         if (holder.isPoolPreparedStatements()) {
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = holder.getStatementPool().get(key);
         }
 
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql, columnIndexes);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql, columnIndexes);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -286,28 +258,24 @@ public class PoolableConnection implements PooledConnection, Connection {
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         checkOpen();
 
+        PreparedStatement stmt = null;
+
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M5);
         if (holder.isPoolPreparedStatements()) {
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = holder.getStatementPool().get(key);
         }
 
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql, columnNames);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql, columnNames);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -318,28 +286,24 @@ public class PoolableConnection implements PooledConnection, Connection {
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
         checkOpen();
 
+        PreparedStatement stmt = null;
+
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.M6);
         if (holder.isPoolPreparedStatements()) {
-            PoolablePreparedStatement poolableStatement = holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = holder.getStatementPool().get(key);
         }
 
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement(sql, autoGeneratedKeys);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareStatement(sql, autoGeneratedKeys);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        PreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
+        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -354,27 +318,23 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.Precall_1);
 
-        if (holder.isPoolPreparedStatements()) {
-            PoolableCallableStatement poolableStatement = (PoolableCallableStatement) holder.getStatementPool().get(key);
+        CallableStatement stmt = null;
 
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+        if (holder.isPoolPreparedStatements()) {
+            stmt = (CallableStatement) holder.getStatementPool().get(key);
         }
 
-        CallableStatement stmt = null;
-        try {
-            stmt = conn.prepareCall(sql);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareCall(sql);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
+        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -386,28 +346,24 @@ public class PoolableConnection implements PooledConnection, Connection {
                                          int resultSetHoldability) throws SQLException {
         checkOpen();
 
+        CallableStatement stmt = null;
+
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.Precall_2);
         if (holder.isPoolPreparedStatements()) {
-            PoolableCallableStatement poolableStatement = (PoolableCallableStatement) holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = (CallableStatement) holder.getStatementPool().get(key);
         }
 
-        CallableStatement stmt = null;
-        try {
-            stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
+        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
 
         holder.addTrace(rtnVal);
 
@@ -418,29 +374,24 @@ public class PoolableConnection implements PooledConnection, Connection {
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
         checkOpen();
 
+        CallableStatement stmt = null;
+
         PreparedStatementKey key = new PreparedStatementKey(sql, getCatalog(), MethodType.Precall_3);
         if (holder.isPoolPreparedStatements()) {
-
-            PoolableCallableStatement poolableStatement = (PoolableCallableStatement) holder.getStatementPool().get(key);
-
-            if (poolableStatement != null) {
-                poolableStatement.setPoolableConnection(this);
-                poolableStatement.setClosed(false);
-                holder.addTrace(poolableStatement);
-                return poolableStatement;
-            }
+            stmt = (CallableStatement) holder.getStatementPool().get(key);
         }
 
-        CallableStatement stmt = null;
-        try {
-            stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency);
-        } catch (SQLException ex) {
-            handleException(ex);
+        if (stmt == null) {
+            try {
+                stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency);
+            } catch (SQLException ex) {
+                handleException(ex);
+            }
         }
 
         holder.getDataSource().initStatement(stmt);
 
-        CallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
+        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmt, key, sql);
         holder.addTrace(rtnVal);
 
         return rtnVal;
@@ -552,14 +503,14 @@ public class PoolableConnection implements PooledConnection, Connection {
             handleException(ex);
         }
     }
-    
+
     protected void transactionRecord(String sql) throws SQLException {
         if (transactionInfo == null && (!conn.getAutoCommit())) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
             dataSource.incrementStartTransactionCount();
             transactionInfo = new TransactionInfo(dataSource.createTransactionId());
         }
-        
+
         if (transactionInfo != null) {
             transactionInfo.getSqlList().add(sql);
         }
@@ -597,7 +548,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (transactionInfo == null) {
             return;
         }
-        
+
         checkOpen();
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
@@ -643,7 +594,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             long transactionMillis = currentTimeMillis - transactionInfo.getStartTimeMillis();
             dataSource.getTransactionHistogram().recode(transactionMillis);
 
-            dataSource.logTransaction( transactionInfo);
+            dataSource.logTransaction(transactionInfo);
 
             transactionInfo = null;
         }

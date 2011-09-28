@@ -1,0 +1,125 @@
+2011-09-28 15:52:42
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (20.1-b02-383 mixed mode):
+
+"Attach Listener" daemon prio=9 tid=7f9c4581f000 nid=0x11051f000 waiting on condition [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"XXX" prio=5 tid=7f9c42015000 nid=0x1113d4000 waiting on condition [1113d3000]
+   java.lang.Thread.State: WAITING (parking)
+	at sun.misc.Unsafe.park(Native Method)
+	- parking to wait for  <7f316ec30> (a java.util.concurrent.locks.ReentrantLock$NonfairSync)
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:158)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.parkAndCheckInterrupt(AbstractQueuedSynchronizer.java:811)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquireQueued(AbstractQueuedSynchronizer.java:842)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.acquire(AbstractQueuedSynchronizer.java:1178)
+	at java.util.concurrent.locks.ReentrantLock$NonfairSync.lock(ReentrantLock.java:186)
+	at java.util.concurrent.locks.ReentrantLock.lock(ReentrantLock.java:262)
+	at com.alibaba.json.test.TestMemory$1.run(TestMemory.java:21)
+
+"ReaderThread" prio=5 tid=7f9c4609b000 nid=0x1112d1000 runnable [1112d0000]
+   java.lang.Thread.State: RUNNABLE
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:264)
+	at sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:306)
+	at sun.nio.cs.StreamDecoder.read(StreamDecoder.java:158)
+	- locked <7f2fdb548> (a java.io.InputStreamReader)
+	at java.io.InputStreamReader.read(InputStreamReader.java:167)
+	at java.io.BufferedReader.fill(BufferedReader.java:136)
+	at java.io.BufferedReader.readLine(BufferedReader.java:299)
+	- locked <7f2fdb548> (a java.io.InputStreamReader)
+	at java.io.BufferedReader.readLine(BufferedReader.java:362)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner$ReaderThread.run(RemoteTestRunner.java:140)
+
+"Low Memory Detector" daemon prio=5 tid=7f9c46002800 nid=0x110d40000 runnable [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread1" daemon prio=9 tid=7f9c46000000 nid=0x110c3d000 waiting on condition [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"C2 CompilerThread0" daemon prio=9 tid=7f9c46001000 nid=0x110b3a000 waiting on condition [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Command Reader" daemon prio=5 tid=7f9c45810800 nid=0x110a37000 runnable [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Event Helper Thread" daemon prio=5 tid=7f9c45810000 nid=0x110934000 runnable [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"JDWP Transport Listener: dt_socket" daemon prio=5 tid=7f9c4580f000 nid=0x110831000 runnable [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Signal Dispatcher" daemon prio=9 tid=7f9c42009800 nid=0x110728000 runnable [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Surrogate Locker Thread (Concurrent GC)" daemon prio=5 tid=7f9c42008800 nid=0x110625000 waiting on condition [00000000]
+   java.lang.Thread.State: RUNNABLE
+
+"Finalizer" daemon prio=8 tid=7f9c4293a800 nid=0x110361000 in Object.wait() [110360000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <7f2e01300> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:118)
+	- locked <7f2e01300> (a java.lang.ref.ReferenceQueue$Lock)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:134)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:159)
+
+"Reference Handler" daemon prio=10 tid=7f9c4293a000 nid=0x11025e000 in Object.wait() [11025d000]
+   java.lang.Thread.State: WAITING (on object monitor)
+	at java.lang.Object.wait(Native Method)
+	- waiting on <7f2e011d8> (a java.lang.ref.Reference$Lock)
+	at java.lang.Object.wait(Object.java:485)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:116)
+	- locked <7f2e011d8> (a java.lang.ref.Reference$Lock)
+
+"main" prio=5 tid=7f9c42802000 nid=0x108486000 at breakpoint[108484000]
+   java.lang.Thread.State: RUNNABLE
+	at com.alibaba.json.test.TestMemory.test_0(TestMemory.java:28)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at junit.framework.TestCase.runTest(TestCase.java:168)
+	at junit.framework.TestCase.runBare(TestCase.java:134)
+	at junit.framework.TestResult$1.protect(TestResult.java:110)
+	at junit.framework.TestResult.runProtected(TestResult.java:128)
+	at junit.framework.TestResult.run(TestResult.java:113)
+	at junit.framework.TestCase.run(TestCase.java:124)
+	at junit.framework.TestSuite.runTest(TestSuite.java:232)
+	at junit.framework.TestSuite.run(TestSuite.java:227)
+	at org.junit.internal.runners.JUnit38ClassRunner.run(JUnit38ClassRunner.java:79)
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)
+
+"VM Thread" prio=9 tid=7f9c42935800 nid=0x11015b000 runnable 
+
+"Gang worker#0 (Parallel GC Threads)" prio=9 tid=7f9c42803800 nid=0x10b7fe000 runnable 
+
+"Gang worker#1 (Parallel GC Threads)" prio=9 tid=7f9c42804000 nid=0x10b901000 runnable 
+
+"Gang worker#2 (Parallel GC Threads)" prio=9 tid=7f9c42804800 nid=0x10ba04000 runnable 
+
+"Gang worker#3 (Parallel GC Threads)" prio=9 tid=7f9c42805000 nid=0x10bb07000 runnable 
+
+"Gang worker#4 (Parallel GC Threads)" prio=9 tid=7f9c42806000 nid=0x10bc0a000 runnable 
+
+"Gang worker#5 (Parallel GC Threads)" prio=9 tid=7f9c42806800 nid=0x10bd0d000 runnable 
+
+"Gang worker#6 (Parallel GC Threads)" prio=9 tid=7f9c42807000 nid=0x10be10000 runnable 
+
+"Gang worker#7 (Parallel GC Threads)" prio=9 tid=7f9c42807800 nid=0x10bf13000 runnable 
+
+"Concurrent Mark-Sweep GC Thread" prio=9 tid=7f9c428e5000 nid=0x10fe00000 runnable 
+"Gang worker#0 (Parallel CMS Threads)" prio=9 tid=7f9c428e4000 nid=0x10f3fa000 runnable 
+
+"Gang worker#1 (Parallel CMS Threads)" prio=9 tid=7f9c428e4800 nid=0x10f4fd000 runnable 
+
+"VM Periodic Task Thread" prio=10 tid=7f9c46014000 nid=0x110e43000 waiting on condition 
+
+"Exception Catcher Thread" prio=10 tid=7f9c42802800 nid=0x108625000 runnable 
+JNI global references: 2185
+

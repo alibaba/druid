@@ -47,12 +47,60 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     private final PreparedStatementKey key;
     private final String               sql;
 
+    private int                        defaultMaxFieldSize;
+    private int                        defaultMaxRows;
+    private int                        defaultQueryTimeout;
+    private int                        defaultFetchDirection;
+    private int                        defaultFetchSize;
+    private int                        currentMaxFieldSize;
+    private int                        currentMaxRows;
+    private int                        currentQueryTimeout;
+    private int                        currentFetchDirection;
+    private int                        currentFetchSize;
+
     public PoolablePreparedStatement(PoolableConnection conn, PreparedStatement stmt, PreparedStatementKey key,
-                                     String sql){
+                                     String sql) throws SQLException{
         super(conn, stmt);
         this.stmt = stmt;
         this.key = key;
         this.sql = sql;
+
+        // Remember the defaults
+        defaultMaxFieldSize = stmt.getMaxFieldSize();
+        defaultMaxRows = stmt.getMaxRows();
+        defaultQueryTimeout = stmt.getQueryTimeout();
+        defaultFetchDirection = stmt.getFetchDirection();
+        defaultFetchSize = stmt.getFetchSize();
+        currentMaxFieldSize = defaultMaxFieldSize;
+        currentMaxRows = defaultMaxRows;
+        currentQueryTimeout = defaultQueryTimeout;
+        currentFetchDirection = defaultFetchDirection;
+        currentFetchSize = defaultFetchSize;
+    }
+    
+    public void setFetchSize(int rows) throws SQLException {
+        currentFetchSize = rows;
+        super.setFetchSize(rows);
+    }
+
+    public void setFetchDirection(int direction) throws SQLException {
+        currentFetchDirection = direction;
+        super.setFetchDirection(direction);
+    }
+
+    public void setMaxFieldSize(int max) throws SQLException {
+        currentMaxFieldSize = max;
+        super.setMaxFieldSize(max);
+    }
+
+    public void setMaxRows(int max) throws SQLException {
+        currentMaxRows = max;
+        super.setMaxRows(max);
+    }
+
+    public void setQueryTimeout(int seconds) throws SQLException {
+        currentQueryTimeout = seconds;
+        super.setQueryTimeout(seconds);
     }
 
     public String getSql() {
@@ -77,6 +125,28 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
             return;
         }
 
+        // Reset the defaults
+        if (defaultMaxFieldSize != currentMaxFieldSize) {
+            stmt.setMaxFieldSize(defaultMaxFieldSize);
+            currentMaxFieldSize = defaultMaxFieldSize;
+        }
+        if (defaultMaxRows != currentMaxRows) {
+            stmt.setMaxRows(defaultMaxRows);
+            currentMaxRows = defaultMaxRows;
+        }
+        if (defaultQueryTimeout != currentQueryTimeout) {
+            stmt.setQueryTimeout(defaultQueryTimeout);
+            currentQueryTimeout = defaultQueryTimeout;
+        }
+        if (defaultFetchDirection != currentFetchDirection) {
+            stmt.setFetchDirection(defaultFetchDirection);
+            currentFetchDirection = defaultFetchDirection;
+        }
+        if (defaultFetchSize != currentFetchSize) {
+            stmt.setFetchSize(defaultFetchSize);
+            currentFetchSize = defaultFetchSize;
+        }
+
         conn.closePoolableStatement(this);
     }
 
@@ -91,7 +161,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public ResultSet executeQuery() throws SQLException {
         checkOpen();
-        
+
         transactionRecord(sql);
 
         try {
@@ -109,7 +179,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public int executeUpdate() throws SQLException {
         checkOpen();
-        
+
         transactionRecord(sql);
 
         try {
@@ -343,7 +413,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     @Override
     public boolean execute() throws SQLException {
         checkOpen();
-        
+
         transactionRecord(sql);
 
         try {
@@ -363,10 +433,10 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
             throw checkException(t);
         }
     }
-    
+
     public int[] executeBatch() throws SQLException {
         transactionRecord(sql);
-        
+
         return super.executeBatch();
     }
 

@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
@@ -38,9 +39,9 @@ public class TestClose_1 extends TestCase {
         Assert.assertEquals(true, rs.isClosed());
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
-        Assert.assertEquals(false, stmt.isClosed());
+        Assert.assertEquals(true, stmt.isClosed());
 
-        Assert.assertEquals(stmt, stmt2);
+        Assert.assertEquals(stmt.unwrap(MockStatement.class), stmt2.unwrap(MockStatement.class));
 
         conn.close();
 

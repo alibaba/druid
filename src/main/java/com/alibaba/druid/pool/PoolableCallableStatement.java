@@ -36,7 +36,8 @@ public class PoolableCallableStatement extends PoolablePreparedStatement impleme
 
     private CallableStatement stmt;
 
-    public PoolableCallableStatement(PoolableConnection conn, CallableStatement stmt, PreparedStatementKey key, String sql){
+    public PoolableCallableStatement(PoolableConnection conn, CallableStatement stmt, PreparedStatementKey key,
+                                     String sql) throws SQLException{
         super(conn, stmt, key, sql);
         this.stmt = stmt;
     }

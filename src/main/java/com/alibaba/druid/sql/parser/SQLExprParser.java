@@ -115,7 +115,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr multiplicative() throws ParserException {
-        SQLExpr expr = bitXor();
+        SQLExpr expr = primary();
         return multiplicativeRest(expr);
     }
 
@@ -673,7 +673,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final SQLExpr equality() throws ParserException {
-        SQLExpr expr = bitOr();
+        SQLExpr expr = shift();
         return equalityRest(expr);
     }
 
@@ -681,14 +681,14 @@ public class SQLExprParser extends SQLParser {
         SQLExpr rightExp;
         if (lexer.token() == Token.EQ) {
             lexer.nextToken();
-            rightExp = bitOr();
+            rightExp = shift();
 
             rightExp = equalityRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp);
         } else if (lexer.token() == Token.BANGEQ) {
             lexer.nextToken();
-            rightExp = bitOr();
+            rightExp = shift();
 
             rightExp = equalityRest(rightExp);
 

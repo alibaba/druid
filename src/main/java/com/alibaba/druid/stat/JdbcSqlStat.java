@@ -335,7 +335,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.DATE,
                 SimpleType.STRING, SimpleType.STRING //
 
-                , new ArrayType<Long>(1, SimpleType.LONG)
+                , new ArrayType<Long>(SimpleType.LONG, true)
         };
 
         String[] indexNames = {
@@ -368,7 +368,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "DbType",
                 "URL" //
 
-                , "ExecuteCountHistogram"};
+                , "Histogram"};
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 
@@ -421,7 +421,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("DbType", dbType);
         map.put("URL", null);
 
-        map.put("ExecuteCountHistogram", this.histogram.toArray());
+        map.put("Histogram", this.histogram.toArray());
 
         return map;
     }
