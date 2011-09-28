@@ -3,6 +3,8 @@ package com.alibaba.druid.pool;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -43,4 +45,9 @@ public class DataSourceAdapter extends WrapperAdapter implements DataSource {
     public Connection getConnection(String username, String password) throws SQLException {
         throw new UnsupportedOperationException();
     }
+    
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+    
 }

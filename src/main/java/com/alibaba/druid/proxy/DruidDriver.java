@@ -20,6 +20,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
@@ -280,5 +282,9 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     public static ConcurrentMap<String, DataSourceProxyImpl> getProxyDataSources() {
         return proxyDataSources;
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
     }
 }

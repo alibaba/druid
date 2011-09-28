@@ -1886,13 +1886,13 @@ public class PoolableCallableStatementTest extends TestCase {
 
     public void test_getObject() throws Exception {
 
-        stmt.getObject(1, null);
-        stmt.getObject("1", null);
+        stmt.getObject(1, (java.util.Map) null);
+        stmt.getObject("1", (java.util.Map) null);
 
         {
             SQLException error = null;
             try {
-                stmt.getObject(0, null);
+                stmt.getObject(0, (java.util.Map) null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1902,7 +1902,7 @@ public class PoolableCallableStatementTest extends TestCase {
         {
             SQLException error = null;
             try {
-                stmt.getObject("0", null);
+                stmt.getObject("0", (java.util.Map) null);
             } catch (SQLException ex) {
                 error = ex;
             }

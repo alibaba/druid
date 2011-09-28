@@ -10,6 +10,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.alibaba.druid.pool.WrapperAdapter;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
@@ -576,6 +578,26 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     @Override
     public Date getConnectedTime() {
         return connectedTime;
+    }
+
+    public void setSchema(String schema) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public String getSchema() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void abort(Executor executor) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public int getNetworkTimeout() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

@@ -26,6 +26,7 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.util.Calendar;
 
@@ -598,6 +599,14 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
     @Override
     public void setNClob(String parameterName, Reader reader) throws SQLException {
         createChain().callableStatement_setNClob(this, parameterName, reader);
+    }
+
+    public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

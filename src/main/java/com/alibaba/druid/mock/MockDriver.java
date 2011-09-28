@@ -24,11 +24,13 @@ import java.sql.DriverPropertyInfo;
 import java.sql.NClob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -277,5 +279,9 @@ public class MockDriver implements Driver {
 
     protected SQLXML createSQLXML(MockConnection conn) throws SQLException {
         return new MockSQLXML();
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
     }
 }

@@ -24,6 +24,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 
 import javax.management.JMException;
 import javax.management.openmbean.CompositeDataSupport;
@@ -1304,4 +1306,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public abstract String getProperties();
 
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

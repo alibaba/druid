@@ -29,6 +29,7 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -661,6 +662,14 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
     @Override
     public void setNClob(String parameterName, Reader x) throws SQLException {
         setObject(parameterName, x);
+    }
+
+    public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

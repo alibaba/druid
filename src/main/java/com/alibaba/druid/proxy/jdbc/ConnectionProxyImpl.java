@@ -25,6 +25,7 @@ import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
@@ -33,6 +34,7 @@ import java.sql.Struct;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
@@ -317,6 +319,26 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
         createChain().connection_setTypeMap(this, map);
+    }
+
+    public void setSchema(String schema) throws SQLException {
+        throw new SQLFeatureNotSupportedException();        
+    }
+
+    public String getSchema() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void abort(Executor executor) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public int getNetworkTimeout() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

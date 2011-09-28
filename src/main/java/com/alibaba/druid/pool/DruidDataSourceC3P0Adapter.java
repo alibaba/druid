@@ -4,8 +4,10 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
@@ -471,4 +473,7 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         this.propertyCycle = propertyCycle;
     }
 
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

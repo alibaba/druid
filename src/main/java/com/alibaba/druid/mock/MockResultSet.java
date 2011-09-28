@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -1207,6 +1208,14 @@ public class MockResultSet implements ResultSet {
     @Override
     public void updateNClob(String columnLabel, Reader x) throws SQLException {
         updateObject(columnLabel, x);
+    }
+
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

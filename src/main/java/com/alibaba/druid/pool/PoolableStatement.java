@@ -544,4 +544,12 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     public String toString() {
         return stmt.toString();
     }
+    
+    public void closeOnCompletion() throws SQLException {
+        
+    }
+    
+    public boolean isCloseOnCompletion() throws SQLException {
+        return false;
+    }
 }

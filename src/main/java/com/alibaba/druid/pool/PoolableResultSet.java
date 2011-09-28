@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Statement;
@@ -1739,4 +1740,11 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
         }
     }
 
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+    
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

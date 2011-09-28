@@ -1714,13 +1714,13 @@ public class ResultSetTest extends TestCase {
     public void test_getObject() throws Exception {
         resultSet.next();
 
-        resultSet.getObject(1, null);
-        resultSet.getObject("1", null);
+        resultSet.getObject(1, (java.util.Map) null);
+        resultSet.getObject("1", (java.util.Map) null);
 
         {
             SQLException error = null;
             try {
-                resultSet.getObject(0, null);
+                resultSet.getObject(0, (java.util.Map) null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -1730,7 +1730,7 @@ public class ResultSetTest extends TestCase {
         {
             SQLException error = null;
             try {
-                resultSet.getObject("0", null);
+                resultSet.getObject("0", (java.util.Map) null);
             } catch (SQLException ex) {
                 error = ex;
             }

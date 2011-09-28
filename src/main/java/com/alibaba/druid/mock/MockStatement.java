@@ -18,6 +18,7 @@ package com.alibaba.druid.mock;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
@@ -447,6 +448,14 @@ public class MockStatement implements Statement {
             throw new SQLException("stmt closed.");
         }
         return false;
+    }
+
+    public void closeOnCompletion() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public boolean isCloseOnCompletion() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

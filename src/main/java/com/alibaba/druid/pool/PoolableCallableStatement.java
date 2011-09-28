@@ -26,6 +26,7 @@ import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.util.Calendar;
 
@@ -1044,6 +1045,14 @@ public class PoolableCallableStatement extends PoolablePreparedStatement impleme
         } catch (Throwable t) {
             throw checkException(t);
         }
+    }
+
+    public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }
