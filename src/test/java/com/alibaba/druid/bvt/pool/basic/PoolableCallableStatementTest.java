@@ -18,6 +18,8 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.pool.PoolableCallableStatement;
+import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.PreparedStatementHolder;
 
 public class PoolableCallableStatementTest extends TestCase {
 
@@ -26,7 +28,7 @@ public class PoolableCallableStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         raw = new MockCallableStatement(null, null);
-        stmt = new PoolableCallableStatement(null, raw, null, null) {
+        stmt = new PoolableCallableStatement(null, new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {

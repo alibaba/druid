@@ -15,7 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.util.LRUCache;
@@ -25,26 +26,36 @@ import com.alibaba.druid.util.LRUCache;
  */
 public class PreparedStatementPool {
 
-    private final LRUCache<PreparedStatementKey, PreparedStatement> map;
+    private final Map<PreparedStatementKey, PreparedStatementHolder> map;
 
     public PreparedStatementPool(int maxSize){
-        map = new LRUCache<PreparedStatementKey, PreparedStatement>(maxSize);
+        if (maxSize < 0) {
+            map = new HashMap<PreparedStatementKey, PreparedStatementHolder>(maxSize);
+        } else {
+            map = new LRUCache<PreparedStatementKey, PreparedStatementHolder>(maxSize);
+        }
     }
 
     public static enum MethodType {
         M1, M2, M3, M4, M5, M6, Precall_1, Precall_2, Precall_3
     }
 
-    public PreparedStatement get(PreparedStatementKey key) {
-        return map.remove(key);
+    public PreparedStatementHolder get(PreparedStatementKey key) {
+        PreparedStatementHolder holder = map.remove(key);
+
+        if (holder != null) {
+            holder.incrementReusedCount();
+        }
+        
+        return holder;
     }
 
-    public void put(PoolablePreparedStatement poolableStatement) {
-        PreparedStatementKey key = poolableStatement.getKey();
-        map.put(key, poolableStatement.getRawPreparedStatement());
+    public void put(PreparedStatementHolder holder) {
+        PreparedStatementKey key = holder.getKey();
+        map.put(key, holder);
     }
 
-    public LRUCache<PreparedStatementKey, PreparedStatement> getMap() {
+    public Map<PreparedStatementKey, PreparedStatementHolder> getMap() {
         return map;
     }
 

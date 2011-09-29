@@ -43,27 +43,26 @@ import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
  */
 public class PoolablePreparedStatement extends PoolableStatement implements PreparedStatement {
 
-    private PreparedStatement          stmt;
-    private final PreparedStatementKey key;
-    private final String               sql;
+    private final PreparedStatementHolder holder;
+    private final PreparedStatement       stmt;
+    private final String                  sql;
 
-    private int                        defaultMaxFieldSize;
-    private int                        defaultMaxRows;
-    private int                        defaultQueryTimeout;
-    private int                        defaultFetchDirection;
-    private int                        defaultFetchSize;
-    private int                        currentMaxFieldSize;
-    private int                        currentMaxRows;
-    private int                        currentQueryTimeout;
-    private int                        currentFetchDirection;
-    private int                        currentFetchSize;
+    private int                           defaultMaxFieldSize;
+    private int                           defaultMaxRows;
+    private int                           defaultQueryTimeout;
+    private int                           defaultFetchDirection;
+    private int                           defaultFetchSize;
+    private int                           currentMaxFieldSize;
+    private int                           currentMaxRows;
+    private int                           currentQueryTimeout;
+    private int                           currentFetchDirection;
+    private int                           currentFetchSize;
 
-    public PoolablePreparedStatement(PoolableConnection conn, PreparedStatement stmt, PreparedStatementKey key,
-                                     String sql) throws SQLException{
-        super(conn, stmt);
-        this.stmt = stmt;
-        this.key = key;
-        this.sql = sql;
+    public PoolablePreparedStatement(PoolableConnection conn, PreparedStatementHolder holder) throws SQLException{
+        super(conn, holder.getStatement());
+        this.stmt = holder.getStatement();
+        this.holder = holder;
+        this.sql = holder.getKey().sql;
 
         // Remember the defaults
         defaultMaxFieldSize = stmt.getMaxFieldSize();
@@ -77,7 +76,11 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         currentFetchDirection = defaultFetchDirection;
         currentFetchSize = defaultFetchSize;
     }
-    
+
+    public PreparedStatementHolder getPreparedStatementHolder() {
+        return holder;
+    }
+
     public void setFetchSize(int rows) throws SQLException {
         currentFetchSize = rows;
         super.setFetchSize(rows);
@@ -108,7 +111,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     }
 
     public PreparedStatementKey getKey() {
-        return key;
+        return holder.getKey();
     }
 
     public PreparedStatement getRawPreparedStatement() {
@@ -783,8 +786,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
     public static class PreparedStatementKey {
 
-        protected final String     sql;
-        protected final String     catalog;
+        private final String     sql;
+        private final String     catalog;
 
         protected final MethodType methodType;
 
@@ -820,6 +823,10 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
             }
 
             return true;
+        }
+
+        public String getSql() {
+            return sql;
         }
 
         public int hashCode() {

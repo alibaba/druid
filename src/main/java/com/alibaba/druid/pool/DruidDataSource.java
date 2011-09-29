@@ -41,6 +41,7 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
@@ -725,7 +726,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (poolingPeakTime <= 0) {
             return null;
         }
-        
+
         return new Date(poolingPeakTime);
     }
 
@@ -1090,7 +1091,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public long getErrorCount() {
         return this.errorCount.get();
     }
@@ -1136,6 +1137,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         buf.append("\n\t]");
 
         buf.append("\n}");
+
+        if (this.isPoolPreparedStatements()) {
+            buf.append("\n\n[");
+            for (int i = 0; i < poolingCount; ++i) {
+                ConnectionHolder conn = connections[i];
+                if (conn != null) {
+                    if (i != 0) {
+                        buf.append(",");
+                    }
+                    buf.append("\n\t{ID:");
+                    buf.append(System.identityHashCode(conn));
+                    buf.append(", poolStatements:[");
+                    PreparedStatementPool pool = conn.getStatementPool();
+                    for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
+                        buf.append("\n\t\t{reuseCount:");
+                        buf.append(entry.getValue().getReusedCount());
+                        buf.append(",sql:\"");
+                        buf.append(entry.getKey().getSql());
+                        buf.append("\"");
+                    }
+                    buf.append("}");
+                }
+            }
+            buf.append("\n]");
+        }
 
         return buf.toString();
     }

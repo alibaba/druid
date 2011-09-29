@@ -76,15 +76,7 @@ public class DataSourceTest3 extends TestCase {
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setPoolPreparedStatements(false);
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setPoolPreparedStatements(false);
     }
 
     public void test_error_2() throws Exception {

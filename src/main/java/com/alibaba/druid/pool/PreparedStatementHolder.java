@@ -17,20 +17,36 @@ package com.alibaba.druid.pool;
 
 import java.sql.PreparedStatement;
 
+import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public final class PreparedStatementHolder<T extends PreparedStatement> {
+public final class PreparedStatementHolder {
 
-    private final T statement;
+    private final PreparedStatementKey key;
+    private final PreparedStatement    statement;
+    private int                        useCount = 0;
 
-    public PreparedStatementHolder(T stmt){
-        super();
+    public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
+        this.key = key;
         this.statement = stmt;
     }
 
-    public T getStatement() {
+    public PreparedStatement getStatement() {
         return statement;
+    }
+
+    public PreparedStatementKey getKey() {
+        return key;
+    }
+
+    public void incrementReusedCount() {
+        useCount++;
+    }
+
+    public int getReusedCount() {
+        return useCount;
     }
 
 }
