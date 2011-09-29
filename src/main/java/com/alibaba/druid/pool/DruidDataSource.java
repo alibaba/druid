@@ -1148,16 +1148,24 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     buf.append("\n\t{ID:");
                     buf.append(System.identityHashCode(conn));
-                    buf.append(", poolStatements:[");
                     PreparedStatementPool pool = conn.getStatementPool();
-                    for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                        buf.append("\n\t\t{reuseCount:");
-                        buf.append(entry.getValue().getReusedCount());
-                        buf.append(",sql:\"");
-                        buf.append(entry.getKey().getSql());
-                        buf.append("\"");
+                    
+                    if (pool != null) {
+                        buf.append(", poolStatements:[");
+                        
+                        int entryIndex = 0;
+                        for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
+                            if (entryIndex ++ != 0) {
+                                buf.append(",");
+                            }
+                            buf.append("\n\t\t{reuseCount:");
+                            buf.append(entry.getValue().getReusedCount());
+                            buf.append(",sql:\"");
+                            buf.append(entry.getKey().getSql());
+                            buf.append("\"");
+                        }
+                        buf.append("}");
                     }
-                    buf.append("}");
                 }
             }
             buf.append("\n]");
