@@ -1163,12 +1163,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             buf.append(",sql:\"");
                             buf.append(entry.getKey().getSql());
                             buf.append("\"");
+                            buf.append("\t}");
                         }
-                        buf.append("}");
+                        
                         buf.append("\n\t\t]");
                     }
                     
-                    buf.append("\n}");
+                    buf.append("\n\t}");
                 }
             }
             buf.append("\n]");
