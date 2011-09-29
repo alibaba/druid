@@ -171,7 +171,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
         map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
         map.put("ErrorCount", dataSource.getErrorCount());
-        map.put("ReusePreparedStatement", dataSource.getReusePreparedStatement());
+        map.put("ReusePreparedStatementCount", dataSource.getReusePreparedStatementCount());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -202,7 +202,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements", "TestOnBorrow", //
                 "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis", "DbType", //
                 "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username", "RemoveAbandonedCount", //
-                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatement"
+                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount"
         //
         };
 

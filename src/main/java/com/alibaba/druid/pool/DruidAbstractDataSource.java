@@ -197,7 +197,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         reusePreparedStatement.incrementAndGet();
     }
 
-    public long getReusePreparedStatement() {
+    public long getReusePreparedStatementCount() {
         return reusePreparedStatement.get();
     }
 
