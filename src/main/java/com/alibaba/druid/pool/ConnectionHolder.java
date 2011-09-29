@@ -41,7 +41,7 @@ public final class ConnectionHolder {
     private long                                useCount                 = 0;
 
     private final boolean                       poolPreparedStatements;
-    private final PreparedStatementPool         statementPool;
+    private PreparedStatementPool         statementPool;
 
     private final List<Statement>               statementTrace           = new ArrayList<Statement>();
 
@@ -84,6 +84,9 @@ public final class ConnectionHolder {
     }
 
     public PreparedStatementPool getStatementPool() {
+        if (statementPool == null) {
+            statementPool = new PreparedStatementPool(dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+        }
         return statementPool;
     }
 
