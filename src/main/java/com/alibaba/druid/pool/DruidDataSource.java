@@ -1146,12 +1146,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (i != 0) {
                         buf.append(",");
                     }
-                    buf.append("\n\t{ID:");
+                    buf.append("\n\t{\n\tID:");
                     buf.append(System.identityHashCode(conn));
                     PreparedStatementPool pool = conn.getStatementPool();
                     
                     if (pool != null) {
-                        buf.append(", poolStatements:[");
+                        buf.append(", \n\tpoolStatements:[");
                         
                         int entryIndex = 0;
                         for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
@@ -1165,7 +1165,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             buf.append("\"");
                         }
                         buf.append("}");
+                        buf.append("\n\t\t]");
                     }
+                    
+                    buf.append("\n}");
                 }
             }
             buf.append("\n]");
