@@ -172,6 +172,10 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
         map.put("ErrorCount", dataSource.getErrorCount());
         map.put("ReusePreparedStatementCount", dataSource.getReusePreparedStatementCount());
+        map.put("StartTransactionCount", dataSource.getStartTransactionCount());
+        
+        map.put("CommitCount", dataSource.getCommitCount());
+        map.put("RollbackCount", dataSource.getRollbackCount());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -191,7 +195,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.BOOLEAN, SimpleType.BOOLEAN, //
                 SimpleType.BOOLEAN, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, //
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
-                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG
+                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
+                , SimpleType.LONG, SimpleType.LONG
         //
         };
 
@@ -202,7 +207,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements", "TestOnBorrow", //
                 "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis", "DbType", //
                 "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username", "RemoveAbandonedCount", //
-                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount"
+                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount", "StartTransactionCount", //
+                "CommitCount", "RollbackCount"
         //
         };
 
