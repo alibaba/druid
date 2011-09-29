@@ -40,7 +40,6 @@ public final class ConnectionHolder {
     private long                                lastActiveTimeMillis;
     private long                                useCount                 = 0;
 
-    private final boolean                       poolPreparedStatements;
     private PreparedStatementPool         statementPool;
 
     private final List<Statement>               statementTrace           = new ArrayList<Statement>();
@@ -48,15 +47,10 @@ public final class ConnectionHolder {
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn){
         this.dataSource = dataSource;
         this.conn = conn;
-        this.poolPreparedStatements = dataSource.isPoolPreparedStatements();
         this.connecttimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connecttimeMillis;
 
-        if (this.poolPreparedStatements) {
-            statementPool = new PreparedStatementPool(dataSource.getMaxPoolPreparedStatementPerConnectionSize());
-        } else {
-            statementPool = null;
-        }
+        statementPool = null;
     }
 
     public long getLastActiveTimeMillis() {
@@ -85,7 +79,7 @@ public final class ConnectionHolder {
 
     public PreparedStatementPool getStatementPool() {
         if (statementPool == null) {
-            statementPool = new PreparedStatementPool(dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+            statementPool = new PreparedStatementPool(this);
         }
         return statementPool;
     }
@@ -95,7 +89,7 @@ public final class ConnectionHolder {
     }
 
     public boolean isPoolPreparedStatements() {
-        return poolPreparedStatements;
+        return dataSource.isPoolPreparedStatements();
     }
 
     public Connection getConnection() {
@@ -142,7 +136,8 @@ public final class ConnectionHolder {
             buf.append("\"");
         }
         
-        if (this.getStatementPool() != null) {
+        PreparedStatementPool statmentPool = this.getStatementPool();
+        if (statmentPool != null && statmentPool.getMap().size() > 0) {
             buf.append("\", CachedStatementCount:");
             buf.append(this.getStatementPool().getMap().size());
         }

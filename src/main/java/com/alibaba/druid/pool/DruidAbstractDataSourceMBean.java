@@ -102,6 +102,8 @@ public interface DruidAbstractDataSourceMBean {
     
     int getMaxPoolPreparedStatementPerConnectionSize();
     
+    void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize);
+    
     String getProperties();
 
     int getRawDriverMinorVersion();

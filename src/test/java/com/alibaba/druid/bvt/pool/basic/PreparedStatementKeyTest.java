@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
+import com.alibaba.druid.pool.ConnectionHolder;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
@@ -95,8 +97,9 @@ public class PreparedStatementKeyTest extends TestCase {
     }
     
     public void test_contains() throws Exception {
+        DruidDataSource dataSource = new DruidDataSource();
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
-        PreparedStatementPool pool = new PreparedStatementPool(10);
+        PreparedStatementPool pool = new PreparedStatementPool(new ConnectionHolder(dataSource, null));
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
         Assert.assertTrue(pool.get(k1) != null);

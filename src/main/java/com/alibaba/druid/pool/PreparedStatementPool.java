@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.pool;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.util.LRUCache;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -27,13 +27,15 @@ import com.alibaba.druid.util.LRUCache;
 public class PreparedStatementPool {
 
     private final Map<PreparedStatementKey, PreparedStatementHolder> map;
+    private final DruidAbstractDataSource dataSource;
 
-    public PreparedStatementPool(int maxSize){
-        if (maxSize < 0) {
-            map = new HashMap<PreparedStatementKey, PreparedStatementHolder>(maxSize);
-        } else {
-            map = new LRUCache<PreparedStatementKey, PreparedStatementHolder>(maxSize);
+    public PreparedStatementPool(ConnectionHolder holder){
+        this.dataSource = holder.getDataSource();
+        int initCapacity = holder.getDataSource().getMaxPoolPreparedStatementPerConnectionSize();
+        if (initCapacity <= 0) {
+            initCapacity = 16;
         }
+        map = new LRUCache<PreparedStatementKey, PreparedStatementHolder>(initCapacity);
     }
 
     public static enum MethodType {
@@ -46,7 +48,7 @@ public class PreparedStatementPool {
         if (holder != null) {
             holder.incrementReusedCount();
         }
-        
+
         return holder;
     }
 
@@ -59,4 +61,16 @@ public class PreparedStatementPool {
         return map;
     }
 
+    public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+
+        private static final long serialVersionUID = 1L;
+
+        public LRUCache(int maxSize){
+            super(maxSize);
+        }
+
+        protected boolean removeEldestEntry(Entry<K, V> eldest) {
+            return (size() > dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+        }
+    }
 }
