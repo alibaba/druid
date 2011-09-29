@@ -1147,7 +1147,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         buf.append(",");
                     }
                     buf.append("\n\t{\n\tID:");
-                    buf.append(System.identityHashCode(conn));
+                    buf.append(System.identityHashCode(conn.getConnection()));
                     PreparedStatementPool pool = conn.getStatementPool();
                     
                     if (pool != null) {
