@@ -579,8 +579,10 @@ public class PoolableConnection implements PooledConnection, Connection {
             return;
         }
 
-        checkOpen();
-
+        if (holder == null) {
+            return;
+        }
+        
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementRollbackCount();
 
@@ -602,7 +604,9 @@ public class PoolableConnection implements PooledConnection, Connection {
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-        checkOpen();
+        if (holder == null) {
+            return;
+        }
 
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementRollbackCount();
