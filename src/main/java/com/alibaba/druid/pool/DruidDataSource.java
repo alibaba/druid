@@ -136,6 +136,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             activePeak = 0;
             activePeakTime = 0;
             poolingPeak = 0;
+            createTimespan = 0;
         } finally {
             lock.unlock();
         }
@@ -159,6 +160,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmpty.signalAll();
                 notEmptySignalCount++;
             }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void setPoolPreparedStatements(boolean value) {
+        lock.lock();
+        try {
+            if (this.poolPreparedStatements && (!value)) {
+                for (int i = 0; i < poolingCount; ++i) {
+                    ConnectionHolder connection = connections[i];
+
+                    connection.getStatementPool().getMap().clear();
+                }
+            }
+            super.setPoolPreparedStatements(value);
         } finally {
             lock.unlock();
         }
@@ -1150,13 +1167,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     buf.append("\n\t{\n\tID:");
                     buf.append(System.identityHashCode(conn.getConnection()));
                     PreparedStatementPool pool = conn.getStatementPool();
-                    
+
                     if (pool != null) {
                         buf.append(", \n\tpoolStatements:[");
-                        
+
                         int entryIndex = 0;
                         for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                            if (entryIndex ++ != 0) {
+                            if (entryIndex++ != 0) {
                                 buf.append(",");
                             }
                             buf.append("\n\t\t{reuseCount:");
@@ -1166,10 +1183,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             buf.append("\"");
                             buf.append("\t}");
                         }
-                        
+
                         buf.append("\n\t\t]");
                     }
-                    
+
                     buf.append("\n\t}");
                 }
             }
@@ -1196,6 +1213,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public String getVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-09-28 22:44";
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-10-08 17:28";
     }
 }
