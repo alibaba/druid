@@ -181,6 +181,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
     protected final AtomicLong                                                               reusePreparedStatement                    = new AtomicLong();
+    protected final AtomicLong                                                               preparedStatementCount                    = new AtomicLong();
+    protected final AtomicLong                                                               closedPreparedStatementCount              = new AtomicLong();
 
     protected final Histogram                                                                transactionHistogram                      = new Histogram(
                                                                                                                                                        10,
@@ -192,8 +194,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }
+    
+    public void incrementClosedPreparedStatementCount() {
+        closedPreparedStatementCount.incrementAndGet();
+    }
 
     public void incrementPreparedStatementCount() {
+        preparedStatementCount.incrementAndGet();
+    }
+
+    public long getPreparedStatementCount() {
+        return preparedStatementCount.get();
+    }
+
+    public void incrementReusePreparedStatementCount() {
         reusePreparedStatement.incrementAndGet();
     }
 
@@ -1308,5 +1322,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
+    }
+    
+    public void closePreapredStatement(PreparedStatementHolder stmtHolder) {
+        if (stmtHolder == null) {
+            return;
+        }
+        closedPreparedStatementCount.incrementAndGet();
+        
+        JdbcUtils.close(stmtHolder.getStatement());
     }
 }

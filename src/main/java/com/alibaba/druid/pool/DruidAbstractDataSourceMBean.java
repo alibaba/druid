@@ -121,4 +121,6 @@ public interface DruidAbstractDataSourceMBean {
     long getTransactionThresholdMillis();
     
     long getReusePreparedStatementCount();
+    
+    long getPreparedStatementCount();
 }

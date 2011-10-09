@@ -44,7 +44,6 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
-import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.TransactionInfo;
 
 /**
@@ -95,6 +94,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             stmt.setClosed(true); // soft set close
         } else {
             stmt.closeInternal();
+            holder.getDataSource().incrementClosedPreparedStatementCount();
         }
     }
 
@@ -105,15 +105,6 @@ public class PoolableConnection implements PooledConnection, Connection {
     @Override
     public Connection getConnection() {
         return conn;
-    }
-    
-    void closePoolableStatement() {
-        PreparedStatementPool statmentPool = holder.getStatementPool();
-        if (statmentPool != null) {
-            for (PreparedStatementHolder holder : statmentPool.getMap().values()) {
-                JdbcUtils.close(holder.getStatement());
-            }
-        }
     }
 
     void disable() {
@@ -164,11 +155,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -195,12 +187,14 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType, resultSetConcurrency));
+                stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
+                                                                                    resultSetConcurrency));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -227,12 +221,15 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability));
+                stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
+                                                                                    resultSetConcurrency,
+                                                                                    resultSetHoldability));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -258,11 +255,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, columnIndexes));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -288,11 +286,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, columnNames));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -318,11 +317,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, autoGeneratedKeys));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -351,11 +351,12 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -381,12 +382,15 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability));
+                stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
+                                                                               resultSetConcurrency,
+                                                                               resultSetHoldability));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -411,12 +415,14 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType, resultSetConcurrency));
+                stmtHolder = new PreparedStatementHolder(key,
+                                                         conn.prepareCall(sql, resultSetType, resultSetConcurrency));
+                holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
             }
         } else {
-            holder.getDataSource().incrementPreparedStatementCount();
+            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(stmtHolder.getStatement());
@@ -582,7 +588,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder == null) {
             return;
         }
-        
+
         DruidAbstractDataSource dataSource = holder.getDataSource();
         dataSource.incrementRollbackCount();
 

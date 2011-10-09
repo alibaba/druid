@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -57,7 +56,7 @@ public class PreparedStatementPool {
         PreparedStatementKey key = holder.getKey();
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null) {
-            JdbcUtils.close(oldHolder.getStatement());
+            dataSource.closePreapredStatement(oldHolder);
         }
     }
 
