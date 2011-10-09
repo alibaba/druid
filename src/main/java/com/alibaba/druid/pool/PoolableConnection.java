@@ -188,7 +188,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
-                                                                                    resultSetConcurrency));
+                                                                                          resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
@@ -383,8 +383,8 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
-                                                                               resultSetConcurrency,
-                                                                               resultSetHoldability));
+                                                                                     resultSetConcurrency,
+                                                                                     resultSetHoldability));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);
@@ -415,8 +415,8 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key,
-                                                         conn.prepareCall(sql, resultSetType, resultSetConcurrency));
+                stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
+                                                                                     resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
             } catch (SQLException ex) {
                 handleException(ex);

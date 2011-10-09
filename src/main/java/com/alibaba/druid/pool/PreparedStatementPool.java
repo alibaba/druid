@@ -27,7 +27,7 @@ import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 public class PreparedStatementPool {
 
     private final Map<PreparedStatementKey, PreparedStatementHolder> map;
-    private final DruidAbstractDataSource dataSource;
+    private final DruidAbstractDataSource                            dataSource;
 
     public PreparedStatementPool(ConnectionHolder holder){
         this.dataSource = holder.getDataSource();
@@ -35,7 +35,7 @@ public class PreparedStatementPool {
         if (initCapacity <= 0) {
             initCapacity = 16;
         }
-        map = new LRUCache<PreparedStatementKey, PreparedStatementHolder>(initCapacity);
+        map = new LRUCache(initCapacity);
     }
 
     public static enum MethodType {
@@ -64,7 +64,7 @@ public class PreparedStatementPool {
         return map;
     }
 
-    public class LRUCache<K, V> extends LinkedHashMap<K, V> {
+    public class LRUCache extends LinkedHashMap<PreparedStatementKey, PreparedStatementHolder> {
 
         private static final long serialVersionUID = 1L;
 
@@ -72,8 +72,14 @@ public class PreparedStatementPool {
             super(maxSize);
         }
 
-        protected boolean removeEldestEntry(Entry<K, V> eldest) {
-            return (size() > dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+        protected boolean removeEldestEntry(Entry<PreparedStatementKey, PreparedStatementHolder> eldest) {
+            boolean remove = (size() > dataSource.getMaxPoolPreparedStatementPerConnectionSize());
+
+            if (remove) {
+                dataSource.closePreapredStatement(eldest.getValue());
+            }
+
+            return remove;
         }
     }
 }

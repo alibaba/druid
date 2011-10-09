@@ -198,6 +198,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void incrementClosedPreparedStatementCount() {
         closedPreparedStatementCount.incrementAndGet();
     }
+    
+    public long getClosedPreparedStatementCount() {
+        return closedPreparedStatementCount.get();
+    }
 
     public void incrementPreparedStatementCount() {
         preparedStatementCount.incrementAndGet();

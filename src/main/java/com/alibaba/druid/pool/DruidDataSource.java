@@ -1217,6 +1217,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public String getVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-10-08 17:28";
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-10-09 11:42";
     }
 }
