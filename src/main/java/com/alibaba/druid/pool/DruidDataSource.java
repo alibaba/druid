@@ -172,6 +172,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 for (int i = 0; i < poolingCount; ++i) {
                     ConnectionHolder connection = connections[i];
 
+                    for (PreparedStatementHolder holder : connection.getStatementPool().getMap().values()) {
+                        JdbcUtils.close(holder.getStatement());
+                    }
+                    
                     connection.getStatementPool().getMap().clear();
                 }
             }
