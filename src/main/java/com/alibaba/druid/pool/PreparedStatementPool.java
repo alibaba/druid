@@ -47,7 +47,6 @@ public class PreparedStatementPool {
 
         if (holder != null) {
             holder.incrementReusedCount();
-            dataSource.decrementCachedPreparedStatementCount();
         }
 
         return holder;
@@ -59,7 +58,9 @@ public class PreparedStatementPool {
         if (oldHolder != null) {
             dataSource.closePreapredStatement(oldHolder);
         } else {
-            dataSource.incrementCachedPreparedStatementCount();
+            if (holder.getReusedCount() == 0) {
+                dataSource.incrementCachedPreparedStatementCount();
+            }
         }
     }
 
