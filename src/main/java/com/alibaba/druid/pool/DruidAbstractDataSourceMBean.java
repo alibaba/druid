@@ -125,4 +125,6 @@ public interface DruidAbstractDataSourceMBean {
     long getPreparedStatementCount();
     
     long getClosedPreparedStatementCount();
+    
+    long getCachedPreparedStatementCount();
 }

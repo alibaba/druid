@@ -174,6 +174,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     for (PreparedStatementHolder holder : connection.getStatementPool().getMap().values()) {
                         closePreapredStatement(holder);
+                        decrementCachedPreparedStatementCount();
                     }
                     
                     connection.getStatementPool().getMap().clear();
@@ -1217,6 +1218,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public String getVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-10-09 11:42";
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-10-09 14:58";
     }
 }

@@ -47,6 +47,7 @@ public class PreparedStatementPool {
 
         if (holder != null) {
             holder.incrementReusedCount();
+            dataSource.decrementCachedPreparedStatementCount();
         }
 
         return holder;
@@ -57,6 +58,8 @@ public class PreparedStatementPool {
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null) {
             dataSource.closePreapredStatement(oldHolder);
+        } else {
+            dataSource.incrementCachedPreparedStatementCount();
         }
     }
 
@@ -77,6 +80,7 @@ public class PreparedStatementPool {
 
             if (remove) {
                 dataSource.closePreapredStatement(eldest.getValue());
+                dataSource.decrementCachedPreparedStatementCount();
             }
 
             return remove;
