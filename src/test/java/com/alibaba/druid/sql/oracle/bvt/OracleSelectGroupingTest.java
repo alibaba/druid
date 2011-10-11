@@ -23,19 +23,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
-public class OracleSelectParserTest extends TestCase {
+public class OracleSelectGroupingTest extends TestCase {
 
     public void test_select() throws Exception {
-        String sql = "SELECT last_name, department_id FROM employees WHERE department_id = (SELECT department_id FROM employees WHERE last_name = 'Lorentz') ORDER BY last_name, department_id;";
-
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        output(statementList);
-    }
-
-    public void test_hinits() throws Exception {
-        String sql = "SELECT /*+FIRST_ROWS*/ * FROM T";
+        String sql = "SELECT COUNT(*) FROM employees e, departments d WHERE d.department_id = e.department_id GROUP BY ROLLUP (department_name, job_id);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
