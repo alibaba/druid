@@ -142,7 +142,7 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>com.sun</groupId>
+					<groupId>com.alibaba</groupId>
 					<artifactId>jconsole</artifactId>
 					<version>1.6.0</version>
 					<scope>system</scope>
