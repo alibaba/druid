@@ -111,7 +111,8 @@
 				</file>
 			</activation>
 			<properties>
-				<toolsjar>${java.home}/../lib/jconsole.jar</toolsjar>
+				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
 			</properties>
 
 			<dependencies>
@@ -127,7 +128,7 @@
 					<artifactId>jconsole</artifactId>
 					<version>1.6.0</version>
 					<scope>system</scope>
-					<systemPath>${java.home}/../lib/jconsole.jar</systemPath>
+					<systemPath>${jconsolejar}</systemPath>
 				</dependency>
 			</dependencies>
 		</profile>
