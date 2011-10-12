@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
@@ -39,12 +40,21 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
+
+
+
+
+
+
 
 
     public boolean                allowStringAdditive = false;
@@ -199,6 +209,18 @@ public class OracleExprParser extends SQLExprParser {
                         throw new ParserException("TODO");
                 }
                 return primaryRest(sqlExpr);
+                
+           case CURSOR:
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    
+                    OracleSelect select = createSelectParser().select();
+                    OracleCursorExpr cursorExpr = new OracleCursorExpr(select);
+                    
+                    accept(Token.RPAREN);
+                    
+                    sqlExpr = cursorExpr;
+                    return  primaryRest(sqlExpr);
             default:
                 return super.primary();
         }
@@ -217,7 +239,7 @@ public class OracleExprParser extends SQLExprParser {
 
             expr = dblink;
         }
-
+        
         return super.primaryRest(expr);
     }
 

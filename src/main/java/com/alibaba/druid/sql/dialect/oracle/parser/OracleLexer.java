@@ -93,6 +93,8 @@ public class OracleLexer extends Lexer {
         map.put("EXTRACT", Token.EXTRACT);
         map.put("DATE", Token.DATE);
         map.put("TIMESTAMP", Token.TIMESTAMP);
+        
+        map.put("CURSOR", Token.CURSOR);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

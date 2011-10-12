@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSQLParserResourceTest extends TestCase {
@@ -40,20 +39,9 @@ public class OracleSQLParserResourceTest extends TestCase {
 
         Assert.assertEquals(1, statementList.size());
 
-        String text = output(statementList);
+        String text = TestUtils.output(statementList);
         System.out.println(text);
         Assert.assertEquals(expect, text.trim());
 
-    }
-
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-        OracleOutputVisitor visitor = new OracleOutputVisitor(out);
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
     }
 }

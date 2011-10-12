@@ -18,6 +18,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArrayAccessExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
@@ -586,6 +587,16 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleBinaryDoubleExpr x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleCursorExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCursorExpr x) {
+        
     }
 
 }
