@@ -388,6 +388,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                       new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
                                                                     stackTrace));
             }
+            
+            if (!this.isDefaultAutoCommit()) {
+                poolalbeConnection.setAutoCommit(false);
+            }
 
             return poolalbeConnection;
         }
