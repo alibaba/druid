@@ -40,7 +40,7 @@ public class OracleHint extends OracleSQLObjectImpl {
         this.name = name;
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }

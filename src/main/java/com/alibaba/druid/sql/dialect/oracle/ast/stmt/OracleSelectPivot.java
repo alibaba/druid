@@ -35,7 +35,7 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
 
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.items);
             acceptChild(visitor, this.pivotFor);
@@ -92,7 +92,7 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
             this.expr = expr;
         }
 
-        protected void accept0(OracleASTVisitor visitor) {
+        public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, this.expr);
             }

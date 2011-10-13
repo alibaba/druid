@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupComparisonCondition;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
@@ -265,4 +266,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCursorExpr x);
     
     void endVisit(OracleCursorExpr x);
+    
+    boolean visit(OracleIsSetExpr x);
+    
+    void endVisit(OracleIsSetExpr x);
 }

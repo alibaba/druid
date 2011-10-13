@@ -33,7 +33,7 @@ public class OracleSelectForUpdate extends OracleSQLObjectImpl {
 
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.of);
         }

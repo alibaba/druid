@@ -87,7 +87,7 @@ public class OracleIntervalExpr extends SQLLiteralExpr implements OracleExpr {
         this.accept0((OracleASTVisitor) visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }

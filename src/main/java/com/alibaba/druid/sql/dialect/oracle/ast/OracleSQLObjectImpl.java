@@ -32,5 +32,5 @@ public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements Oracl
         this.accept0((OracleASTVisitor) visitor);
     }
 
-    protected abstract void accept0(OracleASTVisitor visitor);
+    public abstract void accept0(OracleASTVisitor visitor);
 }

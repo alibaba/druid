@@ -19,6 +19,8 @@ import java.math.BigInteger;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
@@ -38,6 +40,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -48,43 +51,6 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public boolean                allowStringAdditive = false;
@@ -574,5 +540,27 @@ public class OracleExprParser extends SQLExprParser {
             }
             
             return interval;    
+    }
+    
+    public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
+        if (lexer.token() == Token.IS) {
+            lexer.nextToken();
+            
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                SQLExpr rightExpr = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.IsNot, rightExpr);
+            } else if (identifierEquals("A")) {
+                lexer.nextToken();
+                accept(Token.SET);
+                expr = new OracleIsSetExpr(expr);
+            } else {
+                SQLExpr rightExpr = primary();
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Is, rightExpr);
+            }
+            
+            return expr;
+        }
+        return super.relationalRest(expr);
     }
 }

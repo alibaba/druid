@@ -66,7 +66,7 @@ public class SubqueryFactoringClause extends OracleSQLObjectImpl {
         }
 
         @Override
-        protected void accept0(OracleASTVisitor visitor) {
+        public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, name);
                 acceptChild(visitor, columns);
@@ -78,7 +78,7 @@ public class SubqueryFactoringClause extends OracleSQLObjectImpl {
     }
 
     @Override
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, entries);
         }

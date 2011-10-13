@@ -37,7 +37,7 @@ public class OracleBinaryFloatExpr extends SQLNumericLiteralExpr implements Orac
         accept0((OracleASTVisitor) visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }
