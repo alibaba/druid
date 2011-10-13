@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
@@ -241,12 +242,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleIntervalExpr x) {
-        print("INTERVAL '");
-        print(x.getValue());
-        print("' ");
+        if (x.getValue() instanceof SQLLiteralExpr) {
+            print("INTERVAL ");
+            x.getValue().accept(this);
+            print(" ");
+        } else {
+            print('(');
+            x.getValue().accept(this);
+            print(") ");
+        }
+
         print(x.getType().name());
 
-        if ((x.getPrecision() != null) || (x.getFactionalSecondsPrecision() != null)) {
+        if (x.getPrecision() != null) {
             print("(");
             print(x.getPrecision().intValue());
             if (x.getFactionalSecondsPrecision() != null) {
@@ -258,10 +266,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         if (x.getToType() != null) {
             print(" TO ");
-            print(x.getType().name());
+            print(x.getToType().name());
             if (x.getToFactionalSecondsPrecision() != null) {
                 print("(");
-                print(x.getFactionalSecondsPrecision().intValue());
+                print(x.getToFactionalSecondsPrecision().intValue());
                 print(")");
             }
         }
@@ -1152,6 +1160,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCursorExpr x) {
-        
+
     }
 }

@@ -95,6 +95,12 @@ public class OracleLexer extends Lexer {
         map.put("TIMESTAMP", Token.TIMESTAMP);
         
         map.put("CURSOR", Token.CURSOR);
+        
+        map.put("DAY", Token.DAY);
+        map.put("YEAR", Token.YEAR);
+        map.put("MONTH", Token.MONTH);
+        map.put("SECOND", Token.SECOND);
+        map.put("TO", Token.TO);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -22,7 +23,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class OracleIntervalExpr extends SQLLiteralExpr {
 
     private static final long  serialVersionUID = 1L;
-    private String             value;
+    private SQLExpr            value;
     private OracleIntervalType type;
     private Integer            precision;
     private Integer            factionalSecondsPrecision;
@@ -33,11 +34,11 @@ public class OracleIntervalExpr extends SQLLiteralExpr {
 
     }
 
-    public String getValue() {
+    public SQLExpr getValue() {
         return this.value;
     }
 
-    public void setValue(String value) {
+    public void setValue(SQLExpr value) {
         this.value = value;
     }
 

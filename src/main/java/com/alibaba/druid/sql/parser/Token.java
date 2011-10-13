@@ -106,7 +106,12 @@ public enum Token {
     EXTRACT("EXTRACT"),
     TIMESTAMP("TIMESTAMP"),
     DATE("DATE"),
-    CURSOR("CURSOR"),
+    CURSOR("SECOND"),
+    DAY("DAY"),
+    YEAR("YEAR"),
+    MONTH("MONTH"),
+    SECOND("SECOND"),
+    TO("TO"),
 
     EOF, 
     ERROR,
