@@ -66,7 +66,8 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public OracleExprParser(String text){
-        super(text);
+        super(new OracleLexer(text));
+        this.lexer.nextToken();
     }
 
     public boolean isAggreateFunction(String word) {
