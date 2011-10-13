@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 
-public abstract class OracleDatetimeLiteralExpr extends SQLLiteralExpr {
+public abstract class OracleDatetimeLiteralExpr extends SQLLiteralExpr implements OracleExpr {
 
     private static final long serialVersionUID = 1L;
     protected int             year;

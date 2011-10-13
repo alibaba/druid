@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAnalytic extends SQLObjectImpl {
+public class OracleAnalytic extends SQLObjectImpl implements OracleExpr {
 
     private static final long       serialVersionUID = 1L;
     private final List<SQLExpr>     partitionBy      = new ArrayList<SQLExpr>();

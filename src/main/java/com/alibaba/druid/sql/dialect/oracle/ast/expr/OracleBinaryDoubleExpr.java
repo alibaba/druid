@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr {
+public class OracleBinaryDoubleExpr extends SQLNumericLiteralExpr implements OracleExpr {
 
     private static final long serialVersionUID = 1L;
 

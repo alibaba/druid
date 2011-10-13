@@ -17,9 +17,9 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 
-public abstract class OracleConstraint extends OracleSQLObject {
+public abstract class OracleConstraint extends OracleSQLObjectImpl {
 
     private static final long       serialVersionUID = 1L;
 

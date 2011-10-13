@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast.expr;
+package com.alibaba.druid.sql.dialect.oracle.ast;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-@SuppressWarnings("serial")
-public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr {
+public abstract class OracleSQLObjectImpl extends SQLObjectImpl implements OracleSQLObject {
 
-    private Type    type;
-    private SQLExpr expr;
+    private static final long serialVersionUID = 1L;
 
-    public OracleAnalyticWindowing(){
+    public OracleSQLObjectImpl(){
 
     }
 
@@ -35,30 +32,5 @@ public class OracleAnalyticWindowing extends SQLObjectImpl implements OracleExpr
         this.accept0((OracleASTVisitor) visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
-        }
-        visitor.endVisit(this);
-    }
-
-    public SQLExpr getExpr() {
-        return this.expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
-    }
-
-    public Type getType() {
-        return this.type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public static enum Type {
-        ROWS, RANGE;
-    }
+    protected abstract void accept0(OracleASTVisitor visitor);
 }

@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 
-public abstract class OracleUpdateSetClause extends OracleSQLObject {
+public abstract class OracleUpdateSetClause extends OracleSQLObjectImpl {
 
     private static final long serialVersionUID = 1L;
 

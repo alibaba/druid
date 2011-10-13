@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleDbLinkExpr extends SQLExprImpl implements SQLName {
+public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr {
 
     private static final long serialVersionUID = 1L;
     private SQLExpr           expr;

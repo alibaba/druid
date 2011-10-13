@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleGroupingSetsExpr extends SQLExprImpl {
+public class OracleGroupingSetsExpr extends SQLExprImpl implements OracleExpr {
 
     private static final long   serialVersionUID = 1L;
     private final List<SQLExpr> items            = new ArrayList<SQLExpr>();

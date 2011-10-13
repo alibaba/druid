@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAggregateExpr extends SQLAggregateExpr implements Serializable {
+public class OracleAggregateExpr extends SQLAggregateExpr implements Serializable, OracleExpr {
 
     private static final long serialVersionUID = 1L;
     private OracleAnalytic    over;

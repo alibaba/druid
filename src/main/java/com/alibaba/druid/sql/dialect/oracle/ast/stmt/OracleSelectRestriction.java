@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public abstract class OracleSelectRestriction extends OracleSQLObject {
+public abstract class OracleSelectRestriction extends OracleSQLObjectImpl {
 
     private static final long serialVersionUID = 1L;
 

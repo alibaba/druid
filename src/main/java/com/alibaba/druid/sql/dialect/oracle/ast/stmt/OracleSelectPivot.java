@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleSelectPivot extends OracleSelectPivotBase {
@@ -65,7 +65,7 @@ public class OracleSelectPivot extends OracleSelectPivotBase {
         this.xml = xml;
     }
 
-    public static class Item extends OracleSQLObject {
+    public static class Item extends OracleSQLObjectImpl {
 
         private static final long serialVersionUID = 1L;
 

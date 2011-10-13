@@ -6,10 +6,10 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class SubqueryFactoringClause extends OracleSQLObject {
+public class SubqueryFactoringClause extends OracleSQLObjectImpl {
 
     private static final long serialVersionUID = 1L;
 
@@ -19,7 +19,7 @@ public class SubqueryFactoringClause extends OracleSQLObject {
         return entries;
     }
 
-    public static class Entry extends OracleSQLObject {
+    public static class Entry extends OracleSQLObjectImpl {
 
         private static final long   serialVersionUID = 1L;
 

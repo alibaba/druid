@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleTimestampExpr extends SQLLiteralExpr {
+public class OracleTimestampExpr extends SQLLiteralExpr implements OracleExpr {
 
     private static final long serialVersionUID = 1L;
     private String            literal;

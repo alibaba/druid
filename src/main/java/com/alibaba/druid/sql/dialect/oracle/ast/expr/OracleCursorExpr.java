@@ -5,7 +5,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleCursorExpr extends SQLExprImpl {
+public class OracleCursorExpr extends SQLExprImpl implements OracleExpr {
 
     private static final long serialVersionUID = 1L;
 

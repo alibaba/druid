@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleGroupComparisonCondition extends SQLExprImpl {
+public class OracleGroupComparisonCondition extends SQLExprImpl implements OracleExpr {
 
     private static final long     serialVersionUID = 1L;
     private final List<SQLExpr>   exprList         = new ArrayList<SQLExpr>();

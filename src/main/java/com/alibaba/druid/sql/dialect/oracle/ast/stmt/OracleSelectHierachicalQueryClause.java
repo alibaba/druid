@@ -16,10 +16,10 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleSelectHierachicalQueryClause extends OracleSQLObject {
+public class OracleSelectHierachicalQueryClause extends OracleSQLObjectImpl {
 
     private static final long serialVersionUID = 1L;
 
