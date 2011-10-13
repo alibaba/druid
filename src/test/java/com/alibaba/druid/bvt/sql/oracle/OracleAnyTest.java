@@ -15,8 +15,8 @@ public class OracleAnyTest extends TestCase {
                      + "ORDER BY country, prod, year;";
 
         String expect = "SELECT country, prod, YEAR, s\n" + "FROM sales_view\n" + "MODEL\n"
-                        + "PARTITION BY (country)\n" + "DIMENSION BY (prod, YEAR)\n" + "MEASURES (sale s)\n"
-                        + "IGNORE NAV\n" + "UNIQUE DIMENSION\n" + "RULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n"
+                        + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, YEAR)\n" + "\tMEASURES (sale s)\n"
+                        + "\tIGNORE NAV\n" + "\tUNIQUE DIMENSION\n" + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n"
                         + "ORDER BY country, prod, YEAR;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);

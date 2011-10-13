@@ -1212,6 +1212,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(ModelClause x) {
         print("MODEL");
 
+        incrementIndent();
         for (CellReferenceOption opt : x.getCellReferenceOptions()) {
             print(' ');
             print(opt.name);
@@ -1228,6 +1229,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         x.getMainModel().accept(this);
+        decrementIndent();
 
         return false;
     }
