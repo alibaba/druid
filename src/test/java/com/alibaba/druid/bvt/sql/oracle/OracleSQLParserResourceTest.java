@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.test.TestUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSQLParserResourceTest extends TestCase {

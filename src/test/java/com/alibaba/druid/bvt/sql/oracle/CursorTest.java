@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.test.TestUtils;
 
 public class CursorTest extends TestCase {
 
