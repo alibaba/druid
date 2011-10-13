@@ -7,6 +7,15 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.MainModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
@@ -597,17 +606,106 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleCursorExpr x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleIsSetExpr x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleIsSetExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(ReturnRowsClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ReturnRowsClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ModelClause x) {
+
+    }
+
+    @Override
+    public boolean visit(MainModelClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MainModelClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelColumnClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ModelColumnClause x) {
+
+    }
+
+    @Override
+    public boolean visit(QueryPartitionClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(QueryPartitionClause x) {
         
     }
 
+    @Override
+    public boolean visit(ModelColumn x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ModelColumn x) {
+        
+    }
+
+    @Override
+    public boolean visit(ModelRulesClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ModelRulesClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(CellAssignmentItem x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(CellAssignmentItem x) {
+        
+    }
+
+    @Override
+    public boolean visit(CellAssignment x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(CellAssignment x) {
+        
+    }
 }

@@ -112,6 +112,7 @@ public enum Token {
     MONTH("MONTH"),
     SECOND("SECOND"),
     TO("TO"),
+    MODEL("MODEL"),
 
     EOF, 
     ERROR,

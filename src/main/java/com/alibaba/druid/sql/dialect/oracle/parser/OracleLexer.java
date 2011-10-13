@@ -101,6 +101,7 @@ public class OracleLexer extends Lexer {
         map.put("MONTH", Token.MONTH);
         map.put("SECOND", Token.SECOND);
         map.put("TO", Token.TO);
+        map.put("MODEL", Token.MODEL);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

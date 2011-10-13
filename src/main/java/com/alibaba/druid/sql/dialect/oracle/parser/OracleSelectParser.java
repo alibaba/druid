@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -29,6 +32,18 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellReferenceOption;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.MainModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRuleOption;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
@@ -241,6 +256,8 @@ public class OracleSelectParser extends SQLSelectParser {
 
         parseGroupBy(queryBlock);
 
+        parseModelClause(queryBlock);
+
         return queryRest(queryBlock);
     }
 
@@ -292,6 +309,232 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         return selectQuery;
+    }
+
+    private void parseModelClause(OracleSelectQueryBlock queryBlock) {
+        if (lexer.token() != Token.MODEL) {
+            return;
+        }
+
+        lexer.nextToken();
+
+        ModelClause model = new ModelClause();
+        parseCellReferenceOptions(model.getCellReferenceOptions());
+
+        if (identifierEquals("RETURN")) {
+            lexer.nextToken();
+            ReturnRowsClause returnRowsClause = new ReturnRowsClause();
+            if (lexer.token() == Token.ALL) {
+                lexer.nextToken();
+                returnRowsClause.setAll(true);
+            } else {
+                acceptIdentifier("UPDATED");
+            }
+            acceptIdentifier("ROWS");
+
+            model.setReturnRowsClause(returnRowsClause);
+        }
+
+        while (lexer.token() == Token.REFERENCE) {
+            ReferenceModelClause referenceModelClause = new ReferenceModelClause();
+            lexer.nextToken();
+
+            SQLExpr name = expr();
+            referenceModelClause.setName(name);
+
+            accept(Token.ON);
+            accept(Token.LPAREN);
+            OracleSelect subQuery = this.select();
+            accept(Token.RPAREN);
+            referenceModelClause.setSubQuery(subQuery);
+
+            parseModelColumnClause(referenceModelClause);
+
+            parseCellReferenceOptions(referenceModelClause.getCellReferenceOptions());
+
+            model.getReferenceModelClauses().add(referenceModelClause);
+        }
+
+        parseMainModelClause(model);
+
+        queryBlock.setModelClause(model);
+    }
+
+    private void parseMainModelClause(ModelClause modelClause) {
+        MainModelClause mainModel = new MainModelClause();
+
+        if (identifierEquals("MAIN")) {
+            lexer.nextToken();
+            mainModel.setMainModelName(expr());
+        }
+
+        ModelColumnClause modelColumnClause = new ModelColumnClause();
+        parseQueryPartitionClause(modelColumnClause);
+        mainModel.setModelColumnClause(modelColumnClause);
+        
+        acceptIdentifier("DIMENSION");
+        accept(Token.BY);
+        accept(Token.LPAREN);
+        for (;;) {
+            if (lexer.token() == Token.RPAREN) {
+                lexer.nextToken();
+                break;
+            }
+            
+            ModelColumn column = new ModelColumn();
+            column.setExpr(expr());
+            column.setAlias(as());
+            modelColumnClause.getDimensionByColumns().add(column);
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+        }
+        
+        acceptIdentifier("MEASURES");
+        accept(Token.LPAREN);
+        for (;;) {
+            if (lexer.token() == Token.RPAREN) {
+                lexer.nextToken();
+                break;
+            }
+            
+            ModelColumn column = new ModelColumn();
+            column.setExpr(expr());
+            column.setAlias(as());
+            modelColumnClause.getMeasuresColumns().add(column);
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+        }
+        mainModel.setModelColumnClause(modelColumnClause);
+        
+        parseCellReferenceOptions(mainModel.getCellReferenceOptions());
+        
+        parseModelRulesClause(mainModel);
+
+        modelClause.setMainModel(mainModel);
+    }
+    
+    private void parseModelRulesClause(MainModelClause mainModel) {
+        ModelRulesClause modelRulesClause = new ModelRulesClause(); 
+        if (identifierEquals("RULES")) {
+            lexer.nextToken();
+            if (lexer.token() == Token.UPDATE) {
+                modelRulesClause.getOptions().add(ModelRuleOption.UPDATE);
+                lexer.nextToken();
+            } else if (identifierEquals("UPSERT")) {
+                modelRulesClause.getOptions().add(ModelRuleOption.UPSERT);
+                lexer.nextToken();
+            }
+            
+            if (identifierEquals("AUTOMATIC")) {
+                lexer.nextToken();
+                accept(Token.ORDER);
+                modelRulesClause.getOptions().add(ModelRuleOption.AUTOMATIC_ORDER);
+            } else if (identifierEquals("SEQUENTIAL")) {
+                lexer.nextToken();
+                accept(Token.ORDER);
+                modelRulesClause.getOptions().add(ModelRuleOption.SEQUENTIAL_ORDER);
+            }
+        }
+        
+        if (identifierEquals("ITERATE")) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            modelRulesClause.setIterate(expr());
+            accept(Token.RPAREN);
+            
+            if (identifierEquals("UNTIL")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                modelRulesClause.setUntil(expr());
+                accept(Token.RPAREN); 
+            }
+        }
+        
+        accept(Token.LPAREN);
+        for (;;) {
+            if (lexer.token() == Token.RPAREN) {
+                lexer.nextToken();
+                break;
+            }
+            
+            CellAssignmentItem item = new CellAssignmentItem();
+            if (lexer.token() == Token.UPDATE) {
+                item.setOption(ModelRuleOption.UPDATE);
+            } else if (identifierEquals("UPSERT")) {
+                item.setOption(ModelRuleOption.UPSERT);
+            }
+            
+            item.setCellAssignment(parseCellAssignment());
+            item.setOrderBy(this.parseOrderBy());
+            accept(Token.EQ);
+            item.setExpr(expr());
+            
+            modelRulesClause.getCellAssignmentItems().add(item);
+        }
+        
+        mainModel.setModelRulesClause(modelRulesClause);
+    }
+    
+    private CellAssignment parseCellAssignment() {
+        CellAssignment cellAssignment = new CellAssignment();
+        
+        cellAssignment.setMeasureColumn(expr());
+        accept(Token.LBRACKET);
+        this.createExprParser().exprList(cellAssignment.getConditions());
+        accept(Token.RBRACKET);
+        
+        return cellAssignment;
+    }
+
+    private void parseQueryPartitionClause(ModelColumnClause modelColumnClause) {
+        if (identifierEquals("PARTITION")) {
+            QueryPartitionClause queryPartitionClause = new QueryPartitionClause();
+
+            lexer.nextToken();
+            accept(Token.BY);
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                createExprParser().exprList(queryPartitionClause.getExprList());
+                accept(Token.RPAREN);
+            } else {
+                createExprParser().exprList(queryPartitionClause.getExprList());
+            }
+            modelColumnClause.setQueryPartitionClause(queryPartitionClause);
+        }
+    }
+
+    private void parseModelColumnClause(ReferenceModelClause referenceModelClause) {
+        throw new ParserException();
+    }
+
+    private void parseCellReferenceOptions(List<CellReferenceOption> options) {
+        if (identifierEquals("IGNORE")) {
+            lexer.nextToken();
+            acceptIdentifier("NAV");
+            options.add(CellReferenceOption.IgnoreNav);
+        } else if (identifierEquals("KEEP")) {
+            lexer.nextToken();
+            acceptIdentifier("NAV");
+            options.add(CellReferenceOption.KeepNav);
+        }
+
+        if (lexer.token() == Token.UNIQUE) {
+            lexer.nextToken();
+            if (identifierEquals("DIMENSION")) {
+                lexer.nextToken();
+                options.add(CellReferenceOption.UniqueDimension);
+            } else {
+                acceptIdentifier("SINGLE");
+                accept(Token.REFERENCE);
+                options.add(CellReferenceOption.UniqueDimension);
+            }
+        }
     }
 
     private void parseGroupBy(OracleSelectQueryBlock queryBlock) {

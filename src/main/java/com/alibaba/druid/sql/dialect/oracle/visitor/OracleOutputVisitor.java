@@ -36,6 +36,18 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignment;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellAssignmentItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.CellReferenceOption;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.MainModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelColumnClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRuleOption;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
@@ -496,6 +508,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (select.getGroupBy() != null) {
             println();
             select.getGroupBy().accept(this);
+        }
+
+        if (select.getModelClause() != null) {
+            println();
+            select.getModelClause().accept(this);
         }
 
         return false;
@@ -1163,16 +1180,210 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(OracleCursorExpr x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleIsSetExpr x) {
         x.getNestedTable().accept(this);
         print(" IS A SET");
         return false;
     }
-    
+
     @Override
     public void endVisit(OracleIsSetExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(ReturnRowsClause x) {
+        if (x.isAll()) {
+            print("RETURN ALL ROWS");
+        } else {
+            print("RETURN UPDATED ROWS");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(ReturnRowsClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelClause x) {
+        print("MODEL");
+
+        for (CellReferenceOption opt : x.getCellReferenceOptions()) {
+            print(' ');
+            print(opt.name);
+        }
+
+        if (x.getReturnRowsClause() != null) {
+            print(' ');
+            x.getReturnRowsClause().accept(this);
+        }
+
+        for (ReferenceModelClause item : x.getReferenceModelClauses()) {
+            print(' ');
+            item.accept(this);
+        }
+
+        x.getMainModel().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(ModelClause x) {
+
+    }
+
+    @Override
+    public boolean visit(MainModelClause x) {
+        if (x.getMainModelName() != null) {
+            print(" MAIN ");
+            x.getMainModelName().accept(this);
+        }
+
+        println();
+        x.getModelColumnClause().accept(this);
+
+        for (CellReferenceOption opt : x.getCellReferenceOptions()) {
+            println();
+            print(opt.name);
+        }
+
+        println();
+        x.getModelRulesClause().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MainModelClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelColumnClause x) {
+        if (x.getQueryPartitionClause() != null) {
+            x.getQueryPartitionClause().accept(this);
+            println();
+        }
+
+        print("DIMENSION BY (");
+        printAndAccept(x.getDimensionByColumns(), ", ");
+        print(")");
+
+        println();
+        print("MEASURES (");
+        printAndAccept(x.getMeasuresColumns(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(ModelColumnClause x) {
+
+    }
+
+    @Override
+    public boolean visit(QueryPartitionClause x) {
+        print("PARTITION BY (");
+        printAndAccept(x.getExprList(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(QueryPartitionClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelColumn x) {
+        x.getExpr().accept(this);
+        if (x.getAlias() != null) {
+            print(" ");
+            print(x.getAlias());
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(ModelColumn x) {
+
+    }
+
+    @Override
+    public boolean visit(ModelRulesClause x) {
+        if (x.getOptions().size() > 0) {
+            print("RULES");
+            for (ModelRuleOption opt : x.getOptions()) {
+                print(" ");
+                print(opt.name);
+            }
+        }
+        
+        if (x.getIterate() != null) {
+            print(" ITERATE (");
+            x.getIterate().accept(this);
+            print(")");
+            
+            if (x.getUntil() != null) {
+                print(" UNTIL (");
+                x.getUntil().accept(this);
+                print(")");
+            }
+        }
+        
+        print(" (");
+        printAndAccept(x.getCellAssignmentItems(), ", ");
+        print(")");
+        return false;
+
+    }
+
+    @Override
+    public void endVisit(ModelRulesClause x) {
+
+    }
+
+    @Override
+    public boolean visit(CellAssignmentItem x) {
+        if (x.getOption() != null) {
+            print(x.getOption().name);
+            print(" ");
+        }
+        
+        x.getCellAssignment().accept(this);
+        
+        if (x.getOrderBy() != null) {
+            print(" ");
+            x.getOrderBy().accept(this);
+        }
+        
+        print(" = ");
+        x.getExpr().accept(this);
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(CellAssignmentItem x) {
+        
+    }
+
+    @Override
+    public boolean visit(CellAssignment x) {
+        x.getMeasureColumn().accept(this);
+        print("[");
+        printAndAccept(x.getConditions(), ", ");
+        print("]");
+        return false;
+    }
+
+    @Override
+    public void endVisit(CellAssignment x) {
         
     }
 }

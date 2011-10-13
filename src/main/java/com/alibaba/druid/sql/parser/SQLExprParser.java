@@ -358,16 +358,20 @@ public class SQLExprParser extends SQLParser {
                 break;
             case ANY:
                 lexer.nextToken();
-                SQLAnyExpr anyExpr = new SQLAnyExpr();
+                if (lexer.token() == Token.LPAREN) {
+                    SQLAnyExpr anyExpr = new SQLAnyExpr();
 
-                accept(Token.LPAREN);
-                SQLSelect anySubQuery = createSelectParser().select();
-                anyExpr.setSubQuery(anySubQuery);
-                accept(Token.RPAREN);
+                    accept(Token.LPAREN);
+                    SQLSelect anySubQuery = createSelectParser().select();
+                    anyExpr.setSubQuery(anySubQuery);
+                    accept(Token.RPAREN);
 
-                anySubQuery.setParent(anyExpr);
+                    anySubQuery.setParent(anyExpr);
 
-                sqlExpr = anyExpr;
+                    sqlExpr = anyExpr;
+                } else {
+                    sqlExpr = new SQLIdentifierExpr("ANY");
+                }
                 break;
             case SOME:
                 lexer.nextToken();
@@ -383,12 +387,11 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = someExpr;
                 break;
             case KEY:
-                lexer.nextToken();
-                sqlExpr = new SQLIdentifierExpr("KEY");
-                break;
             case DISTINCT:
+            case YEAR:
+            case MONTH:
                 lexer.nextToken();
-                sqlExpr = new SQLIdentifierExpr("DISTINCT");
+                sqlExpr = new SQLIdentifierExpr(tok.name());
                 break;
             case ALL:
                 lexer.nextToken();
@@ -524,7 +527,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public final void exprList(Collection<SQLExpr> exprCol) throws ParserException {
-        if (lexer.token() == Token.RPAREN) {
+        if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
             return;
         }
 

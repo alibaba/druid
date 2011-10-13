@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
@@ -262,12 +263,48 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleSelect x);
 
     void endVisit(OracleSelect x);
-    
+
     boolean visit(OracleCursorExpr x);
-    
+
     void endVisit(OracleCursorExpr x);
-    
+
     boolean visit(OracleIsSetExpr x);
-    
+
     void endVisit(OracleIsSetExpr x);
+
+    boolean visit(ModelClause.ReturnRowsClause x);
+
+    void endVisit(ModelClause.ReturnRowsClause x);
+
+    boolean visit(ModelClause.MainModelClause x);
+
+    void endVisit(ModelClause.MainModelClause x);
+
+    boolean visit(ModelClause.ModelColumnClause x);
+
+    void endVisit(ModelClause.ModelColumnClause x);
+
+    boolean visit(ModelClause.QueryPartitionClause x);
+
+    void endVisit(ModelClause.QueryPartitionClause x);
+    
+    boolean visit(ModelClause.ModelColumn x);
+    
+    void endVisit(ModelClause.ModelColumn x);
+    
+    boolean visit(ModelClause.ModelRulesClause x);
+    
+    void endVisit(ModelClause.ModelRulesClause x);
+    
+    boolean visit(ModelClause.CellAssignmentItem x);
+    
+    void endVisit(ModelClause.CellAssignmentItem x);
+    
+    boolean visit(ModelClause.CellAssignment x);
+    
+    void endVisit(ModelClause.CellAssignment x);
+
+    boolean visit(ModelClause x);
+
+    void endVisit(ModelClause x);
 }

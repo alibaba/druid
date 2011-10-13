@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -32,9 +33,18 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     private final List<OracleHint>             hints            = new ArrayList<OracleHint>(1);
 
     private OracleSelectHierachicalQueryClause hierachicalQueryClause;
+    private ModelClause                        modelClause;
 
     public OracleSelectQueryBlock(){
 
+    }
+
+    public ModelClause getModelClause() {
+        return modelClause;
+    }
+
+    public void setModelClause(ModelClause modelClause) {
+        this.modelClause = modelClause;
     }
 
     public OracleSelectHierachicalQueryClause getHierachicalQueryClause() {
@@ -73,6 +83,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.where);
             acceptChild(visitor, this.hierachicalQueryClause);
             acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.modelClause);
         }
         visitor.endVisit(this);
     }
