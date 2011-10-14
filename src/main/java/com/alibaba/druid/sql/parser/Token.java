@@ -110,6 +110,7 @@ public enum Token {
     DAY("DAY"),
     YEAR("YEAR"),
     MONTH("MONTH"),
+    MINUTE("MINUTE"),
     SECOND("SECOND"),
     TO("TO"),
     MODEL("MODEL"),

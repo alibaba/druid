@@ -497,50 +497,50 @@ public class OracleExprParser extends SQLExprParser {
         lexer.nextToken();
 
         
-            OracleIntervalType type = OracleIntervalType.valueOf(lexer.token().name);
-            interval.setType(type);
+        OracleIntervalType type = OracleIntervalType.valueOf(lexer.token().name);
+        interval.setType(type);
+        lexer.nextToken();
+        
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            if (lexer.token() != Token.LITERAL_INT) {
+                throw new ParserException("syntax error");
+            }
+            interval.setPrecision(lexer.integerValue().intValue());
             lexer.nextToken();
             
-            if (lexer.token() == Token.LPAREN) {
+            if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 if (lexer.token() != Token.LITERAL_INT) {
                     throw new ParserException("syntax error");
                 }
-                interval.setPrecision(lexer.integerValue().intValue());
+                interval.setFactionalSecondsPrecision(lexer.integerValue().intValue());
                 lexer.nextToken();
-                
-                if (lexer.token() == Token.COMMA) {
+            }
+            accept(Token.RPAREN);
+        }
+        
+        if (lexer.token() == Token.TO) {
+            accept(Token.TO);
+            if (lexer.token() == Token.SECOND) {
+                lexer.nextToken();
+                interval.setToType(OracleIntervalType.SECOND);
+                if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
                     if (lexer.token() != Token.LITERAL_INT) {
                         throw new ParserException("syntax error");
                     }
-                    interval.setFactionalSecondsPrecision(lexer.integerValue().intValue());
+                    interval.setToFactionalSecondsPrecision(lexer.integerValue().intValue());
                     lexer.nextToken();
+                    accept(Token.RPAREN);
                 }
-                accept(Token.RPAREN);
+            } else {
+                interval.setToType(OracleIntervalType.MONTH);
+                lexer.nextToken();
             }
-            
-            if (lexer.token() == Token.TO) {
-                accept(Token.TO);
-                if (lexer.token() == Token.SECOND) {
-                    lexer.nextToken();
-                    interval.setToType(OracleIntervalType.SECOND);
-                    if (lexer.token() == Token.LPAREN) {
-                        lexer.nextToken();
-                        if (lexer.token() != Token.LITERAL_INT) {
-                            throw new ParserException("syntax error");
-                        }
-                        interval.setToFactionalSecondsPrecision(lexer.integerValue().intValue());
-                        lexer.nextToken();
-                        accept(Token.RPAREN);
-                    }
-                } else {
-                    interval.setToType(OracleIntervalType.MONTH);
-                    lexer.nextToken();
-                }
-            }
-            
-            return interval;    
+        }
+        
+        return interval;    
     }
     
     public SQLExpr relationalRest(SQLExpr expr) throws ParserException {

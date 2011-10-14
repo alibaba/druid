@@ -99,6 +99,7 @@ public class OracleLexer extends Lexer {
         map.put("DAY", Token.DAY);
         map.put("YEAR", Token.YEAR);
         map.put("MONTH", Token.MONTH);
+        map.put("MINUTE", Token.MINUTE);
         map.put("SECOND", Token.SECOND);
         map.put("TO", Token.TO);
         map.put("MODEL", Token.MODEL);
