@@ -137,7 +137,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     createExprParser().exprList(cycleClause.getAliases());
                     accept(Token.SET);
                     cycleClause.setMark(createExprParser().expr());
-                    acceptIdentifier("TO");
+                    accept(Token.TO);
                     cycleClause.setValue(createExprParser().expr());
                     accept(Token.DEFAULT);
                     cycleClause.setDefaultValue(createExprParser().expr());
