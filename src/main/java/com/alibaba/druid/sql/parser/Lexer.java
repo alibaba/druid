@@ -76,8 +76,37 @@ public class Lexer {
 
     protected boolean                          skipComment = true;
 
+    private SavePoint                          savePoint   = null;
+
     public Lexer(String input){
         this(input, true);
+    }
+
+    private static class SavePoint {
+
+        int   bp;
+        int   sp;
+        int   np;
+        char   ch;
+        Token token;
+    }
+
+    public void mark() {
+        SavePoint savePoint = new SavePoint();
+        savePoint.bp = bp;
+        savePoint.sp = sp;
+        savePoint.np = np;
+        savePoint.ch = ch;
+        savePoint.token = token;
+        this.savePoint = savePoint;
+    }
+
+    public void reset() {
+        this.bp = savePoint.bp;
+        this.sp = savePoint.sp;
+        this.np = savePoint.np;
+        this.ch = savePoint.ch;
+        this.token = savePoint.token;
     }
 
     public Lexer(String input, boolean skipComment){

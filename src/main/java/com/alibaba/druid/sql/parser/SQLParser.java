@@ -41,7 +41,7 @@ public class SQLParser {
         }
     }
 
-    protected final String as() throws ParserException {
+    protected String as() throws ParserException {
         String alias = null;
 
         if (lexer.token() == Token.AS) {
@@ -61,6 +61,12 @@ public class SQLParser {
 
             if (lexer.token() == Token.LITERAL_CHARS) {
                 alias = "'" + lexer.stringVal() + "'";
+                lexer.nextToken();
+                return alias;
+            }
+
+            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY) {
+                alias = lexer.token.name();
                 lexer.nextToken();
                 return alias;
             }
@@ -85,6 +91,9 @@ public class SQLParser {
             lexer.nextToken();
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
+            lexer.nextToken();
+        } else if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY) {
+            alias = lexer.token.name();
             lexer.nextToken();
         }
 

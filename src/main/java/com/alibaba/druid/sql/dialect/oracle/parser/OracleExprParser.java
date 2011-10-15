@@ -236,11 +236,20 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         if (lexer.token() == Token.DAY || lexer.token() == Token.YEAR) {
+            lexer.mark();
+            
+            String name = lexer.token().name;
+            lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.reset();
+                return expr;
+            }
+            
             OracleIntervalExpr interval = new OracleIntervalExpr();
             interval.setValue(expr);
-            OracleIntervalType type = OracleIntervalType.valueOf(lexer.token().name);
+            OracleIntervalType type = OracleIntervalType.valueOf(name);
             interval.setType(type);
-            lexer.nextToken();
             
             if (lexer.token() == Token.LPAREN) {
                 lexer.nextToken();
