@@ -36,7 +36,6 @@ public class SQLMethodInvokeExpr extends SQLExprImpl implements Serializable {
     }
 
     public SQLMethodInvokeExpr(String methodName){
-
         this.methodName = methodName;
     }
 

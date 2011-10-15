@@ -484,6 +484,7 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
 
                 SQLMethodInvokeExpr methodInvokeExpr = new SQLMethodInvokeExpr(name);
+                methodInvokeExpr.setOwner(expr);
                 if (lexer.token() == Token.RPAREN) {
                     lexer.nextToken();
                 } else {

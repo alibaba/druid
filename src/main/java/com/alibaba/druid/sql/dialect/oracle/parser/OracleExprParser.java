@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -41,6 +42,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -275,7 +277,25 @@ public class OracleExprParser extends SQLExprParser {
             expr = interval;
         }
         
-        return super.primaryRest(expr);
+        SQLExpr restExpr = super.primaryRest(expr);
+        
+        if (restExpr != expr && restExpr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvoke = (SQLMethodInvokeExpr) restExpr;
+            if (methodInvoke.getParameters().size() == 1) {
+                SQLExpr paramExpr = methodInvoke.getParameters().get(0);
+                if (paramExpr instanceof SQLIdentifierExpr && "+".equals(((SQLIdentifierExpr) paramExpr).getName())) {
+                    OracleOuterExpr outerExpr = new OracleOuterExpr();
+                    if (methodInvoke.getOwner() == null) {
+                        outerExpr.setExpr(new SQLIdentifierExpr(methodInvoke.getMethodName()));
+                    } else {
+                        outerExpr.setExpr(new SQLPropertyExpr(methodInvoke.getOwner(), methodInvoke.getMethodName()));
+                    }
+                    return outerExpr;
+                }
+            }
+        }
+        
+        return restExpr;
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
