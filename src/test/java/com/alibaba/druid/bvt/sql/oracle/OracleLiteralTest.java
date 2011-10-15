@@ -5,10 +5,9 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
-public class OracleIsLiteralTest extends TestCase {
+public class OracleLiteralTest extends TestCase {
 
     public void test_oracle() throws Exception {
         String sql = "SELECT FROM_TZ(TIMESTAMP '2007-11-20 08:00:00', '3:00') FROM DUAL;";

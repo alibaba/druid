@@ -332,7 +332,7 @@ public class OracleExprParser extends SQLExprParser {
 
             lexer.nextToken();
 
-            if (identifierEquals("SIBINGS")) {
+            if (identifierEquals("SIBLINGS")) {
                 lexer.nextToken();
                 orderBy.setSibings(true);
             }

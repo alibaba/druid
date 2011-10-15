@@ -359,10 +359,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelectHierachicalQueryClause x) {
-        print("START WITH ");
-        x.getStartWith().accept(this);
+        if (x.getStartWith() != null) {
+            print("START WITH ");
+            x.getStartWith().accept(this);
+            println();
+        }
 
-        println();
         print("CONNECT BY ");
 
         if (x.isPrior()) {
@@ -1325,19 +1327,19 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 print(opt.name);
             }
         }
-        
+
         if (x.getIterate() != null) {
             print(" ITERATE (");
             x.getIterate().accept(this);
             print(")");
-            
+
             if (x.getUntil() != null) {
                 print(" UNTIL (");
                 x.getUntil().accept(this);
                 print(")");
             }
         }
-        
+
         print(" (");
         printAndAccept(x.getCellAssignmentItems(), ", ");
         print(")");
@@ -1356,23 +1358,23 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(x.getOption().name);
             print(" ");
         }
-        
+
         x.getCellAssignment().accept(this);
-        
+
         if (x.getOrderBy() != null) {
             print(" ");
             x.getOrderBy().accept(this);
         }
-        
+
         print(" = ");
         x.getExpr().accept(this);
-        
+
         return false;
     }
 
     @Override
     public void endVisit(CellAssignmentItem x) {
-        
+
     }
 
     @Override
@@ -1386,6 +1388,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(CellAssignment x) {
-        
+
     }
 }
