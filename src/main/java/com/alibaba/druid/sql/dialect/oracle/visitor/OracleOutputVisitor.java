@@ -809,6 +809,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
+    public void endVisit(OracleGroupingSetsExpr x) {
+
+    }
+
+    @Override
     public void endVisit(OracleHint x) {
 
     }
