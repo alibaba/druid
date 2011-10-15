@@ -43,7 +43,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -103,9 +102,6 @@ public class OracleExprParser extends SQLExprParser {
                 } else {
                     throw new ParserException("syntax error : " + lexer.token());
                 }
-            case PRIOR:
-                lexer.nextToken();
-                primaryRest(new OraclePriorExpr(expr()));
             case LITERAL_ALIAS:
                 String alias = '"' + lexer.stringVal() + '"';
                 lexer.nextToken();

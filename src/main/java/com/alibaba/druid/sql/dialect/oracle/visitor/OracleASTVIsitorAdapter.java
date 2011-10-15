@@ -36,7 +36,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OraclePriorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
@@ -523,17 +522,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OraclePriorExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(OraclePriorExpr x) {
-
-    }
-
-    @Override
     public boolean visit(SubqueryFactoringClause x) {
 
         return true;
@@ -666,7 +654,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(QueryPartitionClause x) {
-        
+
     }
 
     @Override
@@ -676,7 +664,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(ModelColumn x) {
-        
+
     }
 
     @Override
@@ -686,7 +674,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(ModelRulesClause x) {
-        
+
     }
 
     @Override
@@ -696,7 +684,7 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(CellAssignmentItem x) {
-        
+
     }
 
     @Override
@@ -706,6 +694,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(CellAssignment x) {
-        
+
     }
 }
