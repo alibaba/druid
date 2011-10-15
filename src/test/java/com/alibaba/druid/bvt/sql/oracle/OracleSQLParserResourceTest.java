@@ -40,7 +40,7 @@ public class OracleSQLParserResourceTest extends TestCase {
 
         Assert.assertEquals(1, statementList.size());
 
-        String text = TestUtils.output(statementList);
+        String text = TestUtils.outputOracle(statementList);
         System.out.println(text);
         Assert.assertEquals(expect, text.trim());
 

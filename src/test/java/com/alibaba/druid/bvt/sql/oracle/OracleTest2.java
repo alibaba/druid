@@ -17,7 +17,7 @@ public class OracleTest2 extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals(expect, text);
 

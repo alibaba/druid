@@ -20,7 +20,7 @@ public class OracleFlashbackQueryTest extends TestCase {
 		SQLSelectStatement stmt = (SQLSelectStatement) parser
 				.parseStatementList().get(0);
 
-		String text = TestUtils.output(stmt);
+		String text = TestUtils.outputOracle(stmt);
 
 		Assert.assertEquals(expect, text);
 

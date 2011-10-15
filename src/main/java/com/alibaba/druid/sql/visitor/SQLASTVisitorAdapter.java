@@ -47,8 +47,6 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimeLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
@@ -265,20 +263,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     public void endVisit(SQLDateLiteralExpr x) {
-    }
-
-    public boolean visit(SQLTimeLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLTimeLiteralExpr x) {
-    }
-
-    public boolean visit(SQLTimestampLiteralExpr x) {
-        return true;
-    }
-
-    public void endVisit(SQLTimestampLiteralExpr x) {
     }
 
     public boolean visit(SQLSelect x) {

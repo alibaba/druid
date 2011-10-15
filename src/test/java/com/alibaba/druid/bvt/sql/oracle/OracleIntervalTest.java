@@ -15,7 +15,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT INTERVAL '123-2' YEAR(3) TO MONTH\nFROM DUAL;\n", text);
 
@@ -28,7 +28,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
         
         Assert.assertEquals("SELECT INTERVAL '123' YEAR(3)\nFROM DUAL;\n", text);
         
@@ -41,7 +41,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
         
         Assert.assertEquals("SELECT INTERVAL '5-3' YEAR TO MONTH + INTERVAL '20' MONTH\nFROM DUAL;\n", text);
         
@@ -54,7 +54,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
         
         Assert.assertEquals("SELECT INTERVAL '6-11' YEAR TO MONTH\nFROM DUAL;\n", text);
         
@@ -67,7 +67,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
         
         Assert.assertEquals("SELECT INTERVAL '4 5:12:10.222' DAY TO SECOND(3)\nFROM DUAL;\n", text);
         
@@ -80,7 +80,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
         
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
         
         Assert.assertEquals("SELECT INTERVAL '30.12345' SECOND(2, 4)\nFROM DUAL;\n", text);
         
@@ -93,7 +93,7 @@ public class OracleIntervalTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT (SYSTIMESTAMP - order_date) DAY(9) TO SECOND\n" + "FROM orders\n"
                             + "WHERE order_id = 2458;\n", text);

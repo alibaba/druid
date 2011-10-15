@@ -15,7 +15,7 @@ public class OracleIsASetTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT customer_id, cust_address_ntab\n" + "FROM customers_demo\n"
                             + "WHERE cust_address_ntab IS A SET;\n", text);

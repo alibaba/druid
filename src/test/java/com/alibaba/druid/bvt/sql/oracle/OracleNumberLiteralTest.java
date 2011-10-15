@@ -15,7 +15,7 @@ public class OracleNumberLiteralTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT 7, 255, 0.5, 6.34, 0.025\n\t, 6.34F, 0.5D, -1.0D\nFROM DUAL;\n", text);
 
@@ -28,7 +28,7 @@ public class OracleNumberLiteralTest extends TestCase {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-        String text = TestUtils.output(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
         Assert.assertEquals("SELECT BINARY_FLOAT_INFINITY\nFROM DUAL;\n", text);
 
