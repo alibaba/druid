@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 public class OracleAnalyticTest extends TestCase {
 
-	public void test_isEmpty() throws Exception {
+	public void test_0() throws Exception {
 		String sql = "SELECT last_name, salary, STDDEV(salary) OVER (ORDER BY hire_date) \"StdDev\" " +
 				"FROM employees " +
 				"WHERE department_id = 30;";
@@ -26,5 +26,24 @@ public class OracleAnalyticTest extends TestCase {
 		Assert.assertEquals(expect, text);
 
 		System.out.println(text);
+	}
+	
+	public void test_1() throws Exception {
+	    String sql = "SELECT submit_date, num_votes, TRUNC(AVG(num_votes) OVER(PARTITION BY submit_date ORDER BY submit_date ROWS UNBOUNDED PRECEDING)) AVG_VOTE_PER_DAY\n" +
+	    		"FROM vote_count\n" +
+	    		"ORDER BY submit_date;\n";
+	    
+	    String expect = "SELECT submit_date, num_votes, TRUNC(AVG(num_votes) OVER (PARTITION BY submit_date ORDER BY submit_date ROWS UNBOUNDED PRECEDING)) AS AVG_VOTE_PER_DAY\n" +
+                "FROM vote_count\n" +
+                "ORDER BY submit_date;\n";
+	    OracleStatementParser parser = new OracleStatementParser(sql);
+	    SQLSelectStatement stmt = (SQLSelectStatement) parser
+	            .parseStatementList().get(0);
+	    
+	    String text = TestUtils.outputOracle(stmt);
+	    
+	    Assert.assertEquals(expect, text);
+	    
+	    System.out.println(text);
 	}
 }

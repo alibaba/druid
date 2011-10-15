@@ -436,12 +436,12 @@ public class OracleExprParser extends SQLExprParser {
                         if (lexer.stringVal().equalsIgnoreCase("PRECEDING")) {
                             lexer.nextToken();
                             windowing.setExpr(new SQLIdentifierExpr("UNBOUNDED PRECEDING"));
-                            over.setWindowing(windowing);
+                        } else {
+                            throw new ParserException("syntax error");
                         }
-                        throw new ParserException("syntax error");
                     }
 
-                    throw new ParserException("TODO");
+                    over.setWindowing(windowing);
                 }
             }
 
