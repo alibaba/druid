@@ -541,7 +541,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if (x.getSampleClause() != null) {
-            print(" ");
+            println();
             x.getSampleClause().accept(this);
         }
 
