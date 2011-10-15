@@ -133,19 +133,27 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleAnalytic x) {
+        boolean space = false;
         if (x.getPartitionBy().size() > 0) {
             print("PARTITION BY (");
             printAndAccept(x.getPartitionBy(), ", ");
             print(")");
+
+            space = true;
         }
 
         if (x.getOrderBy() != null) {
-            print(" ");
+            if (space) {
+                print(" ");
+            }
             x.getOrderBy().accept(this);
+            space = true;
         }
 
         if (x.getWindowing() != null) {
-            print(" ");
+            if (space) {
+                print(" ");
+            }
             x.getWindowing().accept(this);
         }
 
