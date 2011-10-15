@@ -36,7 +36,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupComparisonCondition;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
@@ -81,8 +80,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     void endVisit(OracleDeleteStatement x);
 
     void endVisit(OracleExtractExpr x);
-
-    void endVisit(OracleGroupComparisonCondition x);
 
     void endVisit(OracleHint x);
 
@@ -145,8 +142,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDeleteStatement x);
 
     boolean visit(OracleExtractExpr x);
-
-    boolean visit(OracleGroupComparisonCondition x);
 
     boolean visit(OracleHint x);
 
@@ -267,21 +262,21 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(ModelClause.QueryPartitionClause x);
 
     void endVisit(ModelClause.QueryPartitionClause x);
-    
+
     boolean visit(ModelClause.ModelColumn x);
-    
+
     void endVisit(ModelClause.ModelColumn x);
-    
+
     boolean visit(ModelClause.ModelRulesClause x);
-    
+
     void endVisit(ModelClause.ModelRulesClause x);
-    
+
     boolean visit(ModelClause.CellAssignmentItem x);
-    
+
     void endVisit(ModelClause.CellAssignmentItem x);
-    
+
     boolean visit(ModelClause.CellAssignment x);
-    
+
     void endVisit(ModelClause.CellAssignment x);
 
     boolean visit(ModelClause x);

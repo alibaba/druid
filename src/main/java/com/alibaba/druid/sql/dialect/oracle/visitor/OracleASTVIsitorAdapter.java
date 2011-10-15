@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupComparisonCondition;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
@@ -109,11 +108,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleExtractExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleGroupComparisonCondition x) {
 
     }
 
@@ -277,12 +271,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleExtractExpr x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleGroupComparisonCondition x) {
 
         return true;
     }

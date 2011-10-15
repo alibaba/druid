@@ -61,7 +61,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupComparisonCondition;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
@@ -208,29 +207,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(" FROM ");
         x.getFrom().accept(this);
         print(")");
-        return false;
-    }
-
-    public boolean visit(OracleGroupComparisonCondition x) {
-        if (x.getExprList().size() > 1) {
-            print("(");
-        }
-        printAndAccept(x.getExprList(), ", ");
-        if (x.getExprList().size() > 1) {
-            print(")");
-        }
-
-        print(" ");
-        print(x.getOperator().name);
-        print(" ");
-        print(x.getComparator().name());
-
-        print(" ");
-
-        print("(");
-        printAndAccept(x.getTargetExprList(), ", ");
-        print(")");
-
         return false;
     }
 
@@ -771,11 +747,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleExtractExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleGroupComparisonCondition x) {
 
     }
 
