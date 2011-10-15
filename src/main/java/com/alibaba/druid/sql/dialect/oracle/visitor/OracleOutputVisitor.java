@@ -55,7 +55,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArrayAccessExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
@@ -163,17 +162,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print(x.getType().name().toUpperCase());
         print(" ");
         x.getExpr().accept(this);
-        return false;
-    }
-
-    public boolean visit(OracleArrayAccessExpr x) {
-        x.getOwnner().accept(this);
-        print("[");
-
-        printAndAccept(x.getArguments(), ", ");
-
-        print("]");
-
         return false;
     }
 
@@ -766,11 +754,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleArrayAccessExpr x) {
 
     }
 

@@ -24,7 +24,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.E
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArrayAccessExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
@@ -91,11 +90,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleArrayAccessExpr x) {
 
     }
 
@@ -260,12 +254,6 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public boolean visit(OracleAnalyticWindowing x) {
-
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleArrayAccessExpr x) {
 
         return true;
     }
