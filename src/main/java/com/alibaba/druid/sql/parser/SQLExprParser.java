@@ -725,8 +725,6 @@ public class SQLExprParser extends SQLParser {
             }
         }
 
-        expr = andRest(expr);
-        expr = orRest(expr);
         return expr;
     }
 

@@ -67,7 +67,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleGroupingSetsExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTableCollectionExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -639,16 +638,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleTableCollectionExpr x) {
-        print("TALBE (");
-        x.getExpr().accept(this);
-        print(")");
-        if (x.isOuter()) {
-            print("(+)");
-        }
-        return false;
-    }
-
     public boolean visit(OracleTableExpr x) {
         x.getTable().accept(this);
 
@@ -890,11 +879,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSelectUnPivot x) {
-
-    }
-
-    @Override
-    public void endVisit(OracleTableCollectionExpr x) {
 
     }
 
