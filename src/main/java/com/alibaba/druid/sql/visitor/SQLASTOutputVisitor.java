@@ -77,7 +77,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.SQLSelectSubqueryQuery;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
@@ -517,10 +516,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         select.accept(this);
 
         return false;
-    }
-
-    public boolean visit(SQLSelectSubqueryQuery x) {
-        throw new UnsupportedOperationException();
     }
 
     public boolean visit(SQLVariantRefExpr x) {

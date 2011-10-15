@@ -72,7 +72,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.SQLSelectSubqueryQuery;
 
 public interface SQLASTVisitor {
 
@@ -153,10 +152,6 @@ public interface SQLASTVisitor {
     boolean visit(SQLSelectItem x);
 
     void endVisit(SQLCastExpr x);
-
-    void endVisit(SQLSelectSubqueryQuery x);
-
-    boolean visit(SQLSelectSubqueryQuery x);
 
     boolean visit(SQLSelectStatement astNode);
 
