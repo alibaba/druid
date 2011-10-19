@@ -146,6 +146,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         rollbackCount.set(0);
         startTransactionCount.set(0);
         reusePreparedStatement.set(0);
+        closedPreparedStatementCount.set(0);
+        preparedStatementCount.set(0);
+        transactionHistogram.reset();
     }
 
     public boolean isEnable() {
