@@ -42,7 +42,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
 
         return super.visit(x);
     }
-    
+
     public boolean visit(SQLNullExpr x) {
         print('?');
         return false;
@@ -65,8 +65,19 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
             x = new SQLBinaryOpExpr(new SQLVariantRefExpr("?"), x.getOperator(), x.getRight());
         }
 
-        if (x.getRight() instanceof SQLBinaryOpExpr) {
-            x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
+        for (;;) {
+            if (x.getRight() instanceof SQLBinaryOpExpr) {
+                if (x.getLeft() instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr leftBinaryExpr = (SQLBinaryOpExpr) x.getLeft();
+                    if (leftBinaryExpr.getRight().equals(x.getRight())) {
+                        x = leftBinaryExpr;
+                        continue;
+                    }
+                }
+                x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
+            }
+            
+            break;
         }
 
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
