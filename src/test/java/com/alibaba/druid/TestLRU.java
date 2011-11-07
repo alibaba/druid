@@ -17,6 +17,8 @@ public class TestLRU extends TestCase {
         cache.put(2, "22");
         
         System.out.println(cache);
+        cache.get(3);
+        System.out.println(cache);
         
     }
 }
