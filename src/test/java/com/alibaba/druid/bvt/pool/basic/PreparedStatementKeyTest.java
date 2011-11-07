@@ -99,10 +99,12 @@ public class PreparedStatementKeyTest extends TestCase {
     public void test_contains() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
+        
         PreparedStatementPool pool = new PreparedStatementPool(new ConnectionHolder(dataSource, null));
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
+        
         Assert.assertTrue(pool.get(k1) != null);
-        Assert.assertTrue(pool.get(k1) == null);
+        Assert.assertTrue(pool.get(k1) != null);
     }
 }
