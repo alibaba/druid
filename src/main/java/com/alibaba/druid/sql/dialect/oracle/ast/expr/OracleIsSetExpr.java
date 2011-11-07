@@ -38,4 +38,34 @@ public class OracleIsSetExpr extends SQLExprImpl implements OracleExpr {
         }
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((nestedTable == null) ? 0 : nestedTable.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OracleIsSetExpr other = (OracleIsSetExpr) obj;
+        if (nestedTable == null) {
+            if (other.nestedTable != null) {
+                return false;
+            }
+        } else if (!nestedTable.equals(other.nestedTable)) {
+            return false;
+        }
+        return true;
+    }
+
 }

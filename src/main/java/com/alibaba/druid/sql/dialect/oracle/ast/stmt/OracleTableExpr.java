@@ -91,4 +91,74 @@ public class OracleTableExpr extends SQLExprImpl {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dbLink == null) ? 0 : dbLink.hashCode());
+        result = prime * result + ((partition == null) ? 0 : partition.hashCode());
+        result = prime * result + ((partitionFor == null) ? 0 : partitionFor.hashCode());
+        result = prime * result + ((subPartition == null) ? 0 : subPartition.hashCode());
+        result = prime * result + ((subPartitionFor == null) ? 0 : subPartitionFor.hashCode());
+        result = prime * result + ((table == null) ? 0 : table.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OracleTableExpr other = (OracleTableExpr) obj;
+        if (dbLink == null) {
+            if (other.dbLink != null) {
+                return false;
+            }
+        } else if (!dbLink.equals(other.dbLink)) {
+            return false;
+        }
+        if (partition == null) {
+            if (other.partition != null) {
+                return false;
+            }
+        } else if (!partition.equals(other.partition)) {
+            return false;
+        }
+        if (partitionFor == null) {
+            if (other.partitionFor != null) {
+                return false;
+            }
+        } else if (!partitionFor.equals(other.partitionFor)) {
+            return false;
+        }
+        if (subPartition == null) {
+            if (other.subPartition != null) {
+                return false;
+            }
+        } else if (!subPartition.equals(other.subPartition)) {
+            return false;
+        }
+        if (subPartitionFor == null) {
+            if (other.subPartitionFor != null) {
+                return false;
+            }
+        } else if (!subPartitionFor.equals(other.subPartitionFor)) {
+            return false;
+        }
+        if (table == null) {
+            if (other.table != null) {
+                return false;
+            }
+        } else if (!table.equals(other.table)) {
+            return false;
+        }
+        return true;
+    }
 }

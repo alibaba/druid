@@ -91,4 +91,67 @@ public class OracleIntervalExpr extends SQLLiteralExpr implements OracleExpr {
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((factionalSecondsPrecision == null) ? 0 : factionalSecondsPrecision.hashCode());
+        result = prime * result + ((precision == null) ? 0 : precision.hashCode());
+        result = prime * result + ((toFactionalSecondsPrecision == null) ? 0 : toFactionalSecondsPrecision.hashCode());
+        result = prime * result + ((toType == null) ? 0 : toType.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OracleIntervalExpr other = (OracleIntervalExpr) obj;
+        if (factionalSecondsPrecision == null) {
+            if (other.factionalSecondsPrecision != null) {
+                return false;
+            }
+        } else if (!factionalSecondsPrecision.equals(other.factionalSecondsPrecision)) {
+            return false;
+        }
+        if (precision == null) {
+            if (other.precision != null) {
+                return false;
+            }
+        } else if (!precision.equals(other.precision)) {
+            return false;
+        }
+        if (toFactionalSecondsPrecision == null) {
+            if (other.toFactionalSecondsPrecision != null) {
+                return false;
+            }
+        } else if (!toFactionalSecondsPrecision.equals(other.toFactionalSecondsPrecision)) {
+            return false;
+        }
+        if (toType != other.toType) {
+            return false;
+        }
+        if (type != other.type) {
+            return false;
+        }
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

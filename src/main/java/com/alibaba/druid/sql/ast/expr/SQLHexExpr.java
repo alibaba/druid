@@ -46,4 +46,34 @@ public class SQLHexExpr extends SQLLiteralExpr {
         visitor.visit(this);
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((hex == null) ? 0 : hex.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLHexExpr other = (SQLHexExpr) obj;
+        if (hex == null) {
+            if (other.hex != null) {
+                return false;
+            }
+        } else if (!hex.equals(other.hex)) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -65,4 +65,42 @@ public class OracleDbLinkExpr extends SQLExprImpl implements SQLName, OracleExpr
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dbLink == null) ? 0 : dbLink.hashCode());
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OracleDbLinkExpr other = (OracleDbLinkExpr) obj;
+        if (dbLink == null) {
+            if (other.dbLink != null) {
+                return false;
+            }
+        } else if (!dbLink.equals(other.dbLink)) {
+            return false;
+        }
+        if (expr == null) {
+            if (other.expr != null) {
+                return false;
+            }
+        } else if (!expr.equals(other.expr)) {
+            return false;
+        }
+        return true;
+    }
 }

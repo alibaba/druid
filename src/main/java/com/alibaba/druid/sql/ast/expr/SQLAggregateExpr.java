@@ -81,4 +81,46 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((arguments == null) ? 0 : arguments.hashCode());
+        result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
+        result = prime * result + option;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLAggregateExpr other = (SQLAggregateExpr) obj;
+        if (arguments == null) {
+            if (other.arguments != null) {
+                return false;
+            }
+        } else if (!arguments.equals(other.arguments)) {
+            return false;
+        }
+        if (methodName == null) {
+            if (other.methodName != null) {
+                return false;
+            }
+        } else if (!methodName.equals(other.methodName)) {
+            return false;
+        }
+        if (option != other.option) {
+            return false;
+        }
+        return true;
+    }
 }

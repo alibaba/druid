@@ -99,4 +99,54 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
     public void setEndExpr(SQLExpr endExpr) {
         this.endExpr = endExpr;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((beginExpr == null) ? 0 : beginExpr.hashCode());
+        result = prime * result + ((endExpr == null) ? 0 : endExpr.hashCode());
+        result = prime * result + (not ? 1231 : 1237);
+        result = prime * result + ((testExpr == null) ? 0 : testExpr.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLBetweenExpr other = (SQLBetweenExpr) obj;
+        if (beginExpr == null) {
+            if (other.beginExpr != null) {
+                return false;
+            }
+        } else if (!beginExpr.equals(other.beginExpr)) {
+            return false;
+        }
+        if (endExpr == null) {
+            if (other.endExpr != null) {
+                return false;
+            }
+        } else if (!endExpr.equals(other.endExpr)) {
+            return false;
+        }
+        if (not != other.not) {
+            return false;
+        }
+        if (testExpr == null) {
+            if (other.testExpr != null) {
+                return false;
+            }
+        } else if (!testExpr.equals(other.testExpr)) {
+            return false;
+        }
+        return true;
+    }
 }

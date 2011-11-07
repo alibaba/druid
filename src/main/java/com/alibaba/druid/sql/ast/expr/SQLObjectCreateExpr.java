@@ -51,4 +51,42 @@ public class SQLObjectCreateExpr extends SQLExprImpl implements Serializable {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((objType == null) ? 0 : objType.hashCode());
+        result = prime * result + ((paramList == null) ? 0 : paramList.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLObjectCreateExpr other = (SQLObjectCreateExpr) obj;
+        if (objType == null) {
+            if (other.objType != null) {
+                return false;
+            }
+        } else if (!objType.equals(other.objType)) {
+            return false;
+        }
+        if (paramList == null) {
+            if (other.paramList != null) {
+                return false;
+            }
+        } else if (!paramList.equals(other.paramList)) {
+            return false;
+        }
+        return true;
+    }
 }

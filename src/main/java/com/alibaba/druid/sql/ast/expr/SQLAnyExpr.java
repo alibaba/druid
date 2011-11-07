@@ -53,4 +53,34 @@ public class SQLAnyExpr extends SQLExprImpl {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((subQuery == null) ? 0 : subQuery.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLAnyExpr other = (SQLAnyExpr) obj;
+        if (subQuery == null) {
+            if (other.subQuery != null) {
+                return false;
+            }
+        } else if (!subQuery.equals(other.subQuery)) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAllColumnExpr extends SQLExprImpl {
 
     private static final long serialVersionUID = 1L;
-
+    
     public SQLAllColumnExpr(){
 
     }
@@ -33,5 +33,13 @@ public class SQLAllColumnExpr extends SQLExprImpl {
     protected void accept0(SQLASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
+    }
+    
+    public int hashCode() {
+        return 0;
+    }
+    
+    public boolean equals(Object o) {
+        return o instanceof SQLAllColumnExpr;
     }
 }

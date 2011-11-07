@@ -55,4 +55,43 @@ public class OracleTimestampExpr extends SQLLiteralExpr implements OracleExpr {
 
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((literal == null) ? 0 : literal.hashCode());
+        result = prime * result + ((timeZone == null) ? 0 : timeZone.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        OracleTimestampExpr other = (OracleTimestampExpr) obj;
+        if (literal == null) {
+            if (other.literal != null) {
+                return false;
+            }
+        } else if (!literal.equals(other.literal)) {
+            return false;
+        }
+        if (timeZone == null) {
+            if (other.timeZone != null) {
+                return false;
+            }
+        } else if (!timeZone.equals(other.timeZone)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

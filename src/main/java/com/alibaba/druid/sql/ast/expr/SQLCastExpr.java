@@ -62,4 +62,43 @@ public class SQLCastExpr extends SQLExprImpl {
         }
         visitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SQLCastExpr other = (SQLCastExpr) obj;
+        if (dataType == null) {
+            if (other.dataType != null) {
+                return false;
+            }
+        } else if (!dataType.equals(other.dataType)) {
+            return false;
+        }
+        if (expr == null) {
+            if (other.expr != null) {
+                return false;
+            }
+        } else if (!expr.equals(other.expr)) {
+            return false;
+        }
+        return true;
+    }
+    
 }

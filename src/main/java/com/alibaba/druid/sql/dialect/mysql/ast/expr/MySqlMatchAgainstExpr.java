@@ -82,4 +82,47 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
         }
         mysqlVisitor.endVisit(this);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((against == null) ? 0 : against.hashCode());
+        result = prime * result + ((columns == null) ? 0 : columns.hashCode());
+        result = prime * result + ((searchModifier == null) ? 0 : searchModifier.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MySqlMatchAgainstExpr other = (MySqlMatchAgainstExpr) obj;
+        if (against == null) {
+            if (other.against != null) {
+                return false;
+            }
+        } else if (!against.equals(other.against)) {
+            return false;
+        }
+        if (columns == null) {
+            if (other.columns != null) {
+                return false;
+            }
+        } else if (!columns.equals(other.columns)) {
+            return false;
+        }
+        if (searchModifier != other.searchModifier) {
+            return false;
+        }
+        return true;
+    }
+    
 }
