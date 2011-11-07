@@ -43,7 +43,7 @@ public class PreparedStatementPool {
     }
 
     public PreparedStatementHolder get(PreparedStatementKey key) {
-        PreparedStatementHolder holder = map.remove(key);
+        PreparedStatementHolder holder = map.get(key);
 
         if (holder != null) {
             holder.incrementReusedCount();
@@ -73,7 +73,7 @@ public class PreparedStatementPool {
         private static final long serialVersionUID = 1L;
 
         public LRUCache(int maxSize){
-            super(maxSize);
+            super(maxSize, 0.75f, true);
         }
 
         protected boolean removeEldestEntry(Entry<PreparedStatementKey, PreparedStatementHolder> eldest) {
