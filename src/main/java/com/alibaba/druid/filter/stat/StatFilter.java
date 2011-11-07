@@ -67,6 +67,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     protected final AtomicLong         resetCount                 = new AtomicLong();
 
+    protected int                      maxSqlStatCount            = 1000 * 10;
+
     public boolean isConnectionStackTraceEnable() {
         return connectionStackTraceEnable;
     }
@@ -81,10 +83,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public void reset() {
         dataSourceStat.reset();
-        
+
         resetCount.incrementAndGet();
     }
-    
+
     public long getResetCount() {
         return resetCount.get();
     }
@@ -670,6 +672,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = dataSourceStat.getSqlStatMap();
         JdbcSqlStat sqlStat = sqlStatMap.get(sql);
         if (sqlStat == null) {
+            if (dataSourceStat.getSqlStatMap().size() >= maxSqlStatCount) {
+                return null;
+            }
+            
             JdbcSqlStat newSqlStat = new JdbcSqlStat(sql);
             if (dataSourceStat.getSqlStatMap().putIfAbsent(sql, newSqlStat) == null) {
                 newSqlStat.setId(JdbcStatManager.getInstance().generateSqlId());
