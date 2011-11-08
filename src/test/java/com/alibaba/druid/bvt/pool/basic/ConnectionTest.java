@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 import junit.framework.Assert;
@@ -10,7 +11,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
-import com.mysql.jdbc.ResultSet;
 
 public class ConnectionTest extends TestCase {
 
