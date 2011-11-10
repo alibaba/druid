@@ -29,8 +29,8 @@ public class HADataSourceTest extends TestCase {
         dataSourceB.setFilters("stat");
 
         dataSourceHA = new HADataSource();
-        dataSourceHA.addDataSource(dataSourceA);
-        dataSourceHA.addDataSource(dataSourceB);
+        dataSourceHA.setMaster(dataSourceA);
+        dataSourceHA.setSlave(dataSourceB);
     }
 
     protected void tearDown() throws Exception {

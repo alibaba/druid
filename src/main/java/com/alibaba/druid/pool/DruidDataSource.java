@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import com.alibaba.druid.util.TransactionInfo;
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable {
+public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable {
 
     private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
