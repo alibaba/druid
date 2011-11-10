@@ -1,7 +1,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.ast;
 
-import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.dialect.transact.ast.TransactSQLObject;
 
-public interface SqlServerObject extends SQLObject {
+public interface SqlServerObject extends TransactSQLObject {
 
 }
