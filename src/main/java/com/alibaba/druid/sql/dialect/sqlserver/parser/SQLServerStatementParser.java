@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleInsertParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -53,7 +52,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.SELECT)) {
-                statementList.add(new SQLSelectStatement(new SQLSelectParser(this.lexer).select()));
+                statementList.add(new SQLSelectStatement(new SQLServerSelectParser(this.lexer).select()));
                 continue;
             }
 

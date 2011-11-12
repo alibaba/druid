@@ -70,7 +70,8 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleSelectParser extends SQLSelectParser {
 
     public OracleSelectParser(String sql){
-        super(sql);
+        this(new OracleLexer(sql));
+        this.lexer.nextToken();
     }
 
     public OracleSelectParser(Lexer lexer){

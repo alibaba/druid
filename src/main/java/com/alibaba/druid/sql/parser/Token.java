@@ -114,6 +114,9 @@ public enum Token {
     SECOND("SECOND"),
     TO("TO"),
     MODEL("MODEL"),
+    
+    // transact-sql
+    TOP("TOP"),
 
     EOF, 
     ERROR,
