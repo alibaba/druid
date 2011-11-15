@@ -57,7 +57,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     protected ConnectionHolder holder;
     protected TransactionInfo  transactionInfo;
 
-    public PoolableConnection(ConnectionHolder holder){
+    public PoolableConnection(ConnectionHolder holder) {
         this.conn = holder.getConnection();
         this.holder = holder;
     }
@@ -188,7 +188,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareStatement(sql, resultSetType,
-                                                                                          resultSetConcurrency));
+                                                                                    resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
                 holder.getStatementPool().put(stmtHolder);
             } catch (SQLException ex) {
@@ -389,8 +389,8 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (stmtHolder == null) {
             try {
                 stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
-                                                                                     resultSetConcurrency,
-                                                                                     resultSetHoldability));
+                                                                               resultSetConcurrency,
+                                                                               resultSetHoldability));
                 holder.getDataSource().incrementPreparedStatementCount();
                 holder.getStatementPool().put(stmtHolder);
             } catch (SQLException ex) {
@@ -422,8 +422,8 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         if (stmtHolder == null) {
             try {
-                stmtHolder = new PreparedStatementHolder(key, conn.prepareCall(sql, resultSetType,
-                                                                                     resultSetConcurrency));
+                stmtHolder = new PreparedStatementHolder(key,
+                                                         conn.prepareCall(sql, resultSetType, resultSetConcurrency));
                 holder.getDataSource().incrementPreparedStatementCount();
                 holder.getStatementPool().put(stmtHolder);
             } catch (SQLException ex) {

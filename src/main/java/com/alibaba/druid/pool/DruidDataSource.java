@@ -865,6 +865,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     notEmpty.signal();
                     notEmptySignalCount++;
+                } catch (SQLException ex) {
+                    LOG.error("create connection holder error", ex);
+                    break;
                 } finally {
                     lock.unlock();
                 }

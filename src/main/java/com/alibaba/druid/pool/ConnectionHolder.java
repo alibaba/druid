@@ -16,6 +16,7 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,15 +41,23 @@ public final class ConnectionHolder {
     private long                                lastActiveTimeMillis;
     private long                                useCount                 = 0;
 
-    private PreparedStatementPool         statementPool;
+    private PreparedStatementPool               statementPool;
 
     private final List<Statement>               statementTrace           = new ArrayList<Statement>();
 
-    public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn){
+    private boolean                             defaultReadOnly;
+    private int                                 defaultHoldability;
+    private int                                 defaultTransactionIsolation;
+
+    public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
         this.dataSource = dataSource;
         this.conn = conn;
         this.connecttimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connecttimeMillis;
+
+        this.defaultReadOnly = conn.isReadOnly();
+        this.defaultHoldability = conn.getHoldability();
+        this.defaultTransactionIsolation = conn.getTransactionIsolation();
 
         statementPool = null;
     }
@@ -108,7 +117,11 @@ public final class ConnectionHolder {
         useCount++;
     }
 
-    public void reset() {
+    public void reset() throws SQLException {
+        conn.setReadOnly(defaultReadOnly);
+        conn.setHoldability(defaultHoldability);
+        conn.setTransactionIsolation(defaultTransactionIsolation);
+        
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
@@ -118,7 +131,7 @@ public final class ConnectionHolder {
         }
         statementTrace.clear();
     }
-    
+
     public String toString() {
         StringBuilder buf = new StringBuilder();
 
@@ -126,24 +139,24 @@ public final class ConnectionHolder {
         buf.append(System.identityHashCode(conn));
         buf.append(", ConnectTime:\"");
         buf.append(JdbcUtils.toString(new Date(this.connecttimeMillis)));
-        
+
         buf.append("\", UseCount:");
         buf.append(useCount);
-        
+
         if (lastActiveTimeMillis > 0) {
             buf.append(", LastActiveTime:\"");
             buf.append(JdbcUtils.toString(new Date(this.lastActiveTimeMillis)));
             buf.append("\"");
         }
-        
+
         PreparedStatementPool statmentPool = this.getStatementPool();
         if (statmentPool != null && statmentPool.getMap().size() > 0) {
             buf.append("\", CachedStatementCount:");
             buf.append(this.getStatementPool().getMap().size());
         }
-        
+
         buf.append("}");
-        
+
         return buf.toString();
     }
 
