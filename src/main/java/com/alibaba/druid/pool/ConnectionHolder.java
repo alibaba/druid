@@ -45,9 +45,9 @@ public final class ConnectionHolder {
 
     private final List<Statement>               statementTrace           = new ArrayList<Statement>();
 
-    private boolean                             defaultReadOnly;
-    private int                                 defaultHoldability;
-    private int                                 defaultTransactionIsolation;
+    private final boolean                       defaultReadOnly;
+    private final int                           defaultHoldability;
+    private final int                           defaultTransactionIsolation;
 
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
         this.dataSource = dataSource;
@@ -121,7 +121,7 @@ public final class ConnectionHolder {
         conn.setReadOnly(defaultReadOnly);
         conn.setHoldability(defaultHoldability);
         conn.setTransactionIsolation(defaultTransactionIsolation);
-        
+
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
