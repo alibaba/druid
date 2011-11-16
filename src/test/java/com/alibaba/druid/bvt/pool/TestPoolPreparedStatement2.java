@@ -34,7 +34,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        dataSource.setPoolPreparedStatements(true);
+        dataSource.setPoolPreparedStatements(false);
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
     }
 
@@ -44,7 +44,30 @@ public class TestPoolPreparedStatement2 extends TestCase {
     }
 
     public void test_stmtCache() throws Exception {
-
+        for (int j = 0; j < 10; ++j) {
+            for (int i = 0; i < 10; ++i) {
+                Connection conn = dataSource.getConnection();
+                String sql = "SELECT" + i;
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.execute();
+                stmt.close();
+                conn.close();
+            }
+        }
+        
+        dataSource.setPoolPreparedStatements(true);
+        
+        for (int j = 0; j < 10; ++j) {
+            for (int i = 0; i < 10; ++i) {
+                Connection conn = dataSource.getConnection();
+                String sql = "SELECT" + i;
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.execute();
+                stmt.close();
+                conn.close();
+            }
+        }
+        
         for (int i = 0; i < 1000 * 100 * 1; ++i) {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT " + i);

@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.pool;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,7 +54,13 @@ public class PreparedStatementPool {
         return holder;
     }
 
-    public void put(PreparedStatementHolder holder) {
+    public void put(PreparedStatementHolder holder) throws SQLException {
+       PreparedStatement stmt = holder.getStatement();
+        
+        if (stmt.isClosed()) {
+            return;
+        }
+        
         PreparedStatementKey key = holder.getKey();
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null) {
