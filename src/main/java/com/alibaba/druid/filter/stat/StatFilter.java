@@ -71,7 +71,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     protected final AtomicLong         resetCount                 = new AtomicLong();
 
-    protected int                      maxSqlStatCount            = 1000 * 10;
+    protected int                      maxSqlStatCount            = 1000 * 100;
 
     public boolean isConnectionStackTraceEnable() {
         return connectionStackTraceEnable;
