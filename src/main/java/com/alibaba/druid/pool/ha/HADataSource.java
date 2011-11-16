@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.RandomAccess;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.sql.DataSource;
 
@@ -22,7 +21,6 @@ public class HADataSource extends MultiDataSource implements DataSource {
 
     protected DruidDataSource             master;
     protected DruidDataSource             slave;
-    protected final List<DruidDataSource> notAvailableDatasources = new CopyOnWriteArrayList<DruidDataSource>();
 
     protected Balancer                    balancer                = new RoundRobinBlancer();
 
