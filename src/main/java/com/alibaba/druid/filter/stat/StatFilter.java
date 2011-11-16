@@ -30,6 +30,8 @@ import javax.management.openmbean.TabularData;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -50,6 +52,8 @@ import com.alibaba.druid.util.TransactionInfo;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
+
+    private final static Log           LOG                        = LogFactory.getLog(StatFilter.class);
 
     public final static String         ATTR_SQL                   = "stat.sql";
     public final static String         ATTR_UPDATE_COUNT          = "stat.updteCount";
@@ -318,8 +322,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             statement.getAttributes().put(ATTR_SQL, sqlStat);
         }
 
-        sqlStat.addExecuteBatchCount(batchSize);
-
+        if (sqlStat != null) {
+            sqlStat.addExecuteBatchCount(batchSize);
+        }
+        
         internalBeforeStatementExecute(statement, sql);
 
         // super.statementExecuteBatchBefore(statement);
@@ -363,8 +369,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.setName(statContext.getName());
             sqlStat.setFile(statContext.getFile());
         }
-        sqlStat.setExecuteLastStartTime(System.currentTimeMillis());
-        sqlStat.incrementRunningCount();
+
+        if (sqlStat != null) {
+            sqlStat.setExecuteLastStartTime(System.currentTimeMillis());
+            sqlStat.incrementRunningCount();
+        }
 
         statement.getAttributes().put(ATTR_UPDATE_COUNT, 0);
     }
@@ -400,13 +409,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         // // SQL
         final JdbcSqlStat sqlStat = getSqlStat(statement);
 
-        sqlStat.incrementExecuteSuccessCount();
-        for (int updateCount : updateCountArray) {
-            sqlStat.addUpdateCount(updateCount);
-        }
+        if (sqlStat != null) {
+            sqlStat.incrementExecuteSuccessCount();
+            for (int updateCount : updateCountArray) {
+                sqlStat.addUpdateCount(updateCount);
+            }
 
-        sqlStat.decrementExecutingCount();
-        sqlStat.addExecuteTime(nanoSpan);
+            sqlStat.decrementExecutingCount();
+            sqlStat.addExecuteTime(nanoSpan);
+        }
 
         if (updateCountArray.length == 1) {
             statement.getAttributes().put(ATTR_UPDATE_COUNT, updateCountArray[0]);
@@ -432,8 +443,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         // SQL
         JdbcSqlStat sqlStat = getSqlStat(statement);
 
-        sqlStat.error(error);
-        sqlStat.addExecuteTime(nanoSpan);
+        if (sqlStat != null) {
+            sqlStat.error(error);
+            sqlStat.addExecuteTime(nanoSpan);
+        }
 
         super.statement_executeErrorAfter(statement, sql, error);
     }
@@ -675,7 +688,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             if (dataSourceStat.getSqlStatMap().size() >= maxSqlStatCount) {
                 return null;
             }
-            
+
             JdbcSqlStat newSqlStat = new JdbcSqlStat(sql);
             if (dataSourceStat.getSqlStatMap().putIfAbsent(sql, newSqlStat) == null) {
                 newSqlStat.setId(JdbcStatManager.getInstance().generateSqlId());
@@ -683,6 +696,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             }
 
             sqlStat = dataSourceStat.getSqlStatMap().get(sql);
+        }
+
+        if (sqlStat == null) {
+            LOG.error("stat is null");
         }
 
         return sqlStat;

@@ -7,8 +7,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestPoolPreparedStatement2 extends TestCase {
@@ -18,7 +18,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         driver = new MockDriver();
 
         dataSource = new DruidDataSource();
@@ -45,12 +45,22 @@ public class TestPoolPreparedStatement2 extends TestCase {
 
     public void test_stmtCache() throws Exception {
 
-        for (int i = 0; i < 1000 * 1000 * 10; ++i){
+        for (int i = 0; i < 1000 * 100 * 1; ++i) {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT " + i);
+            stmt.execute();
             stmt.close();
             conn.close();
         }
+
+        Connection conn = dataSource.getConnection();
+        PoolableConnection poolableConn = conn.unwrap(PoolableConnection.class);
+        Assert.assertNotNull(poolableConn);
+
+        Assert.assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),
+                            poolableConn.getConnectionHolder().getStatementPool().getMap().size());
+
+        conn.close();
 
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(1, dataSource.getPoolingCount());

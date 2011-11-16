@@ -49,6 +49,7 @@ public class TestPoolPreparedStatement extends TestCase {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT ?");
             raw = stmt.unwrap(MockPreparedStatement.class);
+            stmt.execute();
             stmt.close();
             conn.close();
         }
@@ -57,6 +58,7 @@ public class TestPoolPreparedStatement extends TestCase {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT ?");
             Assert.assertTrue(raw == stmt.unwrap(MockPreparedStatement.class));
+            stmt.execute();
             stmt.close();
             conn.close();
         }
