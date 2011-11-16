@@ -1100,9 +1100,9 @@ public final class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> imp
      */
     static class SimpleEntry<K, V> implements Entry<K, V> {
 
-        private final K           key;
+        private final K key;
 
-        private V                 value;
+        private V       value;
 
         public SimpleEntry(K key, V value){
             this.key = key;

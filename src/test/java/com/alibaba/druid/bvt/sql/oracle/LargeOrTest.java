@@ -25,7 +25,7 @@ public class LargeOrTest extends TestCase {
         SQLBinaryOpExpr last = (SQLBinaryOpExpr) where.getRight();
         Assert.assertEquals(SQLBinaryOperator.Equality, last.getOperator());
     }
-    
+
     public void test_largeAnd() throws Exception {
         StringBuffer buf = new StringBuffer();
         buf.append("SELECT 1 FROM T WHERE ID = ?");

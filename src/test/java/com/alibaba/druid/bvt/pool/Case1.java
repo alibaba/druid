@@ -12,14 +12,15 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class Case1 extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_f() throws Exception {
         final DruidDataSource dataSource = new DruidDataSource();
         dataSource.setTimeBetweenConnectErrorMillis(100);
@@ -46,7 +47,7 @@ public class Case1 extends TestCase {
 
         Connection conn = dataSource.getConnection();
         conn.close();
-        
+
         dataSource.close();
     }
 }

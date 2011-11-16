@@ -65,11 +65,11 @@ public class ConnectionTest4 extends TestCase {
         Assert.assertEquals(false, conn.isWrapperFor(null));
         Assert.assertEquals(true, conn.isWrapperFor(PoolableConnection.class));
         Assert.assertEquals(true, conn.isWrapperFor(Connection.class));
-        
+
         Assert.assertEquals("SELECT 1", conn.nativeSQL("SELECT 1"));
 
         conn.toString();
-        
+
         conn.close();
         conn.toString();
     }
@@ -403,7 +403,7 @@ public class ConnectionTest4 extends TestCase {
         conn.getConnectionHolder().toString();
         conn.getConnectionHolder().getUseCount();
         conn.getConnectionHolder().getTimeMillis();
-        
+
         conn.close();
     }
 
@@ -441,10 +441,10 @@ public class ConnectionTest4 extends TestCase {
 
         conn.close();
     }
-    
+
     public void test_create_2() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.getConnection().close();
         {
             SQLException error = null;
@@ -455,13 +455,13 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_setAutoCommit() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.getAutoCommit();
         conn.setAutoCommit(true);
         conn.getConnection().close();
@@ -474,13 +474,13 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_commit() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.getConnection().close();
         {
             SQLException error = null;
@@ -491,17 +491,17 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_rollback() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.setAutoCommit(false);
         Statement stmt = conn.createStatement();
         stmt.execute("SELECT 1");
-        
+
         conn.getConnection().close();
         {
             SQLException error = null;
@@ -512,13 +512,13 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_rollback_1() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.getConnection().close();
         {
             SQLException error = null;
@@ -529,13 +529,13 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_releaseSavepoint_1() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.getConnection().close();
         {
             SQLException error = null;
@@ -546,13 +546,13 @@ public class ConnectionTest4 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         conn.close();
     }
-    
+
     public void test_addListenerError() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.close();
         {
             Exception error = null;
@@ -564,10 +564,10 @@ public class ConnectionTest4 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_addListenerError2() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.close();
         {
             Exception error = null;
@@ -579,10 +579,10 @@ public class ConnectionTest4 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_removeConnectionEventListener() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.close();
         {
             Exception error = null;
@@ -594,10 +594,10 @@ public class ConnectionTest4 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_removeStatementEventListener() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.close();
         {
             Exception error = null;
@@ -609,10 +609,10 @@ public class ConnectionTest4 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_checkOpen_error() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
-        
+
         conn.close();
         {
             Exception error = null;

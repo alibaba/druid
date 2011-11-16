@@ -22,7 +22,7 @@ public abstract class SQLExprImpl extends SQLObjectImpl implements SQLExpr {
     public SQLExprImpl(){
 
     }
-    
+
     public abstract boolean equals(Object o);
 
     public abstract int hashCode();

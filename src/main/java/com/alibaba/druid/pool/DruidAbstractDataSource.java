@@ -195,15 +195,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }
-    
+
     public void incrementCachedPreparedStatementCount() {
         cachedPreparedStatementCount.incrementAndGet();
     }
-    
+
     public void decrementCachedPreparedStatementCount() {
         cachedPreparedStatementCount.decrementAndGet();
     }
-    
+
     public long getCachedPreparedStatementCount() {
         return cachedPreparedStatementCount.get();
     }

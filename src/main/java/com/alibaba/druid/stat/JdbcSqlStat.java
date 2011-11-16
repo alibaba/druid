@@ -64,9 +64,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
-            4, 15, 60, 250, // 
-            1000, 4 * 1000, 15 * 1000, 60 * 1000, 250 * 1000
-                                                                   });
+            4, 15, 60, 250, //
+            1000, 4 * 1000, 15 * 1000, 60 * 1000, 250 * 1000      });
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
@@ -335,40 +334,15 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.DATE,
                 SimpleType.STRING, SimpleType.STRING //
 
-                , new ArrayType<Long>(SimpleType.LONG, true)
-        };
+                , new ArrayType<Long>(SimpleType.LONG, true) };
 
-        String[] indexNames = {
-                "ID",
-                "DataSource",
-                "SQL",
-                "ExecuteCount",
-                "ErrorCount" //
-                ,
-                "TotalTime",
-                "LastTime",
-                "MaxTimespan",
-                "LastError",
-                "EffectedRowCount" //
-                ,
-                "FetchRowCount",
-                "MaxTimespanOccurTime",
-                "BatchSizeMax",
-                "BatchSizeTotal",
-                "ConcurrentMax" //
-                ,
-                "RunningCount",
-                "Name",
-                "File",
-                "LastErrorMessage",
-                "LastErrorClass" //
-                ,
-                "LastErrorStackTrace",
-                "LastErrorTime",
-                "DbType",
-                "URL" //
+        String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount" //
+                , "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount" //
+                , "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax" //
+                , "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass" //
+                , "LastErrorStackTrace", "LastErrorTime", "DbType", "URL" //
 
-                , "Histogram"};
+                , "Histogram" };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 

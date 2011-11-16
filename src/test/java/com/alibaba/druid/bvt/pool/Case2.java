@@ -31,14 +31,15 @@ import com.alibaba.druid.util.JMXUtils;
  * @author admin 2011-5-4 下午02:45:21
  */
 public class Case2 extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_singleThread() throws Exception {
 
         Class.forName("com.alibaba.druid.mock.MockDriver");

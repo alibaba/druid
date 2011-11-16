@@ -18,7 +18,7 @@ public class OracleFlashbackQueryTest2 extends TestCase {
                         + "FROM employees\n"
                         + "VERSIONS BETWEEN TIMESTAMP SYSTIMESTAMP - INTERVAL '10' MINUTE AND SYSTIMESTAMP - INTERVAL '1' MINUTE\n"
                         + "WHERE last_name = 'Chung';\n";
-        
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 

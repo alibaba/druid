@@ -13,14 +13,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3 extends TestCase {
+
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -37,9 +38,13 @@ public class TestIdle3 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba:type=DataSource,name=mysql"));
-        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba:type=DataSource,name=oracle"));
+
+        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+                                                                 new ObjectName(
+                                                                                "com.alibaba:type=DataSource,name=mysql"));
+        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+                                                                 new ObjectName(
+                                                                                "com.alibaba:type=DataSource,name=oracle"));
 
         // 第一次创建连接
         {

@@ -16,20 +16,20 @@ public class DruidDataSourceC3P0AdapterTest2 extends TestCase {
 
         DruidDataSourceC3P0Adapter dataSource = new DruidDataSourceC3P0Adapter();
         dataSource.setJdbcUrl("jdbc:mock:xxx");
-        
+
         dataSource.setLogWriter(dataSource.getLogWriter());
         dataSource.setLoginTimeout(dataSource.getLoginTimeout());
-        
+
         Assert.assertTrue(dataSource.isWrapperFor(DruidDataSourceC3P0Adapter.class));
         Assert.assertTrue(dataSource.isWrapperFor(DruidDataSource.class));
         Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
         Assert.assertFalse(dataSource.isWrapperFor(null));
-        
+
         Assert.assertNotNull(dataSource.unwrap(DruidDataSourceC3P0Adapter.class));
         Assert.assertNotNull(dataSource.unwrap(DruidDataSource.class));
         Assert.assertNotNull(dataSource.unwrap(DataSource.class));
         Assert.assertNull(dataSource.unwrap(null));
-        
+
         dataSource.setProperties(dataSource.getProperties());
         dataSource.setUser(dataSource.getUser());
         dataSource.setPassword(dataSource.getPassword());

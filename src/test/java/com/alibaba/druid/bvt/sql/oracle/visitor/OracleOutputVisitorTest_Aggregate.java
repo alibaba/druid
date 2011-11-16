@@ -11,8 +11,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
-
 public class OracleOutputVisitorTest_Aggregate extends TestCase {
+
     public void test_0() throws Exception {
         String sql = "SELECT MAX(salary) from emp where F1 = Date '2011-10-01'";
 
@@ -31,7 +31,7 @@ public class OracleOutputVisitorTest_Aggregate extends TestCase {
         Assert.assertEquals(2, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("emp", "salary")));
         Assert.assertEquals(true, visitor.getFields().contains(new Column("emp", "F1")));
-        
+
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);

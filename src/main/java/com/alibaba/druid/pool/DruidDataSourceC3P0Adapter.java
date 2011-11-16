@@ -98,11 +98,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     public String getJdbcUrl() {
         return dataSource.getUrl();
     }
-    
+
     public Driver getDriver() {
         return dataSource.getDriver();
     }
-    
+
     public void setDriver(Driver driver) {
         dataSource.setDriver(driver);
     }
@@ -214,11 +214,11 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     public void setPreferredTestQuery(String preferredTestQuery) {
         dataSource.setValidationQuery(preferredTestQuery);
     }
-    
+
     public void setFilters(String filters) throws SQLException {
         dataSource.setFilters(filters);
     }
-    
+
     public List<Filter> getProxyFilters() {
         return dataSource.getProxyFilters();
     }

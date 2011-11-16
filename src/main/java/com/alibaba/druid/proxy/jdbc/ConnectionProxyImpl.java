@@ -322,7 +322,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     }
 
     public void setSchema(String schema) throws SQLException {
-        throw new SQLFeatureNotSupportedException();        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public String getSchema() throws SQLException {

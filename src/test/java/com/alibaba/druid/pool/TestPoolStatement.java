@@ -45,7 +45,7 @@ public class TestPoolStatement extends TestCase {
         System.out.println();
         System.out.println("millis : " + millis);
     }
-    
+
     private void stat() throws SQLException {
         Connection conn = dataSource.getConnection();
 
@@ -68,7 +68,7 @@ public class TestPoolStatement extends TestCase {
         stmt.setLong(1, new Random().nextInt(1000 * 100));
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            
+
         }
         rs.close();
         stmt.close();

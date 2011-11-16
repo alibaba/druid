@@ -83,5 +83,5 @@ public class SQLAllExpr extends SQLExprImpl {
         }
         return true;
     }
-    
+
 }

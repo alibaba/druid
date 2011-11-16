@@ -25,14 +25,15 @@ import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDruidDataSource extends TestCase {
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 

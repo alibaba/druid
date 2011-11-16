@@ -81,6 +81,5 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
         }
         return true;
     }
-    
-    
+
 }

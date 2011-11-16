@@ -21,10 +21,10 @@ public class MockResultSetMetaDataTest extends TestCase {
         Assert.assertTrue(meta.unwrap(java.sql.ResultSetMetaData.class) != null);
         Assert.assertTrue(meta.unwrap(Object.class) != null);
         Assert.assertTrue(meta.unwrap(Date.class) == null);
-        
+
         ColumnMetaData column = new ColumnMetaData();
         meta.getColumns().add(column);
-        
+
         meta.isAutoIncrement(1);
         meta.isCaseSensitive(1);
         meta.isSearchable(1);

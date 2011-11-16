@@ -40,7 +40,7 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.setFilters("stat,trace");
         dataSource.setRemoveAbandoned(true);
         dataSource.setExceptionSorterClassName(null);
-        
+
         Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
         Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
@@ -53,7 +53,7 @@ public class TestDataSourceBasic extends TestCase {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_toCompositeData() throws Exception {
         Connection conn = dataSource.getConnection();
         conn.close();
@@ -68,7 +68,7 @@ public class TestDataSourceBasic extends TestCase {
             Assert.assertTrue(conn.isWrapperFor(PoolableConnection.class));
             Assert.assertNotNull(wrap);
         }
-        
+
         {
             Statement wrap = conn.unwrap(Statement.class);
             Assert.assertTrue(!conn.isWrapperFor(Statement.class));
@@ -80,7 +80,7 @@ public class TestDataSourceBasic extends TestCase {
         Statement stmt = conn.createStatement();
         stmt.execute("SELECT 1");
         stmt.close();
-        
+
         Assert.assertEquals(1, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(1, dataSource.getActiveConnections().size());
         conn.commit();
@@ -93,12 +93,12 @@ public class TestDataSourceBasic extends TestCase {
         Assert.assertEquals(0, dataSource.getActiveConnectionStackTrace().size());
         Assert.assertEquals(0, dataSource.getActiveConnections().size());
     }
-    
+
     public void test_wrap() throws Exception {
         Assert.assertTrue(!dataSource.isWrapperFor(Date.class));
         Assert.assertTrue(!dataSource.isWrapperFor(null));
         Assert.assertTrue(dataSource.isWrapperFor(DataSource.class));
-        
+
         Assert.assertTrue(dataSource.unwrap(Date.class) == null);
         Assert.assertTrue(dataSource.unwrap(null) == null);
         Assert.assertTrue(dataSource.unwrap(DataSource.class) != null);

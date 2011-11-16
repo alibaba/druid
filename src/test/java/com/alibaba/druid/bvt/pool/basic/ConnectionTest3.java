@@ -37,7 +37,7 @@ public class ConnectionTest3 extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat,trace");
-        
+
         JdbcStatContext context = new JdbcStatContext();
         context.setTraceEnable(true);
         JdbcStatManager.getInstance().setStatContext(context);
@@ -46,32 +46,32 @@ public class ConnectionTest3 extends TestCase {
     protected void tearDown() throws Exception {
         dataSource.close();
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
     public void test_basic() throws Exception {
         PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
-        
+
         conn.getTransactionInfo();
         conn.getMetaData();
         conn.setReadOnly(true);
         Assert.assertEquals(true, conn.isReadOnly());
-        
+
         conn.setCatalog("xxx");
         Assert.assertEquals("xxx", conn.getCatalog());
-        
+
         conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         Assert.assertEquals(Connection.TRANSACTION_READ_COMMITTED, conn.getTransactionIsolation());
-        
+
         conn.getWarnings();
         conn.clearWarnings();
         conn.getTypeMap();
         conn.setTypeMap(null);
-        
+
         conn.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
         Assert.assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, conn.getHoldability());
-        
+
         conn.setSavepoint();
         conn.setSavepoint("savepoint");
         conn.rollback();
@@ -86,17 +86,16 @@ public class ConnectionTest3 extends TestCase {
         conn.setClientInfo("xx", "11");
         conn.getClientInfo("xx");
         conn.getClientInfo();
-        
+
         conn.createArrayOf("int", new Object[0]);
         conn.createStruct("int", new Object[0]);
-        
+
         conn.addConnectionEventListener(null);
         conn.removeConnectionEventListener(null);
         conn.addStatementEventListener(null);
         conn.removeStatementEventListener(null);
-        
+
         conn.close();
     }
-    
- 
+
 }

@@ -34,7 +34,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         return select;
     }
-    
+
     protected SQLSelectQuery query() throws ParserException {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -56,7 +56,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             queryBlock.setDistionOption(SQLSetQuantifier.ALL);
             lexer.nextToken();
         }
-        
+
         if (lexer.token() == Token.TOP) {
             Top top = new Top();
             lexer.nextToken();

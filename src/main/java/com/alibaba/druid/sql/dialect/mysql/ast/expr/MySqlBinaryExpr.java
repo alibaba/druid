@@ -88,6 +88,5 @@ public class MySqlBinaryExpr extends SQLLiteralExpr implements MySqlExpr {
         }
         return true;
     }
-    
-    
+
 }

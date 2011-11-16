@@ -54,9 +54,9 @@ public class TestPoolPreparedStatement2 extends TestCase {
                 conn.close();
             }
         }
-        
+
         dataSource.setPoolPreparedStatements(true);
-        
+
         for (int j = 0; j < 10; ++j) {
             for (int i = 0; i < 10; ++i) {
                 Connection conn = dataSource.getConnection();
@@ -67,7 +67,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
                 conn.close();
             }
         }
-        
+
         for (int i = 0; i < 1000 * 100 * 1; ++i) {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT " + i);

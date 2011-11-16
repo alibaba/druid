@@ -25,7 +25,7 @@ public class TraceFilterTest extends TestCase {
 
     private MockDriver      driver;
     private DruidDataSource dataSource;
-    private TraceFilter filter;
+    private TraceFilter     filter;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
@@ -45,7 +45,7 @@ public class TraceFilterTest extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("trace");
-        
+
         filter = (TraceFilter) dataSource.getProxyFilters().get(0);
         JdbcStatContext statContext = new JdbcStatContext();
         statContext.setTraceEnable(true);
@@ -65,7 +65,7 @@ public class TraceFilterTest extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_exuecuteQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
@@ -75,7 +75,7 @@ public class TraceFilterTest extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_preExuecuteQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT ?");
@@ -86,7 +86,7 @@ public class TraceFilterTest extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_set() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELECT ?");
@@ -105,35 +105,35 @@ public class TraceFilterTest extends TestCase {
         stmt.setBoolean(1, true);
         stmt.setByte(1, (byte) 12);
         stmt.setBytes(1, null);
-        
+
         stmt.setCharacterStream(1, null);
         stmt.setCharacterStream(1, null, 0);
         stmt.setCharacterStream(1, null, 0L);
-        
+
         stmt.setClob(1, (Clob) null);
         stmt.setClob(1, (Reader) null);
         stmt.setClob(1, (Reader) null, 1);
-        
+
         stmt.setDate(1, null);
         stmt.setDate(1, null, null);
-        
+
         stmt.setDouble(1, 1D);
         stmt.setFloat(1, 1F);
         stmt.setLong(1, 1L);
-        
+
         stmt.setNCharacterStream(1, null);
         stmt.setNCharacterStream(1, null, 0);
-        
+
         stmt.setNClob(1, (NClob) null);
         stmt.setNClob(1, (Reader) null);
         stmt.setNClob(1, (Reader) null, 1);
-        
+
         stmt.setNull(1, Types.INTEGER);
         stmt.setNull(1, Types.INTEGER, "int");
         stmt.setObject(1, null);
         stmt.setObject(1, null, Types.INTEGER);
         stmt.setObject(1, null, Types.INTEGER, 2);
-        
+
         stmt.setRef(1, null);
         stmt.setRowId(1, null);
         stmt.setShort(1, (short) 1);
@@ -145,7 +145,7 @@ public class TraceFilterTest extends TestCase {
         stmt.setTimestamp(1, null, null);
         stmt.setUnicodeStream(1, null, 0);
         stmt.setURL(1, null);
-        
+
         ResultSet rs = stmt.executeQuery();
         rs.next();
         rs.previous();

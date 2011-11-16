@@ -81,6 +81,5 @@ public class SQLVariantRefExpr extends SQLExprImpl {
         }
         return true;
     }
-    
-    
+
 }

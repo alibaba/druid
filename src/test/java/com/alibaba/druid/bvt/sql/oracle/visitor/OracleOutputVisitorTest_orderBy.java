@@ -11,8 +11,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
-
 public class OracleOutputVisitorTest_orderBy extends TestCase {
+
     public void test_0() throws Exception {
         String sql = "SELECT salary from employee order by name";
 
@@ -31,7 +31,7 @@ public class OracleOutputVisitorTest_orderBy extends TestCase {
         Assert.assertEquals(2, visitor.getFields().size());
         Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "salary")));
         Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "name")));
-        
+
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);

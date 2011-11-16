@@ -11,8 +11,8 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat.Column;
 
-
 public class OracleOutputVisitorTest_selectJoin extends TestCase {
+
     public void test_0() throws Exception {
         String sql = "SELECT e.salary from employee e join department d where e.depId = d.id";
 
@@ -33,11 +33,12 @@ public class OracleOutputVisitorTest_selectJoin extends TestCase {
         Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "salary")));
         Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "depId")));
         Assert.assertEquals(true, visitor.getFields().contains(new Column("department", "id")));
-        
+
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);
         stmt.accept(outputVisitor);
-        Assert.assertEquals("SELECT e.salary\nFROM employee e JOIN department d\nWHERE e.depId = d.id;\n", buf.toString());
+        Assert.assertEquals("SELECT e.salary\nFROM employee e JOIN department d\nWHERE e.depId = d.id;\n",
+                            buf.toString());
 
     }
 }

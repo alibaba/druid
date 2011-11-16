@@ -47,100 +47,103 @@ public class ConnectionTest2 extends TestCase {
 
     public void test_prepare() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepare2() throws Exception {
         Connection conn = dataSource.getConnection();
-        
-        PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+
+        PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
+                                                       ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepare3() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement("SELECT 1", new int[0]);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepare4() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement("SELECT 1", new String[0]);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepare5() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement("SELECT 1", Statement.RETURN_GENERATED_KEYS);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepareCall() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareCall("SELECT 1");
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepareCall1() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_prepareCall2() throws Exception {
         Connection conn = dataSource.getConnection();
-        
-        PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+
+        PreparedStatement stmt = conn.prepareCall("SELECT 1", ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
+                                                  ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_create() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement();
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_create1() throws Exception {
         Connection conn = dataSource.getConnection();
-        
+
         Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY);
         stmt.close();
-        
+
         conn.close();
     }
-    
+
     public void test_create2() throws Exception {
         Connection conn = dataSource.getConnection();
-        
-        Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+
+        Statement stmt = conn.createStatement(ResultSet.FETCH_FORWARD, ResultSet.CONCUR_READ_ONLY,
+                                              ResultSet.HOLD_CURSORS_OVER_COMMIT);
         stmt.close();
-        
+
         conn.close();
     }
 }

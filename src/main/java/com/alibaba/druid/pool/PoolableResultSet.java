@@ -1743,7 +1743,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
-    
+
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }

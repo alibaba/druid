@@ -59,5 +59,4 @@ public class GroupingSetExpr extends SQLExprImpl {
         return true;
     }
 
-    
 }

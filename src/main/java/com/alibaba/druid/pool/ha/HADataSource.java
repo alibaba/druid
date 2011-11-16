@@ -81,7 +81,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
         if (LOG.isDebugEnabled()) {
             LOG.debug("HADataSource closed");
         }
-        
+
         JdbcUtils.close(master);
     }
 

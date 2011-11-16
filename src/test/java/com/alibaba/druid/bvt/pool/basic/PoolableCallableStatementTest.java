@@ -28,7 +28,8 @@ public class PoolableCallableStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         raw = new MockCallableStatement(null, null);
-        stmt = new PoolableCallableStatement(null, new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
+        stmt = new PoolableCallableStatement(null,
+                                             new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
@@ -2067,12 +2068,12 @@ public class PoolableCallableStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_registerOutParameter_2() throws Exception {
-        
+
         stmt.registerOutParameter(1, Types.INTEGER);
         stmt.registerOutParameter("1", Types.INTEGER);
-        
+
         {
             SQLException error = null;
             try {
@@ -2082,7 +2083,7 @@ public class PoolableCallableStatementTest extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         {
             SQLException error = null;
             try {

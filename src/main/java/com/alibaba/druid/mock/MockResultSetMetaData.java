@@ -38,7 +38,7 @@ public class MockResultSetMetaData implements ResultSetMetaData {
         if (iface == null) {
             return null;
         }
-        
+
         if (iface.isAssignableFrom(MockResultSetMetaData.class)) {
             return (T) this;
         }
@@ -50,7 +50,7 @@ public class MockResultSetMetaData implements ResultSetMetaData {
         if (iface == null) {
             return false;
         }
-        
+
         return MockResultSetMetaData.class.isAssignableFrom(iface);
     }
 

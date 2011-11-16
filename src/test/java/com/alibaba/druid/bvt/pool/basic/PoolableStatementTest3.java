@@ -11,18 +11,20 @@ public class PoolableStatementTest3 extends TestCase {
 
     public void test_clearResultSetError() throws Exception {
         final MockResultSet rs = new MockResultSet(null) {
+
             public void close() throws SQLException {
                 throw new SQLException();
             }
         };
-        
+
         PoolableStatement stmt = new PoolableStatement(null, null) {
+
             public void close() throws SQLException {
                 resultSetTrace.add(rs);
                 clearResultSet();
             }
         };
         stmt.close();
-        
+
     }
 }

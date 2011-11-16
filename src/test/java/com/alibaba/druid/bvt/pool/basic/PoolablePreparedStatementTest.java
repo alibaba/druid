@@ -24,7 +24,8 @@ public class PoolablePreparedStatementTest extends TestCase {
 
     protected void setUp() throws Exception {
         raw = new MockPreparedStatement(null, null);
-        stmt = new PoolablePreparedStatement(null, new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
+        stmt = new PoolablePreparedStatement(null,
+                                             new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
@@ -309,7 +310,6 @@ public class PoolablePreparedStatementTest extends TestCase {
         }
     }
 
-
     public void test_updateCharacterStream_2() throws Exception {
 
         stmt.setCharacterStream(1, (Reader) null, 1L);
@@ -324,7 +324,7 @@ public class PoolablePreparedStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setRef() throws Exception {
 
         stmt.setRef(1, null);
@@ -339,11 +339,11 @@ public class PoolablePreparedStatementTest extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setArray() throws Exception {
-        
+
         stmt.setArray(1, null);
-        
+
         {
             SQLException error = null;
             try {

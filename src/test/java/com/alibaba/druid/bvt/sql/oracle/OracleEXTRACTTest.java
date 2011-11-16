@@ -9,20 +9,18 @@ import junit.framework.TestCase;
 
 public class OracleEXTRACTTest extends TestCase {
 
-	public void test_Extract() throws Exception {
-		String sql = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07') FROM DUAL;";
+    public void test_Extract() throws Exception {
+        String sql = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07') FROM DUAL;";
 
-		String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n"
-				+ "FROM DUAL;\n";
+        String expect = "SELECT EXTRACT(YEAR FROM DATE '1998-03-07')\n" + "FROM DUAL;\n";
 
-		OracleStatementParser parser = new OracleStatementParser(sql);
-		SQLSelectStatement stmt = (SQLSelectStatement) parser
-				.parseStatementList().get(0);
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
 
-		String text = TestUtils.outputOracle(stmt);
+        String text = TestUtils.outputOracle(stmt);
 
-		Assert.assertEquals(expect, text);
+        Assert.assertEquals(expect, text);
 
-		System.out.println(text);
-	}
+        System.out.println(text);
+    }
 }

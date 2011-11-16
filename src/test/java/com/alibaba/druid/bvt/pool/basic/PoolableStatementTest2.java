@@ -47,7 +47,7 @@ public class PoolableStatementTest2 extends TestCase {
         Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
         dataSource.setExceptionSorterClassName("");
         Assert.assertTrue(dataSource.getExceptionSorter() instanceof NullExceptionSorter);
-        
+
         JdbcStatContext context = new JdbcStatContext();
         context.setTraceEnable(true);
         JdbcStatManager.getInstance().setStatContext(context);
@@ -552,14 +552,14 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeBatch() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeBatch();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -569,18 +569,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_getMoreResults_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.getMoreResults(1);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -590,18 +590,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_getGeneratedKeys() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.getGeneratedKeys();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -611,7 +611,7 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
@@ -619,10 +619,10 @@ public class PoolableStatementTest2 extends TestCase {
     public void test_getResultSetHoldability() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.getResultSetHoldability();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -632,18 +632,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_execute() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.execute("SELECT 1", new String[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -653,18 +653,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_execute_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.execute("SELECT 1", new int[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -674,18 +674,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_execute_2() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.execute("SELECT 1", Statement.NO_GENERATED_KEYS);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -695,18 +695,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_1() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SELECT 1", new String[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -716,18 +716,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_2() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SELECT 1", new int[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -737,18 +737,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_3() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SELECT 1", Statement.NO_GENERATED_KEYS);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -758,18 +758,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_getMeta() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.getMetaData();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -779,18 +779,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_getParameterMetaData() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.getParameterMetaData();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -800,18 +800,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_wasNull() throws Exception {
         Connection conn = dataSource.getConnection();
         CallableStatement stmt = conn.prepareCall("SELELCT 1");
-        
+
         stmt.wasNull();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -821,18 +821,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.executeQuery();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -842,18 +842,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_4() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.executeQuery();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -863,18 +863,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_execute_3() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.execute();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -884,19 +884,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
-    
+
     public void test_clearParameters() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.clearParameters();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -906,18 +905,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_addBatch_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
-        
+
         stmt.addBatch();
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -927,18 +926,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_5() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SET 1", Statement.RETURN_GENERATED_KEYS);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -948,18 +947,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_6() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SET 1", new String[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -969,18 +968,18 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
+
     public void test_executeUpdate_7() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.executeUpdate("SET 1", new int[0]);
         ((PoolableStatement) stmt).getStatement().close();
-        
+
         {
             SQLException error = null;
             try {
@@ -990,18 +989,17 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }
-    
-    
+
     public void test_setPoolable() throws Exception {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        
+
         stmt.setPoolable(true);
-        
+
         {
             SQLException error = null;
             try {
@@ -1011,7 +1009,7 @@ public class PoolableStatementTest2 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
         stmt.close();
         conn.close();
     }

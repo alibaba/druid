@@ -20,7 +20,7 @@ public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
     public void setTop(Top top) {
         this.top = top;
     }
-    
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         accept0((SQLServerASTVisitor) visitor);

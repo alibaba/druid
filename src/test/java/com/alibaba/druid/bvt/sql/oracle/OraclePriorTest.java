@@ -31,8 +31,8 @@ public class OraclePriorTest extends TestCase {
                      + "ORDER SIBLINGS BY last_name;";
 
         String expect = "SELECT last_name, employee_id, manager_id, LEVEL\n" + "FROM employees\n"
-                + "START WITH employee_id = 100\n" + "CONNECT BY PRIOR employee_id = manager_id\n"
-                + "ORDER SIBLINGS BY last_name;\n";
+                        + "START WITH employee_id = 100\n" + "CONNECT BY PRIOR employee_id = manager_id\n"
+                        + "ORDER SIBLINGS BY last_name;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

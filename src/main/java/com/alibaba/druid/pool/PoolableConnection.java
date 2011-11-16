@@ -57,7 +57,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     protected ConnectionHolder holder;
     protected TransactionInfo  transactionInfo;
 
-    public PoolableConnection(ConnectionHolder holder) {
+    public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
     }

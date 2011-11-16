@@ -23,19 +23,19 @@ public class OracleLiteralTest extends TestCase {
 
         System.out.println(text);
     }
-    
+
     public void test_date() throws Exception {
         String sql = "SELECT DATE '1998-12-25' FROM DUAL;";
-        
+
         String expect = "SELECT DATE '1998-12-25'\n" + "FROM DUAL;\n";
-        
+
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
-        
+
         String text = TestUtils.outputOracle(stmt);
-        
+
         Assert.assertEquals(expect, text);
-        
+
         System.out.println(text);
     }
 

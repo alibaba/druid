@@ -128,6 +128,5 @@ public class SQLBinaryOpExpr extends SQLExprImpl implements Serializable {
         }
         return true;
     }
-    
-    
+
 }

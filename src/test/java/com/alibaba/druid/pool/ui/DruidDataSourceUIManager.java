@@ -49,7 +49,8 @@ public class DruidDataSourceUIManager extends JFrame {
     private JScrollPane                             scrollPane                    = new JScrollPane(mainPanel);
 
     private JLabel                                  lbUrl                         = new JLabel("URL : ");
-    private JTextField                              txtUrl                        = new JTextField("jdbc:oracle:thin:@10.20.36.18:1521:ocndb");
+    private JTextField                              txtUrl                        = new JTextField(
+                                                                                                   "jdbc:oracle:thin:@10.20.36.18:1521:ocndb");
 
     private JLabel                                  lbDriverClass                 = new JLabel("DriverClassName : ");
     private JTextField                              txtDriverClass                = new JTextField();
@@ -448,9 +449,10 @@ public class DruidDataSourceUIManager extends JFrame {
 
     public void closeDataSource_actionPerformed(ActionEvent e) {
         dataSource.close();
-        
+
         try {
-            ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba.druid:type=DruidDataSource"));
+            ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName(
+                                                                                      "com.alibaba.druid:type=DruidDataSource"));
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -492,11 +494,13 @@ public class DruidDataSourceUIManager extends JFrame {
             dataSource.setMinEvictableIdleTimeMillis(Integer.parseInt(txtMinEvictableIdleTimeMillis.getText().trim()));
             dataSource.setTestWhileIdle(Boolean.parseBoolean(txtTestWhileIdle.getText().trim()));
             dataSource.setTestOnBorrow(Boolean.parseBoolean(txtTestOnBorrow.getText().trim()));
-            
+
             dataSource.setTimeBetweenEvictionRunsMillis(60000);
             dataSource.setNumTestsPerEvictionRun(20);
-            
-            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba.druid:type=DruidDataSource"));
+
+            ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+                                                                     new ObjectName(
+                                                                                    "com.alibaba.druid:type=DruidDataSource"));
 
             try {
                 Connection conn = dataSource.getConnection();

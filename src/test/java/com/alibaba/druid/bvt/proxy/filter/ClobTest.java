@@ -16,13 +16,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class ClobTest extends TestCase {
+
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_clob() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("stat");
@@ -66,7 +68,7 @@ public class ClobTest extends TestCase {
         rs.close();
         stmt.close();
         conn.close();
-        
+
         dataSource.close();
     }
 }

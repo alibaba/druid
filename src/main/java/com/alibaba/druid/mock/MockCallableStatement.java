@@ -56,7 +56,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
         if (parameterIndex < 1) {
             throw new SQLException();
         }
-        
+
         if (parameters.size() >= parameterIndex - 1) {
             parameters.add(null);
         } else {
@@ -74,7 +74,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
         if (closed) {
             throw new SQLException();
         }
-        
+
         return wasNull;
     }
 

@@ -49,7 +49,7 @@ public class TestDefault extends TestCase {
         }
 
         Connection conn = dataSource.getConnection();
-        
+
         Assert.assertEquals(0, conn.getHoldability());
         Assert.assertEquals(false, conn.isReadOnly());
         Assert.assertEquals(0, conn.getTransactionIsolation());

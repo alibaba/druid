@@ -163,14 +163,15 @@ public class TraceFilterTest_commit_error extends TestCase {
                 // TODO Auto-generated method stub
                 return null;
             }
-            
+
         };
         filter.connection_rollback(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0), savepoint);
 
         {
             SQLException error = null;
             try {
-                filter.connection_rollback(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0), savepoint);
+                filter.connection_rollback(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0),
+                                           savepoint);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -179,7 +180,8 @@ public class TraceFilterTest_commit_error extends TestCase {
         {
             RuntimeException error = null;
             try {
-                filter.connection_rollback(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0), savepoint);
+                filter.connection_rollback(chain, new ConnectionProxyImpl(dataSource, conn, new Properties(), 0),
+                                           savepoint);
             } catch (RuntimeException ex) {
                 error = ex;
             }

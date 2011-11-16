@@ -12,14 +12,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class PasswordCallbackTest extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -32,7 +33,7 @@ public class PasswordCallbackTest extends TestCase {
 
         Assert.assertEquals(dataSource.getUrl(), passwordCallback.getUrl());
         Assert.assertEquals(dataSource.getConnectProperties(), passwordCallback.getProperties());
-        
+
         dataSource.close();
     }
 

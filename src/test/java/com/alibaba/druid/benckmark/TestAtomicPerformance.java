@@ -29,7 +29,7 @@ public class TestAtomicPerformance extends TestCase {
         long millis = System.currentTimeMillis() - startMillis;
         System.out.println("millis " + millis);
     }
-    
+
     private void perf2(AtomicInteger count) {
         long startMillis = System.currentTimeMillis();
 

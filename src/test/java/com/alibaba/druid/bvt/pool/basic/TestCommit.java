@@ -52,7 +52,7 @@ public class TestCommit extends TestCase {
             Assert.assertTrue(conn.isWrapperFor(PoolableConnection.class));
             Assert.assertNotNull(wrap);
         }
-        
+
         {
             Statement wrap = conn.unwrap(Statement.class);
             Assert.assertTrue(!conn.isWrapperFor(Statement.class));

@@ -63,7 +63,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
-        
+
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().createResultSet(this);
         }
@@ -80,7 +80,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
-        
+
         return 0;
     }
 
@@ -174,7 +174,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
-        
+
         parameters.clear();
     }
 
@@ -233,7 +233,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
-        
+
         return resultSetMetaData;
     }
 
@@ -267,7 +267,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
-        
+
         return metadata;
     }
 

@@ -786,8 +786,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
     public static class PreparedStatementKey {
 
-        private final String     sql;
-        private final String     catalog;
+        private final String       sql;
+        private final String       catalog;
 
         protected final MethodType methodType;
 

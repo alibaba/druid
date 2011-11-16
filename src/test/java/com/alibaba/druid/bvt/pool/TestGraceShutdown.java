@@ -11,14 +11,14 @@ import com.alibaba.druid.pool.DataSourceDisableException;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-
 public class TestGraceShutdown extends TestCase {
+
     private MockDriver      driver;
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         driver = new MockDriver();
 
         dataSource = new DruidDataSource();
@@ -35,11 +35,11 @@ public class TestGraceShutdown extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
     }
-    
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_close() throws Exception {
         final int threadCount = 100;
         Thread[] threads = new Thread[threadCount];
@@ -68,8 +68,9 @@ public class TestGraceShutdown extends TestCase {
             threads[i].start();
         }
         Thread.sleep(1000);
-        
+
         new Thread("close thread") {
+
             public void run() {
                 dataSource.close();
             }

@@ -81,10 +81,10 @@ public class TestIdel3 extends TestCase {
         concurrent(dataSource, 1, 1000 * 1000);
         Thread.sleep(1000 * 10);
         concurrent(dataSource, 1000, 1000 * 1000);
-        
+
         Assert.assertEquals(driver.getConnections().size(), dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
-        
+
         // 连续打开关闭单个连接
         for (int i = 0; i < 1000; ++i) {
             Assert.assertEquals(0, dataSource.getActiveCount());
@@ -95,15 +95,15 @@ public class TestIdel3 extends TestCase {
             Thread.sleep(10);
             conn.close();
         }
-        //Assert.assertEquals(2, dataSource.getPoolingCount());
+        // Assert.assertEquals(2, dataSource.getPoolingCount());
 
         Thread.sleep(1000 * 100);
         dataSource.close();
-        
-        
+
     }
 
-    private void concurrent(final DruidDataSource dataSource, int threadCount, final int loopCount) throws InterruptedException {
+    private void concurrent(final DruidDataSource dataSource, int threadCount, final int loopCount)
+                                                                                                   throws InterruptedException {
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);

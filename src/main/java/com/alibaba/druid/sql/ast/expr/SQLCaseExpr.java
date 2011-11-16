@@ -180,6 +180,5 @@ public class SQLCaseExpr extends SQLExprImpl implements Serializable {
         }
         return true;
     }
-    
-    
+
 }

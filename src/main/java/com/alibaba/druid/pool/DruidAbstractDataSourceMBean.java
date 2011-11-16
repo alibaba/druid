@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface DruidAbstractDataSourceMBean {
+
     int getLoginTimeout();
 
     String getDbType();
@@ -35,11 +36,11 @@ public interface DruidAbstractDataSourceMBean {
     long getDestroyCount();
 
     long getCreateTimespanMillis();
-    
+
     long getCommitCount();
-    
+
     long getRollbackCount();
-    
+
     long getStartTransactionCount();
 
     int getQueryTimeout();
@@ -55,7 +56,7 @@ public interface DruidAbstractDataSourceMBean {
     long getMinEvictableIdleTimeMillis();
 
     boolean isRemoveAbandoned();
-    
+
     long getRemoveAbandonedTimeoutMillis();
 
     List<String> getActiveConnectionStackTrace();
@@ -91,19 +92,19 @@ public interface DruidAbstractDataSourceMBean {
     int getMaxOpenPreparedStatements();
 
     long getRemoveAbandonedCount();
-    
+
     boolean isLogAbandoned();
-    
+
     long getDupCloseCount();
-    
+
     boolean isBreakAfterAcquireFailure();
-    
+
     int getConnectionErrorRetryAttempts();
-    
+
     int getMaxPoolPreparedStatementPerConnectionSize();
-    
+
     void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize);
-    
+
     String getProperties();
 
     int getRawDriverMinorVersion();
@@ -111,20 +112,20 @@ public interface DruidAbstractDataSourceMBean {
     int getRawDriverMajorVersion();
 
     Date getCreatedTime();
-    
+
     String getValidConnectionCheckerClassName();
-    
+
     long[] getTransactionHistogramValues();
-    
+
     void setTransactionThresholdMillis(long transactionThresholdMillis);
-    
+
     long getTransactionThresholdMillis();
-    
+
     long getReusePreparedStatementCount();
-    
+
     long getPreparedStatementCount();
-    
+
     long getClosedPreparedStatementCount();
-    
+
     long getCachedPreparedStatementCount();
 }

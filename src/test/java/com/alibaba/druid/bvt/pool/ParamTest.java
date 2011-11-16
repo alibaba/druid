@@ -10,14 +10,15 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ParamTest extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_default() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");
@@ -79,7 +80,7 @@ public class ParamTest extends TestCase {
             error = ex;
         }
         Assert.assertNotNull(error);
-        
+
         dataSource.close();
     }
 
@@ -104,7 +105,7 @@ public class ParamTest extends TestCase {
         }
 
         Assert.assertEquals(10, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        
+
         dataSource.close();
     }
 }

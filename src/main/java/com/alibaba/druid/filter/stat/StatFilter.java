@@ -325,7 +325,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (sqlStat != null) {
             sqlStat.addExecuteBatchCount(batchSize);
         }
-        
+
         internalBeforeStatementExecute(statement, sql);
 
         // super.statementExecuteBatchBefore(statement);

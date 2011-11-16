@@ -59,16 +59,16 @@ public class Bug_for_happyday517_2 extends TestCase {
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement("insert into message.dbo.TempSMS(sms) values ('333')");
-        
+
         Exception error = null;
         try {
-            stmt.execute();    
+            stmt.execute();
         } catch (SQLException ex) {
             error = ex;
         }
-        
+
         Assert.assertTrue(exception == error);
-        
+
         stmt.close();
 
         conn.close();

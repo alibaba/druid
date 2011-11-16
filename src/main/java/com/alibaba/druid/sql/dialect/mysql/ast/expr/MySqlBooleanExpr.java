@@ -82,6 +82,5 @@ public class MySqlBooleanExpr extends SQLLiteralExpr implements MySqlExpr {
         }
         return true;
     }
-    
-    
+
 }

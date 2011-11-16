@@ -124,5 +124,5 @@ public class MySqlMatchAgainstExpr extends SQLExprImpl implements MySqlExpr {
         }
         return true;
     }
-    
+
 }

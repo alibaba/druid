@@ -18,9 +18,8 @@ public class CursorTest extends TestCase {
 
         String text = TestUtils.outputOracle(stmt);
 
-        Assert.assertEquals("SELECT department_name, CURSOR(SELECT salary, commission_pct\n"
-                            + "\tFROM employees e\n" + "\tWHERE e.department_id = d.department_id)\n"
-                            + "FROM departments d;\n", text);
+        Assert.assertEquals("SELECT department_name, CURSOR(SELECT salary, commission_pct\n" + "\tFROM employees e\n"
+                            + "\tWHERE e.department_id = d.department_id)\n" + "FROM departments d;\n", text);
 
         System.out.println(text);
     }

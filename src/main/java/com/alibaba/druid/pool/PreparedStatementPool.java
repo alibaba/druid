@@ -55,12 +55,12 @@ public class PreparedStatementPool {
     }
 
     public void put(PreparedStatementHolder holder) throws SQLException {
-       PreparedStatement stmt = holder.getStatement();
-        
+        PreparedStatement stmt = holder.getStatement();
+
         if (stmt.isClosed()) {
             return;
         }
-        
+
         PreparedStatementKey key = holder.getKey();
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null) {

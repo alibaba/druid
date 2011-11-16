@@ -18,18 +18,20 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class SpringFilterTest extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_spring() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("com/alibaba/druid/pool/spring-config-1.xml");
+
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                                                                                    "com/alibaba/druid/pool/spring-config-1.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
@@ -37,9 +39,9 @@ public class SpringFilterTest extends TestCase {
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");
         Assert.assertEquals(1, filter.getConnectCount());
-        
+
         context.close();
-        
+
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 

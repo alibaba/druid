@@ -100,5 +100,5 @@ public class OracleExtractExpr extends SQLExprImpl implements OracleExpr {
         }
         return true;
     }
-    
+
 }

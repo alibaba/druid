@@ -104,6 +104,5 @@ public class SQLPropertyExpr extends SQLExprImpl implements SQLName {
         }
         return true;
     }
-    
-    
+
 }

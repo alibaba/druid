@@ -100,5 +100,5 @@ public class SQLCastExpr extends SQLExprImpl {
         }
         return true;
     }
-    
+
 }

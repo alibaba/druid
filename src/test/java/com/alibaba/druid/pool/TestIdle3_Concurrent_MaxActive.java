@@ -38,8 +38,8 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     public void test_idle2() throws Exception {
 
-//        ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
-//                                                                 new ObjectName("com.alibaba:type=DataSource"));
+        // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
+        // new ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {

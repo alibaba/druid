@@ -153,5 +153,5 @@ public class OracleIntervalExpr extends SQLLiteralExpr implements OracleExpr {
         }
         return true;
     }
-    
+
 }

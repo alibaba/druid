@@ -10,14 +10,15 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DruidDataSourceFilterTest extends TestCase {
+
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_filter() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -26,7 +27,7 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat");
 
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
-        
+
         dataSource.close();
     }
 
@@ -38,7 +39,7 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat,trace");
 
         Assert.assertEquals(2, dataSource.getProxyFilters().size());
-        
+
         dataSource.close();
     }
 
@@ -67,8 +68,8 @@ public class DruidDataSourceFilterTest extends TestCase {
             Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); // logic
                                                                                                        // close不会导致计数器＋1
         }
-        
-        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size()); 
+
+        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         dataSource.close();
 

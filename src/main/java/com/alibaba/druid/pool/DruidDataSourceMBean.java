@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import java.util.Date;
 
-
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -36,7 +35,7 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     int getLockQueueLength();
 
     long getNotEmptyWaitCount();
-    
+
     int getNotEmptyWaitThreadCount();
 
     long getNotEmptySignalCount();
@@ -52,24 +51,26 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     void setResetStatEnable(boolean resetStatEnable);
 
     String getVersion();
-    
+
     void setPoolPreparedStatements(boolean poolPreparedStatements);
 
     /**
      * ActiveCount峰值
+     * 
      * @return
      */
     int getActivePeak();
-    
+
     /**
      * PoolingCount峰值
+     * 
      * @return
      */
     int getPoolingPeak();
-    
+
     Date getActivePeakTime();
-    
+
     Date getPoolingPeakTime();
-    
+
     long getErrorCount();
 }

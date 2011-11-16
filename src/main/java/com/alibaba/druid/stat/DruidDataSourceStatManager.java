@@ -92,7 +92,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public synchronized static void remove(DruidDataSource dataSource) {
         ObjectName objectName = dataSources.remove(dataSource);
-        
+
         if (objectName == null) {
             return;
         }
@@ -188,7 +188,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("ErrorCount", dataSource.getErrorCount());
         map.put("ReusePreparedStatementCount", dataSource.getReusePreparedStatementCount());
         map.put("StartTransactionCount", dataSource.getStartTransactionCount());
-        
+
         map.put("CommitCount", dataSource.getCommitCount());
         map.put("RollbackCount", dataSource.getRollbackCount());
 
@@ -217,12 +217,18 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         String[] indexNames = {
                 //
-                "Name", "URL", "CreateCount", "DestroyCount", "ConnectCount", //
-                "CloseCount", "ActiveCount", "PoolingCount", "LockQueueLength", "WaitThreadCount", //
-                "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements", "TestOnBorrow", //
-                "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis", "DbType", //
-                "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username", "RemoveAbandonedCount", //
-                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount", "StartTransactionCount", //
+                "Name", "URL", "CreateCount", "DestroyCount",
+                "ConnectCount", //
+                "CloseCount", "ActiveCount", "PoolingCount", "LockQueueLength",
+                "WaitThreadCount", //
+                "InitialSize", "MaxActive", "MinIdle", "PoolPreparedStatements",
+                "TestOnBorrow", //
+                "TestOnReturn", "MinEvictableIdleTimeMillis", "ConnectErrorCount", "CreateTimespanMillis",
+                "DbType", //
+                "ValidationQuery", "ValidationQueryTimeout", "DriverClassName", "Username",
+                "RemoveAbandonedCount", //
+                "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
+                "StartTransactionCount", //
                 "CommitCount", "RollbackCount"
         //
         };

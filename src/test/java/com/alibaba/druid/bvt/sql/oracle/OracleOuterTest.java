@@ -14,7 +14,7 @@ public class OracleOuterTest extends TestCase {
                      + "WHERE employees.manager_id(+) = employees.employee_id;";
 
         String expect = "SELECT employee_id, manager_id\n" + "FROM employees\n"
-                + "WHERE employees.manager_id(+) = employees.employee_id;\n";
+                        + "WHERE employees.manager_id(+) = employees.employee_id;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

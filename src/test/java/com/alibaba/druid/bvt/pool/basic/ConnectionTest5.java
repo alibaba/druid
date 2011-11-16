@@ -98,7 +98,7 @@ public class ConnectionTest5 extends TestCase {
 
         conn.close();
     }
-    
+
     public void test_handleException_3() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
         conn.getConnection().close();
@@ -115,7 +115,7 @@ public class ConnectionTest5 extends TestCase {
 
         conn.close();
     }
-    
+
     public void test_handleException_4() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
         conn.getConnection().close();
@@ -132,24 +132,24 @@ public class ConnectionTest5 extends TestCase {
 
         Assert.assertEquals(true, conn.isClosed());
     }
-    
+
     public void test_handleException_5() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
         conn.addConnectionEventListener(new ConnectionEventListener() {
 
             @Override
             public void connectionClosed(ConnectionEvent event) {
-                
+
             }
 
             @Override
             public void connectionErrorOccurred(ConnectionEvent event) {
-                
+
             }
-            
+
         });
         conn.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -159,11 +159,9 @@ public class ConnectionTest5 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
-        
+
     }
-    
-    
+
     public void test_setClientInfo() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
         conn.close();
@@ -179,11 +177,11 @@ public class ConnectionTest5 extends TestCase {
         }
 
     }
-    
+
     public void test_setClientInfo_1() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
         conn.close();
-        
+
         {
             SQLException error = null;
             try {
@@ -193,6 +191,6 @@ public class ConnectionTest5 extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
     }
 }

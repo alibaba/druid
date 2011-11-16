@@ -35,11 +35,11 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        
+
         ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource,
                                                                  new ObjectName("com.alibaba:type=DataSource"));
     }
-    
+
     protected void tearDown() throws Exception {
         ManagementFactory.getPlatformMBeanServer().unregisterMBean(new ObjectName("com.alibaba:type=DataSource"));
     }
@@ -86,10 +86,11 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
         Thread[] threads = new Thread[threadCount];
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
-        
+
         final AtomicInteger pass = new AtomicInteger();
 
         final CyclicBarrier closedBarrier = new CyclicBarrier(threadCount, new Runnable() {
+
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getPoolingCount());
                 dataSource.shrink(false);
@@ -101,6 +102,7 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
             }
         });
         final CyclicBarrier closeBarrier = new CyclicBarrier(threadCount, new Runnable() {
+
             public void run() {
                 Assert.assertEquals(threadCount, dataSource.getActiveCount());
             }
@@ -113,10 +115,10 @@ public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
                     try {
                         startLatch.await();
                         for (int i = 0; i < 1000 * 1000 * 10; ++i) {
-                            
+
                             Connection conn = dataSource.getConnection();
                             closeBarrier.await();
-                            
+
                             conn.close();
                             closedBarrier.await();
                         }

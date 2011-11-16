@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.Token;
 
-
 public class SQLServerLexer extends Lexer {
 
     public final static Keywords DEFAULT_SQL_SERVER_KEYWORDS;

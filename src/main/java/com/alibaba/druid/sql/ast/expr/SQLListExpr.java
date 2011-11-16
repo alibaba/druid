@@ -54,5 +54,5 @@ public class SQLListExpr extends SQLExprImpl {
         }
         return true;
     }
-    
+
 }

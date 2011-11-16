@@ -17,7 +17,7 @@ public class TestStat extends TestCase {
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setName("com.alibaba.dragoon.monitor");
@@ -47,12 +47,11 @@ public class TestStat extends TestCase {
 
         rs.close();
         stmt.close();
-        
+
         dataSource.shrink();
-        
+
         JdbcStatManager.getInstance().getDataSourceList();
         Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
-        
     }
 }

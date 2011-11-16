@@ -58,7 +58,7 @@ public class TestConnectError extends TestCase {
 
     public void test_connect_error() throws Exception {
         Assert.assertEquals(0, dataSource.getCreateErrorCount());
-        
+
         int count = 10;
         Connection[] connections = new Connection[count];
         for (int i = 0; i < count; ++i) {
@@ -68,7 +68,7 @@ public class TestConnectError extends TestCase {
         for (int i = 0; i < count; ++i) {
             connections[i].close();
         }
-        
+
         Assert.assertEquals(10, dataSource.getCreateErrorCount());
     }
 }

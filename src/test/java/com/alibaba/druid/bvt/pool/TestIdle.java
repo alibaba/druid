@@ -11,10 +11,11 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle extends TestCase {
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
@@ -38,7 +39,7 @@ public class TestIdle extends TestCase {
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
-            
+
             Connection conn = dataSource.getConnection();
 
             Assert.assertEquals(dataSource.getInitialSize(), dataSource.getCreateCount());
@@ -88,7 +89,7 @@ public class TestIdle extends TestCase {
             Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
             Assert.assertEquals(0, dataSource.getActiveCount());
         }
-        
+
         {
             int count = 4;
             Connection[] connections = new Connection[4];
@@ -103,12 +104,11 @@ public class TestIdle extends TestCase {
             }
             Assert.assertEquals(4, driver.getConnections().size());
             Assert.assertEquals(0, dataSource.getActiveCount());
-            
+
             dataSource.shrink();
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(dataSource.getMinIdle(), driver.getConnections().size());
         }
-
 
         dataSource.close();
     }

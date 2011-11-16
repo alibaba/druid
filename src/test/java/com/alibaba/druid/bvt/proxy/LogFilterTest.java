@@ -277,7 +277,6 @@ public class LogFilterTest extends TestCase {
         stmt.executeQuery(sql);
         stmt.executeUpdate(sql);
         stmt.cancel();
-        
 
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setArray(1, null);
@@ -313,7 +312,6 @@ public class LogFilterTest extends TestCase {
         pstmt.executeBatch();
         pstmt.executeQuery();
         pstmt.executeUpdate();
-     
 
         conn.prepareCall(sql);
 

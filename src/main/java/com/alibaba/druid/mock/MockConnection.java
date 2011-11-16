@@ -281,7 +281,7 @@ public class MockConnection implements Connection {
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
-        
+
         return stmt;
     }
 

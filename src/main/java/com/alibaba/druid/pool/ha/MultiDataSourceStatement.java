@@ -452,7 +452,7 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
     }
 
     public void closeOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();        
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {

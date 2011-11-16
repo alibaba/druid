@@ -81,7 +81,7 @@ public class Histogram {
         }
         return array;
     }
-    
+
     public long[] getRanges() {
         return ranges;
     }

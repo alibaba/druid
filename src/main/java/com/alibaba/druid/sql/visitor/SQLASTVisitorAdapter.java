@@ -211,7 +211,6 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public void endVisit(SQLCastExpr x) {
     }
 
-
     public boolean visit(SQLSelectStatement astNode) {
         return true;
     }

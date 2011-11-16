@@ -87,7 +87,7 @@ public class Lexer {
         int   bp;
         int   sp;
         int   np;
-        char   ch;
+        char  ch;
         Token token;
     }
 

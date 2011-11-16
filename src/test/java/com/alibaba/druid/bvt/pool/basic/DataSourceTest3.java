@@ -317,17 +317,17 @@ public class DataSourceTest3 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_setExceptionSorter() throws Exception {
         dataSource.setExceptionSorter(NullExceptionSorter.class.getName());
     }
-    
+
     public void test_setProxyFilters() throws Exception {
         dataSource.setProxyFilters(null);
         dataSource.setFilters(null);
         dataSource.setFilters("");
     }
-    
+
     public void test_error_validateConnection() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
 
@@ -343,7 +343,7 @@ public class DataSourceTest3 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_error_validateConnection_2() throws Exception {
         PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
 
@@ -359,7 +359,7 @@ public class DataSourceTest3 extends TestCase {
             Assert.assertNotNull(error);
         }
     }
-    
+
     public void test_error_validateConnection_3() throws Exception {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());

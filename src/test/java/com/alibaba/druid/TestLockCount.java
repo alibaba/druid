@@ -28,7 +28,7 @@ public class TestLockCount extends TestCase {
         Assert.assertEquals(result, dataSource.getC7());
         Assert.assertEquals(result, dataSource.getC8());
         Assert.assertEquals(result, dataSource.getC9());
-        
+
         Assert.assertEquals(result, dataSource.getC10());
         Assert.assertEquals(result, dataSource.getC11());
         Assert.assertEquals(result, dataSource.getC12());

@@ -18,7 +18,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
-        
+
         driver = new MockDriver();
 
         dataSource = new DruidDataSource();

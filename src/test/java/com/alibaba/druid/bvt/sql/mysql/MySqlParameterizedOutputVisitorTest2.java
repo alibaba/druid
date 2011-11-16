@@ -14,11 +14,11 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVis
 public class MySqlParameterizedOutputVisitorTest2 extends TestCase {
 
     public void test_0() throws Exception {
-    	String sql = "SELECT * FROM T WHERE ID = ?";
-    	for (int i = 0; i < 10000; ++i) {
-    		sql += " OR ID = ?";
-    	}
-    	
+        String sql = "SELECT * FROM T WHERE ID = ?";
+        for (int i = 0; i < 10000; ++i) {
+            sql += " OR ID = ?";
+        }
+
         validate(sql, "SELECT * FROM T WHERE ID = ?");
         validateOracle(sql, "SELECT * FROM T WHERE ID = ?; ");
     }

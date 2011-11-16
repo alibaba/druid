@@ -372,7 +372,7 @@ public class OracleSelectParser extends SQLSelectParser {
         ModelColumnClause modelColumnClause = new ModelColumnClause();
         parseQueryPartitionClause(modelColumnClause);
         mainModel.setModelColumnClause(modelColumnClause);
-        
+
         acceptIdentifier("DIMENSION");
         accept(Token.BY);
         accept(Token.LPAREN);
@@ -381,18 +381,18 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 break;
             }
-            
+
             ModelColumn column = new ModelColumn();
             column.setExpr(expr());
             column.setAlias(as());
             modelColumnClause.getDimensionByColumns().add(column);
-            
+
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
             }
         }
-        
+
         acceptIdentifier("MEASURES");
         accept(Token.LPAREN);
         for (;;) {
@@ -400,28 +400,28 @@ public class OracleSelectParser extends SQLSelectParser {
                 lexer.nextToken();
                 break;
             }
-            
+
             ModelColumn column = new ModelColumn();
             column.setExpr(expr());
             column.setAlias(as());
             modelColumnClause.getMeasuresColumns().add(column);
-            
+
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
             }
         }
         mainModel.setModelColumnClause(modelColumnClause);
-        
+
         parseCellReferenceOptions(mainModel.getCellReferenceOptions());
-        
+
         parseModelRulesClause(mainModel);
 
         modelClause.setMainModel(mainModel);
     }
-    
+
     private void parseModelRulesClause(MainModelClause mainModel) {
-        ModelRulesClause modelRulesClause = new ModelRulesClause(); 
+        ModelRulesClause modelRulesClause = new ModelRulesClause();
         if (identifierEquals("RULES")) {
             lexer.nextToken();
             if (lexer.token() == Token.UPDATE) {
@@ -431,7 +431,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 modelRulesClause.getOptions().add(ModelRuleOption.UPSERT);
                 lexer.nextToken();
             }
-            
+
             if (identifierEquals("AUTOMATIC")) {
                 lexer.nextToken();
                 accept(Token.ORDER);
@@ -442,54 +442,54 @@ public class OracleSelectParser extends SQLSelectParser {
                 modelRulesClause.getOptions().add(ModelRuleOption.SEQUENTIAL_ORDER);
             }
         }
-        
+
         if (identifierEquals("ITERATE")) {
             lexer.nextToken();
             accept(Token.LPAREN);
             modelRulesClause.setIterate(expr());
             accept(Token.RPAREN);
-            
+
             if (identifierEquals("UNTIL")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 modelRulesClause.setUntil(expr());
-                accept(Token.RPAREN); 
+                accept(Token.RPAREN);
             }
         }
-        
+
         accept(Token.LPAREN);
         for (;;) {
             if (lexer.token() == Token.RPAREN) {
                 lexer.nextToken();
                 break;
             }
-            
+
             CellAssignmentItem item = new CellAssignmentItem();
             if (lexer.token() == Token.UPDATE) {
                 item.setOption(ModelRuleOption.UPDATE);
             } else if (identifierEquals("UPSERT")) {
                 item.setOption(ModelRuleOption.UPSERT);
             }
-            
+
             item.setCellAssignment(parseCellAssignment());
             item.setOrderBy(this.parseOrderBy());
             accept(Token.EQ);
             item.setExpr(expr());
-            
+
             modelRulesClause.getCellAssignmentItems().add(item);
         }
-        
+
         mainModel.setModelRulesClause(modelRulesClause);
     }
-    
+
     private CellAssignment parseCellAssignment() {
         CellAssignment cellAssignment = new CellAssignment();
-        
+
         cellAssignment.setMeasureColumn(expr());
         accept(Token.LBRACKET);
         this.createExprParser().exprList(cellAssignment.getConditions());
         accept(Token.RBRACKET);
-        
+
         return cellAssignment;
     }
 

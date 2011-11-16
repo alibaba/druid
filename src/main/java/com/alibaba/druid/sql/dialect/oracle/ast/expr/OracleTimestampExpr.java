@@ -93,5 +93,5 @@ public class OracleTimestampExpr extends SQLLiteralExpr implements OracleExpr {
         }
         return true;
     }
-    
+
 }

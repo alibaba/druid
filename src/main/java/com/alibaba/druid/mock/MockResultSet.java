@@ -315,7 +315,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException();
         }
-        
+
         return warning;
     }
 
@@ -324,7 +324,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException();
         }
-        
+
         warning = null;
     }
 
@@ -337,7 +337,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException();
         }
-        
+
         return cursorName;
     }
 
@@ -350,7 +350,7 @@ public class MockResultSet implements ResultSet {
         if (closed) {
             throw new SQLException("resultSet closed");
         }
-        
+
         return metaData;
     }
 

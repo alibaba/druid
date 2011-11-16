@@ -13,14 +13,15 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestIdle3_Concurrent extends TestCase {
+
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     protected void tearDown() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
-    
+
     public void test_idle2() throws Exception {
         MockDriver driver = new MockDriver();
 
@@ -37,8 +38,9 @@ public class TestIdle3_Concurrent extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
-        
-        // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new ObjectName("com.alibaba:type=DataSource"));
+
+        // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new
+        // ObjectName("com.alibaba:type=DataSource"));
 
         // 第一次创建连接
         {
@@ -77,18 +79,20 @@ public class TestIdle3_Concurrent extends TestCase {
         dataSource.close();
     }
 
-    private void concurrent(final MockDriver driver, final DruidDataSource dataSource, final int count) throws Exception {
+    private void concurrent(final MockDriver driver, final DruidDataSource dataSource, final int count)
+                                                                                                       throws Exception {
         final int LOOP_COUNT = 1000;
         Thread[] threads = new Thread[count];
         final CyclicBarrier barrier = new CyclicBarrier(count);
         final CountDownLatch endLatch = new CountDownLatch(count);
         for (int i = 0; i < count; ++i) {
             threads[i] = new Thread("thread-" + i) {
+
                 public void run() {
                     try {
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             barrier.await();
-                            
+
                             Connection conn = dataSource.getConnection();
                             {
                                 AtomicInteger c = new AtomicInteger();
@@ -108,16 +112,16 @@ public class TestIdle3_Concurrent extends TestCase {
                 }
             };
         }
-        
+
         for (int i = 0; i < count; ++i) {
             threads[i].start();
         }
-        
+
         endLatch.await();
         System.out.println("concurrent end");
-        
+
         int max = count > dataSource.getMaxActive() ? dataSource.getMaxActive() : count;
         Assert.assertEquals(max, driver.getConnections().size());
-        
+
     }
 }

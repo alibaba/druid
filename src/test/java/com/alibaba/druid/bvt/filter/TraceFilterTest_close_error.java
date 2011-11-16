@@ -57,13 +57,14 @@ public class TraceFilterTest_close_error extends TestCase {
 
     public void test_close_error() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         MockConnection conn = new MockConnection() {
+
             public void close() throws SQLException {
                 throw new SQLException();
             }
         };
-        
+
         {
             SQLException error = null;
             try {
@@ -75,16 +76,17 @@ public class TraceFilterTest_close_error extends TestCase {
         }
 
     }
-    
+
     public void test_close_error_2() throws Exception {
         FilterChainImpl chain = new FilterChainImpl(dataSource);
-        
+
         MockConnection conn = new MockConnection() {
+
             public void close() throws SQLException {
                 throw new RuntimeException();
             }
         };
-        
+
         {
             Exception error = null;
             try {
@@ -94,6 +96,6 @@ public class TraceFilterTest_close_error extends TestCase {
             }
             Assert.assertNotNull(error);
         }
-        
+
     }
 }

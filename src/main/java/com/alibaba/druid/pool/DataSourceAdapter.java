@@ -45,9 +45,9 @@ public class DataSourceAdapter extends WrapperAdapter implements DataSource {
     public Connection getConnection(String username, String password) throws SQLException {
         throw new UnsupportedOperationException();
     }
-    
+
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
     }
-    
+
 }

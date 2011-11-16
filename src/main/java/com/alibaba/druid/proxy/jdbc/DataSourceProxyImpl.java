@@ -58,7 +58,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     private final AtomicLong            connectionIdSeed  = new AtomicLong(10000);
     private final AtomicLong            statementIdSeed   = new AtomicLong(20000);
     private final AtomicLong            resultSetIdSeed   = new AtomicLong(50000);
-    private final AtomicLong            transactionIdSeed  = new AtomicLong(0);
+    private final AtomicLong            transactionIdSeed = new AtomicLong(0);
 
     public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
         super();

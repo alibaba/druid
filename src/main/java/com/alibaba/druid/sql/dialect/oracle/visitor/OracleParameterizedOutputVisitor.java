@@ -41,7 +41,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
 
         return super.visit(x);
     }
-    
+
     public boolean visit(SQLNullExpr x) {
         print('?');
         return false;
@@ -75,7 +75,7 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
                 }
                 x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
             }
-            
+
             break;
         }
 

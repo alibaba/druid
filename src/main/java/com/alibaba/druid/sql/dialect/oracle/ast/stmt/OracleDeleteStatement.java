@@ -38,7 +38,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     public List<OracleHint> getHints() {
         return this.hints;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((OracleASTVisitor) visitor);
     }

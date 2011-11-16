@@ -76,7 +76,7 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
                 }
                 x = new SQLBinaryOpExpr(x.getLeft(), x.getOperator(), merge((SQLBinaryOpExpr) x.getRight()));
             }
-            
+
             break;
         }
 

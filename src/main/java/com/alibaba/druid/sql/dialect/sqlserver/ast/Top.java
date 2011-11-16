@@ -9,10 +9,10 @@ public class Top extends SQLServerObjectImpl {
      * 
      */
     private static final long serialVersionUID = 1L;
-    
-    private SQLExpr expr;
-    private boolean percent;
-    private boolean withTies;
+
+    private SQLExpr           expr;
+    private boolean           percent;
+    private boolean           withTies;
 
     public SQLExpr getExpr() {
         return expr;
@@ -41,7 +41,7 @@ public class Top extends SQLServerObjectImpl {
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
-            
+
         }
     }
 

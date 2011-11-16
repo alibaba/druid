@@ -21,7 +21,7 @@ public class OracleNumberLiteralTest extends TestCase {
 
         System.out.println(text);
     }
-    
+
     public void test_number_literal_2() throws Exception {
         String sql = "SELECT BINARY_FLOAT_INFINITY FROM DUAL";
 
