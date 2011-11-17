@@ -85,6 +85,14 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return this.dataSourceStat;
     }
 
+    public int getMaxSqlStatCount() {
+        return maxSqlStatCount;
+    }
+
+    public void setMaxSqlStatCount(int maxSqlStatCount) {
+        this.maxSqlStatCount = maxSqlStatCount;
+    }
+
     public void reset() {
         dataSourceStat.reset();
 

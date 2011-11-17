@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
@@ -35,6 +36,7 @@ public class TestPoolPreparedStatement extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
+        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
     protected void tearDown() throws Exception {

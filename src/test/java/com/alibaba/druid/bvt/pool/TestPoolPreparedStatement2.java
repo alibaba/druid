@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.PoolableConnection;
@@ -36,6 +37,8 @@ public class TestPoolPreparedStatement2 extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(false);
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
+        
+        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
     protected void tearDown() throws Exception {
@@ -68,7 +71,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
             }
         }
 
-        for (int i = 0; i < 1000 * 100 * 1; ++i) {
+        for (int i = 0; i < 1000 * 1; ++i) {
             Connection conn = dataSource.getConnection();
             PreparedStatement stmt = conn.prepareStatement("SELECT " + i);
             stmt.execute();
