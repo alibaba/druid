@@ -27,21 +27,29 @@ public class SQLUpdateStatement extends SQLStatementImpl {
 
     private static final long            serialVersionUID = 1L;
 
-    private SQLName                      tableName;
-
     private final List<SQLUpdateSetItem> items            = new ArrayList<SQLUpdateSetItem>();
     private SQLExpr                      where;
+
+    private SQLTableSource               tableSource;
 
     public SQLUpdateStatement(){
 
     }
 
-    public SQLName getTableName() {
-        return tableName;
+    public SQLTableSource getTableSource() {
+        return tableSource;
     }
 
-    public void setTableName(SQLName tableName) {
-        this.tableName = tableName;
+    public void setTableSource(SQLTableSource tableSource) {
+        this.tableSource = tableSource;
+    }
+
+    public SQLName getTableName() {
+        if (tableSource instanceof SQLExprTableSource) {
+            SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
+            return (SQLName) exprTableSource.getExpr();
+        }
+        return null;
     }
 
     public SQLExpr getWhere() {
@@ -60,7 +68,7 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public void output(StringBuffer buf) {
         buf.append("UPDATE ");
 
-        this.tableName.output(buf);
+        this.tableSource.output(buf);
 
         buf.append(" SET ");
         for (int i = 0, size = items.size(); i < size; ++i) {
@@ -79,7 +87,7 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableName);
+            acceptChild(visitor, tableSource);
             acceptChild(visitor, items);
             acceptChild(visitor, where);
         }

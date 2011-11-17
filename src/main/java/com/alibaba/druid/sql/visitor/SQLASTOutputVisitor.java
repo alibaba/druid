@@ -620,7 +620,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLUpdateStatement x) {
         print("UPDATE ");
 
-        x.getTableName().accept(this);
+        x.getTableSource().accept(this);
 
         print(" SET ");
         for (int i = 0, size = x.getItems().size(); i < size; ++i) {

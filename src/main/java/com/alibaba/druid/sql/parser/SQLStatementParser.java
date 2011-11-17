@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
@@ -236,7 +237,8 @@ public class SQLStatementParser extends SQLParser {
 
         SQLUpdateStatement udpateStatement = new SQLUpdateStatement();
 
-        udpateStatement.setTableName(this.exprParser.name());
+        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+        udpateStatement.setTableSource(tableSource);
 
         accept(Token.SET);
 
