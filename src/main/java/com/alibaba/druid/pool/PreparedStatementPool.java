@@ -57,7 +57,7 @@ public class PreparedStatementPool {
     public void put(PreparedStatementHolder holder) throws SQLException {
         PreparedStatement stmt = holder.getStatement();
 
-        if (stmt.isClosed()) {
+        if (stmt == null) {
             return;
         }
 
