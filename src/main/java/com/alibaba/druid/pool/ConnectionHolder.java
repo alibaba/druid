@@ -146,6 +146,8 @@ public final class ConnectionHolder {
             JdbcUtils.close(stmt);
         }
         statementTrace.clear();
+        
+        conn.clearWarnings();
     }
 
     public String toString() {

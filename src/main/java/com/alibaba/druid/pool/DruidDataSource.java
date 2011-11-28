@@ -508,7 +508,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         assert holder != null;
 
         if (isRemoveAbandoned()) {
-            activeConnections.remove(pooledConnection);
+            ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
+            if (oldInfo == null) {
+                LOG.warn("remove abandonded failed.");
+            }
         }
 
         try {
@@ -527,16 +530,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             final boolean isAutoCommit = conn.getAutoCommit();
             final boolean isReadOnly = conn.isReadOnly();
 
-            // 第二步，检查是否需要回滚
+            // check need to rollback?
             if ((!isAutoCommit) && (!isReadOnly)) {
                 pooledConnection.rollback();
             }
-
-            // 第三步，清楚警告信息，重设autoCommit为true
-            conn.clearWarnings();
-            if (!isAutoCommit) {
-                conn.setAutoCommit(true);
-            }
+            
+            // reset holder, restore default settings, clear warnings
+            holder.reset();
 
             if (isTestOnReturn()) {
                 boolean validate = testConnectionInternal(conn);
