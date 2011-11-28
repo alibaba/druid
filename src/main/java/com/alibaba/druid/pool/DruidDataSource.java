@@ -917,6 +917,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         long currentMillis = System.currentTimeMillis();
 
+        List<PoolableConnection> abondonedList = new ArrayList<PoolableConnection>();
+        
         for (; iter.hasNext();) {
             Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
             ActiveConnectionTraceInfo activeInfo = entry.getValue();
@@ -927,6 +929,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 JdbcUtils.close(pooledConnection);
                 removeAbandonedCount++;
                 removeCount++;
+                abondonedList.add(pooledConnection);
 
                 if (isLogAbandoned()) {
                     StringBuilder buf = new StringBuilder();
@@ -942,6 +945,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     LOG.error(buf.toString());
                 }
             }
+        }
+        
+        // multi-check dup close
+        for (PoolableConnection conn : abondonedList) {
+            activeConnections.remove(conn);
         }
 
         return removeCount;
