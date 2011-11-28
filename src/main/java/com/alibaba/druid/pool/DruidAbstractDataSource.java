@@ -192,6 +192,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                                                        10 * 1000,
                                                                                                                                                        100 * 1000);
 
+    private boolean                                                                          dupCloseLogEnable                         = true;
+
+
+    public boolean isDupCloseLogEnable() {
+        return dupCloseLogEnable;
+    }
+
+    public void setDupCloseLogEnable(boolean dupCloseLogEnable) {
+        this.dupCloseLogEnable = dupCloseLogEnable;
+    }
+    
+
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
     }

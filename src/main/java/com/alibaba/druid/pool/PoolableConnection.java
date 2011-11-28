@@ -56,10 +56,12 @@ public class PoolableConnection implements PooledConnection, Connection {
     protected Connection       conn;
     protected ConnectionHolder holder;
     protected TransactionInfo  transactionInfo;
+    private final boolean      dupCloseLogEnable;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
+        dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
     }
 
     public SQLException handleException(Throwable t) throws SQLException {
@@ -115,7 +117,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     public void close() throws SQLException {
         ConnectionHolder holder = this.holder;
 
-        if (holder == null) {
+        if (holder == null && dupCloseLogEnable) {
             LOG.error("dup close");
             return;
         }

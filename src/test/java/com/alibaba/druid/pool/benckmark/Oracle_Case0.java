@@ -16,9 +16,9 @@
 package com.alibaba.druid.pool.benckmark;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.NumberFormat;
 
 import javax.sql.DataSource;
@@ -37,7 +37,7 @@ public class Oracle_Case0 extends TestCase {
     private String   user;
     private String   password;
     private String   driverClass;
-    private int      initialSize     = 10;
+    private int      initialSize     = 1;
     private int      minPoolSize     = 1;
     private int      maxPoolSize     = 2;
     private int      maxActive       = 2;
@@ -126,8 +126,8 @@ public class Oracle_Case0 extends TestCase {
         final int COUNT = 1000 * 1;
         for (int i = 0; i < COUNT; ++i) {
             Connection conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT 1 FROM DUAL");
+            PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM DUAL");
+            ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
             stmt.close();
