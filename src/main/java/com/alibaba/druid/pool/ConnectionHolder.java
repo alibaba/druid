@@ -118,10 +118,19 @@ public final class ConnectionHolder {
     }
 
     public void reset() throws SQLException {
-        conn.setReadOnly(defaultReadOnly);
-        conn.setHoldability(defaultHoldability);
-        conn.setTransactionIsolation(defaultTransactionIsolation);
-
+        // reset default settings
+        if (conn.isReadOnly() != defaultReadOnly) {
+            conn.setReadOnly(defaultReadOnly);
+        }
+        
+        if (conn.getHoldability() != defaultHoldability) {
+            conn.setHoldability(defaultHoldability);
+        }
+        
+        if (conn.getTransactionIsolation() != defaultTransactionIsolation) {
+            conn.setTransactionIsolation(defaultTransactionIsolation);
+        }
+        
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
