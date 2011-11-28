@@ -1117,11 +1117,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
                 conn.setAutoCommit(dataSource.isDefaultAutoCommit());
                 if (dataSource.getDefaultReadOnly() != null) {
-                    conn.setReadOnly(dataSource.getDefaultReadOnly());
+                    if (conn.isReadOnly() != dataSource.getDefaultReadOnly()) {
+                        conn.setReadOnly(dataSource.getDefaultReadOnly());
+                    }
                 }
 
                 if (dataSource.getDefaultTransactionIsolation() != null) {
-                    conn.setTransactionIsolation(dataSource.getDefaultTransactionIsolation());
+                    if (conn.getTransactionIsolation() != dataSource.getDefaultTransactionIsolation().intValue()) {
+                        conn.setTransactionIsolation(dataSource.getDefaultTransactionIsolation());
+                    }
                 }
 
                 if (dataSource.getDefaultCatalog() != null && dataSource.getDefaultCatalog().length() != 0) {
