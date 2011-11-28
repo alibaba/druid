@@ -49,6 +49,8 @@ public final class ConnectionHolder {
     private final int                           defaultHoldability;
     private final int                           defaultTransactionIsolation;
 
+    private final boolean                       defaultAutoCommit;
+
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
         this.dataSource = dataSource;
         this.conn = conn;
@@ -58,6 +60,7 @@ public final class ConnectionHolder {
         this.defaultReadOnly = conn.isReadOnly();
         this.defaultHoldability = conn.getHoldability();
         this.defaultTransactionIsolation = conn.getTransactionIsolation();
+        this.defaultAutoCommit = conn.getAutoCommit();
 
         statementPool = null;
     }
@@ -122,15 +125,19 @@ public final class ConnectionHolder {
         if (conn.isReadOnly() != defaultReadOnly) {
             conn.setReadOnly(defaultReadOnly);
         }
-        
+
         if (conn.getHoldability() != defaultHoldability) {
             conn.setHoldability(defaultHoldability);
         }
-        
+
         if (conn.getTransactionIsolation() != defaultTransactionIsolation) {
             conn.setTransactionIsolation(defaultTransactionIsolation);
         }
         
+        if (conn.getAutoCommit() != defaultAutoCommit) {
+            conn.setAutoCommit(defaultAutoCommit);
+        }
+
         connectionEventListeners.clear();
         statementEventListeners.clear();
 
