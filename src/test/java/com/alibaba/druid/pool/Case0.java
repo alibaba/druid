@@ -29,7 +29,7 @@ public class Case0 extends TestCase {
     private String user;
     private String password;
     private String driverClass;
-    private int    initialSize = 10;
+    private int    initialSize = 1;
     private int    minPoolSize = 1;
     private int    maxPoolSize = 2;
     private int    maxActive   = 2;
@@ -58,6 +58,7 @@ public class Case0 extends TestCase {
         dataSource.setPoolPreparedStatements(true);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
+        dataSource.setFilters("stat");
 
         final int LOOP_COUNT = 1000 * 1000;
 
@@ -67,6 +68,8 @@ public class Case0 extends TestCase {
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             Connection conn = dataSource.getConnection();
+            
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
             Assert.assertEquals(initialSize, dataSource.getCreateCount());
 
