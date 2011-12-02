@@ -329,9 +329,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-
+    
     @Override
     public Connection getConnection() throws SQLException {
+        return getConnection(maxWait);
+    }
+
+    public Connection getConnection(long maxWaitMillis) throws SQLException {
         init();
 
         final int maxWaitThreadCount = getMaxWaitThreadCount();
@@ -349,7 +353,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         for (;;) {
-            PoolableConnection poolalbeConnection = getConnectionInternal();
+            PoolableConnection poolalbeConnection = getConnectionInternal(maxWaitMillis);
 
             if (isTestOnBorrow()) {
                 boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
@@ -423,7 +427,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    private PoolableConnection getConnectionInternal() throws SQLException {
+    private PoolableConnection getConnectionInternal(long maxWait) throws SQLException {
         PoolableConnection poolalbeConnection;
 
         try {

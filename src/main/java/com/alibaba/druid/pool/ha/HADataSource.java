@@ -54,11 +54,6 @@ public class HADataSource extends MultiDataSource implements DataSource {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        return new MultiDataSourceConnection(this, createConnectionId());
-    }
-
     public Balancer getBalancer() {
         return balancer;
     }

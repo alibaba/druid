@@ -49,7 +49,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private Date                  connectedTime    = null;
 
-    public MultiDataSourceConnection(HADataSource haDataSource, int id){
+    public MultiDataSourceConnection(MultiDataSource haDataSource, int id){
         this.haDataSource = haDataSource;
         this.id = id;
     }

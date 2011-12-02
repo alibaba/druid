@@ -190,6 +190,14 @@
 			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- for HADataSource  -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.1.11</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -242,11 +250,6 @@
 			<version>0.9.1.2</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.0.6</version>
-			<scope>test</scope>
-		</dependency>
+	
 	</dependencies>
 </project>
