@@ -56,6 +56,10 @@ public abstract class MultiDataSource extends DataSourceAdapter {
         }
     }
 
+    protected ScheduledExecutorService getScheduler() {
+        return scheduler;
+    }
+
     public long getValidDataSourceCheckPeriodMillis() {
         return validDataSourceCheckPeriodMillis;
     }
