@@ -64,8 +64,14 @@ public interface DruidAbstractDataSourceMBean {
     List<String> getFilterClassNames();
 
     boolean isTestOnBorrow();
+    
+    void setTestOnBorrow(boolean testOnBorrow);
 
     boolean isTestOnReturn();
+    
+    boolean isTestWhileIdle();
+    
+    void setTestWhileIdle(boolean testWhileIdle);
 
     boolean isDefaultAutoCommit();
 
@@ -94,6 +100,8 @@ public interface DruidAbstractDataSourceMBean {
     long getRemoveAbandonedCount();
 
     boolean isLogAbandoned();
+    
+    void setLogAbandoned(boolean logAbandoned);
 
     long getDupCloseCount();
 
