@@ -174,6 +174,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (closed) {
             throw new SQLException();
         }
+        
+        if (this.mockConnection != null && this.mockConnection.isClosed()) {
+            throw new SQLException("No operations allowed after connection closed.");
+        }
 
         parameters.clear();
     }
