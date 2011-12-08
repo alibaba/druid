@@ -30,7 +30,7 @@ public class TraceFilterTest_close_error extends TestCase {
         };
 
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setUrl("jdbc:mock:TraceFilterTest_close_error");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);

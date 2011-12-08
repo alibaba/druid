@@ -51,17 +51,26 @@ import com.alibaba.druid.util.TransactionInfo;
  */
 public class PoolableConnection implements PooledConnection, Connection {
 
-    private final static Log   LOG = LogFactory.getLog(PoolableConnection.class);
+    private final static Log   LOG         = LogFactory.getLog(PoolableConnection.class);
 
     protected Connection       conn;
     protected ConnectionHolder holder;
     protected TransactionInfo  transactionInfo;
     private final boolean      dupCloseLogEnable;
+    private boolean            traceEnable = false;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
+    }
+
+    public boolean isTraceEnable() {
+        return traceEnable;
+    }
+
+    public void setTraceEnable(boolean traceEnable) {
+        this.traceEnable = traceEnable;
     }
 
     public SQLException handleException(Throwable t) throws SQLException {
@@ -84,7 +93,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (this.isClosed()) {
             return;
         }
-        
+
         PreparedStatement rawStatement = stmt.getRawPreparedStatement();
 
         try {
@@ -92,7 +101,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         } catch (SQLException ex) {
             LOG.error("clear parameter error", ex);
         }
-        
+
         if (holder == null) {
             return;
         }
@@ -128,11 +137,6 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder == null && dupCloseLogEnable) {
             LOG.error("dup close");
             return;
-        }
-
-        DruidAbstractDataSource dataSource = holder.getDataSource();
-        if (dataSource.isRemoveAbandoned()) {
-            dataSource.removeActiveConnection(this);
         }
 
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {

@@ -93,9 +93,13 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     public synchronized static void remove(DruidDataSource dataSource) {
         ObjectName objectName = dataSources.remove(dataSource);
+        
+        if (objectName == null) {
+        	objectName = dataSource.getObjectName();
+        }
 
         if (objectName == null) {
-            LOG.error("unregister mbean failed.");
+            LOG.error("unregister mbean failed. url " + dataSource.getUrl());
             return;
         }
 

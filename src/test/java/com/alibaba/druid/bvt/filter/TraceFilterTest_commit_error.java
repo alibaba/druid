@@ -31,7 +31,7 @@ public class TraceFilterTest_commit_error extends TestCase {
         };
 
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mock:xxx");
+        dataSource.setUrl("jdbc:mock:TraceFilterTest_commit_error");
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);

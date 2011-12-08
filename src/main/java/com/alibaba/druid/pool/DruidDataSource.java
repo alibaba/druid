@@ -414,6 +414,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 activeConnections.put(poolalbeConnection,
                                       new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
                                                                     stackTrace));
+                poolalbeConnection.setTraceEnable(true);
             }
 
             if (!this.isDefaultAutoCommit()) {
@@ -530,10 +531,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         assert holder != null;
 
-        if (isRemoveAbandoned()) {
+        if (pooledConnection.isTraceEnable()) {
             ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
             if (oldInfo == null) {
-                LOG.warn("remove abandonded failed.");
+                LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
             }
         }
 
@@ -615,6 +616,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void close() {
         lock.lock();
         try {
+            if (!this.inited) {
+                return;
+            }
+
             if (createConnectionThread != null) {
                 createConnectionThread.interrupt();
             }
@@ -704,7 +709,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmptyWaitThreadCount++;
                 try {
                     long startEstimate = estimate;
-                    estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
+                    estimate = notEmpty.awaitNanos(estimate); // signal by
+                                                              // recycle or
+                                                              // creator
                     notEmptyWaitCount++;
                     notEmptyWaitNanos += (startEstimate - estimate);
 
