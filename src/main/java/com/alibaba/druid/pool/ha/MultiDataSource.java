@@ -15,6 +15,7 @@ import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.valid.DefaultValidDataSourceChecker;
 import com.alibaba.druid.pool.ha.valid.ValidDataSourceChecker;
+import com.alibaba.druid.util.JdbcUtils;
 
 public abstract class MultiDataSource extends DataSourceAdapter {
 
@@ -53,6 +54,15 @@ public abstract class MultiDataSource extends DataSourceAdapter {
             inited = true;
         } finally {
             lock.unlock();
+        }
+    }
+    
+    protected void close() {
+        scheduler.shutdownNow();
+        
+        Object[] items = this.getDataSources().toArray();
+        for (Object item : items) {
+            JdbcUtils.close((DruidDataSource) item);
         }
     }
 

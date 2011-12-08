@@ -71,11 +71,10 @@ public class HADataSource extends MultiDataSource implements DataSource {
     }
 
     public void close() {
+        super.close();
         if (LOG.isDebugEnabled()) {
             LOG.debug("HADataSource closed");
         }
-
-        JdbcUtils.close(master);
     }
 
     private class DataSourceList extends AbstractList<DruidDataSource> implements RandomAccess, java.io.Serializable {

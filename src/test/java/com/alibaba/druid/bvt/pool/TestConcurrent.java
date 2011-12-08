@@ -49,7 +49,7 @@ public class TestConcurrent extends TestCase {
         if (size > 0) {
             for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
                 dataSource.close();
-                System.out.println("unclosed datasource : " + dataSource.getObjectName());
+                System.out.println("unclosed datasource : " + dataSource.getObjectName() + ", url : " + dataSource.getUrl());
             }
             Assert.fail("size : " + size);
         }

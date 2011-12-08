@@ -24,11 +24,11 @@ public class HADataSourceTest extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
         
         dataSourceA = new DruidDataSource();
-        dataSourceA.setUrl("jdbc:mock:x1");
+        dataSourceA.setUrl("jdbc:mock:ha1");
         dataSourceA.setFilters("trace");
 
         dataSourceB = new DruidDataSource();
-        dataSourceB.setUrl("jdbc:mock:x1");
+        dataSourceB.setUrl("jdbc:mock:ha2");
         dataSourceB.setFilters("stat");
 
         dataSourceHA = new HADataSource();
