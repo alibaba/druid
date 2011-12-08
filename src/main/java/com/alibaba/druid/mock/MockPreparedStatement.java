@@ -60,9 +60,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
+        checkOpen();
 
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().createResultSet(this);
@@ -77,9 +75,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public int executeUpdate() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
+        checkOpen();
 
         return 0;
     }
@@ -171,13 +167,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public void clearParameters() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
-        
-        if (this.mockConnection != null && this.mockConnection.isClosed()) {
-            throw new SQLException("No operations allowed after connection closed.");
-        }
+        checkOpen();
 
         parameters.clear();
     }
@@ -194,17 +184,14 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public boolean execute() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
+        checkOpen();
+        
         return false;
     }
 
     @Override
     public void addBatch() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
+        checkOpen();
     }
 
     @Override
@@ -234,9 +221,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
+        checkOpen();
 
         return resultSetMetaData;
     }
@@ -268,10 +253,7 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
 
     @Override
     public ParameterMetaData getParameterMetaData() throws SQLException {
-        if (closed) {
-            throw new SQLException();
-        }
-
+        checkOpen();
         return metadata;
     }
 

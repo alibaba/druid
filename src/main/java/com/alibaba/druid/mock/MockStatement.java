@@ -52,11 +52,19 @@ public class MockStatement implements Statement {
             mockConnection = (MockConnection) connection;
         }
     }
+    
+    protected void checkOpen() throws SQLException, MockConnectionClosedException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        if (this.mockConnection != null && this.mockConnection.isClosed()) {
+            throw new MockConnectionClosedException();
+        }
+    }
 
     public int getResultSetType() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return resultSetType;
     }
@@ -107,9 +115,7 @@ public class MockStatement implements Statement {
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().executeQuery(this, sql);
@@ -120,9 +126,7 @@ public class MockStatement implements Statement {
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return 0;
     }
@@ -134,46 +138,35 @@ public class MockStatement implements Statement {
 
     @Override
     public int getMaxFieldSize() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return maxFieldSize;
     }
 
     @Override
     public void setMaxFieldSize(int max) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         this.maxFieldSize = max;
     }
 
     @Override
     public int getMaxRows() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return maxRows;
     }
 
     @Override
     public void setMaxRows(int max) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         this.maxRows = max;
     }
 
     @Override
     public void setEscapeProcessing(boolean enable) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
-
+        checkOpen();
         this.escapeProcessing = enable;
     }
 
@@ -183,41 +176,31 @@ public class MockStatement implements Statement {
 
     @Override
     public int getQueryTimeout() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return queryTimeout;
     }
 
     @Override
     public void setQueryTimeout(int seconds) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         this.queryTimeout = seconds;
     }
 
     @Override
     public void cancel() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
     }
 
     @Override
     public SQLWarning getWarnings() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return warnings;
     }
 
     @Override
     public void clearWarnings() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         warnings = null;
     }
@@ -228,9 +211,7 @@ public class MockStatement implements Statement {
 
     @Override
     public void setCursorName(String name) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         cursorName = name;
     }
@@ -241,9 +222,7 @@ public class MockStatement implements Statement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         if (ERROR_SQL.equals(sql)) {
             throw new SQLException();
@@ -254,18 +233,14 @@ public class MockStatement implements Statement {
 
     @Override
     public ResultSet getResultSet() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return new MockResultSet(this);
     }
 
     @Override
     public int getUpdateCount() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return updateCount;
     }
@@ -276,153 +251,115 @@ public class MockStatement implements Statement {
 
     @Override
     public boolean getMoreResults() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         return false;
     }
 
     @Override
     public void setFetchDirection(int direction) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
 
         this.fetchDirection = direction;
     }
 
     @Override
     public int getFetchDirection() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return fetchDirection;
     }
 
     @Override
     public void setFetchSize(int rows) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         this.fetchSize = rows;
     }
 
     @Override
     public int getFetchSize() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return fetchSize;
     }
 
     @Override
     public int getResultSetConcurrency() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return resultSetConcurrency;
     }
 
     @Override
     public void addBatch(String sql) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
     }
 
     @Override
     public void clearBatch() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
     }
 
     @Override
     public int[] executeBatch() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return new int[0];
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return connection;
     }
 
     @Override
     public boolean getMoreResults(int current) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return false;
     }
 
     @Override
     public ResultSet getGeneratedKeys() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return new MockResultSet(this);
     }
 
     @Override
     public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return 0;
     }
 
     @Override
     public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return 0;
     }
 
     @Override
     public int executeUpdate(String sql, String[] columnNames) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return 0;
     }
 
     @Override
     public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return false;
     }
 
     @Override
     public boolean execute(String sql, int[] columnIndexes) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return false;
     }
 
     @Override
     public boolean execute(String sql, String[] columnNames) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return false;
     }
 
     @Override
     public int getResultSetHoldability() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return resultSetHoldability;
     }
 
@@ -437,16 +374,12 @@ public class MockStatement implements Statement {
 
     @Override
     public void setPoolable(boolean poolable) throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
     }
 
     @Override
     public boolean isPoolable() throws SQLException {
-        if (closed) {
-            throw new SQLException("stmt closed.");
-        }
+        checkOpen();
         return false;
     }
 

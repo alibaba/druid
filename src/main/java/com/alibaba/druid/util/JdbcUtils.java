@@ -516,4 +516,13 @@ public final class JdbcUtils {
             throw new SQLException(e.getMessage(), e);
         }
     }
+    
+    public static String toString(StackTraceElement[] stackTrace) {
+        StringBuilder buf = new StringBuilder();
+        for (StackTraceElement item : stackTrace) {
+            buf.append(item.toString());
+            buf.append("\n");
+        }
+        return buf.toString();
+    }
 }

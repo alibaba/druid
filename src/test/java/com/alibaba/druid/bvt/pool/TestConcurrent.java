@@ -44,7 +44,15 @@ public class TestConcurrent extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSource.close();
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+
+        int size = DruidDataSourceStatManager.getInstance().getDataSourceList().size();
+        if (size > 0) {
+            for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+                dataSource.close();
+                System.out.println("unclosed datasource : " + dataSource.getObjectName());
+            }
+            Assert.fail("size : " + size);
+        }
     }
 
     public void test_0() throws Exception {

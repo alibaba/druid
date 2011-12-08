@@ -11,6 +11,7 @@ import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HADataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceStatement;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class HADataSourceTest extends TestCase {
 
@@ -20,6 +21,8 @@ public class HADataSourceTest extends TestCase {
     private HADataSource    dataSourceHA;
 
     protected void setUp() throws Exception {
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        
         dataSourceA = new DruidDataSource();
         dataSourceA.setUrl("jdbc:mock:x1");
         dataSourceA.setFilters("trace");
@@ -35,6 +38,12 @@ public class HADataSourceTest extends TestCase {
 
     protected void tearDown() throws Exception {
         dataSourceHA.close();
+        
+        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            dataSource.close();
+        }
+        
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
     }
 
     public void test_createStatement_0() throws Exception {

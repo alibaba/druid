@@ -394,11 +394,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public int getMaxOpenPreparedStatements() {
-        return maxOpenPreparedStatements;
+        return maxPoolPreparedStatementPerConnectionSize;
     }
 
     public void setMaxOpenPreparedStatements(int maxOpenPreparedStatements) {
-        this.maxOpenPreparedStatements = maxOpenPreparedStatements;
+        this.maxPoolPreparedStatementPerConnectionSize = maxOpenPreparedStatements;
     }
 
     public boolean isLogAbandoned() {
@@ -963,12 +963,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public List<String> getActiveConnectionStackTrace() {
         List<String> list = new ArrayList<String>();
         for (ActiveConnectionTraceInfo traceInfo : this.activeConnections.values()) {
-            StringBuilder buf = new StringBuilder();
-            for (StackTraceElement item : traceInfo.getStackTrace()) {
-                buf.append(item.toString());
-                buf.append("\n");
-            }
-            list.add(buf.toString());
+            list.add(JdbcUtils.toString(traceInfo.getStackTrace()));
         }
 
         return list;

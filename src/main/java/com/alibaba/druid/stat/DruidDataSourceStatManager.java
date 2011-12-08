@@ -88,12 +88,14 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         }
 
         dataSources.put(dataSource, objectName);
+        dataSource.setObjectName(objectName);
     }
 
     public synchronized static void remove(DruidDataSource dataSource) {
         ObjectName objectName = dataSources.remove(dataSource);
 
         if (objectName == null) {
+            LOG.error("unregister mbean failed.");
             return;
         }
 

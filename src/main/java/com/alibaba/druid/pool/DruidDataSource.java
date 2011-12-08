@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
@@ -105,7 +106,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private boolean                 resetStatEnable         = true;
 
+    private String                  initStackTrace;
+
+    private ObjectName              objectName;
+
     public DruidDataSource(){
+    }
+
+    public String getInitStackTrace() {
+        return initStackTrace;
+    }
+
+    public ObjectName getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(ObjectName objectName) {
+        this.objectName = objectName;
     }
 
     public boolean isResetStatEnable() {
@@ -209,6 +226,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (inited) {
                 return;
             }
+
+            initStackTrace = JdbcUtils.toString(Thread.currentThread().getStackTrace());
 
             this.id = DruidDriver.createDataSourceId();
 
@@ -329,7 +348,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     @Override
     public Connection getConnection() throws SQLException {
         return getConnection(maxWait);
@@ -538,7 +557,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if ((!isAutoCommit) && (!isReadOnly)) {
                 pooledConnection.rollback();
             }
-            
+
             // reset holder, restore default settings, clear warnings
             holder.reset();
 
@@ -922,7 +941,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         long currentMillis = System.currentTimeMillis();
 
         List<PoolableConnection> abondonedList = new ArrayList<PoolableConnection>();
-        
+
         for (; iter.hasNext();) {
             Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
             ActiveConnectionTraceInfo activeInfo = entry.getValue();
@@ -950,7 +969,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
         }
-        
+
         // multi-check dup close
         for (PoolableConnection conn : abondonedList) {
             activeConnections.remove(conn);

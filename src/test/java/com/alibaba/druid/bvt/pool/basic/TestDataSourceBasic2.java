@@ -42,7 +42,7 @@ public class TestDataSourceBasic2 extends TestCase {
         Assert.assertEquals(1, dataSource.getConnectionInitSqls().size());
 
         Assert.assertEquals(30 * 1000, dataSource.getTimeBetweenConnectErrorMillis());
-        Assert.assertEquals(-1, dataSource.getMaxOpenPreparedStatements());
+        Assert.assertEquals(234, dataSource.getMaxOpenPreparedStatements());
         Assert.assertEquals(300, dataSource.getRemoveAbandonedTimeout());
         dataSource.setRemoveAbandonedTimeout(400);
         Assert.assertEquals(400, dataSource.getRemoveAbandonedTimeout());
