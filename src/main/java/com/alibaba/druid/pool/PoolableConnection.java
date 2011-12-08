@@ -58,6 +58,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     protected TransactionInfo  transactionInfo;
     private final boolean      dupCloseLogEnable;
     private boolean            traceEnable = false;
+    private boolean            diable      = false;
 
     public PoolableConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -126,13 +127,23 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     void disable() {
+        this.traceEnable = false;
         this.holder = null;
         this.transactionInfo = null;
+        this.diable = true;
+    }
+
+    public boolean isDiable() {
+        return diable;
     }
 
     @Override
     public void close() throws SQLException {
         ConnectionHolder holder = this.holder;
+
+        if (this.diable) {
+            return;
+        }
 
         if (holder == null && dupCloseLogEnable) {
             LOG.error("dup close");

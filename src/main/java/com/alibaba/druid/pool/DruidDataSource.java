@@ -512,6 +512,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             // exceptionSorter.isExceptionFatal
             if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
+                if (pooledConnection.isTraceEnable()) {
+                    activeConnections.remove(pooledConnection);
+                }
                 this.discardConnection(holder.getConnection());
                 pooledConnection.disable();
             }
