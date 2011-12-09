@@ -87,6 +87,12 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         slave.setEnable(value);
     }
+    
+    public void switchMasterSlave() {
+    	DruidDataSource tmp = this.getMaster();
+    	this.setMaster(this.getSlave());
+    	this.setSlave(tmp);
+    }
 
     public synchronized void setDataSources(List<DruidDataSource> dataSources) {
         throw new UnsupportedOperationException();

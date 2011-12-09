@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;

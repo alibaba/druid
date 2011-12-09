@@ -1,17 +1,19 @@
 package com.alibaba.druid.pool.ha;
 
 public interface HADataSourceMBean {
-    long getMasterConnectCount();
-    
-    long getSlaveConnectCount();
+	long getMasterConnectCount();
 
-    boolean isMasterEnable();
+	long getSlaveConnectCount();
 
-    void setMasterEnable(boolean value);
+	boolean isMasterEnable();
 
-    boolean isSlaveEnable();
-    
-    void setSlaveEnable(boolean value);
-    
-    void resetStat();
+	void setMasterEnable(boolean value);
+
+	boolean isSlaveEnable();
+
+	void setSlaveEnable(boolean value);
+
+	void switchMasterSlave();
+
+	void resetStat();
 }
