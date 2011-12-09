@@ -39,7 +39,7 @@ public class TestConcurrent extends TestCase {
 
         Assert.assertEquals(0, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
-        Assert.assertEquals(false, dataSource.isEnable());
+        Assert.assertEquals(true, dataSource.isEnable());
     }
 
     protected void tearDown() throws Exception {
@@ -60,7 +60,7 @@ public class TestConcurrent extends TestCase {
         {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(0, dataSource.getPoolingCount());
-            Assert.assertEquals(false, dataSource.isEnable());
+            Assert.assertEquals(true, dataSource.isEnable());
 
             Connection conn = dataSource.getConnection();
 

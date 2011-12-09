@@ -64,7 +64,7 @@ public abstract class MultiDataSource extends DataSourceAdapter {
     protected void close() {
         scheduler.shutdownNow();
         
-        Object[] items = this.getDataSources().toArray();
+        Object[] items = this.getDataSources().values().toArray();
         for (Object item : items) {
             JdbcUtils.close((DruidDataSource) item);
         }

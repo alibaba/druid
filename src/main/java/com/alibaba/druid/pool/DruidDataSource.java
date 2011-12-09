@@ -102,7 +102,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private final CountDownLatch    initedLatch             = new CountDownLatch(2);
 
-    private boolean                 enable                  = false;
+    private boolean                 enable                  = true;
 
     private boolean                 resetStatEnable         = true;
 
@@ -221,8 +221,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             this.id = DruidDriver.createDataSourceId();
 
-            enable = true;
-
             if (maxActive <= 0) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
             }
@@ -324,7 +322,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             destoryConnectionThread.start();
 
             initedLatch.await();
-            inited = true;
 
             createdTime = new Date();
             DruidDataSourceStatManager.add(this);
@@ -335,6 +332,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } finally {
+            inited = true;
+            
             lock.unlock();
         }
     }

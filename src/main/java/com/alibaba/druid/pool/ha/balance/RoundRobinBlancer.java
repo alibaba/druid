@@ -2,6 +2,8 @@ package com.alibaba.druid.pool.ha.balance;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.logging.Log;
@@ -40,7 +42,8 @@ public class RoundRobinBlancer implements Balancer {
 
             try {
                 // 处理并发时的错误
-                dataSource = multiDataSource.getDataSources().get(index);
+                List<DruidDataSource> dataSources = new ArrayList<DruidDataSource>(multiDataSource.getDataSources().values());
+                dataSource = dataSources.get(index);
             } catch (Exception ex) {
                 indexErrorCount.incrementAndGet();
                 if (LOG.isDebugEnabled()) {

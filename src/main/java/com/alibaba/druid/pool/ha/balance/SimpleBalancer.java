@@ -23,7 +23,7 @@ public class SimpleBalancer implements Balancer {
     public Connection getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException {
         MultiDataSource multiDataSource = connectionProxy.getHaDataSource();
 
-        Object[] array = multiDataSource.getDataSources().toArray();
+        Object[] array = multiDataSource.getDataSources().values().toArray();
 
         DruidDataSource minDataSource = null;
         int min = 0;
