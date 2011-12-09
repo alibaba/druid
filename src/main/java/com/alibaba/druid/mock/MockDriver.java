@@ -145,7 +145,7 @@ public class MockDriver implements Driver {
             }
         }
 
-        MockConnection conn = new MockConnection(this, info);
+        MockConnection conn = new MockConnection(this, url, info);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("connect, url " + url + ", id " + conn.getId());

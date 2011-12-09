@@ -55,9 +55,28 @@ public class MockConnection implements Connection {
 
     private final long createdTimeMillis    = System.currentTimeMillis();
     private long       lastActiveTimeMillis = System.currentTimeMillis();
+    private String     url;
 
     public MockConnection(){
-        this(null);
+        this(null, null, null);
+    }
+    
+    public MockConnection(MockDriver driver, String url, Properties connectProperties){
+        this.driver = driver;
+        this.connectProperties = connectProperties;
+        this.url = url;
+
+        if (driver != null) {
+            this.id = driver.generateConnectionId();
+        }
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public long getLastActiveTimeMillis() {
@@ -70,19 +89,6 @@ public class MockConnection implements Connection {
 
     public long getCreatedTimeMillis() {
         return createdTimeMillis;
-    }
-
-    public MockConnection(MockDriver driver){
-        this(driver, new Properties());
-    }
-
-    public MockConnection(MockDriver driver, Properties connectProperties){
-        this.driver = driver;
-        this.connectProperties = connectProperties;
-
-        if (driver != null) {
-            this.id = driver.generateConnectionId();
-        }
     }
 
     public long getId() {

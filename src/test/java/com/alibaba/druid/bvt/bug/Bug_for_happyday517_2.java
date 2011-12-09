@@ -35,7 +35,7 @@ public class Bug_for_happyday517_2 extends TestCase {
 
             public Connection connect(String url, Properties info) throws SQLException {
                 super.connect(url, info);
-                return new MockConnection(driver, info) {
+                return new MockConnection(driver, url, info) {
 
                     public PreparedStatement prepareStatement(String sql) throws SQLException {
                         return mockStatement;
