@@ -2,9 +2,7 @@ package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.AbstractList;
 import java.util.List;
-import java.util.RandomAccess;
 
 import javax.sql.DataSource;
 
@@ -13,18 +11,15 @@ import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.balance.Balancer;
 import com.alibaba.druid.pool.ha.balance.RoundRobinBlancer;
-import com.alibaba.druid.util.JdbcUtils;
 
 public class HADataSource extends MultiDataSource implements DataSource {
 
-    private final static Log              LOG                     = LogFactory.getLog(HADataSource.class);
+    private final static Log  LOG      = LogFactory.getLog(HADataSource.class);
 
-    protected DruidDataSource             master;
-    protected DruidDataSource             slave;
+    protected DruidDataSource master;
+    protected DruidDataSource slave;
 
-    protected Balancer                    balancer                = new RoundRobinBlancer();
-
-    private DataSourceList                dataSourceList          = new DataSourceList();
+    protected Balancer        balancer = new RoundRobinBlancer();
 
     public HADataSource(){
 
@@ -35,6 +30,7 @@ public class HADataSource extends MultiDataSource implements DataSource {
     }
 
     public void setMaster(DruidDataSource master) {
+        this.getDataSources().put("master", master);
         this.master = master;
     }
 
@@ -43,11 +39,8 @@ public class HADataSource extends MultiDataSource implements DataSource {
     }
 
     public void setSlave(DruidDataSource slave) {
+        this.getDataSources().put("slave", slave);
         this.slave = slave;
-    }
-
-    public List<DruidDataSource> getDataSources() {
-        return dataSourceList;
     }
 
     public synchronized void setDataSources(List<DruidDataSource> dataSources) {
@@ -77,52 +70,4 @@ public class HADataSource extends MultiDataSource implements DataSource {
         }
     }
 
-    private class DataSourceList extends AbstractList<DruidDataSource> implements RandomAccess, java.io.Serializable {
-
-        private static final long serialVersionUID = -2764017481108945198L;
-
-        public int size() {
-            return 2;
-        }
-
-        public Object[] toArray() {
-            return new DruidDataSource[] { master, slave };
-        }
-
-        public <T> T[] toArray(T[] a) {
-            throw new UnsupportedOperationException();
-        }
-
-        public DruidDataSource get(int index) {
-            if (index == 0) {
-                return master;
-            }
-
-            if (index == 1) {
-                return slave;
-            }
-
-            throw new IllegalArgumentException("index : " + index);
-        }
-
-        public DruidDataSource set(int index, DruidDataSource element) {
-            throw new UnsupportedOperationException();
-        }
-
-        public int indexOf(Object o) {
-            if (o == master) {
-                return 0;
-            }
-
-            if (o == slave) {
-                return 1;
-            }
-
-            return -1;
-        }
-
-        public boolean contains(Object o) {
-            return o == master || o == slave;
-        }
-    }
 }

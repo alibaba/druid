@@ -108,21 +108,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                  initStackTrace;
 
-    private ObjectName              objectName;
-
     public DruidDataSource(){
     }
 
     public String getInitStackTrace() {
         return initStackTrace;
-    }
-
-    public ObjectName getObjectName() {
-        return objectName;
-    }
-
-    public void setObjectName(ObjectName objectName) {
-        this.objectName = objectName;
     }
 
     public boolean isResetStatEnable() {
@@ -703,7 +693,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         for (;;) {
             if (poolingCount == 0) {
-                empty.signal(); // send signal to CreateThread create connection
+                if (notEmptyWaitThreadCount == 0) {
+                    empty.signal(); // send signal to CreateThread create connection
+                }
 
                 if (estimate <= 0) {
                     throw new GetConnectionTimeoutException();
@@ -712,9 +704,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmptyWaitThreadCount++;
                 try {
                     long startEstimate = estimate;
-                    estimate = notEmpty.awaitNanos(estimate); // signal by
-                                                              // recycle or
-                                                              // creator
+                    estimate = notEmpty.awaitNanos(estimate); // signal by recycle or creator
                     notEmptyWaitCount++;
                     notEmptyWaitNanos += (startEstimate - estimate);
 

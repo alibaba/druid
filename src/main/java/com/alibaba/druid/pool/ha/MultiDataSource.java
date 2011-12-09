@@ -2,8 +2,10 @@ package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +34,8 @@ public abstract class MultiDataSource extends DataSourceAdapter {
 
     private boolean                  inited                           = false;
     private final Lock               lock                             = new ReentrantLock();
+    
+    private ConcurrentMap<String, DruidDataSource> dataSources = new ConcurrentHashMap<String, DruidDataSource>();
 
     public MultiDataSource(){
 
@@ -94,7 +98,9 @@ public abstract class MultiDataSource extends DataSourceAdapter {
         return statementIdSeed.incrementAndGet();
     }
 
-    public abstract List<DruidDataSource> getDataSources();
+    public Map<String, DruidDataSource> getDataSources() {
+        return dataSources;
+    }
 
     public Properties getProperties() {
         return properties;
@@ -114,7 +120,7 @@ public abstract class MultiDataSource extends DataSourceAdapter {
 
         @Override
         public void run() {
-            for (DruidDataSource dataSource : getDataSources()) {
+            for (DruidDataSource dataSource : getDataSources().values()) {
                 boolean isValid = validDataSourceChecker.isValid(dataSource);
                 if (isValid) {
                     handleNotAwailableDatasource(dataSource);

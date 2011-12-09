@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import javax.management.JMException;
+import javax.management.ObjectName;
 import javax.management.openmbean.CompositeDataSupport;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
@@ -194,6 +195,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private boolean                                                                          dupCloseLogEnable                         = true;
 
+    private ObjectName                                                                       objectName;
 
     public boolean isDupCloseLogEnable() {
         return dupCloseLogEnable;
@@ -202,7 +204,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void setDupCloseLogEnable(boolean dupCloseLogEnable) {
         this.dupCloseLogEnable = dupCloseLogEnable;
     }
-    
+
+    public ObjectName getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(ObjectName objectName) {
+        this.objectName = objectName;
+    }
 
     public Histogram getTransactionHistogram() {
         return transactionHistogram;
