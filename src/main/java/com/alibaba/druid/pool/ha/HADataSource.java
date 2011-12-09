@@ -99,7 +99,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
             masterConnectCount.incrementAndGet();
         }
 
-        if (slave.isEnable()) {
+        if (conn == null && slave.isEnable()) {
             conn = slave.getConnection();
             slaveConnectCount.incrementAndGet();
         }

@@ -579,6 +579,26 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     public Date getConnectedTime() {
         return connectedTime;
     }
+    
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    	boolean result = super.isWrapperFor(iface);
+    	
+    	if (result == false && conn != null) {
+    		result = conn.isWrapperFor(iface);
+    	}
+    	
+    	return result;
+    }
+    
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+    	T object = super.unwrap(iface);
+    	
+    	if (object == null && conn != null) {
+    		object = conn.unwrap(iface);
+    	}
+    	
+    	return object;
+    }
 
     public void setSchema(String schema) throws SQLException {
         throw new SQLFeatureNotSupportedException();
