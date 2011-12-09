@@ -12,4 +12,6 @@ public interface HADataSourceMBean {
     boolean isSlaveEnable();
     
     void setSlaveEnable(boolean value);
+    
+    void resetStat();
 }
