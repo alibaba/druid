@@ -51,6 +51,11 @@ public final class ConnectionHolder {
 
     private final boolean                       defaultAutoCommit;
 
+    private boolean                             underlyingReadOnly;
+    private int                                 underlyingHoldability;
+    private int                                 underlyingTransactionIsolation;
+    private boolean                             underlyingAutoCommit;
+
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
         this.dataSource = dataSource;
         this.conn = conn;
@@ -61,8 +66,45 @@ public final class ConnectionHolder {
         this.defaultHoldability = conn.getHoldability();
         this.defaultTransactionIsolation = conn.getTransactionIsolation();
         this.defaultAutoCommit = conn.getAutoCommit();
+        
+        this.underlyingAutoCommit = defaultAutoCommit;
+        this.underlyingHoldability = defaultHoldability;
+        this.underlyingTransactionIsolation = defaultTransactionIsolation;
+        this.underlyingTransactionIsolation = defaultTransactionIsolation;
 
         statementPool = null;
+    }
+
+    public boolean isUnderlyingReadOnly() {
+        return underlyingReadOnly;
+    }
+
+    public void setUnderlyingReadOnly(boolean underlyingReadOnly) {
+        this.underlyingReadOnly = underlyingReadOnly;
+    }
+
+    public int getUnderlyingHoldability() {
+        return underlyingHoldability;
+    }
+
+    public void setUnderlyingHoldability(int underlyingHoldability) {
+        this.underlyingHoldability = underlyingHoldability;
+    }
+
+    public int getUnderlyingTransactionIsolation() {
+        return underlyingTransactionIsolation;
+    }
+
+    public void setUnderlyingTransactionIsolation(int underlyingTransactionIsolation) {
+        this.underlyingTransactionIsolation = underlyingTransactionIsolation;
+    }
+
+    public boolean isUnderlyingAutoCommit() {
+        return underlyingAutoCommit;
+    }
+
+    public void setUnderlyingAutoCommit(boolean underlyingAutoCommit) {
+        this.underlyingAutoCommit = underlyingAutoCommit;
     }
 
     public long getLastActiveTimeMillis() {
@@ -122,19 +164,19 @@ public final class ConnectionHolder {
 
     public void reset() throws SQLException {
         // reset default settings
-        if (conn.isReadOnly() != defaultReadOnly) {
+        if (underlyingReadOnly != defaultReadOnly) {
             conn.setReadOnly(defaultReadOnly);
         }
 
-        if (conn.getHoldability() != defaultHoldability) {
+        if (underlyingHoldability != defaultHoldability) {
             conn.setHoldability(defaultHoldability);
         }
 
-        if (conn.getTransactionIsolation() != defaultTransactionIsolation) {
+        if (underlyingTransactionIsolation != defaultTransactionIsolation) {
             conn.setTransactionIsolation(defaultTransactionIsolation);
         }
-        
-        if (conn.getAutoCommit() != defaultAutoCommit) {
+
+        if (underlyingAutoCommit != defaultAutoCommit) {
             conn.setAutoCommit(defaultAutoCommit);
         }
 
@@ -146,7 +188,7 @@ public final class ConnectionHolder {
             JdbcUtils.close(stmt);
         }
         statementTrace.clear();
-        
+
         conn.clearWarnings();
     }
 

@@ -91,7 +91,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     }
 
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
-        if (this.isClosed()) {
+        if (this.holder == null) {
             return;
         }
 
@@ -585,6 +585,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         try {
             conn.setAutoCommit(autoCommit);
+            holder.setUnderlyingAutoCommit(autoCommit);
         } catch (SQLException ex) {
             handleException(ex);
         }
@@ -728,6 +729,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         conn.setReadOnly(readOnly);
+        holder.setUnderlyingReadOnly(readOnly);
     }
 
     @Override
@@ -756,6 +758,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         conn.setTransactionIsolation(level);
+        holder.setUnderlyingTransactionIsolation(level);
     }
 
     @Override
@@ -798,6 +801,7 @@ public class PoolableConnection implements PooledConnection, Connection {
         checkOpen();
 
         conn.setHoldability(holdability);
+        holder.setUnderlyingHoldability(holdability);
     }
 
     @Override
