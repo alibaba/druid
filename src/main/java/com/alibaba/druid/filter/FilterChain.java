@@ -52,6 +52,8 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface FilterChain {
+    
+    int getFilterSize();
 
     FilterChain cloneChain();
 

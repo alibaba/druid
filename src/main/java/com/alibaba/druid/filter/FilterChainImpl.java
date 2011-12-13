@@ -82,6 +82,10 @@ public class FilterChainImpl implements FilterChain {
         this.filterSize = getFilters().size();
     }
 
+    public int getFilterSize() {
+        return filterSize;
+    }
+
     @Override
     public FilterChain cloneChain() {
         return new FilterChainImpl(dataSource, pos);

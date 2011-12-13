@@ -41,8 +41,8 @@ import java.util.Calendar;
  */
 public class PreparedStatementProxyImpl extends StatementProxyImpl implements PreparedStatementProxy {
 
-    private final PreparedStatement statement;
-    private final String            sql;
+    protected final PreparedStatement statement;
+    protected final String            sql;
 
     public PreparedStatementProxyImpl(ConnectionProxy connection, PreparedStatement statement, String sql, long id){
         super(connection, statement, id);
