@@ -1,6 +1,6 @@
 package com.alibaba.druid.pool.ha;
 
-public interface HADataSourceMBean {
+public interface HADataSourceMBean extends MultiDataSourceMBean {
 	long getMasterConnectCount();
 
 	long getSlaveConnectCount();
@@ -12,6 +12,10 @@ public interface HADataSourceMBean {
 	boolean isSlaveEnable();
 
 	void setSlaveEnable(boolean value);
+	
+	String getMasterUrl();
+	
+	String getSlaveUrl();
 
 	void switchMasterSlave();
 

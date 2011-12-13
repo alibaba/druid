@@ -1,7 +1,10 @@
 package com.alibaba.druid.pool.ha;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,33 +12,78 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.management.ObjectName;
+
+import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.valid.DefaultValidDataSourceChecker;
 import com.alibaba.druid.pool.ha.valid.ValidDataSourceChecker;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
-public abstract class MultiDataSource extends DataSourceAdapter {
+public abstract class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
 
-    private Properties               properties                       = new Properties();
+    private Properties                             properties                       = new Properties();
 
-    private final AtomicInteger      connectionIdSeed                 = new AtomicInteger();
-    private final AtomicInteger      statementIdSeed                  = new AtomicInteger();
+    private final AtomicLong                       connectionIdSeed                 = new AtomicLong();
+    private final AtomicLong                       statementIdSeed                  = new AtomicLong();
+    private final AtomicLong                       resultSetIdSeed                  = new AtomicLong();
+    private final AtomicLong                       transactionIdSeed             = new AtomicLong();
 
-    private ValidDataSourceChecker   validDataSourceChecker           = new DefaultValidDataSourceChecker();
-    private long                     validDataSourceCheckPeriodMillis = 3000;
+    private ValidDataSourceChecker                 validDataSourceChecker           = new DefaultValidDataSourceChecker();
+    private long                                   validDataSourceCheckPeriodMillis = 3000;
 
-    private int                      schedulerThreadCount             = 3;
-    private ScheduledExecutorService scheduler;
+    private int                                    schedulerThreadCount             = 3;
+    private ScheduledExecutorService               scheduler;
 
-    private boolean                  inited                           = false;
-    private final Lock               lock                             = new ReentrantLock();
-    
-    private ConcurrentMap<String, DruidDataSource> dataSources = new ConcurrentHashMap<String, DruidDataSource>();
+    private boolean                                inited                           = false;
+    private final Lock                             lock                             = new ReentrantLock();
+
+    private ConcurrentMap<String, DruidDataSource> dataSources                      = new ConcurrentHashMap<String, DruidDataSource>();
+
+    private ObjectName                             objectName;
+
+    private List<Filter>                           filters                          = new ArrayList<Filter>();
+
+    private boolean                                enable;
+
+    private String                                 name;
+
+    public String getName() {
+        if (name == null) {
+            return "HADataSource-" + System.identityHashCode(this);
+        }
+        return name;
+    }
+
+    public String getNameInternal() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public ObjectName getObjectName() {
+        return objectName;
+    }
+
+    public void setObjectName(ObjectName objectName) {
+        this.objectName = objectName;
+    }
 
     public MultiDataSource(){
 
@@ -53,20 +101,37 @@ public abstract class MultiDataSource extends DataSourceAdapter {
             }
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
-            scheduler.scheduleAtFixedRate(new ValidTask(), validDataSourceCheckPeriodMillis,
+            scheduler.scheduleAtFixedRate(new FailureDetectTask(), validDataSourceCheckPeriodMillis,
                                           validDataSourceCheckPeriodMillis, TimeUnit.MILLISECONDS);
             inited = true;
+
+            MultiDataSourceStatManager.add(this);
         } finally {
             lock.unlock();
         }
     }
-    
+
+    public void resetStat() {
+
+    }
+
     protected void close() {
         scheduler.shutdownNow();
-        
+
         Object[] items = this.getDataSources().values().toArray();
         for (Object item : items) {
             JdbcUtils.close((DruidDataSource) item);
+        }
+
+        MultiDataSourceStatManager.remove(this);
+    }
+
+    public void failureDetect() {
+        for (DruidDataSource dataSource : getDataSources().values()) {
+            boolean isValid = validDataSourceChecker.isValid(dataSource);
+            if (isValid) {
+                handleNotAwailableDatasource(dataSource);
+            }
         }
     }
 
@@ -90,11 +155,11 @@ public abstract class MultiDataSource extends DataSourceAdapter {
         this.validDataSourceChecker = validDataSourceChecker;
     }
 
-    public int createConnectionId() {
+    public long createConnectionId() {
         return connectionIdSeed.getAndIncrement();
     }
 
-    public int createStatementId() {
+    public long createStatementId() {
         return statementIdSeed.incrementAndGet();
     }
 
@@ -116,16 +181,46 @@ public abstract class MultiDataSource extends DataSourceAdapter {
 
     public abstract void handleNotAwailableDatasource(DruidDataSource dataSource);
 
-    class ValidTask implements Runnable {
+    @Override
+    public String getDbType() {
+        return null;
+    }
+
+    @Override
+    public Driver getRawDriver() {
+        return null;
+    }
+
+    @Override
+    public String getUrl() {
+        return null;
+    }
+
+    @Override
+    public String getRawJdbcUrl() {
+        return null;
+    }
+
+    @Override
+    public List<Filter> getProxyFilters() {
+        return filters;
+    }
+
+    @Override
+    public long createResultSetId() {
+        return resultSetIdSeed.incrementAndGet();
+    }
+
+    @Override
+    public long createTransactionId() {
+        return transactionIdSeed.incrementAndGet();
+    }
+
+    class FailureDetectTask implements Runnable {
 
         @Override
         public void run() {
-            for (DruidDataSource dataSource : getDataSources().values()) {
-                boolean isValid = validDataSourceChecker.isValid(dataSource);
-                if (isValid) {
-                    handleNotAwailableDatasource(dataSource);
-                }
-            }
+            failureDetect();
         }
 
     }

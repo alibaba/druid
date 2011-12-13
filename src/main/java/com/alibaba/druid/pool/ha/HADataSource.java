@@ -10,8 +10,9 @@ import javax.sql.DataSource;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ManagedDataSource;
 
-public class HADataSource extends MultiDataSource implements HADataSourceMBean, DataSource {
+public class HADataSource extends MultiDataSource implements HADataSourceMBean, ManagedDataSource, DataSource {
 
     private final static Log  LOG                = LogFactory.getLog(HADataSource.class);
 
@@ -26,6 +27,8 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     }
     
     public void resetStat() {
+        super.resetStat();
+        
         masterConnectCount.set(0);
         slaveConnectCount.set(0);
     }
@@ -71,7 +74,23 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         master.setEnable(value);
     }
+    
+    public String getMasterUrl() {
+        if (master == null) {
+            return null;
+        }
+        
+        return master.getUrl();
+    }
 
+    public String getSlaveUrl() {
+        if (slave == null) {
+            return null;
+        }
+        
+        return slave.getUrl();
+    }
+    
     public boolean isSlaveEnable() {
         if (slave == null) {
             return false;
@@ -127,5 +146,4 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
             LOG.debug("HADataSource closed");
         }
     }
-
 }

@@ -34,7 +34,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private Connection            conn;
 
-    private final int             id;
+    private final long             id;
 
     private Boolean               autoCommit       = null;
     private Boolean               readOnly         = null;
@@ -49,7 +49,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private Date                  connectedTime    = null;
 
-    public MultiDataSourceConnection(MultiDataSource haDataSource, int id){
+    public MultiDataSourceConnection(MultiDataSource haDataSource, long id){
         this.haDataSource = haDataSource;
         this.id = id;
     }
@@ -572,7 +572,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public DataSourceProxy getDirectDataSource() {
-        throw new UnsupportedOperationException();
+        return haDataSource;
     }
 
     @Override
