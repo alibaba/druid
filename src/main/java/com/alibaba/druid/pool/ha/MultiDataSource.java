@@ -21,8 +21,8 @@ import javax.management.ObjectName;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ha.valid.DefaultValidDataSourceChecker;
-import com.alibaba.druid.pool.ha.valid.ValidDataSourceChecker;
+import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
+import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -33,9 +33,9 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     private final AtomicLong                       connectionIdSeed                 = new AtomicLong();
     private final AtomicLong                       statementIdSeed                  = new AtomicLong();
     private final AtomicLong                       resultSetIdSeed                  = new AtomicLong();
-    private final AtomicLong                       transactionIdSeed             = new AtomicLong();
+    private final AtomicLong                       transactionIdSeed                = new AtomicLong();
 
-    private ValidDataSourceChecker                 validDataSourceChecker           = new DefaultValidDataSourceChecker();
+    protected DataSourceFailureDetecter               validDataSourceChecker           = new DefaultDataSourceFailureDetecter();
     private long                                   validDataSourceCheckPeriodMillis = 3000;
 
     private int                                    schedulerThreadCount             = 3;
@@ -129,7 +129,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public void failureDetect() {
         for (DruidDataSource dataSource : getDataSources().values()) {
             boolean isValid = validDataSourceChecker.isValid(dataSource);
-            if (isValid) {
+            if (!isValid) {
                 handleNotAwailableDatasource(dataSource);
             }
         }
@@ -147,11 +147,11 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         this.validDataSourceCheckPeriodMillis = validDataSourceCheckPeriodMillis;
     }
 
-    public ValidDataSourceChecker getValidDataSourceChecker() {
+    public DataSourceFailureDetecter getValidDataSourceChecker() {
         return validDataSourceChecker;
     }
 
-    public void setValidDataSourceChecker(ValidDataSourceChecker validDataSourceChecker) {
+    public void setValidDataSourceChecker(DataSourceFailureDetecter validDataSourceChecker) {
         this.validDataSourceChecker = validDataSourceChecker;
     }
 
@@ -179,7 +179,9 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
 
-    public abstract void handleNotAwailableDatasource(DruidDataSource dataSource);
+    public void handleNotAwailableDatasource(DruidDataSource dataSource) {
+        dataSource.setEnable(false);
+    }
 
     @Override
     public String getDbType() {

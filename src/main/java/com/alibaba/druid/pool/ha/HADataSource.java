@@ -135,11 +135,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return conn;
     }
-
-    public void handleNotAwailableDatasource(DruidDataSource dataSource) {
-        throw new UnsupportedOperationException();
-    }
-
+    
     public void close() {
         super.close();
         if (LOG.isDebugEnabled()) {

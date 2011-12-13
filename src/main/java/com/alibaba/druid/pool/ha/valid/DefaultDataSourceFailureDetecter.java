@@ -8,9 +8,9 @@ import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class DefaultValidDataSourceChecker implements ValidDataSourceChecker {
+public class DefaultDataSourceFailureDetecter implements DataSourceFailureDetecter {
 
-    private final static Log LOG           = LogFactory.getLog(DefaultValidDataSourceChecker.class);
+    private final static Log LOG           = LogFactory.getLog(DefaultDataSourceFailureDetecter.class);
 
     private long             maxWaitMillis = 3000;
 
