@@ -96,6 +96,51 @@ public class PreparedStatementKeyTest extends TestCase {
         Assert.assertFalse(k3.equals(k2));
         Assert.assertFalse(k3.equals(k1));
     }
+    
+    public void test_equals_7() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0);
+        PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, 1, 0);
+        PreparedStatementKey k3 = new PreparedStatementKey("x2", null, MethodType.M1, 0, 1);
+
+        k1.hashCode();
+
+        Assert.assertFalse(k1.equals(k2));
+        Assert.assertFalse(k1.equals(k3));
+        Assert.assertFalse(k2.equals(k1));
+        Assert.assertFalse(k2.equals(k3));
+        Assert.assertFalse(k3.equals(k2));
+        Assert.assertFalse(k3.equals(k1));
+    }
+    
+    public void test_equals_8() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0, 0);
+        PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, 0, 0, 1);
+        PreparedStatementKey k3 = new PreparedStatementKey("x2", null, MethodType.M1, 0, 1, 0);
+
+        k1.hashCode();
+
+        Assert.assertFalse(k1.equals(k2));
+        Assert.assertFalse(k1.equals(k3));
+        Assert.assertFalse(k2.equals(k1));
+        Assert.assertFalse(k2.equals(k3));
+        Assert.assertFalse(k3.equals(k2));
+        Assert.assertFalse(k3.equals(k1));
+    }
+    
+    public void test_equals_9() throws Exception {
+        PreparedStatementKey k1 = new PreparedStatementKey("x1", null, MethodType.M1, 2);
+        PreparedStatementKey k2 = new PreparedStatementKey("x1", null, MethodType.M1, new int[] {});
+        PreparedStatementKey k3 = new PreparedStatementKey("x2", null, MethodType.M1, new String[] {});
+        
+        k1.hashCode();
+        
+        Assert.assertFalse(k1.equals(k2));
+        Assert.assertFalse(k1.equals(k3));
+        Assert.assertFalse(k2.equals(k1));
+        Assert.assertFalse(k2.equals(k3));
+        Assert.assertFalse(k3.equals(k2));
+        Assert.assertFalse(k3.equals(k1));
+    }
 
     public void test_contains() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
