@@ -25,7 +25,7 @@ public class PoolablePreparedStatementTest extends TestCase {
     protected void setUp() throws Exception {
         raw = new MockPreparedStatement(null, null);
         stmt = new PoolablePreparedStatement(null,
-                                             new PreparedStatementHolder(new PreparedStatementKey("", null, null), raw)) {
+                                             new PreparedStatementHolder(new PreparedStatementKey("", null, null, 0, 0, 0), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
