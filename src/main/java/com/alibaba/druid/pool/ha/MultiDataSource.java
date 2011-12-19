@@ -20,7 +20,6 @@ import javax.management.ObjectName;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DataSourceAdapter;
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -120,7 +119,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
         Object[] items = this.getDataSources().values().toArray();
         for (Object item : items) {
-            JdbcUtils.close((DruidDataSource) item);
+            JdbcUtils.close((DataSourceHolder) item);
         }
 
         MultiDataSourceStatManager.remove(this);

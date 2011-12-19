@@ -1,19 +1,23 @@
 package com.alibaba.druid.pool.ha;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class DataSourceHolder {
+public class DataSourceHolder implements Closeable {
 
-    private DruidDataSource  dataSource;
-    private boolean          enable;
+    private final DruidDataSource  dataSource;
+    private boolean          enable            = true;
     private final AtomicLong connectCount      = new AtomicLong();
     private final AtomicLong connectErrorCount = new AtomicLong();
 
     public DataSourceHolder(DruidDataSource dataSource){
+        if (dataSource == null) {
+            throw new IllegalArgumentException("dataSource is null");
+        }
         this.dataSource = dataSource;
     }
 
@@ -33,10 +37,6 @@ public class DataSourceHolder {
         return dataSource;
     }
 
-    public void setDataSource(DruidDataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
     public long getConnectCount() {
         return connectCount.get();
     }
@@ -46,10 +46,6 @@ public class DataSourceHolder {
     }
 
     public String getUrl() {
-        if (dataSource == null) {
-            return null;
-        }
-
         return dataSource.getUrl();
     }
 
@@ -64,5 +60,10 @@ public class DataSourceHolder {
             connectErrorCount.incrementAndGet();
             throw ex;
         }
+    }
+
+    @Override
+    public void close() {
+        dataSource.close();
     }
 }
