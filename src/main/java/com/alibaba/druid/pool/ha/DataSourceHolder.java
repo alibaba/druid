@@ -21,7 +21,7 @@ public class DataSourceHolder implements Closeable {
         this.dataSource = dataSource;
     }
 
-    public void resetStat() {
+    public void resetState() {
         connectCount.set(0);
     }
 
@@ -65,5 +65,9 @@ public class DataSourceHolder implements Closeable {
     @Override
     public void close() {
         dataSource.close();
+    }
+    
+    public void restart() {
+        dataSource.restart();
     }
 }

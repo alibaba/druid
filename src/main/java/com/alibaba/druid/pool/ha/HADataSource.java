@@ -25,8 +25,8 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     public void resetStat() {
         super.resetStat();
 
-        master.resetStat();
-        slave.resetStat();
+        master.resetState();
+        slave.resetState();
     }
 
     public long getMasterConnectCount() {
@@ -39,6 +39,14 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
     public DataSourceHolder getMaster() {
         return master;
+    }
+    
+    public void restartMaster() {
+        this.restartDataSource("master");
+    }
+    
+    public void restartSlave() {
+        this.restartDataSource("slave");
     }
 
     public void setMaster(DruidDataSource master) {

@@ -20,4 +20,8 @@ public interface HADataSourceMBean extends MultiDataSourceMBean {
 	void switchMasterSlave();
 
 	void resetStat();
+	
+	void restartMaster();
+	
+	void restartSlave();
 }
