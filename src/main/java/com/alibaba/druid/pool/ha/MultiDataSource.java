@@ -21,8 +21,8 @@ import javax.management.ObjectName;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
+import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -44,7 +44,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     private boolean                                inited                           = false;
     private final Lock                             lock                             = new ReentrantLock();
 
-    private ConcurrentMap<String, DruidDataSource> dataSources                      = new ConcurrentHashMap<String, DruidDataSource>();
+    private ConcurrentMap<String, DataSourceHolder> dataSources                      = new ConcurrentHashMap<String, DataSourceHolder>();
 
     private ObjectName                             objectName;
 
@@ -127,10 +127,10 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     }
 
     public void failureDetect() {
-        for (DruidDataSource dataSource : getDataSources().values()) {
-            boolean isValid = validDataSourceChecker.isValid(dataSource);
+        for (DataSourceHolder dataSourceHolder : getDataSources().values()) {
+            boolean isValid = validDataSourceChecker.isValid(dataSourceHolder.getDataSource());
             if (!isValid) {
-                handleNotAwailableDatasource(dataSource);
+                handleNotAwailableDatasource(dataSourceHolder);
             }
         }
     }
@@ -163,7 +163,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return statementIdSeed.incrementAndGet();
     }
 
-    public Map<String, DruidDataSource> getDataSources() {
+    public Map<String, DataSourceHolder> getDataSources() {
         return dataSources;
     }
 
@@ -179,8 +179,8 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
 
-    public void handleNotAwailableDatasource(DruidDataSource dataSource) {
-        dataSource.setEnable(false);
+    public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
+        dataSourceHolder.setEnable(false);
     }
 
     @Override

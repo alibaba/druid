@@ -3,7 +3,6 @@ package com.alibaba.druid.pool.ha;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
@@ -14,47 +13,52 @@ import com.alibaba.druid.pool.ManagedDataSource;
 
 public class HADataSource extends MultiDataSource implements HADataSourceMBean, ManagedDataSource, DataSource {
 
-    private final static Log  LOG                = LogFactory.getLog(HADataSource.class);
+    private final static Log   LOG = LogFactory.getLog(HADataSource.class);
 
-    private final AtomicLong  masterConnectCount = new AtomicLong();
-    private final AtomicLong  slaveConnectCount  = new AtomicLong();
-
-    protected DruidDataSource master;
-    protected DruidDataSource slave;
+    protected DataSourceHolder master;
+    protected DataSourceHolder slave;
 
     public HADataSource(){
 
     }
-    
+
     public void resetStat() {
         super.resetStat();
-        
-        masterConnectCount.set(0);
-        slaveConnectCount.set(0);
+
+        master.resetStat();
+        slave.resetStat();
     }
 
     public long getMasterConnectCount() {
-        return masterConnectCount.get();
+        return master.getConnectCount();
     }
 
     public long getSlaveConnectCount() {
-        return slaveConnectCount.get();
+        return slave.getConnectCount();
     }
 
-    public DruidDataSource getMaster() {
+    public DataSourceHolder getMaster() {
         return master;
     }
 
     public void setMaster(DruidDataSource master) {
+        this.setMaster(new DataSourceHolder(master));
+    }
+
+    public void setMaster(DataSourceHolder master) {
         this.getDataSources().put("master", master);
         this.master = master;
     }
 
-    public DruidDataSource getSlave() {
+    public DataSourceHolder getSlave() {
         return slave;
     }
 
     public void setSlave(DruidDataSource slave) {
+        this.setSlave(new DataSourceHolder(slave));
+    }
+
+    public void setSlave(DataSourceHolder slave) {
         this.getDataSources().put("slave", slave);
         this.slave = slave;
     }
@@ -74,12 +78,12 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         master.setEnable(value);
     }
-    
+
     public String getMasterUrl() {
         if (master == null) {
             return null;
         }
-        
+
         return master.getUrl();
     }
 
@@ -87,10 +91,10 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         if (slave == null) {
             return null;
         }
-        
+
         return slave.getUrl();
     }
-    
+
     public boolean isSlaveEnable() {
         if (slave == null) {
             return false;
@@ -106,11 +110,11 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         slave.setEnable(value);
     }
-    
+
     public void switchMasterSlave() {
-    	DruidDataSource tmp = this.getMaster();
-    	this.setMaster(this.getSlave());
-    	this.setSlave(tmp);
+        DataSourceHolder tmp = this.getMaster();
+        this.setMaster(this.getSlave());
+        this.setSlave(tmp);
     }
 
     public synchronized void setDataSources(List<DruidDataSource> dataSources) {
@@ -121,12 +125,10 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         Connection conn = null;
         if (master.isEnable()) {
             conn = master.getConnection();
-            masterConnectCount.incrementAndGet();
         }
 
         if (conn == null && slave.isEnable()) {
             conn = slave.getConnection();
-            slaveConnectCount.incrementAndGet();
         }
 
         if (conn == null) {
@@ -135,7 +137,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return conn;
     }
-    
+
     public void close() {
         super.close();
         if (LOG.isDebugEnabled()) {

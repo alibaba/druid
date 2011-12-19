@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
@@ -38,11 +38,11 @@ public class RoundRobinBlancer implements Balancer {
 
             int index = (int) (connectionId % size);
 
-            DruidDataSource dataSource = null;
+            DataSourceHolder dataSource = null;
 
             try {
                 // 处理并发时的错误
-                List<DruidDataSource> dataSources = new ArrayList<DruidDataSource>(multiDataSource.getDataSources().values());
+                List<DataSourceHolder> dataSources = new ArrayList<DataSourceHolder>(multiDataSource.getDataSources().values());
                 dataSource = dataSources.get(index);
             } catch (Exception ex) {
                 indexErrorCount.incrementAndGet();
@@ -54,7 +54,7 @@ public class RoundRobinBlancer implements Balancer {
 
             assert dataSource != null;
 
-            if (dataSource.isInited() && !dataSource.isEnable()) {
+            if (!dataSource.isEnable()) {
                 multiDataSource.handleNotAwailableDatasource(dataSource);
                 continue;
             }
