@@ -121,13 +121,16 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         throw new UnsupportedOperationException();
     }
 
-    public Connection getConnectionInternal(MultiDataSourceConnection connection, String sql) throws SQLException {
+    public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection connection, String sql) throws SQLException {
         Connection conn = null;
+        DataSourceHolder dataSource = null;
         if (master.isEnable()) {
+            dataSource = master;
             conn = master.getConnection();
         }
 
         if (conn == null && slave.isEnable()) {
+            dataSource = slave;
             conn = slave.getConnection();
         }
 
@@ -135,7 +138,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
             throw new SQLException("get HAConnection error");
         }
 
-        return conn;
+        return new MultiConnectionHolder(dataSource, conn);
     }
 
     public void close() {

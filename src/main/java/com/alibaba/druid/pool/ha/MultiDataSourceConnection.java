@@ -32,8 +32,9 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     private final MultiDataSource haDataSource;
 
     private Connection            conn;
+    private DataSourceHolder      dataSourceHolder;
 
-    private final long             id;
+    private final long            id;
 
     private Boolean               autoCommit       = null;
     private Boolean               readOnly         = null;
@@ -53,9 +54,15 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         this.id = id;
     }
 
+    public DataSourceHolder getDataSourceHolder() {
+        return dataSourceHolder;
+    }
+
     public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
-            conn = haDataSource.getConnectionInternal(this, sql);
+            MultiConnectionHolder connHolder = haDataSource.getConnectionInternal(this, sql);
+            conn = connHolder.getConnection();
+            this.dataSourceHolder = connHolder.getDataSourceHolder();
         }
 
         if (autoCommit != null) {
@@ -578,25 +585,25 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     public Date getConnectedTime() {
         return connectedTime;
     }
-    
+
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-    	boolean result = super.isWrapperFor(iface);
-    	
-    	if (result == false && conn != null) {
-    		result = conn.isWrapperFor(iface);
-    	}
-    	
-    	return result;
+        boolean result = super.isWrapperFor(iface);
+
+        if (result == false && conn != null) {
+            result = conn.isWrapperFor(iface);
+        }
+
+        return result;
     }
-    
+
     public <T> T unwrap(Class<T> iface) throws SQLException {
-    	T object = super.unwrap(iface);
-    	
-    	if (object == null && conn != null) {
-    		object = conn.unwrap(iface);
-    	}
-    	
-    	return object;
+        T object = super.unwrap(iface);
+
+        if (object == null && conn != null) {
+            object = conn.unwrap(iface);
+        }
+
+        return object;
     }
 
     public void setSchema(String schema) throws SQLException {

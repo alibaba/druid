@@ -10,12 +10,13 @@ public class DataSourceHolder {
 
     private DruidDataSource  dataSource;
     private boolean          enable;
-    private final AtomicLong connectCount = new AtomicLong();
+    private final AtomicLong connectCount      = new AtomicLong();
+    private final AtomicLong connectErrorCount = new AtomicLong();
 
     public DataSourceHolder(DruidDataSource dataSource){
         this.dataSource = dataSource;
     }
-    
+
     public void resetStat() {
         connectCount.set(0);
     }
@@ -51,9 +52,17 @@ public class DataSourceHolder {
 
         return dataSource.getUrl();
     }
-    
+
     public Connection getConnection() throws SQLException {
         connectCount.incrementAndGet();
-        return dataSource.getConnection();
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException ex) {
+            connectErrorCount.incrementAndGet();
+            throw ex;
+        } catch (RuntimeException ex) {
+            connectErrorCount.incrementAndGet();
+            throw ex;
+        }
     }
 }

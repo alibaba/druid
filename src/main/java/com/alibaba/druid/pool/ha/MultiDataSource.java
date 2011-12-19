@@ -177,7 +177,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return new MultiDataSourceConnection(this, createConnectionId());
     }
 
-    public abstract Connection getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
+    public abstract MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
         dataSourceHolder.setEnable(false);
