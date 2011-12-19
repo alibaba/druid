@@ -129,7 +129,9 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         for (DataSourceHolder dataSourceHolder : getDataSources().values()) {
             boolean isValid = validDataSourceChecker.isValid(dataSourceHolder.getDataSource());
             if (!isValid) {
-                handleNotAwailableDatasource(dataSourceHolder);
+                dataSourceHolder.setEnable(false);
+            } else {
+                dataSourceHolder.setEnable(true);
             }
         }
     }
@@ -179,7 +181,6 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public abstract MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException;
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
-        dataSourceHolder.setEnable(false);
     }
     
     public String[] getDataSourceNames() {

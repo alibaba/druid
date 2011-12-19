@@ -128,6 +128,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.close();
             this.resetStat();
             this.inited = false;
+            this.enable = true;
         } finally {
             lock.unlock();
         }
