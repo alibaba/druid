@@ -122,6 +122,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements
 	public void setResetStatEnable(boolean resetStatEnable) {
 		this.resetStatEnable = resetStatEnable;
 	}
+	
+	public void restart() {
+	    this.close();
+	    this.inited = false;
+	}
 
 	public void resetStat() {
 		if (!resetStatEnable) {

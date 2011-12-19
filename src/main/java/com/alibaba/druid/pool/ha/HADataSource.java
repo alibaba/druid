@@ -25,8 +25,8 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     public void resetStat() {
         super.resetStat();
 
-        master.resetStat();
-        slave.resetStat();
+        master.resetState();
+        slave.resetState();
     }
 
     public long getMasterConnectCount() {
