@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -20,6 +21,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.management.ObjectName;
 
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.ha.config.ConfigLoader;
 import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
@@ -29,38 +32,46 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public abstract class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
 
-    private Properties                              properties                       = new Properties();
+    private final static Log                        LOG                       = LogFactory.getLog(MultiDataSource.class);
 
-    private final AtomicLong                        connectionIdSeed                 = new AtomicLong();
-    private final AtomicLong                        statementIdSeed                  = new AtomicLong();
-    private final AtomicLong                        resultSetIdSeed                  = new AtomicLong();
-    private final AtomicLong                        transactionIdSeed                = new AtomicLong();
+    private Properties                              properties                = new Properties();
 
-    protected DataSourceFailureDetecter             validDataSourceChecker           = new DefaultDataSourceFailureDetecter();
-    private long                                    validDataSourceCheckPeriodMillis = 3000;
+    private final AtomicLong                        connectionIdSeed          = new AtomicLong();
+    private final AtomicLong                        statementIdSeed           = new AtomicLong();
+    private final AtomicLong                        resultSetIdSeed           = new AtomicLong();
+    private final AtomicLong                        transactionIdSeed         = new AtomicLong();
 
-    private int                                     schedulerThreadCount             = 3;
+    private final AtomicLong                        configLoadCount           = new AtomicLong();
+    private final AtomicLong                        failureDetectCount        = new AtomicLong();
+
+    protected DataSourceFailureDetecter             validDataSourceChecker    = new DefaultDataSourceFailureDetecter();
+    private long                                    failureDetectPeriodMillis = 3000;
+    private long                                    configLoadPeriodMillis    = 1000 * 60;
+
+    private int                                     schedulerThreadCount      = 3;
     private ScheduledExecutorService                scheduler;
 
-    private boolean                                 inited                           = false;
-    protected final Lock                            lock                             = new ReentrantLock();
+    private ScheduledFuture<?>                      failureDetectFuture;
+    private ScheduledFuture<?>                      configLoadFuture;
 
-    private ConcurrentMap<String, DataSourceHolder> dataSources                      = new ConcurrentHashMap<String, DataSourceHolder>();
+    private boolean                                 inited                    = false;
+    protected final Lock                            lock                      = new ReentrantLock();
+
+    private ConcurrentMap<String, DataSourceHolder> dataSources               = new ConcurrentHashMap<String, DataSourceHolder>();
 
     private ObjectName                              objectName;
 
-    private List<Filter>                            filters                          = new ArrayList<Filter>();
+    private List<Filter>                            filters                   = new ArrayList<Filter>();
 
     private boolean                                 enable;
 
     private String                                  name;
 
-    private int                                    totalWeight                      = 0;
+    private int                                     totalWeight               = 0;
 
     private ConfigLoader                            configLoader;
 
     private Random                                  random;
-    
 
     public ConfigLoader getConfigLoader() {
         return configLoader;
@@ -125,18 +136,57 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
             }
 
             random = new Random();
-            
+
             initInternal();
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
-            scheduler.scheduleAtFixedRate(new FailureDetectTask(), validDataSourceCheckPeriodMillis,
-                                          validDataSourceCheckPeriodMillis, TimeUnit.MILLISECONDS);
+            startFailureDetectScheduleTask();
             inited = true;
 
             MultiDataSourceStatManager.add(this);
         } finally {
             lock.unlock();
         }
+    }
+
+    public boolean startConfigLoadScheduleTask() {
+        if (configLoadFuture != null) {
+            configLoadFuture = scheduler.scheduleAtFixedRate(new ConfigLoadTask(), configLoadPeriodMillis,
+                                                             configLoadPeriodMillis, TimeUnit.MILLISECONDS);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean stopConfigLoadScheduleTask() {
+        if (configLoadFuture != null) {
+            configLoadFuture.cancel(true);
+            configLoadFuture = null;
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean startFailureDetectScheduleTask() {
+        if (failureDetectFuture != null) {
+            failureDetectFuture = scheduler.scheduleAtFixedRate(new FailureDetectTask(), failureDetectPeriodMillis,
+                                                                failureDetectPeriodMillis, TimeUnit.MILLISECONDS);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean stopFailureDetectScheduleTask() {
+        if (failureDetectFuture != null) {
+            failureDetectFuture.cancel(true);
+            failureDetectFuture = null;
+            return true;
+        }
+
+        return false;
     }
 
     protected void initInternal() throws SQLException {
@@ -174,11 +224,11 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     }
 
     public long getValidDataSourceCheckPeriodMillis() {
-        return validDataSourceCheckPeriodMillis;
+        return failureDetectPeriodMillis;
     }
 
     public void setValidDataSourceCheckPeriodMillis(long validDataSourceCheckPeriodMillis) {
-        this.validDataSourceCheckPeriodMillis = validDataSourceCheckPeriodMillis;
+        this.failureDetectPeriodMillis = validDataSourceCheckPeriodMillis;
     }
 
     public DataSourceFailureDetecter getValidDataSourceChecker() {
@@ -232,11 +282,11 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     }
 
     public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)
-                                                                                                           throws SQLException {
+                                                                                                       throws SQLException {
         int randomNumber = random.nextInt(totalWeight);
-        
+
         DataSourceHolder dataSource = null;
-        
+
         DataSourceHolder first = null;
         for (DataSourceHolder item : this.dataSources.values()) {
             if (first == null) {
@@ -249,7 +299,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         if (dataSource == null) {
             dataSource = first;
         }
-        
+
         return dataSource.getConnection();
     }
 
@@ -305,10 +355,34 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return false;
     }
 
+    public long getConfigLoadCount() {
+        return configLoadCount.get();
+    }
+    
+    public long getFailureDetectCount() {
+        return failureDetectCount.get();
+    }
+
+    class ConfigLoadTask implements Runnable {
+
+        @Override
+        public void run() {
+            if (configLoader != null) {
+                try {
+                    configLoadCount.incrementAndGet();
+                    configLoader.load();
+                } catch (SQLException e) {
+                    LOG.error("config load error", e);
+                }
+            }
+        }
+    }
+
     class FailureDetectTask implements Runnable {
 
         @Override
         public void run() {
+            failureDetectCount.incrementAndGet();
             failureDetect();
         }
 
