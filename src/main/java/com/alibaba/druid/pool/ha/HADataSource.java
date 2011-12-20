@@ -78,6 +78,22 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return master.isEnable();
     }
+    
+    public boolean isMasterFail() {
+        if (master == null) {
+            return false;
+        }
+        
+        return master.isFail();
+    }
+    
+    public boolean isSlaveFail() {
+        if (slave == null) {
+            return false;
+        }
+        
+        return slave.isFail();
+    }
 
     public void setMasterEnable(boolean value) {
         if (master == null) {

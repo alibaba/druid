@@ -129,9 +129,9 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         for (DataSourceHolder dataSourceHolder : getDataSources().values()) {
             boolean isValid = validDataSourceChecker.isValid(dataSourceHolder.getDataSource());
             if (!isValid) {
-                dataSourceHolder.setEnable(false);
+                dataSourceHolder.setFail(true);
             } else {
-                dataSourceHolder.setEnable(true);
+                dataSourceHolder.setFail(false);
             }
         }
     }
