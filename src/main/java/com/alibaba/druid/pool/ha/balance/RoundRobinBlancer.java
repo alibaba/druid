@@ -1,6 +1,5 @@
 package com.alibaba.druid.pool.ha.balance;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
+import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
@@ -23,7 +23,7 @@ public class RoundRobinBlancer implements Balancer {
     }
 
     @Override
-    public Connection getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException {
+    public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException {
         MultiDataSource multiDataSource = connectionProxy.getHaDataSource();
 
         int tryCount = 0;
@@ -59,7 +59,7 @@ public class RoundRobinBlancer implements Balancer {
                 continue;
             }
 
-            Connection conn = null;
+            MultiConnectionHolder conn = null;
 
             try {
                 tryCount++;

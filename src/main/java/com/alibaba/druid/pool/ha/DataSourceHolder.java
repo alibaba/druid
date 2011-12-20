@@ -18,6 +18,26 @@ public class DataSourceHolder implements Closeable {
 
     private int                   weight            = 1;
 
+    private transient int         weightRegionBegin;
+
+    private transient int         weightReginEnd;
+
+    public int getWeightRegionBegin() {
+        return weightRegionBegin;
+    }
+
+    public void setWeightRegionBegin(int weightRegionBegin) {
+        this.weightRegionBegin = weightRegionBegin;
+    }
+
+    public int getWeightReginEnd() {
+        return weightReginEnd;
+    }
+
+    public void setWeightReginEnd(int weightReginEnd) {
+        this.weightReginEnd = weightReginEnd;
+    }
+
     public DataSourceHolder(DruidDataSource dataSource){
         if (dataSource == null) {
             throw new IllegalArgumentException("dataSource is null");
@@ -69,10 +89,12 @@ public class DataSourceHolder implements Closeable {
         return dataSource.getUrl();
     }
 
-    public Connection getConnection() throws SQLException {
+    public MultiConnectionHolder getConnection() throws SQLException {
         connectCount.incrementAndGet();
         try {
-            return dataSource.getConnection();
+            Connection conn = dataSource.getConnection();
+            
+            return new MultiConnectionHolder(this, conn);
         } catch (SQLException ex) {
             connectErrorCount.incrementAndGet();
             throw ex;

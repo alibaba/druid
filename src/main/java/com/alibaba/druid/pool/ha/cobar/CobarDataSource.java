@@ -27,6 +27,8 @@ public class CobarDataSource extends MultiDataSource {
     private List<Filter>     proxyFilters = new ArrayList<Filter>();
     private String           filters;
 
+    
+
     public CobarDataSource(){
 
     }
@@ -110,6 +112,7 @@ public class CobarDataSource extends MultiDataSource {
 
     @Override
     public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException {
+        
         return null;
     }
 

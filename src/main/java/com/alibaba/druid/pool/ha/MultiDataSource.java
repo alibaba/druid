@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -54,9 +55,12 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     private String                                  name;
 
-    private long                                    totalWeight                      = 0;
+    private int                                    totalWeight                      = 0;
 
     private ConfigLoader                            configLoader;
+
+    private Random                                  random;
+    
 
     public ConfigLoader getConfigLoader() {
         return configLoader;
@@ -64,6 +68,10 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     public void setConfigLoader(ConfigLoader configLoader) {
         this.configLoader = configLoader;
+    }
+
+    public int getTotalWeight() {
+        return totalWeight;
     }
 
     public String getName() {
@@ -116,6 +124,8 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
                 return;
             }
 
+            random = new Random();
+            
             initInternal();
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
@@ -190,25 +200,27 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public Map<String, DataSourceHolder> getDataSources() {
         return dataSources;
     }
-    
+
     public DataSourceHolder getDataSourceHolder(String name) {
         return dataSources.get(name);
     }
 
     public void addDataSource(String name, DataSourceHolder dataSourceHolder) {
         dataSources.put(name, dataSourceHolder);
-        
+
         this.totalWeight += dataSourceHolder.getWeight();
     }
 
     public Properties getProperties() {
         return properties;
     }
-    
+
     public void computeTotalWeight() {
         int totalWeight = 0;
         for (DataSourceHolder holder : this.dataSources.values()) {
+            holder.setWeightRegionBegin(totalWeight);
             totalWeight += holder.getWeight();
+            holder.setWeightReginEnd(totalWeight);
         }
         this.totalWeight = totalWeight;
     }
@@ -219,8 +231,27 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return new MultiDataSourceConnection(this, createConnectionId());
     }
 
-    public abstract MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection conn, String sql)
-                                                                                                           throws SQLException;
+    public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)
+                                                                                                           throws SQLException {
+        int randomNumber = random.nextInt(totalWeight);
+        
+        DataSourceHolder dataSource = null;
+        
+        DataSourceHolder first = null;
+        for (DataSourceHolder item : this.dataSources.values()) {
+            if (first == null) {
+                first = item;
+            }
+            if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightReginEnd()) {
+                dataSource = item;
+            }
+        }
+        if (dataSource == null) {
+            dataSource = first;
+        }
+        
+        return dataSource.getConnection();
+    }
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
     }
@@ -228,7 +259,6 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public String[] getDataSourceNames() {
         return this.dataSources.keySet().toArray(new String[this.dataSources.size()]);
     }
-    
 
     @Override
     public String getDbType() {
@@ -264,14 +294,14 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public long createTransactionId() {
         return transactionIdSeed.incrementAndGet();
     }
-    
+
     public boolean restartDataSource(String name) {
         DataSourceHolder holder = this.getDataSources().get(name);
         if (holder != null) {
             holder.restart();
             return true;
         }
-        
+
         return false;
     }
 
