@@ -1,5 +1,7 @@
 package com.alibaba.druid.pool.ha.config;
 
+import java.sql.SQLException;
+
 public interface ConfigLoader {
-    MultiDataSourceConfig load();
+    void load() throws SQLException;
 }

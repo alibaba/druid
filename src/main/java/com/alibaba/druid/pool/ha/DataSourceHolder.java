@@ -16,6 +16,8 @@ public class DataSourceHolder implements Closeable {
 
     private boolean               fail              = false;
 
+    private int                   weight            = 1;
+
     public DataSourceHolder(DruidDataSource dataSource){
         if (dataSource == null) {
             throw new IllegalArgumentException("dataSource is null");
@@ -25,6 +27,14 @@ public class DataSourceHolder implements Closeable {
 
     public void resetState() {
         connectCount.set(0);
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public boolean isEnable() {

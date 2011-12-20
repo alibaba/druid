@@ -160,18 +160,21 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             connectStat.afterConnected(nanoSpan);
             dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
 
-            JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
-
-            dataSourceStat.getConnections().put(connection.getId(), statEntry);
-
-            statEntry.setConnectTime(new Date(startTime));
-            statEntry.setConnectTimespanNano(nanoSpan);
-            statEntry.setEstablishNano(System.nanoTime());
-            statEntry.setEstablishTime(nowTime);
-            statEntry.setConnectStackTrace(new Exception());
-
-            connectStat.setActiveCount(dataSourceStat.getConnections().size());
-            dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
+            if (connection != null) {
+                JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
+    
+                dataSourceStat.getConnections().put(connection.getId(), statEntry);
+    
+                statEntry.setConnectTime(new Date(startTime));
+                statEntry.setConnectTimespanNano(nanoSpan);
+                statEntry.setEstablishNano(System.nanoTime());
+                statEntry.setEstablishTime(nowTime);
+                statEntry.setConnectStackTrace(new Exception());
+                
+                
+                connectStat.setActiveCount(dataSourceStat.getConnections().size());
+                dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
+            }
         }
         return connection;
     }

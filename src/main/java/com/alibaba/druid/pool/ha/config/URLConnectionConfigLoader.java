@@ -5,12 +5,11 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 
-import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.fastjson.JSON;
 
-public class URLConnectionConfigLoader implements ConfigLoader {
+public abstract class URLConnectionConfigLoader implements ConfigLoader {
 
     private URL url;
     private int connectTimeout = 1000 * 3;
@@ -49,7 +48,7 @@ public class URLConnectionConfigLoader implements ConfigLoader {
     }
 
     @Override
-    public MultiDataSourceConfig load() {
+    public void load() throws SQLException {
         if (url == null) {
             throw new IllegalStateException("configServerURL is null");
         }
@@ -69,16 +68,17 @@ public class URLConnectionConfigLoader implements ConfigLoader {
 
                 reader = new InputStreamReader(conn.getInputStream());
                 responseMessage = JdbcUtils.read(reader);
+                
+                handleResponseMessage(responseMessage);
             } catch (Exception e) {
-                throw new DruidRuntimeException("load config error, url : " + url.toString());
+                throw new SQLException("load config error, url : " + url.toString());
             } finally {
                 JdbcUtils.close(reader);
                 conn.disconnect();
             }
         }
-
-        MultiDataSourceConfig config = JSON.parseObject(responseMessage, MultiDataSourceConfig.class);
-        return config;
     }
+    
+    protected abstract void handleResponseMessage(String response) throws SQLException;
 
 }
