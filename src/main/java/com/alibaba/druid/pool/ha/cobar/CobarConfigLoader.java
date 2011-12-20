@@ -28,9 +28,13 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
     public CobarDataSource getDataSource() {
         return dataSource;
     }
+    
+    public static boolean isCobar(String url) {
+        return url.startsWith("jdbc:cobar://");
+    }
 
     public static URL createURL(String jdbcUrl) throws SQLException {
-        if (!CobarDataSource.isCobar(jdbcUrl)) {
+        if (!isCobar(jdbcUrl)) {
             throw new SQLException("illegal cobar url");
         }
 

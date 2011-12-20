@@ -9,9 +9,7 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
-import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
-import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class CobarDataSource extends MultiDataSource {
@@ -26,8 +24,6 @@ public class CobarDataSource extends MultiDataSource {
 
     private List<Filter>     proxyFilters = new ArrayList<Filter>();
     private String           filters;
-
-    
 
     public CobarDataSource(){
 
@@ -78,7 +74,7 @@ public class CobarDataSource extends MultiDataSource {
             throw new SQLException("");
         }
 
-        if (isCobar(url)) {
+        if (CobarConfigLoader.isCobar(url)) {
             this.setConfigLoader(new CobarConfigLoader(this));
         } else {
             DataSourceHolder holder = createDataSourceHolder(this.url, 1);
@@ -104,16 +100,6 @@ public class CobarDataSource extends MultiDataSource {
     protected void handleDataSourceDiscard(DataSourceHolder holder) {
         LOG.debug("dataSource close");
         JdbcUtils.close(holder);
-    }
-
-    public static boolean isCobar(String url) {
-        return url.startsWith("jdbc:cobar://");
-    }
-
-    @Override
-    public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection conn, String sql) throws SQLException {
-        
-        return null;
     }
 
 }
