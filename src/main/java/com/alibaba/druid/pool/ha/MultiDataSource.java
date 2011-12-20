@@ -228,6 +228,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public String[] getDataSourceNames() {
         return this.dataSources.keySet().toArray(new String[this.dataSources.size()]);
     }
+    
 
     @Override
     public String getDbType() {
@@ -263,14 +264,14 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public long createTransactionId() {
         return transactionIdSeed.incrementAndGet();
     }
-
+    
     public boolean restartDataSource(String name) {
         DataSourceHolder holder = this.getDataSources().get(name);
         if (holder != null) {
             holder.restart();
             return true;
         }
-
+        
         return false;
     }
 
