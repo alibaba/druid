@@ -1,8 +1,5 @@
 package com.alibaba.druid.pool.ha;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import com.alibaba.druid.logging.Log;
@@ -138,27 +135,6 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         DataSourceHolder tmp = this.getMaster();
         this.setMaster(this.getSlave());
         this.setSlave(tmp);
-    }
-
-    public synchronized void setDataSources(List<DruidDataSource> dataSources) {
-        throw new UnsupportedOperationException();
-    }
-
-    public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection connection, String sql) throws SQLException {
-        DataSourceHolder dataSource = null;
-        if (master.isEnable()) {
-            dataSource = master;
-        }
-
-        if (dataSource == null && slave.isEnable()) {
-            dataSource = slave;
-        }
-
-        if (dataSource == null) {
-            throw new SQLException("get HAConnection error");
-        }
-
-        return dataSource.getConnection();
     }
 
     public void close() {
