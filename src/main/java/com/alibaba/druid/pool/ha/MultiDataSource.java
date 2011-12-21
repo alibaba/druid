@@ -15,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -59,6 +60,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     private boolean                                 inited                    = false;
     protected final Lock                            lock                      = new ReentrantLock();
+    protected final Condition                       notFull                   = lock.newCondition();
 
     private ConcurrentMap<String, DataSourceHolder> dataSources               = new ConcurrentHashMap<String, DataSourceHolder>();
 
@@ -75,6 +77,22 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     private ConfigLoader                            configLoader;
 
     private Random                                  random;
+
+    private int                                     maxPoolSize;
+
+    private long                                    activeCount               = 0;
+
+    public int getMaxPoolSize() {
+        return maxPoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) throws SQLException {
+        if (this.isIntited()) {
+            throw new SQLException("dataSource inited");
+        }
+
+        this.maxPoolSize = maxPoolSize;
+    }
 
     public ConfigLoader getConfigLoader() {
         return configLoader;
@@ -274,6 +292,10 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return properties;
     }
 
+    public long getActiveCount() {
+        return activeCount;
+    }
+
     public void computeTotalWeight() {
         int totalWeight = 0;
         for (DataSourceHolder holder : this.dataSources.values()) {
@@ -292,7 +314,32 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public Connection getConnection() throws SQLException {
         init();
 
-        return new MultiDataSourceConnection(this, createConnectionId());
+        lock.lock();
+        try {
+            if (activeCount >= maxPoolSize) {
+                notFull.await();
+            }
+            
+            MultiDataSourceConnection conn = new MultiDataSourceConnection(this, createConnectionId());
+
+            activeCount++;
+
+            return conn;
+        } catch (InterruptedException e) {
+            throw new SQLException("thread interrupted", e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    protected void afterConnectionClosed(MultiDataSourceConnection conn) {
+        lock.lock();
+        try {
+            activeCount--;
+            notFull.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)

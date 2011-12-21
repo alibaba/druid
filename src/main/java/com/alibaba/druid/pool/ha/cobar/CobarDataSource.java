@@ -27,10 +27,11 @@ public class CobarDataSource extends MultiDataSource {
 
     private String           password;
 
+    private long             minEvictableIdleTimeMillis            = 1000 * 60 * 3;                           // 3
+                                                                                                               // minutes
+
     private List<Filter>     proxyFilters                          = new ArrayList<Filter>();
     private String           filters;
-
-    private int              maxPoolSize;
 
     public CobarDataSource(){
         this.setFailureDetector(new CobarFailureDetecter());
@@ -38,16 +39,12 @@ public class CobarDataSource extends MultiDataSource {
         this.setConfigLoadPeriodMillis(DEFAULT_CONFIG_LOAD_PERRIOD_MILLIS);
     }
 
-    public int getMaxPoolSize() {
-        return maxPoolSize;
+    public long getMinEvictableIdleTimeMillis() {
+        return minEvictableIdleTimeMillis;
     }
 
-    public void setMaxPoolSize(int maxPoolSize) throws SQLException {
-        if (this.isIntited()) {
-            throw new SQLException("dataSource inited");
-        }
-
-        this.maxPoolSize = maxPoolSize;
+    public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
+        this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
     }
 
     public String getUrl() {
@@ -124,6 +121,9 @@ public class CobarDataSource extends MultiDataSource {
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
+        dataSource.setMaxActive(getMaxPoolSize());
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis); // 3 minutes
+
         if (filters != null && !filters.isEmpty()) {
             dataSource.setFilters(filters);
         }

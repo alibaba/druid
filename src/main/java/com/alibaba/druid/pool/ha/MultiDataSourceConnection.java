@@ -49,11 +49,13 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private Date                  connectedTime    = null;
 
+    private boolean               closed           = false;
+
     public MultiDataSourceConnection(MultiDataSource haDataSource, long id){
         this.haDataSource = haDataSource;
         this.id = id;
     }
-
+    
     public DataSourceHolder getDataSourceHolder() {
         return dataSourceHolder;
     }
@@ -148,15 +150,12 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         if (conn != null) {
             conn.close();
         }
+        this.closed = true;
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        if (conn != null) {
-            return conn.isClosed();
-        }
-
-        return false;
+        return closed;
     }
 
     @Override
