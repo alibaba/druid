@@ -147,10 +147,16 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public void close() throws SQLException {
+        if (closed) {
+            return;
+        }
+        
         if (conn != null) {
             conn.close();
         }
         this.closed = true;
+        
+        haDataSource.afterConnectionClosed(this);
     }
 
     @Override

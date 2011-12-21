@@ -31,7 +31,7 @@ import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
-public abstract class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
+public class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
 
     private final static Log                        LOG                       = LogFactory.getLog(MultiDataSource.class);
 
@@ -78,7 +78,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     private Random                                  random;
 
-    private int                                     maxPoolSize;
+    private int                                     maxPoolSize               = 50;
 
     private long                                    activeCount               = 0;
 
@@ -319,7 +319,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
             if (activeCount >= maxPoolSize) {
                 notFull.await();
             }
-            
+
             MultiDataSourceConnection conn = new MultiDataSourceConnection(this, createConnectionId());
 
             activeCount++;
@@ -341,6 +341,10 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
             lock.unlock();
         }
     }
+    
+    public int produceRandomNumber() {
+        return random.nextInt(totalWeight);
+    }
 
     public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)
                                                                                                        throws SQLException {
@@ -349,7 +353,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
         final int MAX_RETRY = 10;
         for (int i = 0; i < MAX_RETRY; ++i) {
-            int randomNumber = random.nextInt(totalWeight);
+            int randomNumber = produceRandomNumber();
             DataSourceHolder first = null;
 
             boolean needRetry = false;

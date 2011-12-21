@@ -29,4 +29,10 @@ public interface MultiDataSourceMBean {
     long getFailureDetectPeriodMillis();
     
     long getConfigLoadPeriodMillis();
+    
+    long getActiveCount();
+    
+    int getMaxPoolSize();
+    
+    int produceRandomNumber();
 }
