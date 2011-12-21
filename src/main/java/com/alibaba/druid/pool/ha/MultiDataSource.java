@@ -47,7 +47,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     private final AtomicLong                        busySkipCount             = new AtomicLong();
     private final AtomicLong                        retryGetConnectionCount   = new AtomicLong();
 
-    protected DataSourceFailureDetecter             failureDetector    = new DefaultDataSourceFailureDetecter();
+    protected DataSourceFailureDetecter             failureDetector           = new DefaultDataSourceFailureDetecter();
     private long                                    failureDetectPeriodMillis = 3000;
     private long                                    configLoadPeriodMillis    = 1000 * 60;
 
@@ -240,12 +240,12 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         this.failureDetectPeriodMillis = validDataSourceCheckPeriodMillis;
     }
 
-    public DataSourceFailureDetecter getValidDataSourceChecker() {
+    public DataSourceFailureDetecter getFailureDetector() {
         return failureDetector;
     }
 
-    public void setValidDataSourceChecker(DataSourceFailureDetecter validDataSourceChecker) {
-        this.failureDetector = validDataSourceChecker;
+    public void setFailureDetector(DataSourceFailureDetecter failureDetector) {
+        this.failureDetector = failureDetector;
     }
 
     public long createConnectionId() {

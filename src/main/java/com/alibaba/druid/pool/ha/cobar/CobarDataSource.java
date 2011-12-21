@@ -26,7 +26,7 @@ public class CobarDataSource extends MultiDataSource {
     private String           filters;
 
     public CobarDataSource(){
-
+        this.setFailureDetector(new CobarFailureDetecter());
     }
 
     public String getUrl() {
