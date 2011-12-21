@@ -97,6 +97,8 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         }
 
         master.setEnable(value);
+        
+        this.computeTotalWeight();
     }
 
     public String getMasterUrl() {
@@ -153,6 +155,8 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         }
 
         slave.setEnable(value);
+        
+        this.computeTotalWeight();
     }
 
     public void switchMasterSlave() {

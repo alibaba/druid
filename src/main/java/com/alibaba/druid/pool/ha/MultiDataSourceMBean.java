@@ -23,4 +23,10 @@ public interface MultiDataSourceMBean {
     long getRetryGetConnectionCount();
     
     long getBusySkipCount();
+    
+    int getTotalWeight();
+    
+    long getFailureDetectPeriodMillis();
+    
+    long getConfigLoadPeriodMillis();
 }

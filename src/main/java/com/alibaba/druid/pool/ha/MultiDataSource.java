@@ -173,7 +173,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     }
 
     public boolean startFailureDetectScheduleTask() {
-        if (failureDetectFuture != null) {
+        if (failureDetectFuture == null) {
             failureDetectFuture = scheduler.scheduleAtFixedRate(new FailureDetectTask(), failureDetectPeriodMillis,
                                                                 failureDetectPeriodMillis, TimeUnit.MILLISECONDS);
             return true;
@@ -224,6 +224,8 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         if (changeCount != 0) {
             computeTotalWeight();
         }
+
+        failureDetectCount.incrementAndGet();
     }
 
     protected ScheduledExecutorService getScheduler() {
@@ -340,7 +342,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
     }
-    
+
     public long getRetryGetConnectionCount() {
         return retryGetConnectionCount.get();
     }
@@ -406,6 +408,14 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return failureDetectCount.get();
     }
 
+    public long getFailureDetectPeriodMillis() {
+        return failureDetectPeriodMillis;
+    }
+
+    public long getConfigLoadPeriodMillis() {
+        return configLoadPeriodMillis;
+    }
+
     class ConfigLoadTask implements Runnable {
 
         @Override
@@ -414,7 +424,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
                 try {
                     configLoadCount.incrementAndGet();
                     configLoader.load();
-                } catch (SQLException e) {
+                } catch (Exception e) {
                     LOG.error("config load error", e);
                 }
             }
@@ -425,8 +435,11 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
         @Override
         public void run() {
-            failureDetectCount.incrementAndGet();
-            failureDetect();
+            try {
+                failureDetect();
+            } catch (Exception ex) {
+                LOG.error("failure detect error", ex);
+            }
         }
 
     }
