@@ -19,4 +19,8 @@ public interface MultiDataSourceMBean {
     long getConfigLoadCount();
     
     long getFailureDetectCount();
+    
+    long getRetryGetConnectionCount();
+    
+    long getBusySkipCount();
 }

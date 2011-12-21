@@ -76,6 +76,8 @@ public class CobarDataSource extends MultiDataSource {
 
         if (CobarConfigLoader.isCobar(url)) {
             this.setConfigLoader(new CobarConfigLoader(this));
+            
+            this.getConfigLoader().load();
         } else {
             DataSourceHolder holder = createDataSourceHolder(this.url, 1);
             this.addDataSource("master", holder);

@@ -114,6 +114,30 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return slave.getUrl();
     }
+    
+    public int getMasterWeight() {
+        return master.getWeight();
+    }
+    
+    public int getSlaveWeight() {
+        return slave.getWeight();
+    }
+    
+    public int getMasterWeightRegionBegin() {
+        return master.getWeightRegionBegin();
+    }
+    
+    public int getMasterWeightRegionEnd() {
+        return master.getWeightRegionEnd();
+    }
+    
+    public int getSlaveWeightRegionBegin() {
+        return slave.getWeightRegionBegin();
+    }
+    
+    public int getSlaveWeightRegionEnd() {
+        return slave.getWeightRegionEnd();
+    }
 
     public boolean isSlaveEnable() {
         if (slave == null) {

@@ -806,6 +806,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
+    
+    public boolean isBusy() {
+        lock.lock();
+        try {
+            return this.inited && this.activeCount == maxActive && this.poolingCount == 0;
+        } finally {
+            lock.unlock();
+        }
+    }
 
     public long getRemoveAbandonedCount() {
         return removeAbandonedCount;

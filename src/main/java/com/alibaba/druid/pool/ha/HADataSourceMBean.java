@@ -28,4 +28,16 @@ public interface HADataSourceMBean extends MultiDataSourceMBean {
 	boolean isMasterFail();
 	
 	boolean isSlaveFail();
+	
+	int getMasterWeight();
+	
+	int getSlaveWeight();
+	
+	int getMasterWeightRegionBegin();
+	
+	int getMasterWeightRegionEnd();
+	
+	int getSlaveWeightRegionBegin();
+	
+	int getSlaveWeightRegionEnd();
 }

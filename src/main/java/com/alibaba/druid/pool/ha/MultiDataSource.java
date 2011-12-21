@@ -44,6 +44,9 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     private final AtomicLong                        configLoadCount           = new AtomicLong();
     private final AtomicLong                        failureDetectCount        = new AtomicLong();
 
+    private final AtomicLong                        busySkipCount             = new AtomicLong();
+    private final AtomicLong                        retryGetConnectionCount   = new AtomicLong();
+
     protected DataSourceFailureDetecter             validDataSourceChecker    = new DefaultDataSourceFailureDetecter();
     private long                                    failureDetectPeriodMillis = 3000;
     private long                                    configLoadPeriodMillis    = 1000 * 60;
@@ -209,13 +212,17 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     }
 
     public void failureDetect() {
+        int changeCount = 0;
         for (DataSourceHolder dataSourceHolder : getDataSources().values()) {
-            boolean isValid = validDataSourceChecker.isValid(dataSourceHolder.getDataSource());
-            if (!isValid) {
-                dataSourceHolder.setFail(true);
-            } else {
-                dataSourceHolder.setFail(false);
+            boolean isFail = !validDataSourceChecker.isValid(dataSourceHolder.getDataSource());
+
+            if (isFail != dataSourceHolder.isFail()) {
+                dataSourceHolder.setFail(isFail);
+                changeCount++;
             }
+        }
+        if (changeCount != 0) {
+            computeTotalWeight();
         }
     }
 
@@ -268,9 +275,14 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public void computeTotalWeight() {
         int totalWeight = 0;
         for (DataSourceHolder holder : this.dataSources.values()) {
+            if (!holder.isEnable()) {
+                holder.setWeightRegionBegin(-1);
+                holder.setWeightRegionEnd(-1);
+                continue;
+            }
             holder.setWeightRegionBegin(totalWeight);
             totalWeight += holder.getWeight();
-            holder.setWeightReginEnd(totalWeight);
+            holder.setWeightRegionEnd(totalWeight);
         }
         this.totalWeight = totalWeight;
     }
@@ -283,27 +295,58 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
 
     public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)
                                                                                                        throws SQLException {
-        int randomNumber = random.nextInt(totalWeight);
 
         DataSourceHolder dataSource = null;
 
-        DataSourceHolder first = null;
-        for (DataSourceHolder item : this.dataSources.values()) {
-            if (first == null) {
-                first = item;
+        final int MAX_RETRY = 10;
+        for (int i = 0; i < MAX_RETRY; ++i) {
+            int randomNumber = random.nextInt(totalWeight);
+            DataSourceHolder first = null;
+
+            boolean needRetry = false;
+            for (DataSourceHolder item : this.dataSources.values()) {
+                if (first == null) {
+                    first = item;
+                }
+                if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightRegionEnd()) {
+                    if (!item.isEnable()) {
+                        needRetry = true;
+                        break;
+                    }
+
+                    if (item.getDataSource().isBusy()) {
+                        busySkipCount.incrementAndGet();
+                        needRetry = true;
+                        break;
+                    }
+
+                    dataSource = item;
+                }
             }
-            if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightReginEnd()) {
-                dataSource = item;
+
+            if (needRetry) {
+                retryGetConnectionCount.incrementAndGet();
+                continue;
             }
-        }
-        if (dataSource == null) {
-            dataSource = first;
+
+            if (dataSource == null) {
+                dataSource = first;
+            }
+            break;
         }
 
         return dataSource.getConnection();
     }
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {
+    }
+    
+    public long getRetryGetConnectionCount() {
+        return retryGetConnectionCount.get();
+    }
+
+    public long getBusySkipCount() {
+        return busySkipCount.get();
     }
 
     public String[] getDataSourceNames() {
@@ -358,7 +401,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public long getConfigLoadCount() {
         return configLoadCount.get();
     }
-    
+
     public long getFailureDetectCount() {
         return failureDetectCount.get();
     }

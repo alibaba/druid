@@ -20,7 +20,7 @@ public class DataSourceHolder implements Closeable {
 
     private transient int         weightRegionBegin;
 
-    private transient int         weightReginEnd;
+    private transient int         weightRegionEnd;
 
     public int getWeightRegionBegin() {
         return weightRegionBegin;
@@ -30,12 +30,12 @@ public class DataSourceHolder implements Closeable {
         this.weightRegionBegin = weightRegionBegin;
     }
 
-    public int getWeightReginEnd() {
-        return weightReginEnd;
+    public int getWeightRegionEnd() {
+        return weightRegionEnd;
     }
 
-    public void setWeightReginEnd(int weightReginEnd) {
-        this.weightReginEnd = weightReginEnd;
+    public void setWeightRegionEnd(int weightReginEnd) {
+        this.weightRegionEnd = weightReginEnd;
     }
 
     public DataSourceHolder(DruidDataSource dataSource){
