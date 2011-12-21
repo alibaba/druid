@@ -151,6 +151,8 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
             conn.close();
         }
         this.closed = true;
+        
+        haDataSource.afterConnectionClosed(this);
     }
 
     @Override
