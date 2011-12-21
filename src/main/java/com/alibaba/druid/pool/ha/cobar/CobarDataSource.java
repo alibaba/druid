@@ -30,6 +30,8 @@ public class CobarDataSource extends MultiDataSource {
     private long             minEvictableIdleTimeMillis            = 1000 * 60 * 3;                           // 3
                                                                                                                // minutes
 
+    private boolean          testWhileIdle                         = true;
+
     private List<Filter>     proxyFilters                          = new ArrayList<Filter>();
     private String           filters;
 
@@ -37,6 +39,14 @@ public class CobarDataSource extends MultiDataSource {
         this.setFailureDetector(new CobarFailureDetecter());
         this.setFailureDetectPeriodMillis(DEFAULT_FAILURE_DETECT_PERRIOD_MILLIS);
         this.setConfigLoadPeriodMillis(DEFAULT_CONFIG_LOAD_PERRIOD_MILLIS);
+    }
+
+    public boolean isTestWhileIdle() {
+        return testWhileIdle;
+    }
+
+    public void setTestWhileIdle(boolean testWhileIdle) {
+        this.testWhileIdle = testWhileIdle;
     }
 
     public long getMinEvictableIdleTimeMillis() {
@@ -123,6 +133,7 @@ public class CobarDataSource extends MultiDataSource {
         dataSource.setPassword(password);
         dataSource.setMaxActive(getMaxPoolSize());
         dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis); // 3 minutes
+        dataSource.setTestWhileIdle(testWhileIdle);
 
         if (filters != null && !filters.isEmpty()) {
             dataSource.setFilters(filters);
