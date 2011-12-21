@@ -38,27 +38,23 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
             throw new SQLException("illegal cobar url");
         }
 
+        // jdbc:cobar://ip:port/sid
         String rest = jdbcUrl.substring("jdbc:cobar://".length());
         String[] items = rest.split("/");
-        String loginServerIp = items[0];
-        String schemaName = items[1];
+        String ip = items[0];
+        String sid = items[1];
 
         int port = 80;
         {
-            int pos = loginServerIp.indexOf(':');
+            int pos = ip.indexOf(':');
             if (pos != -1) {
-                loginServerIp = loginServerIp.substring(0, pos);
-                port = Integer.parseInt(loginServerIp.substring(pos + 1));
+                ip = ip.substring(0, pos);
+                port = Integer.parseInt(ip.substring(pos + 1));
             }
         }
 
-        String url = "http://" + loginServerIp;
-
-        if (port != 80) {
-            url += ":" + port;
-        }
-
-        url += "cobarStatusQuery?sid=" + schemaName;
+        //String url = "http://" + ip + ":" + port + "/cobarStatusQuery?sid=" + sid;
+        String url = "http://" + ip + ":" + port + "/cobarStatusQuery?sid=" + sid;
 
         try {
             return new URL(url);

@@ -59,7 +59,7 @@ public class DefaultDataSourceFailureDetecter implements DataSourceFailureDetect
 
         try {
             stmt = conn.createStatement();
-            stmt.execute(validateSql);
+            stmt.execute(getValidateSql());
         } catch (Exception ex) {
             LOG.error("check datasource valid errror", ex);
         } finally {
