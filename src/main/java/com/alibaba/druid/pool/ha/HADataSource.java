@@ -50,7 +50,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     }
 
     public void setMaster(DataSourceHolder master) {
-        this.getDataSources().put("master", master);
+        this.addDataSource("master", master);
         this.master = master;
     }
 
@@ -63,7 +63,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     }
 
     public void setSlave(DataSourceHolder slave) {
-        this.getDataSources().put("slave", slave);
+        this.addDataSource("slave", slave);
         this.slave = slave;
     }
 

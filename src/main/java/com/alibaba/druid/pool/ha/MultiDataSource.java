@@ -258,7 +258,7 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
     public void addDataSource(String name, DataSourceHolder dataSourceHolder) {
         dataSources.put(name, dataSourceHolder);
 
-        this.totalWeight += dataSourceHolder.getWeight();
+        this.computeTotalWeight();
     }
 
     public Properties getProperties() {
