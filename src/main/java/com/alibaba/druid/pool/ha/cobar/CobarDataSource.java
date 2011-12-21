@@ -14,7 +14,12 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class CobarDataSource extends MultiDataSource {
 
-    private final static Log LOG          = LogFactory.getLog(CobarDataSource.class);
+    private final static Log LOG                                   = LogFactory.getLog(CobarDataSource.class);
+
+    public static long       DEFAULT_FAILURE_DETECT_PERRIOD_MILLIS = 1000 * 3;                                // 3
+                                                                                                               // seconds
+    public static long       DEFAULT_CONFIG_LOAD_PERRIOD_MILLIS    = 1000 * 60 * 3;                           // 3
+                                                                                                               // minutes
 
     private String           url;
 
@@ -22,11 +27,27 @@ public class CobarDataSource extends MultiDataSource {
 
     private String           password;
 
-    private List<Filter>     proxyFilters = new ArrayList<Filter>();
+    private List<Filter>     proxyFilters                          = new ArrayList<Filter>();
     private String           filters;
+
+    private int              maxPoolSize;
 
     public CobarDataSource(){
         this.setFailureDetector(new CobarFailureDetecter());
+        this.setFailureDetectPeriodMillis(DEFAULT_FAILURE_DETECT_PERRIOD_MILLIS);
+        this.setConfigLoadPeriodMillis(DEFAULT_CONFIG_LOAD_PERRIOD_MILLIS);
+    }
+
+    public int getMaxPoolSize() {
+        return maxPoolSize;
+    }
+
+    public void setMaxPoolSize(int maxPoolSize) throws SQLException {
+        if (this.isIntited()) {
+            throw new SQLException("dataSource inited");
+        }
+
+        this.maxPoolSize = maxPoolSize;
     }
 
     public String getUrl() {
@@ -84,7 +105,7 @@ public class CobarDataSource extends MultiDataSource {
                     break;
                 } catch (Exception ex) {
                     LOG.error("load config error", ex);
-                    
+
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

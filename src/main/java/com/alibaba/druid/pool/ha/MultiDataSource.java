@@ -232,12 +232,12 @@ public abstract class MultiDataSource extends DataSourceAdapter implements Multi
         return scheduler;
     }
 
-    public long getValidDataSourceCheckPeriodMillis() {
-        return failureDetectPeriodMillis;
+    public void setFailureDetectPeriodMillis(long failureDetectPeriodMillis) {
+        this.failureDetectPeriodMillis = failureDetectPeriodMillis;
     }
 
-    public void setValidDataSourceCheckPeriodMillis(long validDataSourceCheckPeriodMillis) {
-        this.failureDetectPeriodMillis = validDataSourceCheckPeriodMillis;
+    public void setConfigLoadPeriodMillis(long configLoadPeriodMillis) {
+        this.configLoadPeriodMillis = configLoadPeriodMillis;
     }
 
     public DataSourceFailureDetecter getFailureDetector() {
