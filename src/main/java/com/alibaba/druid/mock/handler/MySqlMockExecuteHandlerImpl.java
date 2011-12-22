@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
@@ -47,6 +48,10 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         }
 
         SQLStatement stmt = stmtList.get(0);
+
+        if (stmt instanceof CobarShowStatus) {
+            return showStatus(statement);
+        }
 
         if (!(stmt instanceof SQLSelectStatement)) {
             throw new SQLException("executeQueryError : " + sql);
@@ -80,7 +85,21 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         } else {
             throw new SQLException("TODO");
         }
+    }
 
+    public ResultSet showStatus(MockStatement statement) throws SQLException {
+        MockResultSet rs = new MockResultSet(statement);
+        MockResultSetMetaData metaData = rs.getMockMetaData();
+
+        Object[] row = new Object[] { "on" };
+
+        ColumnMetaData column = new ColumnMetaData();
+        column.setColumnType(Types.NVARCHAR);
+        metaData.getColumns().add(column);
+
+        rs.getRows().add(row);
+
+        return rs;
     }
 
     public ResultSet executeQueryFromDual(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {

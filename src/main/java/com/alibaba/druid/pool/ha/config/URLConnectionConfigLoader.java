@@ -11,9 +11,11 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public abstract class URLConnectionConfigLoader implements ConfigLoader {
 
-    private URL url;
-    private int connectTimeout = 1000 * 3;
-    private int readTimeout;
+    private URL    url;
+    private int    connectTimeout = 1000 * 3;
+    private int    readTimeout;
+
+    protected String responseMessage;
 
     public URLConnectionConfigLoader(URL configServerURL){
         this.url = configServerURL;
@@ -47,13 +49,15 @@ public abstract class URLConnectionConfigLoader implements ConfigLoader {
         this.readTimeout = readTimeout;
     }
 
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
     @Override
     public void load() throws SQLException {
         if (url == null) {
             throw new IllegalStateException("configServerURL is null");
         }
-
-        String responseMessage;
 
         {
             HttpURLConnection conn = null;
@@ -68,17 +72,17 @@ public abstract class URLConnectionConfigLoader implements ConfigLoader {
 
                 reader = new InputStreamReader(conn.getInputStream());
                 responseMessage = JdbcUtils.read(reader);
-                
-                handleResponseMessage(responseMessage);
+
+                handleResponseMessage();
             } catch (Exception e) {
-                throw new SQLException("load config error, url : " + url.toString());
+                throw new SQLException("load config error, url : " + url.toString(), e);
             } finally {
                 JdbcUtils.close(reader);
                 conn.disconnect();
             }
         }
     }
-    
-    protected abstract void handleResponseMessage(String response) throws SQLException;
+
+    protected abstract void handleResponseMessage() throws SQLException;
 
 }

@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
@@ -297,6 +298,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySq
     @Override
     public boolean visit(MySqlShowStatusStatement x) {
 
+        return true;
+    }
+
+    @Override
+    public void endVisit(CobarShowStatus x) {
+        
+    }
+
+    @Override
+    public boolean visit(CobarShowStatus x) {
         return true;
     }
 

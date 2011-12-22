@@ -735,7 +735,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         continue;
                     }
 
-                    throw new GetConnectionTimeoutException();
+                    if (createError != null) {
+                        throw new GetConnectionTimeoutException(createError);
+                    } else {
+                        throw new GetConnectionTimeoutException();
+                    }
                 }
             }
 

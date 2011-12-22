@@ -501,6 +501,9 @@ public final class JdbcUtils {
     }
 
     public static String toString(java.util.Date date) {
+        if (date == null) {
+            return null;
+        }
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(date);
     }

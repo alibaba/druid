@@ -35,6 +35,7 @@ public class CobarDataSource extends MultiDataSource {
     private List<Filter>     proxyFilters                          = new ArrayList<Filter>();
     private String           filters;
 
+
     public CobarDataSource(){
         this.setFailureDetector(new CobarFailureDetecter());
         this.setFailureDetectPeriodMillis(DEFAULT_FAILURE_DETECT_PERRIOD_MILLIS);
@@ -103,8 +104,10 @@ public class CobarDataSource extends MultiDataSource {
         }
 
         if (CobarConfigLoader.isCobar(url)) {
-            this.setConfigLoader(new CobarConfigLoader(this));
-
+            if (this.getConfigLoader() == null) {
+                this.setConfigLoader(new CobarConfigLoader(this));
+            }
+            
             final int RETRY_COUNT = 3;
             for (int i = 0; i < RETRY_COUNT; ++i) {
                 try {

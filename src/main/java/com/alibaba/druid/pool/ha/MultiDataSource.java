@@ -61,6 +61,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     private boolean                                 inited                    = false;
     protected final Lock                            lock                      = new ReentrantLock();
     protected final Condition                       notFull                   = lock.newCondition();
+    protected final Condition                       notFail                   = lock.newCondition();
 
     private ConcurrentMap<String, DataSourceHolder> dataSources               = new ConcurrentHashMap<String, DataSourceHolder>();
 
@@ -81,6 +82,23 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     private int                                     maxPoolSize               = 50;
 
     private long                                    activeCount               = 0;
+    private long                                    maxWaitMillis             = 0;
+
+    public long getMaxWaitMillis() {
+        return maxWaitMillis;
+    }
+
+    public void setMaxWaitMillis(long maxWaitMillis) {
+        this.maxWaitMillis = maxWaitMillis;
+    }
+
+    public void setMaxWait(long seconds) {
+        this.setMaxWaitMillis(1000 * seconds);
+    }
+
+    public long getMaxWait() {
+        return this.getMaxWaitMillis() / 1000;
+    }
 
     public int getMaxPoolSize() {
         return maxPoolSize;
@@ -162,6 +180,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
             startFailureDetectScheduleTask();
+            startConfigLoadScheduleTask();
             inited = true;
 
             MultiDataSourceStatManager.add(this);
@@ -171,7 +190,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     }
 
     public boolean startConfigLoadScheduleTask() {
-        if (configLoadFuture != null) {
+        if (configLoadFuture == null) {
             configLoadFuture = scheduler.scheduleAtFixedRate(new ConfigLoadTask(), configLoadPeriodMillis,
                                                              configLoadPeriodMillis, TimeUnit.MILLISECONDS);
             return true;
@@ -309,6 +328,13 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             holder.setWeightRegionEnd(totalWeight);
         }
         this.totalWeight = totalWeight;
+
+        lock.lock();
+        try {
+            notFail.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public Connection getConnection() throws SQLException {
@@ -341,13 +367,21 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             lock.unlock();
         }
     }
-    
+
     public int produceRandomNumber() {
+        if (totalWeight == 0) {
+            return 0;
+        }
+
         return random.nextInt(totalWeight);
     }
 
-    public MultiConnectionHolder getConnectionInternal(MultiDataSourceConnection multiConn, String sql)
-                                                                                                       throws SQLException {
+    public MultiConnectionHolder getRealConnection(MultiDataSourceConnection multiConn, String sql) throws SQLException {
+
+        long startNano = -1;
+        if (maxWaitMillis > 0) {
+            startNano = System.nanoTime();
+        }
 
         DataSourceHolder dataSource = null;
 
@@ -385,10 +419,50 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             if (dataSource == null) {
                 dataSource = first;
             }
+
+            if (dataSource == null && i != MAX_RETRY - 1) {
+                lock.lock();
+                try {
+                    if (getEnabledDataSourceCount() == 0) {
+                        try {
+                            if (maxWaitMillis > 0) {
+                                long nano = System.nanoTime() - startNano;
+                                long restNano = maxWaitMillis * 1000 * 1000 - nano;
+                                if (restNano > 0) {
+                                    notFail.awaitNanos(restNano);
+                                } else {
+                                    break;
+                                }
+                            } else {
+                                notFail.await();
+                            }
+                            continue;
+                        } catch (InterruptedException e) {
+                            throw new SQLException("interrupted", e);
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
             break;
         }
 
+        if (dataSource == null) {
+            throw new SQLException("cannot get connection. enabledDataSourceCount " + getEnabledDataSourceCount());
+        }
+
         return dataSource.getConnection();
+    }
+
+    public int getEnabledDataSourceCount() {
+        int count = 0;
+        for (DataSourceHolder item : this.dataSources.values()) {
+            if (item.isEnable()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void handleNotAwailableDatasource(DataSourceHolder dataSourceHolder) {

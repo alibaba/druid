@@ -197,6 +197,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private ObjectName                                                                       objectName;
 
+    protected Exception                                                                      createError                               = null;
+
+    public Exception getCreateError() {
+        return createError;
+    }
+
     public boolean isDupCloseLogEnable() {
         return dupCloseLogEnable;
     }
@@ -1137,11 +1143,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
 
                 dataSource.validateConnection(conn);
+                dataSource.createError = null;
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
+                dataSource.createError = ex;
                 throw ex;
             } catch (RuntimeException ex) {
                 dataSource.createErrorCount++;
+                dataSource.createError = ex;
                 throw ex;
             } catch (Error ex) {
                 dataSource.createErrorCount++;

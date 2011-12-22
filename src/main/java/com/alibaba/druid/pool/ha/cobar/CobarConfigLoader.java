@@ -48,8 +48,8 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
         {
             int pos = ip.indexOf(':');
             if (pos != -1) {
-                ip = ip.substring(0, pos);
                 port = Integer.parseInt(ip.substring(pos + 1));
+                ip = ip.substring(0, pos);
             }
         }
 
@@ -64,8 +64,10 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
     }
 
     @Override
-    protected void handleResponseMessage(String response) throws SQLException {
-        JSONObject json = JSON.parseObject(response);
+    protected void handleResponseMessage() throws SQLException {
+        String responseMessage = this.getResponseMessage();
+        
+        JSONObject json = JSON.parseObject(responseMessage);
         String errorMessage = json.getString("error");
         if (errorMessage != null) {
             throw new SQLException("load config error, message : " + errorMessage);
@@ -88,7 +90,7 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
             DataSourceHolder holder = dataSource.getDataSourceHolder(key);
 
             if (holder == null) {
-                String jdbcUrl = "jdbc:mysql://" + ip + ":" + port + "/" + schema;
+                String jdbcUrl = createJdbcUrl(ip, port, schema);
                 holder = dataSource.createDataSourceHolder(jdbcUrl, weight);
                 dataSource.addDataSource(key, holder);
             } else {
@@ -112,6 +114,10 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
         if (removeCount != 0) {
             dataSource.computeTotalWeight();
         }
+    }
+
+    protected String createJdbcUrl(String ip, int port, String schema) {
+        return "jdbc:mysql://" + ip + ":" + port + "/" + schema;
     }
 
 }

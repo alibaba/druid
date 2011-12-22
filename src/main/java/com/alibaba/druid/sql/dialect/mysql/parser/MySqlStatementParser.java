@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -291,6 +292,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setSession(true);
                 return stmt;
             }
+        }
+        
+        if (identifierEquals("COBAR_STATUS")) {
+            lexer.nextToken();
+            return new CobarShowStatus();
         }
 
         throw new ParserException("TODO");
