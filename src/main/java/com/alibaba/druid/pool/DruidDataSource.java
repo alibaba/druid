@@ -94,6 +94,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private int                     poolingCount            = 0;
     private int                     activeCount             = 0;
     private int                     notEmptyWaitThreadCount = 0;
+    private int                     notEmptyWaitThreadPeak  = 0;
 
     // threads
     private CreateConnectionThread  createConnectionThread;
@@ -673,6 +674,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
                 notEmptyWaitThreadCount++;
+                if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
+                    notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
+                }
                 try {
                     notEmpty.await(); // signal by recycle or creator
                 } finally {
@@ -710,6 +714,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
 
                 notEmptyWaitThreadCount++;
+                if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
+                    notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
+                }
+                
                 try {
                     long startEstimate = estimate;
                     estimate = notEmpty.awaitNanos(estimate); // signal by
@@ -810,7 +818,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public boolean isBusy() {
         lock.lock();
         try {
@@ -1141,6 +1149,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public int getNotEmptyWaitThreadCount() {
         return notEmptyWaitThreadCount;
+    }
+    
+    public int getNotEmptyWaitThreadPeak() {
+        lock.lock();
+        try {
+            return notEmptyWaitThreadPeak;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getNotEmptySignalCount() {

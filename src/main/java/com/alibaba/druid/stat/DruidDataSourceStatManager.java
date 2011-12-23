@@ -166,10 +166,10 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("ConnectCount", dataSource.getConnectCount());
 
         map.put("CloseCount", dataSource.getCloseCount());
-        map.put("ActiveCount", dataSource.getActiveCount());
+        map.put("ActiveCount", dataSource.getActivePeak());
         map.put("PoolingCount", dataSource.getPoolingCount());
         map.put("LockQueueLength", dataSource.getLockQueueLength());
-        map.put("WaitThreadCount", dataSource.getWaitThreadCount());
+        map.put("WaitThreadCount", dataSource.getNotEmptyWaitThreadPeak());
 
         map.put("InitialSize", dataSource.getInitialSize());
         map.put("MaxActive", dataSource.getMaxActive());
