@@ -22,6 +22,16 @@ public class DataSourceHolder implements Closeable {
 
     private transient int         weightRegionEnd;
 
+    private boolean               writable          = true;
+
+    public boolean isWritable() {
+        return writable;
+    }
+
+    public void setWritable(boolean writable) {
+        this.writable = writable;
+    }
+
     public int getWeightRegionBegin() {
         return weightRegionBegin;
     }
@@ -93,7 +103,7 @@ public class DataSourceHolder implements Closeable {
         connectCount.incrementAndGet();
         try {
             Connection conn = dataSource.getConnection();
-            
+
             return new MultiConnectionHolder(this, conn);
         } catch (SQLException ex) {
             connectErrorCount.incrementAndGet();

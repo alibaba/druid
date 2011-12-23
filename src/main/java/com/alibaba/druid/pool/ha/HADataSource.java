@@ -24,6 +24,14 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         master.resetState();
         slave.resetState();
     }
+    
+    public boolean isMasterWritable() {
+        return master != null && master.isWritable();
+    }
+    
+    public boolean isSlaveWritable() {
+        return slave != null && slave.isWritable();
+    }
 
     public long getMasterConnectCount() {
         return master.getConnectCount();
@@ -45,8 +53,10 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         this.restartDataSource("slave");
     }
 
-    public void setMaster(DruidDataSource master) {
-        this.setMaster(new DataSourceHolder(master));
+    public DataSourceHolder setMaster(DruidDataSource master) {
+        DataSourceHolder holder = new DataSourceHolder(master);
+        this.setMaster(holder);
+        return holder;
     }
 
     public void setMaster(DataSourceHolder master) {
@@ -58,8 +68,10 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         return slave;
     }
 
-    public void setSlave(DruidDataSource slave) {
-        this.setSlave(new DataSourceHolder(slave));
+    public DataSourceHolder setSlave(DruidDataSource slave) {
+        DataSourceHolder holder = new DataSourceHolder(slave);
+        this.setSlave(holder);
+        return holder;
     }
 
     public void setSlave(DataSourceHolder slave) {
