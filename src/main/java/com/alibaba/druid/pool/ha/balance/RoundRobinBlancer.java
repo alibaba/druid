@@ -1,8 +1,6 @@
 package com.alibaba.druid.pool.ha.balance;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.logging.Log;
@@ -23,7 +21,8 @@ public class RoundRobinBlancer implements Balancer {
     }
 
     @Override
-    public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql) throws SQLException {
+    public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
+                                                                                                     throws SQLException {
         MultiDataSource multiDataSource = connectionProxy.getHaDataSource();
 
         int tryCount = 0;
@@ -38,12 +37,30 @@ public class RoundRobinBlancer implements Balancer {
 
             int index = (int) (connectionId % size);
 
+            DataSourceHolder first = null;
             DataSourceHolder dataSource = null;
 
             try {
-                // 处理并发时的错误
-                List<DataSourceHolder> dataSources = new ArrayList<DataSourceHolder>(multiDataSource.getDataSources().values());
-                dataSource = dataSources.get(index);
+                int itemIndex = 0;
+                for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
+                    if (!item.isEnable()) {
+                        continue;
+                    }
+                    
+                    if (first == null) {
+                        first = item;
+                    }
+                    
+                    if (itemIndex == index) {
+                        dataSource = item;
+                        break;
+                    }
+                    itemIndex++;
+                }
+                
+                if (dataSource == null) {
+                    dataSource = first;
+                }
             } catch (Exception ex) {
                 indexErrorCount.incrementAndGet();
                 if (LOG.isDebugEnabled()) {
@@ -52,11 +69,8 @@ public class RoundRobinBlancer implements Balancer {
                 continue;
             }
 
-            assert dataSource != null;
-
-            if (!dataSource.isEnable()) {
-                multiDataSource.handleNotAwailableDatasource(dataSource);
-                continue;
+            if (dataSource == null) {
+                throw new SQLException("can not get real connection.");
             }
 
             MultiConnectionHolder conn = null;
