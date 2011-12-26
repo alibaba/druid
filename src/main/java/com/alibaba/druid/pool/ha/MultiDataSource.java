@@ -232,7 +232,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
 
     }
 
-    protected void close() {
+    public void close() {
         scheduler.shutdownNow();
 
         Object[] items = this.getDataSources().values().toArray();
@@ -320,6 +320,10 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     }
 
     public void afterDataSourceChanged(Object event) {
+        if (!this.balancer.isInited()) {
+            this.balancer.init(this);
+        }
+        
         this.balancer.afterDataSourceChanged(null);
     }
 

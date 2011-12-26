@@ -11,15 +11,10 @@ import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 import com.alibaba.druid.util.ThreadLocalRandom;
 
-public class WeightBalancer implements Balancer {
+public class WeightBalancer extends AbstractBalancer {
 
-    private MultiDataSource multiDataSource;
     private int             totalWeight = 0;
 
-    @Override
-    public void init(MultiDataSource multiDataSource) {
-        this.multiDataSource = multiDataSource;
-    }
 
     public void afterDataSourceChanged(DataSourceChangedEvent event) {
         computeTotalWeight();
@@ -35,7 +30,7 @@ public class WeightBalancer implements Balancer {
     
     public void computeTotalWeight() {
         int totalWeight = 0;
-        for (DataSourceHolder holder : multiDataSource.getDataSources().values()) {
+        for (DataSourceHolder holder : getMultiDataSource().getDataSources().values()) {
             if (!holder.isEnable()) {
                 holder.setWeightRegionBegin(-1);
                 holder.setWeightRegionEnd(-1);
@@ -47,7 +42,7 @@ public class WeightBalancer implements Balancer {
         }
         this.totalWeight = totalWeight;
 
-        multiDataSource.notFailSignal();
+        getMultiDataSource().notFailSignal();
     }
 
     @Override

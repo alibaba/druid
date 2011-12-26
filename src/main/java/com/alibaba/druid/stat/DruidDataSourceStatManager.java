@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
+import com.alibaba.druid.util.JMXUtils;
 
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
@@ -197,6 +198,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         map.put("CommitCount", dataSource.getCommitCount());
         map.put("RollbackCount", dataSource.getRollbackCount());
+        map.put("LastError", JMXUtils.getErrorCompositeData(dataSource.getLastError()));
+        map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getCreateError()));
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -217,7 +220,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.BOOLEAN, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, //
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
-                , SimpleType.LONG, SimpleType.LONG
+                , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType()
         //
         };
 
@@ -235,7 +238,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "RemoveAbandonedCount", //
                 "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
                 "StartTransactionCount", //
-                "CommitCount", "RollbackCount"
+                "CommitCount", "RollbackCount", "LastError", "LastCreateError"
         //
         };
 

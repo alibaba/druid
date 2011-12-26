@@ -108,6 +108,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                  initStackTrace;
 
+    private Throwable               lastError;
+    private Throwable               lastCreateError;
+
     public DruidDataSource(){
     }
 
@@ -121,6 +124,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public void setResetStatEnable(boolean resetStatEnable) {
         this.resetStatEnable = resetStatEnable;
+    }
+
+    public Throwable getLastCreateError() {
+        return lastCreateError;
+    }
+
+    public Throwable getLastError() {
+        return this.lastError;
     }
 
     public void restart() {
@@ -501,6 +512,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         errorCount.incrementAndGet();
+        lastError = t;
 
         if (t instanceof SQLException) {
             SQLException sqlEx = (SQLException) t;
@@ -717,7 +729,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (notEmptyWaitThreadCount > notEmptyWaitThreadPeak) {
                     notEmptyWaitThreadPeak = notEmptyWaitThreadCount;
                 }
-                
+
                 try {
                     long startEstimate = estimate;
                     estimate = notEmpty.awaitNanos(estimate); // signal by
@@ -864,10 +876,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
 
                 } catch (InterruptedException e) {
+                    lastCreateError = e;
                     break;
                 } catch (RuntimeException e) {
+                    lastCreateError = e;
                     LOG.error("create connection error", e);
                 } catch (Error e) {
+                    lastCreateError = e;
                     LOG.error("create connection error", e);
                     break;
                 } finally {
@@ -1150,7 +1165,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int getNotEmptyWaitThreadCount() {
         return notEmptyWaitThreadCount;
     }
-    
+
     public int getNotEmptyWaitThreadPeak() {
         lock.lock();
         try {

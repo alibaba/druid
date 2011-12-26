@@ -186,6 +186,8 @@ public class CobarDataSourceTest extends TestCase {
             stmt.close();
             conn.close();
         }
+        
+        dataSource.close();
     }
 
 }

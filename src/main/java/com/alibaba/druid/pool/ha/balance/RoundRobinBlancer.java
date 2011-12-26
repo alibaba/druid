@@ -11,29 +11,18 @@ import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
-public class RoundRobinBlancer implements Balancer {
+public class RoundRobinBlancer extends AbstractBalancer {
 
     private final static Log    LOG             = LogFactory.getLog(RoundRobinBlancer.class);
 
     private final AtomicInteger indexErrorCount = new AtomicInteger();
 
-    private MultiDataSource     multiDataSource;
-
     public RoundRobinBlancer(){
 
     }
-    
+
     public void afterDataSourceChanged(DataSourceChangedEvent event) {
-        
-    }
 
-    @Override
-    public void init(MultiDataSource multiDataSource) {
-        this.multiDataSource = multiDataSource;
-    }
-
-    public MultiDataSource getMultiDataSource() {
-        return multiDataSource;
     }
 
     @Override

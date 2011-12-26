@@ -6,9 +6,25 @@ public abstract class AbstractBalancer implements Balancer {
 
     private MultiDataSource multiDataSource;
 
+    private boolean         inited = false;
+
     @Override
-    public void init(MultiDataSource multiDataSource) {
+    public synchronized void init(MultiDataSource multiDataSource) {
+        if (this.inited) {
+            return;
+        }
+        
+        if (multiDataSource == null) {
+            throw new IllegalStateException();
+        }
+
         this.multiDataSource = multiDataSource;
+
+        inited = true;
+    }
+    
+    public boolean isInited() {
+        return inited;
     }
 
     public MultiDataSource getMultiDataSource() {

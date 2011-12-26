@@ -9,6 +9,8 @@ import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
 
 public interface Balancer {
 
+    boolean isInited();
+
     void init(MultiDataSource dataSource);
 
     void afterDataSourceChanged(DataSourceChangedEvent event);
