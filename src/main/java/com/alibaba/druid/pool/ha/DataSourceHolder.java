@@ -9,6 +9,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 
 public class DataSourceHolder implements Closeable {
 
+    private final MultiDataSource multiDataSource;
     private final DruidDataSource dataSource;
     private boolean               enable            = true;
     private final AtomicLong      connectCount      = new AtomicLong();
@@ -48,10 +49,11 @@ public class DataSourceHolder implements Closeable {
         this.weightRegionEnd = weightReginEnd;
     }
 
-    public DataSourceHolder(DruidDataSource dataSource){
+    public DataSourceHolder(MultiDataSource multiDataSource, DruidDataSource dataSource){
         if (dataSource == null) {
             throw new IllegalArgumentException("dataSource is null");
         }
+        this.multiDataSource = multiDataSource;
         this.dataSource = dataSource;
     }
 
@@ -72,7 +74,11 @@ public class DataSourceHolder implements Closeable {
     }
 
     public void setEnable(boolean enable) {
-        this.enable = enable;
+        if (this.enable != enable) {
+            this.enable = enable;
+
+            multiDataSource.afterDataSourceChanged(null);
+        }
     }
 
     public boolean isFail() {
@@ -80,7 +86,10 @@ public class DataSourceHolder implements Closeable {
     }
 
     public void setFail(boolean fail) {
-        this.fail = fail;
+        if (this.fail != fail) {
+            this.fail = fail;
+            multiDataSource.afterDataSourceChanged(null);
+        }
     }
 
     public DruidDataSource getDataSource() {

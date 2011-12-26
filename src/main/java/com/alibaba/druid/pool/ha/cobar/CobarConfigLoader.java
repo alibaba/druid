@@ -96,7 +96,7 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
             } else {
                 if (holder.getWeight() != weight) {
                     holder.setWeight(weight);
-                    dataSource.computeTotalWeight();
+                    dataSource.afterDataSourceChanged(null);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
             }
         }
         if (removeCount != 0) {
-            dataSource.computeTotalWeight();
+            dataSource.afterDataSourceChanged(null);
         }
     }
 

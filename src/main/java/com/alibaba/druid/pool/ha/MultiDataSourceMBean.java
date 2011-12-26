@@ -24,8 +24,6 @@ public interface MultiDataSourceMBean {
     
     long getBusySkipCount();
     
-    int getTotalWeight();
-    
     long getFailureDetectPeriodMillis();
     
     long getConfigLoadPeriodMillis();
@@ -33,6 +31,4 @@ public interface MultiDataSourceMBean {
     long getActiveCount();
     
     int getMaxPoolSize();
-    
-    int produceRandomNumber();
 }

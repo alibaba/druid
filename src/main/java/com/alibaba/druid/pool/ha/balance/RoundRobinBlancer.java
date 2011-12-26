@@ -16,8 +16,23 @@ public class RoundRobinBlancer implements Balancer {
 
     private final AtomicInteger indexErrorCount = new AtomicInteger();
 
+    private MultiDataSource     multiDataSource;
+
     public RoundRobinBlancer(){
 
+    }
+    
+    public void afterDataSourceChanged(Object event) {
+        
+    }
+
+    @Override
+    public void init(MultiDataSource multiDataSource) {
+        this.multiDataSource = multiDataSource;
+    }
+
+    public MultiDataSource getMultiDataSource() {
+        return multiDataSource;
     }
 
     @Override
@@ -46,18 +61,18 @@ public class RoundRobinBlancer implements Balancer {
                     if (!item.isEnable()) {
                         continue;
                     }
-                    
+
                     if (first == null) {
                         first = item;
                     }
-                    
+
                     if (itemIndex == index) {
                         dataSource = item;
                         break;
                     }
                     itemIndex++;
                 }
-                
+
                 if (dataSource == null) {
                     dataSource = first;
                 }

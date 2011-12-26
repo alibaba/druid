@@ -31,7 +31,6 @@ import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.ThreadLocalRandom;
 
 public class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
 
@@ -74,8 +73,6 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     private boolean                                 enable;
 
     private String                                  name;
-
-    private int                                     totalWeight               = 0;
 
     private ConfigLoader                            configLoader;
 
@@ -120,10 +117,6 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
 
     public void setConfigLoader(ConfigLoader configLoader) {
         this.configLoader = configLoader;
-    }
-
-    public int getTotalWeight() {
-        return totalWeight;
     }
 
     public String getName() {
@@ -176,6 +169,8 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
                 return;
             }
 
+            this.balancer.init(this);
+            
             initInternal();
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
@@ -259,7 +254,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             }
         }
         if (changeCount != 0) {
-            computeTotalWeight();
+            afterDataSourceChanged(null);
         }
 
         failureDetectCount.incrementAndGet();
@@ -304,7 +299,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     public void addDataSource(String name, DataSourceHolder dataSourceHolder) {
         dataSources.put(name, dataSourceHolder);
 
-        this.computeTotalWeight();
+        afterDataSourceChanged(null);
     }
 
     public Properties getProperties() {
@@ -315,26 +310,17 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
         return activeCount;
     }
 
-    public void computeTotalWeight() {
-        int totalWeight = 0;
-        for (DataSourceHolder holder : this.dataSources.values()) {
-            if (!holder.isEnable()) {
-                holder.setWeightRegionBegin(-1);
-                holder.setWeightRegionEnd(-1);
-                continue;
-            }
-            holder.setWeightRegionBegin(totalWeight);
-            totalWeight += holder.getWeight();
-            holder.setWeightRegionEnd(totalWeight);
-        }
-        this.totalWeight = totalWeight;
-
+    public void notFailSignal() {
         lock.lock();
         try {
             notFail.signalAll();
         } finally {
             lock.unlock();
         }
+    }
+
+    public void afterDataSourceChanged(Object event) {
+        this.balancer.afterDataSourceChanged(null);
     }
 
     public Connection getConnection() throws SQLException {
@@ -366,14 +352,6 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
         } finally {
             lock.unlock();
         }
-    }
-
-    public int produceRandomNumber() {
-        if (totalWeight == 0) {
-            return 0;
-        }
-
-        return ThreadLocalRandom.current().nextInt(totalWeight);
     }
 
     public MultiConnectionHolder getRealConnection(MultiDataSourceConnection multiConn, String sql) throws SQLException {

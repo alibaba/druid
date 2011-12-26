@@ -8,8 +8,46 @@ import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
+import com.alibaba.druid.util.ThreadLocalRandom;
 
 public class WeightBalancer implements Balancer {
+
+    private MultiDataSource multiDataSource;
+    private int             totalWeight = 0;
+
+    @Override
+    public void init(MultiDataSource multiDataSource) {
+        this.multiDataSource = multiDataSource;
+    }
+
+    public void afterDataSourceChanged(Object event) {
+        computeTotalWeight();
+    }
+
+    public int produceRandomNumber() {
+        if (totalWeight == 0) {
+            return 0;
+        }
+
+        return ThreadLocalRandom.current().nextInt(totalWeight);
+    }
+    
+    public void computeTotalWeight() {
+        int totalWeight = 0;
+        for (DataSourceHolder holder : multiDataSource.getDataSources().values()) {
+            if (!holder.isEnable()) {
+                holder.setWeightRegionBegin(-1);
+                holder.setWeightRegionEnd(-1);
+                continue;
+            }
+            holder.setWeightRegionBegin(totalWeight);
+            totalWeight += holder.getWeight();
+            holder.setWeightRegionEnd(totalWeight);
+        }
+        this.totalWeight = totalWeight;
+
+        multiDataSource.notFailSignal();
+    }
 
     @Override
     public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
@@ -27,7 +65,7 @@ public class WeightBalancer implements Balancer {
 
         final int MAX_RETRY = 10;
         for (int i = 0; i < MAX_RETRY; ++i) {
-            int randomNumber = multiDataSource.produceRandomNumber();
+            int randomNumber = produceRandomNumber();
             DataSourceHolder first = null;
 
             boolean needRetry = false;

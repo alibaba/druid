@@ -24,11 +24,11 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         master.resetState();
         slave.resetState();
     }
-    
+
     public boolean isMasterWritable() {
         return master != null && master.isWritable();
     }
-    
+
     public boolean isSlaveWritable() {
         return slave != null && slave.isWritable();
     }
@@ -44,17 +44,17 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     public DataSourceHolder getMaster() {
         return master;
     }
-    
+
     public void restartMaster() {
         this.restartDataSource("master");
     }
-    
+
     public void restartSlave() {
         this.restartDataSource("slave");
     }
 
     public DataSourceHolder setMaster(DruidDataSource master) {
-        DataSourceHolder holder = new DataSourceHolder(master);
+        DataSourceHolder holder = new DataSourceHolder(this, master);
         this.setMaster(holder);
         return holder;
     }
@@ -69,7 +69,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
     }
 
     public DataSourceHolder setSlave(DruidDataSource slave) {
-        DataSourceHolder holder = new DataSourceHolder(slave);
+        DataSourceHolder holder = new DataSourceHolder(this, slave);
         this.setSlave(holder);
         return holder;
     }
@@ -86,20 +86,20 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return master.isEnable();
     }
-    
+
     public boolean isMasterFail() {
         if (master == null) {
             return false;
         }
-        
+
         return master.isFail();
     }
-    
+
     public boolean isSlaveFail() {
         if (slave == null) {
             return false;
         }
-        
+
         return slave.isFail();
     }
 
@@ -109,8 +109,7 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         }
 
         master.setEnable(value);
-        
-        this.computeTotalWeight();
+
     }
 
     public String getMasterUrl() {
@@ -128,27 +127,27 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
 
         return slave.getUrl();
     }
-    
+
     public int getMasterWeight() {
         return master.getWeight();
     }
-    
+
     public int getSlaveWeight() {
         return slave.getWeight();
     }
-    
+
     public int getMasterWeightRegionBegin() {
         return master.getWeightRegionBegin();
     }
-    
+
     public int getMasterWeightRegionEnd() {
         return master.getWeightRegionEnd();
     }
-    
+
     public int getSlaveWeightRegionBegin() {
         return slave.getWeightRegionBegin();
     }
-    
+
     public int getSlaveWeightRegionEnd() {
         return slave.getWeightRegionEnd();
     }
@@ -167,8 +166,6 @@ public class HADataSource extends MultiDataSource implements HADataSourceMBean, 
         }
 
         slave.setEnable(value);
-        
-        this.computeTotalWeight();
     }
 
     public void switchMasterSlave() {

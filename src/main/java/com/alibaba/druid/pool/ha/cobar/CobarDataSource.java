@@ -143,7 +143,7 @@ public class CobarDataSource extends MultiDataSource {
         }
         dataSource.setProxyFilters(proxyFilters);
 
-        DataSourceHolder holder = new DataSourceHolder(dataSource);
+        DataSourceHolder holder = new DataSourceHolder(this, dataSource);
         holder.setWeight(weight);
         return holder;
     }
