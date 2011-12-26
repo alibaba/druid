@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.pool.ha.DataSourceChangedEvent;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
@@ -22,7 +23,7 @@ public class RoundRobinBlancer implements Balancer {
 
     }
     
-    public void afterDataSourceChanged(Object event) {
+    public void afterDataSourceChanged(DataSourceChangedEvent event) {
         
     }
 

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
+import com.alibaba.druid.pool.ha.DataSourceChangedEvent;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
@@ -20,7 +21,7 @@ public class WeightBalancer implements Balancer {
         this.multiDataSource = multiDataSource;
     }
 
-    public void afterDataSourceChanged(Object event) {
+    public void afterDataSourceChanged(DataSourceChangedEvent event) {
         computeTotalWeight();
     }
 
