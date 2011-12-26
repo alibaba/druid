@@ -15,9 +15,9 @@ public class WeightBalancer implements Balancer {
     public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
                                                                                                      throws SQLException {
         MultiDataSource multiDataSource = connectionProxy.getMultiDataSource();
-        
+
         long maxWaitMillis = multiDataSource.getMaxWaitMillis();
-        
+
         long startNano = -1;
         if (maxWaitMillis > 0) {
             startNano = System.nanoTime();
@@ -91,7 +91,8 @@ public class WeightBalancer implements Balancer {
         }
 
         if (dataSource == null) {
-            throw new SQLException("cannot get connection. enabledDataSourceCount " + multiDataSource.getEnabledDataSourceCount());
+            throw new SQLException("cannot get connection. enabledDataSourceCount "
+                                   + multiDataSource.getEnabledDataSourceCount());
         }
 
         return dataSource.getConnection();

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -32,6 +31,7 @@ import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.ThreadLocalRandom;
 
 public class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
 
@@ -78,8 +78,6 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     private int                                     totalWeight               = 0;
 
     private ConfigLoader                            configLoader;
-
-    private Random                                  random;
 
     private int                                     maxPoolSize               = 50;
 
@@ -177,8 +175,6 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             if (inited) {
                 return;
             }
-
-            random = new Random();
 
             initInternal();
 
@@ -377,7 +373,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             return 0;
         }
 
-        return random.nextInt(totalWeight);
+        return ThreadLocalRandom.current().nextInt(totalWeight);
     }
 
     public MultiConnectionHolder getRealConnection(MultiDataSourceConnection multiConn, String sql) throws SQLException {
