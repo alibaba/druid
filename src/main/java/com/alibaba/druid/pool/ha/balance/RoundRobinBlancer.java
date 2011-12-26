@@ -23,7 +23,7 @@ public class RoundRobinBlancer implements Balancer {
     @Override
     public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
                                                                                                      throws SQLException {
-        MultiDataSource multiDataSource = connectionProxy.getHaDataSource();
+        MultiDataSource multiDataSource = connectionProxy.getMultiDataSource();
 
         int tryCount = 0;
 

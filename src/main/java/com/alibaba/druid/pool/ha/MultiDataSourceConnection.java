@@ -29,7 +29,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 
 public class MultiDataSourceConnection extends WrapperAdapter implements Connection, ConnectionProxy {
 
-    private final MultiDataSource haDataSource;
+    private final MultiDataSource multiDataSource;
 
     private Connection            conn;
     private DataSourceHolder      dataSourceHolder;
@@ -51,8 +51,8 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private boolean               closed           = false;
 
-    public MultiDataSourceConnection(MultiDataSource haDataSource, long id){
-        this.haDataSource = haDataSource;
+    public MultiDataSourceConnection(MultiDataSource multiDataSource, long id){
+        this.multiDataSource = multiDataSource;
         this.id = id;
     }
     
@@ -62,7 +62,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     public void checkConnection(String sql) throws SQLException {
         if (conn == null) {
-            MultiConnectionHolder connHolder = haDataSource.getRealConnection(this, sql);
+            MultiConnectionHolder connHolder = multiDataSource.getRealConnection(this, sql);
             conn = connHolder.getConnection();
             this.dataSourceHolder = connHolder.getDataSourceHolder();
         }
@@ -98,8 +98,8 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         connectedTime = new Date();
     }
 
-    public MultiDataSource getHaDataSource() {
-        return haDataSource;
+    public MultiDataSource getMultiDataSource() {
+        return multiDataSource;
     }
 
     @Override
@@ -156,7 +156,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         }
         this.closed = true;
         
-        haDataSource.afterConnectionClosed(this);
+        multiDataSource.afterConnectionClosed(this);
     }
 
     @Override
@@ -329,14 +329,14 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
         MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency);
         return stmt;
     }
 
     @Override
     public Statement createStatement() throws SQLException {
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
         MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId);
         return stmt;
     }
@@ -346,7 +346,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -356,7 +356,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         CallableStatement stmt = conn.prepareCall(sql);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new CallableStatementProxyImpl(this, stmt, sql, stmtId);
     }
@@ -367,7 +367,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -377,7 +377,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         CallableStatement stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new CallableStatementProxyImpl(this, stmt, sql, stmtId);
     }
@@ -385,7 +385,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
                                                                                                            throws SQLException {
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
         MultiDataSourceStatement stmt = new MultiDataSourceStatement(this, stmtId, resultSetType, resultSetConcurrency,
                                                                      resultSetHoldability);
         return stmt;
@@ -397,7 +397,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -408,7 +408,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         CallableStatement stmt = conn.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new CallableStatementProxyImpl(this, stmt, sql, stmtId);
     }
@@ -418,7 +418,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, autoGeneratedKeys);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -428,7 +428,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, columnIndexes);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -438,7 +438,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         checkConnection(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql, columnNames);
-        long stmtId = haDataSource.createStatementId();
+        long stmtId = multiDataSource.createStatementId();
 
         return new MultiDataSourcePreparedStatement(this, stmt, sql, stmtId);
     }
@@ -578,12 +578,12 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public Properties getProperties() {
-        return haDataSource.getProperties();
+        return multiDataSource.getProperties();
     }
 
     @Override
     public DataSourceProxy getDirectDataSource() {
-        return haDataSource;
+        return multiDataSource;
     }
 
     @Override

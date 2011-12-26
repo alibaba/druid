@@ -14,9 +14,9 @@ public class WeightBalancer implements Balancer {
     @Override
     public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
                                                                                                      throws SQLException {
-        MultiDataSource haDataSource = connectionProxy.getHaDataSource();
+        MultiDataSource multiDataSource = connectionProxy.getMultiDataSource();
         
-        long maxWaitMillis = haDataSource.getMaxWaitMillis();
+        long maxWaitMillis = multiDataSource.getMaxWaitMillis();
         
         long startNano = -1;
         if (maxWaitMillis > 0) {
@@ -27,11 +27,11 @@ public class WeightBalancer implements Balancer {
 
         final int MAX_RETRY = 10;
         for (int i = 0; i < MAX_RETRY; ++i) {
-            int randomNumber = haDataSource.produceRandomNumber();
+            int randomNumber = multiDataSource.produceRandomNumber();
             DataSourceHolder first = null;
 
             boolean needRetry = false;
-            for (DataSourceHolder item : haDataSource.getDataSources().values()) {
+            for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
                 if (first == null) {
                     first = item;
                 }
@@ -42,7 +42,7 @@ public class WeightBalancer implements Balancer {
                     }
 
                     if (item.getDataSource().isBusy()) {
-                        haDataSource.incrementBusySkipCount();
+                        multiDataSource.incrementBusySkipCount();
                         needRetry = true;
                         break;
                     }
@@ -52,7 +52,7 @@ public class WeightBalancer implements Balancer {
             }
 
             if (needRetry) {
-                haDataSource.incrementRetryGetConnectionCount();
+                multiDataSource.incrementRetryGetConnectionCount();
                 continue;
             }
 
@@ -61,11 +61,11 @@ public class WeightBalancer implements Balancer {
             }
 
             if (dataSource == null && i != MAX_RETRY - 1) {
-                Lock lock = haDataSource.getLock();
-                Condition notFail = haDataSource.getNotFail();
+                Lock lock = multiDataSource.getLock();
+                Condition notFail = multiDataSource.getNotFail();
                 lock.lock();
                 try {
-                    if (haDataSource.getEnabledDataSourceCount() == 0) {
+                    if (multiDataSource.getEnabledDataSourceCount() == 0) {
                         try {
                             if (maxWaitMillis > 0) {
                                 long nano = System.nanoTime() - startNano;
@@ -91,7 +91,7 @@ public class WeightBalancer implements Balancer {
         }
 
         if (dataSource == null) {
-            throw new SQLException("cannot get connection. enabledDataSourceCount " + haDataSource.getEnabledDataSourceCount());
+            throw new SQLException("cannot get connection. enabledDataSourceCount " + multiDataSource.getEnabledDataSourceCount());
         }
 
         return dataSource.getConnection();

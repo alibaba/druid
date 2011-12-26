@@ -25,6 +25,8 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DataSourceAdapter;
+import com.alibaba.druid.pool.ha.balance.Balancer;
+import com.alibaba.druid.pool.ha.balance.WeightBalancer;
 import com.alibaba.druid.pool.ha.config.ConfigLoader;
 import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
@@ -83,6 +85,8 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
 
     private long                                    activeCount               = 0;
     private long                                    maxWaitMillis             = 0;
+
+    private Balancer                                balancer                  = new WeightBalancer();
 
     public long getMaxWaitMillis() {
         return maxWaitMillis;
@@ -377,82 +381,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     }
 
     public MultiConnectionHolder getRealConnection(MultiDataSourceConnection multiConn, String sql) throws SQLException {
-
-        long startNano = -1;
-        if (maxWaitMillis > 0) {
-            startNano = System.nanoTime();
-        }
-
-        DataSourceHolder dataSource = null;
-
-        final int MAX_RETRY = 10;
-        for (int i = 0; i < MAX_RETRY; ++i) {
-            int randomNumber = produceRandomNumber();
-            DataSourceHolder first = null;
-
-            boolean needRetry = false;
-            for (DataSourceHolder item : this.dataSources.values()) {
-                if (first == null) {
-                    first = item;
-                }
-                if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightRegionEnd()) {
-                    if (!item.isEnable()) {
-                        needRetry = true;
-                        break;
-                    }
-
-                    if (item.getDataSource().isBusy()) {
-                        busySkipCount.incrementAndGet();
-                        needRetry = true;
-                        break;
-                    }
-
-                    dataSource = item;
-                }
-            }
-
-            if (needRetry) {
-                retryGetConnectionCount.incrementAndGet();
-                continue;
-            }
-
-            if (dataSource == null) {
-                dataSource = first;
-            }
-
-            if (dataSource == null && i != MAX_RETRY - 1) {
-                lock.lock();
-                try {
-                    if (getEnabledDataSourceCount() == 0) {
-                        try {
-                            if (maxWaitMillis > 0) {
-                                long nano = System.nanoTime() - startNano;
-                                long restNano = maxWaitMillis * 1000 * 1000 - nano;
-                                if (restNano > 0) {
-                                    notFail.awaitNanos(restNano);
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                notFail.await();
-                            }
-                            continue;
-                        } catch (InterruptedException e) {
-                            throw new SQLException("interrupted", e);
-                        }
-                    }
-                } finally {
-                    lock.unlock();
-                }
-            }
-            break;
-        }
-
-        if (dataSource == null) {
-            throw new SQLException("cannot get connection. enabledDataSourceCount " + getEnabledDataSourceCount());
-        }
-
-        return dataSource.getConnection();
+        return balancer.getConnection(multiConn, sql);
     }
 
     public int getEnabledDataSourceCount() {
@@ -471,15 +400,15 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     public long getRetryGetConnectionCount() {
         return retryGetConnectionCount.get();
     }
-    
+
     public void incrementRetryGetConnectionCount() {
         retryGetConnectionCount.incrementAndGet();
     }
-    
+
     public Lock getLock() {
         return lock;
     }
-    
+
     public Condition getNotFail() {
         return notFail;
     }
@@ -487,7 +416,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     public long getBusySkipCount() {
         return busySkipCount.get();
     }
-    
+
     public void incrementBusySkipCount() {
         busySkipCount.incrementAndGet();
     }
