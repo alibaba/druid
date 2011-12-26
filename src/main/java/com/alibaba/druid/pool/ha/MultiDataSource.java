@@ -471,9 +471,25 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     public long getRetryGetConnectionCount() {
         return retryGetConnectionCount.get();
     }
+    
+    public void incrementRetryGetConnectionCount() {
+        retryGetConnectionCount.incrementAndGet();
+    }
+    
+    public Lock getLock() {
+        return lock;
+    }
+    
+    public Condition getNotFail() {
+        return notFail;
+    }
 
     public long getBusySkipCount() {
         return busySkipCount.get();
+    }
+    
+    public void incrementBusySkipCount() {
+        busySkipCount.incrementAndGet();
     }
 
     public String[] getDataSourceNames() {
