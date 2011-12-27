@@ -199,6 +199,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected Exception                                                                      createError                               = null;
 
+    private final AtomicLong                                                                 executeCount                              = new AtomicLong();
+
+    public long getExecuteCount() {
+        return executeCount.get();
+    }
+
+    public void incrementExecuteCount() {
+        this.executeCount.incrementAndGet();
+    }
+
     public Exception getCreateError() {
         return createError;
     }

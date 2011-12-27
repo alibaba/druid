@@ -1,8 +1,6 @@
 package com.alibaba.druid.pool.ha.balance;
 
 import java.sql.SQLException;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 
 import com.alibaba.druid.pool.ha.DataSourceChangedEvent;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
@@ -13,8 +11,7 @@ import com.alibaba.druid.util.ThreadLocalRandom;
 
 public class WeightBalancer extends AbstractBalancer {
 
-    private int             totalWeight = 0;
-
+    private int totalWeight = 0;
 
     public void afterDataSourceChanged(DataSourceChangedEvent event) {
         computeTotalWeight();
@@ -27,7 +24,7 @@ public class WeightBalancer extends AbstractBalancer {
 
         return ThreadLocalRandom.current().nextInt(totalWeight);
     }
-    
+
     public void computeTotalWeight() {
         int totalWeight = 0;
         for (DataSourceHolder holder : getMultiDataSource().getDataSources().values()) {
@@ -46,82 +43,39 @@ public class WeightBalancer extends AbstractBalancer {
     }
 
     @Override
-    public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
-                                                                                                     throws SQLException {
-        MultiDataSource multiDataSource = connectionProxy.getMultiDataSource();
-
-        long maxWaitMillis = multiDataSource.getMaxWaitMillis();
-
-        long startNano = -1;
-        if (maxWaitMillis > 0) {
-            startNano = System.nanoTime();
-        }
+    public MultiConnectionHolder getConnection(MultiDataSourceConnection conn, String sql) throws SQLException {
+        MultiDataSource multiDataSource = conn.getMultiDataSource();
 
         DataSourceHolder dataSource = null;
 
-        final int MAX_RETRY = 10;
-        for (int i = 0; i < MAX_RETRY; ++i) {
-            int randomNumber = produceRandomNumber();
-            DataSourceHolder first = null;
+        int randomNumber = produceRandomNumber();
+        DataSourceHolder first = null;
 
-            boolean needRetry = false;
-            for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
-                if (first == null) {
-                    first = item;
-                }
-                if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightRegionEnd()) {
-                    if (!item.isEnable()) {
-                        needRetry = true;
-                        break;
-                    }
-
-                    if (item.getDataSource().isBusy()) {
-                        multiDataSource.incrementBusySkipCount();
-                        needRetry = true;
-                        break;
-                    }
-
-                    dataSource = item;
-                }
-            }
-
-            if (needRetry) {
-                multiDataSource.incrementRetryGetConnectionCount();
+        for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
+            if (!item.isEnable()) {
                 continue;
             }
 
-            if (dataSource == null) {
-                dataSource = first;
+            if (first == null) {
+                first = item;
             }
 
-            if (dataSource == null && i != MAX_RETRY - 1) {
-                Lock lock = multiDataSource.getLock();
-                Condition notFail = multiDataSource.getNotFail();
-                lock.lock();
-                try {
-                    if (multiDataSource.getEnabledDataSourceCount() == 0) {
-                        try {
-                            if (maxWaitMillis > 0) {
-                                long nano = System.nanoTime() - startNano;
-                                long restNano = maxWaitMillis * 1000 * 1000 - nano;
-                                if (restNano > 0) {
-                                    notFail.awaitNanos(restNano);
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                notFail.await();
-                            }
-                            continue;
-                        } catch (InterruptedException e) {
-                            throw new SQLException("interrupted", e);
-                        }
-                    }
-                } finally {
-                    lock.unlock();
+            if (randomNumber >= item.getWeightRegionBegin() && randomNumber < item.getWeightRegionEnd()) {
+                if (!item.isEnable()) {
+                    continue;
                 }
+
+                if (item.getDataSource().isBusy()) {
+                    multiDataSource.incrementBusySkipCount();
+                    break;
+                }
+
+                dataSource = item;
             }
-            break;
+        }
+
+        if (dataSource == null) {
+            dataSource = first;
         }
 
         if (dataSource == null) {

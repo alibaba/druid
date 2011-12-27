@@ -26,75 +26,56 @@ public class RoundRobinBlancer extends AbstractBalancer {
     }
 
     @Override
-    public MultiConnectionHolder getConnection(MultiDataSourceConnection connectionProxy, String sql)
-                                                                                                     throws SQLException {
-        MultiDataSource multiDataSource = connectionProxy.getMultiDataSource();
+    public MultiConnectionHolder getConnection(MultiDataSourceConnection conn, String sql) throws SQLException {
+        MultiDataSource multiDataSource = conn.getMultiDataSource();
 
-        int tryCount = 0;
+        int size = multiDataSource.getDataSources().size();
+        long connectionId = (int) conn.getId();
 
-        for (;;) {
-            int size = multiDataSource.getDataSources().size();
-            long connectionId = (int) connectionProxy.getId();
+        if (size == 0) {
+            throw new SQLException("can not get connection, no availabe datasources");
+        }
 
-            if (size == 0) {
-                throw new SQLException("can not get connection, no availabe datasources");
-            }
+        int index = (int) (connectionId % size);
 
-            int index = (int) (connectionId % size);
+        DataSourceHolder first = null;
+        DataSourceHolder dataSource = null;
 
-            DataSourceHolder first = null;
-            DataSourceHolder dataSource = null;
-
-            try {
-                int itemIndex = 0;
-                for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
-                    if (!item.isEnable()) {
-                        continue;
-                    }
-
-                    if (first == null) {
-                        first = item;
-                    }
-
-                    if (itemIndex == index) {
-                        dataSource = item;
-                        break;
-                    }
-                    itemIndex++;
+        try {
+            int itemIndex = 0;
+            for (DataSourceHolder item : multiDataSource.getDataSources().values()) {
+                if (!item.isEnable()) {
+                    continue;
                 }
 
-                if (dataSource == null) {
-                    dataSource = first;
+                if (first == null) {
+                    first = item;
                 }
-            } catch (Exception ex) {
-                indexErrorCount.incrementAndGet();
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("getDataSource error, index : " + index, ex);
+
+                if (itemIndex == index) {
+                    dataSource = item;
+                    break;
                 }
-                continue;
+                itemIndex++;
             }
 
             if (dataSource == null) {
-                throw new SQLException("can not get real connection.");
+                dataSource = first;
             }
-
-            MultiConnectionHolder conn = null;
-
-            try {
-                tryCount++;
-                conn = dataSource.getConnection();
-            } catch (SQLException ex) {
-                LOG.error("getConnection error", ex);
-
-                if (tryCount >= size) {
-                    throw ex;
-                }
-
-                continue;
+        } catch (Exception ex) {
+            indexErrorCount.incrementAndGet();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("getDataSource error, index : " + index, ex);
             }
-
-            return conn;
         }
+
+        if (dataSource == null) {
+            throw new SQLException("can not get real connection.");
+        }
+
+        MultiConnectionHolder holder = null;
+
+        return holder;
     }
 
     public long getIndexErrorCount() {
