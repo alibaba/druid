@@ -44,7 +44,7 @@ public interface DruidAbstractDataSourceMBean {
     long getStartTransactionCount();
 
     int getQueryTimeout();
-    
+
     int getTransactionQueryTimeout();
 
     String getValidationQuery();
@@ -66,13 +66,13 @@ public interface DruidAbstractDataSourceMBean {
     List<String> getFilterClassNames();
 
     boolean isTestOnBorrow();
-    
+
     void setTestOnBorrow(boolean testOnBorrow);
 
     boolean isTestOnReturn();
-    
+
     boolean isTestWhileIdle();
-    
+
     void setTestWhileIdle(boolean testWhileIdle);
 
     boolean isDefaultAutoCommit();
@@ -84,6 +84,8 @@ public interface DruidAbstractDataSourceMBean {
     String getDefaultCatalog();
 
     boolean isPoolPreparedStatements();
+
+    boolean isSharePreparedStatements();
 
     long getMaxWait();
 
@@ -102,7 +104,7 @@ public interface DruidAbstractDataSourceMBean {
     long getRemoveAbandonedCount();
 
     boolean isLogAbandoned();
-    
+
     void setLogAbandoned(boolean logAbandoned);
 
     long getDupCloseCount();

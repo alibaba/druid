@@ -66,7 +66,7 @@ public final class ConnectionHolder {
         this.defaultHoldability = conn.getHoldability();
         this.defaultTransactionIsolation = conn.getTransactionIsolation();
         this.defaultAutoCommit = conn.getAutoCommit();
-        
+
         this.underlyingAutoCommit = defaultAutoCommit;
         this.underlyingHoldability = defaultHoldability;
         this.underlyingTransactionIsolation = defaultTransactionIsolation;
@@ -143,7 +143,15 @@ public final class ConnectionHolder {
     }
 
     public boolean isPoolPreparedStatements() {
-        return dataSource.isPoolPreparedStatements();
+        boolean poolPreparedStatements = dataSource.isPoolPreparedStatements();
+        if (poolPreparedStatements) {
+            boolean transaction = !isUnderlyingAutoCommit();
+            if (transaction && !dataSource.isSharePreparedStatements()) {
+                poolPreparedStatements = false;
+            }
+        }
+
+        return poolPreparedStatements;
     }
 
     public Connection getConnection() {

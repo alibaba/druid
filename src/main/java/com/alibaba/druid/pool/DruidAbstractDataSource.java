@@ -119,6 +119,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     private boolean                                                                          testOnReturn                              = DEFAULT_TEST_ON_RETURN;
     private boolean                                                                          testWhileIdle                             = DEFAULT_WHILE_IDLE;
     protected boolean                                                                        poolPreparedStatements                    = false;
+    protected boolean                                                                        sharePreparedStatements                   = false;
     protected int                                                                            maxPoolPreparedStatementPerConnectionSize = 10;
 
     protected boolean                                                                        inited                                    = false;
@@ -206,7 +207,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (transactionQueryTimeout <= 0) {
             return queryTimeout;
         }
-        
+
         return transactionQueryTimeout;
     }
 
@@ -349,7 +350,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
+        if (maxPoolPreparedStatementPerConnectionSize > 0) {
+            this.poolPreparedStatements = true;
+        }
+
         this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
+    }
+
+    public boolean isSharePreparedStatements() {
+        return sharePreparedStatements;
+    }
+
+    public void setSharePreparedStatements(boolean sharePreparedStatements) {
+        this.sharePreparedStatements = sharePreparedStatements;
     }
 
     public void incrementDupCloseCount() {
@@ -436,7 +449,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxOpenPreparedStatements(int maxOpenPreparedStatements) {
-        this.maxPoolPreparedStatementPerConnectionSize = maxOpenPreparedStatements;
+        this.setMaxPoolPreparedStatementPerConnectionSize(maxOpenPreparedStatements);
     }
 
     public boolean isLogAbandoned() {
@@ -1044,9 +1057,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     void initStatement(PoolableConnection conn, Statement stmt) throws SQLException {
         boolean transaction = !conn.getConnectionHolder().isUnderlyingAutoCommit();
-        
+
         int queryTimeout = transaction ? getTransactionQueryTimeout() : getQueryTimeout();
-        
+
         if (queryTimeout > 0) {
             stmt.setQueryTimeout(queryTimeout);
         }
