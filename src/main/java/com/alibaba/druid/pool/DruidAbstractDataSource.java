@@ -132,6 +132,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected Driver                                                                         driver;
 
     protected int                                                                            queryTimeout;
+    protected int                                                                            transactionQueryTimeout;
 
     protected long                                                                           createErrorCount;
 
@@ -200,6 +201,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected Exception                                                                      createError                               = null;
 
     private final AtomicLong                                                                 executeCount                              = new AtomicLong();
+
+    public int getTransactionQueryTimeout() {
+        if (transactionQueryTimeout <= 0) {
+            return queryTimeout;
+        }
+        
+        return transactionQueryTimeout;
+    }
+
+    public void setTransactionQueryTimeout(int transactionQueryTimeout) {
+        this.transactionQueryTimeout = transactionQueryTimeout;
+    }
 
     public long getExecuteCount() {
         return executeCount.get();
@@ -1029,7 +1042,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return transactionIdSeed.getAndIncrement();
     }
 
-    void initStatement(Statement stmt) throws SQLException {
+    void initStatement(PoolableConnection conn, Statement stmt) throws SQLException {
+        boolean transaction = !conn.getConnectionHolder().isUnderlyingAutoCommit();
+        
+        int queryTimeout = transaction ? getTransactionQueryTimeout() : getQueryTimeout();
+        
         if (queryTimeout > 0) {
             stmt.setQueryTimeout(queryTimeout);
         }

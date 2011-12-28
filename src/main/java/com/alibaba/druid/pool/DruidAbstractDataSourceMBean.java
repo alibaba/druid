@@ -44,6 +44,8 @@ public interface DruidAbstractDataSourceMBean {
     long getStartTransactionCount();
 
     int getQueryTimeout();
+    
+    int getTransactionQueryTimeout();
 
     String getValidationQuery();
 

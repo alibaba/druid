@@ -189,7 +189,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -227,7 +227,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -266,7 +266,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -300,7 +300,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -334,7 +334,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -368,7 +368,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
 
@@ -405,7 +405,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
 
@@ -443,7 +443,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
 
@@ -479,7 +479,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
-        holder.getDataSource().initStatement(stmtHolder.getStatement());
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
         PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
         holder.addTrace(rtnVal);
@@ -500,7 +500,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             handleException(ex);
         }
 
-        holder.getDataSource().initStatement(stmt);
+        holder.getDataSource().initStatement(this, stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
         holder.addTrace(poolableStatement);
@@ -520,7 +520,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             handleException(ex);
         }
 
-        holder.getDataSource().initStatement(stmt);
+        holder.getDataSource().initStatement(this, stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
         holder.addTrace(poolableStatement);
@@ -539,7 +539,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             handleException(ex);
         }
 
-        holder.getDataSource().initStatement(stmt);
+        holder.getDataSource().initStatement(this, stmt);
 
         PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
         holder.addTrace(poolableStatement);
