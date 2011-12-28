@@ -187,6 +187,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               preparedStatementCount                    = new AtomicLong();
     protected final AtomicLong                                                               closedPreparedStatementCount              = new AtomicLong();
     protected final AtomicLong                                                               cachedPreparedStatementCount              = new AtomicLong();
+    protected final AtomicLong                                                               cachedPreparedStatementDeleteCount              = new AtomicLong();
 
     protected final Histogram                                                                transactionHistogram                      = new Histogram(
                                                                                                                                                        10,
@@ -253,6 +254,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void decrementCachedPreparedStatementCount() {
         cachedPreparedStatementCount.decrementAndGet();
+    }
+    
+    public void incrementCachedPreparedStatementDeleteCount() {
+        cachedPreparedStatementDeleteCount.incrementAndGet();
+    }
+    
+    public long getCachedPreparedStatementDeleteCount() {
+        return cachedPreparedStatementDeleteCount.get();
     }
 
     public long getCachedPreparedStatementCount() {

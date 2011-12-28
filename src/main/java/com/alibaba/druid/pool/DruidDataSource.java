@@ -180,6 +180,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         closedPreparedStatementCount.set(0);
         preparedStatementCount.set(0);
         transactionHistogram.reset();
+        cachedPreparedStatementDeleteCount.set(0);
     }
 
     public boolean isEnable() {

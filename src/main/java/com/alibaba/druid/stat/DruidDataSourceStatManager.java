@@ -200,6 +200,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("RollbackCount", dataSource.getRollbackCount());
         map.put("LastError", JMXUtils.getErrorCompositeData(dataSource.getLastError()));
         map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getCreateError()));
+        map.put("PreparedStatementCacheDeleteCount", dataSource.getCachedPreparedStatementDeleteCount());
+        map.put("Version", dataSource.getVersion());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -220,7 +222,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.BOOLEAN, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING, //
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
-                , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType()
+                , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType(), SimpleType.LONG //
+                , SimpleType.STRING
         //
         };
 
@@ -238,7 +241,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "RemoveAbandonedCount", //
                 "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
                 "StartTransactionCount", //
-                "CommitCount", "RollbackCount", "LastError", "LastCreateError"
+                "CommitCount", "RollbackCount", "LastError", "LastCreateError", "PreparedStatementCacheDeleteCount" //
+                , "Version"
         //
         };
 
