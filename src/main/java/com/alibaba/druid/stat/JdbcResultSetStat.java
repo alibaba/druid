@@ -185,38 +185,4 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
         closeCount.incrementAndGet();
     }
 
-    public static class Entry {
-
-        protected final long constructNano;
-        protected int        cusorIndex    = 0;
-        protected int        fetchRowCount = 0;
-
-        public Entry(){
-            this.constructNano = System.nanoTime();
-        }
-
-        public void decrementCusorIndex() {
-            cusorIndex--;
-        }
-
-        public long getConstructNano() {
-            return constructNano;
-        }
-
-        public int getCusorIndex() {
-            return cusorIndex;
-        }
-
-        public void setCusorIndex(int cusorIndex) {
-            this.cusorIndex = cusorIndex;
-        }
-
-        public int getFetchRowCount() {
-            return fetchRowCount;
-        }
-
-        public void setFetchRowCount(int fetchRowCount) {
-            this.fetchRowCount = fetchRowCount;
-        }
-    }
 }

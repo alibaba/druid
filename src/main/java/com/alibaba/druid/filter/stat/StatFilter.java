@@ -41,7 +41,6 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcResultSetStat;
-import com.alibaba.druid.stat.JdbcResultSetStat.Entry;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -162,16 +161,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             if (connection != null) {
                 JdbcConnectionStat.Entry statEntry = getConnectionInfo(connection);
-    
+
                 dataSourceStat.getConnections().put(connection.getId(), statEntry);
-    
+
                 statEntry.setConnectTime(new Date(startTime));
                 statEntry.setConnectTimespanNano(nanoSpan);
                 statEntry.setEstablishNano(System.nanoTime());
                 statEntry.setEstablishTime(nowTime);
                 statEntry.setConnectStackTrace(new Exception());
-                
-                
+
                 connectStat.setActiveCount(dataSourceStat.getConnections().size());
                 dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
             }
@@ -467,68 +465,32 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         resultSetStat.beforeOpen();
         dataSourceStat.getResultSetStat().beforeOpen();
 
-        JdbcResultSetStat.Entry rsStatEntry = new Entry();
-
-        resultSet.getAttributes().put(ATTR_NAME_RESULT_SET_STAT, rsStatEntry);
+        resultSet.setConstructNano(System.nanoTime());
 
         // super.resultSetOpenAfter(resultSet);
     }
 
     @Override
-    public boolean resultSet_previous(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
-        boolean moreRows = super.resultSet_previous(chain, resultSet);
-
-        if (moreRows) {
-            JdbcResultSetStat.Entry resultSetCounter = getResultSetInfo(resultSet);
-            if (resultSetCounter != null) {
-                resultSetCounter.decrementCusorIndex();
-            }
-        }
-
-        return moreRows;
-    }
-
-    @Override
-    public boolean resultSet_next(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
-        boolean moreRows = super.resultSet_next(chain, resultSet);
-
-        if (moreRows) {
-            JdbcResultSetStat.Entry resultSetCounter = getResultSetInfo(resultSet);
-            if (resultSetCounter != null) {
-                resultSetCounter.setCusorIndex(resultSetCounter.getCusorIndex() + 1);
-                if (resultSetCounter.getCusorIndex() > resultSetCounter.getFetchRowCount()) {
-                    resultSetCounter.setFetchRowCount(resultSetCounter.getCusorIndex());
-                }
-            }
-        }
-
-        return moreRows;
-    }
-
-    @Override
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
-        JdbcResultSetStat.Entry rsStatEntry = getResultSetInfo(resultSet);
 
-        if (rsStatEntry != null) {
-            long nanoSpan = System.nanoTime() - rsStatEntry.getConstructNano();
+        long nanoSpan = System.nanoTime() - resultSet.getConstructNano();
 
-            int fetchCount = rsStatEntry.getFetchRowCount();
+        int fetchCount = resultSet.getFetchRowCount();
 
-            resultSetStat.afterClose(nanoSpan);
-            dataSourceStat.getResultSetStat().afterClose(nanoSpan);
+        resultSetStat.afterClose(nanoSpan);
+        dataSourceStat.getResultSetStat().afterClose(nanoSpan);
 
-            resultSetStat.addFetchRowCount(fetchCount);
-            dataSourceStat.getResultSetStat().addFetchRowCount(fetchCount);
+        resultSetStat.addFetchRowCount(fetchCount);
+        dataSourceStat.getResultSetStat().addFetchRowCount(fetchCount);
 
-            resultSetStat.incrementCloseCounter();
-            dataSourceStat.getResultSetStat().incrementCloseCounter();
+        resultSetStat.incrementCloseCounter();
+        dataSourceStat.getResultSetStat().incrementCloseCounter();
 
-            String sql = resultSet.getSql();
-            if (sql != null) {
-                JdbcSqlStat sqlStat = dataSourceStat.getSqlStatMap().get(sql);
-                if (sqlStat != null) {
-                    sqlStat.addFetchRowCount(fetchCount);
-                }
+        String sql = resultSet.getSql();
+        if (sql != null) {
+            JdbcSqlStat sqlStat = dataSourceStat.getSqlStatMap().get(sql);
+            if (sqlStat != null) {
+                sqlStat.addFetchRowCount(fetchCount);
             }
         }
 
@@ -537,7 +499,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public final static String ATTR_NAME_CONNECTION_STAT = "stat.conn";
     public final static String ATTR_NAME_STATEMENT_STAT  = "stat.stmt";
-    public final static String ATTR_NAME_RESULT_SET_STAT = "stat.rs";
 
     public JdbcConnectionStat.Entry getConnectionInfo(ConnectionProxy connection) {
         JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
@@ -560,16 +521,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         return counter;
-    }
-
-    public static JdbcResultSetStat.Entry getResultSetInfo(ResultSetProxy resultSet) {
-        if (resultSet == null) {
-            return null;
-        }
-
-        JdbcResultSetStat.Entry rsStatEntry = (JdbcResultSetStat.Entry) resultSet.getAttributes().get(ATTR_NAME_RESULT_SET_STAT);
-
-        return rsStatEntry;
     }
 
     @Override

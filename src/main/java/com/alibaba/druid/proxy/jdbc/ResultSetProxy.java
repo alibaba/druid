@@ -27,4 +27,12 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     StatementProxy getStatementProxy();
 
     String getSql();
+    
+    int getCursorIndex();
+    
+    int getFetchRowCount();
+    
+    long getConstructNano();
+    
+    void setConstructNano(long constructNano);
 }

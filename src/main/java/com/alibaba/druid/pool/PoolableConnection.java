@@ -121,6 +121,9 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder.isPoolPreparedStatements()) {
             stmt.clearResultSet();
             holder.removeTrace(stmt);
+            
+            stmt.getPreparedStatementHolder().setFetchRowPeak(stmt.getFetchRowPeak());
+            
             stmt.setClosed(true); // soft set close
             
             if (stmt.getHitCount() == 0 && isOracle()) {

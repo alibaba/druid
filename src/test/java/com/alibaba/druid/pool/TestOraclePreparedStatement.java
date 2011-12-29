@@ -31,22 +31,28 @@ public class TestOraclePreparedStatement extends TestCase {
         // ResultSet metaRs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] {"TABLE"});
         // JdbcUtils.printResultSet(metaRs);
         // metaRs.close();
+        
+        String sql = "SELECT * FROM WS_OFFER WHERE ROWNUM <= ?";
 
         OraclePreparedStatement oracleStmt = null;
-        PreparedStatement stmt = conn.prepareStatement("SELECT ? FROM DUAL");
+        PreparedStatement stmt = conn.prepareStatement(sql);
         oracleStmt = (OraclePreparedStatement) stmt;
+        oracleStmt.setRowPrefetch(1);
         {
             
-            stmt.setString(1, "aaa");
+            stmt.setInt(1, 1);
             ResultSet rs = stmt.executeQuery();
-            rs.next();
+            while (rs.next()) {
+                
+            }
 
             rs.close();
             
             oracleStmt.clearDefines();
         }
+        oracleStmt.setRowPrefetch(1000);
         {
-            stmt.setString(1, "bbb");
+            stmt.setInt(1, 11);
             ResultSet rs = stmt.executeQuery();
             rs.next();
             

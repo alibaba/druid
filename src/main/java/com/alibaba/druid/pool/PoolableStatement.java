@@ -37,12 +37,23 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     protected PoolableConnection    conn;
     protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
     protected boolean               closed         = false;
+    protected int                   fetchRowPeak   = -1;
 
     public PoolableStatement(PoolableConnection conn, Statement stmt){
         super(stmt);
 
         this.conn = conn;
         this.stmt = stmt;
+    }
+
+    protected void recordFetchRowCount(int fetchRowCount) {
+        if (fetchRowPeak < fetchRowCount) {
+            fetchRowPeak = fetchRowCount;
+        }
+    }
+
+    public int getFetchRowPeak() {
+        return fetchRowPeak;
     }
 
     protected SQLException checkException(Throwable error) throws SQLException {
@@ -79,7 +90,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         }
         resultSetTrace.clear();
     }
-    
+
     public void incrementExecuteCount() {
         this.getPoolableConnection().getConnectionHolder().getDataSource().incrementExecuteCount();
     }
@@ -87,7 +98,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     @Override
     public final ResultSet executeQuery(String sql) throws SQLException {
         checkOpen();
-        
+
         incrementExecuteCount();
         transactionRecord(sql);
 
@@ -397,7 +408,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
     @Override
     public int[] executeBatch() throws SQLException {
         checkOpen();
-        
+
         incrementExecuteCount();
 
         try {

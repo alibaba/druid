@@ -40,7 +40,10 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
 
     private final ResultSet         rs;
     private final PoolableStatement stmt;
-    private boolean                 closed = false;
+    private boolean                 closed        = false;
+
+    protected int                   cursorIndex   = 0;
+    protected int                   fetchRowCount = 0;
 
     public PoolableResultSet(PoolableStatement stmt, ResultSet rs){
         super(rs);
@@ -63,7 +66,15 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     @Override
     public boolean next() throws SQLException {
         try {
-            return rs.next();
+            boolean moreRows = rs.next();
+
+            if (moreRows) {
+                cursorIndex++;
+                if (cursorIndex > fetchRowCount) {
+                    fetchRowCount = cursorIndex;
+                }
+            }
+            return moreRows;
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -74,6 +85,8 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
         try {
             this.closed = true;
             rs.close();
+            
+            stmt.recordFetchRowCount(fetchRowCount);
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -581,7 +594,13 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
     @Override
     public boolean previous() throws SQLException {
         try {
-            return rs.previous();
+            boolean moreRows = rs.previous();
+
+            if (moreRows) {
+                cursorIndex--;
+            }
+
+            return moreRows;
         } catch (Throwable t) {
             throw checkException(t);
         }

@@ -50,11 +50,31 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     private final StatementProxy statement;
     private final String         sql;
 
+    protected int                cursorIndex   = 0;
+    protected int                fetchRowCount = 0;
+    protected long               constructNano;
+
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
         this.statement = statement;
         this.resultSet = resultSet;
         this.sql = sql;
+    }
+
+    public long getConstructNano() {
+        return constructNano;
+    }
+
+    public void setConstructNano(long constructNano) {
+        this.constructNano = constructNano;
+    }
+
+    public int getCursorIndex() {
+        return cursorIndex;
+    }
+
+    public int getFetchRowCount() {
+        return fetchRowCount;
     }
 
     public String getSql() {
@@ -545,12 +565,26 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
 
     @Override
     public boolean next() throws SQLException {
-        return createChain().resultSet_next(this);
+        boolean moreRows = createChain().resultSet_next(this);
+
+        if (moreRows) {
+            cursorIndex++;
+            if (cursorIndex > fetchRowCount) {
+                fetchRowCount = cursorIndex;
+            }
+        }
+        return moreRows;
     }
 
     @Override
     public boolean previous() throws SQLException {
-        return createChain().resultSet_previous(this);
+        boolean moreRows = createChain().resultSet_previous(this);
+
+        if (moreRows) {
+            cursorIndex--;
+        }
+
+        return moreRows;
     }
 
     @Override

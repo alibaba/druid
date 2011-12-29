@@ -26,11 +26,23 @@ public final class PreparedStatementHolder {
 
     private final PreparedStatementKey key;
     private final PreparedStatement    statement;
-    private int                        hitCount = 0;
+    private int                        hitCount     = 0;
+
+    private int                        fetchRowPeak = -1;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
         this.statement = stmt;
+    }
+
+    public int getFetchRowPeak() {
+        return fetchRowPeak;
+    }
+
+    public void setFetchRowPeak(int fetchRowPeak) {
+        if (fetchRowPeak > this.fetchRowPeak) {
+            this.fetchRowPeak = fetchRowPeak;
+        }
     }
 
     public PreparedStatement getStatement() {
