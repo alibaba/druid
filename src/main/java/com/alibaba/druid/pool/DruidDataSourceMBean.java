@@ -75,6 +75,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
     Date getPoolingPeakTime();
 
     long getErrorCount();
-    
+
     ObjectName getObjectName();
+
+    void clearStatementCache();
 }

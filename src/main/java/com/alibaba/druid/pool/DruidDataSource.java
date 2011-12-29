@@ -621,6 +621,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
+    public void clearStatementCache() {
+        lock.lock();
+        try {
+            for (int i = 0; i < poolingCount; ++i) {
+                ConnectionHolder conn = connections[i];
+                conn.getStatementPool().clear();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
     /**
      * close datasource
      */

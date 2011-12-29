@@ -17,6 +17,7 @@ package com.alibaba.druid.pool;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,6 +73,19 @@ public class PreparedStatementPool {
             if (holder.getReusedCount() == 0) {
                 dataSource.incrementCachedPreparedStatementCount();
             }
+        }
+    }
+    
+    public void clear() {
+        Iterator<Entry<PreparedStatementKey, PreparedStatementHolder>> iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            Entry<PreparedStatementKey, PreparedStatementHolder> entry = iter.next();
+            
+            dataSource.closePreapredStatement(entry.getValue());
+            dataSource.decrementCachedPreparedStatementCount();
+            dataSource.incrementCachedPreparedStatementDeleteCount();
+            
+            iter.remove();
         }
     }
 

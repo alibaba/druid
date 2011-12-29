@@ -617,7 +617,7 @@ public class ConnectionTest4 extends TestCase {
         {
             Exception error = null;
             try {
-                conn.checkOpen();
+                conn.checkState();
             } catch (SQLException ex) {
                 error = ex;
             }
