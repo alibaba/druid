@@ -183,7 +183,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
-    protected final AtomicLong                                                               reusePreparedStatement                    = new AtomicLong();
+    protected final AtomicLong                                                               cachedPreparedStatementHitCount                    = new AtomicLong();
     protected final AtomicLong                                                               preparedStatementCount                    = new AtomicLong();
     protected final AtomicLong                                                               closedPreparedStatementCount              = new AtomicLong();
     protected final AtomicLong                                                               cachedPreparedStatementCount              = new AtomicLong();
@@ -201,9 +201,45 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private ObjectName                                                                       objectName;
 
-    protected Exception                                                                      createError                               = null;
-
     private final AtomicLong                                                                 executeCount                              = new AtomicLong();
+
+    protected Throwable                                                                      createError;
+    protected Throwable                                                                      lastError;
+    protected long                                                                           lastErrorTimeMillis;
+    protected Throwable                                                                      lastCreateError;
+    protected long                                                                           lastCreateErrorTimeMillis;
+
+    public Throwable getLastCreateError() {
+        return lastCreateError;
+    }
+
+    public Throwable getLastError() {
+        return this.lastError;
+    }
+
+    public long getLastErrorTimeMillis() {
+        return lastErrorTimeMillis;
+    }
+
+    public Date getLastErrorTime() {
+        if (lastErrorTimeMillis <= 0) {
+            return null;
+        }
+
+        return new Date(lastErrorTimeMillis);
+    }
+
+    public long getLastCreateErrorTimeMillis() {
+        return lastCreateErrorTimeMillis;
+    }
+
+    public Date getLastCreateErrorTime() {
+        if (lastErrorTimeMillis <= 0) {
+            return null;
+        }
+
+        return new Date(lastCreateErrorTimeMillis);
+    }
 
     public int getTransactionQueryTimeout() {
         if (transactionQueryTimeout <= 0) {
@@ -223,10 +259,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void incrementExecuteCount() {
         this.executeCount.incrementAndGet();
-    }
-
-    public Exception getCreateError() {
-        return createError;
     }
 
     public boolean isDupCloseLogEnable() {
@@ -260,13 +292,17 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void incrementCachedPreparedStatementDeleteCount() {
         cachedPreparedStatementDeleteCount.incrementAndGet();
     }
-    
+
     public void incrementCachedPreparedStatementMissCount() {
         cachedPreparedStatementMissCount.incrementAndGet();
     }
-    
+
     public long getCachedPreparedStatementMissCount() {
         return cachedPreparedStatementMissCount.get();
+    }
+    
+    public long getCachedPreparedStatementAccessCount() {
+        return cachedPreparedStatementMissCount.get() + cachedPreparedStatementHitCount.get();
     }
 
     public long getCachedPreparedStatementDeleteCount() {
@@ -293,12 +329,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return preparedStatementCount.get();
     }
 
-    public void incrementReusePreparedStatementCount() {
-        reusePreparedStatement.incrementAndGet();
+    public void incrementCachedPreparedStatementHitCount() {
+        cachedPreparedStatementHitCount.incrementAndGet();
     }
 
-    public long getReusePreparedStatementCount() {
-        return reusePreparedStatement.get();
+    public long getCachedPreparedStatementHitCount() {
+        return cachedPreparedStatementHitCount.get();
     }
 
     public long getTransactionThresholdMillis() {
@@ -1205,10 +1241,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
                 dataSource.createError = ex;
+                dataSource.lastCreateError = ex;
+                dataSource.lastCreateErrorTimeMillis = System.currentTimeMillis();
                 throw ex;
             } catch (RuntimeException ex) {
                 dataSource.createErrorCount++;
                 dataSource.createError = ex;
+                dataSource.lastCreateError = ex;
+                dataSource.lastCreateErrorTimeMillis = System.currentTimeMillis();
                 throw ex;
             } catch (Error ex) {
                 dataSource.createErrorCount++;

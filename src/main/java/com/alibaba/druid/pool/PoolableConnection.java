@@ -186,8 +186,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -225,8 +223,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -265,8 +261,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -301,8 +295,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -337,8 +329,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -373,8 +363,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -411,8 +399,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -451,8 +437,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
@@ -489,8 +473,6 @@ public class PoolableConnection implements PooledConnection, Connection {
             } catch (SQLException ex) {
                 handleException(ex);
             }
-        } else {
-            holder.getDataSource().incrementReusePreparedStatementCount();
         }
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());

@@ -133,13 +133,17 @@ public interface DruidAbstractDataSourceMBean {
 
     long getTransactionThresholdMillis();
 
-    long getReusePreparedStatementCount();
-
     long getPreparedStatementCount();
 
     long getClosedPreparedStatementCount();
 
     long getCachedPreparedStatementCount();
-    
+
     long getCachedPreparedStatementDeleteCount();
+
+    long getCachedPreparedStatementAccessCount();
+
+    long getCachedPreparedStatementMissCount();
+
+    long getCachedPreparedStatementHitCount();
 }

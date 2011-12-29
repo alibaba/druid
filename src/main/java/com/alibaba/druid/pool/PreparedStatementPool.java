@@ -49,6 +49,7 @@ public class PreparedStatementPool {
 
         if (holder != null) {
             holder.incrementReusedCount();
+            dataSource.incrementCachedPreparedStatementHitCount();
         } else {
             dataSource.incrementCachedPreparedStatementMissCount();
         }

@@ -193,19 +193,23 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
         map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
         map.put("ErrorCount", dataSource.getErrorCount());
-        map.put("ReusePreparedStatementCount", dataSource.getReusePreparedStatementCount());
+        map.put("ReusePreparedStatementCount", dataSource.getCachedPreparedStatementHitCount());
         map.put("StartTransactionCount", dataSource.getStartTransactionCount());
 
         map.put("CommitCount", dataSource.getCommitCount());
         map.put("RollbackCount", dataSource.getRollbackCount());
         map.put("LastError", JMXUtils.getErrorCompositeData(dataSource.getLastError()));
-        map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getCreateError()));
+        map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getLastCreateError()));
         map.put("PreparedStatementCacheDeleteCount", dataSource.getCachedPreparedStatementDeleteCount());
         
+        map.put("PreparedStatementCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
         map.put("PreparedStatementCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
-        map.put("PreparedStatementCacheHitCount", dataSource.getReusePreparedStatementCount());
+        map.put("PreparedStatementCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
         map.put("PreparedStatementCacheCurrentCount", dataSource.getCachedPreparedStatementCount());
         map.put("Version", dataSource.getVersion());
+
+        map.put("LastErrorTime", dataSource.getLastErrorTime());
+        map.put("LastCreateErrorTime", dataSource.getLastCreateErrorTime());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -227,7 +231,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
                 , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType(), SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING //
+                , SimpleType.DATE , SimpleType.DATE
         //
         };
 
@@ -246,7 +251,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
                 "StartTransactionCount", //
                 "CommitCount", "RollbackCount", "LastError", "LastCreateError", "PreparedStatementCacheDeleteCount" //
-                , "PreparedStatementCacheMissCount", "PreparedStatementCacheHitCount", "PreparedStatementCacheCurrentCount", "Version"
+                , "PreparedStatementCacheAccessCount", "PreparedStatementCacheMissCount", "PreparedStatementCacheHitCount", "PreparedStatementCacheCurrentCount", "Version" // 
+                , "LastErrorTime", "LastCreateErrorTime"
         //
         };
 
