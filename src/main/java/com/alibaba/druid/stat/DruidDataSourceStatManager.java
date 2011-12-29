@@ -201,6 +201,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("LastError", JMXUtils.getErrorCompositeData(dataSource.getLastError()));
         map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getCreateError()));
         map.put("PreparedStatementCacheDeleteCount", dataSource.getCachedPreparedStatementDeleteCount());
+        
+        map.put("PreparedStatementCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
         map.put("Version", dataSource.getVersion());
 
         return new CompositeDataSupport(rowType, map);
@@ -223,7 +225,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
                 , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType(), SimpleType.LONG //
-                , SimpleType.STRING
+                , SimpleType.LONG, SimpleType.STRING
         //
         };
 
@@ -242,7 +244,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
                 "StartTransactionCount", //
                 "CommitCount", "RollbackCount", "LastError", "LastCreateError", "PreparedStatementCacheDeleteCount" //
-                , "Version"
+                , "CachedPreparedStatementMissCount", "Version"
         //
         };
 

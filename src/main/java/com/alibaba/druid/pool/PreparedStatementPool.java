@@ -49,6 +49,8 @@ public class PreparedStatementPool {
 
         if (holder != null) {
             holder.incrementReusedCount();
+        } else {
+            dataSource.incrementCachedPreparedStatementMissCount();
         }
 
         return holder;
@@ -90,6 +92,7 @@ public class PreparedStatementPool {
             if (remove) {
                 dataSource.closePreapredStatement(eldest.getValue());
                 dataSource.decrementCachedPreparedStatementCount();
+                dataSource.incrementCachedPreparedStatementDeleteCount();
             }
 
             return remove;
