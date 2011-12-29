@@ -203,6 +203,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("PreparedStatementCacheDeleteCount", dataSource.getCachedPreparedStatementDeleteCount());
         
         map.put("PreparedStatementCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
+        map.put("PreparedStatementCacheHitCount", dataSource.getReusePreparedStatementCount());
+        map.put("PreparedStatementCacheCurrentCount", dataSource.getCachedPreparedStatementCount());
         map.put("Version", dataSource.getVersion());
 
         return new CompositeDataSupport(rowType, map);
@@ -225,7 +227,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.STRING, SimpleType.INTEGER, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, //
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
                 , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType(), SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.STRING
+                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING
         //
         };
 
@@ -244,7 +246,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "NotEmptyWaitCount", "NotEmptyWaitNanos", "ErrorCount", "ReusePreparedStatementCount",
                 "StartTransactionCount", //
                 "CommitCount", "RollbackCount", "LastError", "LastCreateError", "PreparedStatementCacheDeleteCount" //
-                , "CachedPreparedStatementMissCount", "Version"
+                , "PreparedStatementCacheMissCount", "PreparedStatementCacheHitCount", "PreparedStatementCacheCurrentCount", "Version"
         //
         };
 
