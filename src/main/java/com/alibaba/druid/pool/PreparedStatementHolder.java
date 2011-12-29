@@ -26,7 +26,7 @@ public final class PreparedStatementHolder {
 
     private final PreparedStatementKey key;
     private final PreparedStatement    statement;
-    private int                        useCount = 0;
+    private int                        hitCount = 0;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
@@ -41,12 +41,12 @@ public final class PreparedStatementHolder {
         return key;
     }
 
-    public void incrementReusedCount() {
-        useCount++;
+    public void incrementHitCount() {
+        hitCount++;
     }
 
-    public int getReusedCount() {
-        return useCount;
+    public int getHitCount() {
+        return hitCount;
     }
 
 }

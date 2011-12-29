@@ -29,6 +29,7 @@ public class TestOracle_DruidDataSource extends TestCase {
     public void test_0() throws Exception {
         final String SQL = "SELECT SYSDATE FROM DUAL";
         final DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setInitialSize(1);
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
         dataSource.setPassword(password);

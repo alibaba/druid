@@ -81,6 +81,10 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     public PreparedStatementHolder getPreparedStatementHolder() {
         return holder;
     }
+    
+    public int getHitCount() {
+        return holder.getHitCount();
+    }
 
     public void setFetchSize(int rows) throws SQLException {
         currentFetchSize = rows;

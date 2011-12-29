@@ -1279,8 +1279,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                             if (entryIndex++ != 0) {
                                 buf.append(",");
                             }
-                            buf.append("\n\t\t{reuseCount:");
-                            buf.append(entry.getValue().getReusedCount());
+                            buf.append("\n\t\t{hitCount:");
+                            buf.append(entry.getValue().getHitCount());
                             buf.append(",sql:\"");
                             buf.append(entry.getKey().getSql());
                             buf.append("\"");

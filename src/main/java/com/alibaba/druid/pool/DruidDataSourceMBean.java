@@ -56,18 +56,8 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     void setPoolPreparedStatements(boolean poolPreparedStatements);
 
-    /**
-     * ActiveCount峰值
-     * 
-     * @return
-     */
     int getActivePeak();
 
-    /**
-     * PoolingCount峰值
-     * 
-     * @return
-     */
     int getPoolingPeak();
 
     Date getActivePeakTime();

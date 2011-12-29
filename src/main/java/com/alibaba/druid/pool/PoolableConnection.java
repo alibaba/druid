@@ -96,6 +96,10 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         throw new SQLException("Error", t);
     }
+    
+    private boolean isOracle() {
+        return "oracle".equals(holder.getDataSource().getDbType());
+    }
 
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
         if (this.holder == null) {
@@ -118,6 +122,10 @@ public class PoolableConnection implements PooledConnection, Connection {
             stmt.clearResultSet();
             holder.removeTrace(stmt);
             stmt.setClosed(true); // soft set close
+            
+            if (stmt.getHitCount() == 0 && isOracle()) {
+                OracleUtils.clearDefines(stmt);
+            }
         } else {
             stmt.closeInternal();
             holder.getDataSource().incrementClosedPreparedStatementCount();
