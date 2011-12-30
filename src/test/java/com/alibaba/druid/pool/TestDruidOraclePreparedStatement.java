@@ -1,13 +1,11 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
-import oracle.jdbc.driver.OraclePreparedStatement;
 
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -40,6 +38,28 @@ public class TestDruidOraclePreparedStatement extends TestCase {
     public void test_0() throws Exception {
 
         Class.forName(JdbcUtils.getDriverClassName(jdbcUrl));
+
+        {
+            Connection conn = dataSource.getConnection();
+
+            ResultSet metaRs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] { "TABLE" });
+            JdbcUtils.printResultSet(metaRs);
+            metaRs.close();
+
+            conn.close();
+        }
+
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM WP_ORDERS");
+            JdbcUtils.printResultSet(rs);
+            rs.close();
+
+            stmt.close();
+            conn.close();
+        }
 
         for (int i = 0; i < 3; ++i) {
             Connection conn = dataSource.getConnection();

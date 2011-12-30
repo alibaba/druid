@@ -1,0 +1,2 @@
+mvn install:install-file -Dfile=lib/oracle/11.2.0.3/ojdbc5_g.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.2.0.3 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=lib/oracle/11.2.0.3/ojdbc6_g.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -DgeneratePom=true

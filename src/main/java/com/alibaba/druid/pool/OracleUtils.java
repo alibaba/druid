@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import oracle.jdbc.OracleConnection;
-import oracle.jdbc.driver.OracleStatement;
+import oracle.jdbc.OracleStatement;
 
 public class OracleUtils {
 
@@ -30,11 +30,17 @@ public class OracleUtils {
     }
 
     public static int getDefaultRowPrefetch(Connection conn, int value) throws SQLException {
-        if (conn instanceof OracleConnection) {
-            OracleConnection oracleConn = (OracleConnection) conn;
-            return oracleConn.getDefaultRowPrefetch();
-        }
+        OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
+        return oracleConn.getDefaultRowPrefetch();
+    }
 
-        return -1;
+    public static void cancel(Connection conn) throws SQLException {
+        OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
+        oracleConn.cancel();
+    }
+    
+    public static void pingDatabase(Connection conn) throws SQLException {
+        OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
+        oracleConn.pingDatabase();
     }
 }

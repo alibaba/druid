@@ -290,6 +290,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if ("oracle".equals(this.dbType)) {
                 isOracle = true;
+                
+                if (driver.getMajorVersion() < 10) {
+                    throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "." + driver.getMinorVersion());
+                }
             }
 
             String realDriverClassName = driver.getClass().getName();

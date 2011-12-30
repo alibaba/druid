@@ -205,12 +205,12 @@
 			<version>5.1.12</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
-			<groupId>oracle</groupId>
-			<artifactId>oracle-jdbc</artifactId>
-			<version>10.1.0.2.0</version>
-			<scope>test</scope>
-			<optional>true</optional>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc5</artifactId>
+			<version>11.2.0.3</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 
 import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
-import oracle.jdbc.driver.OraclePreparedStatement;
+import oracle.jdbc.OraclePreparedStatement;
 
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -37,15 +37,15 @@ public class TestOraclePreparedStatement extends TestCase {
 
         int fetchRowSize = oracleConn.getDefaultRowPrefetch();
 
-        String sql = "SELECT * FROM WS_OFFER WHERE ROWNUM <= ?";
+        String sql = "SELECT * FROM WP_ORDERS WHERE ID <= ?";
 
         OraclePreparedStatement oracleStmt = null;
         PreparedStatement stmt = conn.prepareStatement(sql);
         oracleStmt = (OraclePreparedStatement) stmt;
-        oracleStmt.setRowPrefetch(1);
+        oracleStmt.setRowPrefetch(10);
         {
 
-            stmt.setInt(1, 1);
+            stmt.setInt(1, 327);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
 

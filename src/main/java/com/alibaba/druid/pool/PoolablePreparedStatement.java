@@ -173,7 +173,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         incrementExecuteCount();
         transactionRecord(sql);
 
-        oracleSetRowPrefetch();
+        // oracleSetRowPrefetch();
 
         try {
             ResultSet rs = stmt.executeQuery();
@@ -429,7 +429,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         incrementExecuteCount();
         transactionRecord(sql);
 
-        oracleSetRowPrefetch();
+        // oracleSetRowPrefetch();
 
         try {
             return stmt.execute();
@@ -438,7 +438,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         }
     }
 
-    private void oracleSetRowPrefetch() throws SQLException {
+    protected void oracleSetRowPrefetch() throws SQLException {
         if (!conn.isOracle()) {
             return;
         }
@@ -446,7 +446,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         if (holder.getHitCount() == 0) {
             return;
         }
-
+        
         int fetchRowPeak = holder.getFetchRowPeak();
 
         if (fetchRowPeak < 0) {
