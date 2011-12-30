@@ -2,6 +2,7 @@ package com.alibaba.druid.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -71,5 +72,4 @@ public class OracleUtils {
         OracleResultSet oracleResultSet = rs.unwrap(OracleResultSet.class);
         return oracleResultSet.getROWID(columnIndex);
     }
-
 }
