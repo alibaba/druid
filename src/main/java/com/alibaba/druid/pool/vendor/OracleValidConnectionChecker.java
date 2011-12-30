@@ -22,37 +22,24 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolableConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.DruidLoaderUtils;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.OracleUtils;
 
 public class OracleValidConnectionChecker implements ValidConnectionChecker, Serializable {
 
-    private static final long     serialVersionUID = -2227528634302168877L;
+    private static final long serialVersionUID = -2227528634302168877L;
 
-    private static final Log      LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
-
-    private final Class<?>        clazz;
-    private final Method          ping;
-    private final static Object[] params           = new Object[] { new Integer(5000) };
+    private static final Log  LOG              = LogFactory.getLog(OracleValidConnectionChecker.class);
 
     public OracleValidConnectionChecker(){
-        try {
-            clazz = DruidLoaderUtils.loadClass("oracle.jdbc.driver.OracleConnection");
-            ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
-        } catch (Exception e) {
-            throw new RuntimeException("Unable to resolve pingDatabase method:", e);
-        }
+
     }
 
     public boolean isValidConnection(Connection conn, String valiateQuery, int validationQueryTimeout) {
@@ -78,33 +65,14 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
                 conn = ((ConnectionProxy) conn).getConnectionRaw();
             }
 
-            // unwrap
-            if (clazz.isAssignableFrom(conn.getClass())) {
-                Integer status = (Integer) ping.invoke(conn, params);
+            int status = OracleUtils.pingDatabase(conn);
 
-                // Error
-                if (status.intValue() < 0) {
-                    return false;
-                }
-
-                return true;
+            // Error
+            if (status < 0) {
+                return false;
             }
 
-            Statement stmt = null;
-            ResultSet rs = null;
-            try {
-                stmt = conn.createStatement();
-                rs = stmt.executeQuery(valiateQuery);
-                return true;
-            } catch (SQLException e) {
-                return false;
-            } catch (Exception e) {
-                LOG.warn("Unexpected error in ping", e);
-                return false;
-            } finally {
-                JdbcUtils.close(rs);
-                JdbcUtils.close(stmt);
-            }
+            return true;
         } catch (Exception e) {
             LOG.warn("Unexpected error in pingDatabase", e);
         }

@@ -1,8 +1,10 @@
-package com.alibaba.druid.pool;
+package com.alibaba.druid.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import com.alibaba.druid.pool.PoolablePreparedStatement;
 
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleStatement;
@@ -38,9 +40,19 @@ public class OracleUtils {
         OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
         oracleConn.cancel();
     }
-    
-    public static void pingDatabase(Connection conn) throws SQLException {
+
+    public static int pingDatabase(Connection conn) throws SQLException {
         OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
-        oracleConn.pingDatabase();
+        return oracleConn.pingDatabase();
+    }
+
+    public static void openProxySession(Connection conn, int type, java.util.Properties prop) throws SQLException {
+        OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
+        oracleConn.openProxySession(type, prop);
+    }
+
+    public static int getDefaultExecuteBatch(Connection conn) throws SQLException {
+        OracleConnection oracleConn = conn.unwrap(OracleConnection.class);
+        return oracleConn.getDefaultExecuteBatch();
     }
 }

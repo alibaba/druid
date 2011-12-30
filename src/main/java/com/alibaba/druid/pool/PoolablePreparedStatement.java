@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.util.OracleUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
