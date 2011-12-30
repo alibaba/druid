@@ -44,6 +44,7 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.util.OracleUtils;
 import com.alibaba.druid.util.TransactionInfo;
 
 /**
@@ -126,7 +127,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             
             stmt.setClosed(true); // soft set close
             
-            if (stmt.getHitCount() == 0 && isOracle()) {
+            if (stmt.getHitCount() < 2 && isOracle()) {
                 OracleUtils.clearDefines(stmt);
             }
         } else {

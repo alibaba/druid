@@ -21,21 +21,21 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class Oracle_Case4 extends TestCase {
 
-    private String  jdbcUrl;
-    private String  user;
-    private String  password;
-    private String  driverClass;
-    private int     maxIdle                = 40;
-    private int     maxActive              = 50;
-    private int     maxWait                = 5000;
-    private String  validationQuery        = "SELECT 1 FROM DUAL";
-    private int     threadCount            = 1;
-    private int     loopCount              = 3;
-    final int       LOOP_COUNT             = 1000 * 10;
-    private boolean testOnBorrow           = false;
-    private boolean preparedStatementCache = true;
-    
-    private final String SQL = "SELECT MEMBER_ID FROM WP_ORDERS WHERE ID = ?";
+    private String       jdbcUrl;
+    private String       user;
+    private String       password;
+    private String       driverClass;
+    private int          maxIdle                = 40;
+    private int          maxActive              = 50;
+    private int          maxWait                = 5000;
+    private String       validationQuery        = "SELECT 1 FROM DUAL";
+    private int          threadCount            = 1;
+    private int          loopCount              = 3;
+    final int            LOOP_COUNT             = 1000 * 1;
+    private boolean      testOnBorrow           = false;
+    private boolean      preparedStatementCache = true;
+
+    private final String SQL                    = "SELECT MEMBER_ID FROM WP_ORDERS WHERE ID = ?";
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
@@ -44,13 +44,14 @@ public class Oracle_Case4 extends TestCase {
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
-    public void xtest_0() throws Exception {
+    public void test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
         dataSource.setPoolPreparedStatements(preparedStatementCache);
+        dataSource.setMaxOpenPreparedStatements(10);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
@@ -74,6 +75,7 @@ public class Oracle_Case4 extends TestCase {
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
         dataSource.setPoolPreparedStatements(preparedStatementCache);
+        dataSource.setMaxOpenPreparedStatements(10);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
