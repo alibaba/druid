@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import junit.framework.TestCase;
+import oracle.jdbc.OracleConnection;
 import oracle.jdbc.driver.OraclePreparedStatement;
 
 import com.alibaba.druid.util.JdbcUtils;
@@ -28,10 +29,14 @@ public class TestOraclePreparedStatement extends TestCase {
 
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
 
+        OracleConnection oracleConn = (OracleConnection) conn;
+
         // ResultSet metaRs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] {"TABLE"});
         // JdbcUtils.printResultSet(metaRs);
         // metaRs.close();
-        
+
+        int fetchRowSize = oracleConn.getDefaultRowPrefetch();
+
         String sql = "SELECT * FROM WS_OFFER WHERE ROWNUM <= ?";
 
         OraclePreparedStatement oracleStmt = null;
@@ -39,15 +44,15 @@ public class TestOraclePreparedStatement extends TestCase {
         oracleStmt = (OraclePreparedStatement) stmt;
         oracleStmt.setRowPrefetch(1);
         {
-            
+
             stmt.setInt(1, 1);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                
+
             }
 
             rs.close();
-            
+
             oracleStmt.clearDefines();
         }
         oracleStmt.setRowPrefetch(1000);
@@ -55,7 +60,7 @@ public class TestOraclePreparedStatement extends TestCase {
             stmt.setInt(1, 11);
             ResultSet rs = stmt.executeQuery();
             rs.next();
-            
+
             rs.close();
             stmt.close();
         }

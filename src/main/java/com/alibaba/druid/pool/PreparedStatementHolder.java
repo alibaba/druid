@@ -26,13 +26,32 @@ public final class PreparedStatementHolder {
 
     private final PreparedStatementKey key;
     private final PreparedStatement    statement;
-    private int                        hitCount     = 0;
+    private int                        hitCount         = 0;
 
-    private int                        fetchRowPeak = -1;
+    private int                        fetchRowPeak     = -1;
+
+    private int                        defaultRowPretch = -1;
+    private int                        rowPrefetch      = -1;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
         this.statement = stmt;
+    }
+
+    public int getDefaultRowPretch() {
+        return defaultRowPretch;
+    }
+
+    public void setDefaultRowPretch(int defaultRowPretch) {
+        this.defaultRowPretch = defaultRowPretch;
+    }
+
+    public int getRowPrefetch() {
+        return rowPrefetch;
+    }
+
+    public void setRowPrefetch(int rowPrefetch) {
+        this.rowPrefetch = rowPrefetch;
     }
 
     public int getFetchRowPeak() {

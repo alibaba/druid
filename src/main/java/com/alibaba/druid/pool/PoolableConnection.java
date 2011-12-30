@@ -97,8 +97,8 @@ public class PoolableConnection implements PooledConnection, Connection {
         throw new SQLException("Error", t);
     }
     
-    private boolean isOracle() {
-        return "oracle".equals(holder.getDataSource().getDbType());
+    public boolean isOracle() {
+        return holder.getDataSource().isOracle();
     }
 
     void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {

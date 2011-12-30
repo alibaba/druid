@@ -1457,6 +1457,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Date getCreatedTime() {
         return createdTime;
     }
+    
+    public abstract boolean isOracle();
 
     public abstract int getRawDriverMajorVersion();
 

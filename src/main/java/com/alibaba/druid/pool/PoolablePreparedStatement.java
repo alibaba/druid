@@ -81,7 +81,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     public PreparedStatementHolder getPreparedStatementHolder() {
         return holder;
     }
-    
+
     public int getHitCount() {
         return holder.getHitCount();
     }
@@ -172,6 +172,8 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
 
         incrementExecuteCount();
         transactionRecord(sql);
+
+        oracleSetRowPrefetch();
 
         try {
             ResultSet rs = stmt.executeQuery();
@@ -427,10 +429,49 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         incrementExecuteCount();
         transactionRecord(sql);
 
+        oracleSetRowPrefetch();
+
         try {
             return stmt.execute();
         } catch (Throwable t) {
             throw checkException(t);
+        }
+    }
+
+    private void oracleSetRowPrefetch() throws SQLException {
+        if (!conn.isOracle()) {
+            return;
+        }
+
+        if (holder.getHitCount() == 0) {
+            return;
+        }
+
+        int fetchRowPeak = holder.getFetchRowPeak();
+
+        if (fetchRowPeak < 0) {
+            return;
+        }
+
+        if (holder.getDefaultRowPretch() == -1) {
+            int defaultRowPretch = OracleUtils.getRowPrefetch(this);
+            holder.setDefaultRowPretch(defaultRowPretch);
+            holder.setRowPrefetch(defaultRowPretch);
+        }
+
+        int rowPrefetch;
+
+        if (fetchRowPeak <= 1) {
+            rowPrefetch = 1;
+        } else if (fetchRowPeak > holder.getDefaultRowPretch()) {
+            rowPrefetch = holder.getDefaultRowPretch();
+        } else {
+            rowPrefetch = fetchRowPeak;
+        }
+
+        if (rowPrefetch != holder.getRowPrefetch()) {
+            OracleUtils.setRowPrefetch(this, rowPrefetch);
+            holder.setRowPrefetch(rowPrefetch);
         }
     }
 

@@ -35,6 +35,10 @@ public class PoolableWrapper implements Wrapper {
             return false;
         }
 
+        if (iface.isInstance(wrapper)) {
+            return true;
+        }
+
         if (iface.isInstance(this)) {
             return true;
         }
@@ -47,6 +51,10 @@ public class PoolableWrapper implements Wrapper {
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == null) {
             return null;
+        }
+
+        if (iface.isInstance(wrapper)) {
+            return (T) wrapper;
         }
 
         if (iface.isInstance(this)) {

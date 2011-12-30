@@ -108,6 +108,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                  initStackTrace;
 
+    private boolean                 isOracle                = false;
+
     public DruidDataSource(){
     }
 
@@ -285,6 +287,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
+
+            if ("oracle".equals(this.dbType)) {
+                isOracle = true;
+            }
 
             String realDriverClassName = driver.getClass().getName();
             if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
@@ -1312,6 +1318,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             LOG.error(buf.toString(), new TransactionTimeoutException());
         }
+    }
+
+    public boolean isOracle() {
+        return isOracle;
     }
 
     @Override
