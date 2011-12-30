@@ -127,7 +127,7 @@ public class PoolableConnection implements PooledConnection, Connection {
             
             stmt.setClosed(true); // soft set close
             
-            if (stmt.getHitCount() < 2 && isOracle()) {
+            if (stmt.getHitCount() < 1 && isOracle()) {
                 OracleUtils.clearDefines(stmt);
             }
         } else {
