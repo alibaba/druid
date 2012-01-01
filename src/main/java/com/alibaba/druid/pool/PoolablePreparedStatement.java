@@ -174,7 +174,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         incrementExecuteCount();
         transactionRecord(sql);
 
-        // oracleSetRowPrefetch();
+        oracleSetRowPrefetch();
 
         try {
             ResultSet rs = stmt.executeQuery();
@@ -463,11 +463,11 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         int rowPrefetch;
 
         if (fetchRowPeak <= 1) {
-            rowPrefetch = 1;
+            rowPrefetch = 2;
         } else if (fetchRowPeak > holder.getDefaultRowPretch()) {
             rowPrefetch = holder.getDefaultRowPretch();
         } else {
-            rowPrefetch = fetchRowPeak;
+            rowPrefetch = fetchRowPeak + 1;
         }
 
         if (rowPrefetch != holder.getRowPrefetch()) {

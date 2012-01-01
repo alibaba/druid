@@ -183,7 +183,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               commitCount                               = new AtomicLong();
     protected final AtomicLong                                                               startTransactionCount                     = new AtomicLong();
     protected final AtomicLong                                                               rollbackCount                             = new AtomicLong();
-    protected final AtomicLong                                                               cachedPreparedStatementHitCount                    = new AtomicLong();
+    protected final AtomicLong                                                               cachedPreparedStatementHitCount           = new AtomicLong();
     protected final AtomicLong                                                               preparedStatementCount                    = new AtomicLong();
     protected final AtomicLong                                                               closedPreparedStatementCount              = new AtomicLong();
     protected final AtomicLong                                                               cachedPreparedStatementCount              = new AtomicLong();
@@ -208,6 +208,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected long                                                                           lastErrorTimeMillis;
     protected Throwable                                                                      lastCreateError;
     protected long                                                                           lastCreateErrorTimeMillis;
+
+    protected boolean                                                                        isOracle                                  = false;
+
+    public boolean isOracle() {
+        return isOracle;
+    }
 
     public Throwable getLastCreateError() {
         return lastCreateError;
@@ -300,7 +306,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public long getCachedPreparedStatementMissCount() {
         return cachedPreparedStatementMissCount.get();
     }
-    
+
     public long getCachedPreparedStatementAccessCount() {
         return cachedPreparedStatementMissCount.get() + cachedPreparedStatementHitCount.get();
     }
@@ -1238,6 +1244,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
                 dataSource.validateConnection(conn);
                 dataSource.createError = null;
+
+//                if (dataSource.isOracle() && dataSource.isPoolPreparedStatements()) {
+//                    int cacheSize = dataSource.getMaxPoolPreparedStatementPerConnectionSize();
+//                    if (cacheSize > 0) {
+//                        OracleUtils.setImplicitCachingEnabled(conn, true);
+//                        OracleUtils.setStatementCacheSize(conn, cacheSize);
+//                    }
+//                }
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
                 dataSource.createError = ex;
@@ -1457,8 +1471,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public Date getCreatedTime() {
         return createdTime;
     }
-    
-    public abstract boolean isOracle();
 
     public abstract int getRawDriverMajorVersion();
 

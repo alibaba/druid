@@ -39,27 +39,27 @@ public class TestDruidOraclePreparedStatement extends TestCase {
 
         Class.forName(JdbcUtils.getDriverClassName(jdbcUrl));
 
-        {
-            Connection conn = dataSource.getConnection();
+//        {
+//            Connection conn = dataSource.getConnection();
+//
+//            ResultSet metaRs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] { "TABLE" });
+//            JdbcUtils.printResultSet(metaRs);
+//            metaRs.close();
+//
+//            conn.close();
+//        }
 
-            ResultSet metaRs = conn.getMetaData().getTables(null, "ALIBABA", null, new String[] { "TABLE" });
-            JdbcUtils.printResultSet(metaRs);
-            metaRs.close();
-
-            conn.close();
-        }
-
-        {
-            Connection conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
-
-            ResultSet rs = stmt.executeQuery("SELECT * FROM WP_ORDERS");
-            JdbcUtils.printResultSet(rs);
-            rs.close();
-
-            stmt.close();
-            conn.close();
-        }
+//        {
+//            Connection conn = dataSource.getConnection();
+//            Statement stmt = conn.createStatement();
+//
+//            ResultSet rs = stmt.executeQuery("SELECT * FROM WP_ORDERS");
+//            JdbcUtils.printResultSet(rs);
+//            rs.close();
+//
+//            stmt.close();
+//            conn.close();
+//        }
 
         for (int i = 0; i < 3; ++i) {
             Connection conn = dataSource.getConnection();

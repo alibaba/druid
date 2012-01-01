@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.management.ObjectName;
@@ -68,5 +69,5 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     ObjectName getObjectName();
 
-    void clearStatementCache();
+    void clearStatementCache() throws SQLException;
 }

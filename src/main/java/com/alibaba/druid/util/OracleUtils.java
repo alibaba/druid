@@ -2,13 +2,13 @@ package com.alibaba.druid.util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
+import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.sql.ROWID;
 
 import com.alibaba.druid.pool.PoolablePreparedStatement;
@@ -29,6 +29,29 @@ public class OracleUtils {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
         oracleStmt.setRowPrefetch(value);
     }
+    
+    public static void enterImplicitCache(PreparedStatement stmt) throws SQLException {
+        oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
+        oracleStmt.enterImplicitCache();
+    }
+
+    public static void exitImplicitCacheToClose(PreparedStatement stmt) throws SQLException {
+        oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
+        oracleStmt.exitImplicitCacheToClose();
+    }
+
+    public static void exitImplicitCacheToActive(PreparedStatement stmt) throws SQLException {
+        oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
+        oracleStmt.exitImplicitCacheToActive();
+    }
+
+    public static OraclePreparedStatement unwrapInternal(PreparedStatement stmt) throws SQLException {
+        if (stmt instanceof OraclePreparedStatement) {
+            return (OraclePreparedStatement) stmt;
+        }
+
+        return stmt.unwrap(OraclePreparedStatement.class);
+    }
 
     public static void setDefaultRowPrefetch(Connection conn, int value) throws SQLException {
         OracleConnection oracleConn = unwrap(conn);
@@ -40,14 +63,34 @@ public class OracleUtils {
         return oracleConn.getDefaultRowPrefetch();
     }
 
-    public static void cancel(Connection conn) throws SQLException {
+    public static boolean getImplicitCachingEnabled(Connection conn) throws SQLException {
         OracleConnection oracleConn = unwrap(conn);
-        oracleConn.cancel();
+        return oracleConn.getImplicitCachingEnabled();
+    }
+
+    public static int getStatementCacheSize(Connection conn) throws SQLException {
+        OracleConnection oracleConn = unwrap(conn);
+        return oracleConn.getStatementCacheSize();
+    }
+
+    public static void purgeImplicitCache(Connection conn) throws SQLException {
+        OracleConnection oracleConn = unwrap(conn);
+        oracleConn.purgeImplicitCache();
+    }
+
+    public static void setImplicitCachingEnabled(Connection conn, boolean cache) throws SQLException {
+        OracleConnection oracleConn = unwrap(conn);
+        oracleConn.setImplicitCachingEnabled(cache);
+    }
+
+    public static void setStatementCacheSize(Connection conn, int size) throws SQLException {
+        OracleConnection oracleConn = unwrap(conn);
+        oracleConn.setStatementCacheSize(size);
     }
 
     public static int pingDatabase(Connection conn) throws SQLException {
         OracleConnection oracleConn = unwrap(conn);
-        return oracleConn.pingDatabase();
+        return oracleConn.pingDatabase(1000);
     }
 
     public static void openProxySession(Connection conn, int type, java.util.Properties prop) throws SQLException {

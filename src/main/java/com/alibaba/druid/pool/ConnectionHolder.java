@@ -143,6 +143,10 @@ public final class ConnectionHolder {
     }
 
     public boolean isPoolPreparedStatements() {
+//        if (dataSource.isOracle()) {
+//            return false;
+//        }
+        
         boolean poolPreparedStatements = dataSource.isPoolPreparedStatements();
         if (poolPreparedStatements) {
             boolean transaction = !isUnderlyingAutoCommit();

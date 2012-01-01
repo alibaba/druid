@@ -22,12 +22,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.util.OracleUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class PreparedStatementPool {
+
+    private final static Log                                         LOG = LogFactory.getLog(PreparedStatementPool.class);
 
     private final Map<PreparedStatementKey, PreparedStatementHolder> map;
     private final DruidAbstractDataSource                            dataSource;
@@ -45,12 +50,13 @@ public class PreparedStatementPool {
         M1, M2, M3, M4, M5, M6, Precall_1, Precall_2, Precall_3
     }
 
-    public PreparedStatementHolder get(PreparedStatementKey key) {
+    public PreparedStatementHolder get(PreparedStatementKey key) throws SQLException {
         PreparedStatementHolder holder = map.get(key);
 
         if (holder != null) {
             holder.incrementHitCount();
             dataSource.incrementCachedPreparedStatementHitCount();
+            OracleUtils.exitImplicitCacheToActive(holder.getStatement());
         } else {
             dataSource.incrementCachedPreparedStatementMissCount();
         }
@@ -65,9 +71,14 @@ public class PreparedStatementPool {
             return;
         }
 
+        if (dataSource.isOracle()) {
+            OracleUtils.enterImplicitCache(stmt);
+            
+        }
+
         PreparedStatementKey key = holder.getKey();
         PreparedStatementHolder oldHolder = map.put(key, holder);
-        if (oldHolder != null) {
+        if (oldHolder != null && oldHolder != holder) {
             dataSource.closePreapredStatement(oldHolder);
         } else {
             if (holder.getHitCount() == 0) {
@@ -75,18 +86,25 @@ public class PreparedStatementPool {
             }
         }
     }
-    
-    public void clear() {
+
+    public void clear() throws SQLException {
         Iterator<Entry<PreparedStatementKey, PreparedStatementHolder>> iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Entry<PreparedStatementKey, PreparedStatementHolder> entry = iter.next();
-            
-            dataSource.closePreapredStatement(entry.getValue());
-            dataSource.decrementCachedPreparedStatementCount();
-            dataSource.incrementCachedPreparedStatementDeleteCount();
-            
+
+            closeStatement(entry.getValue());
+
             iter.remove();
         }
+    }
+
+    private void closeStatement(PreparedStatementHolder holder) throws SQLException {
+        if (dataSource.isOracle()) {
+            OracleUtils.exitImplicitCacheToClose(holder.getStatement());
+        }
+        dataSource.closePreapredStatement(holder);
+        dataSource.decrementCachedPreparedStatementCount();
+        dataSource.incrementCachedPreparedStatementDeleteCount();
     }
 
     public Map<PreparedStatementKey, PreparedStatementHolder> getMap() {
@@ -105,9 +123,11 @@ public class PreparedStatementPool {
             boolean remove = (size() > dataSource.getMaxPoolPreparedStatementPerConnectionSize());
 
             if (remove) {
-                dataSource.closePreapredStatement(eldest.getValue());
-                dataSource.decrementCachedPreparedStatementCount();
-                dataSource.incrementCachedPreparedStatementDeleteCount();
+                try {
+                    closeStatement(eldest.getValue());
+                } catch (SQLException e) {
+                    LOG.error("closeStatement error", e);
+                }
             }
 
             return remove;

@@ -21,44 +21,55 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class Oracle_Case4 extends TestCase {
 
-    private String       jdbcUrl;
-    private String       user;
-    private String       password;
-    private String       driverClass;
-    private int          maxIdle                = 40;
-    private int          maxActive              = 50;
-    private int          maxWait                = 5000;
-    private String       validationQuery        = "SELECT 1 FROM DUAL";
-    private int          threadCount            = 1;
-    private int          loopCount              = 3;
-    final int            LOOP_COUNT             = 1000 * 1;
-    private boolean      testOnBorrow           = false;
-    private boolean      preparedStatementCache = true;
+    private String  jdbcUrl;
+    private String  user;
+    private String  password;
+    private String  driverClass;
+    private int     maxIdle                    = 40;
+    private int     maxActive                  = 50;
+    private int     maxWait                    = 5000;
+    private String  validationQuery            = "SELECT 1 FROM DUAL";
+    private int     threadCount                = 1;
+    private int     loopCount                  = 3;
+    final int       LOOP_COUNT                 = 1000 * 10;
+    private boolean testOnBorrow               = false;
+    private boolean preparedStatementCache     = true;
+    private int     preparedStatementCacheSize = 50;
+    private String  properties = "defaultRowPrefetch=50";
 
-    private final String SQL                    = "SELECT MEMBER_ID FROM WP_ORDERS WHERE ID = ?";
+    private String  SQL;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+        // user = "alibaba";
+        // password = "ccbuauto";
+        // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
+
+        jdbcUrl = "jdbc:oracle:thin:@10.20.149.81:1521:ointest3";
         user = "alibaba";
-        password = "ccbuauto";
+        password = "deYcR7facWSJtCuDpm2r";
+        SQL = "SELECT * FROM AV_INFO WHERE ID = ?";
+
         driverClass = "oracle.jdbc.driver.OracleDriver";
     }
 
-    public void test_0() throws Exception {
+    public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
         dataSource.setPoolPreparedStatements(preparedStatementCache);
-        dataSource.setMaxOpenPreparedStatements(10);
+        dataSource.setMaxOpenPreparedStatements(preparedStatementCacheSize);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setConnectionProperties(properties);
 
+        // printAV_INFO(dataSource);
         // printTables(dataSource);
         // printWP_ORDERS(dataSource);
 
@@ -68,20 +79,23 @@ public class Oracle_Case4 extends TestCase {
         System.out.println();
     }
 
-    public void test_1() throws Exception {
+    public void test_dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setMaxActive(maxActive);
         dataSource.setMaxIdle(maxIdle);
         dataSource.setMaxWait(maxWait);
         dataSource.setPoolPreparedStatements(preparedStatementCache);
-        dataSource.setMaxOpenPreparedStatements(10);
+        dataSource.setMaxOpenPreparedStatements(preparedStatementCacheSize);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setConnectionProperties(properties);
+        
+//        printAV_INFO(dataSource);
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "dbcp", threadCount);
@@ -93,6 +107,19 @@ public class Oracle_Case4 extends TestCase {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM WP_ORDERS");
+
+        JdbcUtils.printResultSet(rs);
+
+        rs.close();
+        stmt.close();
+        conn.close();
+    }
+
+    private void printAV_INFO(DataSource dataSource) throws SQLException {
+        String sql = "SELECT DISTINCT ID FROM AV_INFO WHERE ROWNUM <= 10";
+        Connection conn = dataSource.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
 
         JdbcUtils.printResultSet(rs);
 
@@ -124,12 +151,16 @@ public class Oracle_Case4 extends TestCase {
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
-                            String sql = SQL; // + " AND ROWNUM <= " + (i % 20 + 1);
+                            
+                            int mod = i % 500;
+                            
+                            String sql = SQL;// + " AND ROWNUM <= " + (mod + 1);
                             PreparedStatement stmt = conn.prepareStatement(sql);
-                            stmt.setInt(1, 337);
+                            stmt.setInt(1, 61);
                             ResultSet rs = stmt.executeQuery();
+                            int rowCount = 0;
                             while (rs.next()) {
-
+                                rowCount++;
                             }
                             // Assert.isTrue(!rs.isClosed());
                             rs.close();
@@ -137,6 +168,7 @@ public class Oracle_Case4 extends TestCase {
                             stmt.close();
                             Assert.isTrue(stmt.isClosed());
                             conn.close();
+                            Assert.isTrue(conn.isClosed());
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

@@ -108,8 +108,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                  initStackTrace;
 
-    private boolean                 isOracle                = false;
-
     public DruidDataSource(){
     }
 
@@ -290,9 +288,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if ("oracle".equals(this.dbType)) {
                 isOracle = true;
-                
+
                 if (driver.getMajorVersion() < 10) {
-                    throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "." + driver.getMinorVersion());
+                    throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
+                                           + driver.getMinorVersion());
                 }
             }
 
@@ -631,7 +630,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    public void clearStatementCache() {
+    public void clearStatementCache() throws SQLException {
         lock.lock();
         try {
             for (int i = 0; i < poolingCount; ++i) {
@@ -1322,10 +1321,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             LOG.error(buf.toString(), new TransactionTimeoutException());
         }
-    }
-
-    public boolean isOracle() {
-        return isOracle;
     }
 
     @Override
