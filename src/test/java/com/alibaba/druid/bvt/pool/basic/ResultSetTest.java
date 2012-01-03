@@ -15,17 +15,17 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.PoolableResultSet;
-import com.alibaba.druid.pool.PoolableStatement;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class ResultSetTest extends TestCase {
 
-    private PoolableStatement stmt;
+    private DruidPooledStatement stmt;
     private MockResultSet     raw;
-    private PoolableResultSet resultSet;
+    private DruidPooledResultSet resultSet;
 
     protected void setUp() throws Exception {
-        stmt = new PoolableStatement(null, null) {
+        stmt = new DruidPooledStatement(null, null) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {
@@ -38,7 +38,7 @@ public class ResultSetTest extends TestCase {
 
         raw = new MockResultSet(null);
         raw.getRows().add(new Object[] { null });
-        resultSet = new PoolableResultSet(stmt, raw);
+        resultSet = new DruidPooledResultSet(stmt, raw);
     }
 
     @SuppressWarnings("deprecation")

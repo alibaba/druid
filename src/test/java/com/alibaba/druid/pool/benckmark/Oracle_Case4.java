@@ -154,7 +154,7 @@ public class Oracle_Case4 extends TestCase {
                             
                             int mod = i % 500;
                             
-                            String sql = SQL;// + " AND ROWNUM <= " + (mod + 1);
+                            String sql = SQL + " AND ROWNUM <= " + (mod + 1);
                             PreparedStatement stmt = conn.prepareStatement(sql);
                             stmt.setInt(1, 61);
                             ResultSet rs = stmt.executeQuery();

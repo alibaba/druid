@@ -29,17 +29,17 @@ import com.alibaba.druid.logging.LogFactory;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class PoolableStatement extends PoolableWrapper implements Statement {
+public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
-    private final static Log        LOG            = LogFactory.getLog(PoolableStatement.class);
+    private final static Log        LOG            = LogFactory.getLog(DruidPooledStatement.class);
 
     private final Statement         stmt;
-    protected PoolableConnection    conn;
+    protected DruidPooledConnection    conn;
     protected final List<ResultSet> resultSetTrace = new ArrayList<ResultSet>();
     protected boolean               closed         = false;
     protected int                   fetchRowPeak   = -1;
 
-    public PoolableStatement(PoolableConnection conn, Statement stmt){
+    public DruidPooledStatement(DruidPooledConnection conn, Statement stmt){
         super(stmt);
 
         this.conn = conn;
@@ -60,11 +60,11 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         return conn.handleException(error);
     }
 
-    public PoolableConnection getPoolableConnection() {
+    public DruidPooledConnection getPoolableConnection() {
         return conn;
     }
 
-    public void setPoolableConnection(PoolableConnection conn) {
+    public void setPoolableConnection(DruidPooledConnection conn) {
         this.conn = conn;
     }
 
@@ -105,7 +105,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         try {
             ResultSet rs = stmt.executeQuery(sql);
 
-            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);
 
             return poolableResultSet;
@@ -284,7 +284,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         try {
             ResultSet rs = stmt.getResultSet();
 
-            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);
 
             return poolableResultSet;
@@ -443,7 +443,7 @@ public class PoolableStatement extends PoolableWrapper implements Statement {
         try {
             ResultSet rs = stmt.getGeneratedKeys();
 
-            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
 
             resultSetTrace.add(poolableResultSet);
 

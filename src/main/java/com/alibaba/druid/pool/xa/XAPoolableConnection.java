@@ -12,9 +12,9 @@ import javax.transaction.xa.Xid;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.ConnectionHolder;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 
-public class XAPoolableConnection extends PoolableConnection implements XAResource {
+public class XAPoolableConnection extends DruidPooledConnection implements XAResource {
 
     private final static Log     LOG       = LogFactory.getLog(XAPoolableConnection.class);
 

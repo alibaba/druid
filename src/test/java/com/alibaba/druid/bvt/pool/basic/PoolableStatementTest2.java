@@ -12,7 +12,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableStatement;
+import com.alibaba.druid.pool.DruidPooledStatement;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
@@ -80,7 +80,7 @@ public class PoolableStatementTest2 extends TestCase {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -100,7 +100,7 @@ public class PoolableStatementTest2 extends TestCase {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -120,7 +120,7 @@ public class PoolableStatementTest2 extends TestCase {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -141,7 +141,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setEscapeProcessing(true);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -164,7 +164,7 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.setMaxFieldSize(23);
         Assert.assertEquals(23, stmt.getMaxFieldSize());
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -197,7 +197,7 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.setQueryTimeout(33);
         Assert.assertEquals(33, stmt.getQueryTimeout());
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -230,7 +230,7 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.setMaxRows(44);
         Assert.assertEquals(44, stmt.getMaxRows());
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -263,7 +263,7 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.setFetchDirection(144);
         Assert.assertEquals(144, stmt.getFetchDirection());
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -296,7 +296,7 @@ public class PoolableStatementTest2 extends TestCase {
         stmt.setFetchSize(144);
         Assert.assertEquals(144, stmt.getFetchSize());
 
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -327,7 +327,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.cancel();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -348,7 +348,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getWarnings();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -369,7 +369,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.clearWarnings();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -390,7 +390,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.setCursorName("c_name");
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -411,7 +411,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getResultSet();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -432,7 +432,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getUpdateCount();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -453,7 +453,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getMoreResults();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -474,7 +474,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getResultSetConcurrency();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -495,7 +495,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getResultSetType();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -516,7 +516,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.addBatch("select 1");
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -537,7 +537,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.clearBatch();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -558,7 +558,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeBatch();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -579,7 +579,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getMoreResults(1);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -600,7 +600,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getGeneratedKeys();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -621,7 +621,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getResultSetHoldability();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -642,7 +642,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.execute("SELECT 1", new String[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -663,7 +663,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.execute("SELECT 1", new int[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -684,7 +684,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.execute("SELECT 1", Statement.NO_GENERATED_KEYS);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -705,7 +705,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SELECT 1", new String[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -726,7 +726,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SELECT 1", new int[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -747,7 +747,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SELECT 1", Statement.NO_GENERATED_KEYS);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -768,7 +768,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.getMetaData();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -789,7 +789,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.getParameterMetaData();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -810,7 +810,7 @@ public class PoolableStatementTest2 extends TestCase {
         CallableStatement stmt = conn.prepareCall("SELELCT 1");
 
         stmt.wasNull();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -831,7 +831,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.executeQuery();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -852,7 +852,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.executeQuery();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -873,7 +873,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.execute();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -894,7 +894,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.clearParameters();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -915,7 +915,7 @@ public class PoolableStatementTest2 extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
 
         stmt.addBatch();
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -936,7 +936,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SET 1", Statement.RETURN_GENERATED_KEYS);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -957,7 +957,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SET 1", new String[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;
@@ -978,7 +978,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.executeUpdate("SET 1", new int[0]);
-        ((PoolableStatement) stmt).getStatement().close();
+        ((DruidPooledStatement) stmt).getStatement().close();
 
         {
             SQLException error = null;

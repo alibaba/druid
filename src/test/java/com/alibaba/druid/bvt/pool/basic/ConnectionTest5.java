@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -54,7 +54,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_basic() throws Exception {
-        PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
+        DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         conn.close();
 
         Assert.assertEquals(true, dataSource.isResetStatEnable());
@@ -71,7 +71,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_handleException() throws Exception {
-        PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
+        DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
         conn.close();
 
         SQLException error = new SQLException();
@@ -83,7 +83,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_handleException_2() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.getConnection().close();
 
         {
@@ -100,7 +100,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_handleException_3() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.getConnection().close();
 
         {
@@ -117,7 +117,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_handleException_4() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.getConnection().close();
 
         {
@@ -134,7 +134,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_handleException_5() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.addConnectionEventListener(new ConnectionEventListener() {
 
             @Override
@@ -163,7 +163,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_setClientInfo() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.close();
 
         {
@@ -179,7 +179,7 @@ public class ConnectionTest5 extends TestCase {
     }
 
     public void test_setClientInfo_1() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
         conn.close();
 
         {

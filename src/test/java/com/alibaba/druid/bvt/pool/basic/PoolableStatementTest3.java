@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockResultSet;
-import com.alibaba.druid.pool.PoolableStatement;
+import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class PoolableStatementTest3 extends TestCase {
 
@@ -17,7 +17,7 @@ public class PoolableStatementTest3 extends TestCase {
             }
         };
 
-        PoolableStatement stmt = new PoolableStatement(null, null) {
+        DruidPooledStatement stmt = new DruidPooledStatement(null, null) {
 
             public void close() throws SQLException {
                 resultSetTrace.add(rs);

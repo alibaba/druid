@@ -9,16 +9,16 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockStatement;
-import com.alibaba.druid.pool.PoolableStatement;
+import com.alibaba.druid.pool.DruidPooledStatement;
 
 public class PoolableStatementTest extends TestCase {
 
     protected Statement         raw;
-    protected PoolableStatement stmt;
+    protected DruidPooledStatement stmt;
 
     protected void setUp() throws Exception {
         raw = new MockStatement(null);
-        stmt = new PoolableStatement(null, raw) {
+        stmt = new DruidPooledStatement(null, raw) {
 
             protected SQLException checkException(Throwable error) throws SQLException {
                 if (error instanceof SQLException) {

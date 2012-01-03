@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -51,7 +51,7 @@ public class ConnectionTest3 extends TestCase {
     }
 
     public void test_basic() throws Exception {
-        PoolableConnection conn = (PoolableConnection) dataSource.getConnection();
+        DruidPooledConnection conn = (DruidPooledConnection) dataSource.getConnection();
 
         conn.getTransactionInfo();
         conn.getMetaData();

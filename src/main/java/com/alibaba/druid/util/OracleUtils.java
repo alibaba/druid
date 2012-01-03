@@ -11,11 +11,11 @@ import oracle.jdbc.OracleStatement;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.sql.ROWID;
 
-import com.alibaba.druid.pool.PoolablePreparedStatement;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class OracleUtils {
 
-    public static void clearDefines(PoolablePreparedStatement stmt) throws SQLException {
+    public static void clearDefines(DruidPooledPreparedStatement stmt) throws SQLException {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
         oracleStmt.clearDefines();
     }

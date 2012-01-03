@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestPoolPreparedStatement2 extends TestCase {
@@ -80,7 +80,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
         }
 
         Connection conn = dataSource.getConnection();
-        PoolableConnection poolableConn = conn.unwrap(PoolableConnection.class);
+        DruidPooledConnection poolableConn = conn.unwrap(DruidPooledConnection.class);
         Assert.assertNotNull(poolableConn);
 
         Assert.assertEquals(dataSource.getMaxPoolPreparedStatementPerConnectionSize(),

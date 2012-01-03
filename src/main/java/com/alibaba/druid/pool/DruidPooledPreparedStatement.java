@@ -43,7 +43,7 @@ import com.alibaba.druid.util.OracleUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class PoolablePreparedStatement extends PoolableStatement implements PreparedStatement {
+public class DruidPooledPreparedStatement extends DruidPooledStatement implements PreparedStatement {
 
     private final PreparedStatementHolder holder;
     private final PreparedStatement       stmt;
@@ -60,7 +60,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
     private int                           currentFetchDirection;
     private int                           currentFetchSize;
 
-    public PoolablePreparedStatement(PoolableConnection conn, PreparedStatementHolder holder) throws SQLException{
+    public DruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder.getStatement());
         this.stmt = holder.getStatement();
         this.holder = holder;
@@ -179,7 +179,7 @@ public class PoolablePreparedStatement extends PoolableStatement implements Prep
         try {
             ResultSet rs = stmt.executeQuery();
 
-            PoolableResultSet poolableResultSet = new PoolableResultSet(this, rs);
+            DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);
 
             return poolableResultSet;

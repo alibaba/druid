@@ -17,7 +17,7 @@ package com.alibaba.druid.pool;
 
 import java.sql.PreparedStatement;
 
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

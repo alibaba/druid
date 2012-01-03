@@ -36,16 +36,16 @@ import java.util.Calendar;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public final class PoolableResultSet extends PoolableWrapper implements ResultSet {
+public final class DruidPooledResultSet extends PoolableWrapper implements ResultSet {
 
     private final ResultSet         rs;
-    private final PoolableStatement stmt;
+    private final DruidPooledStatement stmt;
     private boolean                 closed        = false;
 
     protected int                   cursorIndex   = 0;
     protected int                   fetchRowCount = 0;
 
-    public PoolableResultSet(PoolableStatement stmt, ResultSet rs){
+    public DruidPooledResultSet(DruidPooledStatement stmt, ResultSet rs){
         super(rs);
         this.stmt = stmt;
         this.rs = rs;
@@ -55,7 +55,7 @@ public final class PoolableResultSet extends PoolableWrapper implements ResultSe
         return stmt.checkException(error);
     }
 
-    public PoolableStatement getPoolableStatement() {
+    public DruidPooledStatement getPoolableStatement() {
         return stmt;
     }
 
