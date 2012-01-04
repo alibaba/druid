@@ -37,21 +37,20 @@ import java.util.concurrent.Executor;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
-import javax.sql.PooledConnection;
 import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class PoolableConnection implements PooledConnection, Connection {
+public class DruidPooledConnection implements javax.sql.PooledConnection, Connection {
 
-    private final static Log   LOG         = LogFactory.getLog(PoolableConnection.class);
+    private final static Log   LOG         = LogFactory.getLog(DruidPooledConnection.class);
 
     protected Connection       conn;
     protected ConnectionHolder holder;
@@ -62,7 +61,7 @@ public class PoolableConnection implements PooledConnection, Connection {
     private boolean            closed      = false;
     private final Thread       ownerThread;
 
-    public PoolableConnection(ConnectionHolder holder){
+    public DruidPooledConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
@@ -96,12 +95,12 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         throw new SQLException("Error", t);
     }
-    
+
     public boolean isOracle() {
         return holder.getDataSource().isOracle();
     }
 
-    void closePoolableStatement(PoolablePreparedStatement stmt) throws SQLException {
+    void closePoolableStatement(DruidPooledPreparedStatement stmt) throws SQLException {
         if (this.holder == null) {
             return;
         }
@@ -117,15 +116,15 @@ public class PoolableConnection implements PooledConnection, Connection {
         if (holder == null) {
             return;
         }
-        
+
         if (holder.isPoolPreparedStatements()) {
             holder.getStatementPool().put(stmt.getPreparedStatementHolder());
-            
+
             stmt.clearResultSet();
             holder.removeTrace(stmt);
-            
+
             stmt.getPreparedStatementHolder().setFetchRowPeak(stmt.getFetchRowPeak());
-            
+
             stmt.setClosed(true); // soft set close
         } else {
             stmt.closeInternal();
@@ -204,7 +203,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -238,7 +237,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -273,7 +272,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -304,7 +303,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -335,7 +334,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -366,7 +365,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolablePreparedStatement rtnVal = new PoolablePreparedStatement(this, stmtHolder);
+        DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -399,7 +398,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
+        DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -434,7 +433,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
+        DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
@@ -467,7 +466,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());
 
-        PoolableCallableStatement rtnVal = new PoolableCallableStatement(this, stmtHolder);
+        DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
         holder.addTrace(rtnVal);
 
         return rtnVal;
@@ -488,7 +487,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmt);
 
-        PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
+        DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
 
         return poolableStatement;
@@ -508,7 +507,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmt);
 
-        PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
+        DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
 
         return poolableStatement;
@@ -527,7 +526,7 @@ public class PoolableConnection implements PooledConnection, Connection {
 
         holder.getDataSource().initStatement(this, stmt);
 
-        PoolableStatement poolableStatement = new PoolableStatement(this, stmt);
+        DruidPooledStatement poolableStatement = new DruidPooledStatement(this, stmt);
         holder.addTrace(poolableStatement);
 
         return poolableStatement;

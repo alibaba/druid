@@ -8,7 +8,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.ConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.PreparedStatementPool;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;

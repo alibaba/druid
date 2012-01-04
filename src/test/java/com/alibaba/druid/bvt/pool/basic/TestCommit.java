@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
@@ -48,8 +48,8 @@ public class TestCommit extends TestCase {
         Connection conn = dataSource.getConnection();
 
         {
-            PoolableConnection wrap = conn.unwrap(PoolableConnection.class);
-            Assert.assertTrue(conn.isWrapperFor(PoolableConnection.class));
+            DruidPooledConnection wrap = conn.unwrap(DruidPooledConnection.class);
+            Assert.assertTrue(conn.isWrapperFor(DruidPooledConnection.class));
             Assert.assertNotNull(wrap);
         }
 

@@ -21,7 +21,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestDruidDataSource extends TestCase {
@@ -51,7 +51,7 @@ public class TestDruidDataSource extends TestCase {
 
         Connection conn = dataSource.getConnection();
 
-        Assert.assertTrue(conn instanceof PoolableConnection);
+        Assert.assertTrue(conn instanceof DruidPooledConnection);
 
         Assert.assertEquals(1, dataSource.getConnectCount());
         Assert.assertEquals(0, dataSource.getConnectErrorCount());

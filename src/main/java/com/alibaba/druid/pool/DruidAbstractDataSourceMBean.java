@@ -146,4 +146,8 @@ public interface DruidAbstractDataSourceMBean {
     long getCachedPreparedStatementMissCount();
 
     long getCachedPreparedStatementHitCount();
+    
+    boolean isUseOracleImplicitCache();
+    
+    void setUseOracleImplicitCache(boolean useOracleImplicitCache);
 }

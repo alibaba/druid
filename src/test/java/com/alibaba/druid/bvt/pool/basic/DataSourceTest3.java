@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -56,7 +56,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_prepareStatement_error() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -72,7 +72,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_1() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -80,7 +80,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_2() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -96,7 +96,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_3() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -112,7 +112,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_4() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -128,7 +128,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_5() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -144,7 +144,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_6() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -160,7 +160,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_7() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -176,7 +176,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_8() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -192,7 +192,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_9() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -208,7 +208,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_getValidConnectionCheckerClassName() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -216,7 +216,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_setConnectionInitSqls() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -228,14 +228,14 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setLogWriter(null);
         dataSource.getLogWriter();
 
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
     }
 
     public void test_error_10() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -251,7 +251,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_11() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -303,7 +303,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_12() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -329,7 +329,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_validateConnection() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
@@ -345,7 +345,7 @@ public class DataSourceTest3 extends TestCase {
     }
 
     public void test_error_validateConnection_2() throws Exception {
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.getConnection().close();
 
@@ -363,7 +363,7 @@ public class DataSourceTest3 extends TestCase {
     public void test_error_validateConnection_3() throws Exception {
         dataSource.setValidationQuery(null);
         dataSource.setValidConnectionChecker(new MySqlValidConnectionChecker());
-        PoolableConnection conn = dataSource.getConnection().unwrap(PoolableConnection.class);
+        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         dataSource.validateConnection(conn);
     }

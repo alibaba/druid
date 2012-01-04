@@ -13,18 +13,18 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.PoolablePreparedStatement;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 import com.alibaba.druid.pool.PreparedStatementHolder;
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 
 public class PoolablePreparedStatementTest extends TestCase {
 
     protected MockPreparedStatement     raw;
-    protected PoolablePreparedStatement stmt;
+    protected DruidPooledPreparedStatement stmt;
 
     protected void setUp() throws Exception {
         raw = new MockPreparedStatement(null, null);
-        stmt = new PoolablePreparedStatement(null,
+        stmt = new DruidPooledPreparedStatement(null,
                                              new PreparedStatementHolder(new PreparedStatementKey("", null, null, 0, 0, 0), raw)) {
 
             protected SQLException checkException(Throwable error) throws SQLException {

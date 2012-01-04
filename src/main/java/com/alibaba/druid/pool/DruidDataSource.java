@@ -42,7 +42,7 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
 import com.alibaba.druid.pool.vendor.MockExceptionSorter;
@@ -387,7 +387,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         for (;;) {
-            PoolableConnection poolalbeConnection = getConnectionInternal(maxWaitMillis);
+            DruidPooledConnection poolalbeConnection = getConnectionInternal(maxWaitMillis);
 
             if (isTestOnBorrow()) {
                 boolean validate = testConnectionInternal(poolalbeConnection.getConnection());
@@ -462,8 +462,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    private PoolableConnection getConnectionInternal(long maxWait) throws SQLException {
-        PoolableConnection poolalbeConnection;
+    private DruidPooledConnection getConnectionInternal(long maxWait) throws SQLException {
+        DruidPooledConnection poolalbeConnection;
 
         try {
             lock.lockInterruptibly();
@@ -498,7 +498,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 activePeakTime = System.currentTimeMillis();
             }
 
-            poolalbeConnection = new PoolableConnection(holder);
+            poolalbeConnection = new DruidPooledConnection(holder);
         } catch (InterruptedException e) {
             connectErrorCount++;
             throw new SQLException(e.getMessage(), e);
@@ -511,7 +511,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return poolalbeConnection;
     }
 
-    public void handleConnectionException(PoolableConnection pooledConnection, Throwable t) throws SQLException {
+    public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t) throws SQLException {
         final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         errorCount.incrementAndGet();
@@ -545,7 +545,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     /**
      * 回收连接
      */
-    protected void recycle(PoolableConnection pooledConnection) throws SQLException {
+    protected void recycle(DruidPooledConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
         final ConnectionHolder holder = pooledConnection.getConnectionHolder();
 
@@ -992,19 +992,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int removeAbandoned() {
         int removeCount = 0;
 
-        Iterator<Map.Entry<PoolableConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
+        Iterator<Map.Entry<DruidPooledConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
 
         long currentMillis = System.currentTimeMillis();
 
-        List<PoolableConnection> abondonedList = new ArrayList<PoolableConnection>();
+        List<DruidPooledConnection> abondonedList = new ArrayList<DruidPooledConnection>();
 
         for (; iter.hasNext();) {
-            Map.Entry<PoolableConnection, ActiveConnectionTraceInfo> entry = iter.next();
+            Map.Entry<DruidPooledConnection, ActiveConnectionTraceInfo> entry = iter.next();
             ActiveConnectionTraceInfo activeInfo = entry.getValue();
             long timeMillis = currentMillis - activeInfo.getConnectTime();
 
             if (timeMillis >= removeAbandonedTimeoutMillis) {
-                PoolableConnection pooledConnection = entry.getKey();
+                DruidPooledConnection pooledConnection = entry.getKey();
                 JdbcUtils.close(pooledConnection);
                 removeAbandonedCount++;
                 removeCount++;
@@ -1027,7 +1027,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         // multi-check dup close
-        for (PoolableConnection conn : abondonedList) {
+        for (DruidPooledConnection conn : abondonedList) {
             activeConnections.remove(conn);
         }
 
@@ -1051,18 +1051,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     static class ActiveConnectionTraceInfo {
 
-        private final PoolableConnection  connection;
+        private final DruidPooledConnection  connection;
         private final long                connectTime;
         private final StackTraceElement[] stackTrace;
 
-        public ActiveConnectionTraceInfo(PoolableConnection connection, long connectTime, StackTraceElement[] stackTrace){
+        public ActiveConnectionTraceInfo(DruidPooledConnection connection, long connectTime, StackTraceElement[] stackTrace){
             super();
             this.connection = connection;
             this.connectTime = connectTime;
             this.stackTrace = stackTrace;
         }
 
-        public PoolableConnection getConnection() {
+        public DruidPooledConnection getConnection() {
             return connection;
         }
 

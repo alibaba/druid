@@ -27,7 +27,7 @@ import java.sql.SQLException;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.PoolableConnection;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.OracleUtils;
@@ -57,8 +57,8 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
         }
 
         try {
-            if (conn instanceof PoolableConnection) {
-                conn = ((PoolableConnection) conn).getConnection();
+            if (conn instanceof DruidPooledConnection) {
+                conn = ((DruidPooledConnection) conn).getConnection();
             }
 
             if (conn instanceof ConnectionProxy) {

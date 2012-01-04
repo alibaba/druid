@@ -9,11 +9,11 @@ import java.sql.Statement;
 
 import org.springframework.jdbc.support.nativejdbc.NativeJdbcExtractor;
 
-import com.alibaba.druid.pool.PoolableCallableStatement;
-import com.alibaba.druid.pool.PoolableConnection;
-import com.alibaba.druid.pool.PoolablePreparedStatement;
-import com.alibaba.druid.pool.PoolableResultSet;
-import com.alibaba.druid.pool.PoolableStatement;
+import com.alibaba.druid.pool.DruidPooledCallableStatement;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import com.alibaba.druid.pool.DruidPooledResultSet;
+import com.alibaba.druid.pool.DruidPooledStatement;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
@@ -39,8 +39,8 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
 
     @Override
     public Connection getNativeConnection(Connection conn) throws SQLException {
-        if (conn instanceof PoolableConnection) {
-            conn = ((PoolableConnection) conn).getConnection();
+        if (conn instanceof DruidPooledConnection) {
+            conn = ((DruidPooledConnection) conn).getConnection();
         }
 
         if (conn instanceof ConnectionProxy) {
@@ -58,8 +58,8 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
 
     @Override
     public Statement getNativeStatement(Statement stmt) throws SQLException {
-        if (stmt instanceof PoolableStatement) {
-            stmt = ((PoolableStatement) stmt).getStatement();
+        if (stmt instanceof DruidPooledStatement) {
+            stmt = ((DruidPooledStatement) stmt).getStatement();
         }
 
         if (stmt instanceof StatementProxy) {
@@ -71,8 +71,8 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
 
     @Override
     public PreparedStatement getNativePreparedStatement(PreparedStatement stmt) throws SQLException {
-        if (stmt instanceof PoolablePreparedStatement) {
-            stmt = ((PoolablePreparedStatement) stmt).getRawPreparedStatement();
+        if (stmt instanceof DruidPooledPreparedStatement) {
+            stmt = ((DruidPooledPreparedStatement) stmt).getRawPreparedStatement();
         }
 
         if (stmt instanceof PreparedStatementProxy) {
@@ -84,8 +84,8 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
 
     @Override
     public CallableStatement getNativeCallableStatement(CallableStatement stmt) throws SQLException {
-        if (stmt instanceof PoolableCallableStatement) {
-            stmt = ((PoolableCallableStatement) stmt).getCallableStatementRaw();
+        if (stmt instanceof DruidPooledCallableStatement) {
+            stmt = ((DruidPooledCallableStatement) stmt).getCallableStatementRaw();
         }
 
         if (stmt instanceof CallableStatementProxy) {
@@ -97,8 +97,8 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
 
     @Override
     public ResultSet getNativeResultSet(ResultSet rs) throws SQLException {
-        if (rs instanceof PoolableResultSet) {
-            rs = ((PoolableResultSet) rs).getRawResultSet();
+        if (rs instanceof DruidPooledResultSet) {
+            rs = ((DruidPooledResultSet) rs).getRawResultSet();
         }
 
         if (rs instanceof ResultSetProxy) {

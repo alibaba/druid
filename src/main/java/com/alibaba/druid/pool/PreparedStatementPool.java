@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -32,10 +32,10 @@ import com.alibaba.druid.util.OracleUtils;
  */
 public class PreparedStatementPool {
 
-    private final static Log                                         LOG = LogFactory.getLog(PreparedStatementPool.class);
+    private final static Log              LOG = LogFactory.getLog(PreparedStatementPool.class);
 
-    private final Map<PreparedStatementKey, PreparedStatementHolder> map;
-    private final DruidAbstractDataSource                            dataSource;
+    private final LRUCache                map;
+    private final DruidAbstractDataSource dataSource;
 
     public PreparedStatementPool(ConnectionHolder holder){
         this.dataSource = holder.getDataSource();
@@ -56,7 +56,9 @@ public class PreparedStatementPool {
         if (holder != null) {
             holder.incrementHitCount();
             dataSource.incrementCachedPreparedStatementHitCount();
-            OracleUtils.exitImplicitCacheToActive(holder.getStatement());
+            if (holder.isEnterOracleImplicitCache()) {
+                OracleUtils.exitImplicitCacheToActive(holder.getStatement());
+            }
         } else {
             dataSource.incrementCachedPreparedStatementMissCount();
         }
@@ -71,12 +73,15 @@ public class PreparedStatementPool {
             return;
         }
 
-        if (dataSource.isOracle()) {
+        if (dataSource.isOracle() && dataSource.isUseOracleImplicitCache()) {
             OracleUtils.enterImplicitCache(stmt);
-            
+            holder.setEnterOracleImplicitCache(true);
+        } else {
+            holder.setEnterOracleImplicitCache(false);
         }
 
         PreparedStatementKey key = holder.getKey();
+
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null && oldHolder != holder) {
             dataSource.closePreapredStatement(oldHolder);
@@ -85,6 +90,7 @@ public class PreparedStatementPool {
                 dataSource.incrementCachedPreparedStatementCount();
             }
         }
+
     }
 
     public void clear() throws SQLException {
@@ -99,7 +105,7 @@ public class PreparedStatementPool {
     }
 
     private void closeStatement(PreparedStatementHolder holder) throws SQLException {
-        if (dataSource.isOracle()) {
+        if (holder.isEnterOracleImplicitCache()) {
             OracleUtils.exitImplicitCacheToClose(holder.getStatement());
         }
         dataSource.closePreapredStatement(holder);

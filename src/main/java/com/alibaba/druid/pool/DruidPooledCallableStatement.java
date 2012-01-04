@@ -33,11 +33,11 @@ import java.util.Calendar;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class PoolableCallableStatement extends PoolablePreparedStatement implements CallableStatement {
+public class DruidPooledCallableStatement extends DruidPooledPreparedStatement implements CallableStatement {
 
     private CallableStatement stmt;
 
-    public PoolableCallableStatement(PoolableConnection conn, PreparedStatementHolder holder) throws SQLException{
+    public DruidPooledCallableStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder);
         this.stmt = (CallableStatement) holder.getStatement();
     }

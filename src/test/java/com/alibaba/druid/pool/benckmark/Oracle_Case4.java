@@ -31,7 +31,7 @@ public class Oracle_Case4 extends TestCase {
     private String  validationQuery            = "SELECT 1 FROM DUAL";
     private int     threadCount                = 1;
     private int     loopCount                  = 3;
-    final int       LOOP_COUNT                 = 1000 * 10;
+    final int       LOOP_COUNT                 = 1000 * 1000;
     private boolean testOnBorrow               = false;
     private boolean preparedStatementCache     = true;
     private int     preparedStatementCacheSize = 50;
@@ -68,6 +68,7 @@ public class Oracle_Case4 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
         dataSource.setConnectionProperties(properties);
+        dataSource.setUseOracleImplicitCache(false);
 
         // printAV_INFO(dataSource);
         // printTables(dataSource);
@@ -154,7 +155,7 @@ public class Oracle_Case4 extends TestCase {
                             
                             int mod = i % 500;
                             
-                            String sql = SQL;// + " AND ROWNUM <= " + (mod + 1);
+                            String sql = SQL; // + " AND ROWNUM <= " + (mod + 1);
                             PreparedStatement stmt = conn.prepareStatement(sql);
                             stmt.setInt(1, 61);
                             ResultSet rs = stmt.executeQuery();

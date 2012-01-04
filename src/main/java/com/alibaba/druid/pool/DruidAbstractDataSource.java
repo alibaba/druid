@@ -168,7 +168,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected final AtomicLong                                                               errorCount                                = new AtomicLong();
     protected final AtomicLong                                                               dupCloseCount                             = new AtomicLong();
 
-    protected final ConcurrentIdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo> activeConnections                         = new ConcurrentIdentityHashMap<PoolableConnection, ActiveConnectionTraceInfo>();
+    protected final ConcurrentIdentityHashMap<DruidPooledConnection, ActiveConnectionTraceInfo> activeConnections                         = new ConcurrentIdentityHashMap<DruidPooledConnection, ActiveConnectionTraceInfo>();
 
     protected long                                                                           id;
 
@@ -211,8 +211,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                        isOracle                                  = false;
 
+    protected boolean                                                                        useOracleImplicitCache                    = false;
+
     public boolean isOracle() {
         return isOracle;
+    }
+
+    public boolean isUseOracleImplicitCache() {
+        return useOracleImplicitCache;
+    }
+
+    public void setUseOracleImplicitCache(boolean useOracleImplicitCache) {
+        this.useOracleImplicitCache = useOracleImplicitCache;
     }
 
     public Throwable getLastCreateError() {
@@ -1063,11 +1073,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
-    public Set<PoolableConnection> getActiveConnections() {
+    public Set<DruidPooledConnection> getActiveConnections() {
         return this.activeConnections.keySet();
     }
 
-    void removeActiveConnection(PoolableConnection conn) {
+    void removeActiveConnection(DruidPooledConnection conn) {
         activeConnections.remove(conn);
     }
 
@@ -1115,7 +1125,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return transactionIdSeed.getAndIncrement();
     }
 
-    void initStatement(PoolableConnection conn, Statement stmt) throws SQLException {
+    void initStatement(DruidPooledConnection conn, Statement stmt) throws SQLException {
         boolean transaction = !conn.getConnectionHolder().isUnderlyingAutoCommit();
 
         int queryTimeout = transaction ? getTransactionQueryTimeout() : getQueryTimeout();
@@ -1125,10 +1135,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
-    public abstract void handleConnectionException(PoolableConnection pooledConnection, Throwable t)
+    public abstract void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t)
                                                                                                     throws SQLException;
 
-    protected abstract void recycle(PoolableConnection pooledConnection) throws SQLException;
+    protected abstract void recycle(DruidPooledConnection pooledConnection) throws SQLException;
 
     abstract void incrementCreateCount();
 
@@ -1245,13 +1255,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 dataSource.validateConnection(conn);
                 dataSource.createError = null;
 
-//                if (dataSource.isOracle() && dataSource.isPoolPreparedStatements()) {
-//                    int cacheSize = dataSource.getMaxPoolPreparedStatementPerConnectionSize();
-//                    if (cacheSize > 0) {
-//                        OracleUtils.setImplicitCachingEnabled(conn, true);
-//                        OracleUtils.setStatementCacheSize(conn, cacheSize);
-//                    }
-//                }
+                // if (dataSource.isOracle() && dataSource.isPoolPreparedStatements()) {
+                // int cacheSize = dataSource.getMaxPoolPreparedStatementPerConnectionSize();
+                // if (cacheSize > 0) {
+                // OracleUtils.setImplicitCachingEnabled(conn, true);
+                // OracleUtils.setStatementCacheSize(conn, cacheSize);
+                // }
+                // }
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
                 dataSource.createError = ex;

@@ -115,11 +115,11 @@ public final class ConnectionHolder {
         this.lastActiveTimeMillis = lastActiveMillis;
     }
 
-    public void addTrace(PoolableStatement stmt) {
+    public void addTrace(DruidPooledStatement stmt) {
         statementTrace.add(stmt);
     }
 
-    public void removeTrace(PoolableStatement stmt) {
+    public void removeTrace(DruidPooledStatement stmt) {
         statementTrace.remove(stmt);
     }
 

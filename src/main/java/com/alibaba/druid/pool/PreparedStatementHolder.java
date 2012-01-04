@@ -17,7 +17,7 @@ package com.alibaba.druid.pool;
 
 import java.sql.PreparedStatement;
 
-import com.alibaba.druid.pool.PoolablePreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -26,16 +26,26 @@ public final class PreparedStatementHolder {
 
     private final PreparedStatementKey key;
     private final PreparedStatement    statement;
-    private int                        hitCount         = 0;
+    private int                        hitCount                 = 0;
 
-    private int                        fetchRowPeak     = -1;
+    private int                        fetchRowPeak             = -1;
 
-    private int                        defaultRowPretch = -1;
-    private int                        rowPrefetch      = -1;
+    private int                        defaultRowPretch         = -1;
+    private int                        rowPrefetch              = -1;
+
+    private boolean                    enterOracleImplicitCache = false;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
         this.statement = stmt;
+    }
+
+    public boolean isEnterOracleImplicitCache() {
+        return enterOracleImplicitCache;
+    }
+
+    public void setEnterOracleImplicitCache(boolean enterOracleImplicitCache) {
+        this.enterOracleImplicitCache = enterOracleImplicitCache;
     }
 
     public int getDefaultRowPretch() {
