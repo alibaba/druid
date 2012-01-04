@@ -14,7 +14,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.DruidJdbcExtractor;
+import com.alibaba.druid.support.spring.DruidNativeJdbcExtractor;
 
 public class DruidJdbcExtractorTest extends TestCase {
 
@@ -22,7 +22,7 @@ public class DruidJdbcExtractorTest extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
 
         try {
-            DruidJdbcExtractor extractor = new DruidJdbcExtractor();
+            DruidNativeJdbcExtractor extractor = new DruidNativeJdbcExtractor();
 
             dataSource.setUrl("jdbc:mock:xx1");
             Connection conn = dataSource.getConnection();
