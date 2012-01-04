@@ -23,6 +23,7 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.NClob;
+import java.sql.PreparedStatement;
 import java.sql.Ref;
 import java.sql.RowId;
 import java.sql.SQLException;
@@ -609,4 +610,12 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
         throw new SQLFeatureNotSupportedException();
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == PreparedStatement.class) {
+            return (T) statement;
+        }
+        
+        return super.unwrap(iface);
+    }
 }

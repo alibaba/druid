@@ -60,7 +60,6 @@
 			</extension>
 		</extensions>
 		<plugins>
-			<!-- 配置源码编译要求JDK 1.6 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -71,7 +70,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- 配置 build的时候run testcase的规则 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

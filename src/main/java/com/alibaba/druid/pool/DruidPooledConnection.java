@@ -43,6 +43,7 @@ import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.util.TransactionInfo;
 
 /**
@@ -539,6 +540,14 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == null) {
             return null;
+        }
+        
+        if (iface == Connection.class) {
+            if (conn instanceof ConnectionProxy) {
+                return conn.unwrap(iface);
+            }
+            
+            return (T) conn;
         }
 
         if (iface.isInstance(this)) {

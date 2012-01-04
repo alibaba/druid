@@ -341,4 +341,12 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         throw new SQLFeatureNotSupportedException();
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == Connection.class) {
+            return (T) connection;
+        }
+        
+        return super.unwrap(iface);
+    }
 }

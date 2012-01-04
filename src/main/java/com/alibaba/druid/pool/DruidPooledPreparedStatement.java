@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -986,5 +987,17 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return sql;
         }
 
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == PreparedStatement.class) {
+            if (stmt instanceof PreparedStatementProxy) {
+                return stmt.unwrap(iface);
+            }
+            return (T) stmt;
+        }
+        
+        return super.unwrap(iface);
     }
 }
