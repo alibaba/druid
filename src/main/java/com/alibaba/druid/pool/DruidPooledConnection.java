@@ -541,12 +541,16 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         if (iface == null) {
             return null;
         }
-        
+
         if (iface == Connection.class) {
             if (conn instanceof ConnectionProxy) {
                 return conn.unwrap(iface);
             }
-            
+
+            return (T) conn;
+        }
+
+        if (iface.isInstance(conn)) {
             return (T) conn;
         }
 

@@ -108,6 +108,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private String                  initStackTrace;
 
+    private boolean                 closed                  = false;
+
     public DruidDataSource(){
     }
 
@@ -648,6 +650,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void close() {
         lock.lock();
         try {
+            if (this.closed) {
+                return;
+            }
+            
             if (!this.inited) {
                 return;
             }
@@ -675,6 +681,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             enable = false;
             notEmpty.signalAll();
             notEmptySignalCount++;
+            
+            this.closed = true;
         } finally {
             lock.unlock();
         }
@@ -1051,11 +1059,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     static class ActiveConnectionTraceInfo {
 
-        private final DruidPooledConnection  connection;
-        private final long                connectTime;
-        private final StackTraceElement[] stackTrace;
+        private final DruidPooledConnection connection;
+        private final long                  connectTime;
+        private final StackTraceElement[]   stackTrace;
 
-        public ActiveConnectionTraceInfo(DruidPooledConnection connection, long connectTime, StackTraceElement[] stackTrace){
+        public ActiveConnectionTraceInfo(DruidPooledConnection connection, long connectTime,
+                                         StackTraceElement[] stackTrace){
             super();
             this.connection = connection;
             this.connectTime = connectTime;
