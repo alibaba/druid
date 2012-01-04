@@ -54,7 +54,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         return connection;
     }
 
-    public Statement getStatementRaw() {
+    public Statement getRawObject() {
         return this.statement;
     }
 

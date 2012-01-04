@@ -24,5 +24,5 @@ public interface PreparedStatementProxy extends PreparedStatement, StatementProx
 
     String getSql();
 
-    PreparedStatement getRawPreparedStatement();
+    PreparedStatement getRawObject();
 }

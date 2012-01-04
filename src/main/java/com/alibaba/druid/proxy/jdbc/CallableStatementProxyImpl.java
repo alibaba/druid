@@ -43,7 +43,7 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
         this.statement = statement;
     }
 
-    public CallableStatement getRawCallableStatement() {
+    public CallableStatement getRawObject() {
         return this.statement;
     }
 

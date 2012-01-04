@@ -559,7 +559,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     }
 
     @Override
-    public Object getRawObject() {
+    public Connection getRawObject() {
         return conn;
     }
 
@@ -569,11 +569,6 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
             attributes = new HashMap<String, Object>();
         }
         return attributes;
-    }
-
-    @Override
-    public Connection getConnectionRaw() {
-        return conn;
     }
 
     @Override

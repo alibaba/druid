@@ -22,5 +22,5 @@ import java.sql.CallableStatement;
  */
 public interface CallableStatementProxy extends CallableStatement, PreparedStatementProxy {
 
-    CallableStatement getRawCallableStatement();
+    CallableStatement getRawObject();
 }

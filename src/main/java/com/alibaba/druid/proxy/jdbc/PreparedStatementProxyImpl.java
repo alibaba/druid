@@ -54,7 +54,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         return this.sql;
     }
 
-    public PreparedStatement getRawPreparedStatement() {
+    public PreparedStatement getRawObject() {
         return this.statement;
     }
 

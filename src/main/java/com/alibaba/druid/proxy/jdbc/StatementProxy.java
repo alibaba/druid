@@ -25,7 +25,7 @@ public interface StatementProxy extends Statement, WrapperProxy {
 
     ConnectionProxy getConnectionProxy();
 
-    Statement getStatementRaw();
+    Statement getRawObject();
 
     List<String> getBatchSqlList();
 

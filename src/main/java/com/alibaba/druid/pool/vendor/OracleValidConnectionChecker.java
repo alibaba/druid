@@ -62,7 +62,7 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
             }
 
             if (conn instanceof ConnectionProxy) {
-                conn = ((ConnectionProxy) conn).getConnectionRaw();
+                conn = ((ConnectionProxy) conn).getRawObject();
             }
 
             int status = OracleUtils.pingDatabase(conn);

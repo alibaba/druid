@@ -71,6 +71,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     public Connection getConnectionRaw() {
         return connection;
     }
+    
+    public Connection getRawObject() {
+        return connection;
+    }
 
     public DataSourceProxy getDirectDataSource() {
         return this.dataSource;

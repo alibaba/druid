@@ -29,11 +29,11 @@ public class MultiDataSourceStatement extends WrapperAdapter implements Statemen
         conn.checkConnection(sql);
 
         if (resultSetType != null && resultSetConcurrency != null && resultSetHoldability != null) {
-            stmt = conn.getConnectionRaw().createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+            stmt = conn.getRawObject().createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
         } else if (resultSetType != null && resultSetConcurrency != null) {
-            stmt = conn.getConnectionRaw().createStatement(resultSetType, resultSetConcurrency);
+            stmt = conn.getRawObject().createStatement(resultSetType, resultSetConcurrency);
         } else {
-            stmt = conn.getConnectionRaw().createStatement();
+            stmt = conn.getRawObject().createStatement();
         }
 
         if (maxFieldSize != null) {
