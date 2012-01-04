@@ -546,7 +546,7 @@ public class BasicTypeTest extends TestCase {
             }
             try {
                 cstmt.getBlob(12).free();
-            } catch (SQLFeatureNotSupportedException ex) {
+            } catch (SQLException ex) {
 
             }
             try {

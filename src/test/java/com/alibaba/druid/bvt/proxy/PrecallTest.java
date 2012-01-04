@@ -288,7 +288,7 @@ public class PrecallTest extends TestCase {
 
             try {
                 cstmt.getClob(1);
-            } catch (SQLFeatureNotSupportedException ex) {
+            } catch (SQLException ex) {
 
             }
             try {
