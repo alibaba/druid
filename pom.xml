@@ -190,8 +190,8 @@
 			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!-- for HADataSource  -->
+
+		<!-- for HADataSource -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -205,13 +205,35 @@
 			<version>5.1.12</version>
 			<scope>test</scope>
 		</dependency>
-		
+		<dependency>
+			<groupId>net.sourceforge.jtds</groupId>
+			<artifactId>jtds</artifactId>
+			<version>1.2.4</version>
+			<scope>provided</scope>
+		</dependency>
+			
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.1-901-1.jdbc4</version>
+			<scope>provided</scope>
+		</dependency>
+			
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc5</artifactId>
 			<version>11.2.0.3</version>
 			<scope>provided</scope>
 		</dependency>
+
+<!--
+		<dependency>
+			<groupId>com.alibaba.external</groupId>
+			<artifactId>jdbc.oracle</artifactId>
+			<version>10.2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+-->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -222,7 +244,7 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.6.1.0</version>
+			<version>10.8.2.2</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -250,6 +272,6 @@
 			<version>0.9.1.2</version>
 			<scope>test</scope>
 		</dependency>
-	
+
 	</dependencies>
 </project>
