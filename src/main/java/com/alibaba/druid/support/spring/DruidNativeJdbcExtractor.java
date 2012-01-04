@@ -44,7 +44,7 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
         }
 
         if (conn instanceof ConnectionProxy) {
-            conn = ((ConnectionProxy) conn).getConnectionRaw();
+            conn = ((ConnectionProxy) conn).getRawObject();
         }
 
         return conn;
@@ -63,7 +63,7 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
         }
 
         if (stmt instanceof StatementProxy) {
-            stmt = ((StatementProxy) stmt).getStatementRaw();
+            stmt = ((StatementProxy) stmt).getRawObject();
         }
 
         return stmt;
@@ -76,7 +76,7 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
         }
 
         if (stmt instanceof PreparedStatementProxy) {
-            stmt = ((PreparedStatementProxy) stmt).getRawPreparedStatement();
+            stmt = ((PreparedStatementProxy) stmt).getRawObject();
         }
 
         return stmt;
@@ -89,7 +89,7 @@ public class DruidNativeJdbcExtractor implements NativeJdbcExtractor {
         }
 
         if (stmt instanceof CallableStatementProxy) {
-            stmt = ((CallableStatementProxy) stmt).getRawCallableStatement();
+            stmt = ((CallableStatementProxy) stmt).getRawObject();
         }
 
         return stmt;

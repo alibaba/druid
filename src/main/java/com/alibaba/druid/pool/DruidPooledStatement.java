@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -577,5 +578,17 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     public boolean isCloseOnCompletion() throws SQLException {
         return false;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == Statement.class) {
+            if (stmt instanceof StatementProxy) {
+                return stmt.unwrap(iface);
+            }
+            return (T) stmt;
+        }
+        
+        return super.unwrap(iface);
     }
 }

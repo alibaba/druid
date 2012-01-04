@@ -54,7 +54,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         return this.sql;
     }
 
-    public PreparedStatement getRawPreparedStatement() {
+    public PreparedStatement getRawObject() {
         return this.statement;
     }
 
@@ -341,5 +341,14 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     @Override
     public String getLastExecuteSql() {
         return this.sql;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == PreparedStatement.class) {
+            return (T) statement;
+        }
+        
+        return super.unwrap(iface);
     }
 }

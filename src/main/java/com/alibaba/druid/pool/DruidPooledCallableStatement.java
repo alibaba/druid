@@ -30,6 +30,8 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.util.Calendar;
 
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -1054,4 +1056,15 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
         throw new SQLFeatureNotSupportedException();
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == CallableStatement.class) {
+            if (stmt instanceof CallableStatementProxy) {
+                return stmt.unwrap(iface);
+            }
+            return (T) stmt;
+        }
+        
+        return super.unwrap(iface);
+    }
 }

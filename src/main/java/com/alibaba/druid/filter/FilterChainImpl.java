@@ -140,7 +140,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().clearWarnings();
+        connection.getRawObject().clearWarnings();
     }
 
     @Override
@@ -150,7 +150,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().close();
+        connection.getRawObject().close();
         connection.getAttributes().clear();
     }
 
@@ -161,7 +161,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().commit();
+        connection.getRawObject().commit();
     }
 
     @Override
@@ -171,7 +171,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createArrayOf(this, connection, typeName, elements);
         }
 
-        return connection.getConnectionRaw().createArrayOf(typeName, elements);
+        return connection.getRawObject().createArrayOf(typeName, elements);
 
     }
 
@@ -181,7 +181,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createBlob(this, connection);
         }
 
-        return connection.getConnectionRaw().createBlob();
+        return connection.getRawObject().createBlob();
     }
 
     @Override
@@ -190,7 +190,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createClob(this, connection);
         }
 
-        Clob clob = connection.getConnectionRaw().createClob();
+        Clob clob = connection.getRawObject().createClob();
 
         return wrap(connection, clob);
     }
@@ -201,7 +201,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createNClob(this, connection);
         }
 
-        NClob nclob = connection.getConnectionRaw().createNClob();
+        NClob nclob = connection.getRawObject().createNClob();
 
         return wrap(connection, nclob);
     }
@@ -212,7 +212,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createSQLXML(this, connection);
         }
 
-        return connection.getConnectionRaw().createSQLXML();
+        return connection.getRawObject().createSQLXML();
     }
 
     @Override
@@ -221,7 +221,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createStatement(this, connection);
         }
 
-        Statement statement = connection.getConnectionRaw().createStatement();
+        Statement statement = connection.getRawObject().createStatement();
         return wrap(connection, statement);
     }
 
@@ -232,7 +232,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createStatement(this, connection, resultSetType, resultSetConcurrency);
         }
 
-        Statement statement = connection.getConnectionRaw().createStatement(resultSetType, resultSetConcurrency);
+        Statement statement = connection.getRawObject().createStatement(resultSetType, resultSetConcurrency);
         return wrap(connection, statement);
     }
 
@@ -245,7 +245,7 @@ public class FilterChainImpl implements FilterChain {
                                                            resultSetHoldability);
         }
 
-        Statement statement = connection.getConnectionRaw().createStatement(resultSetType, resultSetConcurrency,
+        Statement statement = connection.getRawObject().createStatement(resultSetType, resultSetConcurrency,
                                                                             resultSetHoldability);
         return wrap(connection, statement);
     }
@@ -257,7 +257,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_createStruct(this, connection, typeName, attributes);
         }
 
-        return connection.getConnectionRaw().createStruct(typeName, attributes);
+        return connection.getRawObject().createStruct(typeName, attributes);
     }
 
     @Override
@@ -266,7 +266,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getAutoCommit(this, connection);
         }
 
-        return connection.getConnectionRaw().getAutoCommit();
+        return connection.getRawObject().getAutoCommit();
     }
 
     @Override
@@ -275,7 +275,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getCatalog(this, connection);
         }
 
-        return connection.getConnectionRaw().getCatalog();
+        return connection.getRawObject().getCatalog();
     }
 
     @Override
@@ -284,7 +284,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getClientInfo(this, connection);
         }
 
-        return connection.getConnectionRaw().getClientInfo();
+        return connection.getRawObject().getClientInfo();
     }
 
     @Override
@@ -293,7 +293,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getClientInfo(this, connection, name);
         }
 
-        return connection.getConnectionRaw().getClientInfo(name);
+        return connection.getRawObject().getClientInfo(name);
     }
 
     public List<Filter> getFilters() {
@@ -306,7 +306,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getHoldability(this, connection);
         }
 
-        return connection.getConnectionRaw().getHoldability();
+        return connection.getRawObject().getHoldability();
     }
 
     @Override
@@ -317,7 +317,7 @@ public class FilterChainImpl implements FilterChain {
 
         // DatabaseMetaData
 
-        DatabaseMetaData rawDatabaseMetaData = connection.getConnectionRaw().getMetaData();
+        DatabaseMetaData rawDatabaseMetaData = connection.getRawObject().getMetaData();
 
         return rawDatabaseMetaData;
     }
@@ -328,7 +328,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getTransactionIsolation(this, connection);
         }
 
-        return connection.getConnectionRaw().getTransactionIsolation();
+        return connection.getRawObject().getTransactionIsolation();
     }
 
     @Override
@@ -337,7 +337,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getTypeMap(this, connection);
         }
 
-        return connection.getConnectionRaw().getTypeMap();
+        return connection.getRawObject().getTypeMap();
     }
 
     @Override
@@ -346,7 +346,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_getWarnings(this, connection);
         }
 
-        return connection.getConnectionRaw().getWarnings();
+        return connection.getRawObject().getWarnings();
     }
 
     @Override
@@ -355,7 +355,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_isClosed(this, connection);
         }
 
-        return connection.getConnectionRaw().isClosed();
+        return connection.getRawObject().isClosed();
     }
 
     @Override
@@ -364,7 +364,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_isReadOnly(this, connection);
         }
 
-        return connection.getConnectionRaw().isReadOnly();
+        return connection.getRawObject().isReadOnly();
     }
 
     @Override
@@ -373,7 +373,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_isValid(this, connection, timeout);
         }
 
-        return connection.getConnectionRaw().isValid(timeout);
+        return connection.getRawObject().isValid(timeout);
     }
 
     @Override
@@ -382,7 +382,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_nativeSQL(this, connection, sql);
         }
 
-        return connection.getConnectionRaw().nativeSQL(sql);
+        return connection.getRawObject().nativeSQL(sql);
     }
 
     private Filter nextFilter() {
@@ -396,7 +396,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareCall(this, connection, sql);
         }
 
-        CallableStatement statement = connection.getConnectionRaw().prepareCall(sql);
+        CallableStatement statement = connection.getRawObject().prepareCall(sql);
         return wrap(connection, statement, sql);
     }
 
@@ -407,7 +407,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareCall(this, connection, sql, resultSetType, resultSetConcurrency);
         }
 
-        CallableStatement statement = connection.getConnectionRaw().prepareCall(sql, resultSetType,
+        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType,
                                                                                 resultSetConcurrency);
         return wrap(connection, statement, sql);
     }
@@ -421,7 +421,7 @@ public class FilterChainImpl implements FilterChain {
                                                        resultSetHoldability);
         }
 
-        CallableStatement statement = connection.getConnectionRaw().prepareCall(sql, resultSetType,
+        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType,
                                                                                 resultSetConcurrency,
                                                                                 resultSetHoldability);
         return wrap(connection, statement, sql);
@@ -434,7 +434,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareStatement(this, connection, sql);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql);
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql);
         return wrap(connection, statement, sql);
     }
 
@@ -445,7 +445,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareStatement(this, connection, sql, autoGeneratedKeys);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql, autoGeneratedKeys);
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, autoGeneratedKeys);
         return wrap(connection, statement, sql);
     }
 
@@ -457,7 +457,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareStatement(this, connection, sql, resultSetType, resultSetConcurrency);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql, resultSetType,
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
                                                                                      resultSetConcurrency);
         return wrap(connection, statement, sql);
     }
@@ -471,7 +471,7 @@ public class FilterChainImpl implements FilterChain {
                                                             resultSetHoldability);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql, resultSetType,
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
                                                                                      resultSetConcurrency,
                                                                                      resultSetHoldability);
         return wrap(connection, statement, sql);
@@ -484,7 +484,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareStatement(this, connection, sql, columnIndexes);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql, columnIndexes);
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, columnIndexes);
         return wrap(connection, statement, sql);
     }
 
@@ -495,7 +495,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareStatement(this, connection, sql, columnNames);
         }
 
-        PreparedStatement statement = connection.getConnectionRaw().prepareStatement(sql, columnNames);
+        PreparedStatement statement = connection.getRawObject().prepareStatement(sql, columnNames);
         return wrap(connection, statement, sql);
     }
 
@@ -506,7 +506,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().releaseSavepoint(savepoint);
+        connection.getRawObject().releaseSavepoint(savepoint);
     }
 
     @Override
@@ -516,7 +516,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().rollback();
+        connection.getRawObject().rollback();
     }
 
     @Override
@@ -526,7 +526,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().rollback(savepoint);
+        connection.getRawObject().rollback(savepoint);
     }
 
     @Override
@@ -536,7 +536,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setAutoCommit(autoCommit);
+        connection.getRawObject().setAutoCommit(autoCommit);
     }
 
     @Override
@@ -546,7 +546,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setCatalog(catalog);
+        connection.getRawObject().setCatalog(catalog);
     }
 
     @Override
@@ -557,7 +557,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setClientInfo(properties);
+        connection.getRawObject().setClientInfo(properties);
     }
 
     @Override
@@ -568,7 +568,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setClientInfo(name, value);
+        connection.getRawObject().setClientInfo(name, value);
     }
 
     @Override
@@ -578,7 +578,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setHoldability(holdability);
+        connection.getRawObject().setHoldability(holdability);
     }
 
     @Override
@@ -588,7 +588,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setReadOnly(readOnly);
+        connection.getRawObject().setReadOnly(readOnly);
     }
 
     @Override
@@ -597,7 +597,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_setSavepoint(this, connection);
         }
 
-        return connection.getConnectionRaw().setSavepoint();
+        return connection.getRawObject().setSavepoint();
     }
 
     @Override
@@ -606,7 +606,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_setSavepoint(this, connection, name);
         }
 
-        return connection.getConnectionRaw().setSavepoint(name);
+        return connection.getRawObject().setSavepoint(name);
     }
 
     @Override
@@ -616,7 +616,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setTransactionIsolation(level);
+        connection.getRawObject().setTransactionIsolation(level);
     }
 
     @Override
@@ -626,7 +626,7 @@ public class FilterChainImpl implements FilterChain {
             return;
         }
 
-        connection.getConnectionRaw().setTypeMap(map);
+        connection.getRawObject().setTypeMap(map);
     }
 
     // ///////////////////////////////////////
@@ -2302,7 +2302,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().statement_executeQuery(this, statement, sql);
         }
 
-        ResultSet resultSet = statement.getStatementRaw().executeQuery(sql);
+        ResultSet resultSet = statement.getRawObject().executeQuery(sql);
 
         if (resultSet == null) {
             return null;
@@ -2316,7 +2316,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_executeUpdate(this, statement, sql);
         }
-        return statement.getStatementRaw().executeUpdate(sql);
+        return statement.getRawObject().executeUpdate(sql);
     }
 
     @Override
@@ -2325,7 +2325,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_close(this, statement);
             return;
         }
-        statement.getStatementRaw().close();
+        statement.getRawObject().close();
     }
 
     @Override
@@ -2333,7 +2333,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getMaxFieldSize(this, statement);
         }
-        return statement.getStatementRaw().getMaxFieldSize();
+        return statement.getRawObject().getMaxFieldSize();
     }
 
     @Override
@@ -2342,7 +2342,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setMaxFieldSize(this, statement, max);
             return;
         }
-        statement.getStatementRaw().setMaxFieldSize(max);
+        statement.getRawObject().setMaxFieldSize(max);
     }
 
     @Override
@@ -2350,7 +2350,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getMaxRows(this, statement);
         }
-        return statement.getStatementRaw().getMaxRows();
+        return statement.getRawObject().getMaxRows();
     }
 
     @Override
@@ -2359,7 +2359,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setMaxRows(this, statement, max);
             return;
         }
-        statement.getStatementRaw().setMaxRows(max);
+        statement.getRawObject().setMaxRows(max);
     }
 
     @Override
@@ -2368,7 +2368,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setEscapeProcessing(this, statement, enable);
             return;
         }
-        statement.getStatementRaw().setEscapeProcessing(enable);
+        statement.getRawObject().setEscapeProcessing(enable);
     }
 
     @Override
@@ -2376,7 +2376,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getQueryTimeout(this, statement);
         }
-        return statement.getStatementRaw().getQueryTimeout();
+        return statement.getRawObject().getQueryTimeout();
     }
 
     @Override
@@ -2385,7 +2385,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setQueryTimeout(this, statement, seconds);
             return;
         }
-        statement.getStatementRaw().setQueryTimeout(seconds);
+        statement.getRawObject().setQueryTimeout(seconds);
     }
 
     @Override
@@ -2394,7 +2394,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_cancel(this, statement);
             return;
         }
-        statement.getStatementRaw().cancel();
+        statement.getRawObject().cancel();
     }
 
     @Override
@@ -2402,7 +2402,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getWarnings(this, statement);
         }
-        return statement.getStatementRaw().getWarnings();
+        return statement.getRawObject().getWarnings();
     }
 
     @Override
@@ -2411,7 +2411,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_clearWarnings(this, statement);
             return;
         }
-        statement.getStatementRaw().clearWarnings();
+        statement.getRawObject().clearWarnings();
     }
 
     @Override
@@ -2420,7 +2420,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setCursorName(this, statement, name);
             return;
         }
-        statement.getStatementRaw().setCursorName(name);
+        statement.getRawObject().setCursorName(name);
     }
 
     @Override
@@ -2428,7 +2428,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_execute(this, statement, sql);
         }
-        return statement.getStatementRaw().execute(sql);
+        return statement.getRawObject().execute(sql);
     }
 
     @Override
@@ -2437,7 +2437,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().statement_getResultSet(this, statement);
         }
 
-        ResultSet resultSet = statement.getStatementRaw().getResultSet();
+        ResultSet resultSet = statement.getRawObject().getResultSet();
 
         if (resultSet == null) {
             return null;
@@ -2451,7 +2451,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getUpdateCount(this, statement);
         }
-        return statement.getStatementRaw().getUpdateCount();
+        return statement.getRawObject().getUpdateCount();
     }
 
     @Override
@@ -2459,7 +2459,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getMoreResults(this, statement);
         }
-        return statement.getStatementRaw().getMoreResults();
+        return statement.getRawObject().getMoreResults();
     }
 
     @Override
@@ -2468,7 +2468,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setFetchDirection(this, statement, direction);
             return;
         }
-        statement.getStatementRaw().setFetchDirection(direction);
+        statement.getRawObject().setFetchDirection(direction);
     }
 
     @Override
@@ -2476,7 +2476,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getFetchDirection(this, statement);
         }
-        return statement.getStatementRaw().getFetchDirection();
+        return statement.getRawObject().getFetchDirection();
     }
 
     @Override
@@ -2485,7 +2485,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setFetchSize(this, statement, rows);
             return;
         }
-        statement.getStatementRaw().setFetchSize(rows);
+        statement.getRawObject().setFetchSize(rows);
     }
 
     @Override
@@ -2493,7 +2493,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getFetchSize(this, statement);
         }
-        return statement.getStatementRaw().getFetchSize();
+        return statement.getRawObject().getFetchSize();
     }
 
     @Override
@@ -2501,7 +2501,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getResultSetConcurrency(this, statement);
         }
-        return statement.getStatementRaw().getResultSetConcurrency();
+        return statement.getRawObject().getResultSetConcurrency();
     }
 
     @Override
@@ -2509,7 +2509,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getResultSetType(this, statement);
         }
-        return statement.getStatementRaw().getResultSetType();
+        return statement.getRawObject().getResultSetType();
     }
 
     @Override
@@ -2518,7 +2518,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_addBatch(this, statement, sql);
             return;
         }
-        statement.getStatementRaw().addBatch(sql);
+        statement.getRawObject().addBatch(sql);
     }
 
     @Override
@@ -2527,7 +2527,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_clearBatch(this, statement);
             return;
         }
-        statement.getStatementRaw().clearBatch();
+        statement.getRawObject().clearBatch();
     }
 
     @Override
@@ -2535,7 +2535,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_executeBatch(this, statement);
         }
-        return statement.getStatementRaw().executeBatch();
+        return statement.getRawObject().executeBatch();
     }
 
     @Override
@@ -2543,7 +2543,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getConnection(this, statement);
         }
-        return statement.getStatementRaw().getConnection();
+        return statement.getRawObject().getConnection();
     }
 
     @Override
@@ -2551,7 +2551,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getMoreResults(this, statement, current);
         }
-        return statement.getStatementRaw().getMoreResults(current);
+        return statement.getRawObject().getMoreResults(current);
     }
 
     @Override
@@ -2560,7 +2560,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().statement_getGeneratedKeys(this, statement);
         }
 
-        ResultSet resultSet = statement.getStatementRaw().getGeneratedKeys();
+        ResultSet resultSet = statement.getRawObject().getGeneratedKeys();
         return wrap(statement, resultSet);
     }
 
@@ -2569,7 +2569,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_executeUpdate(this, statement, sql, autoGeneratedKeys);
         }
-        return statement.getStatementRaw().executeUpdate(sql, autoGeneratedKeys);
+        return statement.getRawObject().executeUpdate(sql, autoGeneratedKeys);
     }
 
     @Override
@@ -2577,7 +2577,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_executeUpdate(this, statement, sql, columnIndexes);
         }
-        return statement.getStatementRaw().executeUpdate(sql, columnIndexes);
+        return statement.getRawObject().executeUpdate(sql, columnIndexes);
     }
 
     @Override
@@ -2585,7 +2585,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_executeUpdate(this, statement, sql, columnNames);
         }
-        return statement.getStatementRaw().executeUpdate(sql, columnNames);
+        return statement.getRawObject().executeUpdate(sql, columnNames);
     }
 
     @Override
@@ -2593,7 +2593,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_execute(this, statement, sql, autoGeneratedKeys);
         }
-        return statement.getStatementRaw().execute(sql, autoGeneratedKeys);
+        return statement.getRawObject().execute(sql, autoGeneratedKeys);
     }
 
     @Override
@@ -2601,7 +2601,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_execute(this, statement, sql, columnIndexes);
         }
-        return statement.getStatementRaw().execute(sql, columnIndexes);
+        return statement.getRawObject().execute(sql, columnIndexes);
     }
 
     @Override
@@ -2609,7 +2609,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_execute(this, statement, sql, columnNames);
         }
-        return statement.getStatementRaw().execute(sql, columnNames);
+        return statement.getRawObject().execute(sql, columnNames);
     }
 
     @Override
@@ -2617,7 +2617,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_getResultSetHoldability(this, statement);
         }
-        return statement.getStatementRaw().getResultSetHoldability();
+        return statement.getRawObject().getResultSetHoldability();
     }
 
     @Override
@@ -2625,7 +2625,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_isClosed(this, statement);
         }
-        return statement.getStatementRaw().isClosed();
+        return statement.getRawObject().isClosed();
     }
 
     @Override
@@ -2634,7 +2634,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().statement_setPoolable(this, statement, poolable);
             return;
         }
-        statement.getStatementRaw().setPoolable(poolable);
+        statement.getRawObject().setPoolable(poolable);
     }
 
     @Override
@@ -2642,7 +2642,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().statement_isPoolable(this, statement);
         }
-        return statement.getStatementRaw().isPoolable();
+        return statement.getRawObject().isPoolable();
     }
 
     // ////////////////
@@ -2653,7 +2653,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().preparedStatement_executeQuery(this, statement);
         }
 
-        ResultSet resultSet = statement.getRawPreparedStatement().executeQuery();
+        ResultSet resultSet = statement.getRawObject().executeQuery();
         return wrap(statement, resultSet);
     }
 
@@ -2662,7 +2662,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().preparedStatement_executeUpdate(this, statement);
         }
-        return statement.getRawPreparedStatement().executeUpdate();
+        return statement.getRawObject().executeUpdate();
     }
 
     @Override
@@ -2672,7 +2672,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNull(this, statement, parameterIndex, sqlType);
             return;
         }
-        statement.getRawPreparedStatement().setNull(parameterIndex, sqlType);
+        statement.getRawObject().setNull(parameterIndex, sqlType);
     }
 
     @Override
@@ -2682,7 +2682,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBoolean(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setBoolean(parameterIndex, x);
+        statement.getRawObject().setBoolean(parameterIndex, x);
     }
 
     @Override
@@ -2692,7 +2692,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setByte(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setByte(parameterIndex, x);
+        statement.getRawObject().setByte(parameterIndex, x);
     }
 
     @Override
@@ -2702,7 +2702,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setShort(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setShort(parameterIndex, x);
+        statement.getRawObject().setShort(parameterIndex, x);
     }
 
     @Override
@@ -2712,7 +2712,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setInt(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setInt(parameterIndex, x);
+        statement.getRawObject().setInt(parameterIndex, x);
     }
 
     @Override
@@ -2722,7 +2722,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setLong(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setLong(parameterIndex, x);
+        statement.getRawObject().setLong(parameterIndex, x);
     }
 
     @Override
@@ -2732,7 +2732,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setFloat(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setFloat(parameterIndex, x);
+        statement.getRawObject().setFloat(parameterIndex, x);
     }
 
     @Override
@@ -2742,7 +2742,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setDouble(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setDouble(parameterIndex, x);
+        statement.getRawObject().setDouble(parameterIndex, x);
     }
 
     @Override
@@ -2752,7 +2752,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBigDecimal(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setBigDecimal(parameterIndex, x);
+        statement.getRawObject().setBigDecimal(parameterIndex, x);
     }
 
     @Override
@@ -2762,7 +2762,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setString(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setString(parameterIndex, x);
+        statement.getRawObject().setString(parameterIndex, x);
     }
 
     @Override
@@ -2772,7 +2772,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBytes(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setBytes(parameterIndex, x);
+        statement.getRawObject().setBytes(parameterIndex, x);
     }
 
     @Override
@@ -2782,7 +2782,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setDate(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setDate(parameterIndex, x);
+        statement.getRawObject().setDate(parameterIndex, x);
     }
 
     @Override
@@ -2792,7 +2792,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setTime(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setTime(parameterIndex, x);
+        statement.getRawObject().setTime(parameterIndex, x);
     }
 
     @Override
@@ -2802,7 +2802,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setTimestamp(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setTimestamp(parameterIndex, x);
+        statement.getRawObject().setTimestamp(parameterIndex, x);
     }
 
     @Override
@@ -2812,7 +2812,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setAsciiStream(this, statement, parameterIndex, x, length);
             return;
         }
-        statement.getRawPreparedStatement().setAsciiStream(parameterIndex, x, length);
+        statement.getRawObject().setAsciiStream(parameterIndex, x, length);
     }
 
     @SuppressWarnings("deprecation")
@@ -2823,7 +2823,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setUnicodeStream(this, statement, parameterIndex, x, length);
             return;
         }
-        statement.getRawPreparedStatement().setUnicodeStream(parameterIndex, x, length);
+        statement.getRawObject().setUnicodeStream(parameterIndex, x, length);
     }
 
     @Override
@@ -2833,7 +2833,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBinaryStream(this, statement, parameterIndex, x, length);
             return;
         }
-        statement.getRawPreparedStatement().setBinaryStream(parameterIndex, x, length);
+        statement.getRawObject().setBinaryStream(parameterIndex, x, length);
     }
 
     @Override
@@ -2842,7 +2842,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_clearParameters(this, statement);
             return;
         }
-        statement.getRawPreparedStatement().clearParameters();
+        statement.getRawObject().clearParameters();
     }
 
     @Override
@@ -2852,7 +2852,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setObject(this, statement, parameterIndex, x, targetSqlType);
             return;
         }
-        statement.getRawPreparedStatement().setObject(parameterIndex, x, targetSqlType);
+        statement.getRawObject().setObject(parameterIndex, x, targetSqlType);
     }
 
     @Override
@@ -2862,7 +2862,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setObject(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setObject(parameterIndex, x);
+        statement.getRawObject().setObject(parameterIndex, x);
     }
 
     @Override
@@ -2870,7 +2870,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().preparedStatement_execute(this, statement);
         }
-        return statement.getRawPreparedStatement().execute();
+        return statement.getRawObject().execute();
     }
 
     @Override
@@ -2879,7 +2879,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_addBatch(this, statement);
             return;
         }
-        statement.getRawPreparedStatement().addBatch();
+        statement.getRawObject().addBatch();
     }
 
     @Override
@@ -2889,7 +2889,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setCharacterStream(this, statement, parameterIndex, reader, length);
             return;
         }
-        statement.getRawPreparedStatement().setCharacterStream(parameterIndex, reader, length);
+        statement.getRawObject().setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
@@ -2899,7 +2899,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setRef(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setRef(parameterIndex, x);
+        statement.getRawObject().setRef(parameterIndex, x);
     }
 
     @Override
@@ -2909,7 +2909,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBlob(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setBlob(parameterIndex, x);
+        statement.getRawObject().setBlob(parameterIndex, x);
     }
 
     @Override
@@ -2919,7 +2919,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setClob(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setClob(parameterIndex, x);
+        statement.getRawObject().setClob(parameterIndex, x);
     }
 
     @Override
@@ -2929,7 +2929,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setArray(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setArray(parameterIndex, x);
+        statement.getRawObject().setArray(parameterIndex, x);
     }
 
     @Override
@@ -2937,7 +2937,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().preparedStatement_getMetaData(this, statement);
         }
-        return statement.getRawPreparedStatement().getMetaData();
+        return statement.getRawObject().getMetaData();
     }
 
     @Override
@@ -2947,7 +2947,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setDate(this, statement, parameterIndex, x, cal);
             return;
         }
-        statement.getRawPreparedStatement().setDate(parameterIndex, x, cal);
+        statement.getRawObject().setDate(parameterIndex, x, cal);
     }
 
     @Override
@@ -2957,7 +2957,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setTime(this, statement, parameterIndex, x, cal);
             return;
         }
-        statement.getRawPreparedStatement().setTime(parameterIndex, x, cal);
+        statement.getRawObject().setTime(parameterIndex, x, cal);
     }
 
     @Override
@@ -2967,7 +2967,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setTimestamp(this, statement, parameterIndex, x, cal);
             return;
         }
-        statement.getRawPreparedStatement().setTimestamp(parameterIndex, x, cal);
+        statement.getRawObject().setTimestamp(parameterIndex, x, cal);
     }
 
     @Override
@@ -2977,7 +2977,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNull(this, statement, parameterIndex, sqlType, typeName);
             return;
         }
-        statement.getRawPreparedStatement().setNull(parameterIndex, sqlType, typeName);
+        statement.getRawObject().setNull(parameterIndex, sqlType, typeName);
     }
 
     @Override
@@ -2987,7 +2987,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setURL(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setURL(parameterIndex, x);
+        statement.getRawObject().setURL(parameterIndex, x);
     }
 
     @Override
@@ -2996,7 +2996,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().preparedStatement_getParameterMetaData(this, statement);
         }
-        return statement.getRawPreparedStatement().getParameterMetaData();
+        return statement.getRawObject().getParameterMetaData();
     }
 
     @Override
@@ -3006,7 +3006,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setRowId(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setRowId(parameterIndex, x);
+        statement.getRawObject().setRowId(parameterIndex, x);
     }
 
     @Override
@@ -3016,7 +3016,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNString(this, statement, parameterIndex, value);
             return;
         }
-        statement.getRawPreparedStatement().setNString(parameterIndex, value);
+        statement.getRawObject().setNString(parameterIndex, value);
     }
 
     @Override
@@ -3026,7 +3026,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNCharacterStream(this, statement, parameterIndex, value, length);
             return;
         }
-        statement.getRawPreparedStatement().setNCharacterStream(parameterIndex, value, length);
+        statement.getRawObject().setNCharacterStream(parameterIndex, value, length);
     }
 
     @Override
@@ -3036,7 +3036,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNClob(this, statement, parameterIndex, value);
             return;
         }
-        statement.getRawPreparedStatement().setNClob(parameterIndex, value);
+        statement.getRawObject().setNClob(parameterIndex, value);
     }
 
     @Override
@@ -3046,7 +3046,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setClob(this, statement, parameterIndex, reader, length);
             return;
         }
-        statement.getRawPreparedStatement().setClob(parameterIndex, reader, length);
+        statement.getRawObject().setClob(parameterIndex, reader, length);
     }
 
     @Override
@@ -3056,7 +3056,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBlob(this, statement, parameterIndex, inputStream, length);
             return;
         }
-        statement.getRawPreparedStatement().setBlob(parameterIndex, inputStream, length);
+        statement.getRawObject().setBlob(parameterIndex, inputStream, length);
     }
 
     @Override
@@ -3066,7 +3066,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNClob(this, statement, parameterIndex, reader, length);
             return;
         }
-        statement.getRawPreparedStatement().setNClob(parameterIndex, reader, length);
+        statement.getRawObject().setNClob(parameterIndex, reader, length);
     }
 
     @Override
@@ -3076,7 +3076,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setSQLXML(this, statement, parameterIndex, xmlObject);
             return;
         }
-        statement.getRawPreparedStatement().setSQLXML(parameterIndex, xmlObject);
+        statement.getRawObject().setSQLXML(parameterIndex, xmlObject);
     }
 
     @Override
@@ -3086,7 +3086,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setObject(this, statement, parameterIndex, x, targetSqlType, scaleOrLength);
             return;
         }
-        statement.getRawPreparedStatement().setObject(parameterIndex, x, targetSqlType, scaleOrLength);
+        statement.getRawObject().setObject(parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
@@ -3096,7 +3096,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setAsciiStream(this, statement, parameterIndex, x, length);
             return;
         }
-        statement.getRawPreparedStatement().setAsciiStream(parameterIndex, x, length);
+        statement.getRawObject().setAsciiStream(parameterIndex, x, length);
     }
 
     @Override
@@ -3106,7 +3106,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBinaryStream(this, statement, parameterIndex, x, length);
             return;
         }
-        statement.getRawPreparedStatement().setBinaryStream(parameterIndex, x, length);
+        statement.getRawObject().setBinaryStream(parameterIndex, x, length);
     }
 
     @Override
@@ -3116,7 +3116,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setCharacterStream(this, statement, parameterIndex, reader, length);
             return;
         }
-        statement.getRawPreparedStatement().setCharacterStream(parameterIndex, reader, length);
+        statement.getRawObject().setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
@@ -3126,7 +3126,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setAsciiStream(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setAsciiStream(parameterIndex, x);
+        statement.getRawObject().setAsciiStream(parameterIndex, x);
     }
 
     @Override
@@ -3136,7 +3136,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBinaryStream(this, statement, parameterIndex, x);
             return;
         }
-        statement.getRawPreparedStatement().setBinaryStream(parameterIndex, x);
+        statement.getRawObject().setBinaryStream(parameterIndex, x);
     }
 
     @Override
@@ -3146,7 +3146,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setCharacterStream(this, statement, parameterIndex, reader);
             return;
         }
-        statement.getRawPreparedStatement().setCharacterStream(parameterIndex, reader);
+        statement.getRawObject().setCharacterStream(parameterIndex, reader);
     }
 
     @Override
@@ -3156,7 +3156,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNCharacterStream(this, statement, parameterIndex, value);
             return;
         }
-        statement.getRawPreparedStatement().setNCharacterStream(parameterIndex, value);
+        statement.getRawObject().setNCharacterStream(parameterIndex, value);
     }
 
     @Override
@@ -3166,7 +3166,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setClob(this, statement, parameterIndex, reader);
             return;
         }
-        statement.getRawPreparedStatement().setClob(parameterIndex, reader);
+        statement.getRawObject().setClob(parameterIndex, reader);
     }
 
     @Override
@@ -3176,7 +3176,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setBlob(this, statement, parameterIndex, inputStream);
             return;
         }
-        statement.getRawPreparedStatement().setBlob(parameterIndex, inputStream);
+        statement.getRawObject().setBlob(parameterIndex, inputStream);
     }
 
     @Override
@@ -3186,7 +3186,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().preparedStatement_setNClob(this, statement, parameterIndex, reader);
             return;
         }
-        statement.getRawPreparedStatement().setNClob(parameterIndex, reader);
+        statement.getRawObject().setNClob(parameterIndex, reader);
     }
 
     // /////////////////////////////////////
@@ -3198,7 +3198,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterIndex, sqlType);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterIndex, sqlType);
+        statement.getRawObject().registerOutParameter(parameterIndex, sqlType);
     }
 
     @Override
@@ -3208,7 +3208,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterIndex, sqlType, scale);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterIndex, sqlType, scale);
+        statement.getRawObject().registerOutParameter(parameterIndex, sqlType, scale);
     }
 
     @Override
@@ -3216,7 +3216,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_wasNull(this, statement);
         }
-        return statement.getRawCallableStatement().wasNull();
+        return statement.getRawObject().wasNull();
     }
 
     @Override
@@ -3224,7 +3224,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getString(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getString(parameterIndex);
+        return statement.getRawObject().getString(parameterIndex);
     }
 
     @Override
@@ -3233,7 +3233,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBoolean(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getBoolean(parameterIndex);
+        return statement.getRawObject().getBoolean(parameterIndex);
     }
 
     @Override
@@ -3241,7 +3241,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getByte(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getByte(parameterIndex);
+        return statement.getRawObject().getByte(parameterIndex);
     }
 
     @Override
@@ -3249,7 +3249,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getShort(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getShort(parameterIndex);
+        return statement.getRawObject().getShort(parameterIndex);
     }
 
     @Override
@@ -3257,7 +3257,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getInt(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getInt(parameterIndex);
+        return statement.getRawObject().getInt(parameterIndex);
     }
 
     @Override
@@ -3265,7 +3265,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getLong(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getLong(parameterIndex);
+        return statement.getRawObject().getLong(parameterIndex);
     }
 
     @Override
@@ -3273,7 +3273,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getFloat(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getFloat(parameterIndex);
+        return statement.getRawObject().getFloat(parameterIndex);
     }
 
     @Override
@@ -3281,7 +3281,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDouble(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getDouble(parameterIndex);
+        return statement.getRawObject().getDouble(parameterIndex);
     }
 
     @SuppressWarnings("deprecation")
@@ -3291,7 +3291,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBigDecimal(this, statement, parameterIndex, scale);
         }
-        return statement.getRawCallableStatement().getBigDecimal(parameterIndex, scale);
+        return statement.getRawObject().getBigDecimal(parameterIndex, scale);
     }
 
     @Override
@@ -3299,7 +3299,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBytes(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getBytes(parameterIndex);
+        return statement.getRawObject().getBytes(parameterIndex);
     }
 
     @Override
@@ -3308,7 +3308,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDate(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getDate(parameterIndex);
+        return statement.getRawObject().getDate(parameterIndex);
     }
 
     @Override
@@ -3317,7 +3317,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTime(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getTime(parameterIndex);
+        return statement.getRawObject().getTime(parameterIndex);
     }
 
     @Override
@@ -3326,7 +3326,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTimestamp(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getTimestamp(parameterIndex);
+        return statement.getRawObject().getTimestamp(parameterIndex);
     }
 
     @Override
@@ -3334,7 +3334,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getObject(parameterIndex);
+        return statement.getRawObject().getObject(parameterIndex);
     }
 
     @Override
@@ -3343,7 +3343,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBigDecimal(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getBigDecimal(parameterIndex);
+        return statement.getRawObject().getBigDecimal(parameterIndex);
     }
 
     @Override
@@ -3352,7 +3352,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterIndex, map);
         }
-        return statement.getRawCallableStatement().getObject(parameterIndex, map);
+        return statement.getRawObject().getObject(parameterIndex, map);
     }
 
     @Override
@@ -3360,7 +3360,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getRef(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getRef(parameterIndex);
+        return statement.getRawObject().getRef(parameterIndex);
     }
 
     @Override
@@ -3368,7 +3368,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBlob(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getBlob(parameterIndex);
+        return statement.getRawObject().getBlob(parameterIndex);
     }
 
     @Override
@@ -3377,7 +3377,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getClob(this, statement, parameterIndex);
         }
 
-        Clob clob = statement.getRawCallableStatement().getClob(parameterIndex);
+        Clob clob = statement.getRawObject().getClob(parameterIndex);
 
         return wrap(statement.getConnectionProxy(), clob);
     }
@@ -3387,7 +3387,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getArray(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getArray(parameterIndex);
+        return statement.getRawObject().getArray(parameterIndex);
     }
 
     @Override
@@ -3396,7 +3396,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDate(this, statement, parameterIndex, cal);
         }
-        return statement.getRawCallableStatement().getDate(parameterIndex, cal);
+        return statement.getRawObject().getDate(parameterIndex, cal);
     }
 
     @Override
@@ -3405,7 +3405,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTime(this, statement, parameterIndex, cal);
         }
-        return statement.getRawCallableStatement().getTime(parameterIndex, cal);
+        return statement.getRawObject().getTime(parameterIndex, cal);
     }
 
     @Override
@@ -3414,7 +3414,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTimestamp(this, statement, parameterIndex, cal);
         }
-        return statement.getRawCallableStatement().getTimestamp(parameterIndex, cal);
+        return statement.getRawObject().getTimestamp(parameterIndex, cal);
     }
 
     @Override
@@ -3424,7 +3424,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterIndex, sqlType, typeName);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterIndex, sqlType, typeName);
+        statement.getRawObject().registerOutParameter(parameterIndex, sqlType, typeName);
     }
 
     @Override
@@ -3434,7 +3434,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterName, sqlType);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterName, sqlType);
+        statement.getRawObject().registerOutParameter(parameterName, sqlType);
     }
 
     @Override
@@ -3444,7 +3444,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterName, sqlType, scale);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterName, sqlType, scale);
+        statement.getRawObject().registerOutParameter(parameterName, sqlType, scale);
     }
 
     @Override
@@ -3454,7 +3454,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_registerOutParameter(this, statement, parameterName, sqlType, typeName);
             return;
         }
-        statement.getRawCallableStatement().registerOutParameter(parameterName, sqlType, typeName);
+        statement.getRawObject().registerOutParameter(parameterName, sqlType, typeName);
     }
 
     @Override
@@ -3463,7 +3463,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getURL(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getURL(parameterIndex);
+        return statement.getRawObject().getURL(parameterIndex);
     }
 
     @Override
@@ -3473,7 +3473,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setURL(this, statement, parameterName, val);
             return;
         }
-        statement.getRawCallableStatement().setURL(parameterName, val);
+        statement.getRawObject().setURL(parameterName, val);
     }
 
     @Override
@@ -3483,7 +3483,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNull(this, statement, parameterName, sqlType);
             return;
         }
-        statement.getRawCallableStatement().setNull(parameterName, sqlType);
+        statement.getRawObject().setNull(parameterName, sqlType);
     }
 
     @Override
@@ -3493,7 +3493,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBoolean(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setBoolean(parameterName, x);
+        statement.getRawObject().setBoolean(parameterName, x);
     }
 
     @Override
@@ -3502,7 +3502,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             nextFilter().callableStatement_setByte(this, statement, parameterName, x);
         }
-        statement.getRawCallableStatement().setByte(parameterName, x);
+        statement.getRawObject().setByte(parameterName, x);
     }
 
     @Override
@@ -3512,7 +3512,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setShort(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setShort(parameterName, x);
+        statement.getRawObject().setShort(parameterName, x);
     }
 
     @Override
@@ -3522,7 +3522,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setInt(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setInt(parameterName, x);
+        statement.getRawObject().setInt(parameterName, x);
     }
 
     @Override
@@ -3532,7 +3532,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setLong(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setLong(parameterName, x);
+        statement.getRawObject().setLong(parameterName, x);
     }
 
     @Override
@@ -3542,7 +3542,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setFloat(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setFloat(parameterName, x);
+        statement.getRawObject().setFloat(parameterName, x);
     }
 
     @Override
@@ -3552,7 +3552,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setDouble(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setDouble(parameterName, x);
+        statement.getRawObject().setDouble(parameterName, x);
     }
 
     @Override
@@ -3562,7 +3562,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBigDecimal(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setBigDecimal(parameterName, x);
+        statement.getRawObject().setBigDecimal(parameterName, x);
     }
 
     @Override
@@ -3572,7 +3572,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setString(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setString(parameterName, x);
+        statement.getRawObject().setString(parameterName, x);
     }
 
     @Override
@@ -3582,7 +3582,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBytes(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setBytes(parameterName, x);
+        statement.getRawObject().setBytes(parameterName, x);
     }
 
     @Override
@@ -3592,7 +3592,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setDate(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setDate(parameterName, x);
+        statement.getRawObject().setDate(parameterName, x);
     }
 
     @Override
@@ -3602,7 +3602,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setTime(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setTime(parameterName, x);
+        statement.getRawObject().setTime(parameterName, x);
     }
 
     @Override
@@ -3612,7 +3612,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setTimestamp(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setTimestamp(parameterName, x);
+        statement.getRawObject().setTimestamp(parameterName, x);
     }
 
     @Override
@@ -3622,7 +3622,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setAsciiStream(this, statement, parameterName, x, length);
             return;
         }
-        statement.getRawCallableStatement().setAsciiStream(parameterName, x, length);
+        statement.getRawObject().setAsciiStream(parameterName, x, length);
     }
 
     @Override
@@ -3632,7 +3632,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBinaryStream(this, statement, parameterName, x, length);
             return;
         }
-        statement.getRawCallableStatement().setBinaryStream(parameterName, x, length);
+        statement.getRawObject().setBinaryStream(parameterName, x, length);
     }
 
     @Override
@@ -3642,7 +3642,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setObject(this, statement, parameterName, x, targetSqlType, scale);
             return;
         }
-        statement.getRawCallableStatement().setObject(parameterName, x, targetSqlType, scale);
+        statement.getRawObject().setObject(parameterName, x, targetSqlType, scale);
     }
 
     @Override
@@ -3652,7 +3652,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setObject(this, statement, parameterName, x, targetSqlType);
             return;
         }
-        statement.getRawCallableStatement().setObject(parameterName, x, targetSqlType);
+        statement.getRawObject().setObject(parameterName, x, targetSqlType);
     }
 
     @Override
@@ -3662,7 +3662,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setObject(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setObject(parameterName, x);
+        statement.getRawObject().setObject(parameterName, x);
     }
 
     @Override
@@ -3672,7 +3672,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setCharacterStream(this, statement, parameterName, reader, length);
             return;
         }
-        statement.getRawCallableStatement().setCharacterStream(parameterName, reader, length);
+        statement.getRawObject().setCharacterStream(parameterName, reader, length);
     }
 
     @Override
@@ -3682,7 +3682,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setDate(this, statement, parameterName, x, cal);
             return;
         }
-        statement.getRawCallableStatement().setDate(parameterName, x, cal);
+        statement.getRawObject().setDate(parameterName, x, cal);
     }
 
     @Override
@@ -3692,7 +3692,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setTime(this, statement, parameterName, x, cal);
             return;
         }
-        statement.getRawCallableStatement().setTime(parameterName, x, cal);
+        statement.getRawObject().setTime(parameterName, x, cal);
     }
 
     @Override
@@ -3702,7 +3702,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setTimestamp(this, statement, parameterName, x, cal);
             return;
         }
-        statement.getRawCallableStatement().setTimestamp(parameterName, x, cal);
+        statement.getRawObject().setTimestamp(parameterName, x, cal);
     }
 
     @Override
@@ -3712,7 +3712,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNull(this, statement, parameterName, sqlType, typeName);
             return;
         }
-        statement.getRawCallableStatement().setNull(parameterName, sqlType, typeName);
+        statement.getRawObject().setNull(parameterName, sqlType, typeName);
     }
 
     @Override
@@ -3721,7 +3721,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getString(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getString(parameterName);
+        return statement.getRawObject().getString(parameterName);
     }
 
     @Override
@@ -3730,7 +3730,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBoolean(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getBoolean(parameterName);
+        return statement.getRawObject().getBoolean(parameterName);
     }
 
     @Override
@@ -3738,7 +3738,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getByte(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getByte(parameterName);
+        return statement.getRawObject().getByte(parameterName);
     }
 
     @Override
@@ -3746,7 +3746,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getShort(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getShort(parameterName);
+        return statement.getRawObject().getShort(parameterName);
     }
 
     @Override
@@ -3754,7 +3754,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getInt(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getInt(parameterName);
+        return statement.getRawObject().getInt(parameterName);
     }
 
     @Override
@@ -3762,7 +3762,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getLong(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getLong(parameterName);
+        return statement.getRawObject().getLong(parameterName);
     }
 
     @Override
@@ -3770,7 +3770,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getFloat(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getFloat(parameterName);
+        return statement.getRawObject().getFloat(parameterName);
     }
 
     @Override
@@ -3779,7 +3779,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDouble(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getDouble(parameterName);
+        return statement.getRawObject().getDouble(parameterName);
     }
 
     @Override
@@ -3788,7 +3788,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBytes(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getBytes(parameterName);
+        return statement.getRawObject().getBytes(parameterName);
     }
 
     @Override
@@ -3797,7 +3797,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDate(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getDate(parameterName);
+        return statement.getRawObject().getDate(parameterName);
     }
 
     @Override
@@ -3806,7 +3806,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTime(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getTime(parameterName);
+        return statement.getRawObject().getTime(parameterName);
     }
 
     @Override
@@ -3815,7 +3815,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTimestamp(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getTimestamp(parameterName);
+        return statement.getRawObject().getTimestamp(parameterName);
     }
 
     @Override
@@ -3824,7 +3824,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getObject(parameterName);
+        return statement.getRawObject().getObject(parameterName);
     }
 
     @Override
@@ -3833,7 +3833,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBigDecimal(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getBigDecimal(parameterName);
+        return statement.getRawObject().getBigDecimal(parameterName);
     }
 
     @Override
@@ -3842,7 +3842,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterName, map);
         }
-        return statement.getRawCallableStatement().getObject(parameterName, map);
+        return statement.getRawObject().getObject(parameterName, map);
     }
 
     @Override
@@ -3850,7 +3850,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getRef(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getRef(parameterName);
+        return statement.getRawObject().getRef(parameterName);
     }
 
     @Override
@@ -3858,7 +3858,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBlob(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getBlob(parameterName);
+        return statement.getRawObject().getBlob(parameterName);
     }
 
     @Override
@@ -3867,7 +3867,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getClob(this, statement, parameterName);
         }
 
-        Clob clob = statement.getRawCallableStatement().getClob(parameterName);
+        Clob clob = statement.getRawObject().getClob(parameterName);
 
         return wrap(statement.getConnectionProxy(), clob);
     }
@@ -3877,7 +3877,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getArray(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getArray(parameterName);
+        return statement.getRawObject().getArray(parameterName);
     }
 
     @Override
@@ -3886,7 +3886,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getDate(this, statement, parameterName, cal);
         }
-        return statement.getRawCallableStatement().getDate(parameterName, cal);
+        return statement.getRawObject().getDate(parameterName, cal);
     }
 
     @Override
@@ -3895,7 +3895,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTime(this, statement, parameterName, cal);
         }
-        return statement.getRawCallableStatement().getTime(parameterName, cal);
+        return statement.getRawObject().getTime(parameterName, cal);
     }
 
     @Override
@@ -3904,7 +3904,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getTimestamp(this, statement, parameterName, cal);
         }
-        return statement.getRawCallableStatement().getTimestamp(parameterName, cal);
+        return statement.getRawObject().getTimestamp(parameterName, cal);
     }
 
     @Override
@@ -3913,7 +3913,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getURL(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getURL(parameterName);
+        return statement.getRawObject().getURL(parameterName);
     }
 
     @Override
@@ -3921,7 +3921,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getRowId(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getRowId(parameterIndex);
+        return statement.getRawObject().getRowId(parameterIndex);
     }
 
     @Override
@@ -3929,7 +3929,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getRowId(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getRowId(parameterName);
+        return statement.getRawObject().getRowId(parameterName);
     }
 
     @Override
@@ -3939,7 +3939,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setRowId(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setRowId(parameterName, x);
+        statement.getRawObject().setRowId(parameterName, x);
     }
 
     @Override
@@ -3949,7 +3949,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNString(this, statement, parameterName, value);
             return;
         }
-        statement.getRawCallableStatement().setNString(parameterName, value);
+        statement.getRawObject().setNString(parameterName, value);
     }
 
     @Override
@@ -3959,7 +3959,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNCharacterStream(this, statement, parameterName, value, length);
             return;
         }
-        statement.getRawCallableStatement().setNCharacterStream(parameterName, value, length);
+        statement.getRawObject().setNCharacterStream(parameterName, value, length);
     }
 
     @Override
@@ -3969,7 +3969,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNClob(this, statement, parameterName, value);
             return;
         }
-        statement.getRawCallableStatement().setNClob(parameterName, value);
+        statement.getRawObject().setNClob(parameterName, value);
     }
 
     @Override
@@ -3979,7 +3979,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setClob(this, statement, parameterName, reader, length);
             return;
         }
-        statement.getRawCallableStatement().setClob(parameterName, reader, length);
+        statement.getRawObject().setClob(parameterName, reader, length);
     }
 
     @Override
@@ -3989,7 +3989,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBlob(this, statement, parameterName, inputStream, length);
             return;
         }
-        statement.getRawCallableStatement().setBlob(parameterName, inputStream, length);
+        statement.getRawObject().setBlob(parameterName, inputStream, length);
     }
 
     @Override
@@ -3999,7 +3999,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNClob(this, statement, parameterName, reader, length);
             return;
         }
-        statement.getRawCallableStatement().setNClob(parameterName, reader, length);
+        statement.getRawObject().setNClob(parameterName, reader, length);
     }
 
     @Override
@@ -4008,7 +4008,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getNClob(this, statement, parameterIndex);
         }
 
-        NClob nclob = statement.getRawCallableStatement().getNClob(parameterIndex);
+        NClob nclob = statement.getRawObject().getNClob(parameterIndex);
 
         return wrap(statement.getConnectionProxy(), nclob);
     }
@@ -4019,7 +4019,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getNClob(this, statement, parameterName);
         }
 
-        NClob nclob = statement.getRawCallableStatement().getNClob(parameterName);
+        NClob nclob = statement.getRawObject().getNClob(parameterName);
 
         return wrap(statement.getConnectionProxy(), nclob);
     }
@@ -4031,7 +4031,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setSQLXML(this, statement, parameterName, xmlObject);
             return;
         }
-        statement.getRawCallableStatement().setSQLXML(parameterName, xmlObject);
+        statement.getRawObject().setSQLXML(parameterName, xmlObject);
     }
 
     @Override
@@ -4039,7 +4039,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getSQLXML(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getSQLXML(parameterIndex);
+        return statement.getRawObject().getSQLXML(parameterIndex);
     }
 
     @Override
@@ -4048,7 +4048,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getSQLXML(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getSQLXML(parameterName);
+        return statement.getRawObject().getSQLXML(parameterName);
     }
 
     @Override
@@ -4057,7 +4057,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNString(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getNString(parameterIndex);
+        return statement.getRawObject().getNString(parameterIndex);
     }
 
     @Override
@@ -4066,7 +4066,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNString(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getNString(parameterName);
+        return statement.getRawObject().getNString(parameterName);
     }
 
     @Override
@@ -4075,7 +4075,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNCharacterStream(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getNCharacterStream(parameterIndex);
+        return statement.getRawObject().getNCharacterStream(parameterIndex);
     }
 
     @Override
@@ -4084,7 +4084,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getNCharacterStream(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getNCharacterStream(parameterName);
+        return statement.getRawObject().getNCharacterStream(parameterName);
     }
 
     @Override
@@ -4093,7 +4093,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getCharacterStream(this, statement, parameterIndex);
         }
-        return statement.getRawCallableStatement().getCharacterStream(parameterIndex);
+        return statement.getRawObject().getCharacterStream(parameterIndex);
     }
 
     @Override
@@ -4102,7 +4102,7 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getCharacterStream(this, statement, parameterName);
         }
-        return statement.getRawCallableStatement().getCharacterStream(parameterName);
+        return statement.getRawObject().getCharacterStream(parameterName);
     }
 
     @Override
@@ -4112,7 +4112,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBlob(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setBlob(parameterName, x);
+        statement.getRawObject().setBlob(parameterName, x);
     }
 
     @Override
@@ -4122,7 +4122,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setClob(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setClob(parameterName, x);
+        statement.getRawObject().setClob(parameterName, x);
     }
 
     @Override
@@ -4132,7 +4132,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setAsciiStream(this, statement, parameterName, x, length);
             return;
         }
-        statement.getRawCallableStatement().setAsciiStream(parameterName, x, length);
+        statement.getRawObject().setAsciiStream(parameterName, x, length);
     }
 
     @Override
@@ -4142,7 +4142,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBinaryStream(this, statement, parameterName, x, length);
             return;
         }
-        statement.getRawCallableStatement().setBinaryStream(parameterName, x, length);
+        statement.getRawObject().setBinaryStream(parameterName, x, length);
     }
 
     @Override
@@ -4152,7 +4152,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setCharacterStream(this, statement, parameterName, reader, length);
             return;
         }
-        statement.getRawCallableStatement().setCharacterStream(parameterName, reader, length);
+        statement.getRawObject().setCharacterStream(parameterName, reader, length);
     }
 
     @Override
@@ -4162,7 +4162,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setAsciiStream(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setAsciiStream(parameterName, x);
+        statement.getRawObject().setAsciiStream(parameterName, x);
     }
 
     @Override
@@ -4172,7 +4172,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBinaryStream(this, statement, parameterName, x);
             return;
         }
-        statement.getRawCallableStatement().setBinaryStream(parameterName, x);
+        statement.getRawObject().setBinaryStream(parameterName, x);
     }
 
     @Override
@@ -4182,7 +4182,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setCharacterStream(this, statement, parameterName, reader);
             return;
         }
-        statement.getRawCallableStatement().setCharacterStream(parameterName, reader);
+        statement.getRawObject().setCharacterStream(parameterName, reader);
     }
 
     @Override
@@ -4192,7 +4192,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNCharacterStream(this, statement, parameterName, value);
             return;
         }
-        statement.getRawCallableStatement().setNCharacterStream(parameterName, value);
+        statement.getRawObject().setNCharacterStream(parameterName, value);
     }
 
     @Override
@@ -4202,7 +4202,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setClob(this, statement, parameterName, reader);
             return;
         }
-        statement.getRawCallableStatement().setClob(parameterName, reader);
+        statement.getRawObject().setClob(parameterName, reader);
     }
 
     @Override
@@ -4212,7 +4212,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setBlob(this, statement, parameterName, inputStream);
             return;
         }
-        statement.getRawCallableStatement().setBlob(parameterName, inputStream);
+        statement.getRawObject().setBlob(parameterName, inputStream);
     }
 
     @Override
@@ -4222,7 +4222,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().callableStatement_setNClob(this, statement, parameterName, reader);
             return;
         }
-        statement.getRawCallableStatement().setNClob(parameterName, reader);
+        statement.getRawObject().setNClob(parameterName, reader);
     }
 
     @Override

@@ -33,6 +33,8 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.util.Calendar;
 
+import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -1765,5 +1767,18 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
 
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == ResultSet.class) {
+            if (rs instanceof ResultSetProxy) {
+                return rs.unwrap(iface);
+            }
+            
+            return (T) rs;
+        }
+        
+        return super.unwrap(iface);
     }
 }

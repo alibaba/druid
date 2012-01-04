@@ -71,6 +71,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     public Connection getConnectionRaw() {
         return connection;
     }
+    
+    public Connection getRawObject() {
+        return connection;
+    }
 
     public DataSourceProxy getDirectDataSource() {
         return this.dataSource;
@@ -341,4 +345,12 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         throw new SQLFeatureNotSupportedException();
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == Connection.class) {
+            return (T) connection;
+        }
+        
+        return super.unwrap(iface);
+    }
 }

@@ -54,7 +54,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         return connection;
     }
 
-    public Statement getStatementRaw() {
+    public Statement getRawObject() {
         return this.statement;
     }
 
@@ -313,5 +313,14 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     public boolean isCloseOnCompletion() throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == Statement.class) {
+            return (T) statement;
+        }
+        
+        return super.unwrap(iface);
     }
 }

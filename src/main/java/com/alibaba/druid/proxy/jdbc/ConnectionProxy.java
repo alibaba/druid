@@ -24,7 +24,7 @@ import java.util.Properties;
  */
 public interface ConnectionProxy extends Connection, WrapperProxy {
 
-    Connection getConnectionRaw();
+    Connection getRawObject();
 
     Properties getProperties();
 
