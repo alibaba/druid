@@ -218,6 +218,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setOracle(boolean isOracle) {
+        if (inited) {
+            throw new IllegalStateException();
+        }
         this.isOracle = isOracle;
     }
 

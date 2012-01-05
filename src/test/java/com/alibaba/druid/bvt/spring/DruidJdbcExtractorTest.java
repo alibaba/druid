@@ -7,8 +7,6 @@ import java.sql.Statement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.springframework.jdbc.support.nativejdbc.Jdbc4NativeJdbcExtractor;
-
 import com.alibaba.druid.mock.MockCallableStatement;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
@@ -56,7 +54,7 @@ public class DruidJdbcExtractorTest extends TestCase {
         DruidDataSource dataSource = new DruidDataSource();
 
         try {
-            Jdbc4NativeJdbcExtractor extractor = new Jdbc4NativeJdbcExtractor();
+            DruidNativeJdbcExtractor extractor = new DruidNativeJdbcExtractor();
 
             dataSource.setUrl("jdbc:mock:xx1");
             dataSource.setFilters("stat");

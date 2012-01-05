@@ -33,6 +33,12 @@
 			<url>http://code.alibabatech.com/mvn/releases/</url>
 			<layout>default</layout>
 		</repository>
+
+		<repository>
+			<id>springsource-repo</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
 	</repositories>
 
 	<distributionManagement>
@@ -164,12 +170,22 @@
 			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.6</version>
+			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
+<!--  
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>3.1.0.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+-->
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -209,14 +225,14 @@
 			<version>1.2.4</version>
 			<scope>provided</scope>
 		</dependency>
-			
+
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.1-901-1.jdbc4</version>
 			<scope>provided</scope>
 		</dependency>
-			
+
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc5</artifactId>
@@ -224,14 +240,8 @@
 			<scope>provided</scope>
 		</dependency>
 
-<!--
-		<dependency>
-			<groupId>com.alibaba.external</groupId>
-			<artifactId>jdbc.oracle</artifactId>
-			<version>10.2.0.2</version>
-			<scope>provided</scope>
-		</dependency>
--->
+		<!-- <dependency> <groupId>com.alibaba.external</groupId> <artifactId>jdbc.oracle</artifactId> 
+			<version>10.2.0.2</version> <scope>provided</scope> </dependency> -->
 
 		<dependency>
 			<groupId>junit</groupId>

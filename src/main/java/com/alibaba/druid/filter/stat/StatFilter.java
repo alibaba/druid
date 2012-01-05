@@ -643,7 +643,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return dataSource.getUrl();
     }
 
-    public final JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
+    public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
         final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = dataSourceStat.getSqlStatMap();
         JdbcSqlStat sqlStat = sqlStatMap.get(sql);
         if (sqlStat == null) {
