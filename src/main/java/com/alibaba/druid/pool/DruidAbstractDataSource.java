@@ -955,6 +955,22 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
+    
+    public int getDriverMajorVersion() {
+        if (this.driver == null) {
+            return -1;
+        }
+        
+        return this.driver.getMajorVersion();
+    }
+    
+    public int getDriverMinorVersion() {
+        if (this.driver == null) {
+            return -1;
+        }
+        
+        return this.driver.getMinorVersion();
+    }
 
     public ExceptionSorter getExceptionSorter() {
         return exceptionSorter;

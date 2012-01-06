@@ -150,4 +150,8 @@ public interface DruidAbstractDataSourceMBean {
     boolean isUseOracleImplicitCache();
     
     void setUseOracleImplicitCache(boolean useOracleImplicitCache);
+    
+    int getDriverMajorVersion();
+    
+    int getDriverMinorVersion();
 }
