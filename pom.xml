@@ -170,21 +170,13 @@
 			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
 			<version>2.0</version>
 			<scope>provided</scope>
 		</dependency>
-<!--  
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>3.1.0.RELEASE</version>
-			<scope>provided</scope>
-		</dependency>
--->
 
 		<dependency>
 			<groupId>log4j</groupId>
@@ -232,16 +224,28 @@
 			<version>9.1-901-1.jdbc4</version>
 			<scope>provided</scope>
 		</dependency>
-
+<!--  
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc5</artifactId>
 			<version>11.2.0.3</version>
 			<scope>provided</scope>
 		</dependency>
+-->
 
-		<!-- <dependency> <groupId>com.alibaba.external</groupId> <artifactId>jdbc.oracle</artifactId> 
-			<version>10.2.0.2</version> <scope>provided</scope> </dependency> -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz</artifactId>
+			<version>1.b.40</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

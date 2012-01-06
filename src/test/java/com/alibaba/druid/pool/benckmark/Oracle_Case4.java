@@ -31,7 +31,7 @@ public class Oracle_Case4 extends TestCase {
     private String  validationQuery            = "SELECT 1 FROM DUAL";
     private int     threadCount                = 1;
     private int     loopCount                  = 3;
-    final int       LOOP_COUNT                 = 1000 * 1000;
+    final int       LOOP_COUNT                 = 1000 * 1;
     private boolean testOnBorrow               = false;
     private boolean preparedStatementCache     = true;
     private int     preparedStatementCacheSize = 50;
@@ -40,10 +40,10 @@ public class Oracle_Case4 extends TestCase {
     private String  SQL;
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-        // user = "alibaba";
-        // password = "ccbuauto";
-        // SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
+//         jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
+//         user = "alibaba";
+//         password = "ccbuauto";
+//         SQL = "SELECT * FROM WP_ORDERS WHERE ID = ?";
 
         jdbcUrl = "jdbc:oracle:thin:@10.20.149.81:1521:ointest3";
         user = "alibaba";
@@ -68,7 +68,7 @@ public class Oracle_Case4 extends TestCase {
         dataSource.setValidationQuery(validationQuery);
         dataSource.setTestOnBorrow(testOnBorrow);
         dataSource.setConnectionProperties(properties);
-        dataSource.setUseOracleImplicitCache(false);
+        dataSource.setUseOracleImplicitCache(true);
 
         // printAV_INFO(dataSource);
         // printTables(dataSource);
@@ -155,7 +155,7 @@ public class Oracle_Case4 extends TestCase {
                             
                             int mod = i % 500;
                             
-                            String sql = SQL; // + " AND ROWNUM <= " + (mod + 1);
+                            String sql = SQL + " AND ROWNUM <= " + (mod + 1);
                             PreparedStatement stmt = conn.prepareStatement(sql);
                             stmt.setInt(1, 61);
                             ResultSet rs = stmt.executeQuery();

@@ -17,7 +17,6 @@ import java.util.Calendar;
 
 import oracle.jdbc.OracleParameterMetaData;
 import oracle.jdbc.OracleResultSetCache;
-import oracle.jdbc.dcn.DatabaseChangeRegistration;
 import oracle.sql.ARRAY;
 import oracle.sql.BFILE;
 import oracle.sql.BINARY_DOUBLE;
@@ -83,25 +82,21 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
         return executeBatch;
     }
 
-    @Override
     public ResultSet getReturnResultSet() throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
     public void registerReturnParameter(int arg0, int arg1) throws SQLException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void registerReturnParameter(int arg0, int arg1, int arg2) throws SQLException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void registerReturnParameter(int arg0, int arg1, String arg2) throws SQLException {
         // TODO Auto-generated method stub
 
@@ -257,13 +252,11 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
 
     }
 
-    @Override
     public void setBytesForBlob(int arg0, byte[] arg1) throws SQLException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void setBytesForBlobAtName(String arg0, byte[] arg1) throws SQLException {
         // TODO Auto-generated method stub
 
@@ -337,12 +330,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
 
     @Override
     public void setDateAtName(String arg0, Date arg1) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setDateAtName(String arg0, Date arg1, Calendar arg2) throws SQLException {
         // TODO Auto-generated method stub
 
     }
@@ -653,18 +640,11 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
     }
 
     @Override
-    public void setTimeAtName(String arg0, Time arg1, Calendar arg2) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setTimestampAtName(String arg0, Timestamp arg1) throws SQLException {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
     public void setTimestampAtName(String arg0, Timestamp arg1, Calendar arg2) throws SQLException {
         // TODO Auto-generated method stub
 
@@ -736,19 +716,16 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
 
     }
 
-    @Override
     public int getLobPrefetchSize() {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    @Override
     public long getRegisteredQueryId() throws SQLException {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    @Override
     public String[] getRegisteredTableNames() throws SQLException {
         // TODO Auto-generated method stub
         return null;
@@ -765,13 +742,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
         return false;
     }
 
-    @Override
-    public void setDatabaseChangeRegistration(DatabaseChangeRegistration arg0) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setLobPrefetchSize(int arg0) throws SQLException {
         // TODO Auto-generated method stub
 
@@ -788,7 +758,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
         this.rowPrefetch = rowPrefetch;
     }
 
-    @Override
     public long getChecksum() throws SQLException {
         // TODO Auto-generated method stub
         return 0;
@@ -798,12 +767,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
     public boolean getFixedString() {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    public SqlKind getSqlKind() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -826,12 +789,6 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
 
     @Override
     public void setFixedString(boolean arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setSnapshotSCN(long arg0) throws SQLException {
         // TODO Auto-generated method stub
 
     }
@@ -872,13 +829,11 @@ public class OracleMockPreparedStatement extends MockPreparedStatement implement
 
     }
 
-    @Override
     public String getOriginalSql() throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
     public void setCharacterStreamAtName(String arg0, Reader arg1, int arg2) throws SQLException {
         // TODO Auto-generated method stub
 

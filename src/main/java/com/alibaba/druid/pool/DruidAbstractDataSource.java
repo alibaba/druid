@@ -211,7 +211,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                           isOracle                                  = false;
 
-    protected boolean                                                                           useOracleImplicitCache                    = false;
+    protected boolean                                                                           useOracleImplicitCache                    = true;
 
     public boolean isOracle() {
         return isOracle;
@@ -229,7 +229,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUseOracleImplicitCache(boolean useOracleImplicitCache) {
-        this.useOracleImplicitCache = useOracleImplicitCache;
+        if (this.useOracleImplicitCache != useOracleImplicitCache) {
+            this.useOracleImplicitCache = useOracleImplicitCache;
+            boolean isOracleDriver10 = isOracle() && this.driver != null && this.driver.getMajorVersion() == 10;
+
+            if (isOracleDriver10) {
+                this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
+            } else {
+                this.getConnectProperties().remove("oracle.jdbc.FreeMemoryOnEnterImplicitCache");
+            }
+        }
     }
 
     public Throwable getLastCreateError() {

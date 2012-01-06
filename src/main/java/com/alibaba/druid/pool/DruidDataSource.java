@@ -295,6 +295,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
                                            + driver.getMinorVersion());
                 }
+                
+                if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
+                    this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
+                }
             }
 
             String realDriverClassName = driver.getClass().getName();
@@ -1334,7 +1338,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public String getVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2011-12-27 14:45";
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion + "-2012-1-6 10:14";
     }
 
 }
