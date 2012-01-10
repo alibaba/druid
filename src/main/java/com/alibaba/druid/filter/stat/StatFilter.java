@@ -465,8 +465,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         resultSetStat.beforeOpen();
         dataSourceStat.getResultSetStat().beforeOpen();
 
-        resultSet.setConstructNano(System.nanoTime());
-
+        resultSet.setConstructNano();
         // super.resultSetOpenAfter(resultSet);
     }
 

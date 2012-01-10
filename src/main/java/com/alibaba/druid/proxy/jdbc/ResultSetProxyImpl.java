@@ -68,6 +68,12 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     public void setConstructNano(long constructNano) {
         this.constructNano = constructNano;
     }
+    
+    public void setConstructNano() {
+        if (this.constructNano <= 0) {
+            this.constructNano = System.nanoTime();
+        }
+    }
 
     public int getCursorIndex() {
         return cursorIndex;

@@ -3312,15 +3312,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             if (hasMore) {
                 List<Object> row = getCurrentRow(resultSet);
                 event.putContext("rs.row", row);
-
-                ResultSetTraceInfo traceInfo = getResultSetTraceInfo(resultSet);
-                if (traceInfo != null) {
-                    traceInfo.incrementCusorIndex();
-                    event.putContext(TRACE_RS_CURSOR_INDEX, traceInfo.getCusorIndex());
-                    if (traceInfo.getCusorIndex() > traceInfo.getFetchRowCount()) {
-                        traceInfo.setFetchRowCount(traceInfo.getCusorIndex());
-                    }
-                }
+                event.putContext(TRACE_RS_CURSOR_INDEX, resultSet.getCursorIndex());
             }
 
             fireEvent(event);
@@ -3352,12 +3344,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
 
             if (hasMore) {
                 event.putContext("rs.row", getCurrentRow(resultSet));
-
-                ResultSetTraceInfo traceInfo = getResultSetTraceInfo(resultSet);
-                if (traceInfo != null) {
-                    traceInfo.decrementCusorIndex();
-                    event.putContext(TRACE_RS_CURSOR_INDEX, traceInfo.getCusorIndex());
-                }
+                event.putContext(TRACE_RS_CURSOR_INDEX, resultSet.getCursorIndex());
             }
 
             fireEvent(event);
@@ -3387,12 +3374,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_STMT_ID, statement.getId());
             event.putContext(TRACE_RS_ID, resultSet.getId());
 
-            ResultSetTraceInfo traceInfo = getResultSetTraceInfo(resultSet);
-            if (traceInfo != null) {
-                traceInfo.decrementCusorIndex();
-                event.putContext(TRACE_RS_CURSOR_INDEX, traceInfo.getCusorIndex());
-                event.putContext("rs.fetchRowIndex", traceInfo.getFetchRowCount());
-            }
+            event.putContext(TRACE_RS_CURSOR_INDEX, resultSet.getCursorIndex());
+            event.putContext("rs.fetchRowIndex", resultSet.getCursorIndex());
 
             fireEvent(event);
         }
@@ -3414,23 +3397,12 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
         return row;
     }
 
-    public static ResultSetTraceInfo getResultSetTraceInfo(ResultSetProxy resultSet) {
-        if (resultSet == null) {
-            return null;
-        }
-
-        ResultSetTraceInfo traceInfo = (ResultSetTraceInfo) resultSet.getAttributes().get(ATTR_NAME_RESULT_SET);
-
-        return traceInfo;
-    }
-
     protected void resultSetOpenAfter(ResultSetProxy resultSet) throws SQLException {
         if (!isTraceResultSetEnable()) {
             return;
         }
 
-        ResultSetTraceInfo resultSetTraceInfo = new ResultSetTraceInfo();
-        resultSet.getAttributes().put(ATTR_NAME_RESULT_SET, resultSetTraceInfo);
+        resultSet.setConstructNano();
 
         StatementProxy statement = resultSet.getStatementProxy();
         ConnectionProxy connection = statement.getConnectionProxy();
@@ -3460,42 +3432,4 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
         fireEvent(event);
     }
 
-    public static class ResultSetTraceInfo {
-
-        protected final long constructNano;
-        protected int        cusorIndex    = 0;
-        protected int        fetchRowCount = 0;
-
-        public ResultSetTraceInfo(){
-            this.constructNano = System.nanoTime();
-        }
-
-        public void incrementCusorIndex() {
-            cusorIndex++;
-        }
-
-        public void decrementCusorIndex() {
-            cusorIndex--;
-        }
-
-        public long getConstructNano() {
-            return constructNano;
-        }
-
-        public int getCusorIndex() {
-            return cusorIndex;
-        }
-
-        public void setCusorIndex(int cusorIndex) {
-            this.cusorIndex = cusorIndex;
-        }
-
-        public int getFetchRowCount() {
-            return fetchRowCount;
-        }
-
-        public void setFetchRowCount(int fetchRowCount) {
-            this.fetchRowCount = fetchRowCount;
-        }
-    }
 }
