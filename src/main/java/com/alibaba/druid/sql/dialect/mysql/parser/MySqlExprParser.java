@@ -415,7 +415,7 @@ public class MySqlExprParser extends SQLExprParser {
 
             MySqlIntervalExpr intervalExpr = new MySqlIntervalExpr();
             intervalExpr.setValue(value);
-            intervalExpr.setUnit(MySqlIntervalUnit.valueOf(unit));
+            intervalExpr.setUnit(MySqlIntervalUnit.valueOf(unit.toUpperCase()));
 
             return intervalExpr;
         }
