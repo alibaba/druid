@@ -741,10 +741,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public String getName() {
-        if (name == null) {
-            return "DataSource-" + System.identityHashCode(this);
+        if (name != null) {
+            return name;
         }
-        return name;
+        return "DataSource-" + System.identityHashCode(this);
     }
 
     public String getNameInternal() {
@@ -955,20 +955,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void setDriver(Driver driver) {
         this.driver = driver;
     }
-    
+
     public int getDriverMajorVersion() {
         if (this.driver == null) {
             return -1;
         }
-        
+
         return this.driver.getMajorVersion();
     }
-    
+
     public int getDriverMinorVersion() {
         if (this.driver == null) {
             return -1;
         }
-        
+
         return this.driver.getMinorVersion();
     }
 

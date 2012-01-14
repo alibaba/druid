@@ -47,7 +47,7 @@ public class TestOraclePing extends TestCase {
 
     private void ping_1000(OracleConnection oracleConn) throws SQLException {
         long startMillis = System.currentTimeMillis();
-        final int COUNT = 1000;
+        final int COUNT = 10000;
         for (int i = 0; i < COUNT; ++i) {
             pring(oracleConn);
         }
@@ -57,7 +57,7 @@ public class TestOraclePing extends TestCase {
 
     private void select_1000(OracleConnection oracleConn) throws SQLException {
         long startMillis = System.currentTimeMillis();
-        final int COUNT = 1000;
+        final int COUNT = 10000;
         for (int i = 0; i < COUNT; ++i) {
             select(oracleConn);
         }

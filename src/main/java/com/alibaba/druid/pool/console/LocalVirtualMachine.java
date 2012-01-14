@@ -29,6 +29,7 @@ import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
+@SuppressWarnings("restriction")
 public class LocalVirtualMachine {
 
     private String  address;
@@ -113,7 +114,7 @@ public class LocalVirtualMachine {
 
     private static void getMonitoredVMs(Map<Integer, LocalVirtualMachine> map) {
         MonitoredHost host;
-        Set vms;
+        Set<?> vms;
         try {
             host = MonitoredHost.getMonitoredHost(new HostIdentifier((String) null));
             vms = host.activeVms();
