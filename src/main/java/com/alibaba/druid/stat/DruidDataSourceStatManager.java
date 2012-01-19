@@ -210,6 +210,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
         map.put("LastErrorTime", dataSource.getLastErrorTime());
         map.put("LastCreateErrorTime", dataSource.getLastCreateErrorTime());
+        map.put("CreateErrorCount", dataSource.getCreateErrorCount());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -232,7 +233,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG//
                 , SimpleType.LONG, SimpleType.LONG, JMXUtils.getThrowableCompositeType(), JMXUtils.getThrowableCompositeType(), SimpleType.LONG //
                 , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING //
-                , SimpleType.DATE , SimpleType.DATE
+                , SimpleType.DATE , SimpleType.DATE, SimpleType.LONG
         //
         };
 
@@ -252,7 +253,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 "StartTransactionCount", //
                 "CommitCount", "RollbackCount", "LastError", "LastCreateError", "PreparedStatementCacheDeleteCount" //
                 , "PreparedStatementCacheAccessCount", "PreparedStatementCacheMissCount", "PreparedStatementCacheHitCount", "PreparedStatementCacheCurrentCount", "Version" // 
-                , "LastErrorTime", "LastCreateErrorTime"
+                , "LastErrorTime", "LastCreateErrorTime", "CreateErrorCount"
         //
         };
 
