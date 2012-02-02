@@ -220,7 +220,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return this.inited;
     }
 
-    private void init() throws SQLException {
+    public void init() throws SQLException {
         if (inited) {
             return;
         }
