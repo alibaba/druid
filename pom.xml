@@ -5,9 +5,13 @@
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
 	<version>0.1.19-SNAPSHOT</version>
-
+	
+	<packaging>jar</packaging>
 	<name>druid</name>
-
+	<description>An JDBC datasource implementation.</description>
+	<url>https://github.com/AlibabaTech/druid</url>
+	<inceptionYear>2012</inceptionYear>
+	
 	<repositories>
 		<repository>
 			<id>oracleReleases</id>
@@ -52,7 +56,33 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<url>http://code.alibabatech.com/wiki/display/Druid/Home</url>
+	<developers>
+		<developer>
+			<id>wenshao</id>
+			<name>wenshao</name>
+			<email>szujobs@hotmail.com</email>
+		</developer>
+	</developers>
+	
+	<scm>
+		<url>https://wenshao@github.com/AlibabaTech/druid.git</url>
+		<connection>scm:git:https://wenshao@github.com/AlibabaTech/druid.git</connection>
+	</scm>
+
+	<organization>
+		<name>Alibaba Group</name>
+		<url>http://code.alibabatech.com/</url>
+	</organization>
+	
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+	
 	<issueManagement>
 		<system>Jira</system>
 		<url>http://code.alibabatech.com/jira/browse/DRUID</url>
@@ -101,6 +131,40 @@
 				<configuration>
 					<attach>true</attach>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+                    <execution>
+                        <id>attach-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+				<configuration>
+					<show>public</show>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<links>
+						<link>http://docs.oracle.com/javase/6/docs/api</link>
+					</links>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
