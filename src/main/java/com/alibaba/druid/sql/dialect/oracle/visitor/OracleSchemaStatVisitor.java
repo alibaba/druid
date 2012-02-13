@@ -54,8 +54,8 @@ public class OracleSchemaStatVisitor extends OracleASTVIsitorAdapter {
     }
 
     public boolean visit(SQLExprTableSource x) {
-        if (x.getExpr() instanceof SQLName) {
-            String ident = ((SQLName) x.getExpr()).toString();
+    	if (x.getExpr() instanceof SQLIdentifierExpr || x.getExpr() instanceof SQLPropertyExpr) {
+    		String ident = x.getExpr().toString();
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();

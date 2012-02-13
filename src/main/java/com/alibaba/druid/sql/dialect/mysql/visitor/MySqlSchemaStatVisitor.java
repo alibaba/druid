@@ -47,8 +47,8 @@ public class MySqlSchemaStatVisitor extends MySqlASTVisitorAdapter {
     }
 
     public boolean visit(SQLExprTableSource x) {
-        if (x.getExpr() instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) x.getExpr()).getName();
+        if (x.getExpr() instanceof SQLIdentifierExpr || x.getExpr() instanceof SQLPropertyExpr) {
+            String ident = x.getExpr().toString();
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
