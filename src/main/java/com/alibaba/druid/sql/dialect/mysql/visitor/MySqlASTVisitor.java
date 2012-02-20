@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -148,4 +149,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(CobarShowStatus x);
     
     boolean visit(CobarShowStatus x);
+    
+    void endVisit(MySqlKillStatement x);
+    
+    boolean visit(MySqlKillStatement x);
 }

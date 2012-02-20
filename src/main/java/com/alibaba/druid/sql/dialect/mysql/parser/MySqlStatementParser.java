@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.bvt.sql.mysql.Kill_Test;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -35,6 +36,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -153,8 +155,35 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         throw new ParserException("TODO " + lexer.token());
     }
+    
+    public SQLStatement parseKill() {
+    	accept(Token.KILL);
+    	
+    	MySqlKillStatement stmt = new MySqlKillStatement();
+    	
+    	if (identifierEquals("CONNECTION")) {
+    		stmt.setType(MySqlKillStatement.Type.CONNECTION);
+    		lexer.nextToken();
+    	} else if (identifierEquals("QUERY")) {
+    		stmt.setType(MySqlKillStatement.Type.QUERY);
+    		lexer.nextToken();
+    	} else {
+    		throw new ParserException("not support kill type " + lexer.token());	
+    	}
+    	
+    	SQLExpr threadId = this.exprParser.expr();
+    	stmt.setThreadId(threadId);
+    	
+    	return stmt;
+    }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.token() == Token.KILL) {
+        	SQLStatement stmt = parseKill();
+        	statementList.add(stmt);
+        	return true;
+        }
+        
         if (identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
             statementList.add(stmt);

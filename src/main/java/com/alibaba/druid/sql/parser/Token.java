@@ -97,6 +97,7 @@ public enum Token {
     TRUE("TRUE"), 
     FALSE("FALSE"),
     LIMIT("LIMIT"),
+    KILL("KILL"),
     
     // oracle
     START("START"),
