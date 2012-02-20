@@ -30,304 +30,305 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
-public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements MySqlASTVisitor {
+public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
+		MySqlASTVisitor {
 
-    @Override
-    public boolean visit(MySqlBooleanExpr x) {
-        return true;
-    }
+	@Override
+	public boolean visit(MySqlBooleanExpr x) {
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlBooleanExpr x) {
+	@Override
+	public void endVisit(MySqlBooleanExpr x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(Limit x) {
-        return true;
-    }
+	@Override
+	public boolean visit(Limit x) {
+		return true;
+	}
 
-    @Override
-    public void endVisit(Limit x) {
+	@Override
+	public void endVisit(Limit x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlTableIndex x) {
-        return true;
-    }
+	@Override
+	public boolean visit(MySqlTableIndex x) {
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlTableIndex x) {
+	@Override
+	public void endVisit(MySqlTableIndex x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlKey x) {
-        return true;
-    }
+	@Override
+	public boolean visit(MySqlKey x) {
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlKey x) {
+	@Override
+	public void endVisit(MySqlKey x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlPrimaryKey x) {
+	@Override
+	public boolean visit(MySqlPrimaryKey x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlPrimaryKey x) {
+	@Override
+	public void endVisit(MySqlPrimaryKey x) {
 
-    }
+	}
 
-    @Override
-    public void endVisit(MySqlIntervalExpr x) {
+	@Override
+	public void endVisit(MySqlIntervalExpr x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlIntervalExpr x) {
+	@Override
+	public boolean visit(MySqlIntervalExpr x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlExtractExpr x) {
+	@Override
+	public void endVisit(MySqlExtractExpr x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlExtractExpr x) {
+	@Override
+	public boolean visit(MySqlExtractExpr x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlMatchAgainstExpr x) {
+	@Override
+	public void endVisit(MySqlMatchAgainstExpr x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlMatchAgainstExpr x) {
+	@Override
+	public boolean visit(MySqlMatchAgainstExpr x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlBinaryExpr x) {
+	@Override
+	public void endVisit(MySqlBinaryExpr x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlBinaryExpr x) {
+	@Override
+	public boolean visit(MySqlBinaryExpr x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlPrepareStatement x) {
+	@Override
+	public void endVisit(MySqlPrepareStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlPrepareStatement x) {
+	@Override
+	public boolean visit(MySqlPrepareStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlExecuteStatement x) {
+	@Override
+	public void endVisit(MySqlExecuteStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlExecuteStatement x) {
+	@Override
+	public boolean visit(MySqlExecuteStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlDeleteStatement x) {
+	@Override
+	public void endVisit(MySqlDeleteStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlDeleteStatement x) {
+	@Override
+	public boolean visit(MySqlDeleteStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlInsertStatement x) {
+	@Override
+	public void endVisit(MySqlInsertStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlInsertStatement x) {
+	@Override
+	public boolean visit(MySqlInsertStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlLoadDataInFileStatement x) {
+	@Override
+	public void endVisit(MySqlLoadDataInFileStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlLoadDataInFileStatement x) {
+	@Override
+	public boolean visit(MySqlLoadDataInFileStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlLoadXmlStatement x) {
+	@Override
+	public void endVisit(MySqlLoadXmlStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlLoadXmlStatement x) {
+	@Override
+	public boolean visit(MySqlLoadXmlStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlReplicateStatement x) {
+	@Override
+	public void endVisit(MySqlReplicateStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlReplicateStatement x) {
+	@Override
+	public boolean visit(MySqlReplicateStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlSelectGroupBy x) {
+	@Override
+	public void endVisit(MySqlSelectGroupBy x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlSelectGroupBy x) {
+	@Override
+	public boolean visit(MySqlSelectGroupBy x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlStartTransactionStatement x) {
+	@Override
+	public void endVisit(MySqlStartTransactionStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlStartTransactionStatement x) {
+	@Override
+	public boolean visit(MySqlStartTransactionStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlCommitStatement x) {
+	@Override
+	public void endVisit(MySqlCommitStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlCommitStatement x) {
+	@Override
+	public boolean visit(MySqlCommitStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlRollbackStatement x) {
+	@Override
+	public void endVisit(MySqlRollbackStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlRollbackStatement x) {
+	@Override
+	public boolean visit(MySqlRollbackStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlShowColumnsStatement x) {
+	@Override
+	public void endVisit(MySqlShowColumnsStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlShowColumnsStatement x) {
+	@Override
+	public boolean visit(MySqlShowColumnsStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlShowTablesStatement x) {
+	@Override
+	public void endVisit(MySqlShowTablesStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlShowTablesStatement x) {
+	@Override
+	public boolean visit(MySqlShowTablesStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlShowDatabasesStatement x) {
+	@Override
+	public void endVisit(MySqlShowDatabasesStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlShowDatabasesStatement x) {
+	@Override
+	public boolean visit(MySqlShowDatabasesStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlShowWarningsStatement x) {
+	@Override
+	public void endVisit(MySqlShowWarningsStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlShowWarningsStatement x) {
+	@Override
+	public boolean visit(MySqlShowWarningsStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(MySqlShowStatusStatement x) {
+	@Override
+	public void endVisit(MySqlShowStatusStatement x) {
 
-    }
+	}
 
-    @Override
-    public boolean visit(MySqlShowStatusStatement x) {
+	@Override
+	public boolean visit(MySqlShowStatusStatement x) {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public void endVisit(CobarShowStatus x) {
-        
-    }
+	@Override
+	public void endVisit(CobarShowStatus x) {
 
-    @Override
-    public boolean visit(CobarShowStatus x) {
-        return true;
-    }
+	}
+
+	@Override
+	public boolean visit(CobarShowStatus x) {
+		return true;
+	}
 
 	@Override
 	public void endVisit(MySqlKillStatement x) {
-		
+
 	}
 
 	@Override
 	public boolean visit(MySqlKillStatement x) {
 		return true;
 	}
-	
+
 	@Override
 	public void endVisit(MySqlBinlogStatement x) {
-		
+
 	}
-	
+
 	@Override
 	public boolean visit(MySqlBinlogStatement x) {
 		return true;
