@@ -18,6 +18,7 @@ public class MySqlSchemaStatVisitorTest5 extends TestCase {
 				+ "  LEFT JOIN (select * from view_portal_panel) c  ON a.panel_id = c.panel_id   "
 				+ " WHERE     b.user_id = ? and     ((b.is_grid='y' and c.param_name='is_hidden' and c.param_value='false') or      b.is_grid  != 'y') and b.user_id in (select user_id from table1 where id = 1)    ORDER BY    a.col ASC, a.position ASC";
 
+		sql = "select columnName from table1 where id in (select id from table3 where name = ?)";
 		MySqlStatementParser parser = new MySqlStatementParser(sql);
 		List<SQLStatement> statementList = parser.parseStatementList();
 		SQLStatement statemen = statementList.get(0);

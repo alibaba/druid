@@ -30,11 +30,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -153,8 +155,46 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         throw new ParserException("TODO " + lexer.token());
     }
+    
+    public SQLStatement parseKill() {
+    	accept(Token.KILL);
+    	
+    	MySqlKillStatement stmt = new MySqlKillStatement();
+    	
+    	if (identifierEquals("CONNECTION")) {
+    		stmt.setType(MySqlKillStatement.Type.CONNECTION);
+    		lexer.nextToken();
+    	} else if (identifierEquals("QUERY")) {
+    		stmt.setType(MySqlKillStatement.Type.QUERY);
+    		lexer.nextToken();
+    	} else {
+    		throw new ParserException("not support kill type " + lexer.token());	
+    	}
+    	
+    	SQLExpr threadId = this.exprParser.expr();
+    	stmt.setThreadId(threadId);
+    	
+    	return stmt;
+    }
+    
+    public SQLStatement parseBinlog() {
+    	acceptIdentifier("binlog");
+    	
+    	MySqlBinlogStatement stmt = new MySqlBinlogStatement();
+    	
+    	SQLExpr expr = this.exprParser.expr();
+    	stmt.setExpr(expr);
+    	
+    	return stmt;
+    }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
+        if (lexer.token() == Token.KILL) {
+        	SQLStatement stmt = parseKill();
+        	statementList.add(stmt);
+        	return true;
+        }
+        
         if (identifierEquals("PREPARE")) {
             MySqlPrepareStatement stmt = parsePrepare();
             statementList.add(stmt);
@@ -201,6 +241,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLStatement stmt = parseShow();
             statementList.add(stmt);
             return true;
+        }
+        
+        if (identifierEquals("BINLOG")) {
+        	SQLStatement stmt = parseBinlog();
+        	statementList.add(stmt);
+        	return true;
         }
 
         return false;

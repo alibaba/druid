@@ -37,11 +37,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
@@ -1201,4 +1203,34 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print("SHOW COBAR_STATUS");
         return false;
     }
+    
+
+	@Override
+	public void endVisit(MySqlKillStatement x) {
+		
+	}
+
+	@Override
+	public boolean visit(MySqlKillStatement x) {
+		if (MySqlKillStatement.Type.CONNECTION.equals(x.getType())) {
+			print("KILL CONNECTION ");
+		} else if (MySqlKillStatement.Type.QUERY.equals(x.getType())) {
+			print("KILL QUERY ");
+		}
+		x.getThreadId().accept(this);
+		return false;
+	}
+	
+	@Override
+	public void endVisit(MySqlBinlogStatement x) {
+		
+	}
+	
+	@Override
+	public boolean visit(MySqlBinlogStatement x) {
+		print("BINLOG ");
+		x.getExpr().accept(this);
+		return false;
+	}
+
 }
