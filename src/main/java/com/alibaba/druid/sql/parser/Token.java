@@ -99,6 +99,20 @@ public enum Token {
     LIMIT("LIMIT"),
     KILL("KILL"),
     
+    //postgresql
+    WINDOW("WINDOW"),
+    OFFSET("OFFSET"),
+    ROW("ROW"),
+    ROWS("ROWS"),
+    ONLY("ONLY"),
+    FIRST("FIRST"),
+    NEXT("NEXT"),
+    FETCH("FETCH"),
+    OF("OF"),
+    SHARE("SHARE"),
+    NOWAIT("NOWAIT"),
+    RECURSIVE("RECURSIVE"),
+    
     // oracle
     START("START"),
     PRIOR("PRIOR"),
