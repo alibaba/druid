@@ -81,6 +81,7 @@ public class PGLexer extends Lexer {
 	        map.put("LOCK", Token.LOCK);
 	        map.put("SOME", Token.SOME);
 	        map.put("ANY", Token.ANY);
+	        map.put("TRUNCATE", Token.TRUNCATE);
 
 	        map.put("LIMIT", Token.LIMIT);
 	        map.put("OFFSET", Token.OFFSET);

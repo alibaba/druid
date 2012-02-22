@@ -85,6 +85,7 @@ public class OracleLexer extends Lexer {
         map.put("LOCK", Token.LOCK);
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
+        map.put("TRUNCATE", Token.TRUNCATE);
 
         map.put("START", Token.START);
         map.put("CONNECT", Token.CONNECT);

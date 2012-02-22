@@ -116,6 +116,12 @@ public class SQLStatementParser extends SQLParser {
                     continue;
                 }
             }
+            
+            if (lexer.token() == Token.TRUNCATE) {
+                SQLStatement stmt = parseTruncate();
+                statementList.add(stmt);
+                continue;
+            }
 
             if (identifierEquals("CALL")) {
                 SQLCallStatement stmt = parseCall();
@@ -129,6 +135,10 @@ public class SQLStatementParser extends SQLParser {
 
             throw new ParserException("TODO " + lexer.token());
         }
+    }
+    
+    public SQLStatement parseTruncate() {
+    	throw new ParserException("TODO " + lexer.token());
     }
 
     public SQLStatement parseInsert() {

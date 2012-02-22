@@ -92,6 +92,7 @@ public enum Token {
     LOCK("LOCK"), 
     SOME("SOME"), 
     ANY("ANY"),
+    TRUNCATE("TRUNCATE"),
 
     // mysql
     TRUE("TRUE"), 
@@ -115,6 +116,11 @@ public enum Token {
     TEMPORARY("TEMPORARY"),
     TEMP("TEMP"),
     UNLOGGED("UNLOGGED"),
+    RESTART("RESTART"),
+    IDENTITY("IDENTITY"),
+    CONTINUE("CONTINUE"),
+    CASCADE("CASCADE"),
+    RESTRICT("RESTRICT"),
     
     // oracle
     START("START"),

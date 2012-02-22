@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClaus
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements
@@ -231,5 +232,37 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
 		}
 		x.getTable().accept(this);
 		return false;
+	}
+	
+	@Override
+	public void endVisit(PGTruncateStatement x) {
+	    
+	}
+	
+	@Override
+	public boolean visit(PGTruncateStatement x) {
+	    print("TRUNCATE TABLE ");
+	    if (x.isOnly()) {
+	        print("ONLY ");
+	    }
+	    
+	    printlnAndAccept(x.getTableNames(), ", ");
+	    
+	    if (x.getRestartIdentity() != null) {
+	        if (x.getRestartIdentity().booleanValue()) {
+	            print(" RESTART IDENTITY");
+	        } else {
+	            print(" CONTINUE IDENTITY");
+	        }
+	    }
+	    
+	    if (x.getCascade() != null) {
+            if (x.getCascade().booleanValue()) {
+                print(" CASCADE");
+            } else {
+                print(" RESTRICT");
+            }
+        }
+	    return false;
 	}
 }

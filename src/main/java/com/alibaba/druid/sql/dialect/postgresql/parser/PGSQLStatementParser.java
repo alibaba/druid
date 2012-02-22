@@ -2,7 +2,9 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -21,6 +23,53 @@ public class PGSQLStatementParser extends SQLStatementParser {
 	public PGSelectParser createSQLSelectParser() {
 		return new PGSelectParser(this.lexer);
 	}
+	
+    public SQLStatement parseTruncate() {
+        accept(Token.TRUNCATE);
+        
+        PGTruncateStatement stmt = new PGTruncateStatement();
+        
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.ONLY) {
+            lexer.nextToken();
+            stmt.setOnly(true);
+        }
+        
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            stmt.getTableNames().add(name);
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            
+            break;
+        }
+        
+        if (lexer.token() == Token.RESTART) {
+            lexer.nextToken();
+            accept(Token.IDENTITY);
+            stmt.setRestartIdentity(Boolean.TRUE);
+        } else if (lexer.token() == Token.SHARE) {
+            lexer.nextToken();
+            accept(Token.IDENTITY);
+            stmt.setRestartIdentity(Boolean.FALSE);
+        }
+        
+        if (lexer.token() == Token.CASCADE) {
+            lexer.nextToken();
+            stmt.setCascade(Boolean.TRUE);
+        } else if (lexer.token() == Token.RESTRICT) {
+            lexer.nextToken();
+            stmt.setCascade(Boolean.FALSE);
+        }
+        
+    	return stmt;
+    }
 	
 	public boolean parseStatementListDialect(List<SQLStatement> statementList) {
 		if (lexer.token() == Token.WITH) {

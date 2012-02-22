@@ -73,6 +73,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
@@ -862,6 +863,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(x.getAlias());
         }
 
+        return false;
+    }
+    
+    @Override
+    public void endVisit(SQLTruncateStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLTruncateStatement x) {
+        print("TRUNCATE TABLE ");
+        printAndAccept(x.getTableNames(), ", ");
         return false;
     }
 }

@@ -21,266 +21,298 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
-	protected HashMap<TableStat.Name, TableStat> tableStats = new HashMap<TableStat.Name, TableStat>();
-	protected Set<Column> fields = new HashSet<Column>();
 
-	protected final static ThreadLocal<Map<String, String>> aliasLocal = new ThreadLocal<Map<String, String>>();
-	protected final static ThreadLocal<String> currentTableLocal = new ThreadLocal<String>();
-	protected final static ThreadLocal<Mode> modeLocal = new ThreadLocal<Mode>();
+    protected HashMap<TableStat.Name, TableStat>            tableStats        = new HashMap<TableStat.Name, TableStat>();
+    protected Set<Column>                                   fields            = new HashSet<Column>();
 
-	@Override
-	public boolean visit(SQLInsertStatement x) {
-		x.putAttribute("_original_use_mode", modeLocal.get());
-		modeLocal.set(Mode.Insert);
+    protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
+    protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
+    protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
 
-		aliasLocal.set(new HashMap<String, String>());
+    @Override
+    public boolean visit(SQLTruncateStatement x) {
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Insert);
 
-		String originalTable = currentTableLocal.get();
+        aliasLocal.set(new HashMap<String, String>());
 
-		if (x.getTableName() instanceof SQLName) {
-			String ident = ((SQLName) x.getTableName()).toString();
-			currentTableLocal.set(ident);
-			x.putAttribute("_old_local_", originalTable);
+        String originalTable = currentTableLocal.get();
 
-			TableStat stat = tableStats.get(ident);
-			if (stat == null) {
-				stat = new TableStat();
-				tableStats.put(new TableStat.Name(ident), stat);
-			}
-			stat.incrementInsertCount();
+        for (SQLName name : x.getTableNames()) {
+            String ident = name.toString();
+            currentTableLocal.set(ident);
+            x.putAttribute("_old_local_", originalTable);
 
-			Map<String, String> aliasMap = aliasLocal.get();
-			if (aliasMap != null) {
-				if (x.getAlias() != null) {
-					aliasMap.put(x.getAlias(), ident);
-				}
-				aliasMap.put(ident, ident);
-			}
-		}
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
+            stat.incrementInsertCount();
 
-		accept(x.getColumns());
-		accept(x.getQuery());
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                aliasMap.put(ident, ident);
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	protected void accept(SQLObject x) {
-		if (x != null) {
-			x.accept(this);
-		}
-	}
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Insert);
 
-	protected void accept(List<? extends SQLObject> nodes) {
-		for (int i = 0, size = nodes.size(); i < size; ++i) {
-			accept(nodes.get(i));
-		}
-	}
+        aliasLocal.set(new HashMap<String, String>());
 
-	public boolean visit(SQLSelectQueryBlock x) {
+        String originalTable = currentTableLocal.get();
 
-		if (x.getFrom() instanceof SQLSubqueryTableSource) {
-			x.getFrom().accept(this);
-			return false;
-		}
+        if (x.getTableName() instanceof SQLName) {
+            String ident = ((SQLName) x.getTableName()).toString();
+            currentTableLocal.set(ident);
+            x.putAttribute("_old_local_", originalTable);
 
-		x.putAttribute("_original_use_mode", modeLocal.get());
-		modeLocal.set(Mode.Select);
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
+            stat.incrementInsertCount();
 
-		String originalTable = currentTableLocal.get();
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                if (x.getAlias() != null) {
+                    aliasMap.put(x.getAlias(), ident);
+                }
+                aliasMap.put(ident, ident);
+            }
+        }
 
-		if (x.getFrom() instanceof SQLExprTableSource) {
-			SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
-			if (tableSource.getExpr() instanceof SQLName) {
-				String ident = tableSource.getExpr().toString();
-				currentTableLocal.set(ident);
-				x.putAttribute("_old_local_", originalTable);
-			}
-		}
+        accept(x.getColumns());
+        accept(x.getQuery());
 
-		x.getFrom().accept(this); // 提前执行，获得aliasMap
+        return false;
+    }
 
-		return true;
-	}
+    protected void accept(SQLObject x) {
+        if (x != null) {
+            x.accept(this);
+        }
+    }
 
-	public void endVisit(SQLSelectQueryBlock x) {
-		String originalTable = (String) x.getAttribute("_old_local_");
-		x.putAttribute("table", currentTableLocal.get());
-		currentTableLocal.set(originalTable);
+    protected void accept(List<? extends SQLObject> nodes) {
+        for (int i = 0, size = nodes.size(); i < size; ++i) {
+            accept(nodes.get(i));
+        }
+    }
 
-		Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
-		modeLocal.set(originalMode);
-	}
+    public boolean visit(SQLSelectQueryBlock x) {
 
-	public boolean visit(SQLJoinTableSource x) {
-		return true;
-	}
+        if (x.getFrom() instanceof SQLSubqueryTableSource) {
+            x.getFrom().accept(this);
+            return false;
+        }
 
-	public boolean visit(SQLPropertyExpr x) {
-		if (x.getOwner() instanceof SQLIdentifierExpr) {
-			String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Select);
 
-			if (owner != null) {
-				Map<String, String> aliasMap = aliasLocal.get();
-				if (aliasMap != null) {
-					String table = aliasMap.get(owner);
+        String originalTable = currentTableLocal.get();
 
-					// table == null时是SubQuery
-					if (table != null) {
-						fields.add(new Column(table, x.getName()));
-					}
-				}
-			}
-		}
-		return false;
-	}
+        if (x.getFrom() instanceof SQLExprTableSource) {
+            SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
+            if (tableSource.getExpr() instanceof SQLName) {
+                String ident = tableSource.getExpr().toString();
+                currentTableLocal.set(ident);
+                x.putAttribute("_old_local_", originalTable);
+            }
+        }
 
-	public boolean visit(SQLIdentifierExpr x) {
-		String currentTable = currentTableLocal.get();
+        x.getFrom().accept(this); // 提前执行，获得aliasMap
 
-		if (currentTable != null) {
-			fields.add(new Column(currentTable, x.getName()));
-		}
-		return false;
-	}
+        return true;
+    }
 
-	public boolean visit(SQLAllColumnExpr x) {
-		String currentTable = currentTableLocal.get();
+    public void endVisit(SQLSelectQueryBlock x) {
+        String originalTable = (String) x.getAttribute("_old_local_");
+        x.putAttribute("table", currentTableLocal.get());
+        currentTableLocal.set(originalTable);
 
-		if (currentTable != null) {
-			fields.add(new Column(currentTable, "*"));
-		}
-		return false;
-	}
+        Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
+        modeLocal.set(originalMode);
+    }
 
-	public Map<TableStat.Name, TableStat> getTables() {
-		return tableStats;
-	}
+    public boolean visit(SQLJoinTableSource x) {
+        return true;
+    }
 
-	public boolean containsTable(String tableName) {
-		return tableStats.containsKey(new TableStat.Name(tableName));
-	}
+    public boolean visit(SQLPropertyExpr x) {
+        if (x.getOwner() instanceof SQLIdentifierExpr) {
+            String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
-	public Set<Column> getFields() {
-		return fields;
-	}
+            if (owner != null) {
+                Map<String, String> aliasMap = aliasLocal.get();
+                if (aliasMap != null) {
+                    String table = aliasMap.get(owner);
 
-	public boolean visit(SQLSelectStatement x) {
-		aliasLocal.set(new HashMap<String, String>());
-		return true;
-	}
+                    // table == null时是SubQuery
+                    if (table != null) {
+                        fields.add(new Column(table, x.getName()));
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-	public void endVisit(SQLSelectStatement x) {
-		aliasLocal.set(null);
-	}
+    public boolean visit(SQLIdentifierExpr x) {
+        String currentTable = currentTableLocal.get();
 
-	public boolean visit(SQLSubqueryTableSource x) {
-		Map<String, String> aliasMap = aliasLocal.get();
-		if (aliasMap != null) {
-			if (x.getAlias() != null) {
-				aliasMap.put(x.getAlias(), null);
-			}
-		}
-		return true;
-	}
+        if (currentTable != null) {
+            fields.add(new Column(currentTable, x.getName()));
+        }
+        return false;
+    }
 
-	protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
-		return x.getExpr() instanceof SQLName;
-	}
+    public boolean visit(SQLAllColumnExpr x) {
+        String currentTable = currentTableLocal.get();
 
-	public boolean visit(SQLExprTableSource x) {
-		if (isSimpleExprTableSource(x)) {
-			String ident = x.getExpr().toString();
-			TableStat stat = tableStats.get(ident);
-			if (stat == null) {
-				stat = new TableStat();
-				tableStats.put(new TableStat.Name(ident), stat);
-			}
+        if (currentTable != null) {
+            fields.add(new Column(currentTable, "*"));
+        }
+        return false;
+    }
 
-			Mode mode = modeLocal.get();
-			switch (mode) {
-			case Delete:
-				stat.incrementDeleteCount();
-				break;
-			case Insert:
-				stat.incrementInsertCount();
-				break;
-			case Update:
-				stat.incrementUpdateCount();
-				break;
-			case Select:
-				stat.incrementSelectCount();
-				break;
-			default:
-				break;
-			}
+    public Map<TableStat.Name, TableStat> getTables() {
+        return tableStats;
+    }
 
-			Map<String, String> aliasMap = aliasLocal.get();
-			if (aliasMap != null) {
-				if (x.getAlias() != null) {
-					aliasMap.put(x.getAlias(), ident);
-				}
-				aliasMap.put(ident, ident);
-			}
-		} else {
-			accept(x.getExpr());
-		}
+    public boolean containsTable(String tableName) {
+        return tableStats.containsKey(new TableStat.Name(tableName));
+    }
 
-		return false;
-	}
+    public Set<Column> getFields() {
+        return fields;
+    }
 
-	public boolean visit(SQLSelect x) {
-		accept(x.getQuery());
+    public boolean visit(SQLSelectStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+        return true;
+    }
 
-		String originalTable = currentTableLocal.get();
+    public void endVisit(SQLSelectStatement x) {
+        aliasLocal.set(null);
+    }
 
-		currentTableLocal.set((String) x.getQuery().getAttribute("table"));
-		x.putAttribute("_old_local_", originalTable);
+    public boolean visit(SQLSubqueryTableSource x) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                aliasMap.put(x.getAlias(), null);
+            }
+        }
+        return true;
+    }
 
-		accept(x.getOrderBy());
+    protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
+        return x.getExpr() instanceof SQLName;
+    }
 
-		currentTableLocal.set(originalTable);
+    public boolean visit(SQLExprTableSource x) {
+        if (isSimpleExprTableSource(x)) {
+            String ident = x.getExpr().toString();
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
 
-		return false;
-	}
+            Mode mode = modeLocal.get();
+            switch (mode) {
+                case Delete:
+                    stat.incrementDeleteCount();
+                    break;
+                case Insert:
+                    stat.incrementInsertCount();
+                    break;
+                case Update:
+                    stat.incrementUpdateCount();
+                    break;
+                case Select:
+                    stat.incrementSelectCount();
+                    break;
+                default:
+                    break;
+            }
 
-	public boolean visit(SQLAggregateExpr x) {
-		accept(x.getArguments());
-		return false;
-	}
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                if (x.getAlias() != null) {
+                    aliasMap.put(x.getAlias(), ident);
+                }
+                aliasMap.put(ident, ident);
+            }
+        } else {
+            accept(x.getExpr());
+        }
 
-	public boolean visit(SQLMethodInvokeExpr x) {
-		accept(x.getParameters());
-		return false;
-	}
+        return false;
+    }
 
-	public boolean visit(SQLUpdateStatement x) {
-		aliasLocal.set(new HashMap<String, String>());
+    public boolean visit(SQLSelect x) {
+        accept(x.getQuery());
 
-		String ident = x.getTableName().toString();
-		currentTableLocal.set(ident);
+        String originalTable = currentTableLocal.get();
 
-		TableStat stat = tableStats.get(ident);
-		if (stat == null) {
-			stat = new TableStat();
-			tableStats.put(new TableStat.Name(ident), stat);
-		}
-		stat.incrementUpdateCount();
+        currentTableLocal.set((String) x.getQuery().getAttribute("table"));
+        x.putAttribute("_old_local_", originalTable);
 
-		Map<String, String> aliasMap = aliasLocal.get();
-		aliasMap.put(ident, ident);
+        accept(x.getOrderBy());
 
-		accept(x.getItems());
-		accept(x.getWhere());
+        currentTableLocal.set(originalTable);
 
-		return false;
-	}
-	
+        return false;
+    }
+
+    public boolean visit(SQLAggregateExpr x) {
+        accept(x.getArguments());
+        return false;
+    }
+
+    public boolean visit(SQLMethodInvokeExpr x) {
+        accept(x.getParameters());
+        return false;
+    }
+
+    public boolean visit(SQLUpdateStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+
+        String ident = x.getTableName().toString();
+        currentTableLocal.set(ident);
+
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(ident), stat);
+        }
+        stat.incrementUpdateCount();
+
+        Map<String, String> aliasMap = aliasLocal.get();
+        aliasMap.put(ident, ident);
+
+        accept(x.getItems());
+        accept(x.getWhere());
+
+        return false;
+    }
+
     public boolean visit(SQLDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
@@ -308,7 +340,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         aliasLocal.set(null);
     }
 
-	public void endVisit(SQLUpdateStatement x) {
-		aliasLocal.set(null);
-	}
+    public void endVisit(SQLUpdateStatement x) {
+        aliasLocal.set(null);
+    }
 }
