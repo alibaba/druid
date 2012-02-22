@@ -11,7 +11,7 @@ import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class PostgresqlTest extends PGTest {
+public class PGSelectIntoTest extends PGTest {
 	public void test_0() throws Exception {
 		String sql = "SELECT * INTO films_recent FROM films WHERE date_prod >= '2002-01-01';";
 		
