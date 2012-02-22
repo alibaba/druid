@@ -28,7 +28,7 @@ public class MySqlKillStatement extends MySqlStatementImpl {
 		this.threadId = threadId;
 	}
 
-	protected void accept0(MySqlASTVisitor visitor) {
+	public void accept0(MySqlASTVisitor visitor) {
 		if (visitor.visit(this)) {
 			acceptChild(visitor, threadId);
 		}

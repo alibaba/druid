@@ -18,7 +18,7 @@ public class MySqlResetStatement extends MySqlStatementImpl {
 		this.options = options;
 	}
 
-    protected void accept0(MySqlASTVisitor visitor) {
+	public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
     }
 }

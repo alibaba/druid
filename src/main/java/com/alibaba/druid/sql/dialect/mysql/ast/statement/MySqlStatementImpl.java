@@ -32,7 +32,7 @@ public abstract class MySqlStatementImpl extends SQLStatementImpl {
         }
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         throw new UnsupportedOperationException(this.getClass().getName());
     }
 }

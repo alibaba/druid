@@ -41,7 +41,7 @@ public class MySqlExecuteStatement extends MySqlStatementImpl {
         return parameters;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, statementName);
             acceptChild(visitor, parameters);

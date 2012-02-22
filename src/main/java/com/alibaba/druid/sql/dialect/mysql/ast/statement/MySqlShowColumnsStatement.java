@@ -70,7 +70,7 @@ public class MySqlShowColumnsStatement extends MySqlStatementImpl {
         this.where = where;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, table);
             acceptChild(visitor, database);

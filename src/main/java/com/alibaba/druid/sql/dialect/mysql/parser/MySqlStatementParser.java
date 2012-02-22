@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableParser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -202,12 +203,12 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             stmt.getUsers().add(userSpec);
-            
+
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
             }
-            
+
             break;
         }
 
@@ -959,5 +960,29 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return insertStatement;
+    }
+
+    public SQLStatement parseDropUser() throws ParserException {
+        accept(Token.USER);
+
+        MySqlDropUser stmt = new MySqlDropUser();
+        for (;;) {
+            SQLCharExpr expr = (SQLCharExpr) this.createExprParser().expr();
+            String user = expr.toString();
+            if (lexer.token() == Token.VARIANT) {
+                lexer.nextToken();
+                SQLCharExpr expr2 = (SQLCharExpr) this.createExprParser().expr();
+                user += '@';
+                user += expr2.toString();
+            }
+            stmt.getUsers().add(new SQLIdentifierExpr(user));
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+
+        return stmt;
     }
 }

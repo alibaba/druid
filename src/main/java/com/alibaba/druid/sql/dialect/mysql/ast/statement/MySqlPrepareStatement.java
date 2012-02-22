@@ -49,7 +49,7 @@ public class MySqlPrepareStatement extends MySqlStatementImpl {
         this.from = from;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, from);

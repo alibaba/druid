@@ -60,7 +60,7 @@ public class MySqlShowStatusStatement extends MySqlStatementImpl {
         this.where = where;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, like);
             acceptChild(visitor, where);

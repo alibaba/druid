@@ -41,7 +41,7 @@ public class MySqlShowWarningsStatement extends MySqlStatementImpl {
         this.limit = limit;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, limit);
         }

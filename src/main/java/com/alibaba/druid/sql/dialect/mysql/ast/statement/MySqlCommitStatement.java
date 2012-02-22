@@ -50,7 +50,7 @@ public class MySqlCommitStatement extends MySqlStatementImpl {
         this.work = work;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
 
         visitor.endVisit(this);

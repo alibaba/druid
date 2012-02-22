@@ -126,6 +126,12 @@ public class SQLStatementParser extends SQLParser {
 
                     statementList.add(stmt);
                     continue;
+                } else if (lexer.token() == Token.USER) {
+                    SQLStatement stmt = parseDropUser();
+                    statementList.add(stmt);
+                    continue;
+                } else {
+                    throw new ParserException("TODO " + lexer.token());
                 }
             }
 
@@ -189,6 +195,10 @@ public class SQLStatementParser extends SQLParser {
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         return false;
+    }
+    
+    public SQLStatement parseDropUser() throws ParserException {
+        throw new ParserException("TODO " + lexer.token());
     }
 
     public SQLCallStatement parseCall() throws ParserException {

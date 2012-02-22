@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -1282,6 +1283,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(" IDENTIFIED WITH ");
             x.getAuthPlugin().accept(this);
         }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlDropUser x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlDropUser x) {
+        print("DROP USER ");
+        printAndAccept(x.getUsers(), ", ");
         return false;
     }
 }

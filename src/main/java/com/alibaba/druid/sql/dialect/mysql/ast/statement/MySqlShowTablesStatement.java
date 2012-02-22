@@ -61,7 +61,7 @@ public class MySqlShowTablesStatement extends MySqlStatementImpl {
         this.where = where;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, database);
             acceptChild(visitor, like);

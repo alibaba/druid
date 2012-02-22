@@ -130,7 +130,7 @@ public class MySqlLoadXmlStatement extends MySqlStatementImpl {
         return setList;
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, fileName);
             acceptChild(visitor, tableName);
