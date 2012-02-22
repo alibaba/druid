@@ -12,9 +12,10 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
 public class TruncateTest extends PGTest {
-	public void test_0() throws Exception {
-		String sql = "TRUNCATE bigtable, fattable;";
-		
+
+    public void test_0() throws Exception {
+        String sql = "TRUNCATE bigtable, fattable;";
+
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
@@ -24,13 +25,56 @@ public class TruncateTest extends PGTest {
 
         PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
-        
+
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getFields());
-        
+
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bigtable")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fattable")));
-        
+
         Assert.assertTrue(visitor.getFields().size() == 0);
-	}
+    }
+
+    public void test_1() throws Exception {
+        String sql = "TRUNCATE bigtable, fattable RESTART IDENTITY;";
+
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+        System.out.println(output(statementList));
+
+        Assert.assertEquals(1, statementList.size());
+
+        PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getFields());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bigtable")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fattable")));
+
+        Assert.assertTrue(visitor.getFields().size() == 0);
+    }
+
+    public void test_2() throws Exception {
+        String sql = "TRUNCATE othertable CASCADE;";
+
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        SQLStatement statemen = statementList.get(0);
+        System.out.println(output(statementList));
+
+        Assert.assertEquals(1, statementList.size());
+
+        PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
+        statemen.accept(visitor);
+
+        System.out.println("Tables : " + visitor.getTables());
+        System.out.println("fields : " + visitor.getFields());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("othertable")));
+
+        Assert.assertTrue(visitor.getFields().size() == 0);
+    }
 }

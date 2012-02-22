@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -23,35 +26,33 @@ public class SQLDropTableStatement extends SQLStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private SQLName           name;
+    private List<SQLName>     tableNames       = new ArrayList<SQLName>();
 
     public SQLDropTableStatement(){
 
     }
 
     public SQLDropTableStatement(SQLName name){
-
-        this.name = name;
+        tableNames.add(name);
     }
 
-    public SQLName getName() {
-        return name;
+    public List<SQLName> getTableNames() {
+        return tableNames;
+    }
+
+    public void setTableNames(List<SQLName> tableNames) {
+        this.tableNames = tableNames;
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        tableNames.add(name);
     }
 
-    @Override
-    public void output(StringBuffer buf) {
-        buf.append("DROP TABLE ");
-        this.name.output(buf);
-    }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, name);
+            this.acceptChild(visitor, tableNames);
         }
         visitor.endVisit(this);
     }

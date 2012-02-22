@@ -526,7 +526,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLDropTableStatement x) {
         print("DROP TABLE ");
-        x.getName().accept(this);
+        printAndAccept(x.getTableNames(), ", ");
         return false;
     }
 
