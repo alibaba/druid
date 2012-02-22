@@ -124,6 +124,7 @@ public enum Token {
     CONTINUE("CONTINUE"),
     CASCADE("CASCADE"),
     RESTRICT("RESTRICT"),
+    USING("USING"),
     
     // oracle
     START("START"),
