@@ -6,15 +6,15 @@ import java.io.Reader;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class PostgresqlResourceTest extends TestCase {
+public class PostgresqlResourceTest extends PGTest {
 
     public void test_0() throws Exception {
         // 13
@@ -70,14 +70,5 @@ public class PostgresqlResourceTest extends TestCase {
         Assert.assertEquals(expect, out.toString());
     }
 
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-        PGOutputVisitor visitor = new PGOutputVisitor(out);
 
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
-    }
 }

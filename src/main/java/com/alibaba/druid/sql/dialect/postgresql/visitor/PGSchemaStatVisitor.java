@@ -2,10 +2,12 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 
 public class PGSchemaStatVisitor extends SchemaStatVisitor implements
 		PGASTVisitor {
@@ -61,6 +63,24 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements
 	public boolean visit(WithClause x) {
 
 		return true;
+	}
+
+	@Override
+	public void endVisit(IntoClause x) {
+		
+	}
+
+	@Override
+	public boolean visit(IntoClause x) {
+		String ident = x.getTable().toString();
+		
+		TableStat stat = tableStats.get(ident);
+		if (stat == null) {
+			stat = new TableStat();
+			tableStats.put(new TableStat.Name(ident), stat);
+		}
+		stat.incrementInsertCount();
+		return false;
 	}
 
 }

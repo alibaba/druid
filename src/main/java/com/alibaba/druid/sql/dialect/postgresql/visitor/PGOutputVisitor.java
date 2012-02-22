@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
@@ -157,6 +158,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
 		}
 
 		printSelectList(x.getSelectList());
+		
+		if (x.getInto() != null) {
+			println();
+			x.getInto().accept(this);
+		}
 
 		if (x.getFrom() != null) {
 			println();
@@ -208,6 +214,22 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
 			x.getForClause().accept(this);
 		}
 
+		return false;
+	}
+
+	@Override
+	public void endVisit(IntoClause x) {
+		
+	}
+
+	@Override
+	public boolean visit(IntoClause x) {
+		print("INTO ");
+		if (x.getOption() != null) {
+			print(x.getOption().name());
+			print(" ");
+		}
+		x.getTable().accept(this);
 		return false;
 	}
 }

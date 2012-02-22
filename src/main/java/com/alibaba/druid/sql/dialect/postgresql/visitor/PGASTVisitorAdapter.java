@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
@@ -62,6 +63,17 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements
 	@Override
 	public boolean visit(WithClause x) {
 
+		return true;
+	}
+	
+	@Override
+	public void endVisit(IntoClause x) {
+		
+	}
+	
+	@Override
+	public boolean visit(IntoClause x) {
+		
 		return true;
 	}
 

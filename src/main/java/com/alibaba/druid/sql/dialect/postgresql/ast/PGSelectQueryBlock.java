@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
-
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock {
@@ -24,6 +23,15 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 	private SQLOrderBy orderBy;
 	private FetchClause fetch;
 	private ForClause forClause;
+	private IntoClause into;
+
+	public IntoClause getInto() {
+		return into;
+	}
+
+	public void setInto(IntoClause into) {
+		this.into = into;
+	}
 
 	@Override
 	protected void accept0(SQLASTVisitor visitor) {
@@ -35,6 +43,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 			acceptChild(visitor, this.with);
 			acceptChild(visitor, this.distinctOn);
 			acceptChild(visitor, this.selectList);
+			acceptChild(visitor, this.into);
 			acceptChild(visitor, this.from);
 			acceptChild(visitor, this.where);
 			acceptChild(visitor, this.groupBy);
@@ -283,5 +292,40 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 				acceptChild(visitor, subQuery);
 			}
 		}
+	}
+
+	public static class IntoClause extends PGSQLObjectImpl {
+		public static enum Option {
+			TEMPORARY, TEMP, UNLOGGED
+		}
+
+		private static final long serialVersionUID = 1L;
+
+		private SQLExpr table;
+		private Option option;
+
+		public Option getOption() {
+			return option;
+		}
+
+		public void setOption(Option option) {
+			this.option = option;
+		}
+
+		public SQLExpr getTable() {
+			return table;
+		}
+
+		public void setTable(SQLExpr table) {
+			this.table = table;
+		}
+
+		@Override
+		public void accept0(PGASTVisitor visitor) {
+			if (visitor.visit(this)) {
+				acceptChild(visitor, table);
+			}
+		}
+
 	}
 }

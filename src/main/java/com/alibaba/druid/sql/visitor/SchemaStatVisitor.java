@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -41,8 +43,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
 		String originalTable = currentTableLocal.get();
 
-		if (x.getTableName() instanceof SQLIdentifierExpr) {
-			String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
+		if (x.getTableName() instanceof SQLName) {
+			String ident = ((SQLName) x.getTableName()).toString();
 			currentTableLocal.set(ident);
 			x.putAttribute("_old_local_", originalTable);
 
@@ -94,9 +96,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
 		if (x.getFrom() instanceof SQLExprTableSource) {
 			SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
-			if (tableSource.getExpr() instanceof SQLIdentifierExpr) {
-				String ident = ((SQLIdentifierExpr) tableSource.getExpr())
-						.getName();
+			if (tableSource.getExpr() instanceof SQLName) {
+				String ident = tableSource.getExpr().toString();
 				currentTableLocal.set(ident);
 				x.putAttribute("_old_local_", originalTable);
 			}
@@ -188,9 +189,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 		return true;
 	}
 
+	protected boolean isSimpleExprTableSource(SQLExprTableSource x) {
+		return x.getExpr() instanceof SQLName;
+	}
+
 	public boolean visit(SQLExprTableSource x) {
-		if (x.getExpr() instanceof SQLIdentifierExpr
-				|| x.getExpr() instanceof SQLPropertyExpr) {
+		if (isSimpleExprTableSource(x)) {
 			String ident = x.getExpr().toString();
 			TableStat stat = tableStats.get(ident);
 			if (stat == null) {
@@ -276,6 +280,33 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
 		return false;
 	}
+	
+    public boolean visit(SQLDeleteStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Delete);
+
+        aliasLocal.set(new HashMap<String, String>());
+
+        String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
+        currentTableLocal.set(ident);
+
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(ident), stat);
+        }
+        stat.incrementDeleteCount();
+
+        accept(x.getWhere());
+
+        return false;
+    }
+
+    public void endVisit(SQLDeleteStatement x) {
+        aliasLocal.set(null);
+    }
 
 	public void endVisit(SQLUpdateStatement x) {
 		aliasLocal.set(null);

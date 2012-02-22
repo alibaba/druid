@@ -23,4 +23,8 @@ public interface PGASTVisitor extends SQLASTVisitor {
 	void endVisit(PGSelectQueryBlock.WithClause x);
 	
 	boolean visit(PGSelectQueryBlock.WithClause x);
+	
+	void endVisit(PGSelectQueryBlock.IntoClause x);
+	
+	boolean visit(PGSelectQueryBlock.IntoClause x);
 }

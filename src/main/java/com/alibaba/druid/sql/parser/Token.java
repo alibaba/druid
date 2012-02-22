@@ -112,6 +112,9 @@ public enum Token {
     SHARE("SHARE"),
     NOWAIT("NOWAIT"),
     RECURSIVE("RECURSIVE"),
+    TEMPORARY("TEMPORARY"),
+    TEMP("TEMP"),
+    UNLOGGED("UNLOGGED"),
     
     // oracle
     START("START"),

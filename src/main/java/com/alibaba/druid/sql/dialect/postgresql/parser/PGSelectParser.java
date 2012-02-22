@@ -5,6 +5,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -76,6 +77,31 @@ public class PGSelectParser extends SQLSelectParser {
 		}
 		
 		parseSelectList(queryBlock);
+		
+		if (lexer.token() == Token.INTO) {
+			IntoClause into = new IntoClause();
+			lexer.nextToken();
+			
+			if (lexer.token() == Token.TEMPORARY) {
+				lexer.nextToken();
+				into.setOption(IntoClause.Option.TEMPORARY);
+			} else if (lexer.token() == Token.TEMP) {
+				lexer.nextToken();
+				into.setOption(IntoClause.Option.TEMP);
+			} else if (lexer.token() == Token.UNLOGGED) {
+				lexer.nextToken();
+				into.setOption(IntoClause.Option.UNLOGGED);
+			}
+			
+			if (lexer.token() == Token.TABLE) {
+				lexer.nextToken();
+			}
+			
+			SQLExpr name = this.createExprParser().name();
+			into.setTable(name);
+			
+			queryBlock.setInto(into);
+		}
 
 		parseFrom(queryBlock);
 
