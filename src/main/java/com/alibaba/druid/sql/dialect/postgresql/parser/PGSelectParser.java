@@ -219,6 +219,7 @@ public class PGSelectParser extends SQLSelectParser {
 
 		if (lexer.token() == Token.LPAREN) {
 			lexer.nextToken();
+
 			SQLSelectQuery subQuery = query();
 			withQuery.setSubQuery(subQuery);
 			accept(Token.RPAREN);

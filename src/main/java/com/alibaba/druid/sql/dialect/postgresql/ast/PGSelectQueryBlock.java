@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
+
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock {
