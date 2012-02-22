@@ -111,12 +111,24 @@ public class SQLStatementParser extends SQLParser {
 
                 if (lexer.token() == Token.TABLE) {
                     lexer.nextToken();
-                    SQLName name = this.exprParser.name();
-                    statementList.add(new SQLDropTableStatement(name));
+
+                    SQLDropTableStatement stmt = new SQLDropTableStatement();
+
+                    for (;;) {
+                        SQLName name = this.exprParser.name();
+                        stmt.getTableNames().add(name);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+
+                    statementList.add(stmt);
                     continue;
                 }
             }
-            
+
             if (lexer.token() == Token.TRUNCATE) {
                 SQLStatement stmt = parseTruncate();
                 statementList.add(stmt);
@@ -136,9 +148,9 @@ public class SQLStatementParser extends SQLParser {
             throw new ParserException("TODO " + lexer.token());
         }
     }
-    
+
     public SQLStatement parseTruncate() {
-    	throw new ParserException("TODO " + lexer.token());
+        throw new ParserException("TODO " + lexer.token());
     }
 
     public SQLStatement parseInsert() {

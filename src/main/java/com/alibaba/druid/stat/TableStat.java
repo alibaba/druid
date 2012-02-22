@@ -21,6 +21,19 @@ public class TableStat {
     int updateCount = 0;
     int deleteCount = 0;
     int insertCount = 0;
+    int dropCount   = 0;
+
+    public int getDropCount() {
+        return dropCount;
+    }
+    
+    public void incrementDropCount() {
+        dropCount++;
+    }
+
+    public void setDropCount(int dropCount) {
+        this.dropCount = dropCount;
+    }
 
     public int getSelectCount() {
         return selectCount;
@@ -73,16 +86,19 @@ public class TableStat {
     public String toString() {
         StringBuilder buf = new StringBuilder(4);
         if (insertCount > 0) {
-            buf.append("C");
+            buf.append("Insert");
         }
         if (updateCount > 0) {
-            buf.append("U");
+            buf.append("Update");
         }
         if (selectCount > 0) {
-            buf.append("R");
+            buf.append("Selelct");
         }
         if (deleteCount > 0) {
-            buf.append("D");
+            buf.append("Delete");
+        }
+        if (dropCount > 0) {
+            buf.append("Drop");
         }
 
         return buf.toString();

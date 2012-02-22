@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -56,6 +57,36 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 tableStats.put(new TableStat.Name(ident), stat);
             }
             stat.incrementInsertCount();
+
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                aliasMap.put(ident, ident);
+            }
+        }
+
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDropTableStatement x) {
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Insert);
+
+        aliasLocal.set(new HashMap<String, String>());
+
+        String originalTable = currentTableLocal.get();
+
+        for (SQLName name : x.getTableNames()) {
+            String ident = name.toString();
+            currentTableLocal.set(ident);
+            x.putAttribute("_old_local_", originalTable);
+
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
+            stat.incrementDropCount();
 
             Map<String, String> aliasMap = aliasLocal.get();
             if (aliasMap != null) {
