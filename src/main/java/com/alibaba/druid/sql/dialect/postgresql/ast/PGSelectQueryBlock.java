@@ -9,6 +9,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
 public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
 	private static final long serialVersionUID = 1L;
@@ -17,8 +19,58 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 	private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
 	private SQLExpr limit;
 	private SQLExpr offset;
+	private WindowClause window;
 
 	private SQLOrderBy orderBy;
+	private FetchClause fetch;
+	private ForClause forClause;
+
+	@Override
+	protected void accept0(SQLASTVisitor visitor) {
+		accept0((PGASTVisitor) visitor);
+	}
+
+	protected void accept0(PGASTVisitor visitor) {
+		if (visitor.visit(this)) {
+			acceptChild(visitor, this.with);
+			acceptChild(visitor, this.distinctOn);
+			acceptChild(visitor, this.selectList);
+			acceptChild(visitor, this.from);
+			acceptChild(visitor, this.where);
+			acceptChild(visitor, this.groupBy);
+			acceptChild(visitor, this.window);
+			acceptChild(visitor, this.orderBy);
+			acceptChild(visitor, this.limit);
+			acceptChild(visitor, this.offset);
+			acceptChild(visitor, this.fetch);
+			acceptChild(visitor, this.forClause);
+		}
+		visitor.endVisit(this);
+	}
+
+	public FetchClause getFetch() {
+		return fetch;
+	}
+
+	public void setFetch(FetchClause fetch) {
+		this.fetch = fetch;
+	}
+
+	public ForClause getForClause() {
+		return forClause;
+	}
+
+	public void setForClause(ForClause forClause) {
+		this.forClause = forClause;
+	}
+
+	public WindowClause getWindow() {
+		return window;
+	}
+
+	public void setWindow(WindowClause window) {
+		this.window = window;
+	}
 
 	public WithClause getWith() {
 		return with;

@@ -95,6 +95,7 @@ public class PGLexer extends Lexer {
 	        map.put("SHARE", Token.SHARE);
 	        map.put("NOWAIT", Token.NOWAIT);
 	        map.put("RECURSIVE", Token.RECURSIVE);
+	        map.put("WITH", Token.WITH);
 
 	        DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
 	    }

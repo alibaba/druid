@@ -74,6 +74,8 @@ public class PGSelectParser extends SQLSelectParser {
 			queryBlock.setDistionOption(SQLSetQuantifier.ALL);
 			lexer.nextToken();
 		}
+		
+		parseSelectList(queryBlock);
 
 		parseFrom(queryBlock);
 
@@ -97,6 +99,7 @@ public class PGSelectParser extends SQLSelectParser {
 					break;
 				}
 			}
+			queryBlock.setWindow(window);
 		}
 
 		queryBlock.setOrderBy(this.createExprParser().parseOrderBy());
@@ -150,6 +153,8 @@ public class PGSelectParser extends SQLSelectParser {
 			} else {
 				throw new ParserException("expect 'ONLY'");
 			}
+			
+			queryBlock.setFetch(fetch);
 		}
 
 		if (lexer.token() == Token.FOR) {
@@ -182,14 +187,17 @@ public class PGSelectParser extends SQLSelectParser {
 				lexer.nextToken();
 				forClause.setNoWait(true);
 			}
+			
+			queryBlock.setForClause(forClause);
 		}
-
-		return queryBlock;
+		
+		return queryRest(queryBlock);
 	}
 
 	private WithQuery withQuery() {
 		WithQuery withQuery = new WithQuery();
 		withQuery.setName(expr());
+		
 		if (lexer.token() == Token.LPAREN) {
 			lexer.nextToken();
 
@@ -210,6 +218,8 @@ public class PGSelectParser extends SQLSelectParser {
 		accept(Token.AS);
 
 		if (lexer.token() == Token.LPAREN) {
+			lexer.nextToken();
+
 			SQLSelectQuery subQuery = query();
 			withQuery.setSubQuery(subQuery);
 			accept(Token.RPAREN);
