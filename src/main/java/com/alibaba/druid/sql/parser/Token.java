@@ -125,6 +125,8 @@ public enum Token {
     CASCADE("CASCADE"),
     RESTRICT("RESTRICT"),
     USING("USING"),
+    CURRENT("CURRENT"),
+    RETURNING("RETURNING"),
     
     // oracle
     START("START"),

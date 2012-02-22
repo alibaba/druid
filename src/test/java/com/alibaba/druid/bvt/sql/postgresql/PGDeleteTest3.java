@@ -10,10 +10,10 @@ import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class PGDeleteTest2 extends PGTest {
+public class PGDeleteTest3 extends PGTest {
 
     public void test_0() throws Exception {
-        String sql = "DELETE FROM tasks WHERE CURRENT OF c_tasks;";
+        String sql = "DELETE FROM tasks WHERE status = 'DONE' RETURNING *;";
 
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -30,7 +30,7 @@ public class PGDeleteTest2 extends PGTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tasks")));
 
-        Assert.assertTrue(visitor.getFields().size() == 0);
+        Assert.assertTrue(visitor.getFields().size() == 1);
     }
 
     

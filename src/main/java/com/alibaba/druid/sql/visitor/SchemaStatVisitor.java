@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -363,6 +364,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         accept(x.getWhere());
 
         return false;
+    }
+    
+    @Override
+    public boolean visit(SQLInSubQueryExpr x) {
+        return true;
     }
 
     public void endVisit(SQLDeleteStatement x) {

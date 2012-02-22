@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -59,8 +60,23 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
-            SQLExpr where = this.exprParser.expr();
-            deleteStatement.setWhere(where);
+
+            if (lexer.token() == Token.CURRENT) {
+                lexer.nextToken();
+                accept(Token.OF);
+                SQLName cursorName = this.exprParser.name();
+                SQLExpr where = new PGCurrentOfExpr(cursorName);
+                deleteStatement.setWhere(where);
+            } else {
+                SQLExpr where = this.exprParser.expr();
+                deleteStatement.setWhere(where);
+            }
+        }
+        
+        if (lexer.token() == Token.RETURNING) {
+            lexer.nextToken();
+            accept(Token.STAR);
+            deleteStatement.setReturning(true);
         }
 
         return deleteStatement;

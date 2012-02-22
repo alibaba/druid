@@ -14,7 +14,16 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
     private PGWithClause      with;
     private boolean           only             = false;
     private List<SQLName>     using            = new ArrayList<SQLName>(2);
+    private boolean           returning;
     private String            alias;
+
+    public boolean isReturning() {
+        return returning;
+    }
+
+    public void setReturning(boolean returning) {
+        this.returning = returning;
+    }
 
     public String getAlias() {
         return alias;
@@ -47,7 +56,7 @@ public class PGDeleteStatement extends SQLDeleteStatement implements PGSQLStatem
     public void setWith(PGWithClause with) {
         this.with = with;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }

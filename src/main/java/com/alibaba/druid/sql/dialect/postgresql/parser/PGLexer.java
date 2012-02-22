@@ -105,6 +105,8 @@ public class PGLexer extends Lexer {
         map.put("CASCADE", Token.CASCADE);
         map.put("RESTRICT", Token.RESTRICT);
         map.put("USING", Token.USING);
+        map.put("CURRENT", Token.CURRENT);
+        map.put("RETURNING", Token.RETURNING);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }

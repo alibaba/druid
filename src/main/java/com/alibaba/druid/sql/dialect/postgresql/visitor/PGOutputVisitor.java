@@ -303,6 +303,11 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print("WHERE ");
             x.getWhere().accept(this);
         }
+        
+        if (x.isReturning()) {
+            println();
+            print("RETURNING *");
+        }
 
         return false;
     }

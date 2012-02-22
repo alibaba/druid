@@ -7,6 +7,14 @@ public class PGCurrentOfExpr extends PGSQLObjectImpl implements SQLExpr {
 
     private static final long serialVersionUID = 1L;
     private SQLExpr           cursor;
+    
+    public PGCurrentOfExpr() {
+        
+    }
+    
+    public PGCurrentOfExpr(SQLExpr cursor) {
+        this.cursor = cursor;
+    }
 
     public SQLExpr getCursor() {
         return cursor;
