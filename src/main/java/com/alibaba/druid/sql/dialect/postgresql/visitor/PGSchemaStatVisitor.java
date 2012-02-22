@@ -1,15 +1,22 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.stat.TableStat.Mode;
 
 public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisitor {
 
@@ -45,23 +52,23 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(WithQuery x) {
+    public void endVisit(PGWithQuery x) {
 
     }
 
     @Override
-    public boolean visit(WithQuery x) {
+    public boolean visit(PGWithQuery x) {
 
         return true;
     }
 
     @Override
-    public void endVisit(WithClause x) {
+    public void endVisit(PGWithClause x) {
 
     }
 
     @Override
-    public boolean visit(WithClause x) {
+    public boolean visit(PGWithClause x) {
 
         return true;
     }
@@ -92,6 +99,57 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     @Override
     public boolean visit(PGTruncateStatement x) {
         this.visit((SQLTruncateStatement) x);
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGDeleteStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGDeleteStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+        }
+        
+        aliasLocal.set(new HashMap<String, String>());
+        
+        for (SQLName name : x.getUsing()) {
+            String ident = name.toString();
+
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
+            stat.incrementSelectCount();
+
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                aliasMap.put(ident, ident);
+            }
+        }
+        
+
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Delete);
+
+        String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
+        currentTableLocal.set(ident);
+
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(ident), stat);
+            if (x.getAlias() != null) {
+                tableStats.put(new TableStat.Name(x.getAlias()), stat);
+            }
+        }
+        stat.incrementDeleteCount();
+
+        accept(x.getWhere());
+
         return false;
     }
 }

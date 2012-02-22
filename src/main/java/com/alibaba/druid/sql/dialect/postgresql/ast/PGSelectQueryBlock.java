@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -14,7 +13,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
 	private static final long serialVersionUID = 1L;
 
-	private WithClause with;
+	private PGWithClause with;
 	private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
 	private SQLExpr limit;
 	private SQLExpr offset;
@@ -81,11 +80,11 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 		this.window = window;
 	}
 
-	public WithClause getWith() {
+	public PGWithClause getWith() {
 		return with;
 	}
 
-	public void setWith(WithClause with) {
+	public void setWith(PGWithClause with) {
 		this.with = with;
 	}
 
@@ -225,71 +224,6 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 		public void accept0(PGASTVisitor visitor) {
 			if (visitor.visit(this)) {
 				acceptChild(visitor, of);
-			}
-		}
-	}
-
-	public static class WithClause extends PGSQLObjectImpl {
-		private static final long serialVersionUID = 1L;
-		private boolean recursive = false;
-		private List<WithQuery> withQuery = new ArrayList<WithQuery>(2);
-
-		public boolean isRecursive() {
-			return recursive;
-		}
-
-		public void setRecursive(boolean recursive) {
-			this.recursive = recursive;
-		}
-
-		public List<WithQuery> getWithQuery() {
-			return withQuery;
-		}
-
-		public void setWithQuery(List<WithQuery> withQuery) {
-			this.withQuery = withQuery;
-		}
-
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, withQuery);
-			}
-		}
-	}
-
-	public static class WithQuery extends PGSQLObjectImpl {
-		private static final long serialVersionUID = 1L;
-		private SQLExpr name;
-		private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
-		private SQLSelectQuery subQuery;
-
-		public SQLExpr getName() {
-			return name;
-		}
-
-		public void setName(SQLExpr name) {
-			this.name = name;
-		}
-
-		public SQLSelectQuery getSubQuery() {
-			return subQuery;
-		}
-
-		public void setSubQuery(SQLSelectQuery subQuery) {
-			this.subQuery = subQuery;
-		}
-
-		public List<SQLExpr> getColumns() {
-			return columns;
-		}
-
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, name);
-				acceptChild(visitor, columns);
-				acceptChild(visitor, subQuery);
 			}
 		}
 	}

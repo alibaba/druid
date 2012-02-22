@@ -1,12 +1,13 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVisitor {
@@ -45,23 +46,23 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     }
 
     @Override
-    public void endVisit(WithQuery x) {
+    public void endVisit(PGWithQuery x) {
 
     }
 
     @Override
-    public boolean visit(WithQuery x) {
+    public boolean visit(PGWithQuery x) {
 
         return true;
     }
 
     @Override
-    public void endVisit(WithClause x) {
+    public void endVisit(PGWithClause x) {
 
     }
 
     @Override
-    public boolean visit(WithClause x) {
+    public boolean visit(PGWithClause x) {
 
         return true;
     }
@@ -85,6 +86,17 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     @Override
     public boolean visit(PGTruncateStatement x) {
 
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGDeleteStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGDeleteStatement x) {
+        
         return true;
     }
 

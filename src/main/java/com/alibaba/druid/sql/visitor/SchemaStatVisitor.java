@@ -350,8 +350,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         x.putAttribute("_original_use_mode", modeLocal.get());
         modeLocal.set(Mode.Delete);
 
-        aliasLocal.set(new HashMap<String, String>());
-
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         currentTableLocal.set(ident);
 

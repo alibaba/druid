@@ -2,14 +2,15 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements
@@ -89,12 +90,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
 	}
 
 	@Override
-	public void endVisit(WithQuery x) {
+	public void endVisit(PGWithQuery x) {
 
 	}
 
 	@Override
-	public boolean visit(WithQuery x) {
+	public boolean visit(PGWithQuery x) {
 		x.getName().accept(this);
 
 		if (x.getColumns().size() > 0) {
@@ -117,12 +118,12 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
 	}
 
 	@Override
-	public void endVisit(WithClause x) {
+	public void endVisit(PGWithClause x) {
 
 	}
 
 	@Override
-	public boolean visit(WithClause x) {
+	public boolean visit(PGWithClause x) {
 		print("WITH");
 		incrementIndent();
 		println();
@@ -265,4 +266,44 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements
         }
 	    return false;
 	}
+
+    @Override
+    public void endVisit(PGDeleteStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGDeleteStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+        
+        print("DELETE FROM ");
+        
+        if (x.isOnly()) {
+            print("ONLY ");
+        }
+
+        x.getTableName().accept(this);
+        
+        if (x.getAlias() != null) {
+            print(" AS ");
+            print(x.getAlias());
+        }
+        
+        if (x.getUsing().size() > 0) {
+            println();
+            print("USING ");
+            printAndAccept(x.getUsing(), ", ");
+        }
+        
+        if (x.getWhere() != null) {
+            println();
+            print("WHERE ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
 }
