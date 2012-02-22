@@ -67,6 +67,7 @@ public enum Token {
     ON("ON"), 
     SCHEMA("SCHEMA"), 
     CAST("CAST"),
+    USER("USER"),
 
     AND("AND"), 
     OR("OR"), 
@@ -99,6 +100,8 @@ public enum Token {
     FALSE("FALSE"),
     LIMIT("LIMIT"),
     KILL("KILL"),
+    IDENTIFIED("IDENTIFIED"),
+    PASSWORD("PASSWORD"),
     
     //postgresql
     WINDOW("WINDOW"),

@@ -10,6 +10,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -344,5 +346,25 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 	public boolean visit(MySqlResetStatement x) {
 		return true;
 	}
+
+    @Override
+    public void endVisit(MySqlCreateUserStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlCreateUserStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(UserSpecification x) {
+        
+    }
+
+    @Override
+    public boolean visit(UserSpecification x) {
+        return true;
+    }
 
 }

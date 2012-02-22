@@ -83,6 +83,7 @@ public class PGLexer extends Lexer {
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
         map.put("TRUNCATE", Token.TRUNCATE);
+        map.put("USER", Token.USER);
 
         map.put("LIMIT", Token.LIMIT);
         map.put("OFFSET", Token.OFFSET);
