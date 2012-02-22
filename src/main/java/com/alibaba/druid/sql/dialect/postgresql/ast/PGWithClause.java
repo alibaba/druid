@@ -31,5 +31,6 @@ public class PGWithClause extends PGSQLObjectImpl {
 		if (visitor.visit(this)) {
 			acceptChild(visitor, withQuery);
 		}
+		visitor.endVisit(this);
 	}
 }

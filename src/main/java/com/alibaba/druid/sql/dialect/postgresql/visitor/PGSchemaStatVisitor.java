@@ -6,6 +6,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
@@ -150,6 +151,16 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         accept(x.getWhere());
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGCurrentOfExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGCurrentOfExpr x) {
         return false;
     }
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
@@ -97,6 +98,16 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     @Override
     public boolean visit(PGDeleteStatement x) {
         
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGCurrentOfExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGCurrentOfExpr x) {
         return true;
     }
 

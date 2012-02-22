@@ -39,5 +39,6 @@ public class PGTruncateStatement extends SQLTruncateStatement implements PGSQLSt
         if (visitor.visit(this)) {
             acceptChild(visitor, tableNames);
         }
+        visitor.endVisit(this);
     }
 }

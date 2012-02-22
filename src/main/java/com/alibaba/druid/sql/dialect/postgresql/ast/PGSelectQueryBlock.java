@@ -147,6 +147,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 				acceptChild(visitor, name);
 				acceptChild(visitor, definition);
 			}
+			visitor.endVisit(this);
 		}
 	}
 
@@ -181,6 +182,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 			if (visitor.visit(this)) {
 				acceptChild(visitor, count);
 			}
+			visitor.endVisit(this);
 		}
 
 	}
@@ -225,6 +227,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 			if (visitor.visit(this)) {
 				acceptChild(visitor, of);
 			}
+			visitor.endVisit(this);
 		}
 	}
 
@@ -259,6 +262,7 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 			if (visitor.visit(this)) {
 				acceptChild(visitor, table);
 			}
+			visitor.endVisit(this);
 		}
 
 	}

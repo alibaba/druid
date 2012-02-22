@@ -40,5 +40,6 @@ public class PGWithQuery extends PGSQLObjectImpl {
 			acceptChild(visitor, columns);
 			acceptChild(visitor, subQuery);
 		}
+		visitor.endVisit(this);
 	}
 }
