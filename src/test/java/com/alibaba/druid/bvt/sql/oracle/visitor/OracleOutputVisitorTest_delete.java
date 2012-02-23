@@ -28,8 +28,8 @@ public class OracleOutputVisitorTest_delete extends TestCase {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("employee"));
 
-        Assert.assertEquals(1, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "id")));
+        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "id")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

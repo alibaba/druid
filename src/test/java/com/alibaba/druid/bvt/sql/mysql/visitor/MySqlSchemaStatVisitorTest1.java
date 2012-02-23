@@ -26,17 +26,17 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
         Assert.assertEquals(true, visitor.containsTable("usergroups"));
 
-        Assert.assertEquals(4, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "name")));
+        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
 
     }
 
@@ -54,17 +54,17 @@ public class MySqlSchemaStatVisitorTest1 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
         Assert.assertEquals(true, visitor.containsTable("usergroups"));
 
-        Assert.assertEquals(4, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("usergroups", "name")));
+        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("usergroups", "name")));
 
     }
 }

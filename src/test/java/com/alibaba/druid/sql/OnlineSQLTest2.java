@@ -82,6 +82,6 @@ public class OnlineSQLTest2 extends TestCase {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
     }
 }

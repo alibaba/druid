@@ -36,12 +36,17 @@ import com.alibaba.druid.stat.TableStat.Mode;
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat>      tableStats        = new HashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                             fields            = new HashSet<Column>();
+    protected final Set<Column>                             columns           = new HashSet<Column>();
     protected final Set<Condition>                          conditions        = new HashSet<Condition>();
+    protected final Set<Column>                             orderByColumns    = new HashSet<Column>();
 
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
     protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
+
+    public Set<Column> getOrderByColumns() {
+        return orderByColumns;
+    }
 
     public Set<Condition> getConditions() {
         return conditions;
@@ -278,7 +283,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                     // table == null时是SubQuery
                     if (table != null) {
-                        fields.add(new Column(table, x.getName()));
+                        columns.add(new Column(table, x.getName()));
                     }
                 }
             }
@@ -290,7 +295,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {
-            fields.add(new Column(currentTable, x.getName()));
+            columns.add(new Column(currentTable, x.getName()));
         }
         return false;
     }
@@ -299,7 +304,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {
-            fields.add(new Column(currentTable, "*"));
+            columns.add(new Column(currentTable, "*"));
         }
         return false;
     }
@@ -312,8 +317,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
-    public Set<Column> getFields() {
-        return fields;
+    public Set<Column> getColumns() {
+        return columns;
     }
 
     public boolean visit(SQLSelectStatement x) {
@@ -453,14 +458,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         if (x.isNot()) {
             handleCondition(x.getExpr(), "NOT IN");
         } else {
             handleCondition(x.getExpr(), "IN");
         }
-        
+
         return true;
     }
 

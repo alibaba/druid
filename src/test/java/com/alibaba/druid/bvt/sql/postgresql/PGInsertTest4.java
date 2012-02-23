@@ -26,15 +26,15 @@ public class PGInsertTest4 extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("distributors")));
 
-        Assert.assertEquals(2, visitor.getFields().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("distributors", "did")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("distributors", "dname")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("distributors", "did")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("distributors", "dname")));
     }
 
 }

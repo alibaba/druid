@@ -28,8 +28,8 @@ public class OracleOutputVisitorTest_dblink extends TestCase {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("master@emp"));
 
-        Assert.assertEquals(1, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("master@emp", "salary")));
+        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("master@emp", "salary")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

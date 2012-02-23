@@ -27,17 +27,17 @@ public class MySqlSelectTest_0 extends MysqlTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getFields().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
 
-        Assert.assertTrue(visitor.getFields().contains(new Column("mytable", "last_name")));
-        Assert.assertTrue(visitor.getFields().contains(new Column("mytable", "first_name")));
-        Assert.assertTrue(visitor.getFields().contains(new Column("mytable", "full_name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
     }
 }

@@ -30,12 +30,12 @@ public class MySqlSchemaStatVisitorTest5 extends TestCase {
 
 		System.out.println(sql);
 		System.out.println("Tables : " + visitor.getTables());
-		System.out.println("fields : " + visitor.getFields());
+		System.out.println("fields : " + visitor.getColumns());
 
 		Assert.assertEquals(4, visitor.getTables().size());
 		Assert.assertEquals(true, visitor.containsTable("view_position_info"));
 
-		Assert.assertEquals(7, visitor.getFields().size());
+		Assert.assertEquals(7, visitor.getColumns().size());
 		// Assert.assertEquals(true, visitor.getFields().contains(new
 		// Column("users", "id")));
 		// Assert.assertEquals(true, visitor.getFields().contains(new

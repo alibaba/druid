@@ -26,17 +26,17 @@ public class PGDeleteTest5 extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("producers")));
 
-        Assert.assertTrue(visitor.getFields().size() == 3);
+        Assert.assertTrue(visitor.getColumns().size() == 3);
         
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("producers", "id")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("producers", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "producer_id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("producers", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("producers", "name")));
     }
 
     

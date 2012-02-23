@@ -29,10 +29,10 @@ public class OracleOutputVisitorTest_selectJoin extends TestCase {
         Assert.assertEquals(true, visitor.containsTable("employee"));
         Assert.assertEquals(true, visitor.containsTable("department"));
 
-        Assert.assertEquals(3, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "salary")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "depId")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("department", "id")));
+        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "depId")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("department", "id")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

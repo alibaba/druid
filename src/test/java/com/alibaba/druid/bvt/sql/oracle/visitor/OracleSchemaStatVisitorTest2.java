@@ -26,14 +26,14 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
 
     }
 
@@ -51,14 +51,14 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
 
     }
 
@@ -76,14 +76,14 @@ public class OracleSchemaStatVisitorTest2 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
 
-        Assert.assertEquals(2, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
 
     }
 }

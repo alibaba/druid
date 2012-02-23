@@ -25,7 +25,7 @@ public class DropUserTest extends MysqlTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().size() == 0);
     }

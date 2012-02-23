@@ -27,12 +27,12 @@ public class TruncateTest extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bigtable")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fattable")));
 
-        Assert.assertTrue(visitor.getFields().size() == 0);
+        Assert.assertTrue(visitor.getColumns().size() == 0);
     }
 
     public void test_1() throws Exception {
@@ -49,12 +49,12 @@ public class TruncateTest extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bigtable")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("fattable")));
 
-        Assert.assertTrue(visitor.getFields().size() == 0);
+        Assert.assertTrue(visitor.getColumns().size() == 0);
     }
 
     public void test_2() throws Exception {
@@ -71,10 +71,10 @@ public class TruncateTest extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("othertable")));
 
-        Assert.assertTrue(visitor.getFields().size() == 0);
+        Assert.assertTrue(visitor.getColumns().size() == 0);
     }
 }

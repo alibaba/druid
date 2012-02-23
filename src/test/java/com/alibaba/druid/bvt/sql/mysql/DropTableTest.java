@@ -26,7 +26,7 @@ public class DropTableTest extends MysqlTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("distributors")));
@@ -34,7 +34,7 @@ public class DropTableTest extends MysqlTest {
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("films")).getDropCount() == 1);
         Assert.assertTrue(visitor.getTables().get(new TableStat.Name("distributors")).getDropCount() == 1);
 
-        Assert.assertTrue(visitor.getFields().size() == 0);
+        Assert.assertTrue(visitor.getColumns().size() == 0);
     }
 
    

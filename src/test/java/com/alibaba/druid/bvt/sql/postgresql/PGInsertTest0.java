@@ -26,12 +26,12 @@ public class PGInsertTest0 extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
 
-        Assert.assertEquals(0, visitor.getFields().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
         
 //        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
     }

@@ -26,13 +26,13 @@ public class PGSelectIntoTest extends PGTest {
         statemen.accept(visitor);
         
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
         
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films_recent")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
         
-        Assert.assertTrue(visitor.getFields().contains(new Column("films", "*")));
-        Assert.assertTrue(visitor.getFields().contains(new Column("films", "date_prod")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("films", "*")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("films", "date_prod")));
 	}
 }
