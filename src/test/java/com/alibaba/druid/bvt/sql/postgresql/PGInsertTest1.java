@@ -27,6 +27,7 @@ public class PGInsertTest1 extends PGTest {
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getFields());
+        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
 

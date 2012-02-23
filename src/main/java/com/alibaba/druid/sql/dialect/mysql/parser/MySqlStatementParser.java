@@ -768,7 +768,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("ROWS")) {
             lexer.nextToken();
-            acceptIdentifier("IDENTIFIED");
+            accept(Token.IDENTIFIED);
             accept(Token.BY);
             SQLExpr rowsIdentifiedBy = exprParser.expr();
             stmt.setRowsIdentifiedBy(rowsIdentifiedBy);

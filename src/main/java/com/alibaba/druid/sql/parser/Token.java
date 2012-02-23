@@ -102,6 +102,7 @@ public enum Token {
     KILL("KILL"),
     IDENTIFIED("IDENTIFIED"),
     PASSWORD("PASSWORD"),
+    DUAL("DUAL"),
     
     //postgresql
     WINDOW("WINDOW"),

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
@@ -43,6 +44,13 @@ import com.alibaba.druid.stat.TableStat.Mode;
 
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
 
+    public boolean visit(SQLSelectStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+        aliasLocal.get().put("DUAL", null);
+        
+        return true;
+    }
+    //DUAL
     public boolean visit(MySqlDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 

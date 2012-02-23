@@ -15,6 +15,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -311,6 +312,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return withQuery;
     }
     
+    public PGSelectStatement parseSelect() throws ParserException {
+        return new PGSelectStatement(createSQLSelectParser().select());
+    }
+    
     public SQLStatement parseWith() {
         PGWithClause with = this.parseWithClause();
         if (lexer.token() == Token.INSERT) {
@@ -318,7 +323,12 @@ public class PGSQLStatementParser extends SQLStatementParser {
             stmt.setWith(with);
             return stmt;
         }
-        
+
+        if (lexer.token() == Token.SELECT) {
+            PGSelectStatement stmt = this.parseSelect();
+            stmt.setWith(with);
+            return stmt;
+        }
         throw new ParserException("TODO");
     }
 }

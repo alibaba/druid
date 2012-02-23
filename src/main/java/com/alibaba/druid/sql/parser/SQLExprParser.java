@@ -198,6 +198,12 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLDefaultExpr();
                 lexer.nextToken();
                 break;
+            case USER:
+            case PASSWORD:
+            case DUAL:
+                sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
             case CASE:
                 SQLCaseExpr caseExpr = new SQLCaseExpr();
                 lexer.nextToken();

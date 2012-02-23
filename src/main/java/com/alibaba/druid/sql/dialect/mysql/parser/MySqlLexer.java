@@ -112,6 +112,7 @@ public class MySqlLexer extends Lexer {
         map.put("KILL", Token.KILL);
         map.put("IDENTIFIED", Token.IDENTIFIED);
         map.put("PASSWORD", Token.PASSWORD);
+        map.put("DUAL", Token.DUAL);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
     }
