@@ -4,10 +4,8 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -27,30 +25,6 @@ public class PGSelectParser extends SQLSelectParser {
 	@Override
 	protected SQLSelectQuery query() throws ParserException {
 		PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
-
-		if (lexer.token() == Token.WITH) {
-			lexer.nextToken();
-
-			PGWithClause withClause = new PGWithClause();
-
-			if (lexer.token() == Token.RECURSIVE) {
-				lexer.nextToken();
-				withClause.setRecursive(true);
-			}
-
-			for (;;) {
-				PGWithQuery withQuery = withQuery();
-				withClause.getWithQuery().add(withQuery);
-				if (lexer.token() == Token.COMMA) {
-					lexer.nextToken();
-					continue;
-				} else {
-					break;
-				}
-			}
-
-			queryBlock.setWith(withClause);
-		}
 
 		accept(Token.SELECT);
 
@@ -221,37 +195,5 @@ public class PGSelectParser extends SQLSelectParser {
 		return queryRest(queryBlock);
 	}
 
-	private PGWithQuery withQuery() {
-		PGWithQuery withQuery = new PGWithQuery();
-		withQuery.setName(expr());
-		
-		if (lexer.token() == Token.LPAREN) {
-			lexer.nextToken();
-
-			for (;;) {
-				SQLExpr expr = this.createExprParser().expr();
-				withQuery.getColumns().add(expr);
-				if (lexer.token() == Token.COMMA) {
-					lexer.nextToken();
-					continue;
-				} else {
-					break;
-				}
-			}
-
-			accept(Token.RPAREN);
-		}
-
-		accept(Token.AS);
-
-		if (lexer.token() == Token.LPAREN) {
-			lexer.nextToken();
-
-			SQLSelectQuery subQuery = query();
-			withQuery.setSubQuery(subQuery);
-			accept(Token.RPAREN);
-		}
-		
-		return withQuery;
-	}
+    
 }

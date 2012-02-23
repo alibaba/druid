@@ -2,14 +2,17 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.FetchClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.IntoClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
@@ -109,7 +112,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         print("(");
         incrementIndent();
         println();
-        x.getSubQuery().accept(this);
+        x.getQuery().accept(this);
         decrementIndent();
         println();
         print(")");
@@ -323,5 +326,73 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         x.getCursor().accept(this);
 
         return false;
+    }
+    
+    @Override
+    public void endVisit(PGInsertStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGInsertStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+        
+        print("INSERT INTO ");
+
+        x.getTableName().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            incrementIndent();
+            println();
+            print("(");
+            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print(", ");
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            print(")");
+            decrementIndent();
+        }
+
+        if (x.getValues() != null) {
+            println();
+            print("VALUES ");
+            printlnAndAccept(x.getValuesList(), ", ");
+        } else {
+            if (x.getQuery() != null) {
+                println();
+                x.getQuery().accept(this);
+            }
+        }
+        
+        if (x.getReturning() != null) {
+            println();
+            print("RETURNING ");
+            x.getReturning().accept(this);
+        }
+
+        return false;
+    }
+    
+    @Override
+    public void endVisit(PGSelectStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGSelectStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+        
+        return visit((SQLSelectStatement) x);
     }
 }

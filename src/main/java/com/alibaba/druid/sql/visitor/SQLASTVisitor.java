@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDateLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexStringLiteralExpr;
@@ -319,4 +320,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLTruncateStatement x);
     
     boolean visit(SQLTruncateStatement x);
+    
+    void endVisit(SQLDefaultExpr x);
+    
+    boolean visit(SQLDefaultExpr x);
 }

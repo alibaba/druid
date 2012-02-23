@@ -22,7 +22,7 @@ public class SQLSelectStatement extends SQLStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private SQLSelect         select;
+    protected SQLSelect         select;
 
     public SQLSelectStatement(){
 

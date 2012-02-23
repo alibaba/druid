@@ -27,12 +27,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLInsertStatement extends SQLStatementImpl {
 
     private static final long   serialVersionUID = 1L;
-    private SQLName             tableName;
-    private String              alias;
+    protected SQLName             tableName;
+    protected String              alias;
 
-    private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
-    private ValuesClause        values;
-    private SQLSelect           query;
+    protected final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+    protected ValuesClause        values;
+    protected SQLSelect           query;
 
     public SQLInsertStatement(){
 

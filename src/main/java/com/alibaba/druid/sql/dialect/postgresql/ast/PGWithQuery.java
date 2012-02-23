@@ -4,42 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
 
 public class PGWithQuery extends PGSQLObjectImpl {
-	private static final long serialVersionUID = 1L;
-	private SQLExpr name;
-	private final List<SQLExpr> columns = new ArrayList<SQLExpr>();
-	private SQLSelectQuery subQuery;
 
-	public SQLExpr getName() {
-		return name;
-	}
+    private static final long   serialVersionUID = 1L;
+    private SQLExpr             name;
+    private final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
+    private SQLStatement        query;
 
-	public void setName(SQLExpr name) {
-		this.name = name;
-	}
+    public SQLExpr getName() {
+        return name;
+    }
 
-	public SQLSelectQuery getSubQuery() {
-		return subQuery;
-	}
+    public void setName(SQLExpr name) {
+        this.name = name;
+    }
 
-	public void setSubQuery(SQLSelectQuery subQuery) {
-		this.subQuery = subQuery;
-	}
+    public SQLStatement getQuery() {
+        return query;
+    }
 
-	public List<SQLExpr> getColumns() {
-		return columns;
-	}
+    public void setQuery(SQLStatement query) {
+        this.query = query;
+    }
 
-	@Override
-	public void accept0(PGASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			acceptChild(visitor, name);
-			acceptChild(visitor, columns);
-			acceptChild(visitor, subQuery);
-		}
-		visitor.endVisit(this);
-	}
+    public List<SQLExpr> getColumns() {
+        return columns;
+    }
+
+    @Override
+    public void accept0(PGASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, name);
+            acceptChild(visitor, columns);
+            acceptChild(visitor, query);
+        }
+        visitor.endVisit(this);
+    }
 }

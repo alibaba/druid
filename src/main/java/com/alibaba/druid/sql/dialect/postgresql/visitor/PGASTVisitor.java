@@ -1,11 +1,13 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGDeleteStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
@@ -45,4 +47,12 @@ public interface PGASTVisitor extends SQLASTVisitor {
     void endVisit(PGCurrentOfExpr x);
     
     boolean visit(PGCurrentOfExpr x);
+    
+    void endVisit(PGInsertStatement x);
+    
+    boolean visit(PGInsertStatement x);
+    
+    void endVisit(PGSelectStatement x);
+    
+    boolean visit(PGSelectStatement x);
 }

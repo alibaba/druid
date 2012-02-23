@@ -1,4 +1,4 @@
-package com.alibaba.druid.sql.dialect.postgresql.ast;
+package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;

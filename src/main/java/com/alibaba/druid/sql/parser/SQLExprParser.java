@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -191,6 +192,10 @@ public class SQLExprParser extends SQLParser {
                 break;
             case VARIANT:
                 sqlExpr = new SQLVariantRefExpr(lexer.stringVal());
+                lexer.nextToken();
+                break;
+            case DEFAULT:
+                sqlExpr = new SQLDefaultExpr();
                 lexer.nextToken();
                 break;
             case CASE:
@@ -351,10 +356,6 @@ public class SQLExprParser extends SQLParser {
                 break;
             case INTERVAL:
                 sqlExpr = parseInterval();
-                break;
-            case DEFAULT:
-                lexer.nextToken();
-                sqlExpr = new SQLIdentifierExpr("DEFAULT");
                 break;
             case ANY:
                 lexer.nextToken();

@@ -98,6 +98,7 @@ public class Keywords {
         map.put("LOCK", Token.LOCK);
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
+        map.put("DEFAULT", Token.DEFAULT);
         DEFAULT_KEYWORDS = new Keywords(map);
     }
 

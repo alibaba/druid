@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
+import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -865,16 +866,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
-    @Override
-    public void endVisit(SQLTruncateStatement x) {
-        
-    }
-    
+
     @Override
     public boolean visit(SQLTruncateStatement x) {
         print("TRUNCATE TABLE ");
         printAndAccept(x.getTableNames(), ", ");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLDefaultExpr x) {
+        print("DEFAULT");
         return false;
     }
 }
