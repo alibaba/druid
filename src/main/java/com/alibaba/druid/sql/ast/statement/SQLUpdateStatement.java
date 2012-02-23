@@ -27,10 +27,10 @@ public class SQLUpdateStatement extends SQLStatementImpl {
 
     private static final long            serialVersionUID = 1L;
 
-    private final List<SQLUpdateSetItem> items            = new ArrayList<SQLUpdateSetItem>();
-    private SQLExpr                      where;
+    protected final List<SQLUpdateSetItem> items            = new ArrayList<SQLUpdateSetItem>();
+    protected SQLExpr                      where;
 
-    private SQLTableSource               tableSource;
+    protected SQLTableSource               tableSource;
 
     public SQLUpdateStatement(){
 

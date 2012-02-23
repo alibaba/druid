@@ -1,16 +1,17 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVisitor {
@@ -130,6 +131,16 @@ public class PGASTVisitorAdapter extends SQLASTVisitorAdapter implements PGASTVi
     
     @Override
     public boolean visit(PGSelectStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(PGUpdateStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGUpdateStatement x) {
         return true;
     }
 

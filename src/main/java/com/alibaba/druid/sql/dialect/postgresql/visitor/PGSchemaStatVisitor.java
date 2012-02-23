@@ -5,20 +5,20 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
-import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
@@ -63,8 +63,19 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGWithQuery x) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap != null) {
+            String alias = null;
+            if (x.getName() != null) {
+                alias = x.getName().toString();
+            }
 
-        return true;
+            if (alias != null) {
+                aliasMap.put(alias, null);
+            }
+        }
+        x.getQuery().accept(this);
+        return false;
     }
 
     @Override
@@ -74,7 +85,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGWithClause x) {
-
         return true;
     }
 
@@ -117,9 +127,9 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
-        
+
         aliasLocal.set(new HashMap<String, String>());
-        
+
         for (SQLName name : x.getUsing()) {
             String ident = name.toString();
 
@@ -135,7 +145,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
                 aliasMap.put(ident, ident);
             }
         }
-        
 
         x.putAttribute("_original_use_mode", modeLocal.get());
         modeLocal.set(Mode.Delete);
@@ -160,7 +169,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGCurrentOfExpr x) {
-        
+
     }
 
     @Override
@@ -170,28 +179,96 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public void endVisit(PGInsertStatement x) {
-        
+
     }
 
     @Override
     public boolean visit(PGInsertStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
-        
-        return visit((SQLInsertStatement) x);
+
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Insert);
+
+        String originalTable = currentTableLocal.get();
+
+        if (x.getTableName() instanceof SQLName) {
+            String ident = ((SQLName) x.getTableName()).toString();
+            currentTableLocal.set(ident);
+            x.putAttribute("_old_local_", originalTable);
+
+            TableStat stat = tableStats.get(ident);
+            if (stat == null) {
+                stat = new TableStat();
+                tableStats.put(new TableStat.Name(ident), stat);
+            }
+            stat.incrementInsertCount();
+
+            Map<String, String> aliasMap = aliasLocal.get();
+            if (aliasMap != null) {
+                if (x.getAlias() != null) {
+                    aliasMap.put(x.getAlias(), ident);
+                }
+                aliasMap.put(ident, ident);
+            }
+        }
+
+        accept(x.getColumns());
+        accept(x.getQuery());
+
+        return false;
     }
+
     @Override
     public void endVisit(PGSelectStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(PGSelectStatement x) {
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
-        
+
         return visit((SQLSelectStatement) x);
+    }
+
+    @Override
+    public void endVisit(PGUpdateStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(PGUpdateStatement x) {
+        Map<String, String> oldAliasMap = aliasLocal.get();
+        
+        aliasLocal.set(new HashMap<String, String>());
+
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+        }
+
+        String ident = x.getTableName().toString();
+        currentTableLocal.set(ident);
+
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(ident), stat);
+        }
+        stat.incrementUpdateCount();
+
+        Map<String, String> aliasMap = aliasLocal.get();
+        aliasMap.put(ident, ident);
+
+        accept(x.getItems());
+        accept(x.getWhere());
+        
+        aliasLocal.set(oldAliasMap);
+
+        return false;
     }
 }

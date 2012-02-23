@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
@@ -55,4 +56,8 @@ public interface PGASTVisitor extends SQLASTVisitor {
     void endVisit(PGSelectStatement x);
     
     boolean visit(PGSelectStatement x);
+    
+    void endVisit(PGUpdateStatement x);
+    
+    boolean visit(PGUpdateStatement x);
 }

@@ -162,8 +162,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
-                currentTableLocal.set(ident);
-                x.putAttribute("_old_local_", originalTable);
+                
+                Map<String, String> aliasMap = aliasLocal.get();
+                if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
+                    
+                } else {
+                    currentTableLocal.set(ident);
+                    x.putAttribute("_old_local_", originalTable);
+                }
             }
         }
 
@@ -260,6 +266,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
+            
+            Map<String, String> aliasMap = aliasLocal.get();
+            
+            if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
+                return false;
+            }
+            
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
@@ -284,7 +297,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     break;
             }
 
-            Map<String, String> aliasMap = aliasLocal.get();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
                     aliasMap.put(x.getAlias(), ident);

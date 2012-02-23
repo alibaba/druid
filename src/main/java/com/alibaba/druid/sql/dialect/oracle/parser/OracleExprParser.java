@@ -478,7 +478,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     @Override
-    protected OracleSelectParser createSelectParser() {
+    public OracleSelectParser createSelectParser() {
         return new OracleSelectParser(this.lexer);
     }
 
