@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.postgresql.ast.stmt;
 
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitor;
@@ -10,6 +11,13 @@ public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatem
     private static final long serialVersionUID = 1L;
     private PGWithClause      with;
 
+    public PGSelectStatement(){
+    }
+
+    public PGSelectStatement(SQLSelect select){
+        super(select);
+    }
+
     public PGWithClause getWith() {
         return with;
     }
@@ -17,7 +25,7 @@ public class PGSelectStatement extends SQLSelectStatement implements PGSQLStatem
     public void setWith(PGWithClause with) {
         this.with = with;
     }
-    
+
     protected void accept0(SQLASTVisitor visitor) {
         accept0((PGASTVisitor) visitor);
     }
