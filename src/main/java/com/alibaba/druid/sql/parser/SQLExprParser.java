@@ -418,7 +418,7 @@ public class SQLExprParser extends SQLParser {
         throw new ParserException("TODO");
     }
 
-    protected SQLSelectParser createSelectParser() {
+    public SQLSelectParser createSelectParser() {
         return new SQLSelectParser(lexer);
     }
 

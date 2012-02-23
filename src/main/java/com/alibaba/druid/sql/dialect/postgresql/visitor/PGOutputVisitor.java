@@ -4,17 +4,18 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor {
@@ -394,5 +395,55 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
         
         return visit((SQLSelectStatement) x);
+    }
+    
+    @Override
+    public void endVisit(PGUpdateStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(PGUpdateStatement x) {
+        if (x.getWith() != null) {
+            x.getWith().accept(this);
+            println();
+        }
+        
+        print("UPDATE ");
+        
+        if (x.isOnly()) {
+            print("ONLY ");
+        }
+
+        x.getTableSource().accept(this);
+
+        println();
+        print("SET ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                print(", ");
+            }
+            x.getItems().get(i).accept(this);
+        }
+        
+        if (x.getFrom() != null) {
+            println();
+            print("FROM ");
+            x.getFrom().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            println();
+            print("WHERE ");
+            x.getWhere().accept(this);
+        }
+        
+        if (x.getReturning().size() > 0) {
+            println();
+            print("RETURNING ");
+            printAndAccept(x.getReturning(), ", ");
+        }
+
+        return false;
     }
 }

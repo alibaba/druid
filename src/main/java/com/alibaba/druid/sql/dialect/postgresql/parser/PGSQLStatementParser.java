@@ -7,12 +7,16 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -31,6 +35,53 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     public PGSelectParser createSQLSelectParser() {
         return new PGSelectParser(this.lexer);
+    }
+    
+    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+        accept(Token.UPDATE);
+
+        PGUpdateStatement udpateStatement = new PGUpdateStatement();
+
+        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+        udpateStatement.setTableSource(tableSource);
+
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = new SQLUpdateSetItem();
+            item.setColumn(this.exprParser.name());
+            accept(Token.EQ);
+            item.setValue(this.exprParser.expr());
+
+            udpateStatement.getItems().add(item);
+
+            if (lexer.token() == (Token.COMMA)) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            udpateStatement.setWhere(this.exprParser.expr());
+        }
+        
+        if (lexer.token() == Token.RETURNING) {
+            lexer.nextToken();
+            
+            for (;;) {
+                udpateStatement.getReturning().add(this.exprParser.expr());
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+        }
+
+        return udpateStatement;
     }
 
     public PGInsertStatement parseInsert() {

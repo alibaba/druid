@@ -385,7 +385,7 @@ public class MySqlExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
 
-    protected SQLSelectParser createSelectParser() {
+    public SQLSelectParser createSelectParser() {
         return new MySqlSelectParser(this.lexer);
     }
 
