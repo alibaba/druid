@@ -26,7 +26,7 @@ public class TableStat {
     public int getDropCount() {
         return dropCount;
     }
-    
+
     public void incrementDropCount() {
         dropCount++;
     }
@@ -132,6 +132,70 @@ public class TableStat {
 
         public String toString() {
             return this.name;
+        }
+    }
+
+    public static class Condition {
+
+        private Column column;
+        private String operator;
+
+        public Column getColumn() {
+            return column;
+        }
+
+        public void setColumn(Column column) {
+            this.column = column;
+        }
+
+        public String getOperator() {
+            return operator;
+        }
+
+        public void setOperator(String operator) {
+            this.operator = operator;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((column == null) ? 0 : column.hashCode());
+            result = prime * result + ((operator == null) ? 0 : operator.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            Condition other = (Condition) obj;
+            if (column == null) {
+                if (other.column != null) {
+                    return false;
+                }
+            } else if (!column.equals(other.column)) {
+                return false;
+            }
+            if (operator == null) {
+                if (other.operator != null) {
+                    return false;
+                }
+            } else if (!operator.equals(other.operator)) {
+                return false;
+            }
+            return true;
+        }
+
+        public String toString() {
+            return this.column.toString() + " " + this.operator;
         }
     }
 

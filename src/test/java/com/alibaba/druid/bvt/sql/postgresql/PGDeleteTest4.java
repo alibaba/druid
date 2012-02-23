@@ -30,6 +30,7 @@ public class PGDeleteTest4 extends PGTest {
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("films")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("producers")));
+        System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getFields().size() == 3);
         

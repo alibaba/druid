@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -27,16 +30,89 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
+import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
-    protected HashMap<TableStat.Name, TableStat>            tableStats        = new HashMap<TableStat.Name, TableStat>();
-    protected Set<Column>                                   fields            = new HashSet<Column>();
+    protected final HashMap<TableStat.Name, TableStat>      tableStats        = new HashMap<TableStat.Name, TableStat>();
+    protected final Set<Column>                             fields            = new HashSet<Column>();
+    protected final Set<Condition>                          conditions        = new HashSet<Condition>();
 
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
     protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
+
+    public Set<Condition> getConditions() {
+        return conditions;
+    }
+
+    public boolean visit(SQLBinaryOpExpr x) {
+        switch (x.getOperator()) {
+            case Equality:
+            case NotEqual:
+            case GreaterThan:
+            case GreaterThanOrEqual:
+            case LessThan:
+            case LessThanOrEqual:
+            case LessThanOrEqualOrGreaterThan:
+            case Like:
+            case NotLike:
+            case Is:
+            case IsNot:
+                handleCondition(x.getLeft(), x.getOperator().name);
+                handleCondition(x.getRight(), x.getOperator().name);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    protected void handleCondition(SQLExpr expr, String operator) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap == null) {
+            return;
+        }
+
+        if (expr instanceof SQLPropertyExpr) {
+            SQLExpr owner = ((SQLPropertyExpr) expr).getOwner();
+            String column = ((SQLPropertyExpr) expr).getName();
+
+            if (owner instanceof SQLIdentifierExpr) {
+                String table = ((SQLIdentifierExpr) owner).getName();
+                if (aliasMap.containsKey(table)) {
+                    table = aliasMap.get(table);
+                }
+
+                if (table != null) {
+                    Condition condition = new Condition();
+                    condition.setColumn(new Column(table, column));
+                    condition.setOperator(operator);
+                    this.conditions.add(condition);
+                }
+            }
+
+            return;
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            String column = ((SQLIdentifierExpr) expr).getName();
+            String table = currentTableLocal.get();
+            if (table != null) {
+                if (aliasMap.containsKey(table)) {
+                    table = aliasMap.get(table);
+                }
+            }
+
+            if (table != null) {
+                Condition condition = new Condition();
+                condition.setColumn(new Column(table, column));
+                condition.setOperator(operator);
+                this.conditions.add(condition);
+            }
+        }
+    }
 
     @Override
     public boolean visit(SQLTruncateStatement x) {
@@ -67,7 +143,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDropTableStatement x) {
         x.putAttribute("_original_use_mode", modeLocal.get());
@@ -162,7 +238,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
-                
+
                 Map<String, String> aliasMap = aliasLocal.get();
                 if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
                     currentTableLocal.set(null);
@@ -266,13 +342,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
-            
+
             Map<String, String> aliasMap = aliasLocal.get();
-            
+
             if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
                 return false;
             }
-            
+
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
@@ -378,8 +454,23 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return false;
     }
     
+    public boolean visit(SQLInListExpr x) {
+        if (x.isNot()) {
+            handleCondition(x.getExpr(), "NOT IN");
+        } else {
+            handleCondition(x.getExpr(), "IN");
+        }
+        
+        return true;
+    }
+
     @Override
     public boolean visit(SQLInSubQueryExpr x) {
+        if (x.isNot()) {
+            handleCondition(x.getExpr(), "NOT IN");
+        } else {
+            handleCondition(x.getExpr(), "IN");
+        }
         return true;
     }
 
