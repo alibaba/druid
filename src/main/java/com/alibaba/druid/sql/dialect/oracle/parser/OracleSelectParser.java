@@ -1002,9 +1002,6 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private void parseHints(OracleSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.HINT) {
-            queryBlock.getHints().add(new OracleHint(lexer.stringVal()));
-            lexer.nextToken();
-        }
+        this.createExprParser().parseHints(queryBlock.getHints());
     }
 }

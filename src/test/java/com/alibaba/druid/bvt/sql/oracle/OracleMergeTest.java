@@ -10,22 +10,18 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleSelectTest2 extends OracleTest {
+public class OracleMergeTest extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "WITH " + //
-                     "   dept_costs AS (" + //
-                     "      SELECT d.department_name, SUM(d.salary) dept_total" + //
-                     "         FROM employees e, departments d" + //
-                     "         WHERE e.department_id = d.department_id" + //
-                     "      GROUP BY d.department_name)," + //
-                     "   avg_cost AS (" + //
-                     "      SELECT SUM(dept_total)/COUNT(*) avg" + //
-                     "      FROM dept_costs)" + //
-                     "SELECT * FROM dept_costs" + //
-                     "   WHERE dept_total >" + //
-                     "      (SELECT avg FROM avg_cost)" + //
-                     "      ORDER BY department_name;";
+        String sql = "MERGE INTO bonuses D" + //
+                     "   USING (SELECT employee_id, salary, department_id FROM employees" + //
+                     "   WHERE department_id = 80) S" + //
+                     "   ON (D.employee_id = S.employee_id)" + //
+                     "   WHEN MATCHED THEN UPDATE SET D.bonus = D.bonus + S.salary*0.01" + //
+                     "     DELETE WHERE (S.salary > 8000)" + //
+                     "   WHEN NOT MATCHED THEN INSERT (D.employee_id, D.bonus)" + //
+                     "     VALUES (S.employee_id, S.salary*0.01)" + //
+                     "     WHERE (S.salary <= 8000);";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -42,7 +38,7 @@ public class OracleSelectTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertEquals(2, visitor.getTables().size());
-        
+
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
 

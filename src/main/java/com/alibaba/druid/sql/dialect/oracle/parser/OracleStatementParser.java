@@ -19,10 +19,12 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -37,7 +39,7 @@ public class OracleStatementParser extends SQLStatementParser {
         super(lexer);
     }
 
-    protected SQLExprParser createExprParser() {
+    protected OracleExprParser createExprParser() {
         return new OracleExprParser(lexer);
     }
 
@@ -111,8 +113,138 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
+            if (lexer.token() == Token.MERGE) {
+                statementList.add(this.parseMerge());
+                continue;
+            }
+
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
 
+    public OracleMergeStatement parseMerge() throws ParserException {
+        accept(Token.MERGE);
+
+        OracleMergeStatement stmt = new OracleMergeStatement();
+
+        OracleExprParser exprParser = this.createExprParser();
+        exprParser.parseHints(stmt.getHints());
+
+        accept(Token.INTO);
+        stmt.setInto(exprParser.name());
+
+        stmt.setAlias(as());
+
+        accept(Token.USING);
+        
+        SQLTableSource using = this.createSQLSelectParser().parseTableSource();
+        stmt.setUsing(using);
+        
+        accept(Token.ON);
+        stmt.setOn(exprParser.expr());
+        
+        boolean insertFlag = false;
+        if (lexer.token() == Token.WHEN) {
+            lexer.nextToken();
+            if (lexer.token() == Token.MATCHED) {
+                OracleMergeStatement.MergeUpdateClause updateClause = new OracleMergeStatement.MergeUpdateClause();
+                lexer.nextToken();
+                accept(Token.THEN);
+                accept(Token.UPDATE);
+                accept(Token.SET);
+                
+                for (;;) {
+                    SQLUpdateSetItem item = new SQLUpdateSetItem();
+                    item.setColumn(this.exprParser.name());
+                    accept(Token.EQ);
+                    item.setValue(this.exprParser.expr());
+
+                    updateClause.getItems().add(item);
+
+                    if (lexer.token() == (Token.COMMA)) {
+                        lexer.nextToken();
+                        continue;
+                    }
+
+                    break;
+                }
+                
+                if (lexer.token() == Token.WHERE) {
+                    lexer.nextToken();
+                    updateClause.setWhere(exprParser.expr());
+                }
+                
+                if (lexer.token() == Token.DELETE) {
+                    lexer.nextToken();
+                    accept(Token.WHERE);
+                    updateClause.setWhere(exprParser.expr());
+                }
+                
+                stmt.setUpdateClause(updateClause);
+            } else if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                insertFlag = true;
+            }
+        }
+        
+        if (!insertFlag) {
+            if (lexer.token() == Token.WHEN) {
+                lexer.nextToken();
+            }
+            
+            if (lexer.token() == Token.NOT) {
+                lexer.nextToken();
+                insertFlag = true;
+            }
+        }
+        
+        if (insertFlag) {
+            OracleMergeStatement.MergeInsertClause insertClause = new OracleMergeStatement.MergeInsertClause();
+            
+            accept(Token.MATCHED);
+            accept(Token.THEN);
+            accept(Token.INSERT);
+            accept(Token.LPAREN);
+            exprParser.exprList(insertClause.getColumns());
+            accept(Token.RPAREN);
+            accept(Token.VALUES);
+            accept(Token.LPAREN);
+            exprParser.exprList(insertClause.getValues());
+            accept(Token.RPAREN);
+            
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                insertClause.setWhere(exprParser.expr());
+            }
+            
+            stmt.setInsertClause(insertClause);
+        }
+        
+        if (lexer.token() == Token.LOG) {
+            OracleMergeStatement.ErrorLoggingClause errorClause = new OracleMergeStatement.ErrorLoggingClause();
+            
+            lexer.nextToken();
+            accept(Token.ERRORS);
+            if (lexer.token() == Token.INTO) {
+                lexer.nextToken();
+                errorClause.setInto(exprParser.name());
+            }
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                errorClause.setSimpleExpression(exprParser.expr());
+                accept(Token.RPAREN);
+            }
+            
+            if (lexer.token() == Token.REJECT) {
+                lexer.nextToken();
+                accept(Token.LIMIT);
+                errorClause.setLimit(exprParser.expr());
+            }
+            
+            stmt.setErrorLoggingClause(errorClause);
+        }
+
+        return stmt;
+    }
 }

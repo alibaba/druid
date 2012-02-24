@@ -67,6 +67,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.ErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -1308,5 +1312,130 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(CellAssignment x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleMergeStatement x) {
+        print("MERGE ");
+        if (x.getHints().size() > 0) {
+            printAndAccept(x.getHints(), ", ");
+            print(" ");
+        }
+        
+        print("INTO ");
+        x.getInto().accept(this);
+        
+        if (x.getAlias() != null) {
+            print(" ");
+            print(x.getAlias());
+        }
+        
+        println();
+        print("USING ");
+        x.getUsing().accept(this);
+        
+        print(" ON ");
+        x.getOn().accept(this);
+        
+        if (x.getUpdateClause() != null) {
+            println();
+            x.getUpdateClause().accept(this);
+        }
+        
+        if (x.getInsertClause() != null) {
+            println();
+            x.getInsertClause().accept(this);
+        }
+        
+        if (x.getErrorLoggingClause() != null) {
+            println();
+            x.getErrorLoggingClause().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleMergeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        print("WHEN MATCHED THEN UPDATE SET ");
+        printAndAccept(x.getItems(), ", ");
+        if (x.getWhere() != null) {
+            incrementIndent();
+            println();
+            print("WHERE ");
+            x.getWhere().accept(this);
+            decrementIndent();
+        }
+        
+        if (x.getDeleteWhere() != null) {
+            incrementIndent();
+            println();
+            print("DELETE WHERE ");
+            x.getDeleteWhere().accept(this);
+            decrementIndent();
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MergeUpdateClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        print("WHEN NOT MATCHED THEN INSERT ");
+        printAndAccept(x.getColumns(), ", ");
+        print(" VALUES (");
+        printAndAccept(x.getValues(), ", ");
+        print(")");
+        if (x.getWhere() != null) {
+            incrementIndent();
+            println();
+            print("WHERE ");
+            x.getWhere().accept(this);
+            decrementIndent();
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MergeInsertClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(ErrorLoggingClause x) {
+        print("LOG ERRORS ");
+        if (x.getInto() != null) {
+            print("INTO ");
+            x.getInto().accept(this);
+            print(" ");
+        }
+        
+        if (x.getSimpleExpression() != null) {
+            print("(");
+            x.getSimpleExpression().accept(this);
+            print(")");
+        }
+        
+        if (x.getLimit() != null) {
+            print(" REJECT LIMIT ");
+            x.getLimit().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(ErrorLoggingClause x) {
+        
     }
 }

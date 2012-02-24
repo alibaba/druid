@@ -48,6 +48,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.ErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -818,6 +822,46 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public void endVisit(ModelClause x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleMergeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleMergeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeUpdateClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeInsertClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(ErrorLoggingClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ErrorLoggingClause x) {
+        
     }
 
 }
