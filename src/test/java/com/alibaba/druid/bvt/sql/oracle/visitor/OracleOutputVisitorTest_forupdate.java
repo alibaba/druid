@@ -28,8 +28,8 @@ public class OracleOutputVisitorTest_forupdate extends TestCase {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("employee"));
 
-        Assert.assertEquals(1, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "salary")));
+        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

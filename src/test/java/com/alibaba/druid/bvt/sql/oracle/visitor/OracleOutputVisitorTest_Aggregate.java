@@ -28,9 +28,9 @@ public class OracleOutputVisitorTest_Aggregate extends TestCase {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("emp"));
 
-        Assert.assertEquals(2, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("emp", "salary")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("emp", "F1")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("emp", "salary")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("emp", "F1")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

@@ -31,19 +31,19 @@ public class PGInsertTest5 extends PGTest {
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees_log")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("accounts")));
 
-        Assert.assertEquals(4, visitor.getFields().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("employees", "sales_count")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("employees", "id")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("accounts", "sales_person")));
-        Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("accounts", "name")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "sales_count")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("accounts", "sales_person")));
+        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("accounts", "name")));
     }
 
 }

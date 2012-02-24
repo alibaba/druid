@@ -22,4 +22,7 @@ public class SQLDefaultExpr extends SQLLiteralExpr {
         visitor.endVisit(this);
     }
 
+    public String toString() {
+        return "DEFAULT";
+    }
 }

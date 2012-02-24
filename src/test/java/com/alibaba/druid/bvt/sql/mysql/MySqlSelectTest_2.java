@@ -11,10 +11,10 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlSelectTest_0 extends MysqlTest {
+public class MySqlSelectTest_2 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SELECT CONCAT(last_name,', ',first_name) AS full_name FROM mytable ORDER BY full_name;";
+        String sql = "SELECT college, region, seed FROM tournament ORDER BY 2, 3;";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -35,10 +35,10 @@ public class MySqlSelectTest_0 extends MysqlTest {
         Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("mytable")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tournament")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "last_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "first_name")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("mytable", "full_name")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tournament", "college")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tournament", "region")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tournament", "seed")));
     }
 }

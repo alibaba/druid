@@ -26,18 +26,18 @@ public class OracleSchemaStatVisitorTest_Subquery2 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
         Assert.assertEquals(true, visitor.containsTable("groups"));
 
-        Assert.assertEquals(5, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "groupId")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("groups", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("groups", "name")));
+        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "groupId")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("groups", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("groups", "name")));
 
     }
 

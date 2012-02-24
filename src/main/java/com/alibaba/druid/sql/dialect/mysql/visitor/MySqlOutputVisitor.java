@@ -91,6 +91,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(MySqlSelectQueryBlock select) {
+        if (select.getOrderBy() != null) {
+            select.getOrderBy().setParent(select);
+        }
+        
         print("SELECT ");
 
         if (SQLSetQuantifier.ALL == select.getDistionOption()) print("ALL ");

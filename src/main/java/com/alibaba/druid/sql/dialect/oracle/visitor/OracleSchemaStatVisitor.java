@@ -212,7 +212,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements
 
 					// table == null时是SubQuery
 					if (table != null) {
-						fields.add(new Column(table, x.getName()));
+						columns.add(new Column(table, x.getName()));
 					}
 				}
 			}
@@ -236,7 +236,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements
 		String currentTable = currentTableLocal.get();
 
 		if (currentTable != null) {
-			fields.add(new Column(currentTable, x.getName()));
+			columns.add(new Column(currentTable, x.getName()));
 		}
 		return false;
 	}

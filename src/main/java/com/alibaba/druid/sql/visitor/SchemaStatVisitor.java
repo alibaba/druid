@@ -9,12 +9,14 @@ import java.util.Set;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -23,6 +25,8 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
@@ -36,12 +40,86 @@ import com.alibaba.druid.stat.TableStat.Mode;
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat>      tableStats        = new HashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                             fields            = new HashSet<Column>();
+    protected final Set<Column>                             columns           = new HashSet<Column>();
     protected final Set<Condition>                          conditions        = new HashSet<Condition>();
+    protected final Set<Column>                             orderByColumns    = new HashSet<Column>();
+    protected final Set<Column>                             groupByColumns    = new HashSet<Column>();
 
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
     protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
+
+    public class OrderByStatVisitor extends SQLASTVisitorAdapter {
+
+        private final SQLOrderBy orderBy;
+
+        public OrderByStatVisitor(SQLOrderBy orderBy){
+            this.orderBy = orderBy;
+        }
+
+        public SQLOrderBy getOrderBy() {
+            return orderBy;
+        }
+
+        public boolean visit(SQLIdentifierExpr x) {
+            String currentTable = currentTableLocal.get();
+
+            if (currentTable != null) {
+                orderByColumns.add(new Column(currentTable, x.getName()));
+            }
+            return false;
+        }
+
+        public boolean visit(SQLPropertyExpr x) {
+            if (x.getOwner() instanceof SQLIdentifierExpr) {
+                String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
+
+                if (owner != null) {
+                    Map<String, String> aliasMap = aliasLocal.get();
+                    if (aliasMap != null) {
+                        String table = aliasMap.get(owner);
+
+                        // table == null时是SubQuery
+                        if (table != null) {
+                            orderByColumns.add(new Column(table, x.getName()));
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public boolean visit(SQLOrderBy x) {
+        OrderByStatVisitor orderByVisitor = new OrderByStatVisitor(x);
+        SQLSelectQueryBlock query = null;
+        if (x.getParent() instanceof SQLSelectQueryBlock) {
+            query = (SQLSelectQueryBlock) x.getParent();
+        }
+        if (query != null) {
+            for (SQLSelectOrderByItem item : x.getItems()) {
+                SQLExpr expr = item.getExpr();
+                if (expr instanceof SQLIntegerExpr) {
+                    int intValue = ((SQLIntegerExpr) expr).getNumber().intValue() - 1;
+                    if (intValue < query.getSelectList().size()) {
+                        SQLSelectItem selectItem = query.getSelectList().get(intValue);
+                        selectItem.getExpr().accept(orderByVisitor);
+                    }
+                }
+            }
+        }
+        x.accept(orderByVisitor);
+        return true;
+    }
+
+    public Set<Column> getOrderByColumns() {
+        return orderByColumns;
+    }
+
+    public Set<Column> getGroupByColumns() {
+        return groupByColumns;
+    }
 
     public Set<Condition> getConditions() {
         return conditions;
@@ -278,7 +356,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
                     // table == null时是SubQuery
                     if (table != null) {
-                        fields.add(new Column(table, x.getName()));
+                        columns.add(new Column(table, x.getName()));
                     }
                 }
             }
@@ -290,7 +368,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {
-            fields.add(new Column(currentTable, x.getName()));
+            columns.add(new Column(currentTable, x.getName()));
         }
         return false;
     }
@@ -299,7 +377,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String currentTable = currentTableLocal.get();
 
         if (currentTable != null) {
-            fields.add(new Column(currentTable, "*"));
+            columns.add(new Column(currentTable, "*"));
         }
         return false;
     }
@@ -312,8 +390,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return tableStats.containsKey(new TableStat.Name(tableName));
     }
 
-    public Set<Column> getFields() {
-        return fields;
+    public Set<Column> getColumns() {
+        return columns;
     }
 
     public boolean visit(SQLSelectStatement x) {
@@ -387,6 +465,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelect x) {
+        if (x.getOrderBy() != null) {
+            x.getOrderBy().setParent(x);
+        }
+
         accept(x.getQuery());
 
         String originalTable = currentTableLocal.get();
@@ -453,14 +535,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         if (x.isNot()) {
             handleCondition(x.getExpr(), "NOT IN");
         } else {
             handleCondition(x.getExpr(), "IN");
         }
-        
+
         return true;
     }
 

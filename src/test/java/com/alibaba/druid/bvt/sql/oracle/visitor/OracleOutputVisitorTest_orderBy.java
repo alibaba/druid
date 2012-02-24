@@ -28,9 +28,9 @@ public class OracleOutputVisitorTest_orderBy extends TestCase {
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("employee"));
 
-        Assert.assertEquals(2, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "salary")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("employee", "name")));
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "salary")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("employee", "name")));
 
         StringBuilder buf = new StringBuilder();
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(buf);

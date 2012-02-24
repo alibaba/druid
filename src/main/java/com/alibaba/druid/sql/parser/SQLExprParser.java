@@ -442,9 +442,8 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp);
         } else {
             if (lexer.token() == Token.LPAREN) {
-                if (expr instanceof SQLIdentifierExpr) {
-                    SQLIdentifierExpr identExpr = (SQLIdentifierExpr) expr;
-                    String method_name = identExpr.getName();
+                if (expr instanceof SQLIdentifierExpr || expr instanceof SQLDefaultExpr) {
+                    String method_name = expr.toString();
                     lexer.nextToken();
 
                     if (isAggreateFunction(method_name)) {
@@ -463,7 +462,7 @@ public class SQLExprParser extends SQLParser {
                     return primaryRest(methodInvokeExpr);
                 }
 
-                throw new ParserException("not support token:");
+                throw new ParserException("not support token:" + lexer.token());
             }
         }
 
@@ -480,7 +479,7 @@ public class SQLExprParser extends SQLParser {
             if (lexer.token() == Token.KEY) {
                 name = "KEY";
                 lexer.nextToken();
-            } else if (lexer.token() != Token.IDENTIFIER) {
+            } else if (lexer.token() != Token.IDENTIFIER && lexer.token() != Token.USER && lexer.token() != Token.PASSWORD) {
                 throw new ParserException("error : " + lexer.stringVal());
             } else {
                 name = lexer.stringVal();

@@ -26,18 +26,18 @@ public class MySqlSchemaStatVisitorTest3 extends TestCase {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
 
         Assert.assertEquals(2, visitor.getTables().size());
         Assert.assertEquals(true, visitor.containsTable("users"));
         Assert.assertEquals(true, visitor.containsTable("users2"));
 
-        Assert.assertEquals(5, visitor.getFields().size());
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "id")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "name")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users", "loginCount")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users2", "name2")));
-        Assert.assertEquals(true, visitor.getFields().contains(new Column("users2", "id2")));
+        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "id")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "name")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users", "loginCount")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users2", "name2")));
+        Assert.assertEquals(true, visitor.getColumns().contains(new Column("users2", "id2")));
 
     }
 

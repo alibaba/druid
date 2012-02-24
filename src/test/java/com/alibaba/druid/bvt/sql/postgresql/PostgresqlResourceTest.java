@@ -48,7 +48,7 @@ public class PostgresqlResourceTest extends PGTest {
 
         System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
-        System.out.println("fields : " + visitor.getFields());
+        System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
 
         System.out.println();
