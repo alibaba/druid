@@ -1,7 +1,8 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,11 +40,11 @@ import com.alibaba.druid.stat.TableStat.Mode;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
-    protected final HashMap<TableStat.Name, TableStat>      tableStats        = new HashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                             columns           = new HashSet<Column>();
-    protected final Set<Condition>                          conditions        = new HashSet<Condition>();
-    protected final Set<Column>                             orderByColumns    = new HashSet<Column>();
-    protected final Set<Column>                             groupByColumns    = new HashSet<Column>();
+    protected final HashMap<TableStat.Name, TableStat>      tableStats        = new LinkedHashMap<TableStat.Name, TableStat>();
+    protected final Set<Column>                             columns           = new LinkedHashSet<Column>();
+    protected final Set<Condition>                          conditions        = new LinkedHashSet<Condition>();
+    protected final Set<Column>                             orderByColumns    = new LinkedHashSet<Column>();
+    protected final Set<Column>                             groupByColumns    = new LinkedHashSet<Column>();
 
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();

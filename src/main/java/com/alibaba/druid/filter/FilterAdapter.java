@@ -57,14 +57,15 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  * @author wenshao<szujobs@hotmail.com>
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {
+    protected DataSourceProxy dataSource;
 
     @Override
     public void loadConfig(AbstractDruidFilterConfig DruidFilterConfig) {
     }
 
     @Override
-    public void init(DataSourceProxy newDataSource) {
-
+    public void init(DataSourceProxy dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override

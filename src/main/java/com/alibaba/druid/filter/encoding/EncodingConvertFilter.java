@@ -33,6 +33,7 @@ import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -210,6 +211,26 @@ public class EncodingConvertFilter extends FilterAdapter {
             Reader reader = (Reader) object;
             String text = JdbcUtils.read(reader);
             return new StringReader(decode(connection, text));
+        }
+        
+        return object; 
+    }
+    
+    public Object decodeObject(CallableStatementProxy stmt, Object object) throws SQLException {
+        if (object instanceof String) {
+            return decode(stmt.getConnectionProxy(), (String) object);
+        }
+
+        if (object instanceof Reader) {
+            Reader reader = (Reader) object;
+            String text = JdbcUtils.read(reader);
+            return new StringReader(decode(stmt.getConnectionProxy(), text));
+        }
+        
+        if (object instanceof ResultSet) {
+            ResultSet resultSet = (ResultSet) object;
+            return new ResultSetProxyImpl(stmt, resultSet, dataSource.createResultSetId(),
+                                          stmt.getLastExecuteSql());
         }
 
         return object;
@@ -594,21 +615,21 @@ public class EncodingConvertFilter extends FilterAdapter {
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
                                                                                                                       throws SQLException {
         Object value = chain.callableStatement_getObject(statement, parameterIndex);
-        return decodeObject(statement.getConnectionProxy(), value);
+        return decodeObject(statement, value);
     }
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex,
                                               java.util.Map<String, Class<?>> map) throws SQLException {
         Object value = chain.callableStatement_getObject(statement, parameterIndex, map);
-        return decodeObject(statement.getConnectionProxy(), value);
+        return decodeObject(statement, value);
     }
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
                                                                                                                         throws SQLException {
         Object value = chain.callableStatement_getObject(statement, parameterName);
-        return decodeObject(statement.getConnectionProxy(), value);
+        return decodeObject(statement, value);
     }
 
     @Override
@@ -616,7 +637,7 @@ public class EncodingConvertFilter extends FilterAdapter {
                                               String parameterName, java.util.Map<String, Class<?>> map)
                                                                                                         throws SQLException {
         Object value = chain.callableStatement_getObject(statement, parameterName, map);
-        return decodeObject(statement.getConnectionProxy(), value);
+        return decodeObject(statement, value);
     }
 
 }

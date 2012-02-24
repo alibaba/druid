@@ -39,7 +39,11 @@ public class OracleOrderBy extends SQLOrderBy {
     }
 
     protected void accept0(SQLASTVisitor visitor) {
-        accept0((OracleASTVisitor) visitor);
+        if (visitor instanceof OracleASTVisitor) {
+            accept0((OracleASTVisitor) visitor);
+        } else {
+            super.accept0(visitor);
+        }
     }
 
     protected void accept0(OracleASTVisitor visitor) {
