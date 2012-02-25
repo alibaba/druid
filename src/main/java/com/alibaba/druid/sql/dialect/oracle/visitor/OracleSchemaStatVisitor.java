@@ -882,6 +882,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public void endVisit(ErrorLoggingClause x) {
 
+
     }
 
 }
