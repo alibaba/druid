@@ -104,6 +104,13 @@ public class OracleLexer extends Lexer {
         map.put("SECOND", Token.SECOND);
         map.put("TO", Token.TO);
         map.put("MODEL", Token.MODEL);
+        map.put("MERGE", Token.MERGE);
+        map.put("USING", Token.USING);
+        map.put("MATCHED", Token.MATCHED);
+        map.put("LOG", Token.LOG);
+        map.put("ERRORS", Token.ERRORS);
+        map.put("REJECT", Token.REJECT);
+        map.put("UNLIMITED", Token.UNLIMITED);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

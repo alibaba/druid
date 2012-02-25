@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -282,4 +283,20 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(ModelClause x);
 
     void endVisit(ModelClause x);
+    
+    boolean visit(OracleMergeStatement x);
+    
+    void endVisit(OracleMergeStatement x);
+    
+    boolean visit(OracleMergeStatement.MergeUpdateClause x);
+    
+    void endVisit(OracleMergeStatement.MergeUpdateClause x);
+    
+    boolean visit(OracleMergeStatement.MergeInsertClause x);
+    
+    void endVisit(OracleMergeStatement.MergeInsertClause x);
+    
+    boolean visit(OracleMergeStatement.ErrorLoggingClause x);
+    
+    void endVisit(OracleMergeStatement.ErrorLoggingClause x);
 }

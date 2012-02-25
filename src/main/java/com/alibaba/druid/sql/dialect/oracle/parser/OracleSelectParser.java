@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
@@ -1002,9 +1001,6 @@ public class OracleSelectParser extends SQLSelectParser {
     }
 
     private void parseHints(OracleSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.HINT) {
-            queryBlock.getHints().add(new OracleHint(lexer.stringVal()));
-            lexer.nextToken();
-        }
+        this.createExprParser().parseHints(queryBlock.getHints());
     }
 }

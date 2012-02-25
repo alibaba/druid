@@ -344,4 +344,6 @@ public class SQLStatementParser extends SQLParser {
         createView.setSubQuery(new SQLSelectParser(this.lexer).select());
         return createView;
     }
+    
+
 }

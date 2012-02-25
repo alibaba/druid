@@ -22,6 +22,15 @@ public class TableStat {
     int deleteCount = 0;
     int insertCount = 0;
     int dropCount   = 0;
+    int mergeCount  = 0;
+
+    public int getMergeCount() {
+        return mergeCount;
+    }
+
+    public void incrementMergeCount() {
+        this.mergeCount++;
+    }
 
     public int getDropCount() {
         return dropCount;
@@ -85,6 +94,9 @@ public class TableStat {
 
     public String toString() {
         StringBuilder buf = new StringBuilder(4);
+        if (mergeCount > 0) {
+            buf.append("Merge");
+        }
         if (insertCount > 0) {
             buf.append("Insert");
         }
@@ -100,6 +112,7 @@ public class TableStat {
         if (dropCount > 0) {
             buf.append("Drop");
         }
+  
 
         return buf.toString();
     }
@@ -272,7 +285,7 @@ public class TableStat {
     }
 
     public static enum Mode {
-        Insert(1), Update(2), Delete(4), Select(8);
+        Insert(1), Update(2), Delete(4), Select(8), Merge(16);
 
         public final int mark;
 

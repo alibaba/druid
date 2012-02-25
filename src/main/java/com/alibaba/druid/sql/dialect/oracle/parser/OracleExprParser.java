@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -28,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -589,5 +591,12 @@ public class OracleExprParser extends SQLExprParser {
             return expr;
         }
         return super.relationalRest(expr);
+    }
+    
+    public void parseHints(List<OracleHint> hints) {
+        if (lexer.token() == Token.HINT) {
+            hints.add(new OracleHint(lexer.stringVal()));
+            lexer.nextToken();
+        }
     }
 }

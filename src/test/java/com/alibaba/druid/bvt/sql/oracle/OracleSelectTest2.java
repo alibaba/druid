@@ -15,10 +15,10 @@ public class OracleSelectTest2 extends OracleTest {
     public void test_0() throws Exception {
         String sql = "WITH " + //
                      "   dept_costs AS (" + //
-                     "      SELECT department_name, SUM(salary) dept_total" + //
+                     "      SELECT d.department_name, SUM(d.salary) dept_total" + //
                      "         FROM employees e, departments d" + //
                      "         WHERE e.department_id = d.department_id" + //
-                     "      GROUP BY department_name)," + //
+                     "      GROUP BY d.department_name)," + //
                      "   avg_cost AS (" + //
                      "      SELECT SUM(dept_total)/COUNT(*) avg" + //
                      "      FROM dept_costs)" + //
@@ -46,7 +46,7 @@ public class OracleSelectTest2 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
     }

@@ -48,6 +48,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.ErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -70,7 +74,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetValueClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
@@ -105,6 +108,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                     break;
                 case Select:
                     stat.incrementSelectCount();
+                    break;
+                case Merge:
+                    stat.incrementMergeCount();
                     break;
                 default:
                     break;
@@ -212,22 +218,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             return false;
         }
 
-        if (x.getOwner() instanceof SQLIdentifierExpr) {
-            String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
-
-            if (owner != null) {
-                Map<String, String> aliasMap = aliasLocal.get();
-                if (aliasMap != null) {
-                    String table = aliasMap.get(owner);
-
-                    // table == null时是SubQuery
-                    if (table != null) {
-                        columns.add(new Column(table, x.getName()));
-                    }
-                }
-            }
-        }
-        return false;
+       return super.visit(x);
     }
 
     public boolean visit(SQLIdentifierExpr x) {
@@ -243,12 +234,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             return false;
         }
 
-        String currentTable = currentTableLocal.get();
-
-        if (currentTable != null) {
-            columns.add(new Column(currentTable, x.getName()));
-        }
-        return false;
+        return super.visit(x);
     }
 
     @Override
@@ -817,6 +803,84 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(ModelClause x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleMergeStatement x) {
+        aliasLocal.set(new HashMap<String, String>());
+
+        x.putAttribute("_original_use_mode", modeLocal.get());
+        modeLocal.set(Mode.Merge);
+        
+        String originalTable = currentTableLocal.get();
+
+        x.getUsing().accept(this);
+
+        String ident =  x.getInto().toString();
+        currentTableLocal.set(ident);
+        x.putAttribute("_old_local_", originalTable);
+
+        TableStat stat = tableStats.get(ident);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(ident), stat);
+        }
+        stat.incrementMergeCount();
+
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap != null) {
+            if (x.getAlias() != null) {
+                aliasMap.put(x.getAlias(), ident);
+            }
+            aliasMap.put(ident, ident);
+        }
+        
+        x.getOn().accept(this);
+        
+        if (x.getUpdateClause() != null) {
+            x.getUpdateClause().accept(this);
+        }
+        
+        if (x.getInsertClause() != null) {
+            x.getInsertClause().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleMergeStatement x) {
+        aliasLocal.set(null);
+    }
+
+    @Override
+    public boolean visit(MergeUpdateClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeUpdateClause x) {
+
+    }
+
+    @Override
+    public boolean visit(MergeInsertClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MergeInsertClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ErrorLoggingClause x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(ErrorLoggingClause x) {
 
     }
 

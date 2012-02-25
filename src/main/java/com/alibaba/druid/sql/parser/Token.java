@@ -145,6 +145,12 @@ public enum Token {
     SECOND("SECOND"),
     TO("TO"),
     MODEL("MODEL"),
+    MERGE("MERGE"),
+    MATCHED("MATCHED"),
+    LOG("LOG"),
+    ERRORS("ERRORS"),
+    REJECT("REJECT"),
+    UNLIMITED("UNLIMITED"),
     
     // transact-sql
     TOP("TOP"),
