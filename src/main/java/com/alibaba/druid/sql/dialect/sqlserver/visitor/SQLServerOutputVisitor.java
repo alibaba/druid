@@ -5,9 +5,9 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
-public class SqlServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
+public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
 
-    public SqlServerOutputVisitor(Appendable appender){
+    public SQLServerOutputVisitor(Appendable appender){
         super(appender);
     }
 

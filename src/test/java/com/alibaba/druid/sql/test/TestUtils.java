@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SqlServerOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class TestUtils {
@@ -23,7 +23,7 @@ public class TestUtils {
 
     public static String outputSqlServer(List<SQLStatement> stmtList) {
         StringBuilder out = new StringBuilder();
-        SqlServerOutputVisitor visitor = new SqlServerOutputVisitor(out);
+        SQLServerOutputVisitor visitor = new SQLServerOutputVisitor(out);
 
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
