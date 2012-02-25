@@ -37,7 +37,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             accept(Token.CREATE);
         }
 
-        SQLCreateTableStatement createTable = new SQLCreateTableStatement();
+        SQLCreateTableStatement createTable = newCreateStatement();
 
         if (lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase("GLOBAL")) {
             lexer.nextToken();
@@ -96,5 +96,9 @@ public class SQLCreateTableParser extends SQLDDLParser {
         }
 
         return createTable;
+    }
+
+    protected SQLCreateTableStatement newCreateStatement() {
+        return new SQLCreateTableStatement();
     }
 }

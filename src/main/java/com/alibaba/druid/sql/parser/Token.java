@@ -154,6 +154,9 @@ public enum Token {
     
     // transact-sql
     TOP("TOP"),
+    
+    // hive
+    PARTITIONED("PARTITIONED"),
 
     EOF, 
     ERROR,
