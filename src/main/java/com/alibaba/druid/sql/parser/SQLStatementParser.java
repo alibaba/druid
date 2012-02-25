@@ -179,14 +179,14 @@ public class SQLStatementParser extends SQLParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.token() == (Token.VALUES)) {
+        if (lexer.token() == Token.VALUES) {
             lexer.nextToken();
             accept(Token.LPAREN);
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
             this.exprParser.exprList(values.getValues());
             insertStatement.setValues(values);
             accept(Token.RPAREN);
-        } else if (lexer.token() == (Token.SELECT)) {
+        } else if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
@@ -196,7 +196,7 @@ public class SQLStatementParser extends SQLParser {
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         return false;
     }
-    
+
     public SQLStatement parseDropUser() throws ParserException {
         throw new ParserException("TODO " + lexer.token());
     }
@@ -344,6 +344,5 @@ public class SQLStatementParser extends SQLParser {
         createView.setSubQuery(new SQLSelectParser(this.lexer).select());
         return createView;
     }
-    
 
 }

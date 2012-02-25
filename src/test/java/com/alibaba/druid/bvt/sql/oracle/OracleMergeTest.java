@@ -36,6 +36,7 @@ public class OracleMergeTest extends OracleTest {
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
 
         Assert.assertEquals(2, visitor.getTables().size());
 

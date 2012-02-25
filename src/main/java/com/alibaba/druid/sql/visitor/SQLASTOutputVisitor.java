@@ -397,6 +397,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getSubQuery().accept(this);
 
             decrementIndent();
+        } else if (x.getParent() instanceof ValuesClause) {
+            println();
+            x.getSubQuery().accept(this);
+            println();
         } else {
             print("(");
             incrementIndent();
@@ -784,7 +788,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 print(", ");
             }
 
-            x.getValues().get(i).accept(this);
+            SQLExpr expr = x.getValues().get(i);
+            expr.setParent(x);
+            expr.accept(this);
         }
         decrementIndent();
         print(")");

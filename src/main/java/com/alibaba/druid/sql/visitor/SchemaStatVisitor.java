@@ -38,12 +38,14 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.stat.TableStat.Relationship;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat>      tableStats        = new LinkedHashMap<TableStat.Name, TableStat>();
     protected final Set<Column>                             columns           = new LinkedHashSet<Column>();
     protected final Set<Condition>                          conditions        = new LinkedHashSet<Condition>();
+    protected final Set<Relationship>                       relationships     = new LinkedHashSet<Relationship>();
     protected final Set<Column>                             orderByColumns    = new LinkedHashSet<Column>();
     protected final Set<Column>                             groupByColumns    = new LinkedHashSet<Column>();
 
@@ -116,6 +118,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return true;
     }
 
+    public Set<Relationship> getRelationships() {
+        return relationships;
+    }
+
     public Set<Column> getOrderByColumns() {
         return orderByColumns;
     }
@@ -143,6 +149,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case IsNot:
                 handleCondition(x.getLeft(), x.getOperator().name);
                 handleCondition(x.getRight(), x.getOperator().name);
+                
+                handleRelationship(x.getLeft(), x.getOperator().name, x.getRight());
                 break;
             default:
                 break;
@@ -150,10 +158,41 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return true;
     }
 
+    protected void handleRelationship(SQLExpr left, String operator, SQLExpr right) {
+        Column leftColumn = getColumn(left);
+        if (leftColumn == null) {
+            return;
+        }
+        
+        Column rightColumn = getColumn(right);
+        if (rightColumn == null) {
+            return;
+        }
+        
+        Relationship relationship = new Relationship();
+        relationship.setLeft(leftColumn);
+        relationship.setRight(rightColumn);
+        relationship.setOperator(operator);
+        
+        this.relationships.add(relationship);
+    }
+
     protected void handleCondition(SQLExpr expr, String operator) {
+        Column column = getColumn(expr);
+        if (column == null) {
+            return;
+        }
+        
+        Condition condition = new Condition();
+        condition.setColumn(column);
+        condition.setOperator(operator);
+        this.conditions.add(condition);
+    }
+
+    protected Column getColumn(SQLExpr expr) {
         Map<String, String> aliasMap = aliasLocal.get();
         if (aliasMap == null) {
-            return;
+            return null;
         }
 
         if (expr instanceof SQLPropertyExpr) {
@@ -168,22 +207,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 }
 
                 if (table != null) {
-                    Condition condition = new Condition();
-                    condition.setColumn(new Column(table, column));
-                    condition.setOperator(operator);
-                    this.conditions.add(condition);
-                } else {
-                    Column sqlColumn = handleSubQueryColumn(tableName, column);
-                    if (sqlColumn != null) {
-                        Condition condition = new Condition();
-                        condition.setColumn(sqlColumn);
-                        condition.setOperator(operator);
-                        this.conditions.add(condition);
-                    }
+                    return new Column(table, column);
                 }
+                
+                return handleSubQueryColumn(tableName, column);
             }
 
-            return;
+            return null;
         }
 
         if (expr instanceof SQLIdentifierExpr) {
@@ -196,12 +226,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             if (table != null) {
-                Condition condition = new Condition();
-                condition.setColumn(new Column(table, column));
-                condition.setOperator(operator);
-                this.conditions.add(condition);
+                return new Column(table, column);
             }
         }
+        
+        return null;
     }
 
     @Override
