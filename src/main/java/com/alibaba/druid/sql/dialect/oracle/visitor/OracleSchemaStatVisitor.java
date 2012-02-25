@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -82,16 +83,50 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetValueClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
 
+    protected Column getColumn(SQLExpr expr) {
+        if (expr instanceof OracleOuterExpr) {
+            expr = ((OracleOuterExpr) expr).getExpr();
+        }
+        
+        return super.getColumn(expr);
+    }
+    
     public boolean visit(OracleSelectTableReference x) {
         SQLExpr expr = x.getExpr();
+        
+        if (expr instanceof SQLMethodInvokeExpr) {
+            SQLMethodInvokeExpr methodInvoke = (SQLMethodInvokeExpr) expr;
+            if ("TABLE".equalsIgnoreCase(methodInvoke.getMethodName()) && methodInvoke.getParameters().size() == 1) {
+                expr = methodInvoke.getParameters().get(0);
+            }
+        }
+        
+        Map<String, String> aliasMap = aliasLocal.get();
+        
         if (expr instanceof SQLName) {
-            String ident = ((SQLName) expr).toString();
+            String ident;
+            if (expr instanceof SQLPropertyExpr) {
+                String owner = ((SQLPropertyExpr) expr).getOwner().toString();
+                String name = ((SQLPropertyExpr) expr).getName();
+                
+                if (aliasMap.containsKey(owner)) {
+                    owner = aliasMap.get(owner);
+                }
+                ident = owner + "." + name;
+            } else {
+                ident = expr.toString();
+            }
+            
+            if ("DUAL".equalsIgnoreCase(ident)) {
+                return false;
+            }
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            
 
             if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
                 return false;
@@ -228,6 +263,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         return super.visit(x);
     }
+    
+    public boolean visit(SQLMethodInvokeExpr x) {
+        accept(x.getParameters());
+        return false;
+    }
 
     public boolean visit(SQLIdentifierExpr x) {
         if ("ROWNUM".equalsIgnoreCase(x.getName())) {
@@ -239,6 +279,10 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
 
         if ("+".equalsIgnoreCase(x.getName())) {
+            return false;
+        }
+        
+        if ("LEVEL".equals(x.getName())) {
             return false;
         }
 

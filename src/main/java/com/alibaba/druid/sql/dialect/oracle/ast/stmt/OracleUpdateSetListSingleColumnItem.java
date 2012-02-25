@@ -32,6 +32,7 @@ public class OracleUpdateSetListSingleColumnItem extends OracleUpdateSetListItem
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.column);
+            acceptChild(visitor, this.value);
         }
 
         visitor.endVisit(this);

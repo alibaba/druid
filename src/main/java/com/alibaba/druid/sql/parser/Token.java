@@ -157,6 +157,8 @@ public enum Token {
     
     // hive
     PARTITIONED("PARTITIONED"),
+    SHOW("SHOW"),
+    TABLES("TABLES"),
 
     EOF, 
     ERROR,
