@@ -60,7 +60,10 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement implements
 
         @Override
         public void accept0(HiveASTVisitor visitor) {
-
+            if (visitor.visit(this)) {
+                acceptChild(visitor, type);
+            }
+            visitor.endVisit(this);
         }
 
     }
