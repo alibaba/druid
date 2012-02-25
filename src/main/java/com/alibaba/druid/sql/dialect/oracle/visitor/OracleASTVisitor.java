@@ -46,6 +46,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -310,4 +312,12 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleInsertStatement x);
     
     void endVisit(OracleInsertStatement x);
+    
+    boolean visit(InsertIntoClause x);
+    
+    void endVisit(InsertIntoClause x);
+    
+    boolean visit(OracleMultiInsertStatement x);
+    
+    void endVisit(OracleMultiInsertStatement x);
 }

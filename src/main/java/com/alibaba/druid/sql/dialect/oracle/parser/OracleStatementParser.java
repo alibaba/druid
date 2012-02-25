@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
@@ -26,6 +27,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -233,15 +235,50 @@ public class OracleStatementParser extends SQLStatementParser {
 
     public OracleStatement parseInsert() {
         accept(Token.INSERT);
-        accept(Token.INTO);
 
-        OracleInsertStatement stmt = new OracleInsertStatement();
+        if (lexer.token() == Token.INTO) {
+            OracleInsertStatement stmt = new OracleInsertStatement();
 
-        parseInsert0(stmt);
+            parseInsert0(stmt);
 
-        stmt.setReturning(parseReturningClause());
-        stmt.setErrorLogging(parseErrorLoggingClause());
+            stmt.setReturning(parseReturningClause());
+            stmt.setErrorLogging(parseErrorLoggingClause());
 
+            return stmt;
+        }
+
+        return parseMultiInsert();
+    }
+
+    public OracleStatement parseMultiInsert() {
+        OracleMultiInsertStatement stmt = new OracleMultiInsertStatement();
+
+        if (lexer.token() == Token.ALL) {
+            lexer.nextToken();
+            stmt.setOption(OracleMultiInsertStatement.Option.ALL);
+        } else if (lexer.token() == Token.FIRST) {
+            lexer.nextToken();
+            stmt.setOption(OracleMultiInsertStatement.Option.FIRST);
+        }
+        
+        while (lexer.token() == Token.INTO) {
+            OracleMultiInsertStatement.InsertIntoClause clause = new OracleMultiInsertStatement.InsertIntoClause();
+
+            parseInsert0(clause);
+
+            clause.setReturning(parseReturningClause());
+            clause.setErrorLogging(parseErrorLoggingClause());
+            
+            stmt.getEntries().add(clause);
+        }
+        
+        if (lexer.token() == Token.WHEN) {
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());    
+        }
+
+        SQLSelect subQuery = this.createSQLSelectParser().select();
+        stmt.setSubQuery(subQuery);
+        
         return stmt;
     }
 

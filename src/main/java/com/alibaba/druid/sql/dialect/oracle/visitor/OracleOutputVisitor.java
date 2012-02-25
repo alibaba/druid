@@ -74,6 +74,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -1324,43 +1326,43 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printAndAccept(x.getHints(), ", ");
             print(" ");
         }
-        
+
         print("INTO ");
         x.getInto().accept(this);
-        
+
         if (x.getAlias() != null) {
             print(" ");
             print(x.getAlias());
         }
-        
+
         println();
         print("USING ");
         x.getUsing().accept(this);
-        
+
         print(" ON ");
         x.getOn().accept(this);
-        
+
         if (x.getUpdateClause() != null) {
             println();
             x.getUpdateClause().accept(this);
         }
-        
+
         if (x.getInsertClause() != null) {
             println();
             x.getInsertClause().accept(this);
         }
-        
+
         if (x.getErrorLoggingClause() != null) {
             println();
             x.getErrorLoggingClause().accept(this);
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(OracleMergeStatement x) {
-        
+
     }
 
     @Override
@@ -1374,7 +1376,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWhere().accept(this);
             decrementIndent();
         }
-        
+
         if (x.getDeleteWhere() != null) {
             incrementIndent();
             println();
@@ -1382,13 +1384,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getDeleteWhere().accept(this);
             decrementIndent();
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(MergeUpdateClause x) {
-        
+
     }
 
     @Override
@@ -1405,13 +1407,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getWhere().accept(this);
             decrementIndent();
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(MergeInsertClause x) {
-        
+
     }
 
     @Override
@@ -1422,59 +1424,134 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getInto().accept(this);
             print(" ");
         }
-        
+
         if (x.getSimpleExpression() != null) {
             print("(");
             x.getSimpleExpression().accept(this);
             print(")");
         }
-        
+
         if (x.getLimit() != null) {
             print(" REJECT LIMIT ");
             x.getLimit().accept(this);
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(OracleErrorLoggingClause x) {
-        
+
     }
+
     @Override
     public boolean visit(OracleReturningClause x) {
         print("RETURNING ");
         printAndAccept(x.getItems(), ", ");
         print(" INTO ");
         printAndAccept(x.getValues(), ", ");
-        
+
         return false;
     }
-    
+
     @Override
     public void endVisit(OracleReturningClause x) {
-        
+
     }
 
     @Override
     public boolean visit(OracleInsertStatement x) {
         visit((SQLInsertStatement) x);
-        
+
         if (x.getReturning() != null) {
             println();
             x.getReturning().accept(this);
         }
-        
+
         if (x.getErrorLogging() != null) {
             println();
             x.getErrorLogging().accept(this);
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(OracleInsertStatement x) {
         endVisit((SQLInsertStatement) x);
+    }
+
+    @Override
+    public boolean visit(InsertIntoClause x) {
+        print("INTO ");
+
+        x.getTableName().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            incrementIndent();
+            println();
+            print("(");
+            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print(", ");
+                }
+                x.getColumns().get(i).accept(this);
+            }
+            print(")");
+            decrementIndent();
+        }
+
+        if (x.getValues() != null) {
+            println();
+            print("VALUES ");
+            x.getValues().accept(this);
+        } else {
+            if (x.getQuery() != null) {
+                println();
+                x.getQuery().setParent(x);
+                x.getQuery().accept(this);
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(InsertIntoClause x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleMultiInsertStatement x) {
+        print("INSERT ");
+
+        if (x.getHints().size() > 0) {
+            this.printHints(x.getHints());
+        }
+
+        if (x.getOption() != null) {
+            print(x.getOption().name());
+            print(" ");
+        }
+
+        for (int i = 0, size = x.getEntries().size(); i < size; ++i) {
+            incrementIndent();
+            println();
+            x.getEntries().get(i).accept(this);
+            decrementIndent();
+        }
+        
+        println();
+        x.getSubQuery().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleMultiInsertStatement x) {
+
     }
 }

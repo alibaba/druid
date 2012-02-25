@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
@@ -161,7 +162,6 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseInsert() {
         accept(Token.INSERT);
-        accept(Token.INTO);
 
         SQLInsertStatement insertStatement = new SQLInsertStatement();
 
@@ -169,7 +169,9 @@ public class SQLStatementParser extends SQLParser {
         return insertStatement;
     }
 
-    protected void parseInsert0(SQLInsertStatement insertStatement) {
+    protected void parseInsert0(SQLInsertInto insertStatement) {
+        accept(Token.INTO);
+        
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
 
