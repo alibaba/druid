@@ -363,6 +363,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     currentTableLocal.set(null);
                 } else {
                     currentTableLocal.set(ident);
+                    x.putAttribute("_table_", ident);
+                    if (x.getParent() instanceof SQLSelect) {
+                        x.getParent().putAttribute("_table_", ident);
+                    }
                 }
                 x.putAttribute("_old_local_", originalTable);
             }

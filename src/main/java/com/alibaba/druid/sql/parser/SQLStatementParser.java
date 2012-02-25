@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
@@ -161,15 +162,20 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseInsert() {
         accept(Token.INSERT);
-        accept(Token.INTO);
 
         SQLInsertStatement insertStatement = new SQLInsertStatement();
 
         parseInsert0(insertStatement);
         return insertStatement;
     }
+    
+    protected void parseInsert0(SQLInsertInto insertStatement) {
+        parseInsert0(insertStatement, true);
+    }
 
-    protected void parseInsert0(SQLInsertStatement insertStatement) {
+    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
+        accept(Token.INTO);
+        
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
 
@@ -191,7 +197,7 @@ public class SQLStatementParser extends SQLParser {
             this.exprParser.exprList(values.getValues());
             insertStatement.setValues(values);
             accept(Token.RPAREN);
-        } else if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN) {
+        } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
