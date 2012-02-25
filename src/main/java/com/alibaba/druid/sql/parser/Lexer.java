@@ -144,6 +144,10 @@ public class Lexer {
     protected final void scanChar() {
         ch = buf[++bp];
     }
+    
+    protected void unscan() {
+        ch = buf[--bp];
+    }
 
     /**
      * Report an error at the given position using the provided arguments.
@@ -253,6 +257,11 @@ public class Lexer {
                     return;
                 case '.':
                     scanChar();
+                    if (isDigit(ch)) {
+                        unscan();
+                        scanNumber();
+                        return;
+                    }
                     token = Token.DOT;
                     return;
                 case '\'':

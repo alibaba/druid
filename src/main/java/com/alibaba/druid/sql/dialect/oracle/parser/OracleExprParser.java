@@ -97,11 +97,11 @@ public class OracleExprParser extends SQLExprParser {
                     return new SQLVariantRefExpr(name);
                 } else if (lexer.token() == Token.IDENTIFIER) {
                     String name = lexer.stringVal();
-                    if (name.startsWith("B")) {
+                    if (name.charAt(0) == 'B' || name.charAt(0) == 'b') {
                         lexer.nextToken();
                         return new SQLVariantRefExpr(":" + name);
                     }
-                    throw new ParserException("syntax error : " + lexer.token());
+                    throw new ParserException("syntax error : " + lexer.token() + " " + lexer.stringVal());
                 } else {
                     throw new ParserException("syntax error : " + lexer.token());
                 }

@@ -111,6 +111,8 @@ public class OracleLexer extends Lexer {
         map.put("ERRORS", Token.ERRORS);
         map.put("REJECT", Token.REJECT);
         map.put("UNLIMITED", Token.UNLIMITED);
+        map.put("RETURNING", Token.RETURNING);
+        map.put("LIMIT", Token.LIMIT);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

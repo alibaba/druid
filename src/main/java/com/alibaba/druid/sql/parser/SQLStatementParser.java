@@ -165,6 +165,11 @@ public class SQLStatementParser extends SQLParser {
 
         SQLInsertStatement insertStatement = new SQLInsertStatement();
 
+        parseInsert0(insertStatement);
+        return insertStatement;
+    }
+
+    protected void parseInsert0(SQLInsertStatement insertStatement) {
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
 
@@ -190,7 +195,6 @@ public class SQLStatementParser extends SQLParser {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
-        return insertStatement;
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {

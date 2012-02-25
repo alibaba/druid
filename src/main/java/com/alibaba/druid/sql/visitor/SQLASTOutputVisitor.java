@@ -390,14 +390,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLQueryExpr x) {
-        if (x.getParent() instanceof SQLStatement) {
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLSelect) {
+            parent = parent.getParent();
+        }
+        
+        if (parent instanceof SQLStatement) {
             incrementIndent();
 
             println();
             x.getSubQuery().accept(this);
 
             decrementIndent();
-        } else if (x.getParent() instanceof ValuesClause) {
+        } else if (parent instanceof ValuesClause) {
             println();
             x.getSubQuery().accept(this);
             println();
@@ -428,6 +433,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelect x) {
+        x.getQuery().setParent(x);
         x.getQuery().accept(this);
 
         if (x.getOrderBy() != null) {
@@ -609,6 +615,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         } else {
             if (x.getQuery() != null) {
                 println();
+                x.getQuery().setParent(x);
                 x.getQuery().accept(this);
             }
         }

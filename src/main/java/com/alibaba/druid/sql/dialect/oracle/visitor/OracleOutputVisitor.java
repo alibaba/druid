@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -49,6 +50,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitio
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
@@ -68,6 +70,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -1437,5 +1440,41 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleErrorLoggingClause x) {
         
+    }
+    @Override
+    public boolean visit(OracleReturningClause x) {
+        print("RETURNING ");
+        printAndAccept(x.getItems(), ", ");
+        print(" INTO ");
+        printAndAccept(x.getValues(), ", ");
+        
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleReturningClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleInsertStatement x) {
+        visit((SQLInsertStatement) x);
+        
+        if (x.getReturning() != null) {
+            println();
+            x.getReturning().accept(this);
+        }
+        
+        if (x.getErrorLogging() != null) {
+            println();
+            x.getErrorLogging().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleInsertStatement x) {
+        endVisit((SQLInsertStatement) x);
     }
 }

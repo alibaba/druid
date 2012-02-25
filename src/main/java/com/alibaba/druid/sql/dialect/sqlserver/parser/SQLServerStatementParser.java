@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleDeleteParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleInsertParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -80,7 +79,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.INSERT) {
-                statementList.add(new OracleInsertParser(this.lexer).parseInsert());
+                statementList.add(parseInsert());
                 continue;
             }
 
