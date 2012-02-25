@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleMergeStatement extends OracleStatementImpl {
@@ -23,7 +24,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
     private SQLExpr                on;
     private MergeUpdateClause      updateClause;
     private MergeInsertClause      insertClause;
-    private ErrorLoggingClause     errorLoggingClause;
+    private OracleErrorLoggingClause     errorLoggingClause;
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -85,11 +86,11 @@ public class OracleMergeStatement extends OracleStatementImpl {
         this.insertClause = insertClause;
     }
 
-    public ErrorLoggingClause getErrorLoggingClause() {
+    public OracleErrorLoggingClause getErrorLoggingClause() {
         return errorLoggingClause;
     }
 
-    public void setErrorLoggingClause(ErrorLoggingClause errorLoggingClause) {
+    public void setErrorLoggingClause(OracleErrorLoggingClause errorLoggingClause) {
         this.errorLoggingClause = errorLoggingClause;
     }
 
@@ -181,49 +182,6 @@ public class OracleMergeStatement extends OracleStatementImpl {
 
         public void setWhere(SQLExpr where) {
             this.where = where;
-        }
-
-    }
-
-    public static class ErrorLoggingClause extends OracleSQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
-        private SQLName           into;
-        private SQLExpr           simpleExpression;
-        private SQLExpr           limit;
-
-        @Override
-        public void accept0(OracleASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, into);
-                acceptChild(visitor, simpleExpression);
-                acceptChild(visitor, limit);
-            }
-            visitor.endVisit(this);
-        }
-
-        public SQLName getInto() {
-            return into;
-        }
-
-        public void setInto(SQLName into) {
-            this.into = into;
-        }
-
-        public SQLExpr getSimpleExpression() {
-            return simpleExpression;
-        }
-
-        public void setSimpleExpression(SQLExpr simpleExpression) {
-            this.simpleExpression = simpleExpression;
-        }
-
-        public SQLExpr getLimit() {
-            return limit;
-        }
-
-        public void setLimit(SQLExpr limit) {
-            this.limit = limit;
         }
 
     }

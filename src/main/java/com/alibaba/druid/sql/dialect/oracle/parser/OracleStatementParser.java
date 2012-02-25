@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -221,7 +222,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
         
         if (lexer.token() == Token.LOG) {
-            OracleMergeStatement.ErrorLoggingClause errorClause = new OracleMergeStatement.ErrorLoggingClause();
+            OracleErrorLoggingClause errorClause = new OracleErrorLoggingClause();
             
             lexer.nextToken();
             accept(Token.ERRORS);
