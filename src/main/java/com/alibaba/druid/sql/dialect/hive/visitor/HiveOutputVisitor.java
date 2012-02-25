@@ -39,6 +39,7 @@ public class HiveOutputVisitor extends SQLASTOutputVisitor implements HiveASTVis
         print(" ");
         x.getType().accept(this);
         print(")");
+
         return false;
     }
 
