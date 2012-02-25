@@ -75,6 +75,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
@@ -1543,7 +1545,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getEntries().get(i).accept(this);
             decrementIndent();
         }
-        
+
         println();
         x.getSubQuery().accept(this);
 
@@ -1553,5 +1555,51 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleMultiInsertStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(ConditionalInsertClause x) {
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                println();
+            }
+            
+            ConditionalInsertClauseItem item = x.getItems().get(i);
+            
+            item.accept(this);
+        }
+
+        if (x.getElseItem() != null) {
+            println();
+            print("ELSE");
+            incrementIndent();
+            println();
+            x.getElseItem().accept(this);
+            decrementIndent();
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(ConditionalInsertClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ConditionalInsertClauseItem x) {
+        print("WHEN ");
+        x.getWhen().accept(this);
+        print(" THEN");
+        incrementIndent();
+        println();
+        x.getThen().accept(this);
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(ConditionalInsertClauseItem x) {
+        
     }
 }

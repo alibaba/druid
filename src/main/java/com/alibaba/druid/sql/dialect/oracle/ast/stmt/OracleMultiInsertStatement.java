@@ -96,16 +96,20 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
-            // TODO Auto-generated method stub
-
+            if (visitor.visit(this)) {
+                acceptChild(visitor, items);
+                acceptChild(visitor, elseItem);
+            }
+            visitor.endVisit(this);
         }
 
     }
 
-    public static class ConditionalInsertClauseItem {
+    public static class ConditionalInsertClauseItem extends OracleSQLObjectImpl {
 
-        private SQLExpr          when;
-        private InsertIntoClause then;
+        private static final long serialVersionUID = 1L;
+        private SQLExpr           when;
+        private InsertIntoClause  then;
 
         public SQLExpr getWhen() {
             return when;
@@ -121,6 +125,15 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
 
         public void setThen(InsertIntoClause then) {
             this.then = then;
+        }
+
+        @Override
+        public void accept0(OracleASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, when);
+                acceptChild(visitor, then);
+            }
+            visitor.endVisit(this);
         }
 
     }

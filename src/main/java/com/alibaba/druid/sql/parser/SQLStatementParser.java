@@ -168,8 +168,12 @@ public class SQLStatementParser extends SQLParser {
         parseInsert0(insertStatement);
         return insertStatement;
     }
-
+    
     protected void parseInsert0(SQLInsertInto insertStatement) {
+        parseInsert0(insertStatement, true);
+    }
+
+    protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         accept(Token.INTO);
         
         SQLName tableName = this.exprParser.name();
@@ -193,7 +197,7 @@ public class SQLStatementParser extends SQLParser {
             this.exprParser.exprList(values.getValues());
             insertStatement.setValues(values);
             accept(Token.RPAREN);
-        } else if (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN) {
+        } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }

@@ -260,7 +260,7 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
             stmt.setOption(OracleMultiInsertStatement.Option.FIRST);
         }
-        
+
         while (lexer.token() == Token.INTO) {
             OracleMultiInsertStatement.InsertIntoClause clause = new OracleMultiInsertStatement.InsertIntoClause();
 
@@ -268,17 +268,39 @@ public class OracleStatementParser extends SQLStatementParser {
 
             clause.setReturning(parseReturningClause());
             clause.setErrorLogging(parseErrorLoggingClause());
-            
+
             stmt.getEntries().add(clause);
         }
-        
+
         if (lexer.token() == Token.WHEN) {
-            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());    
+            OracleMultiInsertStatement.ConditionalInsertClause clause = new OracleMultiInsertStatement.ConditionalInsertClause();
+
+            while (lexer.token() == Token.WHEN) {
+                lexer.nextToken();
+
+                OracleMultiInsertStatement.ConditionalInsertClauseItem item = new OracleMultiInsertStatement.ConditionalInsertClauseItem();
+
+                item.setWhen(this.createExprParser().expr());
+                accept(Token.THEN);
+                OracleMultiInsertStatement.InsertIntoClause insertInto = new OracleMultiInsertStatement.InsertIntoClause();
+                parseInsert0(insertInto);
+                item.setThen(insertInto);
+                
+                clause.getItems().add(item);
+            }
+            
+            if (lexer.token() == Token.ELSE) {
+                lexer.nextToken();
+                
+                OracleMultiInsertStatement.InsertIntoClause insertInto = new OracleMultiInsertStatement.InsertIntoClause();
+                parseInsert0(insertInto, false);
+                clause.setElseItem(insertInto);
+            }
         }
 
         SQLSelect subQuery = this.createSQLSelectParser().select();
         stmt.setSubQuery(subQuery);
-        
+
         return stmt;
     }
 

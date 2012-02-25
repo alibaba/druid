@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -56,6 +57,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
@@ -912,7 +915,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public boolean visit(InsertIntoClause x) {
         String originalTable = currentTableLocal.get();
-        
+
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
             currentTableLocal.set(ident);
@@ -933,12 +936,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 aliasMap.put(ident, ident);
             }
         }
-        
+
         accept(x.getColumns());
         accept(x.getQuery());
         accept(x.getReturning());
         accept(x.getErrorLogging());
-        
+
         return false;
     }
 
@@ -953,13 +956,13 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         modeLocal.set(Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
-        
+
         accept(x.getSubQuery());
-        
+
         for (OracleMultiInsertStatement.Entry entry : x.getEntries()) {
             entry.setParent(x);
         }
-        
+
         accept(x.getEntries());
 
         return false;
@@ -967,6 +970,48 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleMultiInsertStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(ConditionalInsertClause x) {
+        for (ConditionalInsertClauseItem item : x.getItems()) {
+            item.setParent(x);
+        }
+        if (x.getElseItem() != null) {
+            x.getElseItem().setParent(x);
+        }
+        return true;
+    }
+
+    @Override
+    public void endVisit(ConditionalInsertClause x) {
+
+    }
+
+    @Override
+    public boolean visit(ConditionalInsertClauseItem x) {
+        String originalTable = currentTableLocal.get();
+        SQLObject parent = x.getParent();
+        if (parent instanceof ConditionalInsertClause) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof OracleMultiInsertStatement) {
+            SQLSelect subQuery = ((OracleMultiInsertStatement) parent).getSubQuery();
+            if (subQuery != null) {
+                String table = (String) subQuery.getAttribute("_table_");
+                currentTableLocal.set(table);
+            }
+        }
+        x.getWhen().accept(this);
+        x.getThen().accept(this);
+        currentTableLocal.set(originalTable);
+        return false;
+    }
+
+    @Override
+    public void endVisit(ConditionalInsertClauseItem x) {
+
 
     }
 }
