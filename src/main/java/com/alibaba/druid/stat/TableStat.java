@@ -23,6 +23,15 @@ public class TableStat {
     int insertCount = 0;
     int dropCount   = 0;
     int mergeCount  = 0;
+    int createCount = 0;
+
+    public int getCreateCount() {
+        return createCount;
+    }
+
+    public void incrementCreateCount() {
+        this.createCount++;
+    }
 
     public int getMergeCount() {
         return mergeCount;
@@ -111,6 +120,9 @@ public class TableStat {
         }
         if (dropCount > 0) {
             buf.append("Drop");
+        }
+        if (createCount > 0) {
+            buf.append("Create");
         }
 
         return buf.toString();

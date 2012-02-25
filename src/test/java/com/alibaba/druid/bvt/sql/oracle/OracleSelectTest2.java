@@ -49,7 +49,7 @@ public class OracleSelectTest2 extends OracleTest {
 
         Assert.assertEquals(4, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getFields().contains(new TableStat.Column("films", "producer_id")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("films", "producer_id")));
     }
 
 }

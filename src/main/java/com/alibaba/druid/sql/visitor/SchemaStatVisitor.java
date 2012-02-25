@@ -20,6 +20,8 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -32,6 +34,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.stat.TableStat;
@@ -149,7 +152,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case IsNot:
                 handleCondition(x.getLeft(), x.getOperator().name);
                 handleCondition(x.getRight(), x.getOperator().name);
-                
+
                 handleRelationship(x.getLeft(), x.getOperator().name, x.getRight());
                 break;
             default:
@@ -163,17 +166,17 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (leftColumn == null) {
             return;
         }
-        
+
         Column rightColumn = getColumn(right);
         if (rightColumn == null) {
             return;
         }
-        
+
         Relationship relationship = new Relationship();
         relationship.setLeft(leftColumn);
         relationship.setRight(rightColumn);
         relationship.setOperator(operator);
-        
+
         this.relationships.add(relationship);
     }
 
@@ -182,7 +185,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (column == null) {
             return;
         }
-        
+
         Condition condition = new Condition();
         condition.setColumn(column);
         condition.setOperator(operator);
@@ -209,7 +212,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 if (table != null) {
                     return new Column(table, column);
                 }
-                
+
                 return handleSubQueryColumn(tableName, column);
             }
 
@@ -229,7 +232,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 return new Column(table, column);
             }
         }
-        
+
         return null;
     }
 
@@ -659,5 +662,36 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public void endVisit(SQLUpdateStatement x) {
         aliasLocal.set(null);
+    }
+
+    public boolean visit(SQLCreateTableStatement x) {
+        for (SQLTableElement e : x.getTableElementList()) {
+            e.setParent(x);
+        }
+
+        String tableName = x.getName().toString();
+        TableStat stat = new TableStat();
+        stat.incrementCreateCount();
+        tableStats.put(new TableStat.Name(tableName), stat);
+        return true;
+    }
+
+    public boolean visit(SQLColumnDefinition x) {
+        String tableName = null;
+        {
+            SQLObject parent = x.getParent();
+            if (parent instanceof SQLCreateTableStatement) {
+                tableName = ((SQLCreateTableStatement) parent).getName().toString();
+            }
+        }
+        
+        if (tableName == null) {
+            return true;
+        }
+        
+        String columnName = x.getName().toString();
+        columns.add(new Column(tableName, columnName));
+        
+        return true;
     }
 }
