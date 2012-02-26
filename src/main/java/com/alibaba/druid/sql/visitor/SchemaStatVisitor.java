@@ -94,6 +94,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 if (subQueryMap.containsKey(owner)) {
                     return false;
                 }
+                
+                owner = aliasWrap(owner);
 
                 if (owner != null) {
                     orderByColumns.add(new Column(owner, x.getName()));
@@ -417,7 +419,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (subQueryMap.containsKey(owner)) {
                 return false;
             }
-
+            
+            owner = aliasWrap(owner);
+            
             if (owner != null) {
                 Column column = new Column(owner, x.getName());
                 columns.add(column);
@@ -425,6 +429,15 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
         return false;
+    }
+    
+    protected String aliasWrap(String name) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap.containsKey(name)) {
+            return aliasMap.get(name);
+        }
+        
+        return name;
     }
 
     protected Column handleSubQueryColumn(String owner, String alias) {
