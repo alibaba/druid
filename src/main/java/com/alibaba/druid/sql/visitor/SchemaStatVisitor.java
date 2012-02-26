@@ -52,10 +52,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final Set<Column>                             orderByColumns    = new LinkedHashSet<Column>();
     protected final Set<Column>                             groupByColumns    = new LinkedHashSet<Column>();
 
-    private final Map<String, SQLSelectQuery>               subQueryMap       = new LinkedHashMap<String, SQLSelectQuery>();
+    protected final Map<String, SQLObject>               subQueryMap       = new LinkedHashMap<String, SQLObject>();
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
     protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
+
+    public final static String                              ATTR_TABLE        = "_table_";
+    public final static String                              ATTR_COLUMN       = "_column_";
 
     public class OrderByStatVisitor extends SQLASTVisitorAdapter {
 
@@ -72,8 +75,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         public boolean visit(SQLIdentifierExpr x) {
             String currentTable = currentTableLocal.get();
 
+            if (subQueryMap.containsKey(currentTable)) {
+                return false;
+            }
+
             if (currentTable != null) {
                 orderByColumns.add(new Column(currentTable, x.getName()));
+            } else {
+                orderByColumns.add(new Column("UNKOWN", x.getName()));
             }
             return false;
         }
@@ -82,16 +91,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (x.getOwner() instanceof SQLIdentifierExpr) {
                 String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
 
-                if (owner != null) {
-                    Map<String, String> aliasMap = aliasLocal.get();
-                    if (aliasMap != null) {
-                        String table = aliasMap.get(owner);
+                if (subQueryMap.containsKey(owner)) {
+                    return false;
+                }
+                
+                owner = aliasWrap(owner);
 
-                        // table == null时是SubQuery
-                        if (table != null) {
-                            orderByColumns.add(new Column(table, x.getName()));
-                        }
-                    }
+                if (owner != null) {
+                    orderByColumns.add(new Column(owner, x.getName()));
                 }
             }
 
@@ -138,6 +145,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        x.getLeft().setParent(x);
+        x.getRight().setParent(x);
+
         switch (x.getOperator()) {
             case Equality:
             case NotEqual:
@@ -220,17 +230,27 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (expr instanceof SQLIdentifierExpr) {
+            Column attrColumn = (Column) expr.getAttribute(ATTR_COLUMN);
+            if (attrColumn != null) {
+                return attrColumn;
+            }
+
             String column = ((SQLIdentifierExpr) expr).getName();
             String table = currentTableLocal.get();
             if (table != null) {
                 if (aliasMap.containsKey(table)) {
                     table = aliasMap.get(table);
+                    if (table == null) {
+                        return null;
+                    }
                 }
             }
 
             if (table != null) {
                 return new Column(table, column);
             }
+
+            return new Column("UNKNOWN", column);
         }
 
         return null;
@@ -361,21 +381,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
 
-                Map<String, String> aliasMap = aliasLocal.get();
-                if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
-                    currentTableLocal.set(null);
-                } else {
-                    currentTableLocal.set(ident);
-                    x.putAttribute("_table_", ident);
-                    if (x.getParent() instanceof SQLSelect) {
-                        x.getParent().putAttribute("_table_", ident);
-                    }
+                currentTableLocal.set(ident);
+                x.putAttribute(ATTR_TABLE, ident);
+                if (x.getParent() instanceof SQLSelect) {
+                    x.getParent().putAttribute(ATTR_TABLE, ident);
                 }
                 x.putAttribute("_old_local_", originalTable);
             }
         }
 
         x.getFrom().accept(this); // 提前执行，获得aliasMap
+
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+        }
 
         return true;
     }
@@ -396,26 +415,33 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
-
+            
+            if (subQueryMap.containsKey(owner)) {
+                return false;
+            }
+            
+            owner = aliasWrap(owner);
+            
             if (owner != null) {
-                Map<String, String> aliasMap = aliasLocal.get();
-                if (aliasMap != null) {
-                    String table = aliasMap.get(owner);
-
-                    // table == null时是SubQuery
-                    if (table != null) {
-                        Column column = new Column(table, x.getName());
-                        columns.add(column);
-                        x.putAttribute("_column_", column);
-                    }
-                }
+                Column column = new Column(owner, x.getName());
+                columns.add(column);
+                x.putAttribute(ATTR_COLUMN, column);
             }
         }
         return false;
     }
+    
+    protected String aliasWrap(String name) {
+        Map<String, String> aliasMap = aliasLocal.get();
+        if (aliasMap.containsKey(name)) {
+            return aliasMap.get(name);
+        }
+        
+        return name;
+    }
 
     protected Column handleSubQueryColumn(String owner, String alias) {
-        SQLSelectQuery query = subQueryMap.get(owner);
+        SQLObject query = subQueryMap.get(owner);
 
         if (query == null) {
             return null;
@@ -439,7 +465,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 }
 
                 if (alias.equalsIgnoreCase(itemAlias)) {
-                    Column column = (Column) itemExpr.getAttribute("_column_");
+                    Column column = (Column) itemExpr.getAttribute(ATTR_COLUMN);
                     return column;
                 }
 
@@ -452,16 +478,35 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLIdentifierExpr x) {
         String currentTable = currentTableLocal.get();
 
+        if (subQueryMap.containsKey(currentTable)) {
+            return false;
+        }
+
         if (currentTable != null) {
             Column column = new Column(currentTable, x.getName());
             columns.add(column);
-            x.putAttribute("_column_", column);
+            x.putAttribute(ATTR_COLUMN, column);
+        } else {
+            Column column = handleUnkownColumn(x.getName());
+            if (column != null) {
+                x.putAttribute(ATTR_COLUMN, column);
+            }
         }
         return false;
     }
 
+    protected Column handleUnkownColumn(String columnName) {
+        Column column = new Column("UNKNOWN", columnName);
+        columns.add(column);
+        return column;
+    }
+
     public boolean visit(SQLAllColumnExpr x) {
         String currentTable = currentTableLocal.get();
+        
+        if (subQueryMap.containsKey(currentTable)) {
+            return false;
+        }
 
         if (currentTable != null) {
             columns.add(new Column(currentTable, "*"));
@@ -512,17 +557,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
-
-            Map<String, String> aliasMap = aliasLocal.get();
-
-            if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
+            
+            if (subQueryMap.containsKey(ident)) {
                 return false;
             }
+
+            Map<String, String> aliasMap = aliasLocal.get();
 
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
                 stat = new TableStat();
                 tableStats.put(new TableStat.Name(ident), stat);
+                x.putAttribute(ATTR_TABLE, ident);
             }
 
             Mode mode = modeLocal.get();
@@ -673,7 +719,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         TableStat stat = new TableStat();
         stat.incrementCreateCount();
         tableStats.put(new TableStat.Name(tableName), stat);
-        return true;
+
+        accept(x.getTableElementList());
+
+        return false;
     }
 
     public boolean visit(SQLColumnDefinition x) {
@@ -684,14 +733,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 tableName = ((SQLCreateTableStatement) parent).getName().toString();
             }
         }
-        
+
         if (tableName == null) {
             return true;
         }
-        
+
         String columnName = x.getName().toString();
         columns.add(new Column(tableName, columnName));
-        
-        return true;
+
+        return false;
     }
 }

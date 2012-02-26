@@ -57,6 +57,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectPivot;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
@@ -330,4 +331,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(ConditionalInsertClauseItem x);
     
     void endVisit(ConditionalInsertClauseItem x);
+    
+    boolean visit(OracleSelectQueryBlock x);
+    
+    void endVisit(OracleSelectQueryBlock x);
 }

@@ -1602,4 +1602,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void endVisit(ConditionalInsertClauseItem x) {
         
     }
+
+    @Override
+    public void endVisit(OracleSelectQueryBlock x) {
+        
+    }
 }

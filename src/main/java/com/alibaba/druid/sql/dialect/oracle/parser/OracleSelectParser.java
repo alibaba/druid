@@ -845,7 +845,7 @@ public class OracleSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 join.setCondition(this.createExprParser().expr());
-            } else if (identifierEquals("USING")) {
+            } else if (lexer.token() == Token.USING) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 this.createExprParser().exprList(join.getUsing());

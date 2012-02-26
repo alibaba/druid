@@ -85,6 +85,7 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.stat.TableStat.Relationship;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
 
@@ -122,13 +123,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 ident = expr.toString();
             }
             
-            if ("DUAL".equalsIgnoreCase(ident)) {
+            if (subQueryMap.containsKey(ident)) {
                 return false;
             }
-
             
-
-            if (aliasMap.containsKey(ident) && aliasMap.get(ident) == null) {
+            if ("DUAL".equalsIgnoreCase(ident)) {
                 return false;
             }
 
@@ -136,6 +135,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             if (stat == null) {
                 stat = new TableStat();
                 tableStats.put(new TableStat.Name(ident), stat);
+                x.putAttribute(ATTR_TABLE, ident);
             }
 
             Mode mode = modeLocal.get();
@@ -249,6 +249,10 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+        }
+        
         return visit((SQLSelectQueryBlock) x);
     }
 
@@ -519,8 +523,36 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleSelectJoin x) {
-
-        return true;
+        x.getLeft().accept(this);
+        x.getRight().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
+        
+        for (SQLExpr item : x.getUsing()) {
+            if (item instanceof SQLIdentifierExpr) {
+                String columnName = ((SQLIdentifierExpr) item).getName();
+                String leftTable = (String) x.getLeft().getAttribute(ATTR_TABLE);
+                String rightTable = (String) x.getRight().getAttribute(ATTR_TABLE);
+                if (leftTable != null && rightTable != null) {
+                    Relationship relationship = new Relationship();
+                    relationship.setLeft(new Column(leftTable, columnName));
+                    relationship.setRight(new Column(rightTable, columnName));
+                    relationship.setOperator("USING");
+                    relationships.add(relationship);
+                }
+                
+                if (leftTable != null) {
+                    columns.add(new Column(leftTable, columnName));
+                }
+                
+                if (rightTable != null) {
+                    columns.add(new Column(rightTable, columnName));
+                }
+            }
+        }
+        
+        return false;
     }
 
     @Override
@@ -683,6 +715,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
             if (alias != null) {
                 aliasMap.put(alias, null);
+                subQueryMap.put(alias, x.getSubQuery());
             }
         }
         x.getSubQuery().accept(this);
