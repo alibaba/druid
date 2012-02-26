@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class SQLServerStatementParser extends SQLStatementParser {
@@ -23,6 +24,10 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(String sql){
         super(new SQLServerLexer(sql));
         this.lexer.nextToken();
+    }
+    
+    public SQLSelectParser createSQLSelectParser() {
+        return new SQLServerSelectParser(this.lexer);
     }
 
     public SQLServerStatementParser(Lexer lexer){

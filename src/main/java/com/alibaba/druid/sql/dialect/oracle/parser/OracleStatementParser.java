@@ -296,6 +296,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 parseInsert0(insertInto, false);
                 clause.setElseItem(insertInto);
             }
+            stmt.getEntries().add(clause);
         }
 
         SQLSelect subQuery = this.createSQLSelectParser().select();
