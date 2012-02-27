@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
@@ -32,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
@@ -157,7 +159,23 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseTruncate() {
-        throw new ParserException("TODO " + lexer.token());
+        accept(Token.TRUNCATE);
+        accept(Token.TABLE);
+        SQLTruncateStatement stmt = new SQLTruncateStatement();
+        
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            stmt.getTableNames().add(name);
+
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        return stmt;
     }
 
     public SQLStatement parseInsert() {
@@ -236,13 +254,19 @@ public class SQLStatementParser extends SQLParser {
         accept(Token.SET);
         SQLSetStatement stmt = new SQLSetStatement();
 
+        parseAssignItems(stmt.getItems());
+
+        return stmt;
+    }
+
+    public void parseAssignItems(List<SQLAssignItem> items) {
         for (;;) {
-            SQLSetStatement.Item item = new SQLSetStatement.Item();
+            SQLAssignItem item = new SQLAssignItem();
             item.setTarget(exprParser.primary());
             accept(Token.EQ);
             item.setValue(exprParser.expr());
 
-            stmt.getItems().add(item);
+            items.add(item);
 
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
@@ -251,8 +275,6 @@ public class SQLStatementParser extends SQLParser {
                 break;
             }
         }
-
-        return stmt;
     }
 
     public SQLStatement parseCreate() throws ParserException {

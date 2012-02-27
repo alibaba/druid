@@ -573,6 +573,38 @@ public class OracleSelectParser extends SQLSelectParser {
             }
 
             queryBlock.setGroupBy(groupBy);
+        } else if (lexer.token() == (Token.HAVING)) {
+            lexer.nextToken();
+
+            SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
+            groupBy.setHaving(this.createExprParser().expr());
+            
+            if (lexer.token() == (Token.GROUP)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                
+                for (;;) {
+                    if (identifierEquals("GROUPING")) {
+                        GroupingSetExpr groupingSet = new GroupingSetExpr();
+                        lexer.nextToken();
+                        acceptIdentifier("SETS");
+                        accept(Token.LPAREN);
+                        createExprParser().exprList(groupingSet.getParameters());
+                        accept(Token.RPAREN);
+                        groupBy.getItems().add(groupingSet);
+                    } else {
+                        groupBy.getItems().add(this.createExprParser().expr());
+                    }
+
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
+
+                    lexer.nextToken();
+                }
+            }
+            
+            queryBlock.setGroupBy(groupBy);
         }
     }
 

@@ -65,7 +65,7 @@ public class SQLParser {
                 return alias;
             }
 
-            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY) {
+            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.KEY) {
                 alias = lexer.token.name();
                 lexer.nextToken();
                 return alias;

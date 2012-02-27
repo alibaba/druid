@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -44,6 +45,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMethodInvokeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -700,85 +702,85 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleErrorLoggingClause x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleReturningClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleReturningClause x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleInsertStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleInsertStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(InsertIntoClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(InsertIntoClause x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleMultiInsertStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(ConditionalInsertClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(ConditionalInsertClause x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(ConditionalInsertClauseItem x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(ConditionalInsertClauseItem x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleSelectQueryBlock x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleSelectQueryBlock x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleBlockStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleBlockStatement x) {
-        
+
     }
 
     @Override
@@ -788,7 +790,27 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleLockTableStatement x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterSessionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleAlterSessionStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleMethodInvokeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleMethodInvokeStatement x) {
+
     }
 
 }
