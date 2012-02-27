@@ -51,9 +51,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -138,7 +140,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
                 x.putAttribute(ATTR_TABLE, ident);
             }
 
-            Mode mode = modeLocal.get();
+            Mode mode = getMode();
             switch (mode) {
                 case Delete:
                     stat.incrementDeleteCount();
@@ -895,8 +897,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleMergeStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Merge);
+        setMode(x, Mode.Merge);
 
         String originalTable = currentTableLocal.get();
 
@@ -1029,8 +1030,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        x.putAttribute("_original_use_mode", getMode());
+        setMode(x, Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
 
@@ -1090,5 +1091,27 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(ConditionalInsertClauseItem x) {
 
 
+    }
+
+    @Override
+    public boolean visit(OracleBlockStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleBlockStatement x) {
+        
+    }
+    @Override
+    public boolean visit(OracleLockTableStatement x) {
+        String tableName = x.getTable().toString();
+        TableStat stat = new TableStat();
+        this.tableStats.put(new TableStat.Name(tableName), stat);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleLockTableStatement x) {
+        
     }
 }

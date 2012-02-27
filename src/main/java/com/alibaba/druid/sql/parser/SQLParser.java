@@ -114,7 +114,7 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token());
+            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " " + lexer.stringVal());
         }
     }
 

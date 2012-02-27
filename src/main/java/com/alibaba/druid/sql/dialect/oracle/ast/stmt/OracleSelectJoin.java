@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -29,6 +30,7 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     private final List<SQLExpr>     using            = new ArrayList<SQLExpr>();
     protected OracleSelectPivotBase pivot;
+    protected FlashbackQueryClause  flashback;
 
     public OracleSelectJoin(String alias){
         super(alias);
@@ -36,6 +38,14 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     public OracleSelectJoin(){
 
+    }
+
+    public FlashbackQueryClause getFlashback() {
+        return flashback;
+    }
+
+    public void setFlashback(FlashbackQueryClause flashback) {
+        this.flashback = flashback;
     }
 
     public OracleSelectPivotBase getPivot() {
@@ -57,6 +67,7 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
             acceptChild(visitor, this.right);
             acceptChild(visitor, this.condition);
             acceptChild(visitor, this.using);
+            acceptChild(visitor, this.flashback);
         }
 
         visitor.endVisit(this);

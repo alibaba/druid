@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLJoinTableSource extends SQLTableSource {
+public class SQLJoinTableSource extends SQLTableSourceImpl {
 
     private static final long serialVersionUID = 1L;
 

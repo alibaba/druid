@@ -26,11 +26,14 @@ public class OracleDeleteParser extends SQLStatementParser {
 
     public OracleDeleteParser(String sql){
         super(sql);
+        this.exprParser = new OracleExprParser(lexer);
     }
 
     public OracleDeleteParser(Lexer lexer){
         super(lexer);
+        this.exprParser = new OracleExprParser(lexer);
     }
+    
 
     public OracleDeleteStatement parseDelete() throws ParserException {
         accept(Token.DELETE);

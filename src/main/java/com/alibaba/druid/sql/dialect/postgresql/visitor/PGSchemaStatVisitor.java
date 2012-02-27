@@ -147,8 +147,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             }
         }
 
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Delete);
+        x.putAttribute("_original_use_mode", getMode());
+        setMode(x, Mode.Delete);
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         currentTableLocal.set(ident);
@@ -191,8 +191,8 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             x.getWith().accept(this);
         }
 
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        x.putAttribute("_original_use_mode", getMode());
+        setMode(x, Mode.Insert);
 
         String originalTable = currentTableLocal.get();
 

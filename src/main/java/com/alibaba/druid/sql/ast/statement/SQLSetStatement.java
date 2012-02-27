@@ -31,6 +31,10 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     public SQLSetStatement(){
     }
+    
+    public SQLSetStatement(SQLExpr target, SQLExpr value) {
+        this.items.add(new Item(target, value));
+    }
 
     public List<Item> getItems() {
         return items;

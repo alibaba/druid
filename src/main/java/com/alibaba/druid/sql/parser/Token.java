@@ -151,6 +151,10 @@ public enum Token {
     ERRORS("ERRORS"),
     REJECT("REJECT"),
     UNLIMITED("UNLIMITED"),
+    BEGIN("BEGIN"),
+    EXCLUSIVE("EXCLUSIVE"),
+    MODE("MODE"),
+    WAIT("WAIT"),
     
     // transact-sql
     TOP("TOP"),

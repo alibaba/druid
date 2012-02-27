@@ -68,9 +68,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -107,13 +109,17 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         super(appender);
     }
 
-    public void postVisit(SQLObject astNode) {
-        if (astNode instanceof SQLStatement) {
-            if (astNode instanceof OraclePLSQLCommitStatement) {
+    public void postVisit(SQLObject x) {
+        if (x instanceof SQLStatement) {
+            if (x instanceof OraclePLSQLCommitStatement) {
                 return;
             }
 
-            println(";");
+            if (x.getParent() instanceof SQLStatement) {
+                print(";");
+            } else {
+                println(";");
+            }
         }
     }
 
@@ -376,6 +382,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             printAndAccept(x.getUsing(), ", ");
             print(")");
         }
+        
+        if (x.getFlashback() != null) {
+            println();
+            x.getFlashback().accept(this);
+        }
+        
         return false;
     }
 
@@ -513,7 +525,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         println();
         decrementIndent();
         print(")");
-
+        
         if (x.getPivot() != null) {
             incrementIndent();
 
@@ -521,6 +533,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             x.getPivot().accept(this);
 
             decrementIndent();
+        }
+        
+        if (x.getFlashback() != null) {
+            println();
+            x.getFlashback().accept(this);
         }
 
         if ((x.getAlias() != null) && (x.getAlias().length() != 0)) {
@@ -1605,6 +1622,51 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleSelectQueryBlock x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleBlockStatement x) {
+        print("BEGIN");
+        incrementIndent();
+        println();
+        for (int i = 0, size = x.getStatementList().size(); i < size; ++i) {
+            if (i != 0) {
+                println();
+            }
+            SQLStatement stmt = x.getStatementList().get(i);
+            stmt.setParent(x);
+            stmt.accept(this);
+        }
+        decrementIndent();
+        println();
+        print("END");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleBlockStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleLockTableStatement x) {
+        print("LOCK TABLE ");
+        x.getTable().accept(this);
+        print(" IN ");
+        print(x.getLockMode().name());
+        print(" MODE ");
+        if (x.isNoWait()) {
+            print("NOWAIT");
+        } else if (x.getWait() != null){
+            print("WAIT ");
+            x.getWait().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleLockTableStatement x) {
         
     }
 }

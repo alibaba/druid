@@ -113,6 +113,13 @@ public class OracleLexer extends Lexer {
         map.put("UNLIMITED", Token.UNLIMITED);
         map.put("RETURNING", Token.RETURNING);
         map.put("LIMIT", Token.LIMIT);
+        map.put("OF", Token.OF);
+        map.put("BEGIN", Token.BEGIN);
+        map.put("SHARE", Token.SHARE);
+        map.put("EXCLUSIVE", Token.EXCLUSIVE);
+        map.put("MODE", Token.MODE);
+        map.put("WAIT", Token.WAIT);
+        map.put("NOWAIT", Token.NOWAIT);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -164,7 +171,7 @@ public class OracleLexer extends Lexer {
         if (tok != null) {
             token = tok;
         } else {
-            token = Token.IDENTIFIER;
+            token = Token.VARIANT;
         }
     }
 
@@ -323,4 +330,5 @@ public class OracleLexer extends Lexer {
             token = Token.LITERAL_INT;
         }
     }
+    
 }

@@ -1,6 +1,10 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -10,8 +14,17 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
 
     private static final long        serialVersionUID = 1L;
 
-    private OracleReturningClause          returning;
+    private OracleReturningClause    returning;
     private OracleErrorLoggingClause errorLogging;
+    private List<OracleHint>         hints            = new ArrayList<OracleHint>();
+
+    public List<OracleHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<OracleHint> hints) {
+        this.hints = hints;
+    }
 
     public OracleReturningClause getReturning() {
         return returning;

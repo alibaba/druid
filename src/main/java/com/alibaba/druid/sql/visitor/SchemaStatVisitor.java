@@ -52,13 +52,30 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     protected final Set<Column>                             orderByColumns    = new LinkedHashSet<Column>();
     protected final Set<Column>                             groupByColumns    = new LinkedHashSet<Column>();
 
-    protected final Map<String, SQLObject>               subQueryMap       = new LinkedHashMap<String, SQLObject>();
+    protected final Map<String, SQLObject>                  subQueryMap       = new LinkedHashMap<String, SQLObject>();
     protected final static ThreadLocal<Map<String, String>> aliasLocal        = new ThreadLocal<Map<String, String>>();
     protected final static ThreadLocal<String>              currentTableLocal = new ThreadLocal<String>();
-    protected final static ThreadLocal<Mode>                modeLocal         = new ThreadLocal<Mode>();
 
     public final static String                              ATTR_TABLE        = "_table_";
     public final static String                              ATTR_COLUMN       = "_column_";
+
+    private Mode                                            mode;
+
+    protected Mode getMode() {
+        return mode;
+    }
+    
+    protected void setModeOrigin(SQLObject x) {
+        Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
+        mode = originalMode;
+    }
+
+    protected Mode setMode(SQLObject x, Mode mode) {
+        Mode oldMode = this.mode;
+        x.putAttribute("_original_use_mode", oldMode);
+        this.mode = mode;
+        return oldMode;
+    }
 
     public class OrderByStatVisitor extends SQLASTVisitorAdapter {
 
@@ -94,7 +111,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 if (subQueryMap.containsKey(owner)) {
                     return false;
                 }
-                
+
                 owner = aliasWrap(owner);
 
                 if (owner != null) {
@@ -258,8 +275,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLTruncateStatement x) {
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        setMode(x, Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
 
@@ -288,8 +304,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLDropTableStatement x) {
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        setMode(x, Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
 
@@ -318,8 +333,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLInsertStatement x) {
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        setMode(x, Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
 
@@ -365,14 +379,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
-
+        setMode(x, Mode.Select);
+        
         if (x.getFrom() instanceof SQLSubqueryTableSource) {
             x.getFrom().accept(this);
             return false;
         }
-
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Select);
 
         String originalTable = currentTableLocal.get();
 
@@ -404,8 +416,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         x.putAttribute("table", currentTableLocal.get());
         currentTableLocal.set(originalTable);
 
-        Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
-        modeLocal.set(originalMode);
+        setModeOrigin(x);
     }
 
     public boolean visit(SQLJoinTableSource x) {
@@ -415,13 +426,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = ((SQLIdentifierExpr) x.getOwner()).getName();
-            
+
             if (subQueryMap.containsKey(owner)) {
                 return false;
             }
-            
+
             owner = aliasWrap(owner);
-            
+
             if (owner != null) {
                 Column column = new Column(owner, x.getName());
                 columns.add(column);
@@ -430,13 +441,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     protected String aliasWrap(String name) {
         Map<String, String> aliasMap = aliasLocal.get();
         if (aliasMap.containsKey(name)) {
             return aliasMap.get(name);
         }
-        
+
         return name;
     }
 
@@ -503,7 +514,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLAllColumnExpr x) {
         String currentTable = currentTableLocal.get();
-        
+
         if (subQueryMap.containsKey(currentTable)) {
             return false;
         }
@@ -557,7 +568,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
-            
+
             if (subQueryMap.containsKey(ident)) {
                 return false;
             }
@@ -571,7 +582,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 x.putAttribute(ATTR_TABLE, ident);
             }
 
-            Mode mode = modeLocal.get();
+            Mode mode = getMode();
             switch (mode) {
                 case Delete:
                     stat.incrementDeleteCount();
@@ -664,8 +675,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Delete);
+        setMode(x, Mode.Delete);
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         currentTableLocal.set(ident);

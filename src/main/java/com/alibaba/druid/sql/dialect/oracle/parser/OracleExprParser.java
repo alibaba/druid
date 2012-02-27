@@ -19,6 +19,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -598,5 +599,23 @@ public class OracleExprParser extends SQLExprParser {
             hints.add(new OracleHint(lexer.stringVal()));
             lexer.nextToken();
         }
+    }
+    
+    public SQLName name() throws ParserException {
+        SQLName name = super.name();
+        
+        if (lexer.token() == Token.MONKEYS_AT) {
+            lexer.nextToken();
+            if (lexer.token() != Token.IDENTIFIER) {
+                throw new ParserException("syntax error, expect identifier, but " + lexer.token());
+            }
+            OracleDbLinkExpr dbLink = new OracleDbLinkExpr();
+            dbLink.setExpr(name);
+            dbLink.setDbLink(lexer.stringVal());
+            lexer.nextToken();
+            return dbLink;
+        }
+        
+        return name;
     }
 }

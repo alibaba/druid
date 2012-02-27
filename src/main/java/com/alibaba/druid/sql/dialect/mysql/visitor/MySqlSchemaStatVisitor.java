@@ -54,8 +54,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlDeleteStatement x) {
         aliasLocal.set(new HashMap<String, String>());
 
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Delete);
+        setMode(x, Mode.Delete);
 
         aliasLocal.set(new HashMap<String, String>());
 
@@ -89,14 +88,12 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlInsertStatement x) {
-        Mode originalMode = (Mode) x.getAttribute("_original_use_mode");
-        modeLocal.set(originalMode);
+        setModeOrigin(x);
     }
 
     @Override
     public boolean visit(MySqlInsertStatement x) {
-        x.putAttribute("_original_use_mode", modeLocal.get());
-        modeLocal.set(Mode.Insert);
+        setMode(x, Mode.Insert);
 
         aliasLocal.set(new HashMap<String, String>());
 
