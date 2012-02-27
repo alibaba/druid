@@ -252,7 +252,13 @@ public class Lexer {
                         scanChar();
                         token = COLONEQ;
                     } else {
-                        token = COLON;
+                        if (isDigit(ch)) {
+                            unscan();
+                            scanVariable();
+                        } else {
+                            unscan();
+                            token = COLON;
+                        }
                     }
                     return;
                 case '.':

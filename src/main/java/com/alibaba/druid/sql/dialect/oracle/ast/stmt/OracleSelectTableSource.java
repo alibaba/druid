@@ -15,14 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-public interface OracleSelectTableSource {
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 
-    String getAlias();
-
-    void setAlias(String alias);
+public interface OracleSelectTableSource extends SQLTableSource {
 
     OracleSelectPivotBase getPivot();
 
     void setPivot(OracleSelectPivotBase pivot);
 
+    FlashbackQueryClause getFlashback();
+
+    void setFlashback(FlashbackQueryClause flashback);
 }

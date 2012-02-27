@@ -15,14 +15,17 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
@@ -48,6 +51,16 @@ public class OracleStatementParser extends SQLStatementParser {
 
     protected OracleExprParser createExprParser() {
         return new OracleExprParser(lexer);
+    }
+    
+    protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
+        if (insertStatement instanceof OracleInsertStatement) {
+            OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
+            this.createExprParser().parseHints(stmt.getHints());
+        } else {
+            List<OracleHint> hints = new ArrayList<OracleHint>();
+            this.createExprParser().parseHints(hints);
+        }
     }
 
     @Override

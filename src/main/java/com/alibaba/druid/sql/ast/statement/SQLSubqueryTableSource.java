@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLSubqueryTableSource extends SQLTableSource {
+public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     private static final long serialVersionUID = 1L;
 

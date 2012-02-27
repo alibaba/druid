@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -26,8 +27,18 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
 
     protected OracleSelectPivotBase pivot;
 
+    protected FlashbackQueryClause  flashback;
+
     public OracleSelectSubqueryTableSource(){
 
+    }
+
+    public FlashbackQueryClause getFlashback() {
+        return flashback;
+    }
+
+    public void setFlashback(FlashbackQueryClause flashback) {
+        this.flashback = flashback;
     }
 
     public OracleSelectSubqueryTableSource(String alias){
@@ -58,13 +69,9 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.select);
+            acceptChild(visitor, this.flashback);
         }
         visitor.endVisit(this);
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("(");
-        this.select.output(buf);
-        buf.append(")");
-    }
 }

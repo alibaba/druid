@@ -70,6 +70,7 @@ public class CharTypes {
         // identifierFlags['`'] = true;
         identifierFlags['_'] = true;
         identifierFlags['$'] = true;
+        identifierFlags['#'] = true;
     }
 
     public static boolean isIdentifierChar(char c) {

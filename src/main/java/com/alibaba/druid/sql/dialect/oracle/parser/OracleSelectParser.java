@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
@@ -245,6 +246,8 @@ public class OracleSelectParser extends SQLSelectParser {
             queryBlock.setDistionOption(SQLSetQuantifier.ALL);
             lexer.nextToken();
         }
+
+        this.createExprParser().parseHints(queryBlock.getHints());
 
         parseSelectList(queryBlock);
 
@@ -666,6 +669,10 @@ public class OracleSelectParser extends SQLSelectParser {
 
     private void parseTableSourceQueryTableExpr(OracleSelectTableReference tableReference) {
         tableReference.setExpr(this.createExprParser().expr());
+        {
+            FlashbackQueryClause clause = flashback();
+            tableReference.setFlashback(clause);
+        }
 
         if (identifierEquals("SAMPLE")) {
             lexer.nextToken();
@@ -733,27 +740,7 @@ public class OracleSelectParser extends SQLSelectParser {
             tableReference.setPartition(partition);
         }
 
-        if (lexer.token() == Token.AS) {
-            lexer.nextToken();
-
-            if (identifierEquals("OF")) {
-                lexer.nextToken();
-
-                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
-                if (identifierEquals("SCN")) {
-                    clause.setType(AsOfFlashbackQueryClause.Type.SCN);
-                    lexer.nextToken();
-                } else {
-                    accept(Token.TIMESTAMP);
-                    clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
-                }
-                clause.setExpr(createExprParser().primary());
-
-                tableReference.setFlashback(clause);
-            } else {
-                throw new SQLParseException("TODO");
-            }
-        } else if (identifierEquals("VERSIONS")) {
+        if (identifierEquals("VERSIONS")) {
             lexer.nextToken();
 
             if (lexer.token() == Token.BETWEEN) {
@@ -784,8 +771,40 @@ public class OracleSelectParser extends SQLSelectParser {
 
     }
 
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
-        if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
+    private FlashbackQueryClause flashback() {
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == Token.OF) {
+            lexer.nextToken();
+
+            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
+            if (identifierEquals("SCN")) {
+                clause.setType(AsOfFlashbackQueryClause.Type.SCN);
+                lexer.nextToken();
+            } else {
+                accept(Token.TIMESTAMP);
+                clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
+            }
+            clause.setExpr(createExprParser().primary());
+
+            return clause;
+        }
+
+        return null;
+    }
+
+    protected SQLTableSource parseTableSourceRest(OracleSelectTableSource tableSource) {
+        if (lexer.token() == Token.AS) {
+            lexer.nextToken();
+
+            if (lexer.token() == Token.OF) {
+                tableSource.setFlashback(flashback());
+            }
+
+            tableSource.setAlias(as());
+        } else if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
                 tableSource.setAlias(as());
             }

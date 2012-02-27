@@ -15,38 +15,28 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 
-public class SQLExprTableSource extends SQLTableSourceImpl {
+public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
 
     private static final long serialVersionUID = 1L;
 
-    protected SQLExpr         expr;
+    protected String          alias;
 
-    public SQLExprTableSource(){
+    public SQLTableSourceImpl(){
 
     }
-    
-    
 
-    public SQLExpr getExpr() {
-        return this.expr;
+    public SQLTableSourceImpl(String alias){
+
+        this.alias = alias;
     }
 
-    public void setExpr(SQLExpr expr) {
-        this.expr = expr;
+    public String getAlias() {
+        return this.alias;
     }
 
-    @Override
-    protected void accept0(SQLASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.expr);
-        }
-        visitor.endVisit(this);
-    }
-
-    public void output(StringBuffer buf) {
-        this.expr.output(buf);
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

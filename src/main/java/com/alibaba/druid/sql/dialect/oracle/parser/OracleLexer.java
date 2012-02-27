@@ -113,6 +113,7 @@ public class OracleLexer extends Lexer {
         map.put("UNLIMITED", Token.UNLIMITED);
         map.put("RETURNING", Token.RETURNING);
         map.put("LIMIT", Token.LIMIT);
+        map.put("OF", Token.OF);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -323,4 +324,5 @@ public class OracleLexer extends Lexer {
             token = Token.LITERAL_INT;
         }
     }
+    
 }

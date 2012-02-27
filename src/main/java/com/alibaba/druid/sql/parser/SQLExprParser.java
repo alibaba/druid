@@ -570,8 +570,8 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
 
-            if (lexer.token() != Token.IDENTIFIER) {
-                throw new ParserException("error");
+            if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.IDENTIFIER) {
+                throw new ParserException("error, " + lexer.token());
             }
 
             name = new SQLPropertyExpr(name, lexer.stringVal());

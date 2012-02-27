@@ -173,12 +173,18 @@ public class SQLStatementParser extends SQLParser {
         parseInsert0(insertStatement, true);
     }
 
+    protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
+        
+    }
+                                
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         accept(Token.INTO);
         
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
-
+        
+        parseInsert0_hinits(insertStatement);
+        
         if (lexer.token() == Token.IDENTIFIER) {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
