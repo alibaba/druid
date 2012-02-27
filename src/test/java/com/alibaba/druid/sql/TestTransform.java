@@ -154,6 +154,7 @@ public class TestTransform extends OracleTest {
                 if (part != null) {
                     r.setSqlText(r.getSqlText() + part);
                 }
+
             }
             lastSqlId = sqlId;
         }

@@ -60,7 +60,7 @@ public class OracleStatementParser extends SQLStatementParser {
     protected OracleExprParser createExprParser() {
         return new OracleExprParser(lexer);
     }
-
+    
     protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
         if (insertStatement instanceof OracleInsertStatement) {
             OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
