@@ -19,7 +19,6 @@ import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-import static com.alibaba.druid.sql.parser.Token.COLON;
 import static com.alibaba.druid.sql.parser.Token.COLONEQ;
 import static com.alibaba.druid.sql.parser.Token.COMMA;
 import static com.alibaba.druid.sql.parser.Token.EOF;
@@ -91,6 +90,10 @@ public class Lexer {
         Token token;
     }
 
+    public Keywords getKeywods() {
+        return keywods;
+    }
+
     public void mark() {
         SavePoint savePoint = new SavePoint();
         savePoint.bp = bp;
@@ -144,7 +147,7 @@ public class Lexer {
     protected final void scanChar() {
         ch = buf[++bp];
     }
-    
+
     protected void unscan() {
         ch = buf[--bp];
     }

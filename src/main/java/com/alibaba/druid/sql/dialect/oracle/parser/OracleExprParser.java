@@ -29,6 +29,8 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
@@ -40,6 +42,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateTimeUnit;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
@@ -90,6 +93,11 @@ public class OracleExprParser extends SQLExprParser {
 
         SQLExpr sqlExpr = null;
         switch (tok) {
+            case PRIOR:
+                lexer.nextToken();
+                sqlExpr = expr();
+                sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Prior, sqlExpr);
+                return primaryRest(sqlExpr);
             case COLON:
                 lexer.nextToken();
                 if (lexer.token() == Token.LITERAL_INT) {
@@ -204,6 +212,10 @@ public class OracleExprParser extends SQLExprParser {
                         sqlExpr = new OracleBinaryDoubleExpr(Double.parseDouble(lexer.numberString()) * -1);
                         lexer.nextToken();
                         break;
+                    case IDENTIFIER:
+                        sqlExpr = expr();
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, sqlExpr);
+                        break;
                     default:
                         throw new ParserException("TODO");
                 }
@@ -284,6 +296,20 @@ public class OracleExprParser extends SQLExprParser {
             }
             
             expr = interval;
+        }
+        
+        if (lexer.token() == Token.AT) {
+            lexer.nextToken();
+            if (lexer.token() == Token.LOCAL) {
+                lexer.nextToken();
+                expr = new OracleDatetimeExpr(expr, new SQLIdentifierExpr("LOCAL"));
+            } else {
+                accept(Token.TIME);
+                accept(Token.ZONE);
+                
+                SQLExpr timeZone = primary();
+                expr = new OracleDatetimeExpr(expr, timeZone);
+            }
         }
         
         SQLExpr restExpr = super.primaryRest(expr);

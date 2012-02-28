@@ -155,6 +155,12 @@ public enum Token {
     EXCLUSIVE("EXCLUSIVE"),
     MODE("MODE"),
     WAIT("WAIT"),
+    ADVISE("ADVISE"),
+    SESSION("SESSION"),
+    AT("AT"),
+    LOCAL("LOCAL"),
+    TIME("TIME"),
+    ZONE("ZONE"),
     
     // transact-sql
     TOP("TOP"),

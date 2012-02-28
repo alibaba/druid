@@ -201,6 +201,14 @@ public class SQLExprParser extends SQLParser {
             case USER:
             case PASSWORD:
             case DUAL:
+            case REFERENCE:
+            case KEY:
+            case DISTINCT:
+            case YEAR:
+            case MONTH:
+            case TIME:
+            case ZONE:
+            case LOG:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -250,9 +258,10 @@ public class SQLExprParser extends SQLParser {
                     sqlExpr = new SQLExistsExpr(createSelectParser().select(), true);
                     accept(Token.RPAREN);
                 } else if (lexer.token() == Token.LPAREN) {
-                    lexer.token();
+                    lexer.nextToken();
 
-                    sqlExpr = new SQLNotExpr(expr());
+                    SQLExpr notTarget = expr();
+                    sqlExpr = new SQLNotExpr(notTarget);
 
                     accept(Token.RPAREN);
                     return primaryRest(sqlExpr);
@@ -393,13 +402,6 @@ public class SQLExprParser extends SQLParser {
 
                 sqlExpr = someExpr;
                 break;
-            case KEY:
-            case DISTINCT:
-            case YEAR:
-            case MONTH:
-                lexer.nextToken();
-                sqlExpr = new SQLIdentifierExpr(tok.name());
-                break;
             case ALL:
                 lexer.nextToken();
                 SQLAllExpr allExpr = new SQLAllExpr();
@@ -476,14 +478,14 @@ public class SQLExprParser extends SQLParser {
         } else {
             String name;
 
-            if (lexer.token() == Token.KEY) {
-                name = "KEY";
-                lexer.nextToken();
-            } else if (lexer.token() != Token.IDENTIFIER && lexer.token() != Token.USER && lexer.token() != Token.PASSWORD) {
-                throw new ParserException("error : " + lexer.stringVal());
-            } else {
+            if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_CHARS || lexer.token() == Token.LITERAL_ALIAS) {
                 name = lexer.stringVal();
                 lexer.nextToken();
+            } else if (lexer.getKeywods().containsValue(lexer.token())) {
+                name = lexer.stringVal();
+                lexer.nextToken();
+            } else {
+                throw new ParserException("error : " + lexer.stringVal());
             }
 
             if (lexer.token() == Token.LPAREN) {
@@ -569,6 +571,12 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.KEY) {
+                name = new SQLPropertyExpr(name, "KEY");
+                lexer.nextToken();
+                return name;
+            }
 
             if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.IDENTIFIER) {
                 throw new ParserException("error, " + lexer.token());
@@ -914,9 +922,9 @@ public class SQLExprParser extends SQLParser {
             expr = notRationalRest(expr);
         } else if (lexer.token() == (Token.BETWEEN)) {
             lexer.nextToken();
-            SQLExpr beginExpr = primary();
+            SQLExpr beginExpr = bitOr();
             accept(Token.AND);
-            SQLExpr endExpr = primary();
+            SQLExpr endExpr = bitOr();
             expr = new SQLBetweenExpr(expr, beginExpr, endExpr);
         } else if (lexer.token() == (Token.IS)) {
             lexer.nextToken();
@@ -975,9 +983,9 @@ public class SQLExprParser extends SQLParser {
             return expr;
         } else if (lexer.token() == (Token.BETWEEN)) {
             lexer.nextToken();
-            SQLExpr beginExpr = primary();
+            SQLExpr beginExpr = bitOr();
             accept(Token.AND);
-            SQLExpr endExpr = primary();
+            SQLExpr endExpr = bitOr();
 
             expr = new SQLBetweenExpr(expr, true, beginExpr, endExpr);
 

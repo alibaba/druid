@@ -168,6 +168,12 @@ public class SQLSelectParser extends SQLParser {
             }
 
             queryBlock.setGroupBy(groupBy);
+        } else if (lexer.token() == (Token.HAVING)) {
+            lexer.nextToken();
+
+            SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
+            groupBy.setHaving(this.createExprParser().expr());
+            queryBlock.setGroupBy(groupBy);
         }
     }
 

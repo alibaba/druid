@@ -120,6 +120,11 @@ public class OracleLexer extends Lexer {
         map.put("MODE", Token.MODE);
         map.put("WAIT", Token.WAIT);
         map.put("NOWAIT", Token.NOWAIT);
+        map.put("SESSION", Token.SESSION);
+        map.put("AT", Token.AT);
+        map.put("LOCAL", Token.LOCAL);
+        map.put("TIME", Token.TIME);
+        map.put("ZONE", Token.ZONE);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }

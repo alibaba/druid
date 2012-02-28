@@ -65,7 +65,7 @@ public class SQLParser {
                 return alias;
             }
 
-            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY) {
+            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.KEY || lexer.token() == Token.CASE) {
                 alias = lexer.token.name();
                 lexer.nextToken();
                 return alias;
@@ -92,7 +92,7 @@ public class SQLParser {
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY) {
+        } else if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.CASE) {
             alias = lexer.token.name();
             lexer.nextToken();
         }
@@ -114,7 +114,8 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " " + lexer.stringVal());
+            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+                                        + lexer.stringVal());
         }
     }
 

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -27,20 +26,20 @@ public class SQLSetStatement extends SQLStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private List<Item>        items            = new ArrayList<Item>();
+    private List<SQLAssignItem>        items            = new ArrayList<SQLAssignItem>();
 
     public SQLSetStatement(){
     }
     
     public SQLSetStatement(SQLExpr target, SQLExpr value) {
-        this.items.add(new Item(target, value));
+        this.items.add(new SQLAssignItem(target, value));
     }
 
-    public List<Item> getItems() {
+    public List<SQLAssignItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<SQLAssignItem> items) {
         this.items = items;
     }
 
@@ -60,56 +59,8 @@ public class SQLSetStatement extends SQLStatementImpl {
                 buf.append(", ");
             }
 
-            Item item = items.get(i);
+            SQLAssignItem item = items.get(i);
             item.output(buf);
         }
-    }
-
-    public static class Item extends SQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
-
-        private SQLExpr           target;
-        private SQLExpr           value;
-
-        public Item(){
-        }
-
-        public Item(SQLExpr target, SQLExpr value){
-            this.target = target;
-            this.value = value;
-        }
-
-        public SQLExpr getTarget() {
-            return target;
-        }
-
-        public void setTarget(SQLExpr target) {
-            this.target = target;
-        }
-
-        public SQLExpr getValue() {
-            return value;
-        }
-
-        public void setValue(SQLExpr value) {
-            this.value = value;
-        }
-
-        public void output(StringBuffer buf) {
-            target.output(buf);
-            buf.append(" = ");
-            value.output(buf);
-        }
-
-        @Override
-        protected void accept0(SQLASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, this.target);
-                acceptChild(visitor, this.value);
-            }
-            visitor.endVisit(this);
-        }
-
     }
 }

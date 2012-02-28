@@ -573,7 +573,47 @@ public class OracleSelectParser extends SQLSelectParser {
             }
 
             queryBlock.setGroupBy(groupBy);
+        } else if (lexer.token() == (Token.HAVING)) {
+            lexer.nextToken();
+
+            SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
+            groupBy.setHaving(this.createExprParser().expr());
+            
+            if (lexer.token() == (Token.GROUP)) {
+                lexer.nextToken();
+                accept(Token.BY);
+                
+                for (;;) {
+                    if (identifierEquals("GROUPING")) {
+                        GroupingSetExpr groupingSet = new GroupingSetExpr();
+                        lexer.nextToken();
+                        acceptIdentifier("SETS");
+                        accept(Token.LPAREN);
+                        createExprParser().exprList(groupingSet.getParameters());
+                        accept(Token.RPAREN);
+                        groupBy.getItems().add(groupingSet);
+                    } else {
+                        groupBy.getItems().add(this.createExprParser().expr());
+                    }
+
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
+
+                    lexer.nextToken();
+                }
+            }
+            
+            queryBlock.setGroupBy(groupBy);
         }
+    }
+    
+    protected String as() throws ParserException {
+        if (lexer.token() == Token.CONNECT) {
+            return null;
+        }
+        
+        return super.as();
     }
 
     private void parseHierachical(OracleSelectQueryBlock queryBlock) {
@@ -814,7 +854,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.LEFT) {
             lexer.nextToken();
-            if (identifierEquals("OUTER")) {
+            if (lexer.token()  == Token.OUTER) {
                 lexer.nextToken();
             }
             accept(Token.JOIN);
@@ -823,16 +863,16 @@ public class OracleSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.RIGHT) {
             lexer.nextToken();
-            if (identifierEquals("OUTER")) {
+            if (lexer.token()  == Token.OUTER) {
                 lexer.nextToken();
             }
             accept(Token.JOIN);
             joinType = OracleSelectJoin.JoinType.RIGHT_OUTER_JOIN;
         }
 
-        if (identifierEquals("FULL")) {
+        if (lexer.token()  == Token.FULL) {
             lexer.nextToken();
-            if (identifierEquals("OUTER")) {
+            if (lexer.token()  == Token.OUTER) {
                 lexer.nextToken();
             }
             accept(Token.JOIN);

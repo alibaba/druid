@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -281,9 +282,9 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLSetStatement x);
 
-    void endVisit(SQLSetStatement.Item x);
+    void endVisit(SQLAssignItem x);
 
-    boolean visit(SQLSetStatement.Item x);
+    boolean visit(SQLAssignItem x);
 
     void endVisit(SQLCallStatement x);
 
