@@ -296,11 +296,24 @@ public class Lexer {
                 case '@':
                     scanVariable();
                     return;
+                case '-':
+                    int subNextChar = buf[bp + 1];
+                    if (subNextChar == '-') {
+                        scanComment();
+                        if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
+                            sp = 0;
+                            continue;
+                        }
+                    } else {
+                        scanOperator();
+                    }
+                    return;
                 case '/':
                     int nextChar = buf[bp + 1];
                     if (nextChar == '/' || nextChar == '*') {
                         scanComment();
                         if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
+                            sp = 0;
                             continue;
                         }
                     } else {
@@ -855,6 +868,20 @@ public class Lexer {
             }
             return result;
         }
+    }
+    
+    public int bp() {
+        return this.bp;
+    }
+    
+    public char current() {
+        return this.ch;
+    }
+    
+    public void reset(int mark, char mark_ch, Token token) {
+        this.bp = mark;
+        this.ch = mark_ch;
+        this.token = token;
     }
 
     public final String numberString() {

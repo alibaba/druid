@@ -1,5 +1,8 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.clause;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -10,7 +13,7 @@ public class SampleClause extends OracleSQLObjectImpl {
 
     private boolean           block            = false;
 
-    private int               percent;
+    private List<SQLExpr>     percent          = new ArrayList<SQLExpr>();
 
     private SQLExpr           seedValue;
 
@@ -22,11 +25,11 @@ public class SampleClause extends OracleSQLObjectImpl {
         this.block = block;
     }
 
-    public int getPercent() {
+    public List<SQLExpr> getPercent() {
         return percent;
     }
 
-    public void setPercent(int percent) {
+    public void setPercent(List<SQLExpr> percent) {
         this.percent = percent;
     }
 
@@ -42,6 +45,7 @@ public class SampleClause extends OracleSQLObjectImpl {
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, seedValue);
+            acceptChild(visitor, percent);
         }
         visitor.endVisit(this);
     }

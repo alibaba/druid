@@ -16,7 +16,6 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -24,18 +23,18 @@ public class SQLUpdateSetItem extends SQLObjectImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private SQLName           column;
+    private SQLExpr           column;
     private SQLExpr           value;
 
     public SQLUpdateSetItem(){
 
     }
 
-    public SQLName getColumn() {
+    public SQLExpr getColumn() {
         return column;
     }
 
-    public void setColumn(SQLName column) {
+    public void setColumn(SQLExpr column) {
         this.column = column;
     }
 

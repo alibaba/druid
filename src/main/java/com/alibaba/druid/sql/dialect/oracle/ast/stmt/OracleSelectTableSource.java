@@ -15,7 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 
 public interface OracleSelectTableSource extends SQLTableSource {
@@ -27,4 +30,6 @@ public interface OracleSelectTableSource extends SQLTableSource {
     FlashbackQueryClause getFlashback();
 
     void setFlashback(FlashbackQueryClause flashback);
+    
+    List<OracleHint> getHints();
 }

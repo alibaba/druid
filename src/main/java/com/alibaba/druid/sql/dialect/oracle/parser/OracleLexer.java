@@ -94,6 +94,7 @@ public class OracleLexer extends Lexer {
         map.put("EXTRACT", Token.EXTRACT);
         map.put("DATE", Token.DATE);
         map.put("TIMESTAMP", Token.TIMESTAMP);
+        map.put("COLUMN", Token.COLUMN);
 
         map.put("CURSOR", Token.CURSOR);
 
@@ -121,10 +122,16 @@ public class OracleLexer extends Lexer {
         map.put("WAIT", Token.WAIT);
         map.put("NOWAIT", Token.NOWAIT);
         map.put("SESSION", Token.SESSION);
+        map.put("PROCEDURE", Token.PROCEDURE);
         map.put("AT", Token.AT);
         map.put("LOCAL", Token.LOCAL);
         map.put("TIME", Token.TIME);
         map.put("ZONE", Token.ZONE);
+        map.put("SYSDATE", Token.SYSDATE);
+        map.put("DECLARE", Token.DECLARE);
+        map.put("EXCEPTION", Token.EXCEPTION);
+        map.put("GRANT", Token.GRANT);
+        map.put("COMMENT", Token.COMMENT);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -156,6 +163,13 @@ public class OracleLexer extends Lexer {
         sp = 1;
         char ch;
 
+        boolean quoteFlag = false;
+        if (buf[bp + 1] == '"') {
+            hash = 31 * hash + '"';
+            bp++;
+            sp++;
+            quoteFlag = true;
+        }
         for (;;) {
             ch = buf[++bp];
 
@@ -167,6 +181,14 @@ public class OracleLexer extends Lexer {
 
             sp++;
             continue;
+        }
+        if (quoteFlag) {
+            if (ch != '"') {
+                throw new SQLParseException("syntax error");
+            }
+            hash = 31 * hash + '"';
+            ++bp;
+            sp++;
         }
 
         this.ch = buf[bp];
@@ -181,7 +203,7 @@ public class OracleLexer extends Lexer {
     }
 
     public void scanComment() {
-        if (ch != '/') {
+        if (ch != '/' && ch != '-') {
             throw new IllegalStateException();
         }
 
@@ -231,7 +253,7 @@ public class OracleLexer extends Lexer {
             return;
         }
 
-        if (ch == '/') {
+        if (ch == '/' || ch == '-') {
             scanChar();
             sp++;
 

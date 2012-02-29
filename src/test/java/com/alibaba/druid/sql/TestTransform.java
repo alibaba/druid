@@ -65,7 +65,7 @@ public class TestTransform extends OracleTest {
         stmt.setString(2, sqlId);
 
         int updateCount = stmt.executeUpdate();
-        if (updateCount != 1) {
+        if (updateCount < 1) {
             throw new Exception();
         }
 
@@ -76,7 +76,7 @@ public class TestTransform extends OracleTest {
         System.out.println((this.updateCount++) + " : " + sqlId);
     }
 
-    public void f_test_transform() throws Exception {
+    public void test_transform() throws Exception {
 
         Connection conn = dataSource.getConnection();
 
@@ -135,6 +135,21 @@ public class TestTransform extends OracleTest {
             if (sqlId.equals("0tvydgpa3jmkv")) {
                 continue;
             }
+            if (sqlId.equals("09xu7vwbdz0gs")) {
+                continue;
+            }
+            if (sqlId.equals("0wjc3zzc5z2x9")) {
+                continue;
+            }
+            if (sqlId.equals("22vkv80fyntg0")) {
+                continue;
+            }
+            if (sqlId.equals("24j7jc4c8hsw4")) {
+                continue;
+            }
+            if (sqlId.equals("2b4s4scg6rgp8")) {
+                continue;
+            }
 
             r.setSnapshotDate(d1);
             r.setDbName(s2);
@@ -146,8 +161,12 @@ public class TestTransform extends OracleTest {
             r.setLastSnapshotDate(rs.getDate(7));
             r.setDbPk(rs.getLong(8));
 
-            // System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + ") : " + r.getSqlText());
-            schemaStat(r);
+            System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + ") : " + r.getSqlText());
+            try {
+                schemaStatInternal(r);
+            } catch (Exception e) {
+                // e.printStackTrace();
+            }
         }
         rs.close();
         stmt.close();
@@ -162,7 +181,7 @@ public class TestTransform extends OracleTest {
                 try {
                     schemaStatInternal(r);
                 } catch (Exception e) {
-                    // e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         });
@@ -177,43 +196,22 @@ public class TestTransform extends OracleTest {
         if (sql.startsWith("/* MV_REFRESH (DEL) */")) {
             return;
         }
-        if (sql.startsWith("grant") || sql.startsWith("GRANT")) {
-            return;
-        }
         if (sql.startsWith("SELECT /*+ Q1630000 NO_EXPAND ROWID(A1) */ A1.\"PRODUCT_ID\",A1.\"SUMMARY\"")) {
             return;
         }
         if (sql.startsWith("declare") || sql.startsWith("DECLARE")) {
             return;
         }
-        if (sql.startsWith("alter table")) {
-            return;
-        }
-        if (sql.startsWith("SELECT /* OPT_DYN_SAMP */")) {
-            return;
-        }
-        if (sql.startsWith("COMMENT")) {
-            return;
-        }
-        if (sql.startsWith("create index")) {
-            return;
-        }
-        if (sql.startsWith("alter index")) {
-            return;
-        }
-        if (sql.startsWith("create table")) {
+        if (sql.startsWith("create")) {
             return;
         }
         if (sql.startsWith("CREATE")) {
             return;
         }
-        if (sql.startsWith("explain plan")) {
-            return;
-        }
-        if (sql.startsWith("ALTER TABLE")) {
-            return;
-        }
         if (r.getSqlId().equals("09x7ytfdk63sp")) {
+            return;
+        }
+        if (sql.indexOf("AS OF SNAPSHOT") != -1) {
             return;
         }
 
@@ -233,11 +231,11 @@ public class TestTransform extends OracleTest {
         buf.append("\nCoditions : " + visitor.getConditions().toString());
         buf.append("\nrelationships " + visitor.getRelationships().toString());
 
-        // System.out.println(buf.toString());
+        System.out.println(buf.toString());
 
-        // System.out.println();
-        // System.out.println();
-        // System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
 
         updateRecord(r.getSqlId(), buf.toString());
     }
@@ -252,7 +250,7 @@ public class TestTransform extends OracleTest {
         conn.close();
     }
 
-    public void test_migrate() throws Exception {
+    public void f_test_migrate() throws Exception {
         Connection conn = dataSource.getConnection();
 
         int count = 0;

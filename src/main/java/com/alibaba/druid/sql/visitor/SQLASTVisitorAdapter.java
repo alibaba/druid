@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -560,6 +561,16 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     
     @Override
     public boolean visit(SQLDefaultExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCommentStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLCommentStatement x) {
         return true;
     }
 }
