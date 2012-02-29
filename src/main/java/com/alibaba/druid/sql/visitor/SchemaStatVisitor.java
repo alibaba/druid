@@ -20,7 +20,9 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -402,8 +404,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
         }
 
-        x.getFrom().accept(this); // 提前执行，获得aliasMap
-
+        if (x.getFrom() != null) {
+            x.getFrom().accept(this); // 提前执行，获得aliasMap
+        }
+        
         if (x.getWhere() != null) {
             x.getWhere().setParent(x);
         }
@@ -677,7 +681,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setMode(x, Mode.Delete);
 
-        String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
+        String ident = x.getTableName().toString();
         currentTableLocal.set(ident);
 
         TableStat stat = tableStats.get(ident);
@@ -751,6 +755,21 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String columnName = x.getName().toString();
         columns.add(new Column(tableName, columnName));
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLCallStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(SQLCommentStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLCommentStatement x) {
         return false;
     }
 }

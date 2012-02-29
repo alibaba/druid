@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.ast.expr;
 
 public enum SQLUnaryOperator {
-    Plus("+"), Negative("-"), Not("!"), Compl("~"), Prior("PRIOR"), ConnectByRoot("CONNECT BY");
+    Plus("+"), Negative("-"), Not("!"), Compl("~"), Prior("PRIOR"), ConnectByRoot("CONNECT BY"), NOT("NOT");
 
     public final String name;
 

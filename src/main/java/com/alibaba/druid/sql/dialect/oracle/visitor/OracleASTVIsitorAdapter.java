@@ -26,20 +26,25 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.E
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
@@ -64,6 +69,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
@@ -811,6 +817,76 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleMethodInvokeStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleDatetimeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDatetimeExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSysdateExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSysdateExpr x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleExceptionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleExceptionStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleExceptionStatement.Item x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleExceptionStatement.Item x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleArgumentExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleArgumentExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleSetTransactionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSetTransactionStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleGrantStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OracleGrantStatement x) {
+        
     }
 
 }

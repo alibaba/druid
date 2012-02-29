@@ -101,6 +101,10 @@ public class Keywords {
         map.put("DEFAULT", Token.DEFAULT);
         DEFAULT_KEYWORDS = new Keywords(map);
     }
+    
+    public boolean containsValue(Token token) {
+        return this.keywords.containsValue(token);
+    }
 
     public Keywords(Map<String, Token> keywords){
         this.keywords = keywords;

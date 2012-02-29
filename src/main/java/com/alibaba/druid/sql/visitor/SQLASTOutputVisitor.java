@@ -66,6 +66,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -891,6 +892,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLDefaultExpr x) {
         print("DEFAULT");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(SQLCommentStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLCommentStatement x) {
+        print("COMMENT ON ");
+        if (x.getType() != null) {
+            print(x.getType().name());
+            print(" ");
+        }
+        x.getOn().accept(this);
+        
+        print(" IS ");
+        x.getComment().accept(this);
+        
         return false;
     }
 }

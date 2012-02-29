@@ -77,7 +77,11 @@ public class OracleDeleteParser extends SQLStatementParser {
         return deleteStatement;
     }
 
+    protected OracleExprParser createExprParser() {
+        return new OracleExprParser(lexer);
+    }
+    
     private void parseHints(OracleDeleteStatement parseInsert) throws ParserException {
-        if (lexer.token() == Token.HINT) throw new ParserException("TODO");
+        this.createExprParser().parseHints(parseInsert.getHints());
     }
 }

@@ -68,6 +68,7 @@ public enum Token {
     SCHEMA("SCHEMA"), 
     CAST("CAST"),
     USER("USER"),
+    COLUMN("COLUMN"),
 
     AND("AND"), 
     OR("OR"), 
@@ -128,6 +129,7 @@ public enum Token {
     USING("USING"),
     CURRENT("CURRENT"),
     RETURNING("RETURNING"),
+    COMMENT("COMMENT"),
     
     // oracle
     START("START"),
@@ -157,6 +159,14 @@ public enum Token {
     WAIT("WAIT"),
     ADVISE("ADVISE"),
     SESSION("SESSION"),
+    AT("AT"),
+    LOCAL("LOCAL"),
+    TIME("TIME"),
+    ZONE("ZONE"),
+    SYSDATE("SYSDATE"),
+    DECLARE("DECLARE"),
+    EXCEPTION("EXCEPTION"),
+    GRANT("GRANT"),
     
     // transact-sql
     TOP("TOP"),

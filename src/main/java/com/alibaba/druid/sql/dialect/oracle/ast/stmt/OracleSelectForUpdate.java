@@ -29,13 +29,42 @@ public class OracleSelectForUpdate extends OracleSQLObjectImpl {
 
     private final List<SQLExpr> of               = new ArrayList<SQLExpr>();
 
+    private boolean             notWait          = false;
+    private SQLExpr             wait;
+    private boolean             skipLocked       = false;
+
     public OracleSelectForUpdate(){
 
+    }
+
+    public boolean isNotWait() {
+        return notWait;
+    }
+
+    public void setNotWait(boolean notWait) {
+        this.notWait = notWait;
+    }
+
+    public SQLExpr getWait() {
+        return wait;
+    }
+
+    public void setWait(SQLExpr wait) {
+        this.wait = wait;
+    }
+
+    public boolean isSkipLocked() {
+        return skipLocked;
+    }
+
+    public void setSkipLocked(boolean skipLocked) {
+        this.skipLocked = skipLocked;
     }
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.of);
+            acceptChild(visitor, this.wait);
         }
 
         visitor.endVisit(this);

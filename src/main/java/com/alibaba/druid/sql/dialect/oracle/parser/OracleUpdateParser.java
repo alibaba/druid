@@ -15,8 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListSingleColumnItem;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -44,7 +45,8 @@ public class OracleUpdateParser extends SQLStatementParser {
             update.setOnly(true);
         }
 
-        update.setTable(this.exprParser.expr());
+        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+        update.setTableSource(tableSource);
 
         if ((update.getAlias() == null) || (update.getAlias().length() == 0)) {
             update.setAlias(as());
@@ -87,27 +89,28 @@ public class OracleUpdateParser extends SQLStatementParser {
     private void parseSet(OracleUpdateStatement update) throws ParserException {
         accept(Token.SET);
 
-        if (identifierEquals("VALUE")) {
-            throw new ParserException("TODO");
-        }
-
-        OracleUpdateSetListClause setListClause = new OracleUpdateSetListClause();
-        while (true) {
+        for (;;) {
+            SQLUpdateSetItem item = new SQLUpdateSetItem();
+            
             if (lexer.token() == (Token.LPAREN)) {
-                throw new ParserException("TODO");
+                lexer.nextToken();
+                SQLListExpr list = new SQLListExpr();
+                this.exprParser.exprList(list.getItems());
+                accept(Token.RPAREN);
+                item.setColumn(list);
+            } else {
+                item.setColumn(this.exprParser.primary());
             }
-
-            OracleUpdateSetListSingleColumnItem item = new OracleUpdateSetListSingleColumnItem();
-            item.setColumn(this.exprParser.primary());
             accept(Token.EQ);
             item.setValue(this.exprParser.expr());
-            setListClause.getItems().add(item);
+            update.getItems().add(item);
 
-            if (!(lexer.token() == (Token.COMMA))) break;
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+            
             lexer.nextToken();
         }
-
-        update.setSetClause(setListClause);
     }
 
     protected SQLExprParser createExprParser() {

@@ -19,18 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleUpdateStatement extends SQLStatementImpl {
+public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement {
 
     private static final long      serialVersionUID = 1L;
 
     private final List<OracleHint> hints            = new ArrayList<OracleHint>(1);
     private boolean                only             = false;
-    private SQLExpr                table;
     private String                 alias;
     private OracleUpdateSetClause  setClause;
     private SQLExpr                where;
@@ -49,12 +48,12 @@ public class OracleUpdateStatement extends SQLStatementImpl {
         super.accept(visitor);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.hints);
-            acceptChild(visitor, this.table);
-            acceptChild(visitor, this.setClause);
-            acceptChild(visitor, this.where);
+            acceptChild(visitor, tableSource);
+            acceptChild(visitor, items);
+            acceptChild(visitor, where);
         }
 
         visitor.endVisit(this);
@@ -94,13 +93,5 @@ public class OracleUpdateStatement extends SQLStatementImpl {
 
     public List<OracleHint> getHints() {
         return this.hints;
-    }
-
-    public SQLExpr getTable() {
-        return this.table;
-    }
-
-    public void setTable(SQLExpr table) {
-        this.table = table;
     }
 }

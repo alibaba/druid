@@ -13,9 +13,11 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
@@ -41,20 +43,25 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.E
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleArgumentExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryDoubleExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleBinaryFloatExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleCursorExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDatetimeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleDbLinkExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
@@ -79,6 +86,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectRestriction.Rea
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleTableExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetListMultiColumnItem;
@@ -216,9 +224,17 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     public boolean visit(OracleUpdateStatement x) {
         aliasLocal.set(new HashMap<String, String>());
+        setMode(x, Mode.Update);
 
-        if (x.getTable() instanceof SQLIdentifierExpr) {
-            String ident = x.getTable().toString();
+        SQLTableSource tableSource = x.getTableSource();
+        SQLExpr tableExpr = null;
+        
+        if (tableSource instanceof SQLExprTableSource) {
+            tableExpr = ((SQLExprTableSource) tableSource).getExpr(); 
+        }
+        
+        if (tableExpr instanceof SQLIdentifierExpr) {
+            String ident = tableExpr.toString();
             currentTableLocal.set(ident);
 
             TableStat stat = tableStats.get(ident);
@@ -231,7 +247,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             Map<String, String> aliasMap = aliasLocal.get();
             aliasMap.put(ident, ident);
         } else {
-            accept(x.getTable());
+            tableSource.accept(this);
         }
 
         accept(x.getSetClause());
@@ -1135,5 +1151,75 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     @Override
     public void endVisit(OracleLockTableStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleDatetimeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDatetimeExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleSysdateExpr x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSysdateExpr x) {
+        
+    }
+
+    @Override
+    public void endVisit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
+        
+    }
+
+    @Override
+    public boolean visit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleExceptionStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleExceptionStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleArgumentExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleArgumentExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleSetTransactionStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSetTransactionStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleGrantStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleGrantStatement x) {
+        
     }
 }

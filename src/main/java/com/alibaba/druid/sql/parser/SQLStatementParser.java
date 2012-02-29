@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -36,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -250,7 +252,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLSetStatement parseSet() throws ParserException {
+    public SQLStatement parseSet() throws ParserException {
         accept(Token.SET);
         SQLSetStatement stmt = new SQLSetStatement();
 
@@ -299,7 +301,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLSelectParser(this.lexer);
+        return new OracleSelectParser(this.lexer);
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
@@ -383,4 +385,25 @@ public class SQLStatementParser extends SQLParser {
         return createView;
     }
 
+    public SQLCommentStatement parseComment() {
+        accept(Token.COMMENT);
+        SQLCommentStatement stmt = new SQLCommentStatement();
+        
+        accept(Token.ON);
+        
+        if (lexer.token() == Token.TABLE) {
+            stmt.setType(SQLCommentStatement.Type.TABLE);
+            lexer.nextToken();
+        } else if (lexer.token() == Token.COLUMN) {
+            stmt.setType(SQLCommentStatement.Type.COLUMN);
+            lexer.nextToken();
+        }
+        
+        stmt.setOn(this.exprParser.name());
+        
+        accept(Token.IS);
+        stmt.setComment(this.exprParser.expr());
+        
+        return stmt;
+    }
 }
