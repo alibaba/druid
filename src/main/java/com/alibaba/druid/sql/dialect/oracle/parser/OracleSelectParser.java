@@ -919,8 +919,8 @@ public class OracleSelectParser extends SQLSelectParser {
                 this.createExprParser().exprList(join.getUsing());
                 accept(Token.RPAREN);
             }
-
-            return join;
+            
+            return parseTableSourceRest(join);
         }
 
         return tableSource;

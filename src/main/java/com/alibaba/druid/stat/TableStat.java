@@ -24,6 +24,15 @@ public class TableStat {
     int dropCount   = 0;
     int mergeCount  = 0;
     int createCount = 0;
+    int alterCount  = 0;
+
+    public int getAlterCount() {
+        return alterCount;
+    }
+
+    public void incrementAlterCount() {
+        this.alterCount++;
+    }
 
     public int getCreateCount() {
         return createCount;
@@ -123,6 +132,9 @@ public class TableStat {
         }
         if (createCount > 0) {
             buf.append("Create");
+        }
+        if (alterCount > 0) {
+            buf.append("Alter");
         }
 
         return buf.toString();

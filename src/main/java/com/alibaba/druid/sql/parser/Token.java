@@ -23,6 +23,7 @@ package com.alibaba.druid.sql.parser;
  */
 public enum Token {
     FOR("FOR"), 
+    IF("IF"), 
     INDEX("INDEX"), 
     PRIMARY("PRIMARY"), 
     KEY("KEY"), 
@@ -159,6 +160,7 @@ public enum Token {
     WAIT("WAIT"),
     ADVISE("ADVISE"),
     SESSION("SESSION"),
+    PROCEDURE("PROCEDURE"),
     AT("AT"),
     LOCAL("LOCAL"),
     TIME("TIME"),
@@ -167,6 +169,7 @@ public enum Token {
     DECLARE("DECLARE"),
     EXCEPTION("EXCEPTION"),
     GRANT("GRANT"),
+    LOOP("LOOP"),
     
     // transact-sql
     TOP("TOP"),

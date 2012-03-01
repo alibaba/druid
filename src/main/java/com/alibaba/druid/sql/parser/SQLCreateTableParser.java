@@ -66,7 +66,7 @@ public class SQLCreateTableParser extends SQLDDLParser {
             lexer.nextToken();
 
             while (lexer.token() == Token.IDENTIFIER) {
-                SQLColumnDefinition column = parseColumn();
+                SQLColumnDefinition column = this.exprParser.parseColumn();
                 createTable.getTableElementList().add(column);
 
                 // parseConstaint(column.getConstaints());

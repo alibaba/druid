@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
@@ -250,6 +251,19 @@ public class OracleExprParser extends SQLExprParser {
                 return super.primary();
         }
     }
+    
+    @Override
+    protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
+        if (acceptLPAREN) {
+            accept(Token.LPAREN);
+            if (lexer.token() == Token.PLUS) {
+                lexer.nextToken();
+                accept(Token.RPAREN);
+                return new OracleOuterExpr(expr);
+            }
+        }
+        return super.methodRest(expr, false);
+    }
 
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
         if (lexer.token() == Token.MONKEYS_AT) {
@@ -355,6 +369,13 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
+        if (lexer.token() == Token.DOT) {
+            lexer.nextToken();
+            SQLExpr upBound = expr();
+            
+            return new OracleRangeExpr(expr, upBound);
+        }
+        
         if (lexer.token() == Token.LITERAL_ALIAS) {
             String name = '"' + lexer.stringVal() + '"';
             lexer.nextToken();

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -30,9 +31,18 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     private boolean                only             = false;
     private String                 alias;
     private final List<OracleHint> hints            = new ArrayList<OracleHint>();
+    private OracleReturningClause  returning        = null;
 
     public OracleDeleteStatement(){
 
+    }
+
+    public OracleReturningClause getReturning() {
+        return returning;
+    }
+
+    public void setReturning(OracleReturningClause returning) {
+        this.returning = returning;
     }
 
     public List<OracleHint> getHints() {
@@ -48,6 +58,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
             acceptChild(visitor, this.hints);
             acceptChild(visitor, this.getTableName());
             acceptChild(visitor, this.getWhere());
+            acceptChild(visitor, returning);
         }
 
         visitor.endVisit(this);

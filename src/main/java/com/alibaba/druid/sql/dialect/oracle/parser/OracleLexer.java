@@ -122,6 +122,7 @@ public class OracleLexer extends Lexer {
         map.put("WAIT", Token.WAIT);
         map.put("NOWAIT", Token.NOWAIT);
         map.put("SESSION", Token.SESSION);
+        map.put("PROCEDURE", Token.PROCEDURE);
         map.put("AT", Token.AT);
         map.put("LOCAL", Token.LOCAL);
         map.put("TIME", Token.TIME);
@@ -131,6 +132,9 @@ public class OracleLexer extends Lexer {
         map.put("EXCEPTION", Token.EXCEPTION);
         map.put("GRANT", Token.GRANT);
         map.put("COMMENT", Token.COMMENT);
+        map.put("LOOP", Token.LOOP);
+        map.put("IF", Token.IF);
+        map.put("ELSE", Token.ELSE);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -162,6 +166,13 @@ public class OracleLexer extends Lexer {
         sp = 1;
         char ch;
 
+        boolean quoteFlag = false;
+        if (buf[bp + 1] == '"') {
+            hash = 31 * hash + '"';
+            bp++;
+            sp++;
+            quoteFlag = true;
+        }
         for (;;) {
             ch = buf[++bp];
 
@@ -173,6 +184,14 @@ public class OracleLexer extends Lexer {
 
             sp++;
             continue;
+        }
+        if (quoteFlag) {
+            if (ch != '"') {
+                throw new SQLParseException("syntax error");
+            }
+            hash = 31 * hash + '"';
+            ++bp;
+            sp++;
         }
 
         this.ch = buf[bp];

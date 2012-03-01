@@ -287,8 +287,14 @@ public class SQLStatementParser extends SQLParser {
         if (token == Token.TABLE) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             return createTableParser.parseCrateTable(false);
+        } else if (token == Token.INDEX) {
+            return parseCreateIndex(false);
         }
 
+        throw new ParserException("TODO " + lexer.token());
+    }
+    
+    public SQLStatement parseCreateIndex(boolean acceptCreate) {
         throw new ParserException("TODO " + lexer.token());
     }
 

@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -32,6 +33,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -419,5 +421,27 @@ public class MySqlExprParser extends SQLExprParser {
 
             return intervalExpr;
         }
+    }
+    
+    public SQLColumnDefinition parseColumn() throws ParserException {
+        MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
+        column.setName(name());
+        column.setDataType(parseDataType());
+
+        return parseColumnRest(column);
+    }
+
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) throws ParserException {
+        if (identifierEquals("AUTO_INCREMENT")) {
+            lexer.nextToken();
+            if (column instanceof MySqlSQLColumnDefinition) {
+                ((MySqlSQLColumnDefinition) column).setAutoIncrement(true);
+            }
+            return parseColumnRest(column);
+        }
+
+        super.parseColumnRest(column);
+
+        return column;
     }
 }

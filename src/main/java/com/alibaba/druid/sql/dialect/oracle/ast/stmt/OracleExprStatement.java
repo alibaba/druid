@@ -1,19 +1,19 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleMethodInvokeStatement extends OracleStatementImpl {
+public class OracleExprStatement extends OracleStatementImpl {
 
     private static final long   serialVersionUID = 1L;
 
-    private SQLMethodInvokeExpr expr;
+    private SQLExpr expr;
 
-    public OracleMethodInvokeStatement(){
+    public OracleExprStatement(){
 
     }
 
-    public OracleMethodInvokeStatement(SQLMethodInvokeExpr expr){
+    public OracleExprStatement(SQLExpr expr){
         this.expr = expr;
     }
 
@@ -26,11 +26,11 @@ public class OracleMethodInvokeStatement extends OracleStatementImpl {
 
     }
 
-    public SQLMethodInvokeExpr getExpr() {
+    public SQLExpr getExpr() {
         return expr;
     }
 
-    public void setExpr(SQLMethodInvokeExpr expr) {
+    public void setExpr(SQLExpr expr) {
         this.expr = expr;
     }
 

@@ -396,7 +396,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         if (parent instanceof SQLSelect) {
             parent = parent.getParent();
         }
-        
+
         if (parent instanceof SQLStatement) {
             incrementIndent();
 
@@ -553,12 +553,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLColumnDefinition x) {
         x.getName().accept(this);
-        print(' ');
-        x.getDataType().accept(this);
+        
+        if (x.getDataType() != null) {
+            print(' ');
+            x.getDataType().accept(this);
+        }
 
         if (x.getDefaultExpr() != null) {
-            print(" DEFAULT ");
-            x.getDefaultExpr().accept(this);
+            visitColumnDefault(x);
         }
 
         for (SQLColumnConstraint item : x.getConstaints()) {
@@ -567,6 +569,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         return false;
+    }
+
+    protected void visitColumnDefault(SQLColumnDefinition x) {
+        print(" DEFAULT ");
+        x.getDefaultExpr().accept(this);
     }
 
     public boolean visit(SQLDeleteStatement x) {
@@ -888,16 +895,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         printAndAccept(x.getTableNames(), ", ");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLDefaultExpr x) {
         print("DEFAULT");
         return false;
     }
-    
+
     @Override
     public void endVisit(SQLCommentStatement x) {
-        
+
     }
 
     @Override
@@ -908,10 +915,10 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(" ");
         }
         x.getOn().accept(this);
-        
+
         print(" IS ");
         x.getComment().accept(this);
-        
+
         return false;
     }
 }

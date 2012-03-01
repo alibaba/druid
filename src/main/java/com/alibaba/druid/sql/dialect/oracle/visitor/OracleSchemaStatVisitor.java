@@ -54,20 +54,35 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleExtractExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.Else;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMethodInvokeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.ConditionalInsertClauseItem;
@@ -228,11 +243,11 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         SQLTableSource tableSource = x.getTableSource();
         SQLExpr tableExpr = null;
-        
+
         if (tableSource instanceof SQLExprTableSource) {
-            tableExpr = ((SQLExprTableSource) tableSource).getExpr(); 
+            tableExpr = ((SQLExprTableSource) tableSource).getExpr();
         }
-        
+
         if (tableExpr instanceof SQLIdentifierExpr) {
             String ident = tableExpr.toString();
             currentTableLocal.set(ident);
@@ -1129,15 +1144,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleAlterSessionStatement x) {
 
     }
-    
+
     @Override
-    public boolean visit(OracleMethodInvokeStatement x) {
+    public boolean visit(OracleExprStatement x) {
         return false;
     }
-    
+
     @Override
-    public void endVisit(OracleMethodInvokeStatement x) {
-        
+    public void endVisit(OracleExprStatement x) {
+
     }
 
     @Override
@@ -1160,7 +1175,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleDatetimeExpr x) {
-        
+
     }
 
     @Override
@@ -1170,12 +1185,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSysdateExpr x) {
-        
+
     }
 
     @Override
     public void endVisit(com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement.Item x) {
-        
+
     }
 
     @Override
@@ -1190,7 +1205,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleExceptionStatement x) {
-        
+
     }
 
     @Override
@@ -1200,7 +1215,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleArgumentExpr x) {
-        
+
     }
 
     @Override
@@ -1210,7 +1225,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleSetTransactionStatement x) {
-        
+
     }
 
     @Override
@@ -1220,6 +1235,203 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleGrantStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleExplainStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleExplainStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterProcedureStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterProcedureStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableDropPartition x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableDropPartition x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableTruncatePartition x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableTruncatePartition x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableStatement x) {
+        String tableName = x.getName().toString();
+        TableStat stat = new TableStat();
+        stat.incrementAlterCount();
+        this.tableStats.put(new TableStat.Name(tableName), stat);
+
+        accept(x.getItems());
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableSplitPartition.TableSpaceItem x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableSplitPartition.TableSpaceItem x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableSplitPartition.UpdateIndexesClause x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableSplitPartition x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableSplitPartition x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableModify x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableModify x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableAddColumn x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableAddColumn x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreateIndexStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateIndexStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterIndexStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterIndexStatement x) {
+
+    }
+    
+    @Override
+    public boolean visit(OracleForStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleForStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterIndexStatement.Rebuild x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterIndexStatement.Rebuild x) {
+
+    }
+
+    @Override
+    public boolean visit(Else x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(Else x) {
+        
+    }
+    
+    @Override
+    public boolean visit(ElseIf x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(ElseIf x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleIfStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OracleIfStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleRangeExpr x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleRangeExpr x) {
         
     }
 }

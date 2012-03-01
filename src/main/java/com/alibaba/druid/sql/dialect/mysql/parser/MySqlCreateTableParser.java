@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.mysql.ast.statement;
+package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -22,7 +22,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -32,10 +33,12 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
     public MySqlCreateTableParser(String sql) throws ParserException{
         super(sql);
+        this.exprParser = new MySqlExprParser(lexer);
     }
 
     public MySqlCreateTableParser(Lexer lexer){
         super(lexer);
+        this.exprParser = new MySqlExprParser(lexer);
     }
 
     public SQLCreateTableStatement parseCrateTable() throws ParserException {
@@ -70,7 +73,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             for (;;) {
                 if (lexer.token() == Token.IDENTIFIER) {
-                    SQLColumnDefinition column = parseColumn();
+                    SQLColumnDefinition column = this.exprParser.parseColumn();
                     createTable.getTableElementList().add(column);
                 } else if (lexer.token() == (Token.CONSTRAINT)) {
                     createTable.getTableElementList().add(parseConstraint());
@@ -147,28 +150,6 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         return createTable;
-    }
-
-    protected SQLColumnDefinition parseColumn() throws ParserException {
-        MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
-        column.setName(this.exprParser.name());
-        column.setDataType(this.exprParser.parseDataType());
-
-        return parseColumnRest(column);
-    }
-
-    protected SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) throws ParserException {
-        if (identifierEquals("AUTO_INCREMENT")) {
-            lexer.nextToken();
-            if (column instanceof MySqlSQLColumnDefinition) {
-                ((MySqlSQLColumnDefinition) column).setAutoIncrement(true);
-            }
-            return parseColumnRest(column);
-        }
-
-        super.parseColumnRest(column);
-
-        return column;
     }
 
     @SuppressWarnings("unused")

@@ -117,40 +117,6 @@ public class TestTransform extends OracleTest {
             String s2 = rs.getString(2);
             String sqlId = rs.getString(3);
 
-            if (sqlId.equals("018vcjmqxuguv")) {
-                continue;
-            }
-            if (sqlId.equals("0d69js78vuh8j")) {
-                continue;
-            }
-            if (sqlId.equals("0khp9aykj08vq")) {
-                continue;
-            }
-            if (sqlId.equals("0ns0zv7qaxzus")) {
-                continue;
-            }
-            if (sqlId.equals("0tg8ryp81gq1w")) {
-                continue;
-            }
-            if (sqlId.equals("0tvydgpa3jmkv")) {
-                continue;
-            }
-            if (sqlId.equals("09xu7vwbdz0gs")) {
-                continue;
-            }
-            if (sqlId.equals("0wjc3zzc5z2x9")) {
-                continue;
-            }
-            if (sqlId.equals("22vkv80fyntg0")) {
-                continue;
-            }
-            if (sqlId.equals("24j7jc4c8hsw4")) {
-                continue;
-            }
-            if (sqlId.equals("2b4s4scg6rgp8")) {
-                continue;
-            }
-
             r.setSnapshotDate(d1);
             r.setDbName(s2);
             r.setSqlId(sqlId);
@@ -162,11 +128,11 @@ public class TestTransform extends OracleTest {
             r.setDbPk(rs.getLong(8));
 
             System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + ") : " + r.getSqlText());
-//            try {
-//            schemaStatInternal(r);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            try {
+                schemaStatInternal(r);
+            } catch (Throwable e) {
+                // e.printStackTrace();
+            }
         }
         rs.close();
         stmt.close();
@@ -181,7 +147,7 @@ public class TestTransform extends OracleTest {
                 try {
                     schemaStatInternal(r);
                 } catch (Exception e) {
-                    // e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         });
@@ -189,55 +155,6 @@ public class TestTransform extends OracleTest {
 
     public void schemaStatInternal(Record r) throws Exception {
         String sql = r.getSqlText();
-
-        if (sql.startsWith("/* MV_REFRESH (INS) */")) {
-            return;
-        }
-        if (sql.startsWith("/* MV_REFRESH (DEL) */")) {
-            return;
-        }
-        if (sql.startsWith("SELECT /*+ Q1630000 NO_EXPAND ROWID(A1) */ A1.\"PRODUCT_ID\",A1.\"SUMMARY\"")) {
-            return;
-        }
-        if (sql.startsWith("declare") || sql.startsWith("DECLARE")) {
-            return;
-        }
-        if (sql.startsWith("alter table")) {
-            return;
-        }
-        if (sql.startsWith("SELECT /* OPT_DYN_SAMP */")) {
-            return;
-        }
-        if (sql.startsWith("EXPLAIN")) {
-            return;
-        }
-        if (sql.startsWith("SET")) {
-            return;
-        }
-        if (sql.startsWith("create index")) {
-            return;
-        }
-        if (sql.startsWith("alter ")) {
-            return;
-        }
-        if (sql.startsWith("create")) {
-            return;
-        }
-        if (sql.startsWith("CREATE")) {
-            return;
-        }
-        if (sql.startsWith("explain plan")) {
-            return;
-        }
-        if (sql.startsWith("ALTER ")) {
-            return;
-        }
-        if (r.getSqlId().equals("09x7ytfdk63sp")) {
-            return;
-        }
-        if (sql.indexOf("AS OF SNAPSHOT") != -1) {
-            return;
-        }
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

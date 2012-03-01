@@ -53,7 +53,9 @@ import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 
@@ -375,6 +377,13 @@ public class SQLExprParser extends SQLParser {
             case INTERVAL:
                 sqlExpr = parseInterval();
                 break;
+            case COLON:
+                lexer.nextToken();
+                if (lexer.token == Token.LITERAL_ALIAS) {
+                    sqlExpr = new SQLVariantRefExpr(":\"" + lexer.stringVal() + "\"");
+                    lexer.nextToken();
+                }
+                break;
             case ANY:
                 lexer.nextToken();
                 if (lexer.token() == Token.LPAREN) {
@@ -440,6 +449,7 @@ public class SQLExprParser extends SQLParser {
 
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
+            
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.token() == Token.COLONEQ) {
@@ -448,42 +458,47 @@ public class SQLExprParser extends SQLParser {
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp);
         } else {
             if (lexer.token() == Token.LPAREN) {
-                if (expr instanceof SQLName || expr instanceof SQLDefaultExpr) {
-                    String method_name;
-                    
-                    SQLMethodInvokeExpr methodInvokeExpr;
-                    if (expr instanceof SQLPropertyExpr) {
-                        method_name = ((SQLPropertyExpr) expr).getName();
-                        methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
-                        methodInvokeExpr.setOwner(((SQLPropertyExpr) expr).getOwner());
-                    } else {
-                        method_name = expr.toString();
-                        methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
-                    }
-                    
-                    lexer.nextToken();
-
-                    if (isAggreateFunction(method_name)) {
-                        SQLAggregateExpr aggregateExpr = parseAggregateExpr(method_name);
-
-                        return aggregateExpr;
-                    }
-
-                    
-                    if (lexer.token() != Token.RPAREN) {
-                        exprList(methodInvokeExpr.getParameters());
-                    }
-
-                    accept(Token.RPAREN);
-
-                    return primaryRest(methodInvokeExpr);
-                }
-
-                throw new ParserException("not support token:" + lexer.token());
+                return methodRest(expr, true);
             }
         }
 
         return expr;
+    }
+
+    protected SQLExpr methodRest(SQLExpr expr, boolean acceptLPAREN) {
+        if (acceptLPAREN) {
+            accept(Token.LPAREN);
+        }
+
+        if (expr instanceof SQLName || expr instanceof SQLDefaultExpr) {
+            String method_name;
+
+            SQLMethodInvokeExpr methodInvokeExpr;
+            if (expr instanceof SQLPropertyExpr) {
+                method_name = ((SQLPropertyExpr) expr).getName();
+                methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
+                methodInvokeExpr.setOwner(((SQLPropertyExpr) expr).getOwner());
+            } else {
+                method_name = expr.toString();
+                methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
+            }
+
+            if (isAggreateFunction(method_name)) {
+                SQLAggregateExpr aggregateExpr = parseAggregateExpr(method_name);
+
+                return aggregateExpr;
+            }
+
+            if (lexer.token() != Token.RPAREN) {
+                exprList(methodInvokeExpr.getParameters());
+            }
+
+            accept(Token.RPAREN);
+
+            return primaryRest(methodInvokeExpr);
+        }
+
+        throw new ParserException("not support token:" + lexer.token());
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
@@ -579,8 +594,11 @@ public class SQLExprParser extends SQLParser {
             identName = lexer.stringVal();
 
             lexer.nextToken();
+        } else if (lexer.token() == Token.REFERENCE || lexer.token() == Token.DATE || lexer.token() == Token.TIMESTAMP) {
+            identName = lexer.stringVal();
+            lexer.nextToken();
         } else {
-            throw new ParserException("error");
+            throw new ParserException("error " + lexer.token());
         }
 
         SQLName name = new SQLIdentifierExpr(identName);
@@ -1009,19 +1027,20 @@ public class SQLExprParser extends SQLParser {
 
             return expr;
         } else {
-            throw new ParserException("TODO");
+            throw new ParserException("TODO " + lexer.token());
         }
         return expr;
     }
 
     public SQLDataType parseDataType() throws ParserException {
-        if (lexer.token() != Token.DATE && lexer.token() != Token.TIMESTAMP && lexer.token() != Token.IDENTIFIER) {
-            throw new ParserException("unexpect token : " + lexer.token() + " " + lexer.stringVal());
+        
+        if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
+            return null;
         }
+        
+        SQLName typeExpr = name();
+        String typeName = typeExpr.toString();
 
-        String typeName = lexer.stringVal();
-
-        lexer.nextToken();
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
@@ -1086,5 +1105,30 @@ public class SQLExprParser extends SQLParser {
         } else {
             throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token());
         }
+    }
+    
+    public SQLColumnDefinition parseColumn() {
+        SQLColumnDefinition column = new SQLColumnDefinition();
+        column.setName(name());
+        column.setDataType(parseDataType());
+
+        return parseColumnRest(column);
+    }
+    
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
+            column.setDefaultExpr(bitOr());
+            return parseColumnRest(column);
+        }
+
+        if (lexer.token() == Token.NOT) {
+            lexer.nextToken();
+            accept(Token.NULL);
+            column.getConstaints().add(new NotNullConstraint());
+            return parseColumnRest(column);
+        }
+
+        return column;
     }
 }
