@@ -553,7 +553,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLColumnDefinition x) {
         x.getName().accept(this);
-        
+
         if (x.getDataType() != null) {
             print(' ');
             x.getDataType().accept(this);
@@ -669,15 +669,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         x.getName().accept(this);
-        print(" (");
 
-        for (int i = 0, size = x.getTableElementList().size(); i < size; ++i) {
-            if (i != 0) {
-                print(", ");
+        int size = x.getTableElementList().size();
+
+        if (size > 0) {
+            print(" (");
+
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    print(", ");
+                }
+                x.getTableElementList().get(i).accept(this);
             }
-            x.getTableElementList().get(i).accept(this);
+            print(")");
         }
-        print(")");
 
         return false;
     }

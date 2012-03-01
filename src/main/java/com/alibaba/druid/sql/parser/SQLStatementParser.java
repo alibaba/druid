@@ -284,7 +284,7 @@ public class SQLStatementParser extends SQLParser {
 
         Token token = lexer.token();
 
-        if (token == Token.TABLE) {
+        if (token == Token.TABLE || identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             return createTableParser.parseCrateTable(false);
         } else if (token == Token.INDEX) {

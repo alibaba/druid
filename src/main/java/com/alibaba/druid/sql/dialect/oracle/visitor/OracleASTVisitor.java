@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.StorageItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -50,14 +51,17 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -76,6 +80,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -424,60 +429,80 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleAlterTableStatement x);
 
     void endVisit(OracleAlterTableStatement x);
-    
+
     boolean visit(OracleAlterTableSplitPartition.TableSpaceItem x);
-    
+
     void endVisit(OracleAlterTableSplitPartition.TableSpaceItem x);
-    
+
     boolean visit(OracleAlterTableSplitPartition.UpdateIndexesClause x);
-    
+
     void endVisit(OracleAlterTableSplitPartition.UpdateIndexesClause x);
-    
+
     boolean visit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x);
-    
+
     void endVisit(OracleAlterTableSplitPartition.NestedTablePartitionSpec x);
-    
+
     boolean visit(OracleAlterTableSplitPartition x);
-    
+
     void endVisit(OracleAlterTableSplitPartition x);
-    
+
     boolean visit(OracleAlterTableModify x);
-    
+
     void endVisit(OracleAlterTableModify x);
-    
+
     boolean visit(OracleAlterTableAddColumn x);
-    
+
     void endVisit(OracleAlterTableAddColumn x);
-    
+
     boolean visit(OracleCreateIndexStatement x);
-    
+
     void endVisit(OracleCreateIndexStatement x);
-    
+
     boolean visit(OracleForStatement x);
-    
+
     void endVisit(OracleForStatement x);
-    
+
     boolean visit(Else x);
-    
+
     void endVisit(Else x);
-    
+
     boolean visit(ElseIf x);
-    
+
     void endVisit(ElseIf x);
-    
+
     boolean visit(OracleIfStatement x);
-    
+
     void endVisit(OracleIfStatement x);
-    
+
     boolean visit(OracleRangeExpr x);
-    
+
     void endVisit(OracleRangeExpr x);
-    
+
     boolean visit(OracleAlterIndexStatement x);
-    
+
     void endVisit(OracleAlterIndexStatement x);
-    
+
+    boolean visit(OracleAlterTableAddConstaint x);
+
+    void endVisit(OracleAlterTableAddConstaint x);
+
+    boolean visit(OracleAlterTableRenameTo x);
+
+    void endVisit(OracleAlterTableRenameTo x);
+
+    boolean visit(OraclePrimaryKey x);
+
+    void endVisit(OraclePrimaryKey x);
+
+    boolean visit(OracleCreateTableStatement x);
+
+    void endVisit(OracleCreateTableStatement x);
+
     boolean visit(OracleAlterIndexStatement.Rebuild x);
-    
+
     void endVisit(OracleAlterIndexStatement.Rebuild x);
+
+    boolean visit(StorageItem x);
+
+    void endVisit(StorageItem x);
 }

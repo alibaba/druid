@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -38,6 +39,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.StorageItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.Entry;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -61,14 +63,17 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -89,6 +94,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -1432,6 +1438,57 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleRangeExpr x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleAlterTableAddConstaint x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleAlterTableAddConstaint x) {
+        
+    }
+
+    @Override
+    public boolean visit(OraclePrimaryKey x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePrimaryKey x) {
+        
+    }
+    
+    @Override
+    public boolean visit(OracleCreateTableStatement x) {
+        this.visit((SQLCreateTableStatement) x);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(OracleCreateTableStatement x) {
+        this.endVisit((SQLCreateTableStatement) x);
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableRenameTo x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableRenameTo x) {
+        
+    }
+
+    @Override
+    public boolean visit(StorageItem x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(StorageItem x) {
         
     }
 }

@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -56,6 +57,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.StorageItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -79,9 +81,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement.R
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.TableSpaceItem;
@@ -91,6 +95,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePar
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -111,6 +116,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -2306,5 +2312,111 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" DEFAULT ");
         }
         x.getDefaultExpr().accept(this);
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableAddConstaint x) {
+        print("ADD ");
+        x.getConstraint().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableAddConstaint x) {
+
+    }
+
+    @Override
+    public boolean visit(OraclePrimaryKey x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(" ");
+        }
+        print("PRIMARY KEY (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        if (x.getUsingIndex() != null) {
+            print(" USING INDEX ");
+            x.getUsingIndex().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePrimaryKey x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreateTableStatement x) {
+        this.visit((SQLCreateTableStatement) x);
+
+        incrementIndent();
+        if (x.getTablespace() != null) {
+            print(" TABLESPACE ");
+            x.getTablespace().accept(this);
+        }
+        
+        if (x.isInMemoryMetadata()) {
+            print(" IN_MEMORY_METADATA");
+        }
+        
+        if (x.isCursorSpecificSegment()) {
+            print(" CURSOR_SPECIFIC_SEGMENT");
+        }
+        
+        if (x.getParallel() == Boolean.TRUE) {
+            
+        } else if (x.getParallel() == Boolean.FALSE) {
+            print(" NOPARALLEL");
+        }
+        
+        if (x.getStorage().size() > 0) {
+            print(" STORAGE (");
+            printAndAccept(x.getStorage(), ", ");
+            print(")");
+        }
+
+        if (x.getSelect() != null) {
+            println();
+            print("AS");
+            println();
+            x.getSelect().accept(this);
+        }
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableRenameTo x) {
+        print("RENAME TO ");
+        x.getTo().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableRenameTo x) {
+        
+    }
+
+    @Override
+    public boolean visit(StorageItem x) {
+        x.getName().accept(this);
+        if (x.getValue() != null) {
+            print(" ");
+            x.getValue().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(StorageItem x) {
+        
     }
 }
