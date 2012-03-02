@@ -64,10 +64,12 @@ public class MySqlStatementParser extends SQLStatementParser {
     public MySqlStatementParser(String sql) throws ParserException{
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
+        this.exprParser = this.createExprParser();
     }
 
     public MySqlStatementParser(Lexer lexer){
         super(lexer);
+        this.exprParser = this.createExprParser();
     }
 
     protected SQLExprParser createExprParser() {

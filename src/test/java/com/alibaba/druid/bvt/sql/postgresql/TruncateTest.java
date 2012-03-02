@@ -19,7 +19,7 @@ public class TruncateTest extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -41,7 +41,7 @@ public class TruncateTest extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -63,7 +63,7 @@ public class TruncateTest extends PGTest {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

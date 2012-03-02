@@ -62,6 +62,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong updateCount           = new AtomicLong();
     private final AtomicLong fetchRowCount         = new AtomicLong();
 
+    private final AtomicLong inTransactionCount    = new AtomicLong();
+
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
             4, 15, 60, 250, //
@@ -164,6 +166,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         fetchRowCount.set(0);
 
         histogram.reset();
+        inTransactionCount.set(0);
     }
 
     public long getConcurrentMax() {
@@ -319,6 +322,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return executeBatchSizeMax.get();
     }
 
+    public long getInTransactionCount() {
+        return inTransactionCount.get();
+    }
+
+    public void incrementInTransactionCount() {
+        inTransactionCount.incrementAndGet();
+    }
+
     private static CompositeType COMPOSITE_TYPE = null;
 
     public static CompositeType getCompositeType() throws JMException {
@@ -327,20 +338,31 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] { SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
-                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.LONG,
-                JMXUtils.getThrowableCompositeType(), SimpleType.LONG, SimpleType.LONG, SimpleType.DATE,
-                SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.STRING,
-                SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.DATE,
-                SimpleType.STRING, SimpleType.STRING //
+        OpenType<?>[] indexTypes = new OpenType<?>[] {
+                //
+                SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG,
+                SimpleType.LONG, //
 
-                , new ArrayType<Long>(SimpleType.LONG, true) };
+                SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(),
+                SimpleType.LONG,
+                //
+
+                SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                //
+
+                SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
+                //
+
+                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG //
+
+                , new ArrayType<Long>(SimpleType.LONG, true)
+                };
 
         String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount" //
                 , "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount" //
                 , "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax" //
                 , "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass" //
-                , "LastErrorStackTrace", "LastErrorTime", "DbType", "URL" //
+                , "LastErrorStackTrace", "LastErrorTime", "DbType", "InTransactionCount", "URL" //
 
                 , "Histogram" };
         String[] indexDescriptions = indexNames;
@@ -394,6 +416,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         map.put("DbType", dbType);
         map.put("URL", null);
+        map.put("InTransactionCount", getInTransactionCount());
 
         map.put("Histogram", this.histogram.toArray());
 

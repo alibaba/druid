@@ -37,7 +37,6 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -307,7 +306,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new OracleSelectParser(this.lexer);
+        return new SQLSelectParser(this.lexer);
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {

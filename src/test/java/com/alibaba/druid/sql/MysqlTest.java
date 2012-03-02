@@ -19,4 +19,13 @@ public class MysqlTest extends TestCase {
 
 		return out.toString();
 	}
+	
+	   protected void print(List<SQLStatement> stmtList) {
+	        String text = output(stmtList);
+	        String outputProperty = System.getProperty("druid.output");
+	        if ("false".equals(outputProperty)) {
+	            return;
+	        }
+	        System.out.println(text);
+	    }
 }

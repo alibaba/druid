@@ -127,7 +127,7 @@ public class TestTransform extends OracleTest {
             r.setLastSnapshotDate(rs.getDate(7));
             r.setDbPk(rs.getLong(8));
 
-            System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + ") : " + r.getSqlText());
+            System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + "/" + r.getCommandType() + ") : " + r.getSqlText());
             try {
                 schemaStatInternal(r);
             } catch (Throwable e) {
@@ -161,7 +161,7 @@ public class TestTransform extends OracleTest {
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        // System.out.println(output(statementList));
+        // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
@@ -283,7 +283,7 @@ public class TestTransform extends OracleTest {
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
-        // System.out.println(output(statementList));
+        // print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);

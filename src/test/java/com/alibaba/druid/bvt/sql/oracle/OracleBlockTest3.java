@@ -28,7 +28,7 @@ public class OracleBlockTest3 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

@@ -19,7 +19,7 @@ public class OracleCreateTableTest6 extends OracleTest {
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
@@ -34,12 +34,12 @@ public class OracleCreateTableTest6 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"SYS\".SYS_TEMP_0FD9D66FD_93E068F3")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("\"SYS\".SYS_TEMP_0FD9D66FD_93E068F3", "\"C0\"")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("\"SYS\".SYS_TEMP_0FD9D66FD_93E068F3", "\"C1\"")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

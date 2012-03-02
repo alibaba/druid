@@ -213,7 +213,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         TransactionInfo transInfo = (TransactionInfo) attributes.remove(ATTR_TRANSACTION);
         if (transInfo != null) {
-            transInfo.setEndTimeMillis(System.currentTimeMillis());
+            transInfo.setEndTimeMillis();
         }
     }
 
@@ -382,6 +382,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (sqlStat != null) {
             sqlStat.setExecuteLastStartTime(System.currentTimeMillis());
             sqlStat.incrementRunningCount();
+
+            try {
+                boolean inTransaction = !statement.getConnectionProxy().getAutoCommit();
+                if (inTransaction) {
+                    sqlStat.incrementInTransactionCount();
+                }
+            } catch (SQLException e) {
+                LOG.error("getAutoCommit error", e);
+            }
         }
 
         statement.getAttributes().put(ATTR_UPDATE_COUNT, 0);
@@ -487,7 +496,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         String sql = resultSet.getSql();
         if (sql != null) {
-        	JdbcSqlStat sqlStat = getSqlCounter(sql);
+            JdbcSqlStat sqlStat = getSqlCounter(sql);
             if (sqlStat != null) {
                 sqlStat.addFetchRowCount(fetchCount);
             }

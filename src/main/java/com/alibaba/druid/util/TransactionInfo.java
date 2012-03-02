@@ -45,6 +45,12 @@ public class TransactionInfo {
     public long getEndTimeMillis() {
         return endTimeMillis;
     }
+    
+    public void setEndTimeMillis() {
+        if (endTimeMillis == 0) {
+            endTimeMillis = System.currentTimeMillis();
+        }
+    }
 
     public void setEndTimeMillis(long endTimeMillis) {
         this.endTimeMillis = endTimeMillis;

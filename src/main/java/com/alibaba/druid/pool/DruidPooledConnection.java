@@ -590,12 +590,12 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             holder.setUnderlyingAutoCommit(autoCommit);
         } catch (SQLException ex) {
             if ((!autoCommit) && holder.isUnderlyingAutoCommit()) {
-                
+
             }
             handleException(ex);
         }
     }
-    
+
     protected void transactionRecord(String sql) throws SQLException {
         if (transactionInfo == null && (!conn.getAutoCommit())) {
             DruidAbstractDataSource dataSource = holder.getDataSource();
@@ -684,10 +684,9 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     private void handleEndTransaction(DruidAbstractDataSource dataSource) {
         if (transactionInfo != null) {
-            long currentTimeMillis = System.currentTimeMillis();
-            transactionInfo.setEndTimeMillis(currentTimeMillis);
+            transactionInfo.setEndTimeMillis();
 
-            long transactionMillis = currentTimeMillis - transactionInfo.getStartTimeMillis();
+            long transactionMillis = transactionInfo.getEndTimeMillis() - transactionInfo.getStartTimeMillis();
             dataSource.getTransactionHistogram().recode(transactionMillis);
 
             dataSource.logTransaction(transactionInfo);

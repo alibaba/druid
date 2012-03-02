@@ -17,7 +17,7 @@ public class HiveShowTableTest2 extends HiveTest {
         HiveStatementParser parser = new HiveStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-        System.out.println(output(statementList));
+        print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 

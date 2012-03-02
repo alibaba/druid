@@ -10,10 +10,17 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleBlockTest1 extends OracleTest {
+public class OracleBlockTest4 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "DECLARE   n        NUMBER;   str_stmt VARCHAR2(4000);   sql_text ora_name_list_t;   l_trace  NUMBER;   l_alert  NUMBER; BEGIN   n := ora_sql_txt(sql_text);   FOR i IN 1 .. n LOOP     str_stmt := SUBSTR(str_stmt || sql_text(i), 1, 300);   END LOOP;    SELECT COUNT(*)     INTO l_trace     FROM DUAL    WHERE (sys_context('userenv', 'ip_address') IS NOT NULL)      and lower(str_stmt) like 'alter% compile%';    IF l_trace > 0 THEN     RAISE_APPLICATION_ERROR(-20001,'Please try later,DBA is publishing DDL for project');   END IF; END;";
+        String sql = "declare "
+                     + " cursor cspid(vspid dba_hist_snapshot.snap_id%type) is "
+                     + "  select end_interval_time , startup_time " //
+                     + "  from dba_hist_snapshot "
+                     + //
+                     "  where snap_id = vspid and instance_number = :inst_num"
+                     + "  and dbid            = :dbid;    "
+                     + "  bsnapt  dba_hist_snapshot.end_interval_time%type;   bstart  dba_hist_snapshot.startup_time%type;   esnapt  dba_hist_snapshot.end_interval_time%type;   estart  dba_hist_snapshot.startup_time%type;  begin    -- Check Begin Snapshot id is valid, get corresponding instance startup time   open cspid(:bid);   fetch cspid into bsnapt, bstart;   if cspid%notfound then     raise_application_error(-20200,       'Begin Snapshot Id '||:bid||' does not exist for this database/instance');   end if;   close cspid;    -- Check End Snapshot id is valid and get corresponding instance startup time   open cspid(:eid);   fetch cspid into esnapt, estart;   if cspid%notfound then     raise_application_error(-20200,       'End Snapshot Id '||:eid||' does not exist for this database/instance');   end if;   if esnapt <= bsnapt then     raise_application_error(-20200,       'End Snapshot Id '||:eid||' must be greater than Begin Snapshot Id '||:bid);   end if;   close cspid;    -- Check startup time is same for begin and end snapshot ids   if ( bstart != estart) then     raise_application_error(-20200,       'The instance was shutdown between snapshots '||:bid||' and '||:eid);   end if;  end;";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
