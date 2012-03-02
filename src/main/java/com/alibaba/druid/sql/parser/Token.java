@@ -170,6 +170,7 @@ public enum Token {
     EXCEPTION("EXCEPTION"),
     GRANT("GRANT"),
     LOOP("LOOP"),
+    GOTO("GOTO"),
     
     // transact-sql
     TOP("TOP"),
@@ -207,6 +208,7 @@ public enum Token {
     SEMI(";"), 
     COMMA(","), 
     DOT("."), 
+    DOTDOT(".."), 
     EQ("="), 
     GT(">"), 
     LT("<"), 

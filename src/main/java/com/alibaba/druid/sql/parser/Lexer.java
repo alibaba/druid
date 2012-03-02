@@ -270,8 +270,12 @@ public class Lexer {
                         unscan();
                         scanNumber();
                         return;
+                    } else if (ch == '.') {
+                        scanChar();
+                        token = Token.DOTDOT;
+                    } else {
+                        token = Token.DOT;
                     }
-                    token = Token.DOT;
                     return;
                 case '\'':
                     scanString();
@@ -689,6 +693,10 @@ public class Lexer {
         boolean isDouble = false;
 
         if (ch == '.') {
+            if (buf[bp + 1] == '.') {
+                token = Token.LITERAL_INT;
+                return;
+            }
             sp++;
             ch = buf[++bp];
             isDouble = true;
@@ -869,15 +877,15 @@ public class Lexer {
             return result;
         }
     }
-    
+
     public int bp() {
         return this.bp;
     }
-    
+
     public char current() {
         return this.ch;
     }
-    
+
     public void reset(int mark, char mark_ch, Token token) {
         this.bp = mark;
         this.ch = mark_ch;

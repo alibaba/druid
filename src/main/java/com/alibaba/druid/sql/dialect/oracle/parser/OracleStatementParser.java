@@ -57,9 +57,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.LockMode;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
@@ -273,6 +275,25 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseIf());
                 continue;
             }
+            
+            if (lexer.token() == Token.GOTO) {
+                lexer.nextToken();
+                SQLName label = this.exprParser.name();
+                OracleGotoStatement stmt = new OracleGotoStatement(label);
+                statementList.add(stmt);
+                continue;
+            }
+            
+            if (lexer.token() == Token.LTLT) {
+                lexer.nextToken();
+                SQLName label = this.exprParser.name();
+                OracleLabelStatement stmt = new OracleLabelStatement(label);
+                accept(Token.GTGT);
+                statementList.add(stmt);
+                continue;
+            }
+            
+            
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }

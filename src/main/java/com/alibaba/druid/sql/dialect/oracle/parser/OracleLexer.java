@@ -135,6 +135,7 @@ public class OracleLexer extends Lexer {
         map.put("LOOP", Token.LOOP);
         map.put("IF", Token.IF);
         map.put("ELSE", Token.ELSE);
+        map.put("GOTO", Token.GOTO);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -307,6 +308,10 @@ public class OracleLexer extends Lexer {
         boolean isDouble = false;
 
         if (ch == '.') {
+            if (buf[bp + 1] == '.') {
+                token = Token.LITERAL_INT;
+                return;
+            }
             sp++;
             ch = buf[++bp];
             isDouble = true;

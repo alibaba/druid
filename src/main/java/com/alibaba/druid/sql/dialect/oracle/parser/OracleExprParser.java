@@ -266,6 +266,13 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+        if (lexer.token() == Token.DOTDOT) {
+            lexer.nextToken();
+            SQLExpr upBound = expr();
+            
+            return new OracleRangeExpr(expr, upBound);
+        }
+        
         if (lexer.token() == Token.MONKEYS_AT) {
             lexer.nextToken();
 
@@ -369,13 +376,6 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     protected SQLExpr dotRest(SQLExpr expr) {
-        if (lexer.token() == Token.DOT) {
-            lexer.nextToken();
-            SQLExpr upBound = expr();
-            
-            return new OracleRangeExpr(expr, upBound);
-        }
-        
         if (lexer.token() == Token.LITERAL_ALIAS) {
             String name = '"' + lexer.stringVal() + '"';
             lexer.nextToken();
