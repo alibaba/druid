@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
@@ -63,7 +62,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGWithQuery x) {
-        Map<String, String> aliasMap = aliasLocal.get();
+        Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             String alias = null;
             if (x.getName() != null) {
@@ -129,7 +128,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             x.getWith().accept(this);
         }
 
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         for (SQLName name : x.getUsing()) {
             String ident = name.toString();
@@ -141,7 +140,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             }
             stat.incrementSelectCount();
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 aliasMap.put(ident, ident);
             }
@@ -151,7 +150,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         setMode(x, Mode.Delete);
 
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
-        currentTableLocal.set(ident);
+        setCurrentTable(ident);
 
         TableStat stat = tableStats.get(ident);
         if (stat == null) {
@@ -185,7 +184,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGInsertStatement x) {
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         if (x.getWith() != null) {
             x.getWith().accept(this);
@@ -194,11 +193,11 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
-            currentTableLocal.set(ident);
+            setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = tableStats.get(ident);
@@ -208,7 +207,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             }
             stat.incrementInsertCount();
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
                     aliasMap.put(x.getAlias(), ident);
@@ -244,16 +243,16 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGUpdateStatement x) {
-        Map<String, String> oldAliasMap = aliasLocal.get();
+        Map<String, String> oldAliasMap = getAliasMap();
         
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         if (x.getWith() != null) {
             x.getWith().accept(this);
         }
 
         String ident = x.getTableName().toString();
-        currentTableLocal.set(ident);
+        setCurrentTable(ident);
 
         TableStat stat = tableStats.get(ident);
         if (stat == null) {
@@ -262,13 +261,13 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         }
         stat.incrementUpdateCount();
 
-        Map<String, String> aliasMap = aliasLocal.get();
+        Map<String, String> aliasMap = getAliasMap();
         aliasMap.put(ident, ident);
 
         accept(x.getItems());
         accept(x.getWhere());
         
-        aliasLocal.set(oldAliasMap);
+        setAliasMap(oldAliasMap);
 
         return false;
     }

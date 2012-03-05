@@ -136,6 +136,7 @@ public class OracleLexer extends Lexer {
         map.put("IF", Token.IF);
         map.put("ELSE", Token.ELSE);
         map.put("GOTO", Token.GOTO);
+        map.put("COMMIT", Token.COMMIT);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
