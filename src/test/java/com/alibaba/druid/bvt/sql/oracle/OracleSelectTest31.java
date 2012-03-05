@@ -10,19 +10,16 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleBlockTest4 extends OracleTest {
+public class OracleSelectTest31 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "DECLARE" + //
-                     "  done  BOOLEAN;" + //
-                     "BEGIN" + //
-                     "  FOR i IN 1..50 LOOP" + //
-                     "    IF done THEN" + //
-                     "       GOTO end_loop;" + //
-                     "    END IF;" + //
-                     "  <<end_loop>>" + //
-                     "  END LOOP;" + //
-                     "END;";
+        String sql = //
+        "SELECT e1.last_name FROM employees e1" + //
+                "   WHERE f(" + //
+                "   CURSOR(SELECT e2.hire_date FROM employees e2" + //
+                "   WHERE e1.employee_id = e2.manager_id)," + //
+                "   e1.hire_date) = 1" + //
+                "   ORDER BY last_name;"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -40,13 +37,17 @@ public class OracleBlockTest4 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getTables().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("departments")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(4, visitor.getColumns().size());
 
-//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "last_name")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "hire_date")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "manager_id")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+         
+         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -35,6 +34,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
@@ -71,6 +71,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
@@ -142,7 +143,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
         }
 
-        Map<String, String> aliasMap = aliasLocal.get();
+        Map<String, String> aliasMap = getAliasMap();
 
         if (expr instanceof SQLName) {
             String ident;
@@ -232,12 +233,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         String originalTable = currentTableLocal.get();
 
-        currentTableLocal.set((String) x.getQuery().getAttribute("table"));
+        setCurrentTable((String) x.getQuery().getAttribute("table"));
         x.putAttribute("_old_local_", originalTable);
 
         accept(x.getOrderBy());
 
-        currentTableLocal.set(originalTable);
+        setCurrentTable(originalTable);
 
         return false;
     }
@@ -246,7 +247,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public boolean visit(OracleUpdateStatement x) {
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
         setMode(x, Mode.Update);
 
         SQLTableSource tableSource = x.getTableSource();
@@ -258,7 +259,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         if (tableExpr instanceof SQLIdentifierExpr) {
             String ident = tableExpr.toString();
-            currentTableLocal.set(ident);
+            setCurrentTable(ident);
 
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
@@ -267,7 +268,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
             stat.incrementUpdateCount();
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            Map<String, String> aliasMap = getAliasMap();
             aliasMap.put(ident, ident);
         } else {
             tableSource.accept(this);
@@ -280,7 +281,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public void endVisit(OracleUpdateStatement x) {
-        aliasLocal.set(null);
+        clearAliasMap();
     }
 
     public boolean visit(OracleDeleteStatement x) {
@@ -288,7 +289,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public void endVisit(OracleDeleteStatement x) {
-        aliasLocal.set(null);
+        clearAliasMap();
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
@@ -749,7 +750,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(Entry x) {
-        Map<String, String> aliasMap = aliasLocal.get();
+        Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             String alias = null;
             if (x.getName() != null) {
@@ -936,7 +937,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleMergeStatement x) {
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         setMode(x, Mode.Merge);
 
@@ -945,7 +946,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         x.getUsing().accept(this);
 
         String ident = x.getInto().toString();
-        currentTableLocal.set(ident);
+        setCurrentTable(ident);
         x.putAttribute("_old_local_", originalTable);
 
         TableStat stat = tableStats.get(ident);
@@ -955,7 +956,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         }
         stat.incrementMergeCount();
 
-        Map<String, String> aliasMap = aliasLocal.get();
+        Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             if (x.getAlias() != null) {
                 aliasMap.put(x.getAlias(), ident);
@@ -978,7 +979,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleMergeStatement x) {
-        aliasLocal.set(null);
+        clearAliasMap();
     }
 
     @Override
@@ -1037,7 +1038,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
-            currentTableLocal.set(ident);
+            setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = tableStats.get(ident);
@@ -1047,7 +1048,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             }
             stat.incrementInsertCount();
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
                     aliasMap.put(x.getAlias(), ident);
@@ -1074,7 +1075,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         accept(x.getSubQuery());
 
@@ -1119,12 +1120,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             SQLSelect subQuery = ((OracleMultiInsertStatement) parent).getSubQuery();
             if (subQuery != null) {
                 String table = (String) subQuery.getAttribute("_table_");
-                currentTableLocal.set(table);
+                setCurrentTable(table);
             }
         }
         x.getWhen().accept(this);
         x.getThen().accept(this);
-        currentTableLocal.set(originalTable);
+        setCurrentTable(originalTable);
         return false;
     }
 
@@ -1385,6 +1386,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     
     @Override
     public boolean visit(OracleForStatement x) {
+        x.getRange().setParent(x);
+        
+        x.getIndex().accept(this);
+        x.getRange().accept(this);
+        accept(x.getStatements());
+        
         return false;
     }
     
@@ -1511,6 +1518,26 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     
     @Override
     public void endVisit(OracleLabelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleParameter x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleParameter x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleCommitStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCommitStatement x) {
         
     }
 }

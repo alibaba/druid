@@ -171,6 +171,7 @@ public enum Token {
     GRANT("GRANT"),
     LOOP("LOOP"),
     GOTO("GOTO"),
+    COMMIT("COMMIT"),
     
     // transact-sql
     TOP("TOP"),

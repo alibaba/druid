@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
@@ -51,6 +52,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
@@ -280,6 +282,13 @@ public class OracleStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 SQLName label = this.exprParser.name();
                 OracleGotoStatement stmt = new OracleGotoStatement(label);
+                statementList.add(stmt);
+                continue;
+            }
+            
+            if (lexer.token() == Token.COMMIT) {
+                lexer.nextToken();
+                OracleCommitStatement stmt = new OracleCommitStatement();
                 statementList.add(stmt);
                 continue;
             }
@@ -715,12 +724,15 @@ public class OracleStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             for (;;) {
-                SQLColumnDefinition parameter = this.exprParser.parseColumn();
+                OracleParameter parameter = new OracleParameter();
+                parameter.setName(this.exprParser.name());
+                parameter.setDataType(this.exprParser.parseDataType());
+                
                 block.getParameters().add(parameter);
 
                 if (lexer.token() == Token.COLONEQ) {
                     lexer.nextToken();
-                    parameter.setDefaultExpr(this.exprParser.expr());
+                    parameter.setDefaultValue(this.exprParser.expr());
                 }
                 parameter.setParent(block);
                 accept(Token.SEMI);

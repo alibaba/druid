@@ -53,6 +53,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitio
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
@@ -93,6 +94,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
@@ -1195,7 +1197,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleCursorExpr x) {
         print("CURSOR(");
+        incrementIndent();
+        println();
         x.getQuery().accept(this);
+        decrementIndent();
+        println();
         print(")");
         return false;
     }
@@ -1710,7 +1716,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             incrementIndent();
             println();
 
-            for (SQLColumnDefinition param : x.getParameters()) {
+            for (OracleParameter param : x.getParameters()) {
                 param.accept(this);
                 println();
             }
@@ -2443,6 +2449,35 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     
     @Override
     public void endVisit(OracleLabelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleParameter x) {
+        x.getName().accept(this);
+        print(" ");
+        x.getDataType().accept(this);
+        
+        if (x.getDefaultValue() != null) {
+            print(" := ");
+            x.getDefaultValue().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleParameter x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleCommitStatement x) {
+        print("COMMIT");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCommitStatement x) {
         
     }
 }

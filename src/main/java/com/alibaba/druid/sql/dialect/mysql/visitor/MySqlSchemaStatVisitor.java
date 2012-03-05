@@ -1,6 +1,5 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
@@ -45,22 +44,22 @@ import com.alibaba.druid.stat.TableStat.Mode;
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
 
     public boolean visit(SQLSelectStatement x) {
-        aliasLocal.set(new HashMap<String, String>());
-        aliasLocal.get().put("DUAL", null);
+        setAliasMap();
+        getAliasMap().put("DUAL", null);
         
         return true;
     }
     //DUAL
     public boolean visit(MySqlDeleteStatement x) {
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         setMode(x, Mode.Delete);
 
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         if (x.getTableNames().size() == 1) {
             String ident = ((SQLIdentifierExpr) x.getTableNames().get(0)).getName();
-            currentTableLocal.set(ident);
+            setCurrentTable(ident);
         }
 
         for (SQLName tableName : x.getTableNames()) {
@@ -83,7 +82,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     }
 
     public void endVisit(MySqlDeleteStatement x) {
-        aliasLocal.set(null);
+        setAliasMap(null);
     }
 
     @Override
@@ -95,13 +94,13 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlInsertStatement x) {
         setMode(x, Mode.Insert);
 
-        aliasLocal.set(new HashMap<String, String>());
+        setAliasMap();
 
         String originalTable = currentTableLocal.get();
 
         if (x.getTableName() instanceof SQLIdentifierExpr) {
             String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
-            currentTableLocal.set(ident);
+            setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = tableStats.get(ident);
@@ -111,7 +110,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             }
             stat.incrementInsertCount();
 
-            Map<String, String> aliasMap = aliasLocal.get();
+            Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
                 if (x.getAlias() != null) {
                     aliasMap.put(x.getAlias(), ident);

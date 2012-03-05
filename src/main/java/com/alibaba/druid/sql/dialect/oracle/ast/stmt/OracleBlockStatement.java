@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleBlockStatement extends OracleStatementImpl {
 
     private static final long         serialVersionUID = 1L;
 
-    private List<SQLColumnDefinition> parameters       = new ArrayList<SQLColumnDefinition>();
+    private List<OracleParameter> parameters       = new ArrayList<OracleParameter>();
 
     private List<SQLStatement>        statementList    = new ArrayList<SQLStatement>();
 
@@ -32,11 +32,11 @@ public class OracleBlockStatement extends OracleStatementImpl {
         visitor.endVisit(this);
     }
 
-    public List<SQLColumnDefinition> getParameters() {
+    public List<OracleParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<SQLColumnDefinition> parameters) {
+    public void setParameters(List<OracleParameter> parameters) {
         this.parameters = parameters;
     }
 
