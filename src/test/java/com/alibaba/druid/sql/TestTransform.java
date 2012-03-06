@@ -262,6 +262,11 @@ public class TestTransform extends OracleTest {
                 r.setDbPk(rs.getLong(8));
             } else {
                 String part = rs.getString(5);
+                
+                int commentIndex = part.indexOf("--");
+                if (commentIndex != -1) {
+                    part = part.substring(0, commentIndex);
+                }
                 if (part != null) {
                     r.appendSqlText(part);
                 }
