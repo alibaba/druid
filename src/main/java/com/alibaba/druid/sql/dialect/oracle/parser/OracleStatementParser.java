@@ -288,6 +288,10 @@ public class OracleStatementParser extends SQLStatementParser {
             
             if (lexer.token() == Token.COMMIT) {
                 lexer.nextToken();
+                
+                if (identifierEquals("WORK")) {
+                    lexer.nextToken();
+                }
                 OracleCommitStatement stmt = new OracleCommitStatement();
                 statementList.add(stmt);
                 continue;

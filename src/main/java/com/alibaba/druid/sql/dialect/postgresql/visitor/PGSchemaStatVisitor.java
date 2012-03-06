@@ -193,7 +193,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         x.putAttribute("_original_use_mode", getMode());
         setMode(x, Mode.Insert);
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();

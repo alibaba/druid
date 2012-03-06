@@ -231,19 +231,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
         accept(x.getFactoring());
         accept(x.getQuery());
 
-        String originalTable = currentTableLocal.get();
-
-        setCurrentTable((String) x.getQuery().getAttribute("table"));
-        x.putAttribute("_old_local_", originalTable);
+        setCurrentTable(x, (String) x.getQuery().getAttribute("table"));
 
         accept(x.getOrderBy());
-
-        setCurrentTable(originalTable);
 
         return false;
     }
 
     public void endVisit(SQLSelect x) {
+        restoreCurrentTable(x);
     }
 
     public boolean visit(OracleUpdateStatement x) {
@@ -941,12 +937,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
         setMode(x, Mode.Merge);
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         x.getUsing().accept(this);
 
         String ident = x.getInto().toString();
-        setCurrentTable(ident);
+        setCurrentTable(x, ident);
         x.putAttribute("_old_local_", originalTable);
 
         TableStat stat = tableStats.get(ident);
@@ -1034,12 +1030,10 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(InsertIntoClause x) {
-        String originalTable = currentTableLocal.get();
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
-            setCurrentTable(ident);
-            x.putAttribute("_old_local_", originalTable);
+            setCurrentTable(x, ident);
 
             TableStat stat = tableStats.get(ident);
             if (stat == null) {
@@ -1111,7 +1105,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(ConditionalInsertClauseItem x) {
-        String originalTable = currentTableLocal.get();
         SQLObject parent = x.getParent();
         if (parent instanceof ConditionalInsertClause) {
             parent = parent.getParent();
@@ -1120,12 +1113,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             SQLSelect subQuery = ((OracleMultiInsertStatement) parent).getSubQuery();
             if (subQuery != null) {
                 String table = (String) subQuery.getAttribute("_table_");
-                setCurrentTable(table);
+                setCurrentTable(x, table);
             }
         }
         x.getWhen().accept(this);
         x.getThen().accept(this);
-        setCurrentTable(originalTable);
+        restoreCurrentTable(x);
         return false;
     }
 
@@ -1136,6 +1129,12 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public boolean visit(OracleBlockStatement x) {
+        for (OracleParameter param : x.getParameters()) {
+            param.setParent(x);
+            
+            SQLExpr name = param.getName();
+            this.variants.put(name.toString(), name);
+        }
         return true;
     }
 
@@ -1388,7 +1387,9 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public boolean visit(OracleForStatement x) {
         x.getRange().setParent(x);
         
-        x.getIndex().accept(this);
+        SQLName index = x.getIndex();
+        this.getVariants().put(index.toString(), x);
+        
         x.getRange().accept(this);
         accept(x.getStatements());
         
