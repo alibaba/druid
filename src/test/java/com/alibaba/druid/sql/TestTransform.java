@@ -239,7 +239,7 @@ public class TestTransform extends OracleTest {
 
                     try {
                         setInfo(r);
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         e.printStackTrace();
                     }
 
