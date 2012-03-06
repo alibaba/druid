@@ -59,6 +59,11 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 }
                 accept(Token.RPAREN);
                 continue;
+            } else if (identifierEquals("organization")) {
+                lexer.nextToken();
+                accept(Token.INDEX);
+                stmt.setOrganizationIndex(true);
+                continue;
             }
             break;
         }

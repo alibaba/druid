@@ -15,10 +15,10 @@ public class OracleAnyTest extends TestCase {
                      + "UNIQUE DIMENSION RULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0) "
                      + "ORDER BY country, prod, year;";
 
-        String expect = "SELECT country, prod, YEAR, s\n" + "FROM sales_view\n" + "MODEL\n"
-                        + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, YEAR)\n" + "\tMEASURES (sale s)\n"
+        String expect = "SELECT country, prod, year, s\n" + "FROM sales_view\n" + "MODEL\n"
+                        + "\tPARTITION BY (country)\n" + "\tDIMENSION BY (prod, year)\n" + "\tMEASURES (sale s)\n"
                         + "\tIGNORE NAV\n" + "\tUNIQUE DIMENSION\n"
-                        + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, YEAR;\n";
+                        + "\tRULES UPSERT SEQUENTIAL ORDER (s[ANY, 2000] = 0)\n" + "ORDER BY country, prod, year;\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

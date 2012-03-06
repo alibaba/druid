@@ -33,7 +33,7 @@ public class OracleSelectTest15 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("DUAL")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

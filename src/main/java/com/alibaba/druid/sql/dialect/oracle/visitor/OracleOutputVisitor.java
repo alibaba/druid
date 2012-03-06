@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
@@ -75,17 +76,20 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement.Rebuild;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
@@ -93,6 +97,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
@@ -102,6 +110,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
@@ -1976,6 +1985,10 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             println();
             item.accept(this);
         }
+        if (x.isUpdateGlobalIndexes()) {
+            println();
+            print("UPDATE GLOABL INDEXES");
+        }
         decrementIndent();
         return false;
     }
@@ -2105,7 +2118,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleAlterTableAddColumn x) {
         print("ADD (");
-        x.getColumn().accept(this);
+        printAndAccept(x.getColumns(), ", ");
         print(")");
         return false;
     }
@@ -2129,6 +2142,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("(");
         printAndAccept(x.getItems(), ", ");
         print(")");
+        
+        if (x.isIndexOnlyTopLevel()) {
+            print(" INDEX ONLY TOPLEVEL");
+        }
+        
         if (x.getTablespace() != null) {
             print(" TABLESPACE ");
             x.getTablespace().accept(this);
@@ -2136,6 +2154,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         if (x.isOnline()) {
             print(" ONLINE");
+        }
+        
+        if (x.isNoParallel()) {
+            print(" NOPARALLEL");
+        } else if (x.getParallel() != null){
+            print(" PARALLEL ");
+            x.getParallel().accept(this);
         }
         return false;
     }
@@ -2157,6 +2182,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getRebuild() != null) {
             print(" ");
             x.getRebuild().accept(this);
+        }
+        
+        if (x.getParallel() != null) {
+            print(" PARALLEL");
+            x.getParallel().accept(this);
         }
 
         return false;
@@ -2361,6 +2391,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         this.visit((SQLCreateTableStatement) x);
 
         incrementIndent();
+        
+        if (x.isOrganizationIndex()) {
+            print(" ORGANIZATION INDEX");
+        }
+        
         if (x.getTablespace() != null) {
             print(" TABLESPACE ");
             x.getTablespace().accept(this);
@@ -2478,6 +2513,169 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCommitStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterTriggerStatement x) {
+        print("ALTER TRIGGER ");
+        x.getName().accept(this);
+       
+        if (x.isCompile()) {
+            print(" COMPILE");
+        }
+        
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
+                print("ENABLE");
+            } else {
+                print("DISABLE");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTriggerStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterSynonymStatement x) {
+        print("ALTER SYNONYM ");
+        x.getName().accept(this);
+        
+        if (x.isCompile()) {
+            print(" COMPILE");
+        }
+        
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
+                print("ENABLE");
+            } else {
+                print("DISABLE");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterSynonymStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(AsOfSnapshotClause x) {
+        print("AS OF SNAPSHOT(");
+        x.getExpr().accept(this);
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(AsOfSnapshotClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterViewStatement x) {
+        print("ALTER VIEW ");
+        x.getName().accept(this);
+        
+        if (x.isCompile()) {
+            print(" COMPILE");
+        }
+        
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
+                print("ENABLE");
+            } else {
+                print("DISABLE");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterViewStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterTableMoveTablespace x) {
+        print(" MOVE TABLESPACE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableMoveTablespace x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleSizeExpr x) {
+        x.getValue().accept(this);
+        print(x.getUnit().name());
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSizeExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleFileSpecification x) {
+        printAndAccept(x.getFileNames(), ", ");
+        
+        if (x.getSize() != null) {
+            print(" SIZE ");
+            x.getSize().accept(this);
+        }
+        
+        if (x.isAutoExtendOff()) {
+            print(" AUTOEXTEND OFF");
+        } else if (x.getAutoExtendOn() != null) {
+            print(" AUTOEXTEND ON ");
+            x.getAutoExtendOn().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleFileSpecification x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterTablespaceAddDataFile x) {
+        print("ADD DATAFILE");
+        incrementIndent();
+        for (OracleFileSpecification file : x.getFiles()) {
+            println();
+            file.accept(this);
+        }
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTablespaceAddDataFile x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleAlterTablespaceStatement x) {
+        print("ALTER TABLESPACE ");
+        x.getName().accept(this);
+        println();
+        x.getItem().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTablespaceStatement x) {
         
     }
 }

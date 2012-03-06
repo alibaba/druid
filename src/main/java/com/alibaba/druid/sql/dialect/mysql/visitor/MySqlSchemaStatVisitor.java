@@ -64,11 +64,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         for (SQLName tableName : x.getTableNames()) {
             String ident = tableName.toString();
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementDeleteCount();
         }
 
@@ -100,11 +96,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
             String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
             setCurrentTable(x, ident);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();

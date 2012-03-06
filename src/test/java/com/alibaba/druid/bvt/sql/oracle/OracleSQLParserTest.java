@@ -17,27 +17,6 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 
 public class OracleSQLParserTest extends TestCase {
 
-    public void test_0() throws Exception {
-        String sql = "UPDATE employees SET salary = salary * 1.1 WHERE employee_id IN (SELECT employee_id FROM job_history);";
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        Assert.assertEquals(1, statementList.size());
-
-        OracleUpdateStatement statement = (OracleUpdateStatement) statementList.get(0);
-        Assert.assertEquals(0, statement.getHints().size());
-        OracleUpdateSetListClause setList = (OracleUpdateSetListClause) statement.getSetClause();
-        Assert.assertEquals(1, setList.getItems().size());
-        OracleUpdateSetListSingleColumnItem item = (OracleUpdateSetListSingleColumnItem) setList.getItems().get(0);
-        SQLIdentifierExpr column = (SQLIdentifierExpr) item.getColumn();
-        Assert.assertEquals("salary", column.getName());
-
-        SQLBinaryOpExpr value = (SQLBinaryOpExpr) item.getValue();
-        Assert.assertEquals(SQLBinaryOperator.Multiply, value.getOperator());
-
-        String text = output(statementList);
-        System.out.println(text);
-    }
 
     public void test_1() throws Exception {
         String sql = "SELECT employees_seq.nextval FROM DUAL;";

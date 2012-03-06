@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
@@ -19,13 +20,24 @@ public class OracleAlterIndexStatement extends OracleStatementImpl {
 
     private Rebuild           rebuild;
 
+    private SQLExpr           parallel;
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, rebuild);
+            acceptChild(visitor, parallel);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getParallel() {
+        return parallel;
+    }
+
+    public void setParallel(SQLExpr parallel) {
+        this.parallel = parallel;
     }
 
     public Boolean getMonitoringUsage() {

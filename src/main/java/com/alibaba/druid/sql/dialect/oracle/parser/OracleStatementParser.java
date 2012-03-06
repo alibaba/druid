@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -39,11 +40,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableMoveTablespace;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableRenameTo;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.NestedTablePartitionSpec;
@@ -51,6 +54,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartit
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableSplitPartition.UpdateIndexesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableTruncatePartition;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceAddDataFile;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTablespaceStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTriggerStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
@@ -58,6 +65,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGrantStatement;
@@ -69,7 +77,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.Lo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSetTransactionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -277,7 +284,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseIf());
                 continue;
             }
-            
+
             if (lexer.token() == Token.GOTO) {
                 lexer.nextToken();
                 SQLName label = this.exprParser.name();
@@ -285,10 +292,10 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (lexer.token() == Token.COMMIT) {
                 lexer.nextToken();
-                
+
                 if (identifierEquals("WORK")) {
                     lexer.nextToken();
                 }
@@ -296,7 +303,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (lexer.token() == Token.LTLT) {
                 lexer.nextToken();
                 SQLName label = this.exprParser.name();
@@ -305,8 +312,6 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
-            
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
@@ -468,17 +473,160 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterIndexStatement stmt = new OracleAlterIndexStatement();
             stmt.setName(this.exprParser.name());
 
-            if (identifierEquals("rebuild")) {
-                lexer.nextToken();
+            for (;;) {
+                if (identifierEquals("rebuild")) {
+                    lexer.nextToken();
 
-                OracleAlterIndexStatement.Rebuild rebuild = new OracleAlterIndexStatement.Rebuild();
-                stmt.setRebuild(rebuild);
-            } else if (identifierEquals("MONITORING")) {
-                lexer.nextToken();
-                acceptIdentifier("USAGE");
-                stmt.setMonitoringUsage(Boolean.TRUE);
+                    OracleAlterIndexStatement.Rebuild rebuild = new OracleAlterIndexStatement.Rebuild();
+                    stmt.setRebuild(rebuild);
+                    continue;
+                } else if (identifierEquals("MONITORING")) {
+                    lexer.nextToken();
+                    acceptIdentifier("USAGE");
+                    stmt.setMonitoringUsage(Boolean.TRUE);
+                    continue;
+                } else if (identifierEquals("PARALLEL")) {
+                    lexer.nextToken();
+                    stmt.setParallel(this.exprParser.expr());
+                }
+                break;
             }
 
+            return stmt;
+        } else if (identifierEquals("TRIGGER")) {
+            lexer.nextToken();
+            OracleAlterTriggerStatement stmt = new OracleAlterTriggerStatement();
+            stmt.setName(this.exprParser.name());
+
+            for (;;) {
+                if (identifierEquals("ENABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.TRUE);
+                    continue;
+                } else if (identifierEquals("DISABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.FALSE);
+                    continue;
+                } else if (identifierEquals("COMPILE")) {
+                    lexer.nextToken();
+                    stmt.setCompile(true);
+                    continue;
+                }
+                break;
+            }
+
+            return stmt;
+        } else if (identifierEquals("SYNONYM")) {
+            lexer.nextToken();
+            OracleAlterSynonymStatement stmt = new OracleAlterSynonymStatement();
+            stmt.setName(this.exprParser.name());
+
+            for (;;) {
+                if (identifierEquals("ENABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.TRUE);
+                    continue;
+                } else if (identifierEquals("DISABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.FALSE);
+                    continue;
+                } else if (identifierEquals("COMPILE")) {
+                    lexer.nextToken();
+                    stmt.setCompile(true);
+                    continue;
+                }
+                break;
+            }
+
+            return stmt;
+        } else if (lexer.token() == Token.VIEW) {
+            lexer.nextToken();
+            OracleAlterViewStatement stmt = new OracleAlterViewStatement();
+            stmt.setName(this.exprParser.name());
+
+            for (;;) {
+                if (identifierEquals("ENABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.TRUE);
+                    continue;
+                } else if (identifierEquals("DISABLE")) {
+                    lexer.nextToken();
+                    stmt.setEnable(Boolean.FALSE);
+                    continue;
+                } else if (identifierEquals("COMPILE")) {
+                    lexer.nextToken();
+                    stmt.setCompile(true);
+                    continue;
+                }
+                break;
+            }
+
+            return stmt;
+        } else if (identifierEquals("TABLESPACE")) {
+            lexer.nextToken();
+
+            OracleAlterTablespaceStatement stmt = new OracleAlterTablespaceStatement();
+            stmt.setName(this.exprParser.name());
+
+            if (identifierEquals("ADD")) {
+                lexer.nextToken();
+                
+                if (identifierEquals("DATAFILE")) {
+                    lexer.nextToken();
+                    
+                    OracleAlterTablespaceAddDataFile item = new OracleAlterTablespaceAddDataFile();
+                    
+                    for (;;) {
+                        OracleFileSpecification file = new OracleFileSpecification();
+                        
+                        for (;;) {
+                            SQLExpr fileName = this.exprParser.expr();
+                            file.getFileNames().add(fileName);
+                            
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            
+                            break;
+                        }
+                        
+                        if (identifierEquals("SIZE")) {
+                            lexer.nextToken();
+                            file.setSize(this.exprParser.expr());
+                        }
+                        
+                        if (identifierEquals("AUTOEXTEND")) {
+                            lexer.nextToken();
+                            if (identifierEquals("OFF")) {
+                                lexer.nextToken();
+                                file.setAutoExtendOff(true);
+                            } else if (identifierEquals("ON")) {
+                                lexer.nextToken();
+                                file.setAutoExtendOn(this.exprParser.expr());
+                            } else {
+                                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                            }
+                        }
+                        
+                        item.getFiles().add(file);
+                        
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        
+                        break;
+                    }
+                    
+                    stmt.setItem(item);
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+            } else {
+                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            }
+            
             return stmt;
         }
 
@@ -496,11 +644,19 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 if (lexer.token() == Token.LPAREN) {
                     lexer.nextToken();
-                    SQLColumnDefinition columnDef = this.exprParser.parseColumn();
-                    accept(Token.RPAREN);
 
                     OracleAlterTableAddColumn item = new OracleAlterTableAddColumn();
-                    item.setColumn(columnDef);
+
+                    for (;;) {
+                        SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+                        item.getColumns().add(columnDef);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        break;
+                    }
+                    accept(Token.RPAREN);
 
                     stmt.getItems().add(item);
                 } else if (lexer.token() == Token.CONSTRAINT) {
@@ -511,7 +667,18 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 continue;
             } else if (identifierEquals("MOVE")) {
-                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                lexer.nextToken();
+
+                if (identifierEquals("TABLESPACE")) {
+                    lexer.nextToken();
+
+                    OracleAlterTableMoveTablespace item = new OracleAlterTableMoveTablespace();
+                    item.setName(this.exprParser.name());
+
+                    stmt.getItems().add(item);
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
             } else if (identifierEquals("RENAME")) {
                 stmt.getItems().add(parseAlterTableRename());
             } else if (identifierEquals("MODIFY")) {
@@ -559,12 +726,24 @@ public class OracleStatementParser extends SQLStatementParser {
             break;
         }
 
+        if (lexer.token() == Token.UPDATE) {
+            lexer.nextToken();
+
+            if (identifierEquals("GLOBAL")) {
+                lexer.nextToken();
+                acceptIdentifier("INDEXES");
+                stmt.setUpdateGlobalIndexes(true);
+            } else {
+                throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+            }
+        }
+
         return stmt;
     }
 
     private OracleAlterTableItem parseAlterTableRename() {
         acceptIdentifier("RENAME");
-        
+
         if (lexer.token() == Token.TO) {
             lexer.nextToken();
             OracleAlterTableRenameTo item = new OracleAlterTableRenameTo();
@@ -581,30 +760,18 @@ public class OracleStatementParser extends SQLStatementParser {
 
         SQLName name = this.exprParser.name();
 
+        SQLConstaint constraint;
         if (lexer.token() == Token.PRIMARY) {
-            lexer.nextToken();
-            accept(Token.KEY);
-
-            OraclePrimaryKey primaryKey = new OraclePrimaryKey();
-            accept(Token.LPAREN);
-            this.exprParser.exprList(primaryKey.getColumns());
-            accept(Token.RPAREN);
-
-            item.setConstraint(primaryKey);
-            if (lexer.token() == Token.USING) {
-                lexer.nextToken();
-                accept(Token.INDEX);
-                primaryKey.setUsingIndex(this.exprParser.expr());
-            }
-
-            primaryKey.setName(name);
-
-            item.setConstraint(primaryKey);
-
-            return item;
+            constraint = exprParser.parsePrimaryKey();
+        } else {
+            throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
 
-        throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+        constraint.setName(name);
+
+        item.setConstraint(constraint);
+
+        return item;
     }
 
     private void parseAlterTableDrop(OracleAlterTableStatement stmt) {
@@ -731,7 +898,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 OracleParameter parameter = new OracleParameter();
                 parameter.setName(this.exprParser.name());
                 parameter.setDataType(this.exprParser.parseDataType());
-                
+
                 block.getParameters().add(parameter);
 
                 if (lexer.token() == Token.COLONEQ) {
@@ -755,6 +922,10 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.END);
 
         return block;
+    }
+
+    public OracleSelectParser createSQLSelectParser() {
+        return new OracleSelectParser(this.lexer);
     }
 
     public OracleMergeStatement parseMerge() throws ParserException {
@@ -1106,7 +1277,7 @@ public class OracleStatementParser extends SQLStatementParser {
         }
 
         OracleCreateIndexStatement stmt = new OracleCreateIndexStatement();
-        if (lexer.token() == Token.UNION) {
+        if (lexer.token() == Token.UNIQUE) {
             stmt.setType(OracleCreateIndexStatement.Type.UNIQUE);
             lexer.nextToken();
         } else if (identifierEquals("BITMAP")) {
@@ -1143,6 +1314,20 @@ public class OracleStatementParser extends SQLStatementParser {
             } else if (identifierEquals("ONLINE")) {
                 lexer.nextToken();
                 stmt.setOnline(true);
+                continue;
+            } else if (identifierEquals("NOPARALLEL")) {
+                lexer.nextToken();
+                stmt.setNoParallel(true);
+                continue;
+            } else if (identifierEquals("PARALLEL")) {
+                lexer.nextToken();
+                stmt.setParallel(this.exprParser.expr());
+                continue;
+            } else if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+                acceptIdentifier("ONLY");
+                acceptIdentifier("TOPLEVEL");
+                stmt.setIndexOnlyTopLevel(true);
                 continue;
             } else {
                 break;

@@ -105,21 +105,86 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
             return COMPOSITE_TYPE;
         }
 
-        OpenType<?>[] indexTypes = new OpenType<?>[] { //
-        SimpleType.LONG, SimpleType.STRING, SimpleType.STRING,
-                new ArrayType<SimpleType<String>>(SimpleType.STRING, false), SimpleType.DATE, //
-                SimpleType.STRING, SimpleType.STRING, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG //
-                , SimpleType.DATE, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.INTEGER, SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING //
-                , SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER, SimpleType.DATE, SimpleType.LONG //
-                , SimpleType.LONG, SimpleType.INTEGER, SimpleType.INTEGER, SimpleType.LONG, SimpleType.DATE //
-                , SimpleType.LONG, SimpleType.LONG, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING //
-                , SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG, SimpleType.INTEGER //
-                , SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG //
-                //
-                , new ArrayType<Long>(SimpleType.LONG, true), new ArrayType<Long>(SimpleType.LONG, true)
+        OpenType<?>[] indexTypes = new OpenType<?>[] {
+                // 0 - 4
+                SimpleType.LONG, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                new ArrayType<SimpleType<String>>(SimpleType.STRING, false), //
+                SimpleType.DATE, //
+
+                // 5 - 9
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                SimpleType.INTEGER, //
+                SimpleType.INTEGER, //
+                SimpleType.STRING, //
+
+                // 10 - 14
+                SimpleType.LONG, //
+                SimpleType.INTEGER, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+
+                // 14 - 19
+                SimpleType.DATE, //
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+
+                // 20 - 24
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.INTEGER, //
+
+                // 25 - 29
+                SimpleType.INTEGER, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.STRING, //
+
+                // 30 - 34
+                SimpleType.STRING, //
+                SimpleType.LONG, //
+                SimpleType.INTEGER, //
+                SimpleType.DATE, //
+                SimpleType.LONG, //
+
+                // 35 - 39
+                SimpleType.LONG, //
+                SimpleType.INTEGER, //
+                SimpleType.INTEGER, //
+                SimpleType.LONG, //
+                SimpleType.DATE,
+
+                // 40 - 44
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.STRING, //
+                SimpleType.STRING,
+
+                // 45 - 49
+                SimpleType.LONG, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                SimpleType.LONG, //
+                SimpleType.INTEGER, //
+
+                // 50 - 54
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.LONG, //
+                SimpleType.LONG, // 
+                new ArrayType<Long>(SimpleType.LONG, true), // 
+                
+                // 55 -
+                new ArrayType<Long>(SimpleType.LONG, true)
         //
         //
         };
@@ -170,29 +235,37 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "StatementLastErrorMessage" //
                 ,
                 // 30 - 34
-                "StatementLastErrorStackTrace",
-                "StatementExecuteMillisTotal",
-                "ConnectionConnectingCount",
+                "StatementLastErrorStackTrace", "StatementExecuteMillisTotal", "ConnectionConnectingCount",
                 "StatementExecuteLastTime",
                 "ResultSetCloseCount" //
                 ,
                 // 35 -39
-                "ResultSetOpenCount",
-                "ResultSetOpenningCount",
-                "ResultSetOpenningMax",
-                "ResultSetFetchRowCount",
+                "ResultSetOpenCount", "ResultSetOpenningCount", "ResultSetOpenningMax", "ResultSetFetchRowCount",
                 "ResultSetLastOpenTime" //
                 ,
                 // 40 - 44
-                "ResultSetErrorCount", "ResultSetOpenningMillisTotal", "ResultSetLastErrorTime",
-                "ResultSetLastErrorMessage", "ResultSetLastErrorStackTrace", "ConnectionConnectCount",
-                "ConnectionErrorLastMessage", "ConnectionErrorLastStackTrace",
-                "ConnectionConnectMillisTotal",
-                "ConnectionConnectingCountMax" //
-                , "ConnectionConnectMillisMax", "ConnectionErrorLastTime", "ConnectionAliveMillisMax",
-                "ConnectionAliveMillisMin" //
-                //
-                , "ConnectionHistogram", "StatementHistogram",
+                "ResultSetErrorCount", //
+                "ResultSetOpenningMillisTotal", //
+                "ResultSetLastErrorTime", //
+                "ResultSetLastErrorMessage", //
+                "ResultSetLastErrorStackTrace", //
+
+                // 45 - 49
+                "ConnectionConnectCount", //
+                "ConnectionErrorLastMessage", //
+                "ConnectionErrorLastStackTrace", //
+                "ConnectionConnectMillisTotal", //
+                "ConnectionConnectingCountMax",
+
+                // 50 - 54
+                "ConnectionConnectMillisMax", //
+                "ConnectionErrorLastTime", //
+                "ConnectionAliveMillisMax", //
+                "ConnectionAliveMillisMin", //
+                "ConnectionHistogram", //
+                
+                // 55 -
+                "StatementHistogram",
         //
         };
 

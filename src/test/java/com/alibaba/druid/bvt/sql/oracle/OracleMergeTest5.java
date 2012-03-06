@@ -40,16 +40,16 @@ public class OracleMergeTest5 extends OracleTest {
 
         Assert.assertEquals(2, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bonuses")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN_HZ")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("MEMBER_LAST_LOGIN")));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(12, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
 
 }

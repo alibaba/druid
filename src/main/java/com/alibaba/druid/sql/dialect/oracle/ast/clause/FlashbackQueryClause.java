@@ -77,4 +77,27 @@ public abstract class FlashbackQueryClause extends OracleSQLObjectImpl {
             visitor.endVisit(this);
         }
     }
+    
+    public static class AsOfSnapshotClause extends FlashbackQueryClause {
+
+        private static final long serialVersionUID = 1L;
+
+        private SQLExpr           expr;
+
+        public SQLExpr getExpr() {
+            return expr;
+        }
+
+        public void setExpr(SQLExpr expr) {
+            this.expr = expr;
+        }
+
+        @Override
+        public void accept0(OracleASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, expr);
+            }
+            visitor.endVisit(this);
+        }
+    }
 }

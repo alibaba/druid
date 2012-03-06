@@ -66,6 +66,45 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public final static String                         ATTR_COLUMN    = "_column_";
 
     private Mode                                       mode;
+    
+    public TableStat getTableStat(String ident) {
+        return getTableStat(ident, null);
+    }
+    
+    public Column addColumn(String tableName, String columnName) {
+        tableName = handleName(tableName);
+        columnName = handleName(columnName);
+        
+        Column column = new Column(tableName, columnName);
+        columns.add(column);
+        return column;
+    }
+
+    public TableStat getTableStat(String tableName, String alias) {
+        if (variants.containsKey(tableName)){
+            return null;
+        }
+        
+        tableName = handleName(tableName);
+        TableStat stat = tableStats.get(tableName);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(tableName), stat);
+            if (alias != null) {
+                aliasMap.put(alias, tableName);    
+            }
+        }
+        return stat;
+    }
+
+    private String handleName(String ident) {
+        ident = ident.replaceAll("\"", "");
+        ident = ident.replaceAll(" ", "");
+        
+        ident = aliasWrap(ident);
+        
+        return ident;
+    }
 
     public Map<String, SQLObject> getVariants() {
         return variants;
@@ -89,6 +128,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public void setCurrentTable(String table) {
         this.currentTable = table;
+    }
+
+    public void setCurrentTable(SQLObject x) {
+        x.putAttribute("_old_local_", this.currentTable);
     }
 
     public void restoreCurrentTable(SQLObject x) {
@@ -330,11 +373,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -359,11 +398,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementDropCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -388,11 +423,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -437,7 +468,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
 
-                setCurrentTable(ident);
+                setCurrentTable(x, ident);
                 x.putAttribute(ATTR_TABLE, ident);
                 if (x.getParent() instanceof SQLSelect) {
                     x.getParent().putAttribute(ATTR_TABLE, ident);
@@ -448,6 +479,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getFrom() != null) {
             x.getFrom().accept(this); // 提前执行，获得aliasMap
+            String table = (String) x.getFrom().getAttribute(ATTR_TABLE);
+            if (table != null) {
+                x.putAttribute(ATTR_TABLE, table);
+            }
         }
 
         if (x.getWhere() != null) {
@@ -480,8 +515,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             owner = aliasWrap(owner);
 
             if (owner != null) {
-                Column column = new Column(owner, x.getName());
-                columns.add(column);
+                Column column = addColumn(owner, x.getName());
                 x.putAttribute(ATTR_COLUMN, column);
             }
         }
@@ -546,8 +580,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (currentTable != null) {
-            Column column = new Column(currentTable, ident);
-            columns.add(column);
+            Column column = addColumn(currentTable, ident);
             x.putAttribute(ATTR_COLUMN, column);
         } else {
             Column column = handleUnkownColumn(ident);
@@ -559,9 +592,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected Column handleUnkownColumn(String columnName) {
-        Column column = new Column("UNKNOWN", columnName);
-        columns.add(column);
-        return column;
+        return addColumn("UNKNOWN", columnName);
     }
 
     public boolean visit(SQLAllColumnExpr x) {
@@ -572,7 +603,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         if (currentTable != null) {
-            columns.add(new Column(currentTable, "*"));
+            addColumn(currentTable, "*");
         }
         return false;
     }
@@ -627,12 +658,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             Map<String, String> aliasMap = getAliasMap();
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-                x.putAttribute(ATTR_TABLE, ident);
-            }
+            TableStat stat = getTableStat(ident);
 
             Mode mode = getMode();
             switch (mode) {
@@ -673,7 +699,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return true;
     }
 
+    public void endVisit(SQLSelect x) {
+        restoreCurrentTable(x);
+    }
+
     public boolean visit(SQLSelect x) {
+        setCurrentTable(x);
+
         if (x.getOrderBy() != null) {
             x.getOrderBy().setParent(x);
         }
@@ -708,11 +740,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String ident = x.getTableName().toString();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();
 
         Map<String, String> aliasMap = getAliasMap();
@@ -732,11 +760,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String ident = x.getTableName().toString();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementDeleteCount();
 
         accept(x.getWhere());
@@ -778,11 +802,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String tableName = x.getName().toString();
-        TableStat stat = new TableStat();
+        
+        TableStat stat = getTableStat(tableName);
         stat.incrementCreateCount();
-        tableStats.put(new TableStat.Name(tableName), stat);
+        setCurrentTable(x, tableName);
 
         accept(x.getTableElementList());
+        
+        restoreCurrentTable(x);
 
         return false;
     }
@@ -801,7 +828,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String columnName = x.getName().toString();
-        columns.add(new Column(tableName, columnName));
+        addColumn(tableName, columnName);
 
         return false;
     }

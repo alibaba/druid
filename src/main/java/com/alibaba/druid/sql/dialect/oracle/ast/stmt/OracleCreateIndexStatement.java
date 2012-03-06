@@ -3,25 +3,48 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleCreateIndexStatement extends OracleStatementImpl {
 
-    private static final long          serialVersionUID = 1L;
+    private static final long          serialVersionUID  = 1L;
 
     private SQLName                    name;
 
     private SQLName                    table;
 
-    private List<SQLSelectOrderByItem> items            = new ArrayList<SQLSelectOrderByItem>();
+    private List<SQLSelectOrderByItem> items             = new ArrayList<SQLSelectOrderByItem>();
 
     private SQLName                    tablespace;
 
     private Type                       type;
 
-    private boolean                    online           = false;
+    private boolean                    online            = false;
+
+    private boolean                    indexOnlyTopLevel = false;
+
+    private boolean                    noParallel;
+
+    private SQLExpr                    parallel;
+
+    public SQLExpr getParallel() {
+        return parallel;
+    }
+
+    public void setParallel(SQLExpr parallel) {
+        this.parallel = parallel;
+    }
+
+    public boolean isNoParallel() {
+        return noParallel;
+    }
+
+    public void setNoParallel(boolean noParallel) {
+        this.noParallel = noParallel;
+    }
 
     public Type getType() {
         return type;
@@ -31,6 +54,14 @@ public class OracleCreateIndexStatement extends OracleStatementImpl {
         this.type = type;
     }
 
+    public boolean isIndexOnlyTopLevel() {
+        return indexOnlyTopLevel;
+    }
+
+    public void setIndexOnlyTopLevel(boolean indexOnlyTopLevel) {
+        this.indexOnlyTopLevel = indexOnlyTopLevel;
+    }
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -38,6 +69,7 @@ public class OracleCreateIndexStatement extends OracleStatementImpl {
             acceptChild(visitor, table);
             acceptChild(visitor, items);
             acceptChild(visitor, tablespace);
+            acceptChild(visitor, parallel);
         }
         visitor.endVisit(this);
     }

@@ -36,9 +36,9 @@ public class OracleSelectTest20 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
+//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

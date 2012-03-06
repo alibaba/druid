@@ -33,7 +33,7 @@ public class OracleSelectTest1 extends OracleTest {
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("orders")));
 
         Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
     }

@@ -12,7 +12,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleStatement {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID  = 1L;
 
     private SQLName           tablespace;
 
@@ -25,7 +25,17 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
     // NOPARALLEL
     private Boolean           parallel;
 
-    private List<StorageItem> storage          = new ArrayList<StorageItem>();
+    private List<StorageItem> storage           = new ArrayList<StorageItem>();
+
+    private boolean           organizationIndex = false;
+
+    public boolean isOrganizationIndex() {
+        return organizationIndex;
+    }
+
+    public void setOrganizationIndex(boolean organizationIndex) {
+        this.organizationIndex = organizationIndex;
+    }
 
     public Boolean getParallel() {
         return parallel;

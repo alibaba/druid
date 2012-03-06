@@ -17,14 +17,23 @@ package com.alibaba.druid.stat;
 
 public class TableStat {
 
-    int selectCount = 0;
-    int updateCount = 0;
-    int deleteCount = 0;
-    int insertCount = 0;
-    int dropCount   = 0;
-    int mergeCount  = 0;
-    int createCount = 0;
-    int alterCount  = 0;
+    int selectCount      = 0;
+    int updateCount      = 0;
+    int deleteCount      = 0;
+    int insertCount      = 0;
+    int dropCount        = 0;
+    int mergeCount       = 0;
+    int createCount      = 0;
+    int alterCount       = 0;
+    int createIndexCount = 0;
+
+    public int getCreateIndexCount() {
+        return createIndexCount;
+    }
+
+    public void incrementCreateIndexCount() {
+        createIndexCount++;
+    }
 
     public int getAlterCount() {
         return alterCount;
@@ -135,6 +144,9 @@ public class TableStat {
         }
         if (alterCount > 0) {
             buf.append("Alter");
+        }
+        if (createIndexCount > 0) {
+            buf.append("CreateIndex");
         }
 
         return buf.toString();

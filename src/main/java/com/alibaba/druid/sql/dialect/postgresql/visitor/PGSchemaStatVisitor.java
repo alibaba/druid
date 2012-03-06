@@ -97,11 +97,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     public boolean visit(IntoClause x) {
         String ident = x.getTable().toString();
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementInsertCount();
         return false;
     }
@@ -133,11 +129,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         for (SQLName name : x.getUsing()) {
             String ident = name.toString();
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementSelectCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -152,14 +144,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         String ident = ((SQLIdentifierExpr) x.getTableName()).getName();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-            if (x.getAlias() != null) {
-                tableStats.put(new TableStat.Name(x.getAlias()), stat);
-            }
-        }
+        TableStat stat = getTableStat(ident, x.getAlias());
         stat.incrementDeleteCount();
 
         accept(x.getWhere());
@@ -200,11 +185,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -254,11 +235,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
         String ident = x.getTableName().toString();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();
 
         Map<String, String> aliasMap = getAliasMap();

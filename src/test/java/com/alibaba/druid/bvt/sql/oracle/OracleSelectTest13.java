@@ -35,12 +35,12 @@ public class OracleSelectTest13 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("BUSINESS_ORDER")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("retl_data_search")));
 
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(7, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

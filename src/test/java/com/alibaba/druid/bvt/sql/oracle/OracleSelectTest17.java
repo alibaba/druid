@@ -33,9 +33,9 @@ public class OracleSelectTest17 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("v$session")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(5, visitor.getColumns().size());
 
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
 //        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

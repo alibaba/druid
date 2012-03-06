@@ -34,12 +34,12 @@ public class OracleAlterTableTest7 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_ship_order")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
-        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "forwarder_service")));
+         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "status")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

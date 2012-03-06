@@ -38,7 +38,7 @@ public class OracleAlterTableTest3 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("WRH$_ROWCACHE_SUMMARY")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

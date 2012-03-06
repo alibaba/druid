@@ -56,8 +56,10 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 
 public class SQLExprParser extends SQLParser {
 
@@ -214,6 +216,7 @@ public class SQLExprParser extends SQLParser {
             case LIMIT:
             case SCHEMA:
             case AT:
+            case COLUMN:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextToken();
                 break;
@@ -1130,5 +1133,9 @@ public class SQLExprParser extends SQLParser {
         }
 
         return column;
+    }
+    
+    public SQLPrimaryKey parsePrimaryKey() {
+        throw new ParserException("TODO");
     }
 }

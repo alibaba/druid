@@ -286,7 +286,7 @@ public class SQLStatementParser extends SQLParser {
         if (token == Token.TABLE || identifierEquals("GLOBAL")) {
             SQLCreateTableParser createTableParser = getSQLCreateTableParser();
             return createTableParser.parseCrateTable(false);
-        } else if (token == Token.INDEX) {
+        } else if (token == Token.INDEX || token == Token.UNIQUE) {
             return parseCreateIndex(false);
         }
 
