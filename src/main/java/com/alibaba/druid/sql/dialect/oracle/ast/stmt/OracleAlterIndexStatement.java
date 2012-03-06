@@ -12,6 +12,8 @@ public class OracleAlterIndexStatement extends OracleStatementImpl {
 
     private SQLName           name;
 
+    private SQLName           renameTo;
+
     private boolean           compile;
 
     private Boolean           enable;
@@ -26,10 +28,19 @@ public class OracleAlterIndexStatement extends OracleStatementImpl {
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
+            acceptChild(visitor, renameTo);
             acceptChild(visitor, rebuild);
             acceptChild(visitor, parallel);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLName getRenameTo() {
+        return renameTo;
+    }
+
+    public void setRenameTo(SQLName renameTo) {
+        this.renameTo = renameTo;
     }
 
     public SQLExpr getParallel() {

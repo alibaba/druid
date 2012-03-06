@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.parser;
 
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 
 public class SQLCreateTableParser extends SQLDDLParser {
 
@@ -65,17 +66,23 @@ public class SQLCreateTableParser extends SQLDDLParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
-            while (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_ALIAS) {
-                SQLColumnDefinition column = this.exprParser.parseColumn();
-                createTable.getTableElementList().add(column);
-
-                // parseConstaint(column.getConstaints());
-
-                if (lexer.token() != Token.COMMA) {
-                    break;
+            for (;;) {
+                if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_ALIAS) {
+                    SQLColumnDefinition column = this.exprParser.parseColumn();
+                    createTable.getTableElementList().add(column);
+                } else if (lexer.token() == Token.PRIMARY) {
+                    SQLPrimaryKey primaryKey = exprParser.parsePrimaryKey();
+                    createTable.getTableElementList().add(primaryKey);
+                } else {
+                    throw new ParserException("TODO " + lexer.token());
+                }
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
                 }
 
-                lexer.nextToken();
+                break;
             }
 
             // while
@@ -89,10 +96,6 @@ public class SQLCreateTableParser extends SQLDDLParser {
 
             accept(Token.RPAREN);
 
-        }
-
-        if (lexer.token() == Token.ON) {
-            throw new ParserException("TODO");
         }
 
         return createTable;

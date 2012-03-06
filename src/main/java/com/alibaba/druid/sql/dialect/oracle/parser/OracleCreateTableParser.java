@@ -1,6 +1,6 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.StorageItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -31,6 +31,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             if (identifierEquals("TABLESPACE")) {
                 lexer.nextToken();
                 stmt.setTablespace(this.exprParser.name());
+                continue;
             } else if (identifierEquals("IN_MEMORY_METADATA")) {
                 lexer.nextToken();
                 stmt.setInMemoryMetadata(true);
@@ -43,21 +44,74 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setParallel(false);
                 continue;
+            } else if (identifierEquals("LOGGING")) {
+                lexer.nextToken();
+                stmt.setLogging(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOCOMPRESS")) {
+                lexer.nextToken();
+                stmt.setCompress(Boolean.FALSE);
+                continue;
+            } else if (lexer.token() == Token.ON) {
+                lexer.nextToken();
+                accept(Token.COMMIT);
+                stmt.setOnCommit(true);
+                continue;
+            } else if (identifierEquals("PRESERVE")) {
+                lexer.nextToken();
+                acceptIdentifier("ROWS");
+                stmt.setPreserveRows(true);
+                continue;
             } else if (identifierEquals("STORAGE")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
 
+                OracleStorageClause storage = new OracleStorageClause();
                 for (;;) {
-                    if (lexer.token() == Token.IDENTIFIER) {
-                        StorageItem item = new StorageItem();
-                        item.setName(this.exprParser.name());
-                        item.setValue(this.exprParser.expr());
-                        stmt.getStorage().add(item);
-                    } else {
-                        break;
+                    if (identifierEquals("INITIAL")) {
+                        lexer.nextToken();
+                        storage.setInitial(this.exprParser.expr());
+                        continue;
+                    } else if (identifierEquals("FREELISTS")) {
+                        lexer.nextToken();
+                        storage.setFreeLists(this.exprParser.expr());
+                        continue;
+                    } else if (identifierEquals("FREELIST")) {
+                        lexer.nextToken();
+                        acceptIdentifier("GROUPS");
+                        storage.setFreeListGroups(this.exprParser.expr());
+                        continue;
+                    } else if (identifierEquals("BUFFER_POOL")) {
+                        lexer.nextToken();
+                        storage.setBufferPool(this.exprParser.expr());
+                        continue;
                     }
+
+                    break;
                 }
                 accept(Token.RPAREN);
+                stmt.setStorage(storage);
+                continue;
+            } else if (identifierEquals("organization")) {
+                lexer.nextToken();
+                accept(Token.INDEX);
+                stmt.setOrganizationIndex(true);
+                continue;
+            } else if (identifierEquals("PCTFREE")) {
+                lexer.nextToken();
+                stmt.setPtcfree(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("PCTUSED")) {
+                lexer.nextToken();
+                stmt.setPctused(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("INITRANS")) {
+                lexer.nextToken();
+                stmt.setInitrans(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("MAXTRANS")) {
+                lexer.nextToken();
+                stmt.setMaxtrans(this.exprParser.expr());
                 continue;
             }
             break;

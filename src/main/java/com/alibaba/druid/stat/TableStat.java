@@ -403,7 +403,7 @@ public class TableStat {
     }
 
     public static enum Mode {
-        Insert(1), Update(2), Delete(4), Select(8), Merge(16);
+        Insert(1), Update(2), Delete(4), Select(8), Merge(16), Truncate(32);
 
         public final int mark;
 

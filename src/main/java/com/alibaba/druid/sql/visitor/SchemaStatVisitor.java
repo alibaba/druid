@@ -362,7 +362,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLTruncateStatement x) {
-        setMode(x, Mode.Insert);
+        setMode(x, Mode.Delete);
 
         setAliasMap();
 
@@ -374,7 +374,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.putAttribute("_old_local_", originalTable);
 
             TableStat stat = getTableStat(ident);
-            stat.incrementInsertCount();
+            stat.incrementDeleteCount();
 
             Map<String, String> aliasMap = getAliasMap();
             if (aliasMap != null) {
@@ -805,8 +805,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         
         TableStat stat = getTableStat(tableName);
         stat.incrementCreateCount();
+        setCurrentTable(x, tableName);
 
         accept(x.getTableElementList());
+        
+        restoreCurrentTable(x);
 
         return false;
     }

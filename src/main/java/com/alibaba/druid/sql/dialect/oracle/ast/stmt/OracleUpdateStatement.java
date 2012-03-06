@@ -33,8 +33,27 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
     private String                 alias;
     private SQLExpr                where;
 
+    private List<SQLExpr>          returning        = new ArrayList<SQLExpr>();
+    private List<SQLExpr>          returningInto    = new ArrayList<SQLExpr>();
+
     public OracleUpdateStatement(){
 
+    }
+
+    public List<SQLExpr> getReturning() {
+        return returning;
+    }
+
+    public void setReturning(List<SQLExpr> returning) {
+        this.returning = returning;
+    }
+
+    public List<SQLExpr> getReturningInto() {
+        return returningInto;
+    }
+
+    public void setReturningInto(List<SQLExpr> returningInto) {
+        this.returningInto = returningInto;
     }
 
     @Override
@@ -53,6 +72,8 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
             acceptChild(visitor, tableSource);
             acceptChild(visitor, items);
             acceptChild(visitor, where);
+            acceptChild(visitor, returning);
+            acceptChild(visitor, returningInto);
         }
 
         visitor.endVisit(this);

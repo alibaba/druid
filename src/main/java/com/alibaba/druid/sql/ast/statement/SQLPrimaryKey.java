@@ -15,6 +15,6 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-public interface SQLPrimaryKey extends SQLUniqueConstraint {
+public interface SQLPrimaryKey extends SQLUniqueConstraint, SQLTableElement {
 
 }

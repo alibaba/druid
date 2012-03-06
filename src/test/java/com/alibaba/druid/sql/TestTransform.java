@@ -76,7 +76,7 @@ public class TestTransform extends OracleTest {
         System.out.println((this.updateCount++) + " : " + sqlId);
     }
 
-    public void test_transform() throws Exception {
+    public void f_test_transform() throws Exception {
 
         Connection conn = dataSource.getConnection();
 
@@ -191,7 +191,7 @@ public class TestTransform extends OracleTest {
         conn.close();
     }
 
-    public void f_test_migrate() throws Exception {
+    public void test_migrate() throws Exception {
         Connection conn = dataSource.getConnection();
 
         int count = 0;

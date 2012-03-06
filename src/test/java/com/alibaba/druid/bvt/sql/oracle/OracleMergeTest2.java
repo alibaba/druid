@@ -58,18 +58,19 @@ public class OracleMergeTest2 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("bonuses")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.MLOG$_HT_TASK_TRADE_HISTOR")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ESCROW.HT_TASK_TRADE_HISTORY_NEW")));
 
-        Assert.assertEquals(5, visitor.getColumns().size());
+        Assert.assertEquals(31, visitor.getColumns().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "salary")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "employee_id")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("bonuses", "bonus")));
     }
 
 }

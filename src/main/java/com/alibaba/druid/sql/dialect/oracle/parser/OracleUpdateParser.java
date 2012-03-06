@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
@@ -68,8 +69,34 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseReturn(OracleUpdateStatement update) throws ParserException {
-        if (identifierEquals("RETURN") || identifierEquals("RETURNING")) {
-            throw new ParserException("TODO");
+        if (identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
+            lexer.nextToken();
+            
+            for (;;) {
+                SQLExpr item = this.exprParser.expr();
+                update.getReturning().add(item);
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                
+                break;
+            }
+            
+            accept(Token.INTO);
+            
+            for (;;) {
+                SQLExpr item = this.exprParser.expr();
+                update.getReturningInto().add(item);
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                
+                break;
+            }
         }
     }
 

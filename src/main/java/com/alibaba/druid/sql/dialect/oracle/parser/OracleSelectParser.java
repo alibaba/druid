@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfSnapshotClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.VersionsFlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.GroupingSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause;
@@ -824,17 +825,31 @@ public class OracleSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.OF) {
             lexer.nextToken();
 
-            AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
+            
             if (identifierEquals("SCN")) {
+                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
                 clause.setType(AsOfFlashbackQueryClause.Type.SCN);
                 lexer.nextToken();
+                clause.setExpr(createExprParser().expr());
+
+                return clause;
+            } else if (identifierEquals("SNAPSHOT")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                AsOfSnapshotClause clause = new AsOfSnapshotClause();
+                clause.setExpr(this.expr());
+                accept(Token.RPAREN);
+                
+                return clause;
             } else {
+                AsOfFlashbackQueryClause clause = new AsOfFlashbackQueryClause();
                 accept(Token.TIMESTAMP);
                 clause.setType(AsOfFlashbackQueryClause.Type.TIMESTAMP);
+                clause.setExpr(createExprParser().expr());
+                
+                return clause;
             }
-            clause.setExpr(createExprParser().expr());
 
-            return clause;
         }
 
         return null;

@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -51,9 +52,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIntervalType;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleIsSetExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleOuterExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleRangeExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSizeExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleSysdateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleTimestampExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -61,6 +64,11 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
+
+
+
 
 
 
@@ -266,6 +274,32 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+        if (lexer.token() == Token.IDENTIFIER) {
+            String ident = lexer.stringVal();
+            if (ident.length() == 1) {
+                char unit = ident.charAt(0);
+                switch (unit) {
+                    case 'K':
+                    case 'M':
+                    case 'G':
+                    case 'T':
+                    case 'P':
+                    case 'E':
+                    case 'k':
+                    case 'm':
+                    case 'g':
+                    case 't':
+                    case 'p':
+                    case 'e':
+                        expr = new OracleSizeExpr(expr, OracleSizeExpr.Unit.valueOf(ident.toUpperCase()));
+                        lexer.nextToken();
+                        break;
+                    default:
+                    break;
+                }
+            }
+        }
+        
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
             SQLExpr upBound = expr();
@@ -730,5 +764,34 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return expr;
+    }
+    
+    public OraclePrimaryKey parsePrimaryKey() {
+        lexer.nextToken();
+        accept(Token.KEY);
+
+        OraclePrimaryKey primaryKey = new OraclePrimaryKey();
+        accept(Token.LPAREN);
+        exprList(primaryKey.getColumns());
+        accept(Token.RPAREN);
+
+        
+        if (lexer.token() == Token.USING) {
+            lexer.nextToken();
+            accept(Token.INDEX);
+            primaryKey.setUsingIndex(expr());
+        }
+        return primaryKey;
+    }
+    
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        column = super.parseColumnRest(column);
+        
+        if (identifierEquals("ENABLE")) {
+            lexer.nextToken();
+            column.setEnable(Boolean.TRUE);
+        }
+        
+        return column;
     }
 }

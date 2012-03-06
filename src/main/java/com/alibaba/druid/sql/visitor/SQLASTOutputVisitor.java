@@ -567,7 +567,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(' ');
             item.accept(this);
         }
-
+        
+        if (x.getEnable() != null) {
+            if (x.getEnable().booleanValue()) {
+                print(" ENABLE");
+            }
+        }
+        
         return false;
     }
 
@@ -674,13 +680,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (size > 0) {
             print(" (");
-
+            incrementIndent();
+            println();
             for (int i = 0; i < size; ++i) {
                 if (i != 0) {
                     print(", ");
+                    println();
                 }
                 x.getTableElementList().get(i).accept(this);
             }
+            decrementIndent();
+            println();
             print(")");
         }
 

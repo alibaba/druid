@@ -25,5 +25,6 @@ public class SQLTruncateStatement extends SQLStatementImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableNames);
         }
+        visitor.endVisit(this);
     }
 }

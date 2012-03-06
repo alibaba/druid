@@ -33,8 +33,18 @@ public class SQLColumnDefinition extends SQLObjectImpl implements SQLTableElemen
     private final List<SQLColumnConstraint> constaints = new ArrayList<SQLColumnConstraint>(0);
     private String                          comment;
 
+    private Boolean                         enable;
+
     public SQLColumnDefinition(){
 
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
     public SQLName getName() {
