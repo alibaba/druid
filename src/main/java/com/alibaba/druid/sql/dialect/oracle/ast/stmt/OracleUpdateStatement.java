@@ -31,7 +31,6 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
     private final List<OracleHint> hints            = new ArrayList<OracleHint>(1);
     private boolean                only             = false;
     private String                 alias;
-    private OracleUpdateSetClause  setClause;
     private SQLExpr                where;
 
     public OracleUpdateStatement(){
@@ -73,14 +72,6 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
 
     public void setWhere(SQLExpr where) {
         this.where = where;
-    }
-
-    public OracleUpdateSetClause getSetClause() {
-        return this.setClause;
-    }
-
-    public void setSetClause(OracleUpdateSetClause setClause) {
-        this.setClause = setClause;
     }
 
     public boolean isOnly() {

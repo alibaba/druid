@@ -34,7 +34,7 @@ public class OracleAlterTableTestRename extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("PRODUCT_NEW_CLUSTER_YZS_0210")));
 
         Assert.assertEquals(0, visitor.getColumns().size());
 

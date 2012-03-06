@@ -2158,6 +2158,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" ");
             x.getRebuild().accept(this);
         }
+        
+        if (x.getParallel() != null) {
+            print(" PARALLEL");
+            x.getParallel().accept(this);
+        }
 
         return false;
     }

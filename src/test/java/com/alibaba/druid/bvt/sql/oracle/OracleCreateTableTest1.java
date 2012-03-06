@@ -34,9 +34,9 @@ public class OracleCreateTableTest1 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_track_task")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(8, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));

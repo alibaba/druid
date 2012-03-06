@@ -82,7 +82,9 @@ public class OracleSelectSubqueryTableSource extends SQLSubqueryTableSource impl
 
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, this.hints);
             acceptChild(visitor, this.select);
+            acceptChild(visitor, this.pivot);
             acceptChild(visitor, this.flashback);
         }
         visitor.endVisit(this);

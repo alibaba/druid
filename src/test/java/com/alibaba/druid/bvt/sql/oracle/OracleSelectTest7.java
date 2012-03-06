@@ -47,5 +47,7 @@ public class OracleSelectTest7 extends OracleTest {
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "location_id")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "*")));
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "department_id")));
+        
+        Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }

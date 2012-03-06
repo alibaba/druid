@@ -47,42 +47,105 @@ import com.alibaba.druid.stat.TableStat.Relationship;
 
 public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
-    protected final HashMap<TableStat.Name, TableStat> tableStats        = new LinkedHashMap<TableStat.Name, TableStat>();
-    protected final Set<Column>                        columns           = new LinkedHashSet<Column>();
-    protected final Set<Condition>                     conditions        = new LinkedHashSet<Condition>();
-    protected final Set<Relationship>                  relationships     = new LinkedHashSet<Relationship>();
-    protected final Set<Column>                        orderByColumns    = new LinkedHashSet<Column>();
-    protected final Set<Column>                        groupByColumns    = new LinkedHashSet<Column>();
+    protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
+    protected final Set<Column>                        columns        = new LinkedHashSet<Column>();
+    protected final Set<Condition>                     conditions     = new LinkedHashSet<Condition>();
+    protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
+    protected final Set<Column>                        orderByColumns = new LinkedHashSet<Column>();
+    protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
 
-    protected final Map<String, SQLObject>             subQueryMap       = new LinkedHashMap<String, SQLObject>();
-    
-    protected Map<String, String>                      aliasLocal        = new HashMap<String, String>();
-    
-    protected final static ThreadLocal<String>         currentTableLocal = new ThreadLocal<String>();
+    protected final Map<String, SQLObject>             subQueryMap    = new LinkedHashMap<String, SQLObject>();
 
-    public final static String                         ATTR_TABLE        = "_table_";
-    public final static String                         ATTR_COLUMN       = "_column_";
+    protected final Map<String, SQLObject>             variants       = new LinkedHashMap<String, SQLObject>();
+
+    protected Map<String, String>                      aliasMap       = new HashMap<String, String>();
+
+    protected String                                   currentTable;
+
+    public final static String                         ATTR_TABLE     = "_table_";
+    public final static String                         ATTR_COLUMN    = "_column_";
 
     private Mode                                       mode;
     
+    public TableStat getTableStat(String ident) {
+        return getTableStat(ident, null);
+    }
+    
+    public Column addColumn(String tableName, String columnName) {
+        tableName = handleName(tableName);
+        columnName = handleName(columnName);
+        
+        Column column = new Column(tableName, columnName);
+        columns.add(column);
+        return column;
+    }
+
+    public TableStat getTableStat(String tableName, String alias) {
+        if (variants.containsKey(tableName)){
+            return null;
+        }
+        
+        tableName = handleName(tableName);
+        TableStat stat = tableStats.get(tableName);
+        if (stat == null) {
+            stat = new TableStat();
+            tableStats.put(new TableStat.Name(tableName), stat);
+            if (alias != null) {
+                aliasMap.put(alias, tableName);    
+            }
+        }
+        return stat;
+    }
+
+    private String handleName(String ident) {
+        ident = ident.replaceAll("\"", "");
+        ident = ident.replaceAll(" ", "");
+        
+        ident = aliasWrap(ident);
+        
+        return ident;
+    }
+
+    public Map<String, SQLObject> getVariants() {
+        return variants;
+    }
+
     public void setAliasMap() {
         this.setAliasMap(new HashMap<String, String>());
     }
-    
+
     public void clearAliasMap() {
-        this.aliasLocal = null;
+        this.aliasMap = null;
     }
-    
+
     public void setAliasMap(Map<String, String> aliasMap) {
-        this.aliasLocal = aliasMap;
+        this.aliasMap = aliasMap;
     }
 
     public Map<String, String> getAliasMap() {
-        return aliasLocal;
+        return aliasMap;
     }
-    
+
     public void setCurrentTable(String table) {
-        currentTableLocal.set(table);
+        this.currentTable = table;
+    }
+
+    public void setCurrentTable(SQLObject x) {
+        x.putAttribute("_old_local_", this.currentTable);
+    }
+
+    public void restoreCurrentTable(SQLObject x) {
+        String table = (String) x.getAttribute("_old_local_");
+        this.currentTable = table;
+    }
+
+    public void setCurrentTable(SQLObject x, String table) {
+        x.putAttribute("_old_local_", this.currentTable);
+        this.currentTable = table;
+    }
+
+    public String getCurrentTable() {
+        return currentTable;
     }
 
     protected Mode getMode() {
@@ -114,7 +177,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
-            String currentTable = currentTableLocal.get();
+            String currentTable = getCurrentTable();
 
             if (subQueryMap.containsKey(currentTable)) {
                 return false;
@@ -277,7 +340,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             String column = ((SQLIdentifierExpr) expr).getName();
-            String table = currentTableLocal.get();
+            String table = getCurrentTable();
             if (table != null) {
                 if (aliasMap.containsKey(table)) {
                     table = aliasMap.get(table);
@@ -303,18 +366,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         for (SQLName name : x.getTableNames()) {
             String ident = name.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -332,18 +391,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         for (SQLName name : x.getTableNames()) {
             String ident = name.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementDropCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -361,18 +416,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setAliasMap();
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         if (x.getTableName() instanceof SQLName) {
             String ident = ((SQLName) x.getTableName()).toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-            }
+            TableStat stat = getTableStat(ident);
             stat.incrementInsertCount();
 
             Map<String, String> aliasMap = getAliasMap();
@@ -410,14 +461,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         if (x.getFrom() instanceof SQLExprTableSource) {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
                 String ident = tableSource.getExpr().toString();
 
-                setCurrentTable(ident);
+                setCurrentTable(x, ident);
                 x.putAttribute(ATTR_TABLE, ident);
                 if (x.getParent() instanceof SQLSelect) {
                     x.getParent().putAttribute(ATTR_TABLE, ident);
@@ -428,6 +479,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (x.getFrom() != null) {
             x.getFrom().accept(this); // 提前执行，获得aliasMap
+            String table = (String) x.getFrom().getAttribute(ATTR_TABLE);
+            if (table != null) {
+                x.putAttribute(ATTR_TABLE, table);
+            }
         }
 
         if (x.getWhere() != null) {
@@ -439,7 +494,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public void endVisit(SQLSelectQueryBlock x) {
         String originalTable = (String) x.getAttribute("_old_local_");
-        x.putAttribute("table", currentTableLocal.get());
+        x.putAttribute("table", getCurrentTable());
         setCurrentTable(originalTable);
 
         setModeOrigin(x);
@@ -460,8 +515,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             owner = aliasWrap(owner);
 
             if (owner != null) {
-                Column column = new Column(owner, x.getName());
-                columns.add(column);
+                Column column = addColumn(owner, x.getName());
                 x.putAttribute(ATTR_COLUMN, column);
             }
         }
@@ -513,18 +567,23 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-        String currentTable = currentTableLocal.get();
+        String currentTable = getCurrentTable();
 
         if (subQueryMap.containsKey(currentTable)) {
             return false;
         }
 
+        String ident = x.toString();
+
+        if (variants.containsKey(ident)) {
+            return false;
+        }
+
         if (currentTable != null) {
-            Column column = new Column(currentTable, x.getName());
-            columns.add(column);
+            Column column = addColumn(currentTable, ident);
             x.putAttribute(ATTR_COLUMN, column);
         } else {
-            Column column = handleUnkownColumn(x.getName());
+            Column column = handleUnkownColumn(ident);
             if (column != null) {
                 x.putAttribute(ATTR_COLUMN, column);
             }
@@ -533,20 +592,18 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     protected Column handleUnkownColumn(String columnName) {
-        Column column = new Column("UNKNOWN", columnName);
-        columns.add(column);
-        return column;
+        return addColumn("UNKNOWN", columnName);
     }
 
     public boolean visit(SQLAllColumnExpr x) {
-        String currentTable = currentTableLocal.get();
+        String currentTable = getCurrentTable();
 
         if (subQueryMap.containsKey(currentTable)) {
             return false;
         }
 
         if (currentTable != null) {
-            columns.add(new Column(currentTable, "*"));
+            addColumn(currentTable, "*");
         }
         return false;
     }
@@ -601,12 +658,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             Map<String, String> aliasMap = getAliasMap();
 
-            TableStat stat = tableStats.get(ident);
-            if (stat == null) {
-                stat = new TableStat();
-                tableStats.put(new TableStat.Name(ident), stat);
-                x.putAttribute(ATTR_TABLE, ident);
-            }
+            TableStat stat = getTableStat(ident);
 
             Mode mode = getMode();
             switch (mode) {
@@ -647,14 +699,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return true;
     }
 
+    public void endVisit(SQLSelect x) {
+        restoreCurrentTable(x);
+    }
+
     public boolean visit(SQLSelect x) {
+        setCurrentTable(x);
+
         if (x.getOrderBy() != null) {
             x.getOrderBy().setParent(x);
         }
 
         accept(x.getQuery());
 
-        String originalTable = currentTableLocal.get();
+        String originalTable = getCurrentTable();
 
         setCurrentTable((String) x.getQuery().getAttribute("table"));
         x.putAttribute("_old_local_", originalTable);
@@ -682,11 +740,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String ident = x.getTableName().toString();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementUpdateCount();
 
         Map<String, String> aliasMap = getAliasMap();
@@ -706,11 +760,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         String ident = x.getTableName().toString();
         setCurrentTable(ident);
 
-        TableStat stat = tableStats.get(ident);
-        if (stat == null) {
-            stat = new TableStat();
-            tableStats.put(new TableStat.Name(ident), stat);
-        }
+        TableStat stat = getTableStat(ident);
         stat.incrementDeleteCount();
 
         accept(x.getWhere());
@@ -752,9 +802,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String tableName = x.getName().toString();
-        TableStat stat = new TableStat();
+        
+        TableStat stat = getTableStat(tableName);
         stat.incrementCreateCount();
-        tableStats.put(new TableStat.Name(tableName), stat);
 
         accept(x.getTableElementList());
 
@@ -775,7 +825,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String columnName = x.getName().toString();
-        columns.add(new Column(tableName, columnName));
+        addColumn(tableName, columnName);
 
         return false;
     }

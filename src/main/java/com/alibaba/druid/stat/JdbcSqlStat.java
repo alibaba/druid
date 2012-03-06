@@ -339,32 +339,87 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         OpenType<?>[] indexTypes = new OpenType<?>[] {
-                //
-                SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG,
+                // 0 - 4
+                SimpleType.LONG, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                SimpleType.LONG, //
                 SimpleType.LONG, //
 
-                SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, JMXUtils.getThrowableCompositeType(),
-                SimpleType.LONG,
+                // 5 - 9
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.LONG, //
+                JMXUtils.getThrowableCompositeType(), //
+                SimpleType.LONG, //
                 //
 
-                SimpleType.LONG, SimpleType.DATE, SimpleType.LONG, SimpleType.LONG, SimpleType.LONG,
+                // 10 - 14
+                SimpleType.LONG, //
+                SimpleType.DATE, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
                 //
 
-                SimpleType.LONG, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING, SimpleType.STRING,
+                // 15 - 19
+                SimpleType.LONG, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
+                SimpleType.STRING, //
                 //
 
-                SimpleType.STRING, SimpleType.DATE, SimpleType.STRING, SimpleType.STRING, SimpleType.LONG //
+                // 20 - 24
+                SimpleType.STRING, //
+                SimpleType.DATE, //
+                SimpleType.STRING, //
+                SimpleType.LONG, //
+                SimpleType.STRING, //
 
-                , new ArrayType<Long>(SimpleType.LONG, true)
-                };
+                // 25 -
+                new ArrayType<Long>(SimpleType.LONG, true) //
+        };
 
-        String[] indexNames = { "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount" //
-                , "TotalTime", "LastTime", "MaxTimespan", "LastError", "EffectedRowCount" //
-                , "FetchRowCount", "MaxTimespanOccurTime", "BatchSizeMax", "BatchSizeTotal", "ConcurrentMax" //
-                , "RunningCount", "Name", "File", "LastErrorMessage", "LastErrorClass" //
-                , "LastErrorStackTrace", "LastErrorTime", "DbType", "InTransactionCount", "URL" //
+        String[] indexNames = {
+                // 0 - 4
+                "ID", //
+                "DataSource", //
+                "SQL", //
+                "ExecuteCount", //
+                "ErrorCount", //
 
-                , "Histogram" };
+                // 5 - 9
+                "TotalTime", //
+                "LastTime", //
+                "MaxTimespan", //
+                "LastError", //
+                "EffectedRowCount", //
+
+                // 10 - 14
+                "FetchRowCount", //
+                "MaxTimespanOccurTime", //
+                "BatchSizeMax", //
+                "BatchSizeTotal", //
+                "ConcurrentMax", //
+
+                // 15 - 19
+                "RunningCount", //
+                "Name", //
+                "File", //
+                "LastErrorMessage", //
+                "LastErrorClass", //
+
+                // 20 - 24
+                "LastErrorStackTrace", //
+                "LastErrorTime", //
+                "DbType", //
+                "InTransactionCount", //
+                "URL", //
+
+                // 25 -
+                "Histogram" //
+        };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
 

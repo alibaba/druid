@@ -10,11 +10,11 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleAlterTableTest8 extends OracleTest {
+public class OracleAlterIndexTest3 extends OracleTest {
 
     public void test_0() throws Exception {
         String sql = //
-        "ALTER TABLE ws_i18n_translate_item ADD CONSTRAINT ws_i18n_translate_item_pk PRIMARY KEY (id) USING INDEX ws_i18n_translate_item_pk";
+        "alter index    PRODUCT_ADDITION_NCID_IND parallel 1";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -32,13 +32,13 @@ public class OracleAlterTableTest8 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ws_i18n_translate_item")));
+//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("cdc.en_complaint_ipr_stat_fdt0")));
 
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
-         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_i18n_translate_item", "id")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }

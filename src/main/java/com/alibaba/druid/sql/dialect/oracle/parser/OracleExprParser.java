@@ -407,7 +407,7 @@ public class OracleExprParser extends SQLExprParser {
     public SQLExpr parseTimestamp() {
         accept(Token.TIMESTAMP);
         
-        if (lexer.token() != Token.LITERAL_ALIAS) {
+        if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.LITERAL_CHARS) {
             return new SQLIdentifierExpr("TIMESTAMP");
         }
 

@@ -277,7 +277,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseIf());
                 continue;
             }
-            
+
             if (lexer.token() == Token.GOTO) {
                 lexer.nextToken();
                 SQLName label = this.exprParser.name();
@@ -285,14 +285,18 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (lexer.token() == Token.COMMIT) {
                 lexer.nextToken();
+
+                if (identifierEquals("WORK")) {
+                    lexer.nextToken();
+                }
                 OracleCommitStatement stmt = new OracleCommitStatement();
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (lexer.token() == Token.LTLT) {
                 lexer.nextToken();
                 SQLName label = this.exprParser.name();
@@ -301,8 +305,6 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
-            
 
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
@@ -464,15 +466,23 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterIndexStatement stmt = new OracleAlterIndexStatement();
             stmt.setName(this.exprParser.name());
 
-            if (identifierEquals("rebuild")) {
-                lexer.nextToken();
+            for (;;) {
+                if (identifierEquals("rebuild")) {
+                    lexer.nextToken();
 
-                OracleAlterIndexStatement.Rebuild rebuild = new OracleAlterIndexStatement.Rebuild();
-                stmt.setRebuild(rebuild);
-            } else if (identifierEquals("MONITORING")) {
-                lexer.nextToken();
-                acceptIdentifier("USAGE");
-                stmt.setMonitoringUsage(Boolean.TRUE);
+                    OracleAlterIndexStatement.Rebuild rebuild = new OracleAlterIndexStatement.Rebuild();
+                    stmt.setRebuild(rebuild);
+                    continue;
+                } else if (identifierEquals("MONITORING")) {
+                    lexer.nextToken();
+                    acceptIdentifier("USAGE");
+                    stmt.setMonitoringUsage(Boolean.TRUE);
+                    continue;
+                } else if (identifierEquals("PARALLEL")) {
+                    lexer.nextToken();
+                    stmt.setParallel(this.exprParser.expr());
+                }
+                break;
             }
 
             return stmt;
@@ -560,7 +570,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
     private OracleAlterTableItem parseAlterTableRename() {
         acceptIdentifier("RENAME");
-        
+
         if (lexer.token() == Token.TO) {
             lexer.nextToken();
             OracleAlterTableRenameTo item = new OracleAlterTableRenameTo();
@@ -727,7 +737,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 OracleParameter parameter = new OracleParameter();
                 parameter.setName(this.exprParser.name());
                 parameter.setDataType(this.exprParser.parseDataType());
-                
+
                 block.getParameters().add(parameter);
 
                 if (lexer.token() == Token.COLONEQ) {
@@ -751,6 +761,10 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.END);
 
         return block;
+    }
+
+    public OracleSelectParser createSQLSelectParser() {
+        return new OracleSelectParser(this.lexer);
     }
 
     public OracleMergeStatement parseMerge() throws ParserException {

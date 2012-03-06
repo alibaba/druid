@@ -32,11 +32,13 @@ public class OracleSelectTest23 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("\"DUAL\"")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.obj$")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("sys.user$")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("dba_jobs")));
 
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(10, visitor.getColumns().size());
 
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "*")));
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "YEAR")));
