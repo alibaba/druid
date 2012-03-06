@@ -263,6 +263,10 @@ public class TestTransform extends OracleTest {
             } else {
                 String part = rs.getString(5);
                 
+                if (part == null) {
+                    continue;
+                }
+                
                 int commentIndex = part.indexOf("--");
                 if (commentIndex != -1) {
                     part = part.substring(0, commentIndex);
