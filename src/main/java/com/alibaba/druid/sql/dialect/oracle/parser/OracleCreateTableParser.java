@@ -85,6 +85,10 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                         lexer.nextToken();
                         storage.setBufferPool(this.exprParser.expr());
                         continue;
+                    } else if (identifierEquals("OBJNO")) {
+                        lexer.nextToken();
+                        storage.setObjno(this.exprParser.expr());
+                        continue;
                     }
 
                     break;

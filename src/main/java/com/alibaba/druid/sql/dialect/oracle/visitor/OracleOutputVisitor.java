@@ -2493,17 +2493,22 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         
         if (x.getFreeLists() != null) {
             print(" FREELISTS ");
-            x.getInitial().accept(this);
+            x.getFreeLists().accept(this);
         }
         
         if (x.getFreeListGroups() != null) {
             print(" FREELIST GROUPS ");
-            x.getInitial().accept(this);
+            x.getFreeListGroups().accept(this);
         }
         
         if (x.getBufferPool() != null) {
             print(" BUFFER_POOL ");
-            x.getInitial().accept(this);
+            x.getBufferPool().accept(this);
+        }
+        
+        if (x.getObjno() != null) {
+            print(" OBJNO ");
+            x.getObjno().accept(this);
         }
         
         print(")");

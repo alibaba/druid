@@ -13,6 +13,7 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
     private SQLExpr           freeLists;
     private SQLExpr           freeListGroups;
     private SQLExpr           bufferPool;
+    private SQLExpr           objno;
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
@@ -21,8 +22,17 @@ public class OracleStorageClause extends OracleSQLObjectImpl {
             acceptChild(visitor, freeLists);
             acceptChild(visitor, freeListGroups);
             acceptChild(visitor, bufferPool);
+            acceptChild(visitor, objno);
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getObjno() {
+        return objno;
+    }
+
+    public void setObjno(SQLExpr objno) {
+        this.objno = objno;
     }
 
     public SQLExpr getInitial() {
