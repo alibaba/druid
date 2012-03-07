@@ -66,8 +66,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
-            4, 15, 60, 250, //
-            1000, 4 * 1000, 15 * 1000, 60 * 1000, 250 * 1000      });
+            1, 10, 100, 1000, 10 * 1000, //
+            100 * 1000, 1000 * 1000
+                                                                   //
+                                                                   });
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
