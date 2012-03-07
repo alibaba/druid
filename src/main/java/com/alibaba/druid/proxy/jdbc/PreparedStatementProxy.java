@@ -16,6 +16,7 @@
 package com.alibaba.druid.proxy.jdbc;
 
 import java.sql.PreparedStatement;
+import java.util.Map;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -25,4 +26,6 @@ public interface PreparedStatementProxy extends PreparedStatement, StatementProx
     String getSql();
 
     PreparedStatement getRawObject();
+    
+    Map<Integer, JdbcParameter> getParameters();
 }

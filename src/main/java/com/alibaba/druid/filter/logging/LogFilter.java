@@ -18,8 +18,6 @@ package com.alibaba.druid.filter.logging;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -67,9 +65,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     private boolean           statementLogErrorEnabled             = true;
     private boolean           resultSetLogEnabled                  = true;
     private boolean           resultSetLogErrorEnabled             = true;
-
-    protected final String    attributeNameParameter               = "log.parameter";
-    protected final String    attributeNameLastSql                 = "log.lastSql";
 
     protected DataSourceProxy dataSource;
 
@@ -327,16 +322,12 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteBefore(StatementProxy statement, String sql) {
-        setLastSql(statement, sql);
 
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
         }
     }
 
-    private void setLastSql(StatementProxy statement, String sql) {
-        statement.getAttributes().put(attributeNameLastSql, sql);
-    }
 
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
@@ -363,7 +354,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteQueryBefore(StatementProxy statement, String sql) {
-        setLastSql(statement, sql);
 
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
@@ -380,7 +370,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteUpdateBefore(StatementProxy statement, String sql) {
-        setLastSql(statement, sql);
 
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
@@ -532,21 +521,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     protected void preparedStatement_setParameterBefore(PreparedStatementProxy statement, int parameterIndex,
                                                         int sqlType, Object... values) {
-        JdbcParameter parameter = new JdbcParameter(sqlType, values);
 
-        getParameters(statement).put(parameterIndex, parameter);
-    }
-
-    @SuppressWarnings("unchecked")
-    public Map<Integer, JdbcParameter> getParameters(PreparedStatementProxy statement) {
-        Map<Integer, JdbcParameter> parameters = (Map<Integer, JdbcParameter>) statement.getAttributes().get(attributeNameParameter);
-
-        if (parameters == null) {
-            statement.getAttributes().put(attributeNameParameter, new HashMap<Integer, JdbcParameter>());
-            parameters = (Map<Integer, JdbcParameter>) statement.getAttributes().get(attributeNameParameter);
-        }
-
-        return parameters;
     }
 
     protected void logParameter(PreparedStatementProxy statement) {
@@ -560,18 +535,18 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 buf.append("}");
                 buf.append(" Parameters : [");
                 int parameterIndex = 0;
-                for (JdbcParameter parameter : getParameters(statement).values()) {
+                for (JdbcParameter parameter : statement.getParameters().values()) {
                     if (parameterIndex != 0) {
                         buf.append(", ");
                     }
                     int sqlType = parameter.getSqlType();
-                    Object[] values = parameter.getValues();
+                    Object value = parameter.getValue();
                     switch (sqlType) {
                         case Types.NULL:
                             buf.append("NULL");
                             break;
                         default:
-                            buf.append(String.valueOf(values[0]));
+                            buf.append(String.valueOf(value));
                             break;
                     }
                     parameterIndex++;
@@ -588,7 +563,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 buf.append("}");
                 buf.append(" Types : [");
                 int parameterIndex = 0;
-                for (JdbcParameter parameter : getParameters(statement).values()) {
+                for (JdbcParameter parameter : statement.getParameters().values()) {
                     if (parameterIndex != 0) {
                         buf.append(", ");
                     }
