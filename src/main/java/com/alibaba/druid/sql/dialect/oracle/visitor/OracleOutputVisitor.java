@@ -34,7 +34,6 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
@@ -56,11 +55,13 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceMode
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -106,9 +107,11 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
@@ -121,6 +124,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleIfStatement.ElseIf;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeInsertClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement.MergeUpdateClause;
@@ -1928,7 +1932,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleExplainStatement x) {
-        print("XPLAIN PLAN");
+        print("EXPLAIN PLAN");
         incrementIndent();
         println();
         if (x.getStatementId() != null) {
@@ -2430,6 +2434,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" NOPARALLEL");
         }
         
+        if (x.getCache() == Boolean.TRUE) {
+            print(" CACHE");
+        } else if (x.getCache() == Boolean.FALSE) {
+            print(" NOCACHE");
+        }
+        
         if (x.getCompress() == Boolean.TRUE) {
             print(" COMPRESS");
         } else if (x.getCompress() == Boolean.FALSE) {
@@ -2453,6 +2463,11 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         
         if (x.isPreserveRows()) {
             print(" PRESERVE ROWS");
+        }
+        
+        if (x.getPartitioning() != null) {
+            println();
+            x.getPartitioning().accept(this);
         }
 
         if (x.getSelect() != null) {
@@ -2749,6 +2764,145 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleTruncateStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleCreateSequenceStatement x) {
+        print("CREATE SEQUENCE ");
+        x.getName().accept(this);
+        
+        if (x.getStartWith() != null) {
+            print(" START WITH ");
+            x.getStartWith().accept(this);
+        }
+        
+        if (x.getIncrementBy() != null) {
+            print(" INCREMENT BY ");
+            x.getIncrementBy().accept(this);
+        }
+        
+        if (x.getMaxValue() != null) {
+            print(" MAXVALUE ");
+            x.getMaxValue().accept(this);
+        }
+        
+        if (x.getCycle() != null) {
+            if (x.getCycle().booleanValue()) {
+                print(" CYCLE");
+            } else {
+                print(" NOCYCLE");
+            }
+        }
+        
+        if (x.getCache() != null) {
+            if (x.getCache().booleanValue()) {
+                print(" CACHE");
+            } else {
+                print(" NOCACHE");
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateSequenceStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleRangeValuesClause x) {
+        print("PARTITION ");
+        x.getName().accept(this);
+        print(" VALUES LESS THAN (");
+        printAndAccept(x.getValues(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRangeValuesClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(OraclePartitionByRangeClause x) {
+        print("PARTITION BY RANGE (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        
+        if (x.getInterval() != null) {
+            print(" INTERVAL ");
+            x.getInterval().accept(this);
+        }
+        
+        if (x.getStoreIn().size() > 0) {
+            print(" STORE IN (");
+            printAndAccept(x.getStoreIn(), ", ");
+            print(")");
+        }
+        
+
+        println();
+        print("(");
+        incrementIndent();
+        for (int i = 0, size = x.getRanges().size(); i < size; ++i) {
+            if (i != 0) {
+                print(",");
+            }
+            println();
+            x.getRanges().get(i).accept(this);
+        }
+        decrementIndent();
+        println();
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OraclePartitionByRangeClause x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleLoopStatement x) {
+        print("LOOP");
+        incrementIndent();
+        println();
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            SQLStatement item = x.getStatements().get(i);
+            item.setParent(x);
+            item.accept(this);
+            if (i != size - 1) {
+                println();
+            }
+        }
+
+        decrementIndent();
+        println();
+        print("END LOOP");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleLoopStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleExitStatement x) {
+        print("EXIT");
+        if (x.getWhen() != null) {
+            print(" WHEN ");
+            x.getWhen().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleExitStatement x) {
         
     }
 }

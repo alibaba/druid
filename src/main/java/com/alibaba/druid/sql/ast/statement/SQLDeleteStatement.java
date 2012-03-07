@@ -25,6 +25,7 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     private static final long serialVersionUID = 1L;
     protected SQLName         tableName;
     protected SQLExpr         where;
+    private String            alias;
 
     public SQLDeleteStatement(){
 
@@ -44,6 +45,14 @@ public class SQLDeleteStatement extends SQLStatementImpl {
 
     public void setWhere(SQLExpr where) {
         this.where = where;
+    }
+
+    public String getAlias() {
+        return this.alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public void output(StringBuffer buf) {

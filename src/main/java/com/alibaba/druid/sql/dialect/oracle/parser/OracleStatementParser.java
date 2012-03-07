@@ -61,8 +61,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
@@ -74,6 +76,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLabelStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLockTableStatement.LockMode;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleLoopStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
@@ -237,6 +240,17 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseException());
                 continue;
             }
+            
+            if (identifierEquals("EXIT")) {
+                lexer.nextToken();
+                OracleExitStatement stmt = new OracleExitStatement();
+                if (lexer.token() == Token.WHEN) {
+                    lexer.nextToken();
+                    stmt.setWhen(this.exprParser.expr());
+                }
+                statementList.add(stmt);
+                continue;
+            }
 
             if (lexer.token() == Token.IDENTIFIER) {
                 if (identifierEquals("EXPLAIN")) {
@@ -281,6 +295,10 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(this.parseFor());
                 continue;
             }
+            if (lexer.token() == Token.LOOP) {
+                statementList.add(this.parseLoop());
+                continue;
+            }
             if (lexer.token() == Token.IF) {
                 statementList.add(this.parseIf());
                 continue;
@@ -313,7 +331,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-
+            
             throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
         }
     }
@@ -367,6 +385,17 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setRange(this.exprParser.expr());
         accept(Token.LOOP);
 
+        this.parseStatementList(stmt.getStatements());
+        accept(Token.END);
+        accept(Token.LOOP);
+        return stmt;
+    }
+    
+    public OracleLoopStatement parseLoop() {
+        accept(Token.LOOP);
+        
+        OracleLoopStatement stmt = new OracleLoopStatement();
+        
         this.parseStatementList(stmt.getStatements());
         accept(Token.END);
         accept(Token.LOOP);
@@ -1362,4 +1391,47 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
+    public OracleCreateSequenceStatement parseCreateSequence(boolean acceptCreate) {
+        if (acceptCreate) {
+            accept(Token.CREATE);
+        }
+        
+        acceptIdentifier("SEQUENCE");
+
+        OracleCreateSequenceStatement stmt = new OracleCreateSequenceStatement();
+        stmt.setName(this.exprParser.name());
+        
+        for (;;) {
+            if (lexer.token() == Token.START) {
+                lexer.nextToken();
+                accept(Token.WITH);
+                stmt.setStartWith(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("INCREMENT")) {
+                lexer.nextToken();
+                accept(Token.BY);
+                stmt.setIncrementBy(this.exprParser.expr());
+                continue;
+            } else if (identifierEquals("CACHE")) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOCACHE")) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.FALSE);
+                continue;
+            } else if (identifierEquals("CYCLE")) {
+                lexer.nextToken();
+                stmt.setCycle(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOCYCLE")) {
+                lexer.nextToken();
+                stmt.setCycle(Boolean.FALSE);
+                continue;
+            } 
+            break;
+        }
+
+        return stmt;
+    }
 }

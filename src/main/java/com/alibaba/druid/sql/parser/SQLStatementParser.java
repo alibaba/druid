@@ -202,6 +202,10 @@ public class SQLStatementParser extends SQLParser {
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
         
+        if (lexer.token() == Token.LITERAL_ALIAS) {
+            insertStatement.setAlias(as());
+        }
+        
         parseInsert0_hinits(insertStatement);
         
         if (lexer.token() == Token.IDENTIFIER) {
@@ -288,8 +292,14 @@ public class SQLStatementParser extends SQLParser {
             return createTableParser.parseCrateTable(false);
         } else if (token == Token.INDEX || token == Token.UNIQUE) {
             return parseCreateIndex(false);
+        } else if (identifierEquals("SEQUENCE")) {
+            return parseCreateSequence(false);
         }
 
+        throw new ParserException("TODO " + lexer.token());
+    }
+    
+    public SQLStatement parseCreateSequence(boolean acceptCreate) {
         throw new ParserException("TODO " + lexer.token());
     }
     

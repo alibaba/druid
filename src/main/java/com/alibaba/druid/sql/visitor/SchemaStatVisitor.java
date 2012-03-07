@@ -66,32 +66,32 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public final static String                         ATTR_COLUMN    = "_column_";
 
     private Mode                                       mode;
-    
+
     public TableStat getTableStat(String ident) {
         return getTableStat(ident, null);
     }
-    
+
     public Column addColumn(String tableName, String columnName) {
         tableName = handleName(tableName);
         columnName = handleName(columnName);
-        
+
         Column column = new Column(tableName, columnName);
         columns.add(column);
         return column;
     }
 
     public TableStat getTableStat(String tableName, String alias) {
-        if (variants.containsKey(tableName)){
+        if (variants.containsKey(tableName)) {
             return null;
         }
-        
+
         tableName = handleName(tableName);
         TableStat stat = tableStats.get(tableName);
         if (stat == null) {
             stat = new TableStat();
             tableStats.put(new TableStat.Name(tableName), stat);
             if (alias != null) {
-                aliasMap.put(alias, tableName);    
+                aliasMap.put(alias, tableName);
             }
         }
         return stat;
@@ -100,9 +100,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     private String handleName(String ident) {
         ident = ident.replaceAll("\"", "");
         ident = ident.replaceAll(" ", "");
-        
+
         ident = aliasWrap(ident);
-        
+
         return ident;
     }
 
@@ -323,6 +323,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                     table = aliasMap.get(table);
                 }
 
+                if (variants.containsKey(table)) {
+                    return null;
+                }
+
                 if (table != null) {
                     return new Column(table, column);
                 }
@@ -352,6 +356,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             if (table != null) {
                 return new Column(table, column);
+            }
+            
+            if (variants.containsKey(column)) {
+                return null;
             }
 
             return new Column("UNKNOWN", column);
@@ -524,8 +532,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected String aliasWrap(String name) {
         Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap.containsKey(name)) {
-            return aliasMap.get(name);
+
+        if (aliasMap != null) {
+            for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    return entry.getValue();
+                }
+            }
         }
 
         return name;
@@ -757,10 +770,14 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         setMode(x, Mode.Delete);
 
-        String ident = x.getTableName().toString();
-        setCurrentTable(ident);
+        String tableName = x.getTableName().toString();
+        setCurrentTable(tableName);
 
-        TableStat stat = getTableStat(ident);
+        if (x.getAlias() != null) {
+            this.aliasMap.put(x.getAlias(), tableName);
+        }
+
+        TableStat stat = getTableStat(tableName);
         stat.incrementDeleteCount();
 
         accept(x.getWhere());
@@ -802,13 +819,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         String tableName = x.getName().toString();
-        
+
         TableStat stat = getTableStat(tableName);
         stat.incrementCreateCount();
         setCurrentTable(x, tableName);
 
         accept(x.getTableElementList());
-        
+
         restoreCurrentTable(x);
 
         return false;

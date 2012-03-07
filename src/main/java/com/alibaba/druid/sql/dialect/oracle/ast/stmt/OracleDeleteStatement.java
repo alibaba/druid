@@ -29,7 +29,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     private static final long      serialVersionUID = 1L;
 
     private boolean                only             = false;
-    private String                 alias;
+    
     private final List<OracleHint> hints            = new ArrayList<OracleHint>();
     private OracleReturningClause  returning        = null;
 
@@ -72,11 +72,5 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
         this.only = only;
     }
 
-    public String getAlias() {
-        return this.alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
+ 
 }

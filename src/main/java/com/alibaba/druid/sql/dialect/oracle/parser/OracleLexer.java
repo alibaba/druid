@@ -10,6 +10,8 @@ import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
+import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
+
 public class OracleLexer extends Lexer {
 
     public final static Keywords DEFAULT_ORACLE_KEYWORDS;
@@ -270,6 +272,8 @@ public class OracleLexer extends Lexer {
                         break;
                     }
                     sp++;
+                    break;
+                } else if (ch == EOI) {
                     break;
                 }
 

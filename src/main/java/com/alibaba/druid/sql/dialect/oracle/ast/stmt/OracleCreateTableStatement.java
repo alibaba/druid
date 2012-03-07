@@ -1,44 +1,62 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitioningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleStatement {
 
-    private static final long   serialVersionUID  = 1L;
+    private static final long        serialVersionUID  = 1L;
 
-    private SQLName             tablespace;
+    private SQLName                  tablespace;
 
-    private SQLSelect           select;
+    private SQLSelect                select;
 
-    private boolean             inMemoryMetadata;
+    private boolean                  inMemoryMetadata;
 
-    private boolean             cursorSpecificSegment;
+    private boolean                  cursorSpecificSegment;
 
     // NOPARALLEL
-    private Boolean             parallel;
+    private Boolean                  parallel;
 
-    private OracleStorageClause storage;
+    private OracleStorageClause      storage;
 
-    private boolean             organizationIndex = false;
+    private boolean                  organizationIndex = false;
 
-    private SQLExpr             ptcfree;
-    private SQLExpr             pctused;
-    private SQLExpr             initrans;
-    private SQLExpr             maxtrans;
+    private SQLExpr                  ptcfree;
+    private SQLExpr                  pctused;
+    private SQLExpr                  initrans;
+    private SQLExpr                  maxtrans;
 
-    private Boolean             logging;
-    private Boolean             compress;
-    private boolean             onCommit;
-    private boolean             preserveRows;
+    private Boolean                  logging;
+    private Boolean                  compress;
+    private boolean                  onCommit;
+    private boolean                  preserveRows;
+
+    private Boolean                  cache;
+
+    private OraclePartitioningClause partitioning;
+
+    public OraclePartitioningClause getPartitioning() {
+        return partitioning;
+    }
+
+    public void setPartitioning(OraclePartitioningClause partitioning) {
+        this.partitioning = partitioning;
+    }
+
+    public Boolean getCache() {
+        return cache;
+    }
+
+    public void setCache(Boolean cache) {
+        this.cache = cache;
+    }
 
     public boolean isOnCommit() {
         return onCommit;
@@ -171,6 +189,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
             this.acceptChild(visitor, tablespace);
             this.acceptChild(visitor, select);
             this.acceptChild(visitor, storage);
+            this.acceptChild(visitor, partitioning);
         }
         visitor.endVisit(this);
     }

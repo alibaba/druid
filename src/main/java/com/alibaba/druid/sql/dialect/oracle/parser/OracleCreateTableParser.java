@@ -1,9 +1,14 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -47,6 +52,14 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
             } else if (identifierEquals("LOGGING")) {
                 lexer.nextToken();
                 stmt.setLogging(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("CACHE")) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.TRUE);
+                continue;
+            } else if (identifierEquals("NOCACHE")) {
+                lexer.nextToken();
+                stmt.setCache(Boolean.FALSE);
                 continue;
             } else if (identifierEquals("NOCOMPRESS")) {
                 lexer.nextToken();
@@ -117,6 +130,92 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 stmt.setMaxtrans(this.exprParser.expr());
                 continue;
+            } else if (identifierEquals("PARTITION")) {
+                lexer.nextToken();
+                accept(Token.BY);
+
+                if (identifierEquals("RANGE")) {
+                    lexer.nextToken();
+                    accept(Token.LPAREN);
+                    OraclePartitionByRangeClause clause = new OraclePartitionByRangeClause();
+                    for (;;) {
+                        SQLName column = this.exprParser.name();
+                        clause.getColumns().add(column);
+                        
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        
+                        break;
+                    }
+                    accept(Token.RPAREN);
+                    
+                    if (identifierEquals("INTERVAL")) {
+                        lexer.nextToken();
+                        clause.setInterval(this.exprParser.expr());
+                    }
+                    
+                    if (identifierEquals("STORE")) {
+                        lexer.nextToken();
+                        accept(Token.IN);
+                        accept(Token.LPAREN);
+                        for (;;) {
+                            SQLName tablespace = this.exprParser.name();
+                            clause.getStoreIn().add(tablespace);
+                            
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                    }
+                    
+                    accept(Token.LPAREN);
+                    
+                    for (;;) {
+                        acceptIdentifier("PARTITION");
+                        OracleRangeValuesClause range = new OracleRangeValuesClause();
+                        range.setName(this.exprParser.name());
+                        
+                        accept(Token.VALUES);
+                        acceptIdentifier("LESS");
+                        acceptIdentifier("THAN");
+                        
+                        accept(Token.LPAREN);
+                        for (;;) {
+                            SQLExpr rangeValue = this.exprParser.expr();
+                            range.getValues().add(rangeValue);
+                            
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                        
+                        clause.getRanges().add(range);
+                        
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        }
+                        
+                        break;
+                    }
+                    
+                    accept(Token.RPAREN);
+                    
+                    stmt.setPartitioning(clause);
+                    continue;
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
             }
             break;
         }
