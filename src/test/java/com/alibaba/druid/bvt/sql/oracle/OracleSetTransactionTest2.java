@@ -10,13 +10,10 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleSelectTest33 extends OracleTest {
+public class OracleSetTransactionTest2 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = //
-        "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " + //
-        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " + //
-        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1"; //
+        String sql = "SET TRANSACTION READ ONLY NAME 'Toronto';";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -34,14 +31,12 @@ public class OracleSelectTest33 extends OracleTest {
         System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(0, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ALIBABA1949.WS_PRODUCT_DETAIL")));
+//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
 
-        Assert.assertEquals(4, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
 
-//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW_LOGISTICS", "*")));
-         
-//         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
+//        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("departments", "department_id")));
     }
 }

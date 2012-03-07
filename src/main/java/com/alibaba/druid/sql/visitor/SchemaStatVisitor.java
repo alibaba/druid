@@ -535,6 +535,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (aliasMap != null) {
             for (Map.Entry<String, String> entry : aliasMap.entrySet()) {
+                if (entry.getKey() == null) {
+                    continue;
+                }
                 if (entry.getKey().equalsIgnoreCase(name)) {
                     return entry.getValue();
                 }

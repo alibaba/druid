@@ -36,10 +36,10 @@ public class OracleInsertTest8 extends OracleTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("relationships : " + visitor.getRelationships());
 
-        Assert.assertEquals(9, visitor.getTables().size());
-        Assert.assertEquals(42, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getTables().size());
+        Assert.assertEquals(26, visitor.getColumns().size());
 
-        // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("raises")));
+         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("AV_INFO_NEW")));
         // Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("employees")));
         //
         // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("employees", "employee_id")));

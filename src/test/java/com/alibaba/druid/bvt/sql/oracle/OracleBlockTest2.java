@@ -52,7 +52,7 @@ public class OracleBlockTest2 extends OracleTest {
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_ship_order")));
 
         Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(4, visitor.getConditions().size());
+        Assert.assertEquals(3, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "id")));
     }

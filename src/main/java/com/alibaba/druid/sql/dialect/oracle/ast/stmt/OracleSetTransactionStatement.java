@@ -8,6 +8,8 @@ public class OracleSetTransactionStatement extends OracleSQLObjectImpl implement
 
     private static final long serialVersionUID = 1L;
 
+    private boolean           readOnly         = false;
+
     private SQLExpr           name;
 
     @Override
@@ -24,6 +26,14 @@ public class OracleSetTransactionStatement extends OracleSQLObjectImpl implement
 
     public void setName(SQLExpr name) {
         this.name = name;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
 }
