@@ -19,14 +19,12 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.fastjson.JSON;
 
-public class TestTransform extends OracleTest {
+public class TestMigrate extends OracleTest {
 
     private String          jdbcUrl;
     private String          user;
     private String          password;
     private DruidDataSource dataSource;
-
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public void setUp() throws Exception {
         jdbcUrl = "jdbc:oracle:thin:@10.20.149.18:1521:emdb";
@@ -41,17 +39,6 @@ public class TestTransform extends OracleTest {
         dataSource.setMaxActive(50);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(100);
-    }
-
-    public void f_test_createIndex() throws Exception {
-        String sql = "CREATE INDEX i_db_day_sql_fulltext on db_day_sql_fulltext (sql_id)";
-        Connection conn = dataSource.getConnection();
-
-        Statement stmt = conn.createStatement();
-
-        stmt.execute(sql);
-
-        conn.close();
     }
 
     private int updateCount = 0;
@@ -76,92 +63,9 @@ public class TestTransform extends OracleTest {
         System.out.println((this.updateCount++) + " : " + sqlId);
     }
 
-    public void test_transform() throws Exception {
-
-        Connection conn = dataSource.getConnection();
-
-        int count = 0;
-        {
-            String sql = "SELECT COUNT(*) FROM db_day_sql_fulltext WHERE SQL_PARSE_RESULT IS NULL";
-            Statement stmt = conn.createStatement();
-
-            ResultSet rs = stmt.executeQuery(sql);
-            rs.next();
-            count = rs.getInt(1);
-            rs.close();
-            stmt.close();
-        }
-        System.out.println("COUNT : " + count);
-
-        String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
-                     "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
-                     "  FROM db_day_sql_fulltext " + //
-                     " WHERE SQL_PARSE_RESULT IS NULL" + //
-                     "  ORDER BY sql_id, piece";
-
-        Statement stmt = conn.createStatement();
-
-        OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
-        oracleStmt.setRowPrefetch(100);
-
-        ResultSet rs = stmt.executeQuery(sql);
-        Record r = null;
-
-        int i = 0;
-        while (rs.next()) {
-            r = new Record();
-
-            i++;
-
-            Date d1 = rs.getDate(1);
-            String s2 = rs.getString(2);
-            String sqlId = rs.getString(3);
-
-            r.setSnapshotDate(d1);
-            r.setDbName(s2);
-            r.setSqlId(sqlId);
-            r.setPiece(rs.getInt(4));
-            r.setSqlText(rs.getString(5));
-
-            r.setCommandType(rs.getInt(6));
-            r.setLastSnapshotDate(rs.getDate(7));
-            r.setDbPk(rs.getLong(8));
-
-            System.out.println(i + "(" + r.getDbName() + "/" + r.getSqlId() + "/" + r.getCommandType() + ") : " + r.getSqlText());
-            try {
-                schemaStatInternal(r);
-            } catch (Throwable e) {
-//                e.printStackTrace();
-            }
-        }
-        rs.close();
-        stmt.close();
-
-        conn.close();
-    }
-
-    public void schemaStat(final Record r) throws Exception {
-        executor.submit(new Runnable() {
-
-            public void run() {
-                try {
-                    schemaStatInternal(r);
-                } catch (Exception e) {
-//                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
     public void schemaStatInternal(Record r) throws Exception {
         String sql = r.getSqlText();
-        
-        sql = sql.replaceAll("5'HK'", "5''HK'");
-        sql = sql.replaceAll("5'TW'", "5''TW'");
-        sql = sql.replaceAll("5'CN'", "5''CN'");
-        sql = sql.replaceAll("\\Qnull, 'zeus')\\E", "', null, 'zeus')");
-        sql = sql.replaceAll("\\Q--+use_hash(v c m)\\E", "");
-        sql = sql.replaceAll("\\Q--+ordered use_hash(v c m)\\E", "");
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -198,7 +102,7 @@ public class TestTransform extends OracleTest {
         conn.close();
     }
 
-    public void f_test_migrate() throws Exception {
+    public void test_migrate() throws Exception {
         Connection conn = dataSource.getConnection();
 
         int count = 0;
@@ -219,7 +123,7 @@ public class TestTransform extends OracleTest {
         String sql = "SELECT SNAP_DATE, DBNAME, SQL_ID, PIECE, SQL_TEXT" + //
                      "      , COMMAND_TYPE, LAST_SNAP_DATE, DB_PK, SQL_PARSE_RESULT " + //
                      "  FROM db_day_sqltext " + //
-                     // "  WHERE db_pk = 40 and snap_date = trunc(sysdate) " + //
+                     "  WHERE snap_date = trunc(sysdate) " + //
                      "  ORDER BY db_pk, sql_id, piece";
 
         Statement stmt = conn.createStatement();
@@ -269,15 +173,11 @@ public class TestTransform extends OracleTest {
                 r.setDbPk(rs.getLong(8));
             } else {
                 String part = rs.getString(5);
-                
+
                 if (part == null) {
                     continue;
                 }
-                
-                int commentIndex = part.indexOf("--");
-                if (commentIndex != -1) {
-                    part = part.substring(0, commentIndex);
-                }
+
                 if (part != null) {
                     r.appendSqlText(part);
                 }

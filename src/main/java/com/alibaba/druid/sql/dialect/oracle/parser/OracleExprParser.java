@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
@@ -64,6 +65,8 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
 
 
 
@@ -274,7 +277,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
-        if (lexer.token() == Token.IDENTIFIER) {
+        if (lexer.token() == Token.IDENTIFIER && expr instanceof SQLNumericLiteralExpr) {
             String ident = lexer.stringVal();
             if (ident.length() == 1) {
                 char unit = ident.charAt(0);
@@ -313,9 +316,14 @@ public class OracleExprParser extends SQLExprParser {
             OracleDbLinkExpr dblink = new OracleDbLinkExpr();
             dblink.setExpr(expr);
 
-            String link = lexer.stringVal();
-            accept(Token.IDENTIFIER);
-            dblink.setDbLink(link);
+            if (lexer.token() == Token.BANG) {
+                dblink.setDbLink("!");
+                lexer.nextToken();
+            } else {
+                String link = lexer.stringVal();
+                accept(Token.IDENTIFIER);
+                dblink.setDbLink(link);
+            }
 
             expr = dblink;
         }

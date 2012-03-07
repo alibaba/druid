@@ -95,7 +95,7 @@ public class SQLParser {
             lexer.nextToken();
         } else if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.TIME
                    || lexer.token() == Token.MONTH || lexer.token() == Token.CASE || lexer.token() == Token.AT
-                   || lexer.token() == Token.TIMESTAMP) {
+                   || lexer.token() == Token.TIMESTAMP || lexer.token() == Token.LOG) {
             alias = lexer.token.name();
             lexer.nextToken();
         }

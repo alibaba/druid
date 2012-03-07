@@ -10,26 +10,13 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
-public class OracleBlockTest2 extends OracleTest {
+public class OracleSelectTest33 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "declare   i integer := 0; " //
-                     + "begin   " + //
-                     "  for c in (" + //
-                     "      select id " + //
-                     "      from wl_ship_order" + //
-                     "      where forwarder_service is null or status is null) " + //
-                     "  loop" + //
-                     "      update wl_ship_order" + //
-                     "          set forwarder_service = nvl(forwarder_service, 'UPS'), status = nvl(status, 500)" + //
-                     "      where id = c.id;" + //
-                     "      i := i + 1;" + //
-                     "      if mod(i, 100) = 0 then" + //
-                     "          commit;" + //
-                     "      end if;" + //
-                     "  end loop;" + //
-                     "  commit; " + //
-                     "end;";
+        String sql = //
+        "SELECT /*+ Q1647000 NO_EXPAND ROWID(A1) */ " + //
+        "A1.\"PRODUCT_ID\",A1.\"SUMMARY\",A1.\"DESCRIPTION\",A1.\"DESCRIPTION2\" " + //
+        "FROM \"ALIBABA1949\".\"WS_PRODUCT_DETAIL\" A1"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -49,11 +36,12 @@ public class OracleBlockTest2 extends OracleTest {
 
         Assert.assertEquals(1, visitor.getTables().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("wl_ship_order")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("ALIBABA1949.WS_PRODUCT_DETAIL")));
 
         Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(3, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("wl_ship_order", "id")));
+//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ESCROW_LOGISTICS", "*")));
+         
+//         Assert.assertTrue(visitor.getOrderByColumns().contains(new TableStat.Column("employees", "last_name")));
     }
 }
