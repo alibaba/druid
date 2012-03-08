@@ -31,4 +31,6 @@ public interface ConnectionProxy extends Connection, WrapperProxy {
     DataSourceProxy getDirectDataSource();
 
     Date getConnectedTime();
+
+    TransactionInfo getTransactionInfo();
 }

@@ -52,6 +52,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private final long            connectedTime;
 
+    private TransactionInfo       transcationInfo;
+
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id){
         super(connection, id);
         this.dataSource = dataSource;
@@ -71,7 +73,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     public Connection getConnectionRaw() {
         return connection;
     }
-    
+
     public Connection getRawObject() {
         return connection;
     }
@@ -97,6 +99,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void commit() throws SQLException {
         createChain().connection_commit(this);
+        
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
+        }
     }
 
     @Override
@@ -268,15 +274,32 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void rollback() throws SQLException {
         createChain().connection_rollback(this);
+        
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
+        }
     }
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         createChain().connection_rollback(this, savepoint);
+        
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
+        }
     }
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
+        if (!autoCommit) {
+            if (transcationInfo == null) {
+                long transactionId = this.dataSource.createTransactionId();
+                transcationInfo = new TransactionInfo(transactionId);
+            }
+        } else {
+            transcationInfo = null;
+        }
+
         createChain().connection_setAutoCommit(this, autoCommit);
     }
 
@@ -350,7 +373,12 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
         if (iface == Connection.class) {
             return (T) connection;
         }
-        
+
         return super.unwrap(iface);
+    }
+
+    @Override
+    public TransactionInfo getTransactionInfo() {
+        return transcationInfo;
     }
 }

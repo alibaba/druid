@@ -44,7 +44,7 @@ import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
-import com.alibaba.druid.util.TransactionInfo;
+import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

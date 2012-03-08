@@ -52,13 +52,13 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource.ActiveConnectionTraceInfo;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.util.TransactionInfo;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

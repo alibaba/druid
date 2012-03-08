@@ -26,6 +26,7 @@ import com.alibaba.druid.pool.WrapperAdapter;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 
 public class MultiDataSourceConnection extends WrapperAdapter implements Connection, ConnectionProxy {
 
@@ -51,11 +52,13 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private boolean               closed           = false;
 
+    private TransactionInfo       transcationInfo;
+
     public MultiDataSourceConnection(MultiDataSource multiDataSource, long id){
         this.multiDataSource = multiDataSource;
         this.id = id;
     }
-    
+
     public DataSourceHolder getDataSourceHolder() {
         return dataSourceHolder;
     }
@@ -116,6 +119,15 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         } else {
             this.autoCommit = Boolean.valueOf(autoCommit);
         }
+
+        if (!autoCommit) {
+            if (transcationInfo == null) {
+                long transactionId = this.getDirectDataSource().createTransactionId();
+                transcationInfo = new TransactionInfo(transactionId);
+            }
+        } else {
+            transcationInfo = null;
+        }
     }
 
     @Override
@@ -136,12 +148,20 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         if (conn != null) {
             conn.commit();
         }
+
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
+        }
     }
 
     @Override
     public void rollback() throws SQLException {
         if (conn != null) {
             conn.rollback();
+        }
+
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
         }
     }
 
@@ -150,12 +170,12 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
         if (closed) {
             return;
         }
-        
+
         if (conn != null) {
             conn.close();
         }
         this.closed = true;
-        
+
         multiDataSource.afterConnectionClosed(this);
     }
 
@@ -166,11 +186,11 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
-        if (conn != null) {
-            return conn.getMetaData();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.getMetaData();
     }
 
     @Override
@@ -246,6 +266,10 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public void clearWarnings() throws SQLException {
+        if (conn == null) {
+            throw new SQLException("connection not init");
+        }
+
         if (conn != null) {
             conn.clearWarnings();
         }
@@ -293,38 +317,42 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public Savepoint setSavepoint() throws SQLException {
-        if (conn != null) {
-            return conn.setSavepoint();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.setSavepoint();
     }
 
     @Override
     public Savepoint setSavepoint(String name) throws SQLException {
-        if (conn != null) {
-            return conn.setSavepoint(name);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.setSavepoint(name);
     }
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
-        if (conn != null) {
-            conn.rollback(savepoint);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        conn.rollback(savepoint);
+
+        if (transcationInfo != null) {
+            transcationInfo.setEndTimeMillis();
+        }
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        if (conn != null) {
-            conn.releaseSavepoint(savepoint);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        conn.releaseSavepoint(savepoint);
     }
 
     @Override
@@ -445,47 +473,47 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public Clob createClob() throws SQLException {
-        if (conn != null) {
-            return conn.createClob();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createClob();
     }
 
     @Override
     public Blob createBlob() throws SQLException {
-        if (conn != null) {
-            return conn.createBlob();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createBlob();
     }
 
     @Override
     public NClob createNClob() throws SQLException {
-        if (conn != null) {
-            return conn.createNClob();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createNClob();
     }
 
     @Override
     public SQLXML createSQLXML() throws SQLException {
-        if (conn != null) {
-            return conn.createSQLXML();
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createSQLXML();
     }
 
     @Override
     public boolean isValid(int timeout) throws SQLException {
-        if (conn != null) {
-            return conn.isValid(timeout);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        return true;
+        return conn.isValid(timeout);
     }
 
     @Override
@@ -535,20 +563,20 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
-        if (conn != null) {
-            return conn.createArrayOf(typeName, elements);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createArrayOf(typeName, elements);
     }
 
     @Override
     public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-        if (conn != null) {
-            return conn.createStruct(typeName, attributes);
+        if (conn == null) {
+            throw new SQLException("connection not init");
         }
 
-        throw new SQLException("connection not init");
+        return conn.createStruct(typeName, attributes);
     }
 
     // /////
@@ -615,6 +643,10 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     }
 
     public void abort(Executor executor) throws SQLException {
+        if (conn == null) {
+            throw new SQLException("connection not init");
+        }
+
         throw new SQLFeatureNotSupportedException();
     }
 
@@ -624,6 +656,11 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     public int getNetworkTimeout() throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public TransactionInfo getTransactionInfo() {
+        return null;
     }
 
 }

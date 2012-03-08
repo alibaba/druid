@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.util;
+package com.alibaba.druid.proxy.jdbc;
 
 import java.util.ArrayList;
 import java.util.List;
