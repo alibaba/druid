@@ -446,34 +446,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-    public boolean visit(SQLSelectQueryBlock select) {
+    public boolean visit(SQLSelectQueryBlock x) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
-        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
-        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
         }
 
-        printSelectList(select.getSelectList());
+        printSelectList(x.getSelectList());
 
-        if (select.getFrom() != null) {
+        if (x.getFrom() != null) {
             println();
             print("FROM ");
-            select.getFrom().accept(this);
+            x.getFrom().accept(this);
         }
 
-        if (select.getWhere() != null) {
+        if (x.getWhere() != null) {
             println();
             print("WHERE ");
-            select.getWhere().accept(this);
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
         }
 
-        if (select.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             print(" ");
-            select.getGroupBy().accept(this);
+            x.getGroupBy().accept(this);
         }
 
         return false;
@@ -589,6 +590,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -660,6 +662,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 

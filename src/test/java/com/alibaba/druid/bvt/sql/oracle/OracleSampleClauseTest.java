@@ -12,7 +12,7 @@ public class OracleSampleClauseTest extends TestCase {
     public void test_0() throws Exception {
         String sql = "SELECT COUNT(*) * 10 FROM orders SAMPLE (10);";
 
-        String expected = "SELECT COUNT(*) * 10\n" + "FROM orders\n" + "SAMPLE (10);\n";
+        String expected = "SELECT COUNT(*) * 10\n" + "FROM orders SAMPLE (10);\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);
@@ -27,7 +27,7 @@ public class OracleSampleClauseTest extends TestCase {
     public void test_1() throws Exception {
         String sql = "SELECT COUNT(*) * 10 FROM orders SAMPLE (10) SEED (1);";
 
-        String expected = "SELECT COUNT(*) * 10\n" + "FROM orders\n" + "SAMPLE (10) SEED (1);\n";
+        String expected = "SELECT COUNT(*) * 10\n" + "FROM orders SAMPLE (10) SEED (1);\n";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLSelectStatement stmt = (SQLSelectStatement) parser.parseStatementList().get(0);

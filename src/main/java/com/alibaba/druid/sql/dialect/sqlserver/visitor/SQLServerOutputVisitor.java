@@ -11,38 +11,39 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         super(appender);
     }
 
-    public boolean visit(SQLServerSelectQueryBlock select) {
+    public boolean visit(SQLServerSelectQueryBlock x) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
-        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
-        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
         }
 
-        if (select.getTop() != null) {
-            select.getTop().accept(this);
+        if (x.getTop() != null) {
+            x.getTop().accept(this);
         }
 
-        printSelectList(select.getSelectList());
+        printSelectList(x.getSelectList());
 
-        if (select.getFrom() != null) {
+        if (x.getFrom() != null) {
             println();
             print("FROM ");
-            select.getFrom().accept(this);
+            x.getFrom().accept(this);
         }
 
-        if (select.getWhere() != null) {
+        if (x.getWhere() != null) {
             println();
             print("WHERE ");
-            select.getWhere().accept(this);
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
         }
 
-        if (select.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             print(" ");
-            select.getGroupBy().accept(this);
+            x.getGroupBy().accept(this);
         }
 
         return false;

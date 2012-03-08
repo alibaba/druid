@@ -6,21 +6,20 @@ import java.io.Reader;
 import java.util.List;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
+import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class OracleResourceTest extends TestCase {
+public class OracleResourceTest extends OracleTest {
 
     public void test_0() throws Exception {
         // 13
-        exec_test("bvt/parser/oracle-53.txt");
+        exec_test("bvt/parser/oracle-17.txt");
         // for (int i = 0; i <= 53; ++i) {
         // exec_test("bvt/parser/oracle-" + i + ".txt");
         // }
@@ -43,11 +42,14 @@ public class OracleResourceTest extends TestCase {
         SQLStatement statemen = statementList.get(0);
 
         Assert.assertEquals(1, statementList.size());
+        
+        System.out.println(sql);
+        
+        print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
-        System.out.println(sql);
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
 
@@ -72,14 +74,4 @@ public class OracleResourceTest extends TestCase {
         Assert.assertEquals(expect, out.toString());
     }
 
-    private String output(List<SQLStatement> stmtList) {
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
-
-        for (SQLStatement stmt : stmtList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
-    }
 }

@@ -90,137 +90,138 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    public boolean visit(MySqlSelectQueryBlock select) {
-        if (select.getOrderBy() != null) {
-            select.getOrderBy().setParent(select);
+    public boolean visit(MySqlSelectQueryBlock x) {
+        if (x.getOrderBy() != null) {
+            x.getOrderBy().setParent(x);
         }
         
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) print("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) print("DISTINCT ");
-        else if (SQLSetQuantifier.DISTINCTROW == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) print("ALL ");
+        else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) print("DISTINCT ");
+        else if (SQLSetQuantifier.DISTINCTROW == x.getDistionOption()) {
             print("DISTINCTROW ");
         }
 
-        if (select.isHignPriority()) {
+        if (x.isHignPriority()) {
             print("HIGH_PRIORITY ");
         }
 
-        if (select.isSmallResult()) {
+        if (x.isSmallResult()) {
             print("SQL_SMALL_RESULT ");
         }
 
-        if (select.isBigResult()) {
+        if (x.isBigResult()) {
             print("SQL_BIG_RESULT ");
         }
 
-        if (select.isBufferResult()) {
+        if (x.isBufferResult()) {
             print("SQL_BUFFER_RESULT ");
         }
 
-        if (select.getCache() != null) {
-            if (select.getCache().booleanValue()) {
+        if (x.getCache() != null) {
+            if (x.getCache().booleanValue()) {
                 print("SQL_CACHE ");
             } else {
                 print("SQL_NO_CACHE ");
             }
         }
 
-        if (select.isCalcFoundRows()) {
+        if (x.isCalcFoundRows()) {
             print("SQL_CALC_FOUND_ROWS ");
         }
 
-        printSelectList(select.getSelectList());
+        printSelectList(x.getSelectList());
 
-        if (select.getOutFile() != null) {
+        if (x.getOutFile() != null) {
             println();
             print("INTO OUTFILE ");
-            select.getOutFile().accept(this);
-            if (select.getOutFileCharset() != null) {
+            x.getOutFile().accept(this);
+            if (x.getOutFileCharset() != null) {
                 print(" CHARACTER SET ");
-                print(select.getOutFileCharset());
+                print(x.getOutFileCharset());
             }
 
-            if (select.getOutFileColumnsTerminatedBy() != null || select.getOutFileColumnsEnclosedBy() != null
-                || select.getOutFileColumnsEscaped() != null) {
+            if (x.getOutFileColumnsTerminatedBy() != null || x.getOutFileColumnsEnclosedBy() != null
+                || x.getOutFileColumnsEscaped() != null) {
                 print(" COLUMNS");
-                if (select.getOutFileColumnsTerminatedBy() != null) {
+                if (x.getOutFileColumnsTerminatedBy() != null) {
                     print(" TERMINATED BY ");
-                    select.getOutFileColumnsTerminatedBy().accept(this);
+                    x.getOutFileColumnsTerminatedBy().accept(this);
                 }
 
-                if (select.getOutFileColumnsEnclosedBy() != null) {
-                    if (select.isOutFileColumnsEnclosedOptionally()) {
+                if (x.getOutFileColumnsEnclosedBy() != null) {
+                    if (x.isOutFileColumnsEnclosedOptionally()) {
                         print(" OPTIONALLY");
                     }
                     print(" ENCLOSED BY ");
-                    select.getOutFileColumnsEnclosedBy().accept(this);
+                    x.getOutFileColumnsEnclosedBy().accept(this);
                 }
 
-                if (select.getOutFileColumnsEscaped() != null) {
+                if (x.getOutFileColumnsEscaped() != null) {
                     print(" ESCAPED BY ");
-                    select.getOutFileColumnsEscaped().accept(this);
+                    x.getOutFileColumnsEscaped().accept(this);
                 }
             }
 
-            if (select.getOutFileLinesStartingBy() != null || select.getOutFileLinesTerminatedBy() != null) {
+            if (x.getOutFileLinesStartingBy() != null || x.getOutFileLinesTerminatedBy() != null) {
                 print(" LINES");
-                if (select.getOutFileLinesStartingBy() != null) {
+                if (x.getOutFileLinesStartingBy() != null) {
                     print(" STARTING BY ");
-                    select.getOutFileLinesStartingBy().accept(this);
+                    x.getOutFileLinesStartingBy().accept(this);
                 }
 
-                if (select.getOutFileLinesTerminatedBy() != null) {
+                if (x.getOutFileLinesTerminatedBy() != null) {
                     print(" TERMINATED BY ");
-                    select.getOutFileLinesTerminatedBy().accept(this);
+                    x.getOutFileLinesTerminatedBy().accept(this);
                 }
             }
         }
 
-        if (select.getFrom() != null) {
+        if (x.getFrom() != null) {
             println();
             print("FROM ");
-            select.getFrom().accept(this);
+            x.getFrom().accept(this);
         }
 
-        if (select.getWhere() != null) {
+        if (x.getWhere() != null) {
             println();
             print("WHERE ");
-            select.getWhere().accept(this);
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
         }
 
-        if (select.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             println();
-            select.getGroupBy().accept(this);
+            x.getGroupBy().accept(this);
         }
 
-        if (select.getOrderBy() != null) {
+        if (x.getOrderBy() != null) {
             println();
-            select.getOrderBy().accept(this);
+            x.getOrderBy().accept(this);
         }
 
-        if (select.getLimit() != null) {
+        if (x.getLimit() != null) {
             println();
-            select.getLimit().accept(this);
+            x.getLimit().accept(this);
         }
 
-        if (select.getProcedureName() != null) {
+        if (x.getProcedureName() != null) {
             print(" PROCEDURE ");
-            select.getProcedureName().accept(this);
-            if (select.getProcedureArgumentList().size() > 0) {
+            x.getProcedureName().accept(this);
+            if (x.getProcedureArgumentList().size() > 0) {
                 print("(");
-                printAndAccept(select.getProcedureArgumentList(), ", ");
+                printAndAccept(x.getProcedureArgumentList(), ", ");
                 print(")");
             }
         }
 
-        if (select.isForUpdate()) {
+        if (x.isForUpdate()) {
             println();
             print("FOR UPDATE");
         }
 
-        if (select.isLockInShareMode()) {
+        if (x.isLockInShareMode()) {
             println();
             print("LOCK IN SHARE MODE");
         }
@@ -675,6 +676,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1036,6 +1038,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1067,6 +1070,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1089,6 +1093,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1141,6 +1146,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
