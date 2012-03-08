@@ -167,7 +167,7 @@ public class ArithmeticOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 = 0 OR A > ?;", text);
+        Assert.assertEquals("SELECT 1 = 0\n\tOR A > ?;", text);
     }
 
     public void test_13() throws Exception {
@@ -178,7 +178,7 @@ public class ArithmeticOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 = 0 AND ID = ?;", text);
+        Assert.assertEquals("SELECT 1 = 0\n\tAND ID = ?;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {

@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAnyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -53,11 +54,12 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -66,7 +68,6 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
-import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -200,12 +201,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        SQLObject parent = x.getParent();
+        boolean isRoot = parent instanceof SQLSelectQueryBlock;
+        boolean relational = x.getOperator() == SQLBinaryOperator.BooleanAnd
+                             || x.getOperator() == SQLBinaryOperator.BooleanOr;
+
+        if (isRoot && relational) {
+            incrementIndent();
+        }
+
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
+            boolean leftRational = left.getOperator() == SQLBinaryOperator.BooleanAnd
+                    || left.getOperator() == SQLBinaryOperator.BooleanOr;
+            
             if (left.getOperator().priority > x.getOperator().priority) {
+                if (leftRational) {
+                    incrementIndent();
+                }
                 print('(');
                 left.accept(this);
                 print(')');
+                
+                if (leftRational) {
+                    decrementIndent();
+                }
             } else {
                 left.accept(this);
             }
@@ -213,21 +233,47 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getLeft().accept(this);
         }
 
-        print(" ");
+        if (isRoot && relational) {
+            decrementIndent();
+        }
+
+        if (relational) {
+            if (isRoot) {
+                incrementIndent();
+            }
+            println();
+        } else {
+            print(" ");
+        }
         print(x.getOperator().name);
         print(" ");
 
         if (x.getRight() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
+            boolean rightRational = right.getOperator() == SQLBinaryOperator.BooleanAnd
+                                    || right.getOperator() == SQLBinaryOperator.BooleanOr;
+
             if (right.getOperator().priority >= x.getOperator().priority) {
+                if (rightRational) {
+                    incrementIndent();
+                }
+                
                 print('(');
                 right.accept(this);
                 print(')');
+                
+                if (rightRational) {
+                    decrementIndent();
+                }
             } else {
                 right.accept(this);
             }
         } else {
             x.getRight().accept(this);
+        }
+
+        if (isRoot && relational) {
+            decrementIndent();
         }
 
         return false;
@@ -446,34 +492,35 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         return false;
     }
 
-    public boolean visit(SQLSelectQueryBlock select) {
+    public boolean visit(SQLSelectQueryBlock x) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
-        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
-        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
         }
 
-        printSelectList(select.getSelectList());
+        printSelectList(x.getSelectList());
 
-        if (select.getFrom() != null) {
+        if (x.getFrom() != null) {
             println();
             print("FROM ");
-            select.getFrom().accept(this);
+            x.getFrom().accept(this);
         }
 
-        if (select.getWhere() != null) {
+        if (x.getWhere() != null) {
             println();
             print("WHERE ");
-            select.getWhere().accept(this);
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
         }
 
-        if (select.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             print(" ");
-            select.getGroupBy().accept(this);
+            x.getGroupBy().accept(this);
         }
 
         return false;
@@ -567,13 +614,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(' ');
             item.accept(this);
         }
-        
+
         if (x.getEnable() != null) {
             if (x.getEnable().booleanValue()) {
                 print(" ENABLE");
             }
         }
-        
+
         return false;
     }
 
@@ -589,6 +636,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -660,6 +708,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getWhere() != null) {
             print(" WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 

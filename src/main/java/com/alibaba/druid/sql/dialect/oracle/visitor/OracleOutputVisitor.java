@@ -274,6 +274,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -438,30 +439,40 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         x.getLeft().accept(this);
 
         if (x.getJoinType() == JoinType.COMMA) {
-            print(",");
+            print(", ");
+            x.getRight().accept(this);
         } else {
-            print(" ");
-            print(JoinType.toString(x.getJoinType()));
-        }
-
-        print(" ");
-        x.getRight().accept(this);
-
-        if (x.getCondition() != null) {
-            print(" ON ");
-            x.getCondition().accept(this);
-            print(" ");
-        }
-
-        if (x.getUsing().size() > 0) {
-            print(" USING (");
-            printAndAccept(x.getUsing(), ", ");
-            print(")");
-        }
-
-        if (x.getFlashback() != null) {
+            boolean isRoot = x.getParent() instanceof SQLSelectQueryBlock;
+            if (isRoot) {
+                incrementIndent();
+            }
+            
             println();
-            x.getFlashback().accept(this);
+            print(JoinType.toString(x.getJoinType()));
+            print(" ");
+
+            x.getRight().accept(this);
+            
+            if (isRoot) {
+                decrementIndent();
+            }
+
+            if (x.getCondition() != null) {
+                print(" ON ");
+                x.getCondition().accept(this);
+                print(" ");
+            }
+
+            if (x.getUsing().size() > 0) {
+                print(" USING (");
+                printAndAccept(x.getUsing(), ", ");
+                print(")");
+            }
+
+            if (x.getFlashback() != null) {
+                println();
+                x.getFlashback().accept(this);
+            }
         }
 
         return false;
@@ -529,58 +540,60 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return super.visit(select);
     }
 
-    public boolean visit(OracleSelectQueryBlock select) {
+    public boolean visit(OracleSelectQueryBlock x) {
         print("SELECT ");
 
-        if (SQLSetQuantifier.ALL == select.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
             print("ALL ");
-        } else if (SQLSetQuantifier.DISTINCT == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
             print("DISTINCT ");
-        } else if (SQLSetQuantifier.UNIQUE == select.getDistionOption()) {
+        } else if (SQLSetQuantifier.UNIQUE == x.getDistionOption()) {
             print("UNIQUE ");
         }
 
-        if (select.getHints().size() > 0) {
+        if (x.getHints().size() > 0) {
             print("/*+");
-            printAndAccept(select.getHints(), ", ");
+            printAndAccept(x.getHints(), ", ");
             print("*/ ");
         }
 
-        printSelectList(select.getSelectList());
+        printSelectList(x.getSelectList());
 
-        if (select.getInto() != null) {
+        if (x.getInto() != null) {
             println();
             print("INTO ");
-            select.getInto().accept(this);
+            x.getInto().accept(this);
         }
 
         println();
         print("FROM ");
-        if (select.getFrom() == null) {
+        if (x.getFrom() == null) {
             print("DUAL");
         } else {
-            select.getFrom().accept(this);
+            x.getFrom().setParent(x);
+            x.getFrom().accept(this);
         }
 
-        if (select.getWhere() != null) {
+        if (x.getWhere() != null) {
             println();
             print("WHERE ");
-            select.getWhere().accept(this);
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
         }
 
-        if (select.getHierachicalQueryClause() != null) {
+        if (x.getHierachicalQueryClause() != null) {
             println();
-            select.getHierachicalQueryClause().accept(this);
+            x.getHierachicalQueryClause().accept(this);
         }
 
-        if (select.getGroupBy() != null) {
+        if (x.getGroupBy() != null) {
             println();
-            select.getGroupBy().accept(this);
+            x.getGroupBy().accept(this);
         }
 
-        if (select.getModelClause() != null) {
+        if (x.getModelClause() != null) {
             println();
-            select.getModelClause().accept(this);
+            x.getModelClause().accept(this);
         }
 
         return false;
@@ -603,18 +616,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleSelectSubqueryTableSource x) {
         print("(");
         incrementIndent();
-        x.getSelect().accept(this);
         println();
+        x.getSelect().accept(this);
         decrementIndent();
+        println();
         print(")");
 
         if (x.getPivot() != null) {
-            incrementIndent();
-
             println();
             x.getPivot().accept(this);
-
-            decrementIndent();
         }
 
         if (x.getFlashback() != null) {
@@ -655,17 +665,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         }
 
         if (x.getSampleClause() != null) {
-            println();
+            print(" ");
             x.getSampleClause().accept(this);
         }
 
         if (x.getPivot() != null) {
-            incrementIndent();
-
             println();
             x.getPivot().accept(this);
-
-            decrementIndent();
         }
 
         if (x.getFlashback() != null) {
@@ -812,6 +818,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         if (x.getWhere() != null) {
             println();
             print("WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
 
@@ -1496,6 +1503,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             incrementIndent();
             println();
             print("WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }
@@ -1504,6 +1512,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             incrementIndent();
             println();
             print("DELETE WHERE ");
+            x.getDeleteWhere().setParent(x);
             x.getDeleteWhere().accept(this);
             decrementIndent();
         }
@@ -1530,6 +1539,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             incrementIndent();
             println();
             print("WHERE ");
+            x.getWhere().setParent(x);
             x.getWhere().accept(this);
             decrementIndent();
         }

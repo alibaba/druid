@@ -123,7 +123,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 AND 1;", text);
+        Assert.assertEquals("SELECT 1\n\tAND 1;", text);
     }
 
     public void test_9() throws Exception {
@@ -134,7 +134,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 1 AND NULL;", text);
+        Assert.assertEquals("SELECT 1\n\tAND NULL;", text);
     }
 
     public void test_10() throws Exception {
@@ -145,7 +145,7 @@ public class LogicalOperatorsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT 0 OR NULL;", text);
+        Assert.assertEquals("SELECT 0\n\tOR NULL;", text);
     }
 
     public void test_11() throws Exception {
