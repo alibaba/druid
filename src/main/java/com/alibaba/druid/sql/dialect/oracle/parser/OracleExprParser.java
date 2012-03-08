@@ -115,8 +115,7 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
-        parseDataTypeRest(dataType);
-        return dataType;
+        return parseDataTypeRest(dataType);
     }
 
     public boolean isAggreateFunction(String word) {

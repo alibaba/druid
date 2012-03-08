@@ -105,6 +105,7 @@ public class MySqlLexer extends Lexer {
         map.put("ANY", Token.ANY);
         map.put("TRUNCATE", Token.TRUNCATE);
         map.put("USER", Token.USER);
+        map.put("IF", Token.IF);
 
         map.put("TRUE", Token.TRUE);
         map.put("FALSE", Token.FALSE);

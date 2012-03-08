@@ -1056,50 +1056,53 @@ public class SQLExprParser extends SQLParser {
         String typeName = typeExpr.toString();
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
-        parseDataTypeRest(dataType);
-        return dataType;
+        return parseDataTypeRest(dataType);
     }
 
-    protected void parseDataTypeRest(SQLDataType dataType) {
+    protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             exprList(dataType.getArguments());
             accept(Token.RPAREN);
+
+            return parseCharTypeRest(dataType);
         }
+
+        return dataType;
     }
 
-    protected SQLDataType parseCharType() throws ParserException {
-        if (lexer.token() != Token.IDENTIFIER) {
-            throw new ParserException();
+    protected boolean isCharType(SQLDataType dataType) {
+        String dataTypeName = dataType.getName();
+
+        return "char".equalsIgnoreCase(dataTypeName) //
+               || "varchar".equalsIgnoreCase(dataTypeName)
+               || "nchar".equalsIgnoreCase(dataTypeName)
+               || "nvarchar".equalsIgnoreCase(dataTypeName)
+        //
+        ;
+    }
+
+    protected SQLDataType parseCharTypeRest(SQLDataType dataType) {
+        if (!isCharType(dataType)) {
+            return dataType;
         }
 
-        String typeName = lexer.stringVal();
+        SQLCharactorDataType charType = new SQLCharactorDataType(dataType.getName());
+        charType.getArguments().addAll(dataType.getArguments());
 
-        lexer.nextToken();
-        SQLCharactorDataType dataType = new SQLCharactorDataType(typeName);
-        if (lexer.token() == (Token.LPAREN)) {
+        if (lexer.token() != Token.IDENTIFIER) {
+            throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
+        }
+
+        if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
-            exprList(dataType.getArguments());
-            accept(Token.RPAREN);
-        }
 
-        if (lexer.token() != Token.IDENTIFIER) {
-            throw new ParserException();
-        }
-
-        if (lexer.stringVal().equalsIgnoreCase("CHARACTER")) {
-            if (lexer.token() != Token.IDENTIFIER) {
-                throw new ParserException();
-            }
-
-            if (!lexer.stringVal().equalsIgnoreCase("SET")) {
-                throw new ParserException();
-            }
+            accept(Token.SET);
 
             if (lexer.token() != Token.IDENTIFIER) {
                 throw new ParserException();
             }
-            dataType.setCharSetName(lexer.stringVal());
+            charType.setCharSetName(lexer.stringVal());
             lexer.nextToken();
 
             if (lexer.token() == Token.IDENTIFIER) {
@@ -1109,12 +1112,12 @@ public class SQLExprParser extends SQLParser {
                     if (lexer.token() != Token.IDENTIFIER) {
                         throw new ParserException();
                     }
-                    dataType.setCollate(lexer.stringVal());
+                    charType.setCollate(lexer.stringVal());
                     lexer.nextToken();
                 }
             }
         }
-        return dataType;
+        return charType;
     }
 
     public void accept(Token token) {

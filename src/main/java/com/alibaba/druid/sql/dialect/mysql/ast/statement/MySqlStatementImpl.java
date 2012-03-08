@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public abstract class MySqlStatementImpl extends SQLStatementImpl {
+public abstract class MySqlStatementImpl extends SQLStatementImpl implements MySqlStatement {
 
     private static final long serialVersionUID = 1L;
 

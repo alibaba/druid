@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
@@ -1305,6 +1306,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlDropUser x) {
         print("DROP USER ");
         printAndAccept(x.getUsers(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlDropTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlDropTableStatement x) {
+        print("DROP TABLE ");
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
+        printAndAccept(x.getTableNames(), ", ");
         return false;
     }
 }

@@ -26,7 +26,7 @@ public class SQLDropTableStatement extends SQLStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private List<SQLName>     tableNames       = new ArrayList<SQLName>();
+    protected List<SQLName>   tableNames       = new ArrayList<SQLName>();
 
     public SQLDropTableStatement(){
 
@@ -47,7 +47,6 @@ public class SQLDropTableStatement extends SQLStatementImpl {
     public void setName(SQLName name) {
         tableNames.add(name);
     }
-
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
