@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -107,6 +108,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -114,6 +116,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
@@ -135,6 +138,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRollbackStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -167,6 +172,9 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public void postVisit(SQLObject x) {
         if (x instanceof SQLStatement) {
             if (x instanceof OraclePLSQLCommitStatement) {
+                return;
+            }
+            if (x.getParent() instanceof OracleCreateProcedureStatement) {
                 return;
             }
 
@@ -357,6 +365,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     public boolean visit(OraclePLSQLCommitStatement astNode) {
         print("/");
+        println();
         return false;
     }
 
@@ -446,13 +455,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             if (isRoot) {
                 incrementIndent();
             }
-            
+
             println();
             print(JoinType.toString(x.getJoinType()));
             print(" ");
 
             x.getRight().accept(this);
-            
+
             if (isRoot) {
                 decrementIndent();
             }
@@ -1749,12 +1758,17 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             incrementIndent();
             println();
 
-            for (OracleParameter param : x.getParameters()) {
+            for (int i = 0, size = x.getParameters().size(); i < size; ++i) {
+                if (i != 0) {
+                    println();
+                }
+                OracleParameter param = x.getParameters().get(i);
                 param.accept(this);
-                println();
+                print(";");
             }
 
             decrementIndent();
+            println();
         }
         print("BEGIN");
         incrementIndent();
@@ -1870,8 +1884,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         print("WHEN ");
         x.getWhen().accept(this);
         incrementIndent();
-        println();
-        x.getStatement().accept(this);
+
+        for (int i = 0, size = x.getStatements().size(); i < size; ++i) {
+            println();
+            SQLStatement stmt = x.getStatements().get(i);
+            stmt.setParent(x);
+            stmt.accept(this);
+        }
         decrementIndent();
         return false;
     }
@@ -2576,14 +2595,28 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleParameter x) {
-        x.getName().accept(this);
-        print(" ");
-        x.getDataType().accept(this);
+        if (x.getDataType().getName().equalsIgnoreCase("CURSOR")) {
+            print("CURSOR ");
+            x.getName().accept(this);
+            print(" IS");
+            incrementIndent();
+            println();
+            SQLSelect select = ((SQLQueryExpr) x.getDefaultValue()).getSubQuery();
+            select.accept(this);
+            decrementIndent();
 
-        if (x.getDefaultValue() != null) {
-            print(" := ");
-            x.getDefaultValue().accept(this);
+        } else {
+            x.getName().accept(this);
+            print(" ");
+
+            x.getDataType().accept(this);
+
+            if (x.getDefaultValue() != null) {
+                print(" := ");
+                x.getDefaultValue().accept(this);
+            }
         }
+
         return false;
     }
 
@@ -2595,6 +2628,26 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleCommitStatement x) {
         print("COMMIT");
+
+        if (x.isWrite()) {
+            print(" WRITE");
+            if (x.getWait() != null) {
+                if (x.getWait().booleanValue()) {
+                    print(" WAIT");        
+                } else {
+                    print(" NOWAIT");
+                }
+            }
+            
+            if (x.getImmediate() != null) {
+                if (x.getImmediate().booleanValue()) {
+                    print(" IMMEDIATE");        
+                } else {
+                    print(" BATCH");
+                }
+            }
+        }
+
         return false;
     }
 
@@ -2917,6 +2970,91 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleExitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleFetchStatement x) {
+        print("FETCH ");
+        x.getCursorName().accept(this);
+        print(" INTO ");
+        printAndAccept(x.getInto(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleFetchStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRollbackStatement x) {
+        print("ROLLBACK");
+        if (x.getTo() != null) {
+            print(" TO ");
+            x.getTo().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleRollbackStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSavePointStatement x) {
+        print("ROLLBACK");
+        if (x.getTo() != null) {
+            print(" TO ");
+            x.getTo().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleSavePointStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleCreateProcedureStatement x) {
+        if (x.isOrReplace()) {
+            print("CREATE OR REPLACE PROCEDURE ");
+        } else {
+            print("CREATE PROCEDURE ");
+        }
+        x.getName().accept(this);
+
+        int paramSize = x.getParameters().size();
+
+        if (paramSize > 0) {
+            print(" (");
+            incrementIndent();
+            println();
+
+            for (int i = 0; i < paramSize; ++i) {
+                if (i != 0) {
+                    print(", ");
+                    println();
+                }
+                OracleParameter param = x.getParameters().get(i);
+                param.accept(this);
+            }
+
+            decrementIndent();
+            println();
+            print(")");
+        }
+
+        println();
+        x.getBlock().setParent(x);
+        x.getBlock().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateProcedureStatement x) {
 
     }
 }

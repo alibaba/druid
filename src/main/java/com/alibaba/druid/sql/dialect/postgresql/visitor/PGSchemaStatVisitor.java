@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -153,16 +152,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     }
 
     @Override
-    public void endVisit(PGCurrentOfExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(PGCurrentOfExpr x) {
-        return false;
-    }
-
-    @Override
     public void endVisit(PGInsertStatement x) {
 
     }
@@ -225,7 +214,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     @Override
     public boolean visit(PGUpdateStatement x) {
         Map<String, String> oldAliasMap = getAliasMap();
-        
+
         setAliasMap();
 
         if (x.getWith() != null) {
@@ -243,7 +232,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         accept(x.getItems());
         accept(x.getWhere());
-        
+
         setAliasMap(oldAliasMap);
 
         return false;

@@ -41,6 +41,7 @@ public class OracleParameter extends OracleSQLObjectImpl {
         if (visitor.visit(this)) {
             acceptChild(visitor, name);
             acceptChild(visitor, dataType);
+            acceptChild(visitor, defaultValue);
         }
         visitor.endVisit(this);
     }

@@ -3,7 +3,6 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -318,19 +317,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         return false;
     }
 
-    @Override
-    public void endVisit(PGCurrentOfExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(PGCurrentOfExpr x) {
-        print("CURRENT OF ");
-        x.getCursor().accept(this);
-
-        return false;
-    }
-    
     @Override
     public void endVisit(PGInsertStatement x) {
         

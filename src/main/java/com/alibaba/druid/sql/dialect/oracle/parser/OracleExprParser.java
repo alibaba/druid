@@ -18,6 +18,8 @@ package com.alibaba.druid.sql.dialect.oracle.parser;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
+import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -65,24 +67,21 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
-
-
-
-
-
-
-
-
-
-
-
     public boolean                allowStringAdditive = false;
 
     /**
      * @formatter:off
      */
-    private static final String[] _aggregateFunctions = { "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT", "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE", "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX", "MIN", "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT", "REGR_R2", "REGR_AVGX",
-            "REGR_AVGY", "REGR_SXX", "REGR_SYY", "REGR_SXY", "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP", "SUM", "VAR_POP", "VAR_SAMP", "VARIANCE" };
+    private static final String[] _aggregateFunctions = { //
+                                                          "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT", // 
+                                                          "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE", // 
+                                                          "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX", "MIN", // 
+                                                          "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", // 
+                                                          "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT", "REGR_R2", // 
+                                                          "REGR_AVGX", "REGR_AVGY", "REGR_SXX", "REGR_SYY", "REGR_SXY", // 
+                                                          "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP", "SUM", // 
+                                                          "VAR_POP", "VAR_SAMP", "VARIANCE" // 
+                                                          };
 
     public OracleExprParser(Lexer lexer){
         super(lexer);
@@ -91,6 +90,33 @@ public class OracleExprParser extends SQLExprParser {
     public OracleExprParser(String text){
         super(new OracleLexer(text));
         this.lexer.nextToken();
+    }
+    
+    public SQLDataType parseDataType() throws ParserException {
+        
+        if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
+            return null;
+        }
+        
+        SQLName typeExpr = name();
+        String typeName = typeExpr.toString();
+        
+        if (lexer.token() == Token.PERCENT) {
+            lexer.nextToken();
+            if (identifierEquals("TYPE")) {
+                lexer.nextToken();
+                typeName += "%TYPE";
+            } else if (identifierEquals("ROWTYPE")) {
+                lexer.nextToken();
+                typeName += "%ROWTYPE";
+            } else {
+                throw new ParserException("syntax error : " + lexer.token() + " " + lexer.stringVal());
+            }
+        }
+
+        SQLDataType dataType = new SQLDataTypeImpl(typeName);
+        parseDataTypeRest(dataType);
+        return dataType;
     }
 
     public boolean isAggreateFunction(String word) {

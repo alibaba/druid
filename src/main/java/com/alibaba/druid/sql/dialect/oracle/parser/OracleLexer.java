@@ -139,6 +139,8 @@ public class OracleLexer extends Lexer {
         map.put("ELSE", Token.ELSE);
         map.put("GOTO", Token.GOTO);
         map.put("COMMIT", Token.COMMIT);
+        map.put("ROLLBACK", Token.ROLLBACK);
+        map.put("SAVEPOINT", Token.SAVEPOINT);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -217,7 +219,6 @@ public class OracleLexer extends Lexer {
         np = bp;
         sp = 0;
         scanChar();
-        sp++;
 
         // /*+ */
         if (ch == '*') {
@@ -277,7 +278,7 @@ public class OracleLexer extends Lexer {
                     break;
                 }
 
-                if (ch == '\r') {
+                if (ch == '\n') {
                     scanChar();
                     sp++;
                     break;

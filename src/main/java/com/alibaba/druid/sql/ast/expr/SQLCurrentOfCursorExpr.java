@@ -29,6 +29,10 @@ public class SQLCurrentOfCursorExpr extends SQLExprImpl {
 
     }
 
+    public SQLCurrentOfCursorExpr(SQLName cursorName){
+        this.cursorName = cursorName;
+    }
+
     public SQLName getCursorName() {
         return cursorName;
     }

@@ -172,6 +172,8 @@ public enum Token {
     LOOP("LOOP"),
     GOTO("GOTO"),
     COMMIT("COMMIT"),
+    ROLLBACK("ROLLBACK"),
+    SAVEPOINT("SAVEPOINT"),
     
     // transact-sql
     TOP("TOP"),

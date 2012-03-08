@@ -51,6 +51,11 @@ import com.alibaba.druid.stat.JdbcTraceManager;
 
 public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
 
+
+    private static final String TRACE_STMT_COLUMN = "stmt.columnNames";
+
+    private static final String TRACE_STMT_RS_HOLDABILITY = "stmt.resultSetHoldability";
+
     public final static String ATTR_NAME_RESULT_SET      = "trace.rs";
 
     public final static String TRACE_CONN_ID             = "conn.id";
@@ -61,8 +66,11 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
     public final static String TRACE_STMT_PARAMS         = "stmt.params";
     public final static String TRACE_STMT_UPDATE_COUNT   = "stmt.updateCount";
     public final static String TRACE_STMT_COLUMN_INDEXES = "stmt.columnIndexes";
+    public final static String TRACE_STMT_RS_TYPE        = "stmt.resultSetType";
+    public static final String TRACE_STMT_RS_CONCURRENCY = "stmt.resultSetConcurrency";
     public final static String TRACE_RS_ID               = "rs.id";
     public final static String TRACE_RS_CURSOR_INDEX     = "rs.cusorIndex";
+    
 
     public TraceFilter(){
 
@@ -489,8 +497,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
             fireEvent(event);
         }
 
@@ -507,8 +515,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
 
@@ -521,8 +529,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -534,8 +542,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -559,9 +567,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-            event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
             fireEvent(event);
         }
 
@@ -579,9 +587,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
 
@@ -594,9 +602,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -608,9 +616,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -695,7 +703,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.columnNames", columnNames);
+            event.putContext(TRACE_STMT_COLUMN, columnNames);
             fireEvent(event);
         }
 
@@ -711,7 +719,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
 
@@ -724,7 +732,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
             throw ex;
@@ -736,7 +744,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
             throw ex;
@@ -815,8 +823,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
             fireEvent(event);
         }
 
@@ -832,8 +840,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
 
@@ -845,8 +853,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -857,8 +865,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -882,9 +890,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-            event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
             fireEvent(event);
         }
 
@@ -900,9 +908,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
 
@@ -914,9 +922,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -927,9 +935,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -1002,8 +1010,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
             fireEvent(event);
         }
 
@@ -1018,8 +1026,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
 
@@ -1030,8 +1038,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -1041,8 +1049,8 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
                 fireEvent(event);
             }
             throw ex;
@@ -1065,9 +1073,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
             event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
             event.putContext(TRACE_CONN_ID, connection.getId());
-            event.putContext("stmt.resultSetType", resultSetType);
-            event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-            event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+            event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+            event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+            event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
 
             fireEvent(event);
         }
@@ -1084,9 +1092,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
 
@@ -1097,9 +1105,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -1109,9 +1117,9 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_INFO, connection.getProperties().clone());
                 event.putContext(TRACE_CONN_CONNECTED_TIME, connection.getConnectedTime());
                 event.putContext(TRACE_CONN_ID, connection.getId());
-                event.putContext("stmt.resultSetType", resultSetType);
-                event.putContext("stmt.resultSetConcurrency", resultSetConcurrency);
-                event.putContext("stmt.resultSetHoldability", resultSetHoldability);
+                event.putContext(TRACE_STMT_RS_TYPE, resultSetType);
+                event.putContext(TRACE_STMT_RS_CONCURRENCY, resultSetConcurrency);
+                event.putContext(TRACE_STMT_RS_HOLDABILITY, resultSetHoldability);
                 fireEvent(event);
             }
             throw ex;
@@ -1341,7 +1349,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
 
@@ -1709,7 +1717,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
             event.putContext(TRACE_CONN_ID, connection.getId());
             event.putContext(TRACE_STMT_ID, statement.getId());
             event.putContext(TRACE_STMT_SQL, sql);
-            event.putContext("stmt.columnNames", columnNames);
+            event.putContext(TRACE_STMT_COLUMN, columnNames);
 
             fireEvent(event);
         }
@@ -1726,7 +1734,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 event.putContext(TRACE_STMT_UPDATE_COUNT, updateCount);
                 fireEvent(event);
             }
@@ -1740,7 +1748,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
             throw ex;
@@ -1752,7 +1760,7 @@ public class TraceFilter extends FilterAdapter implements TraceFilterMBean {
                 event.putContext(TRACE_CONN_ID, connection.getId());
                 event.putContext(TRACE_STMT_ID, statement.getId());
                 event.putContext(TRACE_STMT_SQL, sql);
-                event.putContext("stmt.columnNames", columnNames);
+                event.putContext(TRACE_STMT_COLUMN, columnNames);
                 fireEvent(event);
             }
             throw ex;

@@ -67,6 +67,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -74,6 +75,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExprStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFetchStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleFileSpecification;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleForStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleGotoStatement;
@@ -95,6 +97,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePLSQLCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OraclePrimaryKey;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleRollbackStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSavePointStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectForUpdate;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectHierachicalQueryClause;
@@ -1257,55 +1261,55 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleAlterTableMoveTablespace x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleSizeExpr x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleSizeExpr x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleFileSpecification x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleFileSpecification x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleAlterTablespaceAddDataFile x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleAlterTablespaceAddDataFile x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleAlterTablespaceStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleAlterTablespaceStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleTruncateStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleTruncateStatement x) {
-        
+
     }
 
     @Override
@@ -1315,17 +1319,17 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleCreateSequenceStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(OracleRangeValuesClause x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleRangeValuesClause x) {
-        
+
     }
 
     @Override
@@ -1335,16 +1339,17 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OraclePartitionByRangeClause x) {
-        
+
     }
+
     @Override
     public boolean visit(OracleLoopStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleLoopStatement x) {
-        
+
     }
 
     @Override
@@ -1354,6 +1359,46 @@ public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleExitStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleFetchStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleFetchStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleRollbackStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleRollbackStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(OracleSavePointStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleSavePointStatement x) {
+
+    }
+    
+    @Override
+    public boolean visit(OracleCreateProcedureStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(OracleCreateProcedureStatement x) {
         
     }
 

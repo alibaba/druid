@@ -5,12 +5,12 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGCurrentOfExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
@@ -169,7 +169,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 accept(Token.OF);
                 SQLName cursorName = this.exprParser.name();
-                SQLExpr where = new PGCurrentOfExpr(cursorName);
+                SQLExpr where = new SQLCurrentOfCursorExpr(cursorName);
                 deleteStatement.setWhere(where);
             } else {
                 SQLExpr where = this.exprParser.expr();

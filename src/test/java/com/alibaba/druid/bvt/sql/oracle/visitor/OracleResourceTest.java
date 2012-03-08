@@ -19,9 +19,9 @@ public class OracleResourceTest extends OracleTest {
 
     public void test_0() throws Exception {
         // 13
-//        exec_test("bvt/parser/oracle-17.txt");
-        for (int i = 0; i <= 53; ++i) {
-            exec_test("bvt/parser/oracle-" + i + ".txt");
+//        exec_test("bvt/parser/oracle-56.txt");
+        for (int i = 0; i <= 56; ++i) {
+             exec_test("bvt/parser/oracle-" + i + ".txt");
         }
     }
 
@@ -39,16 +39,19 @@ public class OracleResourceTest extends OracleTest {
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
 
-        Assert.assertEquals(1, statementList.size());
-        
+        // Assert.assertEquals(1, statementList.size());
+
         System.out.println(sql);
-        
+
         print(statementList);
 
         OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
-        statemen.accept(visitor);
+
+        for (int i = 0, size = statementList.size(); i < size; ++i) {
+            SQLStatement statement = statementList.get(i);
+            statement.accept(visitor);
+        }
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());

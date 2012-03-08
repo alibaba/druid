@@ -23,9 +23,9 @@ public class OracleExceptionStatement extends OracleSQLObjectImpl implements Ora
 
     public static class Item extends OracleSQLObjectImpl {
 
-        private static final long serialVersionUID = 1L;
-        private SQLExpr           when;
-        private SQLStatement      statement;
+        private static final long  serialVersionUID = 1L;
+        private SQLExpr            when;
+        private List<SQLStatement> statements       = new ArrayList<SQLStatement>();
 
         public SQLExpr getWhen() {
             return when;
@@ -35,19 +35,19 @@ public class OracleExceptionStatement extends OracleSQLObjectImpl implements Ora
             this.when = when;
         }
 
-        public SQLStatement getStatement() {
-            return statement;
+        public List<SQLStatement> getStatements() {
+            return statements;
         }
 
-        public void setStatement(SQLStatement statement) {
-            this.statement = statement;
+        public void setStatements(List<SQLStatement> statements) {
+            this.statements = statements;
         }
 
         @Override
         public void accept0(OracleASTVisitor visitor) {
             if (visitor.visit(this)) {
                 acceptChild(visitor, when);
-                acceptChild(visitor, statement);
+                acceptChild(visitor, statements);
             }
             visitor.endVisit(this);
         }

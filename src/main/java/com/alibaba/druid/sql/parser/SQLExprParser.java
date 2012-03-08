@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCastExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCurrentOfCursorExpr;
 import com.alibaba.druid.sql.ast.expr.SQLDefaultExpr;
 import com.alibaba.druid.sql.ast.expr.SQLExistsExpr;
 import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
@@ -449,9 +450,20 @@ public class SQLExprParser extends SQLParser {
             throw new IllegalArgumentException("expr");
         }
 
+        if (lexer.token() == Token.OF) {
+            if (expr instanceof SQLIdentifierExpr) {
+                String name = ((SQLIdentifierExpr) expr).getName();
+                if ("CURRENT".equalsIgnoreCase(name)) {
+                    lexer.nextToken();
+                    SQLName cursorName = this.name();
+                    return new SQLCurrentOfCursorExpr(cursorName);
+                }
+            }
+        }
+
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
-            
+
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.token() == Token.COLONEQ) {
@@ -1035,21 +1047,25 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLDataType parseDataType() throws ParserException {
-        
+
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;
         }
-        
+
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
+        parseDataTypeRest(dataType);
+        return dataType;
+    }
+
+    protected void parseDataTypeRest(SQLDataType dataType) {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             exprList(dataType.getArguments());
             accept(Token.RPAREN);
         }
-        return dataType;
     }
 
     protected SQLDataType parseCharType() throws ParserException {
@@ -1108,7 +1124,7 @@ public class SQLExprParser extends SQLParser {
             throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token());
         }
     }
-    
+
     public SQLColumnDefinition parseColumn() {
         SQLColumnDefinition column = new SQLColumnDefinition();
         column.setName(name());
@@ -1116,7 +1132,7 @@ public class SQLExprParser extends SQLParser {
 
         return parseColumnRest(column);
     }
-    
+
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (lexer.token() == Token.DEFAULT) {
             lexer.nextToken();
@@ -1133,7 +1149,7 @@ public class SQLExprParser extends SQLParser {
 
         return column;
     }
-    
+
     public SQLPrimaryKey parsePrimaryKey() {
         throw new ParserException("TODO");
     }

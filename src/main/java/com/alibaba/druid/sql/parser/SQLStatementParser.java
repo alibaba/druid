@@ -114,19 +114,8 @@ public class SQLStatementParser extends SQLParser {
                 lexer.nextToken();
 
                 if (lexer.token() == Token.TABLE) {
-                    lexer.nextToken();
 
-                    SQLDropTableStatement stmt = new SQLDropTableStatement();
-
-                    for (;;) {
-                        SQLName name = this.exprParser.name();
-                        stmt.getTableNames().add(name);
-                        if (lexer.token() == Token.COMMA) {
-                            lexer.nextToken();
-                            continue;
-                        }
-                        break;
-                    }
+                    SQLDropTableStatement stmt = parseDropTable(false);
 
                     statementList.add(stmt);
                     continue;
@@ -159,11 +148,31 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
+    protected SQLDropTableStatement parseDropTable(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        accept(Token.TABLE);
+
+        SQLDropTableStatement stmt = new SQLDropTableStatement();
+
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            stmt.getTableNames().add(name);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        return stmt;
+    }
+
     public SQLStatement parseTruncate() {
         accept(Token.TRUNCATE);
         accept(Token.TABLE);
         SQLTruncateStatement stmt = new SQLTruncateStatement();
-        
+
         for (;;) {
             SQLName name = this.exprParser.name();
             stmt.getTableNames().add(name);
@@ -187,27 +196,27 @@ public class SQLStatementParser extends SQLParser {
         parseInsert0(insertStatement);
         return insertStatement;
     }
-    
+
     protected void parseInsert0(SQLInsertInto insertStatement) {
         parseInsert0(insertStatement, true);
     }
 
     protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
-        
+
     }
-                                
+
     protected void parseInsert0(SQLInsertInto insertStatement, boolean acceptSubQuery) {
         accept(Token.INTO);
-        
+
         SQLName tableName = this.exprParser.name();
         insertStatement.setTableName(tableName);
-        
+
         if (lexer.token() == Token.LITERAL_ALIAS) {
             insertStatement.setAlias(as());
         }
-        
+
         parseInsert0_hinits(insertStatement);
-        
+
         if (lexer.token() == Token.IDENTIFIER) {
             insertStatement.setAlias(lexer.stringVal());
             lexer.nextToken();
@@ -283,6 +292,9 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreate() throws ParserException {
+        char mark_ch = lexer.current();
+        int mark_bp = lexer.bp();
+        
         accept(Token.CREATE);
 
         Token token = lexer.token();
@@ -294,15 +306,29 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateIndex(false);
         } else if (identifierEquals("SEQUENCE")) {
             return parseCreateSequence(false);
+        } else if (token == Token.OR) {
+            lexer.nextToken();
+            acceptIdentifier("REPLACE");
+            if (lexer.token() == Token.PROCEDURE) {
+                lexer.reset(mark_bp, mark_ch, Token.CREATE);
+                return parseCreateProcedure();
+            }
+            
+            //lexer.reset(mark_bp, mark_ch, Token.CREATE);
+            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
 
         throw new ParserException("TODO " + lexer.token());
     }
     
+    public SQLStatement parseCreateProcedure() {
+        throw new ParserException("TODO " + lexer.token());
+    }
+
     public SQLStatement parseCreateSequence(boolean acceptCreate) {
         throw new ParserException("TODO " + lexer.token());
     }
-    
+
     public SQLStatement parseCreateIndex(boolean acceptCreate) {
         throw new ParserException("TODO " + lexer.token());
     }
@@ -403,9 +429,9 @@ public class SQLStatementParser extends SQLParser {
     public SQLCommentStatement parseComment() {
         accept(Token.COMMENT);
         SQLCommentStatement stmt = new SQLCommentStatement();
-        
+
         accept(Token.ON);
-        
+
         if (lexer.token() == Token.TABLE) {
             stmt.setType(SQLCommentStatement.Type.TABLE);
             lexer.nextToken();
@@ -413,12 +439,12 @@ public class SQLStatementParser extends SQLParser {
             stmt.setType(SQLCommentStatement.Type.COLUMN);
             lexer.nextToken();
         }
-        
+
         stmt.setOn(this.exprParser.name());
-        
+
         accept(Token.IS);
         stmt.setComment(this.exprParser.expr());
-        
+
         return stmt;
     }
 }

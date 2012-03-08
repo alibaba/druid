@@ -50,8 +50,8 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLSomeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
@@ -543,22 +543,22 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     public boolean visit(SQLSubqueryTableSource x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLTruncateStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLTruncateStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(SQLDefaultExpr x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLDefaultExpr x) {
         return true;
@@ -566,11 +566,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCommentStatement x) {
-        
+
     }
 
     @Override
     public boolean visit(SQLCommentStatement x) {
         return true;
     }
+
 }

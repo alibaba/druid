@@ -318,16 +318,17 @@ public interface SQLASTVisitor {
     void endVisit(SQLSubqueryTableSource x);
 
     boolean visit(SQLSubqueryTableSource x);
-    
+
     void endVisit(SQLTruncateStatement x);
-    
+
     boolean visit(SQLTruncateStatement x);
-    
+
     void endVisit(SQLDefaultExpr x);
-    
+
     boolean visit(SQLDefaultExpr x);
-    
+
     void endVisit(SQLCommentStatement x);
-    
+
     boolean visit(SQLCommentStatement x);
+
 }

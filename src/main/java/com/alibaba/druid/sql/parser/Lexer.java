@@ -582,7 +582,6 @@ public class Lexer {
         np = bp;
         sp = 0;
         scanChar();
-        sp++;
 
         if (ch == '*') {
             scanChar();
@@ -620,7 +619,7 @@ public class Lexer {
                     break;
                 }
 
-                if (ch == '\r') {
+                if (ch == '\n') {
                     scanChar();
                     sp++;
                     break;

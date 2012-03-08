@@ -985,4 +985,5 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
+    
 }

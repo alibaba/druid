@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OraclePLSQLCommitStatement extends SQLStatementImpl {
+public class OraclePLSQLCommitStatement extends OracleStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +25,7 @@ public class OraclePLSQLCommitStatement extends SQLStatementImpl {
 
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
+    public void accept0(OracleASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
     }
