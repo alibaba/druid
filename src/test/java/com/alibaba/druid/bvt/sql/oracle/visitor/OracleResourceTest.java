@@ -19,10 +19,10 @@ public class OracleResourceTest extends OracleTest {
 
     public void test_0() throws Exception {
         // 13
-        exec_test("bvt/parser/oracle-17.txt");
-        // for (int i = 0; i <= 53; ++i) {
-        // exec_test("bvt/parser/oracle-" + i + ".txt");
-        // }
+//        exec_test("bvt/parser/oracle-17.txt");
+        for (int i = 0; i <= 53; ++i) {
+            exec_test("bvt/parser/oracle-" + i + ".txt");
+        }
     }
 
     public void exec_test(String resource) throws Exception {
