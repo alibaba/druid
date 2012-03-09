@@ -439,7 +439,10 @@ public class MySqlExprParser extends SQLExprParser {
             }
             return parseColumnRest(column);
         }
-
+        
+        if (identifierEquals("PARTITION")) {
+            throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
+        }
         super.parseColumnRest(column);
 
         return column;

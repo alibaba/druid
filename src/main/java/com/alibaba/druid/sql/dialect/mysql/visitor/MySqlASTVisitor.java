@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
@@ -182,4 +183,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlDropTableStatement x);
 
     boolean visit(MySqlDropTableStatement x);
+    
+    void endVisit(MySqlPartitionByKey x);
+    
+    boolean visit(MySqlPartitionByKey x);
 }
