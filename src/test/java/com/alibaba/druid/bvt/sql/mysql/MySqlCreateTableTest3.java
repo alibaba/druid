@@ -32,11 +32,13 @@ public class MySqlCreateTableTest3 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(1, visitor.getColumns().size());
+        Assert.assertEquals(3, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("tk")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "blob_col")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tk", "col1")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tk", "col2")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("tk", "col3")));
     }
 }

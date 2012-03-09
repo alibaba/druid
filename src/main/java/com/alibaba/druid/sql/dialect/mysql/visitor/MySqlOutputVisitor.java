@@ -49,6 +49,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
@@ -1322,6 +1323,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         
         printAndAccept(x.getTableNames(), ", ");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlPartitionByKey x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlPartitionByKey x) {
+        print("PARTITION BY KEY (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+        
+        if (x.getPartitionCount() != null) {
+            print(" PARTITIONS ");
+            x.getPartitionCount().accept(this);
+        }
         return false;
     }
 }

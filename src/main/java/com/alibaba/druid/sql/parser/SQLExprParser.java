@@ -1090,10 +1090,6 @@ public class SQLExprParser extends SQLParser {
         SQLCharactorDataType charType = new SQLCharactorDataType(dataType.getName());
         charType.getArguments().addAll(dataType.getArguments());
 
-        if (lexer.token() != Token.IDENTIFIER) {
-            throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
-        }
-
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
 

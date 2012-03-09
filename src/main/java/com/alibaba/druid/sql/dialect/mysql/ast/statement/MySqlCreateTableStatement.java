@@ -18,20 +18,31 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 
 @SuppressWarnings("serial")
 public class MySqlCreateTableStatement extends SQLCreateTableStatement {
 
-    private boolean             ifNotExiists = false;
+    private boolean               ifNotExiists = false;
 
-    private Map<String, String> tableOptions = new HashMap<String, String>();
+    private Map<String, String>   tableOptions = new HashMap<String, String>();
 
-    protected SQLSelect         query;
+    protected SQLSelect           query;
+
+    private SQLPartitioningClause partitioning;
 
     public MySqlCreateTableStatement(){
 
+    }
+
+    public SQLPartitioningClause getPartitioning() {
+        return partitioning;
+    }
+
+    public void setPartitioning(SQLPartitioningClause partitioning) {
+        this.partitioning = partitioning;
     }
 
     public Map<String, String> getTableOptions() {
