@@ -5,10 +5,11 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OraclePartitionByRangeClause extends OracleSQLObjectImpl implements OraclePartitioningClause {
+public class OraclePartitionByRangeClause extends OracleSQLObjectImpl implements SQLPartitioningClause {
 
     private static final long             serialVersionUID = 1L;
 

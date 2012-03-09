@@ -83,7 +83,9 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     MySqlTableIndex idx = new MySqlTableIndex();
 
                     if (lexer.token() == Token.IDENTIFIER) {
-                        idx.setName(this.exprParser.name());
+                        if (!"USING".equalsIgnoreCase(lexer.stringVal())) {
+                            idx.setName(this.exprParser.name());
+                        }
                     }
 
                     if (identifierEquals("USING")) {
