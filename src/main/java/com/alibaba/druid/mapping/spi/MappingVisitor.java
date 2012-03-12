@@ -1,7 +1,8 @@
-package com.alibaba.druid.mapping;
+package com.alibaba.druid.mapping.spi;
 
 import java.util.Map;
 
+import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 

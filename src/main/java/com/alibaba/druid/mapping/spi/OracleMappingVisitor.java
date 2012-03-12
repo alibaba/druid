@@ -1,8 +1,9 @@
-package com.alibaba.druid.mapping;
+package com.alibaba.druid.mapping.spi;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;

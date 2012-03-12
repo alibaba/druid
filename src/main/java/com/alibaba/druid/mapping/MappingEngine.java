@@ -2,6 +2,8 @@ package com.alibaba.druid.mapping;
 
 import java.util.LinkedHashMap;
 
+import com.alibaba.druid.mapping.spi.MappingProvider;
+import com.alibaba.druid.mapping.spi.MappingVisitor;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 

@@ -1,5 +1,8 @@
-package com.alibaba.druid.mapping;
+package com.alibaba.druid.mapping.spi;
 
+import com.alibaba.druid.mapping.DruidMappingException;
+import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;

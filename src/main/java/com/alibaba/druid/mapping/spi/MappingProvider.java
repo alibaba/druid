@@ -1,5 +1,6 @@
-package com.alibaba.druid.mapping;
+package com.alibaba.druid.mapping.spi;
 
+import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
