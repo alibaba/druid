@@ -21,7 +21,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         return new SQLServerOutputVisitor(out);
     }
 
-    public SQLSelectQueryBlock explainToSQLObject(MappingEngine engine, String sql) {
+    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
         SQLServerSelectParser selectParser = new SQLServerSelectParser(sql);
         SQLServerSelectQueryBlock query = (SQLServerSelectQueryBlock) selectParser.query();
 

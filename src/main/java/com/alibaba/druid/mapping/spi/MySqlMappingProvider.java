@@ -21,7 +21,7 @@ public class MySqlMappingProvider implements MappingProvider {
         return new MySqlOutputVisitor(out);
     }
 
-    public SQLSelectQueryBlock explainToSQLObject(MappingEngine engine, String sql) {
+    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
         MySqlSelectParser selectParser = new MySqlSelectParser(sql);
         MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) selectParser.query();
 

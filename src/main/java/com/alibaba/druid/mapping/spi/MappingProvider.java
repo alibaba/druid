@@ -10,5 +10,5 @@ public interface MappingProvider {
 
     SQLASTOutputVisitor createOutputVisitor(MappingEngine engine, Appendable out);
 
-    SQLSelectQueryBlock explainToSQLObject(MappingEngine engine, String sql);
+    SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql);
 }

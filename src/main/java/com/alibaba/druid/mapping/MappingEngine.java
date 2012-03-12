@@ -46,12 +46,12 @@ public class MappingEngine {
         return provider.createOutputVisitor(this, out);
     }
 
-    public SQLSelectQueryBlock explainToSQLObject(String sql) {
-        return provider.explainToSQLObject(this, sql);
+    public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
+        return provider.explainToSelectSQLObject(this, sql);
     }
 
-    public String explainToSQL(String sql) {
-        SQLSelectQueryBlock query = explainToSQLObject(sql);
+    public String explainToSelectSQL(String sql) {
+        SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 
         query.accept(this.createMappingVisitor());
 

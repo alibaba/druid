@@ -19,7 +19,7 @@ public class OracleMappingProvider implements MappingProvider {
         return new OracleOutputVisitor(out);
     }
 
-    public SQLSelectQueryBlock explainToSQLObject(MappingEngine engine, String sql) {
+    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
         OracleSelectParser selectParser = new OracleSelectParser(sql);
         OracleSelectQueryBlock query = (OracleSelectQueryBlock) selectParser.query();
 
