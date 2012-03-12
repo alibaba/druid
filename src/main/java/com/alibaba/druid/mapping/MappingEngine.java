@@ -7,6 +7,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MappingEngine {
 
@@ -29,13 +30,22 @@ public class MappingEngine {
         this.entities.put(entity.getName(), entity);
     }
 
-    public MySqlMappingVisitor createMappingVisitor() {
+    public SQLASTVisitor createMySqlMappingVisitor() {
         return new MySqlMappingVisitor(entities);
     }
 
-    public String explain(String sql) {
-        MySqlSelectQueryBlock query = explainToSQLObject(sql);
+    public String explainToMySql(String sql) {
+        MySqlSelectQueryBlock query = explainToMySqlObject(sql);
 
+        query.accept(this.createMySqlMappingVisitor());
+
+        return SQLUtils.toMySqlString(query);
+    }
+
+    public MySqlSelectQueryBlock explainToMySqlObject(String sql) {
+        MySqlSelectParser selectParser = new MySqlSelectParser(sql);
+        MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) selectParser.query();
+        
         if (this.maxLimit != null) {
             if (query.getLimit() == null) {
                 Limit limit = new Limit();
@@ -49,15 +59,7 @@ public class MappingEngine {
                 }
             }
         }
-
-        query.accept(this.createMappingVisitor());
-
-        return SQLUtils.toMySqlString(query);
-    }
-
-    public MySqlSelectQueryBlock explainToSQLObject(String sql) {
-        MySqlSelectParser selectParser = new MySqlSelectParser(sql);
-        MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) selectParser.query();
+        
         return query;
     }
 }

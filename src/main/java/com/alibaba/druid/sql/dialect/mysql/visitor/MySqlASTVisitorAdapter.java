@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -398,6 +399,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
     @Override
     public boolean visit(MySqlPartitionByKey x) {
         return true;
+    }
+
+    @Override
+    public boolean visit(MySqlSelectQueryBlock x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlSelectQueryBlock x) {
+        
     }
 
 }

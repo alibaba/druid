@@ -187,4 +187,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlPartitionByKey x);
     
     boolean visit(MySqlPartitionByKey x);
+    
+    boolean visit(MySqlSelectQueryBlock x);
+    
+    void endVisit(MySqlSelectQueryBlock x);
 }

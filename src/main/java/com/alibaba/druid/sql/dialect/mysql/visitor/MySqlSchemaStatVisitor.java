@@ -5,6 +5,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -32,6 +33,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -49,10 +51,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(SQLSelectStatement x) {
         setAliasMap();
         getAliasMap().put("DUAL", null);
-        
+
         return true;
     }
-    //DUAL
+
+    // DUAL
     public boolean visit(MySqlDeleteStatement x) {
         setAliasMap();
 
@@ -426,31 +429,45 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(UserSpecification x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(MySqlDropUser x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlDropUser x) {
         return true;
     }
+
     @Override
     public void endVisit(MySqlDropTableStatement x) {
-        
+
     }
+
     @Override
     public boolean visit(MySqlDropTableStatement x) {
         return visit((SQLDropTableStatement) x);
     }
+
     @Override
     public void endVisit(MySqlPartitionByKey x) {
-        
+
     }
+
     @Override
     public boolean visit(MySqlPartitionByKey x) {
         accept(x.getColumns());
         return false;
+    }
+
+    @Override
+    public boolean visit(MySqlSelectQueryBlock x) {
+        return this.visit((SQLSelectQueryBlock) x);
+    }
+
+    @Override
+    public void endVisit(MySqlSelectQueryBlock x) {
+
     }
 }

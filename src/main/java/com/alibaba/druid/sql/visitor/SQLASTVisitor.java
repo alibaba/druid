@@ -198,7 +198,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLSelectQueryBlock x);
 
     void endVisit(SQLSelectQueryBlock x);
-
+    
     boolean visit(SQLExprTableSource x);
 
     void endVisit(SQLExprTableSource x);

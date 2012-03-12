@@ -1343,4 +1343,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
+
+    @Override
+    public void endVisit(MySqlSelectQueryBlock x) {
+        
+    }
 }

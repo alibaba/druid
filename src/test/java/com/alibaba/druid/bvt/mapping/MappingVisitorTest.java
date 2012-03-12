@@ -26,18 +26,18 @@ public class MappingVisitorTest extends TestCase {
 
     public void test_0() throws Exception {
 
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device", engine.explain("select *"));
+        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device", engine.explainToMySql("select *"));
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
-                            engine.explain("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
+                            engine.explainToMySql("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
 
     }
     
     public void test_1() throws Exception {
         engine.setMaxLimit(10);
         
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nLIMIT 10", engine.explain("select *"));
+        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nLIMIT 10", engine.explainToMySql("select *"));
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'\nLIMIT 10",
-                            engine.explain("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
+                            engine.explainToMySql("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
         
         engine.setMaxLimit(null);
 
