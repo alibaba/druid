@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import com.alibaba.druid.mapping.spi.MappingProvider;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
+import com.alibaba.druid.mapping.spi.MySqlMappingProvider;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -11,7 +12,15 @@ public class MappingEngine {
 
     private LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
     private Integer                       maxLimit;
-    private MappingProvider               provider;
+    private final MappingProvider         provider;
+
+    public MappingEngine(){
+        this(new MySqlMappingProvider());
+    }
+
+    public MappingEngine(MappingProvider provider){
+        this.provider = provider;
+    }
 
     public Integer getMaxLimit() {
         return maxLimit;
@@ -36,7 +45,7 @@ public class MappingEngine {
     public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
         return provider.createOutputVisitor(this, out);
     }
-    
+
     public SQLSelectQueryBlock explainToSQLObject(String sql) {
         return provider.explainToSQLObject(this, sql);
     }

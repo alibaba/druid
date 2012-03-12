@@ -40,49 +40,41 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
     }
 
     public Entity getEntity(String name) {
-        Entity entity = this.entities.get(name);
-
-        if (entity == null) {
-            for (Map.Entry<String, Entity> entry : entities.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase(name)) {
-                    entity = entry.getValue();
-                    break;
-                }
-            }
-        }
-
-        return entity;
+        return MappingVisitorUtils.getEntity(this, name);
     }
 
+    @Override
     public boolean visit(SQLSelectItem x) {
         x.getExpr().setParent(x);
         return true;
     }
 
+    @Override
     public boolean visit(MySqlSelectQueryBlock x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
+    @Override
     public boolean visit(SQLSelectQueryBlock x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
-    protected void fillSelectList(SQLSelectQueryBlock x) {
-        MappingVisitorUtils.fillSelectList(this, x);
-    }
-
+    @Override
     public boolean visit(SQLIdentifierExpr x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
+    @Override
     public boolean visit(SQLSubqueryTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
+    @Override
     public boolean visit(SQLJoinTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
+    @Override
     public boolean visit(SQLExprTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }

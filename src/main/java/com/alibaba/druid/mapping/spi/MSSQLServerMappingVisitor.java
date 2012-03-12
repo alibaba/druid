@@ -11,16 +11,15 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 
-public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements MappingVisitor {
+public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implements MappingVisitor {
 
     private final LinkedHashMap<String, Entity> entities;
     private final Map<String, SQLTableSource>   tableSources = new LinkedHashMap<String, SQLTableSource>();
 
-    public OracleMappingVisitor(LinkedHashMap<String, Entity> entities){
+    public MSSQLServerMappingVisitor(LinkedHashMap<String, Entity> entities){
         super();
         this.entities = entities;
     }
@@ -33,6 +32,7 @@ public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements Map
         return tableSources;
     }
 
+    @Override
     public Entity getFirstEntity() {
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
@@ -52,7 +52,7 @@ public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements Map
     }
 
     @Override
-    public boolean visit(OracleSelectQueryBlock x) {
+    public boolean visit(SQLServerSelectQueryBlock x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
@@ -81,8 +81,4 @@ public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements Map
         return MappingVisitorUtils.visit(this, x);
     }
 
-    @Override
-    public boolean visit(OracleSelectTableReference x) {
-        return MappingVisitorUtils.visit(this, x);
-    }
 }

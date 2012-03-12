@@ -1,5 +1,7 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.Map;
+
 import com.alibaba.druid.mapping.DruidMappingException;
 import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.mapping.Property;
@@ -12,6 +14,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 
 public class MappingVisitorUtils {
+
     public static boolean visit(MappingVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
@@ -34,12 +37,12 @@ public class MappingVisitorUtils {
 
         return false;
     }
-    
+
     public static boolean visit(MappingVisitor visitor, SQLTableSource x) {
         if (x.getAlias() != null) {
             visitor.getTableSources().put(x.getAlias(), x);
         }
-        
+
         return true;
     }
 
@@ -102,5 +105,20 @@ public class MappingVisitorUtils {
         }
 
         return true;
+    }
+
+    public static Entity getEntity(MappingVisitor visitor, String name) {
+        Entity entity = visitor.getEntities().get(name);
+
+        if (entity == null) {
+            for (Map.Entry<String, Entity> entry : visitor.getEntities().entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    entity = entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        return entity;
     }
 }
