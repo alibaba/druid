@@ -26,27 +26,26 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     private static final long     serialVersionUID = 1L;
-    protected SQLIdentifierExpr   methodName;
+    protected String              methodName;
     protected int                 option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
 
     public SQLAggregateExpr(String methodName){
 
-        this.methodName = new SQLIdentifierExpr(methodName);
+        this.methodName = methodName;
         this.option = 1;
     }
 
     public SQLAggregateExpr(String methodName, int option){
-
-        this.methodName = new SQLIdentifierExpr(methodName);
+        this.methodName = methodName;
         this.option = option;
     }
 
-    public SQLIdentifierExpr getMethodName() {
+    public String getMethodName() {
         return this.methodName;
     }
 
-    public void setMethodName(SQLIdentifierExpr methodName) {
+    public void setMethodName(String methodName) {
         this.methodName = methodName;
     }
 
@@ -75,7 +74,6 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.methodName);
             acceptChild(visitor, this.arguments);
         }
 

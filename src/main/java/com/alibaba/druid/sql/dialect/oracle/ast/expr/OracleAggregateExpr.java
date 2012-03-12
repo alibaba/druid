@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
@@ -54,10 +53,6 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
         super(methodName, option);
     }
 
-    public SQLIdentifierExpr getMethodName() {
-        return this.methodName;
-    }
-
     public OracleAnalytic getOver() {
         return this.over;
     }
@@ -87,7 +82,6 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
             this.accept0((OracleASTVisitor) visitor);
         } else {
             if (visitor.visit(this)) {
-                acceptChild(visitor, this.methodName);
                 acceptChild(visitor, this.arguments);
                 acceptChild(visitor, this.over);
             }
@@ -97,7 +91,6 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.methodName);
             acceptChild(visitor, this.arguments);
             acceptChild(visitor, this.over);
         }

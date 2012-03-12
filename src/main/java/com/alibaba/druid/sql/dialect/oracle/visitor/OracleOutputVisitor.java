@@ -195,7 +195,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleAggregateExpr expr) {
-        expr.getMethodName().accept(this);
+        print(expr.getMethodName());
         print("(");
         if (expr.isUnique()) {
             print("UNIQUE ");
