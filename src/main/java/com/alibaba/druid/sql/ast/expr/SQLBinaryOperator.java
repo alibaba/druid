@@ -47,11 +47,16 @@ public enum SQLBinaryOperator {
     LessThanOrEqual("<=", 110), 
     LessThanOrEqualOrGreaterThan("<=>",110),
     LessThanOrGreater("<>", 110), 
-    Like("LIKE", 110), 
+    
+    Like("LIKE", 110),
+    NotLike("NOT LIKE", 110), 
+    
+    RLike("RLIKE", 110),
+    NotRLike("NOT RLIKE", 110),
+    
     NotEqual("!=", 110), 
     NotLessThan("!<", 110),
     NotGreaterThan("!>", 110), 
-    NotLike("NOT LIKE", 110), 
     IsNot("IS NOT", 110), 
     Escape("ESCAPE", 110), 
     RegExp("REGEXP", 110),

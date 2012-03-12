@@ -52,7 +52,16 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
-        if (lexer.token() == Token.IDENTIFIER && "REGEXP".equalsIgnoreCase(lexer.stringVal())) {
+        if (identifierEquals("REGEXP")) {
+            lexer.nextToken();
+            SQLExpr rightExp = equality();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp);
+        }
+        
+        if (identifierEquals("RLIKE")) {
             lexer.nextToken();
             SQLExpr rightExp = equality();
 
@@ -78,13 +87,22 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLExpr notRationalRest(SQLExpr expr) {
-        if (lexer.token() == Token.IDENTIFIER && "REGEXP".equalsIgnoreCase(lexer.stringVal())) {
+        if (identifierEquals("REGEXP")) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
 
             rightExp = relationalRest(rightExp);
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRegExp, rightExp);
+        }
+        
+        if (identifierEquals("RLIKE")) {
+            lexer.nextToken();
+            SQLExpr rightExp = primary();
+
+            rightExp = relationalRest(rightExp);
+
+            return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRLike, rightExp);
         }
 
         return super.notRationalRest(expr);

@@ -149,6 +149,8 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public OracleSchemaStatVisitor(){
         this.variants.put("DUAL", null);
         this.variants.put("NOTFOUND", null);
+        this.variants.put("TRUE", null);
+        this.variants.put("FALSE", null);
     }
 
     protected Column getColumn(SQLExpr expr) {
