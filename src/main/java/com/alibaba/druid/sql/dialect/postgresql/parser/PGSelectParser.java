@@ -23,7 +23,7 @@ public class PGSelectParser extends SQLSelectParser {
 	}
 
 	@Override
-	protected SQLSelectQuery query() throws ParserException {
+	public SQLSelectQuery query() throws ParserException {
 		PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
 
 		accept(Token.SELECT);

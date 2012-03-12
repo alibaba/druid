@@ -229,7 +229,7 @@ public class OracleSelectParser extends SQLSelectParser {
         return select;
     }
 
-    protected SQLSelectQuery query() {
+    public SQLSelectQuery query() {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
 

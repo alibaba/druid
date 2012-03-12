@@ -35,7 +35,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
         return select;
     }
 
-    protected SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query() throws ParserException {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 

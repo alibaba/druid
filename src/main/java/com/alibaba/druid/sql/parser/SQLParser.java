@@ -28,6 +28,10 @@ public class SQLParser {
         this.lexer = lexer;
     }
 
+    public final Lexer getLexer() {
+        return lexer;
+    }
+
     protected boolean identifierEquals(String text) {
         return lexer.token() == Token.IDENTIFIER && lexer.stringVal().equalsIgnoreCase(text);
     }

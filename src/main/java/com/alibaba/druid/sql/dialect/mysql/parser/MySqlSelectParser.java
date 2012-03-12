@@ -40,7 +40,7 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
 
     @Override
-    protected SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query() throws ParserException {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
 
