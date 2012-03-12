@@ -2,17 +2,14 @@ package com.alibaba.druid.mapping;
 
 import java.util.LinkedHashMap;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlSelectParser;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class MappingEngine {
 
     private LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
     private Integer                       maxLimit;
+    private MappingProvider               provider;
 
     public Integer getMaxLimit() {
         return maxLimit;
@@ -30,36 +27,23 @@ public class MappingEngine {
         this.entities.put(entity.getName(), entity);
     }
 
-    public SQLASTVisitor createMySqlMappingVisitor() {
-        return new MySqlMappingVisitor(entities);
+    public MappingVisitor createMappingVisitor() {
+        return provider.createMappingVisitor(this);
     }
 
-    public String explainToMySql(String sql) {
-        MySqlSelectQueryBlock query = explainToMySqlObject(sql);
-
-        query.accept(this.createMySqlMappingVisitor());
-
-        return SQLUtils.toMySqlString(query);
+    public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
+        return provider.createOutputVisitor(this, out);
     }
 
-    public MySqlSelectQueryBlock explainToMySqlObject(String sql) {
-        MySqlSelectParser selectParser = new MySqlSelectParser(sql);
-        MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) selectParser.query();
-        
-        if (this.maxLimit != null) {
-            if (query.getLimit() == null) {
-                Limit limit = new Limit();
-                limit.setRowCount(new SQLNumberExpr(maxLimit));
-                query.setLimit(limit);
-            } else {
-                SQLNumberExpr rowCountExpr = (SQLNumberExpr) query.getLimit().getRowCount();
-                int rowCount = rowCountExpr.getNumber().intValue();
-                if (rowCount > maxLimit.intValue()) {
-                    rowCountExpr.setNumber(maxLimit);
-                }
-            }
-        }
-        
-        return query;
+    public String explainToSQL(String sql) {
+        SQLSelectQueryBlock query = provider.explainToSQLObject(this, sql);
+
+        query.accept(this.createMappingVisitor());
+
+        StringBuilder out = new StringBuilder();
+        SQLASTOutputVisitor outputVisitor = createOutputVisitor(out);
+        query.accept(outputVisitor);
+
+        return out.toString();
     }
 }
