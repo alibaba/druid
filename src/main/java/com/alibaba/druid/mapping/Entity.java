@@ -1,15 +1,24 @@
 package com.alibaba.druid.mapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Entity {
 
-    private String         name;
-    private String         description;
-    private String         tableName;
+    private String                name;
+    private String                description;
+    private String                tableName;
 
-    private List<Property> properties = new ArrayList<Property>();
+    private Map<String, Property> properties = new LinkedHashMap<String, Property>();
+
+    public Entity(){
+    }
+
+    public Entity(String name, String description, String tableName){
+        this.name = name;
+        this.description = description;
+        this.tableName = tableName;
+    }
 
     public String getName() {
         return name;
@@ -35,11 +44,30 @@ public class Entity {
         this.tableName = tableName;
     }
 
-    public List<Property> getProperties() {
+    public void addProperty(Property property) {
+        this.properties.put(property.getName(), property);
+    }
+
+    public Property getProperty(String name) {
+        Property prop = this.properties.get(name);
+
+        if (prop == null) {
+            for (Map.Entry<String, Property> entry : properties.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    prop = entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        return prop;
+    }
+
+    public Map<String, Property> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<Property> properties) {
+    public void setProperties(Map<String, Property> properties) {
         this.properties = properties;
     }
 

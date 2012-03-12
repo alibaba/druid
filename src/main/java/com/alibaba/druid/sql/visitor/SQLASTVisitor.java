@@ -135,7 +135,7 @@ public interface SQLASTVisitor {
 
     boolean visit(SQLExistsExpr x);
 
-    boolean visit(SQLIdentifierExpr astNode);
+    boolean visit(SQLIdentifierExpr x);
 
     boolean visit(SQLInListExpr x);
 

@@ -22,21 +22,28 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Driver;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.mapping.DruidMappingException;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -518,6 +525,69 @@ public final class JdbcUtils {
         } catch (ClassNotFoundException e) {
             throw new SQLException(e.getMessage(), e);
         }
+    }
+    
+    public static List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters) {
+        List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            for (int i = 0, size = parameters.size(); i < size; ++i) {
+                Object val = parameters.get(i);
+                int paramIndex = i + 1;
+                
+                if (val == null) {
+                    stmt.setNull(paramIndex, Types.VARCHAR);
+                } else if (val instanceof BigDecimal) {
+                    stmt.setBigDecimal(paramIndex, (BigDecimal) val);
+                } else if (val instanceof String) {
+                    stmt.setString(paramIndex, (String) val);
+                } else if (val instanceof Date) {
+                    long time = ((Date) val).getTime();
+                    stmt.setTimestamp(paramIndex, new java.sql.Timestamp(time));
+                } else if (val instanceof Byte) {
+                    stmt.setByte(paramIndex, (Byte) val);
+                } else if (val instanceof Short) {
+                    stmt.setShort(paramIndex, (Short) val);
+                } else if (val instanceof Integer) {
+                    stmt.setInt(paramIndex, (Integer) val);
+                } else if (val instanceof Long) {
+                    stmt.setLong(paramIndex, (Long) val);
+                } else if (val instanceof Float) {
+                    stmt.setFloat(paramIndex, (Float) val);
+                } else if (val instanceof Double) {
+                    stmt.setDouble(paramIndex, (Double) val);
+                } else {
+                    throw new DruidMappingException("not support parameters : " + val);
+                }
+            }
+
+            rs = stmt.executeQuery();
+            
+            ResultSetMetaData rsMeta = rs.getMetaData();
+            
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<String, Object>();
+                
+                for (int i = 0, size = rsMeta.getColumnCount(); i < size; ++i) {
+                    String columName = rsMeta.getColumnName(i + 1);
+                    Object value = rs.getObject(i + 1);
+                    row.put(columName, value);
+                }
+                
+                rows.add(row);
+            }
+        } catch (SQLException e) {
+            throw new DruidMappingException("execute error", e);
+        } finally {
+            JdbcUtils.close(rs);
+            JdbcUtils.close(stmt);
+        }
+
+        return rows;
     }
     
     public static String toString(StackTraceElement[] stackTrace) {

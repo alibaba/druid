@@ -85,12 +85,20 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
-    protected Appendable appender;
-    private String       indent      = "\t";
-    private int          indentCount = 0;
+    protected final Appendable appender;
+    private String             indent      = "\t";
+    private int                indentCount = 0;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
+    }
+
+    public int getIndentCount() {
+        return indentCount;
+    }
+
+    public Appendable getAppender() {
+        return appender;
     }
 
     public void decrementIndent() {
@@ -213,8 +221,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         if (x.getLeft() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
             boolean leftRational = left.getOperator() == SQLBinaryOperator.BooleanAnd
-                    || left.getOperator() == SQLBinaryOperator.BooleanOr;
-            
+                                   || left.getOperator() == SQLBinaryOperator.BooleanOr;
+
             if (left.getOperator().priority > x.getOperator().priority) {
                 if (leftRational) {
                     incrementIndent();
@@ -222,7 +230,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 print('(');
                 left.accept(this);
                 print(')');
-                
+
                 if (leftRational) {
                     decrementIndent();
                 }
@@ -257,11 +265,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
                 if (rightRational) {
                     incrementIndent();
                 }
-                
+
                 print('(');
                 right.accept(this);
                 print(')');
-                
+
                 if (rightRational) {
                     decrementIndent();
                 }
@@ -985,5 +993,5 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         return false;
     }
-    
+
 }
