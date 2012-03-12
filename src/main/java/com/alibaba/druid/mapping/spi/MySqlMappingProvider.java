@@ -1,7 +1,8 @@
 package com.alibaba.druid.mapping.spi;
 
 import com.alibaba.druid.mapping.MappingEngine;
-import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
@@ -30,10 +31,10 @@ public class MySqlMappingProvider implements MappingProvider {
         if (maxLimit != null) {
             if (query.getLimit() == null) {
                 Limit limit = new Limit();
-                limit.setRowCount(new SQLNumberExpr(maxLimit));
+                limit.setRowCount(new SQLIntegerExpr(maxLimit));
                 query.setLimit(limit);
             } else {
-                SQLNumberExpr rowCountExpr = (SQLNumberExpr) query.getLimit().getRowCount();
+                SQLNumericLiteralExpr rowCountExpr = (SQLNumericLiteralExpr) query.getLimit().getRowCount();
                 int rowCount = rowCountExpr.getNumber().intValue();
                 if (rowCount > maxLimit.intValue()) {
                     rowCountExpr.setNumber(maxLimit);

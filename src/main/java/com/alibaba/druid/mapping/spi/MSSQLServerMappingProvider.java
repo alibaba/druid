@@ -2,6 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
@@ -13,7 +14,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
 
     @Override
     public MappingVisitor createMappingVisitor(MappingEngine engine) {
-        return new MySqlMappingVisitor(engine.getEntities());
+        return new MSSQLServerMappingVisitor(engine.getEntities());
     }
 
     @Override
@@ -33,7 +34,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
                 top.setExpr(new SQLNumberExpr(maxLimit));
                 query.setTop(top);
             } else {
-                SQLNumberExpr rowCountExpr = (SQLNumberExpr) query.getTop().getExpr();
+                SQLNumericLiteralExpr rowCountExpr = (SQLNumericLiteralExpr) query.getTop().getExpr();
                 int rowCount = rowCountExpr.getNumber().intValue();
                 if (rowCount > maxLimit.intValue()) {
                     rowCountExpr.setNumber(maxLimit);
