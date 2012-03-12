@@ -12,11 +12,11 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
-public class EntityMapingMySqlVisitor extends MySqlASTVisitorAdapter {
+public class MySqlMappingVisitor extends MySqlASTVisitorAdapter {
 
     private final LinkedHashMap<String, Entity> entities;
 
-    public EntityMapingMySqlVisitor(LinkedHashMap<String, Entity> entities){
+    public MySqlMappingVisitor(LinkedHashMap<String, Entity> entities){
         this.entities = entities;
     }
 

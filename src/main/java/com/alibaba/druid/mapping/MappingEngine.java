@@ -29,8 +29,8 @@ public class MappingEngine {
         this.entities.put(entity.getName(), entity);
     }
 
-    public EntityMapingMySqlVisitor createMappingVisitor() {
-        return new EntityMapingMySqlVisitor(entities);
+    public MySqlMappingVisitor createMappingVisitor() {
+        return new MySqlMappingVisitor(entities);
     }
 
     public String explain(String sql) {
