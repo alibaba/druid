@@ -172,7 +172,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         return true;
     }
 
-    public boolean visit(SQLIdentifierExpr astNode) {
+    public boolean visit(SQLIdentifierExpr x) {
         return true;
     }
 
