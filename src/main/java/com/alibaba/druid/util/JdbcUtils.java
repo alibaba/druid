@@ -526,8 +526,40 @@ public final class JdbcUtils {
             throw new SQLException(e.getMessage(), e);
         }
     }
-    
-    public static List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters) {
+
+    public static int executeUpdate(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        PreparedStatement stmt = null;
+
+        int updateCount;
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            setParameters(stmt, parameters);
+
+            updateCount = stmt.executeUpdate();
+        } finally {
+            JdbcUtils.close(stmt);
+        }
+
+        return updateCount;
+    }
+
+    public static void execute(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            setParameters(stmt, parameters);
+
+            stmt.executeUpdate();
+        } finally {
+            JdbcUtils.close(stmt);
+        }
+    }
+
+    public static List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters)
+                                                                                                              throws SQLException {
         List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
         PreparedStatement stmt = null;
@@ -535,53 +567,23 @@ public final class JdbcUtils {
         try {
             stmt = conn.prepareStatement(sql);
 
-            for (int i = 0, size = parameters.size(); i < size; ++i) {
-                Object val = parameters.get(i);
-                int paramIndex = i + 1;
-                
-                if (val == null) {
-                    stmt.setNull(paramIndex, Types.VARCHAR);
-                } else if (val instanceof BigDecimal) {
-                    stmt.setBigDecimal(paramIndex, (BigDecimal) val);
-                } else if (val instanceof String) {
-                    stmt.setString(paramIndex, (String) val);
-                } else if (val instanceof Date) {
-                    long time = ((Date) val).getTime();
-                    stmt.setTimestamp(paramIndex, new java.sql.Timestamp(time));
-                } else if (val instanceof Byte) {
-                    stmt.setByte(paramIndex, (Byte) val);
-                } else if (val instanceof Short) {
-                    stmt.setShort(paramIndex, (Short) val);
-                } else if (val instanceof Integer) {
-                    stmt.setInt(paramIndex, (Integer) val);
-                } else if (val instanceof Long) {
-                    stmt.setLong(paramIndex, (Long) val);
-                } else if (val instanceof Float) {
-                    stmt.setFloat(paramIndex, (Float) val);
-                } else if (val instanceof Double) {
-                    stmt.setDouble(paramIndex, (Double) val);
-                } else {
-                    throw new DruidMappingException("not support parameters : " + val);
-                }
-            }
+            setParameters(stmt, parameters);
 
             rs = stmt.executeQuery();
-            
+
             ResultSetMetaData rsMeta = rs.getMetaData();
-            
+
             while (rs.next()) {
                 Map<String, Object> row = new LinkedHashMap<String, Object>();
-                
+
                 for (int i = 0, size = rsMeta.getColumnCount(); i < size; ++i) {
                     String columName = rsMeta.getColumnName(i + 1);
                     Object value = rs.getObject(i + 1);
                     row.put(columName, value);
                 }
-                
+
                 rows.add(row);
             }
-        } catch (SQLException e) {
-            throw new DruidMappingException("execute error", e);
         } finally {
             JdbcUtils.close(rs);
             JdbcUtils.close(stmt);
@@ -589,7 +591,39 @@ public final class JdbcUtils {
 
         return rows;
     }
-    
+
+    private static void setParameters(PreparedStatement stmt, List<Object> parameters) throws SQLException {
+        for (int i = 0, size = parameters.size(); i < size; ++i) {
+            Object val = parameters.get(i);
+            int paramIndex = i + 1;
+
+            if (val == null) {
+                stmt.setNull(paramIndex, Types.VARCHAR);
+            } else if (val instanceof BigDecimal) {
+                stmt.setBigDecimal(paramIndex, (BigDecimal) val);
+            } else if (val instanceof String) {
+                stmt.setString(paramIndex, (String) val);
+            } else if (val instanceof Date) {
+                long time = ((Date) val).getTime();
+                stmt.setTimestamp(paramIndex, new java.sql.Timestamp(time));
+            } else if (val instanceof Byte) {
+                stmt.setByte(paramIndex, (Byte) val);
+            } else if (val instanceof Short) {
+                stmt.setShort(paramIndex, (Short) val);
+            } else if (val instanceof Integer) {
+                stmt.setInt(paramIndex, (Integer) val);
+            } else if (val instanceof Long) {
+                stmt.setLong(paramIndex, (Long) val);
+            } else if (val instanceof Float) {
+                stmt.setFloat(paramIndex, (Float) val);
+            } else if (val instanceof Double) {
+                stmt.setDouble(paramIndex, (Double) val);
+            } else {
+                throw new DruidMappingException("not support parameters : " + val);
+            }
+        }
+    }
+
     public static String toString(StackTraceElement[] stackTrace) {
         StringBuilder buf = new StringBuilder();
         for (StackTraceElement item : stackTrace) {

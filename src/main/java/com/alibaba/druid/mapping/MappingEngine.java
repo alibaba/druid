@@ -1,6 +1,7 @@
 package com.alibaba.druid.mapping;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -134,11 +135,34 @@ public class MappingEngine {
 
         return out.toString();
     }
-    
-    public List<Map<String, Object>> executeQuery(Connection conn, String sql, List<Object> parameters) {
+
+    public List<Map<String, Object>> select(Connection conn, String sql, List<Object> parameters) throws SQLException {
         SQLSelectQueryBlock sqlObject = this.explainToSelectSQLObject(sql);
         exportParameters(sqlObject, parameters);
         String rawSql = this.toSQL(sqlObject);
         return JdbcUtils.executeQuery(conn, rawSql, parameters);
+    }
+
+    public int delete(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        SQLDeleteStatement sqlObject = this.explainToDeleteSQLObject(sql);
+        exportParameters(sqlObject, parameters);
+        String rawSql = this.toSQL(sqlObject);
+        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
+        return updateCount;
+    }
+    
+    public int update(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        SQLUpdateStatement sqlObject = this.explainToUpdateSQLObject(sql);
+        exportParameters(sqlObject, parameters);
+        String rawSql = this.toSQL(sqlObject);
+        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
+        return updateCount;
+    }
+    
+    public void insert(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        SQLInsertStatement sqlObject = this.explainToInsertSQLObject(sql);
+        exportParameters(sqlObject, parameters);
+        String rawSql = this.toSQL(sqlObject);
+        JdbcUtils.execute(conn, rawSql, parameters);
     }
 }
