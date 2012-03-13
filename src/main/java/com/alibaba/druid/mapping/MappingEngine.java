@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import com.alibaba.druid.mapping.spi.ExportParameterVisitor;
 import com.alibaba.druid.mapping.spi.MappingProvider;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
@@ -24,9 +26,18 @@ public class MappingEngine {
     private LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
     private Integer                       maxLimit;
     private final MappingProvider         provider;
+    private DataSource                    dataSource;
 
     public MappingEngine(){
         this(new MySqlMappingProvider());
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public MappingEngine(MappingProvider provider){
@@ -150,7 +161,7 @@ public class MappingEngine {
         int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
         return updateCount;
     }
-    
+
     public int update(Connection conn, String sql, List<Object> parameters) throws SQLException {
         SQLUpdateStatement sqlObject = this.explainToUpdateSQLObject(sql);
         exportParameters(sqlObject, parameters);
@@ -158,11 +169,55 @@ public class MappingEngine {
         int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
         return updateCount;
     }
-    
+
     public void insert(Connection conn, String sql, List<Object> parameters) throws SQLException {
         SQLInsertStatement sqlObject = this.explainToInsertSQLObject(sql);
         exportParameters(sqlObject, parameters);
         String rawSql = this.toSQL(sqlObject);
         JdbcUtils.execute(conn, rawSql, parameters);
+    }
+
+    public Connection getConnection() throws SQLException {
+        return this.dataSource.getConnection();
+    }
+
+    public List<Map<String, Object>> select(String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return select(conn, sql, parameters);
+        } finally {
+            JdbcUtils.close(conn);
+        }
+    }
+
+    public int delete(String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return delete(conn, sql, parameters);
+        } finally {
+            JdbcUtils.close(conn);
+        }
+    }
+
+    public int update(String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            return update(conn, sql, parameters);
+        } finally {
+            JdbcUtils.close(conn);
+        }
+    }
+
+    public void insert(String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            insert(conn, sql, parameters);
+        } finally {
+            JdbcUtils.close(conn);
+        }
     }
 }
