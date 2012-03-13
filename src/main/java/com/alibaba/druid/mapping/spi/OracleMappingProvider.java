@@ -2,8 +2,10 @@ package com.alibaba.druid.mapping.spi;
 
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleSelectParser;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -26,4 +28,8 @@ public class OracleMappingProvider implements MappingProvider {
         return query;
     }
 
+    public OracleDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        return parser.parseDeleteStatement();
+    }
 }

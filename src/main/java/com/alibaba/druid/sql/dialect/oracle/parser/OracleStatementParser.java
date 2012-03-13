@@ -176,7 +176,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.DELETE)) {
-                statementList.add(parseDelete());
+                statementList.add(parseDeleteStatement());
                 continue;
             }
 
@@ -1413,7 +1413,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleDeleteStatement parseDelete() throws ParserException {
+    public OracleDeleteStatement parseDeleteStatement() throws ParserException {
         accept(Token.DELETE);
 
         OracleDeleteStatement deleteStatement = new OracleDeleteStatement();

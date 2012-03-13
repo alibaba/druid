@@ -1,6 +1,7 @@
 package com.alibaba.druid.mapping.spi;
 
 import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -11,4 +12,6 @@ public interface MappingProvider {
     SQLASTOutputVisitor createOutputVisitor(MappingEngine engine, Appendable out);
 
     SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql);
+    
+    SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql);
 }
