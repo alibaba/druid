@@ -1,7 +1,10 @@
 package com.alibaba.druid.mapping;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import com.alibaba.druid.mapping.spi.ExportParameterVisitor;
 import com.alibaba.druid.mapping.spi.MappingProvider;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
 import com.alibaba.druid.mapping.spi.MySqlMappingProvider;
@@ -24,6 +27,10 @@ public class MappingEngine {
 
     public MappingEngine(MappingProvider provider){
         this.provider = provider;
+    }
+
+    public MappingProvider getMappingProvider() {
+        return provider;
     }
 
     public Integer getMaxLimit() {
@@ -93,16 +100,27 @@ public class MappingEngine {
 
         return toSQL(query);
     }
-    
+
     public SQLInsertStatement explainToInsertSQLObject(String sql) {
         return provider.explainToInsertSQLObject(this, sql);
     }
-    
+
     public String explainToInsertSQL(String sql) {
         SQLInsertStatement query = explainToInsertSQLObject(sql);
-        
+
         query.accept(this.createMappingVisitor());
-        
+
         return toSQL(query);
+    }
+
+    public List<Object> exportParameters(SQLObject sqlObject) {
+        List<Object> parameters = new ArrayList<Object>();
+        exportParameters(sqlObject, parameters);
+        return parameters;
+    }
+
+    public void exportParameters(SQLObject sqlObject, List<Object> parameters) {
+        ExportParameterVisitor exporter = this.provider.createExportParameterVisitor(parameters);
+        sqlObject.accept(exporter);
     }
 }
