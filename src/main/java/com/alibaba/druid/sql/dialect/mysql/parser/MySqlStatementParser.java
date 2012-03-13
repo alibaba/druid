@@ -26,7 +26,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -87,7 +86,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         return new SQLSelectStatement(new MySqlSelectParser(lexer).select());
     }
 
-    public SQLDeleteStatement parseDeleteStatement() throws ParserException {
+    public MySqlDeleteStatement parseDeleteStatement() throws ParserException {
         accept(Token.DELETE);
 
         MySqlDeleteStatement deleteStatement = new MySqlDeleteStatement();

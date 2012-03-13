@@ -5,7 +5,11 @@ import java.util.LinkedHashMap;
 import com.alibaba.druid.mapping.spi.MappingProvider;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
 import com.alibaba.druid.mapping.spi.MySqlMappingProvider;
+import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class MappingEngine {
@@ -55,10 +59,50 @@ public class MappingEngine {
 
         query.accept(this.createMappingVisitor());
 
+        return toSQL(query);
+    }
+
+    public SQLDeleteStatement explainToDeleteSQLObject(String sql) {
+        return provider.explainToDeleteSQLObject(this, sql);
+    }
+
+    public String explainToDeleteSQLObjectSQL(String sql) {
+        SQLDeleteStatement query = explainToDeleteSQLObject(sql);
+
+        query.accept(this.createMappingVisitor());
+
+        return toSQL(query);
+    }
+
+    public String toSQL(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor outputVisitor = createOutputVisitor(out);
-        query.accept(outputVisitor);
+        sqlObject.accept(outputVisitor);
 
         return out.toString();
+    }
+
+    public SQLUpdateStatement explainToUpdateSQLObject(String sql) {
+        return provider.explainToUpdateSQLObject(this, sql);
+    }
+
+    public String explainToUpdateSQL(String sql) {
+        SQLUpdateStatement query = explainToUpdateSQLObject(sql);
+
+        query.accept(this.createMappingVisitor());
+
+        return toSQL(query);
+    }
+    
+    public SQLInsertStatement explainToInsertSQLObject(String sql) {
+        return provider.explainToInsertSQLObject(this, sql);
+    }
+    
+    public String explainToInsertSQL(String sql) {
+        SQLInsertStatement query = explainToInsertSQLObject(sql);
+        
+        query.accept(this.createMappingVisitor());
+        
+        return toSQL(query);
     }
 }

@@ -36,7 +36,7 @@ public class OracleUpdateParser extends SQLStatementParser {
         super(lexer);
     }
 
-    public OracleUpdateStatement parseUpdate() throws ParserException {
+    public OracleUpdateStatement parseUpdateStatement() throws ParserException {
         accept(Token.UPDATE);
 
         OracleUpdateStatement update = new OracleUpdateStatement();

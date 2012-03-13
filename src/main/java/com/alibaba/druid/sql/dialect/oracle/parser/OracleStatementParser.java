@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
@@ -161,7 +162,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.UPDATE)) {
-                statementList.add(new OracleUpdateParser(this.lexer).parseUpdate());
+                statementList.add(parseUpdateStatement());
                 continue;
             }
 
@@ -176,7 +177,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.DELETE)) {
-                statementList.add(parseDelete());
+                statementList.add(parseDeleteStatement());
                 continue;
             }
 
@@ -368,7 +369,7 @@ public class OracleStatementParser extends SQLStatementParser {
                             stmt.setImmediate(Boolean.FALSE);
                             continue;
                         }
-                        
+
                         break;
                     }
                 }
@@ -1413,7 +1414,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleDeleteStatement parseDelete() throws ParserException {
+    public OracleDeleteStatement parseDeleteStatement() throws ParserException {
         accept(Token.DELETE);
 
         OracleDeleteStatement deleteStatement = new OracleDeleteStatement();
@@ -1594,5 +1595,9 @@ public class OracleStatementParser extends SQLStatementParser {
         stmt.setBlock(block);
 
         return stmt;
+    }
+
+    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+        return new OracleUpdateParser(this.lexer).parseUpdateStatement();
     }
 }
