@@ -1,5 +1,7 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.List;
+
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
@@ -64,5 +66,10 @@ public class MSSQLServerMappingProvider implements MappingProvider {
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         return (SQLInsertStatement) parser.parseInsert();
+    }
+
+    @Override
+    public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
+        return new MSSQLServerExportParameterVisitor(parameters);
     }
 }

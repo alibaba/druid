@@ -24,4 +24,5 @@ public abstract class SQLLiteralExpr extends SQLExprImpl {
     public SQLLiteralExpr(){
 
     }
+
 }

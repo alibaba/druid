@@ -1,5 +1,7 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.List;
+
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -44,5 +46,10 @@ public class OracleMappingProvider implements MappingProvider {
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         return (SQLInsertStatement) parser.parseInsert();
+    }
+    
+    @Override
+    public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
+        return new OracleExportParameterVisitor(parameters);
     }
 }
