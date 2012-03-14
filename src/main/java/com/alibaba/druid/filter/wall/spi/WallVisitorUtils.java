@@ -7,8 +7,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 
 public class WallVisitorUtils {
@@ -19,20 +20,106 @@ public class WallVisitorUtils {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static Object getObject(SQLBinaryOpExpr x) {
-        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
-            if (x.getOperator() == SQLBinaryOperator.Equality) {
-                String leftLiteral = SQLUtils.toOracleString(x.getLeft());
-                String rightLiteral = SQLUtils.toOracleString(x.getRight());
+        x.getLeft().setParent(x);
+        x.getRight().setParent(x);
+        Object leftResult = getValue(x.getLeft());
+        Object rightResult = getValue(x.getRight());
 
-                return leftLiteral.equalsIgnoreCase(rightLiteral);
+        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
+            if (Boolean.TRUE == leftResult || Boolean.TRUE == rightResult) {
+                return true;
+            }
+        }
+
+        if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
+            if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
+                return false;
             }
 
-            if (x.getOperator() == SQLBinaryOperator.NotEqual || x.getOperator() == SQLBinaryOperator.LessThanOrGreater) {
-                String leftLiteral = SQLUtils.toSQLString(x.getLeft());
-                String rightLiteral = SQLUtils.toSQLString(x.getRight());
-
-                return !leftLiteral.equalsIgnoreCase(rightLiteral);
+            if (Boolean.TRUE == leftResult && Boolean.TRUE == rightResult) {
+                return true;
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.Equality) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return true;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            return leftResult.equals(rightResult);
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.NotEqual || x.getOperator() == SQLBinaryOperator.LessThanOrGreater) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return false;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            return !leftResult.equals(rightResult);
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.GreaterThan) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return false;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            if (leftResult instanceof Comparable) {
+                return (((Comparable) leftResult).compareTo(rightResult) > 0);
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return false;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            if (leftResult instanceof Comparable) {
+                return ((Comparable) leftResult).compareTo(rightResult) >= 0;
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.LessThan) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return false;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            if (leftResult instanceof Comparable) {
+                return (((Comparable) leftResult).compareTo(rightResult) < 0);
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
+            if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
+                return false;
+            }
+            
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            if (leftResult instanceof Comparable) {
+                return ((Comparable) leftResult).compareTo(rightResult) <= 0;
             }
         }
 
@@ -53,31 +140,6 @@ public class WallVisitorUtils {
             }
         }
 
-        x.getLeft().setParent(x);
-        x.getRight().setParent(x);
-
-        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            Object leftResult = getValue(x.getLeft());
-            Object rightResult = getValue(x.getRight());
-
-            if (Boolean.TRUE == leftResult || Boolean.TRUE == rightResult) {
-                return true;
-            }
-        }
-
-        if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
-            Object leftResult = getValue(x.getLeft());
-            Object rightResult = getValue(x.getRight());
-
-            if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
-                return false;
-            }
-
-            if (Boolean.TRUE == leftResult && Boolean.TRUE == rightResult) {
-                return true;
-            }
-        }
-
         return null;
     }
 
@@ -88,6 +150,10 @@ public class WallVisitorUtils {
 
         if (x instanceof MySqlBooleanExpr) {
             return ((MySqlBooleanExpr) x).getValue();
+        }
+
+        if (x instanceof SQLNumericLiteralExpr) {
+            return ((SQLNumericLiteralExpr) x).getNumber();
         }
 
         if (x instanceof SQLNotExpr) {

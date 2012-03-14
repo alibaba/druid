@@ -20,5 +20,11 @@ public class WallVisitorUtilsTest extends TestCase {
         Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
         
         Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("1 < 2")));
+        Assert.assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 < 2")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 <= 2")));
+        
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 1")));
+        Assert.assertEquals(Boolean.FALSE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 > 2")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("2 >= 2")));
     }
 }

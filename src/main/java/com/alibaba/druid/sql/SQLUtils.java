@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -116,7 +117,7 @@ public class SQLUtils {
     }
     
     public static SQLExpr toSQLExpr(String sql) {
-        MySqlLexer lexer = new MySqlLexer(sql);
+        Lexer lexer = new Lexer(sql);
         lexer.nextToken();
 
         SQLExprParser parser = new SQLExprParser(lexer);
