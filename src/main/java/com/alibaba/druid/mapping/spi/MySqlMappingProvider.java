@@ -29,7 +29,7 @@ public class MySqlMappingProvider implements MappingProvider {
     public SQLASTOutputVisitor createOutputVisitor(MappingEngine engine, Appendable out) {
         return new MySqlOutputVisitor(out);
     }
-    
+
     public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
         MySqlSelectParser selectParser = new MySqlSelectParser(sql);
         MySqlSelectQueryBlock query = (MySqlSelectQueryBlock) selectParser.query();
@@ -52,36 +52,43 @@ public class MySqlMappingProvider implements MappingProvider {
 
         return query;
     }
-    
+
     public MySqlDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        
+
         MySqlDeleteStatement stmt = parser.parseDeleteStatement();
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
-        
+
         return stmt;
     }
-    
+
     public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
+
+        if (stmt.getTableSource() == null) {
+            Entity entity = engine.getFirstEntity();
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
+        }
+
+        return stmt;
+    }
+
+    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
         
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
-        
+
         return stmt;
     }
-    
-    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        return (SQLInsertStatement) parser.parseInsert();
-    }
-    
+
     @Override
     public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
         return new MySqlExportParameterVisitor(parameters);

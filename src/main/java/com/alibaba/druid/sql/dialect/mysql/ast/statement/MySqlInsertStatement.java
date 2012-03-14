@@ -107,7 +107,7 @@ public class MySqlInsertStatement extends SQLInsertStatement {
 
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, getTableName());
+            this.acceptChild(visitor, getTableSource());
             this.acceptChild(visitor, getColumns());
             this.acceptChild(visitor, getValuesList());
             this.acceptChild(visitor, getQuery());

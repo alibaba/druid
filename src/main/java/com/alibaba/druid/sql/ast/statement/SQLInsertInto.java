@@ -11,7 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 public abstract class SQLInsertInto extends SQLObjectImpl {
 
     private static final long     serialVersionUID = 1L;
-    protected SQLName             tableName;
+    protected SQLExprTableSource  tableSource;
     protected String              alias;
 
     protected final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
@@ -30,12 +30,24 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
         this.alias = alias;
     }
 
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        this.tableSource = tableSource;
+    }
+
     public SQLName getTableName() {
-        return tableName;
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setTableName(SQLName tableName) {
-        this.tableName = tableName;
+        this.setTableSource(new SQLExprTableSource(tableName));
+    }
+    
+    public void setTableSource(SQLName tableName) {
+        this.setTableSource(new SQLExprTableSource(tableName));
     }
 
     public SQLSelect getQuery() {

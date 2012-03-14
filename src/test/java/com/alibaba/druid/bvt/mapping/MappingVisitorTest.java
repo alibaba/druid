@@ -44,6 +44,11 @@ public class MappingVisitorTest extends TestCase {
         Assert.assertEquals("UPDATE device\nSET serviceTag = ?\nWHERE ip = '127.0.0.1'",
                             engine.explainToUpdateSQL("SET 编号 = ? WHERE IP地址 = '127.0.0.1'"));
     }
+    
+    public void test_insert() throws Exception {
+        Assert.assertEquals("INSERT INTO device\n(serviceTag, ip)\nVALUES\n(?, ?)",
+                            engine.explainToInsertSQL("(编号, IP地址) VALUES (?, ?)"));
+    }
 
     public void test_1() throws Exception {
         engine.setMaxLimit(10);

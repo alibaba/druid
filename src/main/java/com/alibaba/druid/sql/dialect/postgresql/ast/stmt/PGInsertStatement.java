@@ -60,7 +60,7 @@ public class PGInsertStatement extends SQLInsertStatement implements PGSQLStatem
     public void accept0(PGASTVisitor visitor) {
         if (visitor.visit(this)) {
             this.acceptChild(visitor, with);
-            this.acceptChild(visitor, tableName);
+            this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, columns);
             this.acceptChild(visitor, valuesList);
             this.acceptChild(visitor, query);

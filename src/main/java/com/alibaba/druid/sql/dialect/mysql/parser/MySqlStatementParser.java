@@ -117,7 +117,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                         continue;
                     }
-                    
+
                     break;
                 }
 
@@ -138,7 +138,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                         continue;
                     }
-                    
+
                     break;
                 }
             }
@@ -910,40 +910,43 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLInsertStatement parseInsert() {
-        accept(Token.INSERT);
-
         MySqlInsertStatement insertStatement = new MySqlInsertStatement();
 
-        if (identifierEquals("LOW_PRIORITY")) {
-            insertStatement.setLowPriority(true);
+        if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
-        }
 
-        if (identifierEquals("DELAYED")) {
-            insertStatement.setDelayed(true);
-            lexer.nextToken();
-        }
+            if (identifierEquals("LOW_PRIORITY")) {
+                insertStatement.setLowPriority(true);
+                lexer.nextToken();
+            }
 
-        if (identifierEquals("HIGH_PRIORITY")) {
-            insertStatement.setHighPriority(true);
-            lexer.nextToken();
-        }
+            if (identifierEquals("DELAYED")) {
+                insertStatement.setDelayed(true);
+                lexer.nextToken();
+            }
 
-        if (identifierEquals("IGNORE")) {
-            insertStatement.setIgnore(true);
-            lexer.nextToken();
-        }
+            if (identifierEquals("HIGH_PRIORITY")) {
+                insertStatement.setHighPriority(true);
+                lexer.nextToken();
+            }
 
-        if (lexer.token() == Token.INTO) {
-            lexer.nextToken();
-        }
+            if (identifierEquals("IGNORE")) {
+                insertStatement.setIgnore(true);
+                lexer.nextToken();
+            }
 
-        SQLName tableName = this.exprParser.name();
-        insertStatement.setTableName(tableName);
+            if (lexer.token() == Token.INTO) {
+                lexer.nextToken();
+            }
 
-        if (lexer.token() == Token.IDENTIFIER) {
-            insertStatement.setAlias(lexer.stringVal());
-            lexer.nextToken();
+            SQLName tableName = this.exprParser.name();
+            insertStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                insertStatement.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+
         }
 
         if (lexer.token() == (Token.LPAREN)) {

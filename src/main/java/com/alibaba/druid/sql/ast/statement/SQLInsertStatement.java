@@ -34,7 +34,7 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, tableName);
+            this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, columns);
             this.acceptChild(visitor, values);
             this.acceptChild(visitor, query);
