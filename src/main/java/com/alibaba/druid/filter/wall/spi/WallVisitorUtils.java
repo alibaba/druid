@@ -1,5 +1,7 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.filter.wall.spi;
 
+import com.alibaba.druid.filter.wall.IllegalConditionViolation;
+import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;

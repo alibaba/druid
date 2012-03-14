@@ -1,8 +1,10 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.filter.wall.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.filter.wall.Violation;
+import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 

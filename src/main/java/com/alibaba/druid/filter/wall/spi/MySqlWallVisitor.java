@@ -1,8 +1,9 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.filter.wall.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.filter.wall.Violation;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
