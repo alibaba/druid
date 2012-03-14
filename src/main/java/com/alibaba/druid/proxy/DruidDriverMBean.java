@@ -21,6 +21,8 @@ package com.alibaba.druid.proxy;
 public interface DruidDriverMBean {
 
     long getConnectCount();
+    
+    void resetStat();
 
     String getAcceptPrefix();
 

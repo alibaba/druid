@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.proxy;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -29,6 +30,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
@@ -63,13 +67,15 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     public final static String                                      JMX_PREFIX               = "jmx=";
     public final static String                                      FILTERS_PREFIX           = "filters=";
 
-    private final AtomicLong                                        connectCounter           = new AtomicLong(0);
+    private final AtomicLong                                        connectCount           = new AtomicLong(0);
 
     private String                                                  acceptPrefix             = DEFAULT_PREFIX;
 
     private int                                                     majorVersion             = 4;
 
     private int                                                     minorVersion             = 0;
+
+    private final static String                                     MBEAN_NAME               = "com.alibaba.druid:type=DruidDriver";
 
     static {
         registerDriver(instance);
@@ -78,6 +84,17 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     public static boolean registerDriver(Driver driver) {
         try {
             DriverManager.registerDriver(driver);
+
+            try {
+                MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+                
+                ObjectName objectName = new ObjectName(MBEAN_NAME);
+                if (!mbeanServer.isRegistered(objectName)) {
+                    mbeanServer.registerMBean(instance, objectName);
+                }
+            } catch (Exception ex) {
+                LOG.error("register druid-driver mbean error", ex);
+            }
 
             return true;
         } catch (Exception e) {
@@ -118,7 +135,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             return null;
         }
 
-        connectCounter.incrementAndGet();
+        connectCount.incrementAndGet();
 
         DataSourceProxyImpl dataSource = getDataSource(url, info);
 
@@ -268,7 +285,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     @Override
     public long getConnectCount() {
-        return connectCounter.get();
+        return connectCount.get();
     }
 
     public String getAcceptPrefix() {
@@ -286,5 +303,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void resetStat() {
+        connectCount.set(0);
     }
 }
