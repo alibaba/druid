@@ -2,9 +2,11 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
@@ -63,12 +65,14 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setAliasMap();
 
-        if (x.getTableNames().size() == 1) {
-            String ident = ((SQLIdentifierExpr) x.getTableNames().get(0)).getName();
+        if (x.getTableSources().size() == 1) {
+            SQLName tableName = (SQLName) x.getTableSources().get(0).getExpr();
+            String ident = tableName.toString();
             setCurrentTable(x, ident);
         }
 
-        for (SQLName tableName : x.getTableNames()) {
+        for (SQLExprTableSource tableSource : x.getTableSources()) {
+            SQLExpr tableName = tableSource.getExpr();
             String ident = tableName.toString();
             TableStat stat = getTableStat(ident);
             stat.incrementDeleteCount();

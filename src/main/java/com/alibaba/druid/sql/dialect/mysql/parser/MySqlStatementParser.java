@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -108,7 +109,17 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
-                exprParser.names(deleteStatement.getTableNames());
+                for (;;) {
+                    SQLName name = exprParser.name();
+                    deleteStatement.getTableSources().add(new SQLExprTableSource(name));
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    
+                    break;
+                }
 
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
@@ -119,7 +130,17 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
                 }
-                exprParser.names(deleteStatement.getTableNames());
+                for (;;) {
+                    SQLName name = exprParser.name();
+                    deleteStatement.getTableSources().add(new SQLExprTableSource(name));
+
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    }
+                    
+                    break;
+                }
             }
 
             if (identifierEquals("USING")) {

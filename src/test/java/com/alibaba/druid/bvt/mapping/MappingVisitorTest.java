@@ -30,7 +30,14 @@ public class MappingVisitorTest extends TestCase {
                             engine.explainToSelectSQL("select *"));
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
                             engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
+        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
+                            engine.explainToSelectSQL("WHERE IP地址 = '127.0.0.1'"));
 
+    }
+    
+    public void test_delete() throws Exception {
+        Assert.assertEquals("DELETE FROM device\nWHERE ip = '127.0.0.1'",
+                            engine.explainToDeleteSQL("WHERE IP地址 = '127.0.0.1'"));
     }
 
     public void test_1() throws Exception {

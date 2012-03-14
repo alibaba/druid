@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -39,7 +40,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     private SQLTableSource      using;
     private SQLOrderBy          orderBy;
     private Limit               limit;
-    private final List<SQLName> tableNames       = new ArrayList<SQLName>();
+    private final List<SQLExprTableSource> tableSources       = new ArrayList<SQLExprTableSource>();
 
     public boolean isLowPriority() {
         return lowPriority;
@@ -78,22 +79,23 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     }
 
     public SQLName getTableName() {
-        if (tableNames.size() == 0) {
+        if (tableSources.size() == 0) {
             return null;
         }
-        return tableNames.get(0);
+        return (SQLName) tableSources.get(0).getExpr();
     }
 
     public void setTableName(SQLName tableName) {
-        if (tableNames.size() == 0) {
-            tableNames.add(tableName);
+        SQLExprTableSource tableSource = new SQLExprTableSource(tableName);
+        if (tableSources.size() == 0) {
+            tableSources.add(tableSource);
         } else {
-            tableNames.set(0, tableName);
+            tableSources.set(0, tableSource);
         }
     }
 
-    public List<SQLName> getTableNames() {
-        return tableNames;
+    public List<SQLExprTableSource> getTableSources() {
+        return tableSources;
     }
 
     public void setFrom(SQLTableSource from) {
@@ -131,7 +133,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getTableNames());
+            acceptChild(visitor, getTableSources());
             acceptChild(visitor, getWhere());
             acceptChild(visitor, getFrom());
             acceptChild(visitor, getUsing());
