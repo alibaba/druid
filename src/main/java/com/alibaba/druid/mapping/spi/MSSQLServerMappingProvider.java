@@ -51,21 +51,32 @@ public class MSSQLServerMappingProvider implements MappingProvider {
 
         return query;
     }
-    
+
     public SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
-        return parser.parseDeleteStatement();
+        SQLDeleteStatement stmt = parser.parseDeleteStatement();
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
+
+        return stmt;
     }
-    
+
     public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
-        return parser.parseUpdateStatement();
+        SQLUpdateStatement stmt = parser.parseUpdateStatement();
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
+
+        return stmt;
     }
-    
-    
+
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
         PGSQLStatementParser parser = new PGSQLStatementParser(sql);
-        return (SQLInsertStatement) parser.parseInsert();
+        SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
+
+        return stmt;
     }
 
     @Override
