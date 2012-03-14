@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -308,5 +309,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     @Override
     public void resetStat() {
         connectCount.set(0);
+    }
+    
+    @Override
+    public String getDruidVersion() {
+        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
     }
 }
