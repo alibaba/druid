@@ -50,6 +50,22 @@ import com.alibaba.druid.mapping.DruidMappingException;
  */
 public final class JdbcUtils {
 
+    public static final String      HSQL             = "hsql";
+
+    public static final String      DB2              = "db2";
+
+    public static final String      POSTGRESQL       = "postgresql";
+
+    public static final String      SYBASE           = "sybase";
+
+    public static final String      SQL_SERVER       = "sqlserver";
+
+    public static final String      ORACLE           = "oracle";
+
+    public static final String      MYSQL            = "mysql";
+
+    public static final String      DERBY            = "derby";
+
     private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
     private static final Properties driverUrlMapping = new Properties();
@@ -444,25 +460,25 @@ public final class JdbcUtils {
         }
 
         if (rawUrl.startsWith("jdbc:derby:")) {
-            return "derby";
+            return DERBY;
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
-            return "mysql";
+            return MYSQL;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
-            return "oracle";
+            return ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
-            return "sqlserver";
+            return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
-            return "sybase";
+            return SYBASE;
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
             return "jtds";
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
             return "mock";
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
-            return "postgresql";
+            return POSTGRESQL;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
-            return "hsql";
+            return HSQL;
         } else if (rawUrl.startsWith("jdbc:db2:")) {
-            return "db2";
+            return DB2;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return "sqlite";
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
