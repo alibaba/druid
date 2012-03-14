@@ -275,7 +275,7 @@ public class SQLExprParser extends SQLParser {
                     accept(Token.RPAREN);
                     return primaryRest(sqlExpr);
                 } else {
-                    SQLExpr restExpr = primary();
+                    SQLExpr restExpr = expr();
                     sqlExpr = new SQLNotExpr(restExpr);
                 }
                 break;
