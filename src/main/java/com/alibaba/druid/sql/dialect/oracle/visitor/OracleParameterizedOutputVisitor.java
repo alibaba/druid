@@ -19,9 +19,9 @@ public class OracleParameterizedOutputVisitor extends OracleOutputVisitor {
     public OracleParameterizedOutputVisitor(Appendable appender){
         super(appender);
     }
-
-    public void println() {
-        print(' ');
+    
+    public OracleParameterizedOutputVisitor(Appendable appender, boolean printPostSemi){
+        super (appender, printPostSemi);
     }
 
     public boolean visit(SQLInListExpr x) {

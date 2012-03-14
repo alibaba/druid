@@ -4,14 +4,18 @@ import java.util.Map;
 
 import com.alibaba.druid.mapping.DruidMappingException;
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
 public class MappingVisitorUtils {
 
@@ -122,4 +126,24 @@ public class MappingVisitorUtils {
         return entity;
     }
 
+    public static void setDataSource(MappingEngine engine, SQLDeleteStatement stmt) {
+        if (stmt.getTableSource() == null) {
+            Entity entity = engine.getFirstEntity();
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
+        }
+    }
+    
+    public static void setDataSource(MappingEngine engine, SQLUpdateStatement stmt) {
+        if (stmt.getTableSource() == null) {
+            Entity entity = engine.getFirstEntity();
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
+        }
+    }
+    
+    public static void setDataSource(MappingEngine engine, SQLInsertStatement stmt) {
+        if (stmt.getTableSource() == null) {
+            Entity entity = engine.getFirstEntity();
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
+        }
+    }
 }

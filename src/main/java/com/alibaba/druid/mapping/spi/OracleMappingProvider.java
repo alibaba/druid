@@ -2,9 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import java.util.List;
 
-import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.mapping.MappingEngine;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -37,23 +35,27 @@ public class OracleMappingProvider implements MappingProvider {
     public OracleDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         OracleDeleteStatement stmt = parser.parseDeleteStatement();
-        
-        if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
-            stmt.setTableName(new SQLIdentifierExpr(entity.getName()));
-        }
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
 
         return stmt;
     }
 
     public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
         OracleStatementParser parser = new OracleStatementParser(sql);
-        return parser.parseUpdateStatement();
+        SQLUpdateStatement stmt = parser.parseUpdateStatement();
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
+
+        return stmt;
     }
 
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
         OracleStatementParser parser = new OracleStatementParser(sql);
-        return (SQLInsertStatement) parser.parseInsert();
+        SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
+        MappingVisitorUtils.setDataSource(engine, stmt);
+        return stmt;
+
     }
 
     @Override

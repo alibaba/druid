@@ -21,10 +21,6 @@ public class MySqlParameterizedOutputVisitor extends MySqlOutputVisitor {
         super(appender);
     }
 
-    public void println() {
-        print(' ');
-    }
-
     public boolean visit(SQLInListExpr x) {
         x.getExpr().accept(this);
 

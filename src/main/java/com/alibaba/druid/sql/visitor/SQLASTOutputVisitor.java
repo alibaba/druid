@@ -681,7 +681,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         if (x.getValues() != null) {
             println();
-            print("VALUES ");
+            print("VALUES");
+            println();
             x.getValues().accept(this);
         } else {
             if (x.getQuery() != null) {
