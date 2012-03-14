@@ -50,108 +50,110 @@ public class MySqlSelectParser extends SQLSelectParser {
             return queryRest(select);
         }
 
-        accept(Token.SELECT);
-
         MySqlSelectQueryBlock queryBlock = new MySqlSelectQueryBlock();
 
-        if (lexer.token() == (Token.DISTINCT)) {
-            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+        if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
-        } else if (identifierEquals("DISTINCTROW")) {
-            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCTROW);
-            lexer.nextToken();
-        } else if (lexer.token() == (Token.ALL)) {
-            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
-            lexer.nextToken();
-        }
 
-        if (identifierEquals("HIGH_PRIORITY")) {
-            queryBlock.setHignPriority(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("STRAIGHT_JOIN")) {
-            queryBlock.setStraightJoin(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_SMALL_RESULT")) {
-            queryBlock.setSmallResult(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_BIG_RESULT")) {
-            queryBlock.setBigResult(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_BUFFER_RESULT")) {
-            queryBlock.setBufferResult(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_CACHE")) {
-            queryBlock.setCache(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_NO_CACHE")) {
-            queryBlock.setCache(false);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("SQL_CALC_FOUND_ROWS")) {
-            queryBlock.setCalcFoundRows(true);
-            lexer.nextToken();
-        }
-
-        parseSelectList(queryBlock);
-
-        if (lexer.token() == (Token.INTO)) {
-            lexer.nextToken();
-            acceptIdentifier("OUTFILE");
-            SQLExpr outFile = expr();
-            queryBlock.setOutFile(outFile);
-
-            if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
+            if (lexer.token() == (Token.DISTINCT)) {
+                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
                 lexer.nextToken();
-
-                if (identifierEquals("TERMINATED")) {
-                    lexer.nextToken();
-                    accept(Token.BY);
-                }
-                queryBlock.setOutFileColumnsTerminatedBy((SQLLiteralExpr) expr());
-
-                if (identifierEquals("OPTIONALLY")) {
-                    lexer.nextToken();
-                    queryBlock.setOutFileColumnsEnclosedOptionally(true);
-                }
-
-                if (identifierEquals("ENCLOSED")) {
-                    lexer.nextToken();
-                    accept(Token.BY);
-                    queryBlock.setOutFileColumnsEnclosedBy((SQLLiteralExpr) expr());
-                }
-
-                if (identifierEquals("ESCAPED")) {
-                    lexer.nextToken();
-                    accept(Token.BY);
-                    queryBlock.setOutFileColumnsEscaped((SQLLiteralExpr) expr());
-                }
+            } else if (identifierEquals("DISTINCTROW")) {
+                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCTROW);
+                lexer.nextToken();
+            } else if (lexer.token() == (Token.ALL)) {
+                queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                lexer.nextToken();
             }
 
-            if (identifierEquals("LINES")) {
+            if (identifierEquals("HIGH_PRIORITY")) {
+                queryBlock.setHignPriority(true);
                 lexer.nextToken();
+            }
 
-                if (identifierEquals("STARTING")) {
+            if (identifierEquals("STRAIGHT_JOIN")) {
+                queryBlock.setStraightJoin(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_SMALL_RESULT")) {
+                queryBlock.setSmallResult(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_BIG_RESULT")) {
+                queryBlock.setBigResult(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_BUFFER_RESULT")) {
+                queryBlock.setBufferResult(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_CACHE")) {
+                queryBlock.setCache(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_NO_CACHE")) {
+                queryBlock.setCache(false);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("SQL_CALC_FOUND_ROWS")) {
+                queryBlock.setCalcFoundRows(true);
+                lexer.nextToken();
+            }
+
+            parseSelectList(queryBlock);
+
+            if (lexer.token() == (Token.INTO)) {
+                lexer.nextToken();
+                acceptIdentifier("OUTFILE");
+                SQLExpr outFile = expr();
+                queryBlock.setOutFile(outFile);
+
+                if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
                     lexer.nextToken();
-                    accept(Token.BY);
-                    queryBlock.setOutFileLinesStartingBy((SQLLiteralExpr) expr());
-                } else {
-                    identifierEquals("TERMINATED");
+
+                    if (identifierEquals("TERMINATED")) {
+                        lexer.nextToken();
+                        accept(Token.BY);
+                    }
+                    queryBlock.setOutFileColumnsTerminatedBy((SQLLiteralExpr) expr());
+
+                    if (identifierEquals("OPTIONALLY")) {
+                        lexer.nextToken();
+                        queryBlock.setOutFileColumnsEnclosedOptionally(true);
+                    }
+
+                    if (identifierEquals("ENCLOSED")) {
+                        lexer.nextToken();
+                        accept(Token.BY);
+                        queryBlock.setOutFileColumnsEnclosedBy((SQLLiteralExpr) expr());
+                    }
+
+                    if (identifierEquals("ESCAPED")) {
+                        lexer.nextToken();
+                        accept(Token.BY);
+                        queryBlock.setOutFileColumnsEscaped((SQLLiteralExpr) expr());
+                    }
+                }
+
+                if (identifierEquals("LINES")) {
                     lexer.nextToken();
-                    accept(Token.BY);
-                    queryBlock.setOutFileLinesTerminatedBy((SQLLiteralExpr) expr());
+
+                    if (identifierEquals("STARTING")) {
+                        lexer.nextToken();
+                        accept(Token.BY);
+                        queryBlock.setOutFileLinesStartingBy((SQLLiteralExpr) expr());
+                    } else {
+                        identifierEquals("TERMINATED");
+                        lexer.nextToken();
+                        accept(Token.BY);
+                        queryBlock.setOutFileLinesTerminatedBy((SQLLiteralExpr) expr());
+                    }
                 }
             }
         }

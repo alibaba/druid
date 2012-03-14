@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
@@ -84,5 +85,11 @@ public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements Map
     @Override
     public boolean visit(OracleSelectTableReference x) {
         return MappingVisitorUtils.visit(this, x);
+    }
+    
+    @Override
+    public boolean visit(OracleDeleteStatement x) {
+
+        return true;
     }
 }

@@ -31,6 +31,14 @@ public class MappingEngine {
     public MappingEngine(){
         this(new MySqlMappingProvider());
     }
+    
+    public Entity getFirstEntity() {
+        for (Map.Entry<String, Entity> entry : entities.entrySet()) {
+            return entry.getValue();
+        }
+
+        return null;
+    }
 
     public DataSource getDataSource() {
         return dataSource;
@@ -88,9 +96,9 @@ public class MappingEngine {
         return provider.explainToDeleteSQLObject(this, sql);
     }
 
-    public String explainToDeleteSQLObjectSQL(String sql) {
+    public String explainToDeleteSQL(String sql) {
         SQLDeleteStatement query = explainToDeleteSQLObject(sql);
-
+        
         query.accept(this.createMappingVisitor());
 
         return toSQL(query);

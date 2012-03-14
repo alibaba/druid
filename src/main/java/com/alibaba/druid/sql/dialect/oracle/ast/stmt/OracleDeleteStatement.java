@@ -56,7 +56,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
     protected void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.hints);
-            acceptChild(visitor, this.getTableName());
+            acceptChild(visitor, this.tableSource);
             acceptChild(visitor, this.getWhere());
             acceptChild(visitor, returning);
         }

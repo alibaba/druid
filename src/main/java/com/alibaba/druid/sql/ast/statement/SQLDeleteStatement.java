@@ -18,25 +18,38 @@ package com.alibaba.druid.sql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeleteStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
-    protected SQLName         tableName;
-    protected SQLExpr         where;
-    private String            alias;
+    private static final long    serialVersionUID = 1L;
+    protected SQLExprTableSource tableSource;
+    protected SQLExpr            where;
+    private String               alias;
 
     public SQLDeleteStatement(){
 
     }
 
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        this.tableSource = tableSource;
+    }
+
     public SQLName getTableName() {
-        return tableName;
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setTableName(SQLName tableName) {
-        this.tableName = tableName;
+        this.tableSource = new SQLExprTableSource(tableName);
+    }
+    
+    public void setTableName(String name) {
+        setTableName(new SQLIdentifierExpr(name));
     }
 
     public SQLExpr getWhere() {
@@ -55,19 +68,10 @@ public class SQLDeleteStatement extends SQLStatementImpl {
         this.alias = alias;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append("DELETE FROM ");
-        this.tableName.output(buf);
-        if (this.where != null) {
-            buf.append(" WHERE ");
-            this.where.output(buf);
-        }
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableName);
+            acceptChild(visitor, tableSource);
             acceptChild(visitor, where);
         }
 

@@ -165,11 +165,26 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleASTVisitor {
 
+    private final boolean printPostSemi;
+
     public OracleOutputVisitor(Appendable appender){
+        this(appender, true);
+    }
+
+    public OracleOutputVisitor(Appendable appender, boolean printPostSemi){
         super(appender);
+        this.printPostSemi = printPostSemi;
+    }
+
+    public boolean isPrintPostSemi() {
+        return printPostSemi;
     }
 
     public void postVisit(SQLObject x) {
+        if (!printPostSemi) {
+            return;
+        }
+
         if (x instanceof SQLStatement) {
             if (x instanceof OraclePLSQLCommitStatement) {
                 return;
@@ -265,19 +280,21 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleDeleteStatement x) {
-        print("DELETE ");
-        printHints(x.getHints());
+        if (x.getTableName() != null) {
+            print("DELETE ");
+            printHints(x.getHints());
 
-        print("FROM ");
-        if (x.isOnly()) {
-            print("ONLY (");
-            x.getTableName().accept(this);
-            print(")");
-        } else {
-            x.getTableName().accept(this);
+            print("FROM ");
+            if (x.isOnly()) {
+                print("ONLY (");
+                x.getTableName().accept(this);
+                print(")");
+            } else {
+                x.getTableName().accept(this);
+            }
+
+            printAlias(x.getAlias());
         }
-
-        printAlias(x.getAlias());
 
         if (x.getWhere() != null) {
             println();
@@ -2633,15 +2650,15 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(" WRITE");
             if (x.getWait() != null) {
                 if (x.getWait().booleanValue()) {
-                    print(" WAIT");        
+                    print(" WAIT");
                 } else {
                     print(" NOWAIT");
                 }
             }
-            
+
             if (x.getImmediate() != null) {
                 if (x.getImmediate().booleanValue()) {
-                    print(" IMMEDIATE");        
+                    print(" IMMEDIATE");
                 } else {
                     print(" BATCH");
                 }

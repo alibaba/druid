@@ -87,45 +87,47 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public MySqlDeleteStatement parseDeleteStatement() throws ParserException {
-        accept(Token.DELETE);
-
         MySqlDeleteStatement deleteStatement = new MySqlDeleteStatement();
 
-        if (identifierEquals("LOW_PRIORITY")) {
-            deleteStatement.setLowPriority(true);
+        if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
-        }
 
-        if (identifierEquals("QUICK")) {
-            deleteStatement.setQuick(true);
-            lexer.nextToken();
-        }
-
-        if (identifierEquals("IGNORE")) {
-            deleteStatement.setIgnore(true);
-            lexer.nextToken();
-        }
-
-        if (lexer.token() == Token.IDENTIFIER) {
-            exprParser.names(deleteStatement.getTableNames());
-
-            if (lexer.token() == Token.FROM) {
+            if (identifierEquals("LOW_PRIORITY")) {
+                deleteStatement.setLowPriority(true);
                 lexer.nextToken();
+            }
+
+            if (identifierEquals("QUICK")) {
+                deleteStatement.setQuick(true);
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("IGNORE")) {
+                deleteStatement.setIgnore(true);
+                lexer.nextToken();
+            }
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                exprParser.names(deleteStatement.getTableNames());
+
+                if (lexer.token() == Token.FROM) {
+                    lexer.nextToken();
+                    SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
+                    deleteStatement.setFrom(tableSource);
+                }
+            } else {
+                if (lexer.token() == Token.FROM) {
+                    lexer.nextToken();
+                }
+                exprParser.names(deleteStatement.getTableNames());
+            }
+
+            if (identifierEquals("USING")) {
+                lexer.nextToken();
+
                 SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
-                deleteStatement.setFrom(tableSource);
+                deleteStatement.setUsing(tableSource);
             }
-        } else {
-            if (lexer.token() == Token.FROM) {
-                lexer.nextToken();
-            }
-            exprParser.names(deleteStatement.getTableNames());
-        }
-
-        if (identifierEquals("USING")) {
-            lexer.nextToken();
-
-            SQLTableSource tableSource = createSQLSelectParser().parseTableSource();
-            deleteStatement.setUsing(tableSource);
         }
 
         if (lexer.token() == (Token.WHERE)) {
@@ -987,7 +989,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     protected SQLDropTableStatement parseDropTable(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
@@ -995,7 +997,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         accept(Token.TABLE);
 
         MySqlDropTableStatement stmt = new MySqlDropTableStatement();
-        
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.EXISTS);

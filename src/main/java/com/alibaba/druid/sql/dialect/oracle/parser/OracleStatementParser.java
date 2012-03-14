@@ -1415,30 +1415,32 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     public OracleDeleteStatement parseDeleteStatement() throws ParserException {
-        accept(Token.DELETE);
-
         OracleDeleteStatement deleteStatement = new OracleDeleteStatement();
 
-        this.createExprParser().parseHints(deleteStatement.getHints());
-
-        if (lexer.token() == (Token.FROM)) {
+        if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
+
+            this.createExprParser().parseHints(deleteStatement.getHints());
+
+            if (lexer.token() == (Token.FROM)) {
+                lexer.nextToken();
+            }
+
+            if (identifierEquals("ONLY")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+
+                SQLName tableName = exprParser.name();
+                deleteStatement.setTableName(tableName);
+
+                accept(Token.RPAREN);
+            } else {
+                SQLName tableName = exprParser.name();
+                deleteStatement.setTableName(tableName);
+            }
+
+            deleteStatement.setAlias(as());
         }
-
-        if (identifierEquals("ONLY")) {
-            lexer.nextToken();
-            accept(Token.LPAREN);
-
-            SQLName tableName = exprParser.name();
-            deleteStatement.setTableName(tableName);
-
-            accept(Token.RPAREN);
-        } else {
-            SQLName tableName = exprParser.name();
-            deleteStatement.setTableName(tableName);
-        }
-
-        deleteStatement.setAlias(as());
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
