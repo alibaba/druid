@@ -35,7 +35,7 @@ public class MiscellaneousFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("UPDATE t SET i = DEFAULT(i) + 1 WHERE id < 100;", text);
+        Assert.assertEquals("UPDATE t\nSET i = DEFAULT(i) + 1\nWHERE id < 100;", text);
     }
 
     public void test_1() throws Exception {

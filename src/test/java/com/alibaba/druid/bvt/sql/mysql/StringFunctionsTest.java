@@ -321,7 +321,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("UPDATE t SET blob_col = LOAD_FILE('/tmp/picture') WHERE id = 1;", text);
+        Assert.assertEquals("UPDATE t\nSET blob_col = LOAD_FILE('/tmp/picture')\nWHERE id = 1;", text);
     }
 
     public void test_27() throws Exception {

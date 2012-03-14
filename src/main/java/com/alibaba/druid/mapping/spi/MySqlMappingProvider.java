@@ -2,9 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import java.util.List;
 
-import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.mapping.MappingEngine;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -57,10 +55,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
 
         MySqlDeleteStatement stmt = parser.parseDeleteStatement();
-        if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
-            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
-        }
+        MappingVisitorUtils.setDataSource(engine, stmt);
 
         return stmt;
     }
@@ -69,10 +64,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
-        if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
-            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
-        }
+        MappingVisitorUtils.setDataSource(engine, stmt);
 
         return stmt;
     }
@@ -80,11 +72,8 @@ public class MySqlMappingProvider implements MappingProvider {
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
-        
-        if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
-            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
-        }
+
+        MappingVisitorUtils.setDataSource(engine, stmt);
 
         return stmt;
     }

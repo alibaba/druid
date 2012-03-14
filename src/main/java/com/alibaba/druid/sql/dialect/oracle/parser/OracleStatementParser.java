@@ -1227,6 +1227,16 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     public OracleStatement parseInsert() {
+        if (lexer.token() == Token.LPAREN) {
+            OracleInsertStatement stmt = new OracleInsertStatement();
+            parseInsert0(stmt, false);
+
+            stmt.setReturning(parseReturningClause());
+            stmt.setErrorLogging(parseErrorLoggingClause());
+
+            return stmt;
+        }
+        
         accept(Token.INSERT);
 
         List<OracleHint> hints = new ArrayList<OracleHint>();

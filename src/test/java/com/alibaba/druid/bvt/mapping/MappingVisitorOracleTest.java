@@ -41,5 +41,15 @@ public class MappingVisitorOracleTest extends TestCase {
         Assert.assertEquals("DELETE FROM device\nWHERE ip = '127.0.0.1'",
                             engine.explainToDeleteSQL("WHERE IP地址 = '127.0.0.1'"));
     }
+    
+    public void test_update() throws Exception {
+        Assert.assertEquals("UPDATE device\nSET serviceTag = ?\nWHERE ip = '127.0.0.1'",
+                            engine.explainToUpdateSQL("SET 编号 = ? WHERE IP地址 = '127.0.0.1'"));
+    }
+    
+    public void test_insert() throws Exception {
+        Assert.assertEquals("INSERT INTO device\n\t(serviceTag, ip)\nVALUES\n(?, ?)",
+                            engine.explainToInsertSQL("(编号, IP地址) VALUES (?, ?)"));
+    }
 
 }

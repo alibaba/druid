@@ -37,7 +37,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
     public PGSelectParser createSQLSelectParser() {
         return new PGSelectParser(this.lexer);
     }
-    
+
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
         accept(Token.UPDATE);
 
@@ -68,10 +68,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
             lexer.nextToken();
             udpateStatement.setWhere(this.exprParser.expr());
         }
-        
+
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
-            
+
             for (;;) {
                 udpateStatement.getReturning().add(this.exprParser.expr());
                 if (lexer.token() == Token.COMMA) {
@@ -86,17 +86,20 @@ public class PGSQLStatementParser extends SQLStatementParser {
     }
 
     public PGInsertStatement parseInsert() {
-        accept(Token.INSERT);
-        accept(Token.INTO);
-
         PGInsertStatement stmt = new PGInsertStatement();
 
-        SQLName tableName = this.exprParser.name();
-        stmt.setTableName(tableName);
-
-        if (lexer.token() == Token.IDENTIFIER) {
-            stmt.setAlias(lexer.stringVal());
+        if (lexer.token() == Token.INSERT) {
             lexer.nextToken();
+            accept(Token.INTO);
+
+            SQLName tableName = this.exprParser.name();
+            stmt.setTableName(tableName);
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                stmt.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+
         }
 
         if (lexer.token() == (Token.LPAREN)) {
@@ -124,7 +127,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
             stmt.setQuery(queryExpr.getSubQuery());
         }
-        
+
         if (lexer.token() == Token.RETURNING) {
             lexer.nextToken();
             SQLExpr returning = this.exprParser.expr();
@@ -242,7 +245,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
         return false;
     }
-    
+
     public PGWithClause parseWithClause() {
         lexer.nextToken();
 
@@ -269,7 +272,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
     private PGWithQuery withQuery() {
         PGWithQuery withQuery = new PGWithQuery();
         withQuery.setName(this.createExprParser().expr());
-        
+
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
@@ -305,17 +308,17 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 throw new ParserException("syntax error, support token '" + lexer.token() + "'");
             }
             withQuery.setQuery(query);
-            
+
             accept(Token.RPAREN);
         }
-        
+
         return withQuery;
     }
-    
+
     public PGSelectStatement parseSelect() throws ParserException {
         return new PGSelectStatement(createSQLSelectParser().select());
     }
-    
+
     public SQLStatement parseWith() {
         PGWithClause with = this.parseWithClause();
         if (lexer.token() == Token.INSERT) {

@@ -45,26 +45,28 @@ public class SQLServerSelectParser extends SQLSelectParser {
             return queryRest(select);
         }
 
-        accept(Token.SELECT);
-
         SQLServerSelectQueryBlock queryBlock = new SQLServerSelectQueryBlock();
 
-        if (lexer.token() == Token.DISTINCT) {
-            queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+        if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
-        } else if (lexer.token() == Token.ALL) {
-            queryBlock.setDistionOption(SQLSetQuantifier.ALL);
-            lexer.nextToken();
-        }
 
-        if (lexer.token() == Token.TOP) {
-            Top top = new Top();
-            lexer.nextToken();
-            top.setExpr(createExprParser().primary());
-            queryBlock.setTop(top);
-        }
+            if (lexer.token() == Token.DISTINCT) {
+                queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
+                lexer.nextToken();
+            } else if (lexer.token() == Token.ALL) {
+                queryBlock.setDistionOption(SQLSetQuantifier.ALL);
+                lexer.nextToken();
+            }
 
-        parseSelectList(queryBlock);
+            if (lexer.token() == Token.TOP) {
+                Top top = new Top();
+                lexer.nextToken();
+                top.setExpr(createExprParser().primary());
+                queryBlock.setTop(top);
+            }
+
+            parseSelectList(queryBlock);
+        }
 
         parseFrom(queryBlock);
 

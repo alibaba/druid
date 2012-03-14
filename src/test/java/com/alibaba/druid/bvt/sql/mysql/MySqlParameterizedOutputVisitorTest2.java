@@ -19,8 +19,8 @@ public class MySqlParameterizedOutputVisitorTest2 extends TestCase {
             sql += " OR ID = ?";
         }
 
-        validate(sql, "SELECT * FROM T WHERE ID = ?");
-        validateOracle(sql, "SELECT * FROM T WHERE ID = ?; ");
+        validate(sql, "SELECT *\nFROM T\nWHERE ID = ?");
+        validateOracle(sql, "SELECT *\nFROM T\nWHERE ID = ?");
     }
 
     void validate(String sql, String expect) {
@@ -47,7 +47,7 @@ public class MySqlParameterizedOutputVisitorTest2 extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
-        OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out);
+        OracleParameterizedOutputVisitor visitor = new OracleParameterizedOutputVisitor(out, false);
         statemen.accept(visitor);
 
         Assert.assertEquals(expect, out.toString());
