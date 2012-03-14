@@ -10,9 +10,3 @@ mvn install:install-file -Dfile=lib/oracle/11.2.0.3/ojdbc6_g.jar -DgroupId=com.o
 
 mvn install:install-file -Dfile=lib/proxool/proxool-0.9.1.jar -DgroupId=proxool -DartifactId=proxool -Dversion=0.9.1 -Dpackaging=jar -DgeneratePom=true
 mvn install:install-file -Dfile=lib/proxool/proxool-cglib.jar -DgroupId=proxool -DartifactId=proxool-cglib -Dversion=0.9.1 -Dpackaging=jar -DgeneratePom=true
-
-mvn install:install-file -Dfile=lib/jboss/4.2.3/jboss-common.jar -DgroupId=jboss -DartifactId=jboss-common -Dversion=4.2.3 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/jboss/4.2.3/jboss-remoting.jar -DgroupId=jboss -DartifactId=jboss-remoting -Dversion=4.2.3 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/jboss/4.2.3/jboss-serialization.jar -DgroupId=jboss -DartifactId=jboss-serialization -Dversion=4.2.3 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/jboss/4.2.3/jboss.jar -DgroupId=jboss -DartifactId=jboss -Dversion=4.2.3 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/jboss/4.2.3/jboss-transaction.jar -DgroupId=jboss -DartifactId=jboss-transaction -Dversion=4.2.3 -Dpackaging=jar -DgeneratePom=true
