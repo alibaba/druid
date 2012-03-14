@@ -706,7 +706,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         x.getTableSource().accept(this);
 
-        print(" SET ");
+        println();
+        print("SET ");
         for (int i = 0, size = x.getItems().size(); i < size; ++i) {
             if (i != 0) {
                 print(", ");
@@ -715,7 +716,8 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         if (x.getWhere() != null) {
-            print(" WHERE ");
+            println();
+            print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }

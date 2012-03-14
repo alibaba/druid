@@ -35,6 +35,10 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     public SQLExprTableSource getTableSource() {
         return tableSource;
     }
+    
+    public void setTableSource(SQLExpr expr) {
+        this.setTableSource(new SQLExprTableSource(expr));
+    }
 
     public void setTableSource(SQLExprTableSource tableSource) {
         this.tableSource = tableSource;
@@ -45,7 +49,7 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     }
 
     public void setTableName(SQLName tableName) {
-        this.tableSource = new SQLExprTableSource(tableName);
+        this.setTableSource(new SQLExprTableSource(tableName));
     }
     
     public void setTableName(String name) {

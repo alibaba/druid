@@ -294,7 +294,7 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseCreate() throws ParserException {
         char mark_ch = lexer.current();
         int mark_bp = lexer.bp();
-        
+
         accept(Token.CREATE);
 
         Token token = lexer.token();
@@ -313,14 +313,14 @@ public class SQLStatementParser extends SQLParser {
                 lexer.reset(mark_bp, mark_ch, Token.CREATE);
                 return parseCreateProcedure();
             }
-            
-            //lexer.reset(mark_bp, mark_ch, Token.CREATE);
+
+            // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
 
         throw new ParserException("TODO " + lexer.token());
     }
-    
+
     public SQLStatement parseCreateProcedure() {
         throw new ParserException("TODO " + lexer.token());
     }
@@ -346,13 +346,15 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
-        accept(Token.UPDATE);
-
         SQLUpdateStatement udpateStatement = new SQLUpdateStatement();
+        
+        if (lexer.token() == Token.UPDATE) {
+            lexer.nextToken();
 
-        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-        udpateStatement.setTableSource(tableSource);
-
+            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+            udpateStatement.setTableSource(tableSource);
+        }
+        
         accept(Token.SET);
 
         for (;;) {

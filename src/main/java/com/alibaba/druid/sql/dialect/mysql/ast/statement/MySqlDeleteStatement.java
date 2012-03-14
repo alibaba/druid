@@ -84,9 +84,8 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         }
         return (SQLName) tableSources.get(0).getExpr();
     }
-
-    public void setTableName(SQLName tableName) {
-        SQLExprTableSource tableSource = new SQLExprTableSource(tableName);
+    
+    public void setTableSource(SQLExprTableSource tableSource) {
         if (tableSources.size() == 0) {
             tableSources.add(tableSource);
         } else {

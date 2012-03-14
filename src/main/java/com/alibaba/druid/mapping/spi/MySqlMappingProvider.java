@@ -59,7 +59,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlDeleteStatement stmt = parser.parseDeleteStatement();
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
-            stmt.setTableName(new SQLIdentifierExpr(entity.getName()));
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
         
         return stmt;
@@ -67,7 +67,14 @@ public class MySqlMappingProvider implements MappingProvider {
     
     public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        return parser.parseUpdateStatement();
+        SQLUpdateStatement stmt = parser.parseUpdateStatement();
+        
+        if (stmt.getTableSource() == null) {
+            Entity entity = engine.getFirstEntity();
+            stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
+        }
+        
+        return stmt;
     }
     
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {

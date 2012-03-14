@@ -39,6 +39,10 @@ public class SQLUpdateStatement extends SQLStatementImpl {
     public SQLTableSource getTableSource() {
         return tableSource;
     }
+    
+    public void setTableSource(SQLExpr expr) {
+        this.setTableSource(new SQLExprTableSource(expr));
+    }
 
     public void setTableSource(SQLTableSource tableSource) {
         this.tableSource = tableSource;
