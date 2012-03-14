@@ -60,7 +60,11 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         if (dataSources.size() == 0) {
             try {
-                mbeanServer.registerMBean(instance, new ObjectName(MBEAN_NAME));
+                
+                ObjectName objectName = new ObjectName(MBEAN_NAME);
+                if (!mbeanServer.isRegistered(objectName)) {
+                    mbeanServer.registerMBean(instance, objectName);
+                }
             } catch (JMException ex) {
                 LOG.error("register mbean error", ex);
             }
