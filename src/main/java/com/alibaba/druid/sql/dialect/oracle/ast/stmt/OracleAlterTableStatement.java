@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
 public class OracleAlterTableStatement extends OracleStatementImpl {
 
     private static final long          serialVersionUID        = 1L;
-    private SQLName                    name;
+    private SQLExprTableSource         tableSource;
     private List<OracleAlterTableItem> items                   = new ArrayList<OracleAlterTableItem>();
 
     private boolean                    updateGlobalIndexes     = false;
@@ -18,7 +19,7 @@ public class OracleAlterTableStatement extends OracleStatementImpl {
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
+            acceptChild(visitor, tableSource);
             acceptChild(visitor, items);
         }
         visitor.endVisit(this);
@@ -41,11 +42,22 @@ public class OracleAlterTableStatement extends OracleStatementImpl {
     }
 
     public SQLName getName() {
-        return name;
+        if (tableSource == null) {
+            return null;
+        }
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        this.tableSource = tableSource;
     }
 
     public List<OracleAlterTableItem> getItems() {

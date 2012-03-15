@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -158,7 +159,7 @@ public class SQLStatementParser extends SQLParser {
 
         for (;;) {
             SQLName name = this.exprParser.name();
-            stmt.getTableNames().add(name);
+            stmt.getTableSources().add(new SQLExprTableSource(name));
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
@@ -175,7 +176,7 @@ public class SQLStatementParser extends SQLParser {
 
         for (;;) {
             SQLName name = this.exprParser.name();
-            stmt.getTableNames().add(name);
+            stmt.addTableSource(name);
 
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();

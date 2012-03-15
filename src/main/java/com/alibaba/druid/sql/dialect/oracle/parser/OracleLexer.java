@@ -162,7 +162,7 @@ public class OracleLexer extends Lexer {
             return;
         }
 
-        if (ch != ':') {
+        if (ch != ':' && ch != '#') {
             throw new SQLParseException("illegal variable");
         }
 

@@ -53,7 +53,7 @@ public class Lexer {
     protected int                              tokenPos;
 
     /** A character buffer for literals. */
-    protected final static ThreadLocal<char[]> sbufRef     = new ThreadLocal<char[]>();
+    protected final static ThreadLocal<char[]> sbufRef      = new ThreadLocal<char[]>();
     protected char[]                           sbuf;
 
     /** string point as size */
@@ -62,23 +62,36 @@ public class Lexer {
     /** string point as offset */
     protected int                              np;
 
-    protected SymbolTable                      symbolTable = new SymbolTable();
+    protected SymbolTable                      symbolTable  = new SymbolTable();
 
     /**
      * The token, set by nextToken().
      */
     protected Token                            token;
 
-    protected Keywords                         keywods     = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords                         keywods      = Keywords.DEFAULT_KEYWORDS;
 
     protected String                           stringVal;
 
-    protected boolean                          skipComment = true;
+    protected boolean                          skipComment  = true;
 
-    private SavePoint                          savePoint   = null;
+    private SavePoint                          savePoint    = null;
+
+    /*
+     * anti sql injection
+     */
+    private boolean                            allowComment = true;
 
     public Lexer(String input){
         this(input, true);
+    }
+
+    public boolean isAllowComment() {
+        return allowComment;
+    }
+
+    public void setAllowComment(boolean allowComment) {
+        this.allowComment = allowComment;
     }
 
     private static class SavePoint {
@@ -263,6 +276,9 @@ public class Lexer {
                             scanVariable();
                         }
                     }
+                    return;
+                case '#':
+                    scanVariable();
                     return;
                 case '.':
                     scanChar();
@@ -538,7 +554,7 @@ public class Lexer {
     public void scanVariable() {
         final char first = ch;
 
-        if (ch != '@' && ch != ':') {
+        if (ch != '@' && ch != ':' && ch != '#') {
             throw new SQLParseException("illegal variable");
         }
 
@@ -575,6 +591,10 @@ public class Lexer {
     }
 
     public void scanComment() {
+        if (!allowComment) {
+            throw new NotAllowCommentException();
+        }
+
         if (ch != '/') {
             throw new IllegalStateException();
         }

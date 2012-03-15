@@ -1030,7 +1030,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         for (;;) {
             SQLName name = this.exprParser.name();
-            stmt.getTableNames().add(name);
+            stmt.addTableSource(name);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;

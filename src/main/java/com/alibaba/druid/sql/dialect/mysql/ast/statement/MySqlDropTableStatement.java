@@ -21,7 +21,7 @@ public class MySqlDropTableStatement extends SQLDropTableStatement implements My
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, tableNames);
+            this.acceptChild(visitor, tableSources);
         }
         visitor.endVisit(this);
     }

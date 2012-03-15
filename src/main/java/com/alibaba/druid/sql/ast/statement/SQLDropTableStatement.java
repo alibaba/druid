@@ -24,34 +24,46 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDropTableStatement extends SQLStatementImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long          serialVersionUID = 1L;
 
-    protected List<SQLName>   tableNames       = new ArrayList<SQLName>();
+    protected List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>();
 
     public SQLDropTableStatement(){
 
     }
 
     public SQLDropTableStatement(SQLName name){
-        tableNames.add(name);
+        this(new SQLExprTableSource(name));
     }
 
-    public List<SQLName> getTableNames() {
-        return tableNames;
+    public SQLDropTableStatement(SQLExprTableSource tableSource){
+        this.tableSources.add(tableSource);
     }
 
-    public void setTableNames(List<SQLName> tableNames) {
-        this.tableNames = tableNames;
+    public List<SQLExprTableSource> getTableSources() {
+        return tableSources;
+    }
+
+    public void setTableSources(List<SQLExprTableSource> tableSources) {
+        this.tableSources = tableSources;
     }
 
     public void setName(SQLName name) {
-        tableNames.add(name);
+        this.addTableSource(new SQLExprTableSource(name));
+    }
+    
+    public void addTableSource(SQLName name) {
+        this.addTableSource(new SQLExprTableSource(name));
+    }
+    
+    public void addTableSource(SQLExprTableSource tableSource) {
+        tableSources.add(tableSource);
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, tableNames);
+            this.acceptChild(visitor, tableSources);
         }
         visitor.endVisit(this);
     }

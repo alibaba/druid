@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateTableStatement extends SQLStatementImpl {
 
     protected Type                  type;
-    protected SQLName               name;
+    protected SQLExprTableSource    tableSource;
 
     protected List<SQLTableElement> tableElementList = new ArrayList<SQLTableElement>();
 
@@ -35,11 +35,23 @@ public class SQLCreateTableStatement extends SQLStatementImpl {
     }
 
     public SQLName getName() {
-        return name;
+        if (tableSource == null) {
+            return null;
+        }
+
+        return (SQLName) tableSource.getExpr();
     }
 
     public void setName(SQLName name) {
-        this.name = name;
+        this.setTableSource(new SQLExprTableSource(name));
+    }
+
+    public SQLExprTableSource getTableSource() {
+        return tableSource;
+    }
+
+    public void setTableSource(SQLExprTableSource tableSource) {
+        this.tableSource = tableSource;
     }
 
     public Type getType() {
@@ -67,7 +79,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl {
             buf.append("LOCAL TEMPORARY ");
         }
 
-        this.name.output(buf);
+        this.tableSource.output(buf);
         buf.append(" ");
 
         buf.append("(");
@@ -83,7 +95,7 @@ public class SQLCreateTableStatement extends SQLStatementImpl {
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, name);
+            this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
         }
         visitor.endVisit(this);

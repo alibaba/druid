@@ -251,7 +251,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print("ONLY ");
         }
 
-        printlnAndAccept(x.getTableNames(), ", ");
+        printlnAndAccept(x.getTableSources(), ", ");
 
         if (x.getRestartIdentity() != null) {
             if (x.getRestartIdentity().booleanValue()) {

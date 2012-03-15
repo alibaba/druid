@@ -358,7 +358,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             if (table != null) {
                 return new Column(table, column);
             }
-            
+
             if (variants.containsKey(column)) {
                 return null;
             }
@@ -377,7 +377,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         String originalTable = getCurrentTable();
 
-        for (SQLName name : x.getTableNames()) {
+        for (SQLExprTableSource tableSource : x.getTableSources()) {
+            SQLName name = (SQLName) tableSource.getExpr();
+            
             String ident = name.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
@@ -402,7 +404,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         String originalTable = getCurrentTable();
 
-        for (SQLName name : x.getTableNames()) {
+        for (SQLExprTableSource tableSource : x.getTableSources()) {
+            SQLName name = (SQLName) tableSource.getExpr();
             String ident = name.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
@@ -868,7 +871,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCommentStatement x) {
         return false;
     }
-    
+
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
     }
