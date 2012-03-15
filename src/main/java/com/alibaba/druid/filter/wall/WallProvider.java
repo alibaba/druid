@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 
 public abstract class WallProvider {
 
@@ -48,6 +49,13 @@ public abstract class WallProvider {
         parser.getLexer().setAllowComment(false); // permit comment
 
         List<SQLStatement> statementList = parser.parseStatementList();
+        if(parser.getLexer().token() != Token.EOF) {
+            if (throwException) {
+                throw new WallRuntimeException("illegal statement : " + sql);
+            }
+
+            return false;
+        }
         if (statementList.size() > 1) {
             if (throwException) {
                 throw new WallRuntimeException("multi-statement : " + sql);
