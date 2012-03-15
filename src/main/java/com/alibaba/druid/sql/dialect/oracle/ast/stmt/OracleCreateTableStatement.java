@@ -184,7 +184,7 @@ public class OracleCreateTableStatement extends SQLCreateTableStatement implemen
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, name);
+            this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, tablespace);
             this.acceptChild(visitor, select);

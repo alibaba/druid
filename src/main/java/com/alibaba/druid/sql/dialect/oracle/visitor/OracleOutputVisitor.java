@@ -2839,7 +2839,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public boolean visit(OracleTruncateStatement x) {
         print("TRUNCATE TABLE ");
-        printAndAccept(x.getTableNames(), ", ");
+        printAndAccept(x.getTableSources(), ", ");
 
         if (x.isPurgeSnapshotLog()) {
             print(" PURGE SNAPSHOT LOG");

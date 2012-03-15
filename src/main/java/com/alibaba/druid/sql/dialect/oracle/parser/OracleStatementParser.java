@@ -580,7 +580,7 @@ public class OracleStatementParser extends SQLStatementParser {
         OracleTruncateStatement stmt = new OracleTruncateStatement();
 
         SQLName name = this.exprParser.name();
-        stmt.getTableNames().add(name);
+        stmt.addTableSource(name);
 
         if (identifierEquals("PURGE")) {
             lexer.nextToken();

@@ -69,7 +69,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
             buf.append("IF NOT EXISTS ");
         }
 
-        this.name.output(buf);
+        this.tableSource.output(buf);
         buf.append(" ");
         buf.append("(");
         for (int i = 0, size = tableElementList.size(); i < size; ++i) {

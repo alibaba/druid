@@ -29,7 +29,7 @@ public class HiveCreateTableStatement extends SQLCreateTableStatement implements
     @Override
     public void accept0(HiveASTVisitor visitor) {
         if (visitor.visit(this)) {
-            this.acceptChild(visitor, name);
+            this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionedBy);
         }
