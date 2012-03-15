@@ -7,15 +7,18 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
+import com.alibaba.druid.util.JdbcUtils;
+
 public class TestOnlineSQLTest3 extends TestCase {
 
-    private String       url      = "jdbc:mysql://10.249.192.221/test";
-    private String       user     = "dragoon";
-    private String       password = "dragoon";
+    private String       url      = "jdbc:mysql://10.20.144.27/dragoon_v25_masterdb";
+    private String       user     = "dragoon_test";
+    private String       password = "dragoon_test";
 
     protected Connection conn;
 
     public void setUp() throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
         conn = DriverManager.getConnection(url, user, password);
     }
 
@@ -27,23 +30,15 @@ public class TestOnlineSQLTest3 extends TestCase {
     }
 
     public void test_0() throws Exception {
-        String sql = "SELECT * FROM m_sql_const";
+//        ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
+//        JdbcUtils.printResultSet(rs);
+        
+        String sql = "SELECT User,Password FROM mysql.user;";
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            long id = rs.getLong(1);
-            String value = rs.getString(2);
-            handle(id, value);
-        }
-        rs.close();
-
+        JdbcUtils.printResultSet(rs);
+        
         stmt.close();
-    }
-
-    void handle(long id, String value) {
-        String sql = value.toString();
-
-        System.out.println(sql);
     }
 }

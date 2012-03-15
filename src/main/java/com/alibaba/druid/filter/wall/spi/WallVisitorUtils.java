@@ -209,6 +209,19 @@ public class WallVisitorUtils {
                 return ((String) firstValue).length();
             }
         }
+        
+        if ("if".equalsIgnoreCase(methodName) && x.getParameters().size() == 3) {
+            SQLExpr first = x.getParameters().get(0);
+            Object firstResult = getValue(first);
+            
+            if (Boolean.TRUE == firstResult) {
+                return getValue(x.getParameters().get(1));
+            }
+            
+            if (Boolean.FALSE == firstResult) {
+                getValue(x.getParameters().get(2));
+            }
+        }
 
         return null;
     }
@@ -277,6 +290,8 @@ public class WallVisitorUtils {
 
             if (propExpr.getOwner() instanceof SQLIdentifierExpr) {
                 String ownerName = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
+                
+                ownerName = form(ownerName);
 
                 if (visitor.getPermitSchemas().contains(ownerName.toLowerCase())) {
                     visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
@@ -325,6 +340,9 @@ public class WallVisitorUtils {
 
     public static String form(String name) {
         if (name.startsWith("\"") && name.endsWith("\"")) {
+            name = name.substring(1, name.length() - 1);
+        }
+        if (name.startsWith("`") && name.endsWith("`")) {
             name = name.substring(1, name.length() - 1);
         }
         

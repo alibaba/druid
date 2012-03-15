@@ -227,6 +227,11 @@ public class SQLSelectParser extends SQLParser {
     }
 
     private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) throws ParserException {
+        if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED || lexer.token() == Token.LITERAL_CHARS) {
+            tableReference.setExpr(this.createExprParser().name());
+            return;
+        }
+        
         tableReference.setExpr(expr());
     }
 

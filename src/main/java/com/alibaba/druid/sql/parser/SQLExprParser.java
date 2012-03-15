@@ -273,9 +273,9 @@ public class SQLExprParser extends SQLParser {
 
                     accept(Token.RPAREN);
                     notTarget = exprRest(notTarget);
-                    
+
                     sqlExpr = new SQLNotExpr(notTarget);
-                    
+
                     return primaryRest(sqlExpr);
                 } else {
                     SQLExpr restExpr = expr();
@@ -468,6 +468,11 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
 
+            if (expr instanceof SQLCharExpr) {
+                String text = ((SQLCharExpr) expr).getText();
+                expr = new SQLIdentifierExpr(text);
+            }
+
             expr = dotRest(expr);
             return primaryRest(expr);
         } else if (lexer.token() == Token.COLONEQ) {
@@ -635,7 +640,11 @@ public class SQLExprParser extends SQLParser {
                 throw new ParserException("error, " + lexer.token());
             }
 
-            name = new SQLPropertyExpr(name, lexer.stringVal());
+            if (lexer.token() == Token.LITERAL_ALIAS) {
+                name = new SQLPropertyExpr(name, '"' + lexer.stringVal() + '"');
+            } else {
+                name = new SQLPropertyExpr(name, lexer.stringVal());
+            }
             lexer.nextToken();
         }
 
