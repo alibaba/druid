@@ -1,9 +1,11 @@
 package com.alibaba.druid.filter.wall;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -30,7 +32,7 @@ public abstract class WallProvider {
         if (whiteList == null) {
             return false;
         }
-        
+
         return whiteList.get(sql) != null;
     }
 
@@ -48,8 +50,19 @@ public abstract class WallProvider {
         SQLStatementParser parser = createParser(sql);
         parser.getLexer().setAllowComment(false); // permit comment
 
-        List<SQLStatement> statementList = parser.parseStatementList();
-        if(parser.getLexer().token() != Token.EOF) {
+        List<SQLStatement> statementList = new ArrayList<SQLStatement>();
+
+        try {
+            parser.parseStatementList(statementList);
+        } catch (NotAllowCommentException e) {
+            if (throwException) {
+                throw new WallRuntimeException("not allow comment : " + sql);
+            }
+
+            return false;
+        }
+
+        if (parser.getLexer().token() != Token.EOF) {
             if (throwException) {
                 throw new WallRuntimeException("illegal statement : " + sql);
             }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
 import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -257,8 +258,16 @@ public class OracleLexer extends Lexer {
                 stringVal = new String(buf, np, sp);
                 token = Token.MULTI_LINE_COMMENT;
             }
+            
+            if (token != Token.HINT && !isAllowComment()) {
+                throw new NotAllowCommentException();
+            }
 
             return;
+        }
+        
+        if (!isAllowComment()) {
+            throw new NotAllowCommentException();
         }
 
         if (ch == '/' || ch == '-') {
