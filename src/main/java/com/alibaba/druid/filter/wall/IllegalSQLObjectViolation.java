@@ -1,14 +1,14 @@
 package com.alibaba.druid.filter.wall;
 
-public class IllegalStatementViolation implements Violation {
+public class IllegalSQLObjectViolation implements Violation {
 
     private String condition;
 
-    public IllegalStatementViolation(){
+    public IllegalSQLObjectViolation(){
 
     }
 
-    public IllegalStatementViolation(String condition){
+    public IllegalSQLObjectViolation(String condition){
         this.condition = condition;
     }
 

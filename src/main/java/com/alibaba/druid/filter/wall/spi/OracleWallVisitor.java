@@ -3,7 +3,7 @@ package com.alibaba.druid.filter.wall.spi;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.filter.wall.IllegalStatementViolation;
+import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
@@ -34,7 +34,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
     
     public boolean visit(SQLDropTableStatement x) {
-        violations.add(new IllegalStatementViolation(SQLUtils.toOracleString(x)));
+        violations.add(new IllegalSQLObjectViolation(SQLUtils.toOracleString(x)));
         return false;
     }
 }

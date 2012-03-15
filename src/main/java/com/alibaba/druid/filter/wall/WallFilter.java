@@ -1,24 +1,29 @@
 package com.alibaba.druid.filter.wall;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.filter.wall.spi.MySqlWallVisitor;
+import com.alibaba.druid.filter.wall.spi.OracleWallVisitor;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
-import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
+
+    private WallProvider provider;
+
+    @Override
+    public void init(DataSourceProxy dataSource) {
+        this.dataSource = dataSource;
+
+        provider = createWallProvider(dataSource.getDbType());
+    }
 
     @Override
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
@@ -94,44 +99,27 @@ public class WallFilter extends FilterAdapter {
     }
 
     public void check(ConnectionProxy connection, String sql) throws SQLException {
-        String dbType = connection.getDirectDataSource().getDbType();
+        provider.check(sql, true);
+    }
 
-        SQLStatementParser parser = createParser(dbType, sql);
-        parser.getLexer().setAllowComment(false); // permit comment
-
-        List<SQLStatement> statementList = parser.parseStatementList();
-        if (statementList.size() > 1) {
-            throw new SQLException("multi-statement : " + sql);
+    public WallProvider createWallProvider(String dbType) {
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return new MySqlWallProvider();
         }
 
-        SQLStatement stmt = statementList.get(0);
-
-        SQLASTVisitor visitor = createWallVisitor(dbType);
-
-        stmt.accept(visitor);
+        throw new IllegalStateException("dbType not support : " + dbType);
     }
 
-    public SQLASTVisitor createWallVisitor(String dbType) throws SQLException {
-        throw new SQLException("dbType not support : " + dbType);
-    }
-
-    public SQLStatementParser createParser(String dbType, String sql) throws SQLException {
+    public WallVisitor createWallVisitor(String dbType) throws SQLException {
         if (JdbcUtils.ORACLE.equals(dbType)) {
-            return new OracleStatementParser(sql);
+            return new OracleWallVisitor();
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlStatementParser(sql);
-        }
-
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return new PGSQLStatementParser(sql);
-        }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-            return new SQLServerStatementParser(sql);
+            return new MySqlWallVisitor();
         }
 
         throw new SQLException("dbType not support : " + dbType);
     }
+
 }
