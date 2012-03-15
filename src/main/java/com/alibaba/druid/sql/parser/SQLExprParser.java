@@ -270,9 +270,12 @@ public class SQLExprParser extends SQLParser {
                     lexer.nextToken();
 
                     SQLExpr notTarget = expr();
-                    sqlExpr = new SQLNotExpr(notTarget);
 
                     accept(Token.RPAREN);
+                    notTarget = exprRest(notTarget);
+                    
+                    sqlExpr = new SQLNotExpr(notTarget);
+                    
                     return primaryRest(sqlExpr);
                 } else {
                     SQLExpr restExpr = expr();
