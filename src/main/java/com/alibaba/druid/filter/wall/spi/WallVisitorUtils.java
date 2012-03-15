@@ -1,6 +1,6 @@
 package com.alibaba.druid.filter.wall.spi;
 
-import com.alibaba.druid.filter.wall.IllegalConditionViolation;
+import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -25,7 +25,7 @@ public class WallVisitorUtils {
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
         if (Boolean.TRUE == getValue(x)) {
-            visitor.getViolations().add(new IllegalConditionViolation(SQLUtils.toSQLString(x)));
+            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
         }
     }
 
