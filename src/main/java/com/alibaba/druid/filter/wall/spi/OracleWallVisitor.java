@@ -19,12 +19,19 @@ import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 import com.alibaba.druid.util.JdbcUtils;
@@ -100,12 +107,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         name = name.toLowerCase();
         permitFunctions.add(name);
     }
-    
+
     public void addPermitTable(String name) {
         name = name.toLowerCase();
         permitTables.add(name);
     }
-
 
     public Set<String> getPermitNames() {
         return permitNames;
@@ -155,7 +161,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     public boolean visit(SQLExprTableSource x) {
         WallVisitorUtils.check(this, x);
 
@@ -165,7 +171,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLUnionQuery x) {
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
@@ -174,15 +180,35 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         return true;
     }
-    
+
     @Override
     public String toSQL(SQLObject obj) {
         return SQLUtils.toOracleString(obj);
     }
-    
+
     @Override
     public boolean containsPermitTable(String name) {
         name = WallVisitorUtils.form(name);
         return permitTables.contains(name);
+    }
+
+    public void preVisit(SQLObject x) {
+        if (!(x instanceof SQLStatement)) {
+            return;
+        }
+
+        if (x instanceof SQLInsertStatement) {
+
+        } else if (x instanceof SQLSelectStatement) {
+
+        } else if (x instanceof SQLDeleteStatement) {
+
+        } else if (x instanceof SQLUpdateStatement) {
+        } else if (x instanceof OracleMultiInsertStatement) {
+
+        } else if (x instanceof OracleMergeStatement) {
+        } else {
+            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+        }
     }
 }

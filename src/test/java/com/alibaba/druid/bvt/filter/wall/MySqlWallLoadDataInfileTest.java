@@ -11,10 +11,10 @@ import junit.framework.TestCase;
  * 
  * @author admin
  */
-public class MySqlWallPermitTableTest extends TestCase {
+public class MySqlWallLoadDataInfileTest extends TestCase {
 
-    public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql("select benchmark( 500000, sha1( 'test' ) )"));
+    public void test_permit_stmt() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql("load data infile 'c:/boot.ini' into table foo"));
     }
     
 }
