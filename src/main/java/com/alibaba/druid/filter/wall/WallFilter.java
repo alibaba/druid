@@ -97,6 +97,7 @@ public class WallFilter extends FilterAdapter {
         String dbType = connection.getDirectDataSource().getDbType();
 
         SQLStatementParser parser = createParser(dbType, sql);
+        parser.getLexer().setAllowComment(false); // permit comment
 
         List<SQLStatement> statementList = parser.parseStatementList();
         if (statementList.size() > 1) {
