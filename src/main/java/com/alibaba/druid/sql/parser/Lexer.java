@@ -277,6 +277,9 @@ public class Lexer {
                         }
                     }
                     return;
+                case '#':
+                    scanVariable();
+                    return;
                 case '.':
                     scanChar();
                     if (isDigit(ch)) {
@@ -551,7 +554,7 @@ public class Lexer {
     public void scanVariable() {
         final char first = ch;
 
-        if (ch != '@' && ch != ':') {
+        if (ch != '@' && ch != ':' && ch != '#') {
             throw new SQLParseException("illegal variable");
         }
 
