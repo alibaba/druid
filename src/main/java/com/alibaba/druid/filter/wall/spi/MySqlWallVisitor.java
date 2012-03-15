@@ -8,6 +8,7 @@ import com.alibaba.druid.filter.wall.Violation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
@@ -73,5 +74,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
+    }
+    
+    public boolean visit(SQLDropTableStatement x) {
+        violations.add(new IllegalStatementViolation(SQLUtils.toMySqlString(x)));
+        return false;
     }
 }
