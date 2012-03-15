@@ -1322,7 +1322,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print("IF EXISTS ");
         }
         
-        printAndAccept(x.getTableNames(), ", ");
+        printAndAccept(x.getTableSources(), ", ");
         return false;
     }
 
