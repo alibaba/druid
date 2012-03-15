@@ -470,7 +470,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         String sql = resultSet.getSql();
         if (sql != null) {
-            JdbcSqlStat sqlStat = getSqlCounter(sql);
+            JdbcSqlStat sqlStat = getSqlStat(sql);
             if (sqlStat != null) {
                 sqlStat.addFetchRowCount(fetchCount);
             }
@@ -657,7 +657,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return (JdbcSqlStat) statement.getAttributes().get(ATTR_SQL);
     }
 
+    @Deprecated
     public JdbcSqlStat getSqlCounter(String sql) {
+        return getSqlStat(sql);
+    }
+    
+    public JdbcSqlStat getSqlStat(String sql) {
         return dataSourceStat.getSqlStatMap().get(sql);
     }
 
