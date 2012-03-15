@@ -8,6 +8,8 @@ import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
@@ -22,13 +24,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 public class WallVisitorUtils {
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
-        if (Boolean.TRUE == getObject(x)) {
+        if (Boolean.TRUE == getValue(x)) {
             visitor.getViolations().add(new IllegalConditionViolation(SQLUtils.toSQLString(x)));
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Object getObject(SQLBinaryOpExpr x) {
+    public static Object getValue(SQLBinaryOpExpr x) {
         x.getLeft().setParent(x);
         x.getRight().setParent(x);
         Object leftResult = getValue(x.getLeft());
@@ -106,7 +108,7 @@ public class WallVisitorUtils {
             if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
                 return false;
             }
-
+            
             if (leftResult == null || rightResult == null) {
                 return null;
             }
@@ -149,10 +151,10 @@ public class WallVisitorUtils {
 
         return null;
     }
-
+    
     public static Object getValue(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {
-            return getObject((SQLBinaryOpExpr) x);
+            return getValue((SQLBinaryOpExpr) x);
         }
 
         if (x instanceof MySqlBooleanExpr) {
@@ -162,6 +164,14 @@ public class WallVisitorUtils {
         if (x instanceof SQLNumericLiteralExpr) {
             return ((SQLNumericLiteralExpr) x).getNumber();
         }
+        
+        if (x instanceof SQLCharExpr) {
+            return ((SQLCharExpr) x).getText();
+        }
+        
+        if (x instanceof SQLNCharExpr) {
+            return ((SQLNCharExpr) x).getText();
+        }
 
         if (x instanceof SQLNotExpr) {
             Object result = getValue(((SQLNotExpr) x).getExpr());
@@ -169,10 +179,30 @@ public class WallVisitorUtils {
                 return !((Boolean) result).booleanValue();
             }
         }
-        
+
         if (x instanceof SQLQueryExpr) {
             if (isSimpleCountTableSource(((SQLQueryExpr) x).getSubQuery())) {
                 return Integer.valueOf(1);
+            }
+        }
+
+        if (x instanceof SQLMethodInvokeExpr) {
+            return getValue((SQLMethodInvokeExpr) x);
+        }
+
+        return null;
+    }
+
+    public static Object getValue(SQLMethodInvokeExpr x) {
+        String methodName = x.getMethodName();
+        if ("len".equalsIgnoreCase(methodName) || "length".equalsIgnoreCase(methodName)) {
+            Object firstValue = null;
+            if (x.getParameters().size() > 0) {
+                firstValue = (getValue(x.getParameters().get(0)));
+            }
+
+            if (firstValue instanceof String) {
+                return ((String) firstValue).length();
             }
         }
 
@@ -188,14 +218,25 @@ public class WallVisitorUtils {
 
         return isSimpleCountTableSource(subQuery.getSelect());
     }
-    
+
     public static boolean isSimpleCountTableSource(SQLSelect select) {
         SQLSelectQuery query = select.getQuery();
 
         if (query instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
 
-            boolean allawTrueWhere = queryBlock.getWhere() == null || getValue(queryBlock.getWhere()) == Boolean.TRUE;
+            boolean allawTrueWhere = false;
+            
+            if (queryBlock.getWhere() == null) {
+                allawTrueWhere = true;
+            } else {
+                Object whereValue = getValue(queryBlock.getWhere());
+                if (whereValue == Boolean.TRUE) {
+                    allawTrueWhere = true;
+                } else if (whereValue == Boolean.FALSE) {
+                    return false;
+                }
+            }
             boolean simpleCount = false;
             if (queryBlock.getSelectList().size() == 1) {
                 SQLExpr selectItemExpr = queryBlock.getSelectList().get(0).getExpr();
