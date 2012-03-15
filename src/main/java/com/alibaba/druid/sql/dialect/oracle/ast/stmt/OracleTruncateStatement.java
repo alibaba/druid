@@ -17,7 +17,7 @@ public class OracleTruncateStatement extends SQLTruncateStatement implements Ora
 
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableNames);
+            acceptChild(visitor, tableSources);
         }
         visitor.endVisit(this);
     }

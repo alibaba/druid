@@ -967,7 +967,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLTruncateStatement x) {
         print("TRUNCATE TABLE ");
-        printAndAccept(x.getTableNames(), ", ");
+        printAndAccept(x.getTableSources(), ", ");
         return false;
     }
 
