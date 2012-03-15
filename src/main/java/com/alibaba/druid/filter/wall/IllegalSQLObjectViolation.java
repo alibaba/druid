@@ -2,22 +2,26 @@ package com.alibaba.druid.filter.wall;
 
 public class IllegalSQLObjectViolation implements Violation {
 
-    private String condition;
+    private String sqlPart;
 
     public IllegalSQLObjectViolation(){
 
     }
 
     public IllegalSQLObjectViolation(String condition){
-        this.condition = condition;
+        this.sqlPart = condition;
     }
 
-    public String getCondition() {
-        return condition;
+    public String getSqlPart() {
+        return sqlPart;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setSqlPart(String sqlPart) {
+        this.sqlPart = sqlPart;
+    }
+
+    public String toString() {
+        return this.sqlPart;
     }
 
 }

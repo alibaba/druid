@@ -17,7 +17,10 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
@@ -27,8 +30,9 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor {
 
-    private Set<String>           permitFunctions = new HashSet<String>();
-    private Set<String>           permitSchemas   = new HashSet<String>();
+    private Set<String>           permitFunctions   = new HashSet<String>();
+    private Set<String>           permitTablesoures = new HashSet<String>();
+    private Set<String>           permitSchemas     = new HashSet<String>();
 
     private final List<Violation> violations;
 
@@ -39,9 +43,21 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public MySqlWallVisitor(List<Violation> violations){
         this.violations = violations;
 
-permitFunctions.add("load_file");
+        permitFunctions.add("version");
+        permitFunctions.add("load_file");
+        permitFunctions.add("databse");
+        permitFunctions.add("schema");
+        permitFunctions.add("user");
+        permitFunctions.add("system_user");
+        permitFunctions.add("session_user");
+        permitFunctions.add("benchmark");
+        permitFunctions.add("connection_id");
+        permitFunctions.add("current_user");
 
-permitSchemas.add("information_schema");
+        permitSchemas.add("information_schema");
+        permitSchemas.add("mysql");
+
+        permitTablesoures.add("outfile");
     }
 
     public List<Violation> getViolations() {
@@ -136,5 +152,28 @@ permitSchemas.add("information_schema");
         }
 
         return true;
+    }
+
+    @Override
+    public boolean visit(MySqlOutFileExpr x) {
+        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLUnionQuery x) {
+        if (queryBlockFromIsNull(x.getLeft()) || queryBlockFromIsNull(x.getRight())) {
+            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+        }
+
+        return true;
+    }
+
+    private static boolean queryBlockFromIsNull(SQLSelectQuery query) {
+        if (query instanceof SQLSelectQueryBlock) {
+            return ((SQLSelectQueryBlock) query).getFrom() == null;
+        }
+
+        return false;
     }
 }

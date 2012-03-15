@@ -287,10 +287,6 @@ public class SQLSelectParser extends SQLParser {
             return parseTableSourceRest(join);
         }
 
-        if (lexer.token() == Token.UNION) {
-            throw new SQLParseException("TODO");
-        }
-
         return tableSource;
     }
 

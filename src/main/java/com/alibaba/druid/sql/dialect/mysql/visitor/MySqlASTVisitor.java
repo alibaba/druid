@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
@@ -191,4 +192,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSelectQueryBlock x);
     
     void endVisit(MySqlSelectQueryBlock x);
+    
+    boolean visit(MySqlOutFileExpr x);
+    
+    void endVisit(MySqlOutFileExpr x);
 }

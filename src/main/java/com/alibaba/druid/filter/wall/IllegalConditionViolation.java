@@ -19,5 +19,9 @@ public class IllegalConditionViolation implements Violation {
     public void setCondition(String condition) {
         this.condition = condition;
     }
+    
+    public String toString() {
+        return this.condition;
+    }
 
 }

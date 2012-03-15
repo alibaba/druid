@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -111,8 +112,11 @@ public class MySqlSelectParser extends SQLSelectParser {
             if (lexer.token() == (Token.INTO)) {
                 lexer.nextToken();
                 acceptIdentifier("OUTFILE");
-                SQLExpr outFile = expr();
-                queryBlock.setOutFile(outFile);
+
+                MySqlOutFileExpr outFile = new MySqlOutFileExpr();
+                outFile.setFile(expr());
+
+                queryBlock.setInto(outFile);
 
                 if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
                     lexer.nextToken();
@@ -121,23 +125,23 @@ public class MySqlSelectParser extends SQLSelectParser {
                         lexer.nextToken();
                         accept(Token.BY);
                     }
-                    queryBlock.setOutFileColumnsTerminatedBy((SQLLiteralExpr) expr());
+                    outFile.setColumnsTerminatedBy((SQLLiteralExpr) expr());
 
                     if (identifierEquals("OPTIONALLY")) {
                         lexer.nextToken();
-                        queryBlock.setOutFileColumnsEnclosedOptionally(true);
+                        outFile.setColumnsEnclosedOptionally(true);
                     }
 
                     if (identifierEquals("ENCLOSED")) {
                         lexer.nextToken();
                         accept(Token.BY);
-                        queryBlock.setOutFileColumnsEnclosedBy((SQLLiteralExpr) expr());
+                        outFile.setColumnsEnclosedBy((SQLLiteralExpr) expr());
                     }
 
                     if (identifierEquals("ESCAPED")) {
                         lexer.nextToken();
                         accept(Token.BY);
-                        queryBlock.setOutFileColumnsEscaped((SQLLiteralExpr) expr());
+                        outFile.setColumnsEscaped((SQLLiteralExpr) expr());
                     }
                 }
 
@@ -147,12 +151,12 @@ public class MySqlSelectParser extends SQLSelectParser {
                     if (identifierEquals("STARTING")) {
                         lexer.nextToken();
                         accept(Token.BY);
-                        queryBlock.setOutFileLinesStartingBy((SQLLiteralExpr) expr());
+                        outFile.setLinesStartingBy((SQLLiteralExpr) expr());
                     } else {
                         identifierEquals("TERMINATED");
                         lexer.nextToken();
                         accept(Token.BY);
-                        queryBlock.setOutFileLinesTerminatedBy((SQLLiteralExpr) expr());
+                        outFile.setLinesTerminatedBy((SQLLiteralExpr) expr());
                     }
                 }
             }

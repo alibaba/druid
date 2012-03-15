@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -110,6 +111,15 @@ public class MySqlExprParser extends SQLExprParser {
 
     public SQLExpr primary() throws ParserException {
         final Token tok = lexer.token();
+        
+        if (identifierEquals("outfile")) {
+            lexer.nextToken();
+            SQLExpr file = primary();
+            SQLExpr expr = new MySqlOutFileExpr(file);
+            
+            return primaryRest(expr);
+            
+        }
 
         switch (tok) {
             case TRUE:

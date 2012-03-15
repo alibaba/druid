@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -30,55 +29,37 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 @SuppressWarnings("serial")
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private boolean        hignPriority;
-    private boolean        straightJoin;
+    private boolean       hignPriority;
+    private boolean       straightJoin;
 
-    private boolean        smallResult;
-    private boolean        bigResult;
-    private boolean        bufferResult;
-    private Boolean        cache;
-    private boolean        calcFoundRows;
+    private boolean       smallResult;
+    private boolean       bigResult;
+    private boolean       bufferResult;
+    private Boolean       cache;
+    private boolean       calcFoundRows;
 
-    private SQLOrderBy     orderBy;
+    private SQLOrderBy    orderBy;
 
-    private Limit          limit;
+    private Limit         limit;
 
-    private SQLName        procedureName;
-    private List<SQLExpr>  procedureArgumentList            = new ArrayList<SQLExpr>();
-    private SQLExpr        outFile;
-    private String         outFileCharset;
+    private SQLName       procedureName;
+    private List<SQLExpr> procedureArgumentList = new ArrayList<SQLExpr>();
 
-    private SQLLiteralExpr outFileColumnsTerminatedBy;
-    private boolean        outFileColumnsEnclosedOptionally = false;
-    private SQLLiteralExpr outFileColumnsEnclosedBy;
-    private SQLLiteralExpr outFileColumnsEscaped;
+    private SQLExpr       into;
 
-    private SQLLiteralExpr outFileLinesStartingBy;
-    private SQLLiteralExpr outFileLinesTerminatedBy;
-
-    private SQLExpr        outFileIgnoreLinesNumber;
-
-    private boolean        forUpdate                        = false;
-    private boolean        lockInShareMode                  = false;
+    private boolean       forUpdate             = false;
+    private boolean       lockInShareMode       = false;
 
     public MySqlSelectQueryBlock(){
 
     }
 
-    public SQLExpr getOutFile() {
-        return outFile;
+    public SQLExpr getInto() {
+        return into;
     }
 
-    public void setOutFile(SQLExpr outFile) {
-        this.outFile = outFile;
-    }
-
-    public String getOutFileCharset() {
-        return outFileCharset;
-    }
-
-    public void setOutFileCharset(String charset) {
-        this.outFileCharset = charset;
+    public void setInto(SQLExpr into) {
+        this.into = into;
     }
 
     public boolean isForUpdate() {
@@ -185,62 +166,6 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
         this.limit = limit;
     }
 
-    public SQLLiteralExpr getOutFileColumnsTerminatedBy() {
-        return outFileColumnsTerminatedBy;
-    }
-
-    public void setOutFileColumnsTerminatedBy(SQLLiteralExpr outFileColumnsTerminatedBy) {
-        this.outFileColumnsTerminatedBy = outFileColumnsTerminatedBy;
-    }
-
-    public boolean isOutFileColumnsEnclosedOptionally() {
-        return outFileColumnsEnclosedOptionally;
-    }
-
-    public void setOutFileColumnsEnclosedOptionally(boolean outFileColumnsEnclosedOptionally) {
-        this.outFileColumnsEnclosedOptionally = outFileColumnsEnclosedOptionally;
-    }
-
-    public SQLLiteralExpr getOutFileColumnsEnclosedBy() {
-        return outFileColumnsEnclosedBy;
-    }
-
-    public void setOutFileColumnsEnclosedBy(SQLLiteralExpr outFileColumnsEnclosedBy) {
-        this.outFileColumnsEnclosedBy = outFileColumnsEnclosedBy;
-    }
-
-    public SQLLiteralExpr getOutFileColumnsEscaped() {
-        return outFileColumnsEscaped;
-    }
-
-    public void setOutFileColumnsEscaped(SQLLiteralExpr outFileColumnsEscaped) {
-        this.outFileColumnsEscaped = outFileColumnsEscaped;
-    }
-
-    public SQLLiteralExpr getOutFileLinesStartingBy() {
-        return outFileLinesStartingBy;
-    }
-
-    public void setOutFileLinesStartingBy(SQLLiteralExpr outFileLinesStartingBy) {
-        this.outFileLinesStartingBy = outFileLinesStartingBy;
-    }
-
-    public SQLLiteralExpr getOutFileLinesTerminatedBy() {
-        return outFileLinesTerminatedBy;
-    }
-
-    public void setOutFileLinesTerminatedBy(SQLLiteralExpr outFileLinesTerminatedBy) {
-        this.outFileLinesTerminatedBy = outFileLinesTerminatedBy;
-    }
-
-    public SQLExpr getOutFileIgnoreLinesNumber() {
-        return outFileIgnoreLinesNumber;
-    }
-
-    public void setOutFileIgnoreLinesNumber(SQLExpr outFileIgnoreLinesNumber) {
-        this.outFileIgnoreLinesNumber = outFileIgnoreLinesNumber;
-    }
-
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
@@ -252,13 +177,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
             acceptChild(visitor, this.limit);
             acceptChild(visitor, this.procedureName);
             acceptChild(visitor, this.procedureArgumentList);
-            acceptChild(visitor, this.outFile);
-            acceptChild(visitor, this.outFileColumnsTerminatedBy);
-            acceptChild(visitor, this.outFileColumnsEnclosedBy);
-            acceptChild(visitor, this.outFileColumnsEscaped);
-            acceptChild(visitor, this.outFileLinesStartingBy);
-            acceptChild(visitor, this.outFileLinesTerminatedBy);
-            acceptChild(visitor, this.outFileIgnoreLinesNumber);
+            acceptChild(visitor, this.into);
         }
 
         visitor.endVisit(this);

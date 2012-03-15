@@ -36,11 +36,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
@@ -57,7 +59,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -135,49 +136,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         printSelectList(x.getSelectList());
 
-        if (x.getOutFile() != null) {
+        if (x.getInto() != null) {
             println();
-            print("INTO OUTFILE ");
-            x.getOutFile().accept(this);
-            if (x.getOutFileCharset() != null) {
-                print(" CHARACTER SET ");
-                print(x.getOutFileCharset());
-            }
-
-            if (x.getOutFileColumnsTerminatedBy() != null || x.getOutFileColumnsEnclosedBy() != null
-                || x.getOutFileColumnsEscaped() != null) {
-                print(" COLUMNS");
-                if (x.getOutFileColumnsTerminatedBy() != null) {
-                    print(" TERMINATED BY ");
-                    x.getOutFileColumnsTerminatedBy().accept(this);
-                }
-
-                if (x.getOutFileColumnsEnclosedBy() != null) {
-                    if (x.isOutFileColumnsEnclosedOptionally()) {
-                        print(" OPTIONALLY");
-                    }
-                    print(" ENCLOSED BY ");
-                    x.getOutFileColumnsEnclosedBy().accept(this);
-                }
-
-                if (x.getOutFileColumnsEscaped() != null) {
-                    print(" ESCAPED BY ");
-                    x.getOutFileColumnsEscaped().accept(this);
-                }
-            }
-
-            if (x.getOutFileLinesStartingBy() != null || x.getOutFileLinesTerminatedBy() != null) {
-                print(" LINES");
-                if (x.getOutFileLinesStartingBy() != null) {
-                    print(" STARTING BY ");
-                    x.getOutFileLinesStartingBy().accept(this);
-                }
-
-                if (x.getOutFileLinesTerminatedBy() != null) {
-                    print(" TERMINATED BY ");
-                    x.getOutFileLinesTerminatedBy().accept(this);
-                }
-            }
+            print("INTO ");
+            x.getInto().accept(this);
         }
 
         if (x.getFrom() != null) {
@@ -1346,6 +1308,59 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlSelectQueryBlock x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlOutFileExpr x) {
+        print("OUTFILE ");
+        x.getFile().accept(this);
+        
+        if (x.getCharset() != null) {
+            print(" CHARACTER SET ");
+            print(x.getCharset());
+        }
+
+        if (x.getColumnsTerminatedBy() != null || x.getColumnsEnclosedBy() != null
+            || x.getColumnsEscaped() != null) {
+            print(" COLUMNS");
+            if (x.getColumnsTerminatedBy() != null) {
+                print(" TERMINATED BY ");
+                x.getColumnsTerminatedBy().accept(this);
+            }
+
+            if (x.getColumnsEnclosedBy() != null) {
+                if (x.isColumnsEnclosedOptionally()) {
+                    print(" OPTIONALLY");
+                }
+                print(" ENCLOSED BY ");
+                x.getColumnsEnclosedBy().accept(this);
+            }
+
+            if (x.getColumnsEscaped() != null) {
+                print(" ESCAPED BY ");
+                x.getColumnsEscaped().accept(this);
+            }
+        }
+
+        if (x.getLinesStartingBy() != null || x.getLinesTerminatedBy() != null) {
+            print(" LINES");
+            if (x.getLinesStartingBy() != null) {
+                print(" STARTING BY ");
+                x.getLinesStartingBy().accept(this);
+            }
+
+            if (x.getLinesTerminatedBy() != null) {
+                print(" TERMINATED BY ");
+                x.getLinesTerminatedBy().accept(this);
+            }
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlOutFileExpr x) {
         
     }
 }

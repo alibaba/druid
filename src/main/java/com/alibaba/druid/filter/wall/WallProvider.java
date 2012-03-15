@@ -64,6 +64,7 @@ public abstract class WallProvider {
 
         if (visitor.getViolations().size() > 0) {
             if (throwException) {
+                visitor.getViolations().get(0);
                 throw new WallRuntimeException();
             } else {
                 return false;
