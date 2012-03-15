@@ -4,16 +4,20 @@ import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -108,7 +112,7 @@ public class WallVisitorUtils {
             if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
                 return false;
             }
-            
+
             if (leftResult == null || rightResult == null) {
                 return null;
             }
@@ -151,7 +155,7 @@ public class WallVisitorUtils {
 
         return null;
     }
-    
+
     public static Object getValue(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {
             return getValue((SQLBinaryOpExpr) x);
@@ -164,11 +168,11 @@ public class WallVisitorUtils {
         if (x instanceof SQLNumericLiteralExpr) {
             return ((SQLNumericLiteralExpr) x).getNumber();
         }
-        
+
         if (x instanceof SQLCharExpr) {
             return ((SQLCharExpr) x).getText();
         }
-        
+
         if (x instanceof SQLNCharExpr) {
             return ((SQLNCharExpr) x).getText();
         }
@@ -226,7 +230,7 @@ public class WallVisitorUtils {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
 
             boolean allawTrueWhere = false;
-            
+
             if (queryBlock.getWhere() == null) {
                 allawTrueWhere = true;
             } else {
@@ -253,5 +257,78 @@ public class WallVisitorUtils {
         }
 
         return false;
+    }
+
+    public static void check(WallVisitor visitor, SQLMethodInvokeExpr x) {
+        String methodName = x.getMethodName();
+
+        if (visitor.getPermitFunctions().contains(methodName.toLowerCase())) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+        }
+
+    }
+
+    public static void check(WallVisitor visitor, SQLExprTableSource x) {
+        SQLExpr expr = x.getExpr();
+
+        String tableName = null;
+        if (expr instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propExpr = (SQLPropertyExpr) expr;
+
+            if (propExpr.getOwner() instanceof SQLIdentifierExpr) {
+                String ownerName = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
+
+                if (visitor.getPermitSchemas().contains(ownerName.toLowerCase())) {
+                    visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+                }
+            }
+
+            tableName = propExpr.getName();
+        }
+
+        if (expr instanceof SQLIdentifierExpr) {
+            tableName = ((SQLIdentifierExpr) expr).getName();
+        }
+
+        if (tableName != null) {
+            tableName = form(tableName);
+            if (visitor.getPermitTables().contains(tableName)) {
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            }
+        }
+    }
+
+    public static boolean queryBlockFromIsNull(SQLSelectQuery query) {
+        if (query instanceof SQLSelectQueryBlock) {
+            SQLTableSource from = ((SQLSelectQueryBlock) query).getFrom();
+
+            if (from == null) {
+                return true;
+            }
+
+            if (from instanceof SQLExprTableSource) {
+                SQLExpr fromExpr = ((SQLExprTableSource) from).getExpr();
+                if (fromExpr instanceof SQLName) {
+                    String name = fromExpr.toString();
+
+                    name = form(name);
+
+                    if (name.equalsIgnoreCase("DUAL")) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static String form(String name) {
+        if (name.startsWith("\"") && name.endsWith("\"")) {
+            name = name.substring(1, name.length() - 1);
+        }
+        
+        name = name.toLowerCase();
+        return name;
     }
 }

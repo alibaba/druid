@@ -353,7 +353,7 @@ public final class JdbcUtils {
 
         }
     }
-
+    
     public static String read(Reader reader) {
         try {
             final int DEFAULT_BUFFER_SIZE = 1024 * 4;

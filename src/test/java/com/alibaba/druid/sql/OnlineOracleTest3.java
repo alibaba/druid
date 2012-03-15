@@ -33,7 +33,7 @@ public class OnlineOracleTest3 extends TestCase {
     }
 
     public void test_connect() throws Exception {
-        execute("select * from session_roles");
+        executeQuery("select * from TAB");
     }
 
     public void executeQuery(String sql) throws SQLException {
