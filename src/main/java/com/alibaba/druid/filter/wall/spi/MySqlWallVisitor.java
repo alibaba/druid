@@ -19,11 +19,13 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
@@ -90,24 +92,30 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public List<Violation> getViolations() {
         return violations;
     }
-    
+
     public boolean visit(SQLPropertyExpr x) {
         WallVisitorUtils.check(this, x);
         return true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-
         return true;
     }
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        if (x.getWhere() != null) {
-            x.getWhere().setParent(x);
-        }
+        WallVisitorUtils.checkCondition(this, x.getWhere());
 
+        return true;
+    }
+
+    public boolean visit(SQLSelectGroupByClause x) {
+        WallVisitorUtils.checkCondition(this, x.getHaving());
+        return true;
+    }
+    
+    public boolean visit(MySqlSelectGroupBy x) {
+        WallVisitorUtils.checkCondition(this, x.getHaving());
         return true;
     }
 

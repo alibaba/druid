@@ -16,6 +16,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -29,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
@@ -50,7 +52,11 @@ public class WallVisitorUtils {
         }
     }
 
-    public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
+    public static void checkCondition(WallVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+        
         if (Boolean.TRUE == getValue(x)) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
         }
@@ -338,7 +344,8 @@ public class WallVisitorUtils {
 
     public static boolean queryBlockFromIsNull(SQLSelectQuery query) {
         if (query instanceof SQLSelectQueryBlock) {
-            SQLTableSource from = ((SQLSelectQueryBlock) query).getFrom();
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+            SQLTableSource from = queryBlock.getFrom();
 
             if (from == null) {
                 return true;
@@ -355,6 +362,26 @@ public class WallVisitorUtils {
                         return true;
                     }
                 }
+            }
+            
+            if (queryBlock.getSelectList().size() == 1 && queryBlock.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
+                if (from instanceof SQLSubqueryTableSource) {
+                    SQLSelectQuery subQuery = ((SQLSubqueryTableSource) from).getSelect().getQuery();
+                    if (queryBlockFromIsNull(subQuery)) {
+                        return true;
+                    }
+                }
+            }
+            
+            boolean allIsConst = true;
+            for (SQLSelectItem item : queryBlock.getSelectList()) {
+                if (getValue(item.getExpr()) == null) {
+                    allIsConst = false;
+                    break;
+                }
+            }
+            if (allIsConst) {
+                return true;
             }
         }
 

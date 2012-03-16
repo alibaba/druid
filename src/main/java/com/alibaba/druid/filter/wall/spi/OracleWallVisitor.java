@@ -20,11 +20,14 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 
@@ -108,8 +111,6 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     // executeQuery
     public boolean visit(SQLBinaryOpExpr x) {
-        WallVisitorUtils.check(this, x);
-
         return true;
     }
 
@@ -138,6 +139,23 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         }
 
         return true;
+    }
+
+    public boolean visit(SQLSelectGroupByClause x) {
+        WallVisitorUtils.checkCondition(this, x.getHaving());
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLSelectQueryBlock x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleSelectQueryBlock x) {
+        return visit((SQLSelectQueryBlock) x);
     }
 
     @Override

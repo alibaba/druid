@@ -16,6 +16,7 @@ public class OracleWallPermitObjectTest extends TestCase {
     public void test_permitTable() throws Exception {
         Assert.assertFalse(WallUtils.isValidateOracle("select utl_inaddr.get_host_address from DUAL"));
         Assert.assertFalse(WallUtils.isValidateOracle("select TO_CHAR(utl_inaddr.get_host_address) from DUAL"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT SYS.DBMS_EXPORT_EXTENSION.GET_DOMAIN_INDEX_TABLES('FOO','BAR','DBMS_OUTPUT'.PUT(:P1));"));
     }
     
 }
