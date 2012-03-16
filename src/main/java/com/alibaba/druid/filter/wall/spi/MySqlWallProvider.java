@@ -1,5 +1,6 @@
 package com.alibaba.druid.filter.wall.spi;
 
+import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -7,11 +8,17 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class MySqlWallProvider extends WallProvider {
 
-    public MySqlWallProvider(){
-        this(true, true);
+    public MySqlWallProvider() {
+        this(new WallConfig());
     }
 
-    public MySqlWallProvider(boolean loadDefault, boolean loadExtend){
+    public MySqlWallProvider(WallConfig config){
+        this(config, true, true);
+    }
+
+    public MySqlWallProvider(WallConfig config, boolean loadDefault, boolean loadExtend){
+        super(config);
+
         if (loadDefault) {
             loadDefault();
         }

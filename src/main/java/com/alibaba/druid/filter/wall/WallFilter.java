@@ -18,7 +18,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
 
-    private boolean      inited                        = false;
+    private boolean      inited = false;
 
     private WallProvider provider;
 
@@ -26,7 +26,7 @@ public class WallFilter extends FilterAdapter {
 
     private boolean      loadExtend;
 
-    private boolean      checkSelectAlwayTrueCondition = true;
+    private WallConfig   config = new WallConfig();
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -39,6 +39,14 @@ public class WallFilter extends FilterAdapter {
 
     public WallProvider getProvider() {
         return provider;
+    }
+
+    public WallConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(WallConfig config) {
+        this.config = config;
     }
 
     public boolean isLoadDefault() {
@@ -208,14 +216,12 @@ public class WallFilter extends FilterAdapter {
     public WallProvider createWallProvider(String dbType) {
         WallProvider provider;
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            provider = new MySqlWallProvider(this.loadDefault, this.loadExtend);
+            provider = new MySqlWallProvider(config, this.loadDefault, this.loadExtend);
         } else if (JdbcUtils.ORACLE.equals(dbType)) {
-            provider = new OracleWallProvider(this.loadDefault, this.loadExtend);
+            provider = new OracleWallProvider(config, this.loadDefault, this.loadExtend);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType);
         }
-
-        provider.setCheckSelectAlwayTrueCondition(this.checkSelectAlwayTrueCondition);
 
         return provider;
     }

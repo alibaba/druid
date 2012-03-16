@@ -1,5 +1,6 @@
 package com.alibaba.druid.filter.wall.spi;
 
+import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
@@ -8,10 +9,16 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 public class OracleWallProvider extends WallProvider {
 
     public OracleWallProvider(){
-        this(true, true);
+        this(new WallConfig());
     }
 
-    public OracleWallProvider(boolean loadDefault, boolean loadExtend){
+    public OracleWallProvider(WallConfig config){
+        this(config, true, true);
+    }
+
+    public OracleWallProvider(WallConfig config, boolean loadDefault, boolean loadExtend){
+        super(config);
+
         if (loadDefault) {
             loadDefault();
         }

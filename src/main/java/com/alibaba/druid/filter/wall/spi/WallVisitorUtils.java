@@ -58,17 +58,19 @@ public class WallVisitorUtils {
         if (x == null) {
             return;
         }
-        
+
         WallProvider provider = visitor.getProvider();
-        if (!provider.isCheckSelectAlwayTrueCondition()) {
+        if (!provider.getConfig().isSelectHavingAlwayTrueCheck()) {
             return;
         }
 
         if (Boolean.TRUE == getValue(x)) {
             if (x instanceof SQLBinaryOpExpr) {
                 SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) x;
-                if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
-                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                    || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                        && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
                         return;
                     }
                 }
