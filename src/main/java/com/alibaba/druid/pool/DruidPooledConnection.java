@@ -589,9 +589,6 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             conn.setAutoCommit(autoCommit);
             holder.setUnderlyingAutoCommit(autoCommit);
         } catch (SQLException ex) {
-            if ((!autoCommit) && holder.isUnderlyingAutoCommit()) {
-
-            }
             handleException(ex);
         }
     }
