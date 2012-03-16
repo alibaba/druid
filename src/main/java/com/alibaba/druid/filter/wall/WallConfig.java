@@ -1,5 +1,7 @@
 package com.alibaba.druid.filter.wall;
 
+import static com.alibaba.druid.filter.wall.spi.WallVisitorUtils.loadResource;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,11 +20,38 @@ public class WallConfig {
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
 
+    private boolean             shcemaCheck                = true;
+    private boolean             tableCheck                 = true;
+    private boolean             functionCheck              = true;
+
     protected final Set<String> permitFunctions            = new HashSet<String>();
     protected final Set<String> permitTables               = new HashSet<String>();
     protected final Set<String> permitSchemas              = new HashSet<String>();
     protected final Set<String> permitNames                = new HashSet<String>();
     protected final Set<String> permitObjects              = new HashSet<String>();
+
+    public void loadDefault(String dir) {
+        if (dir.endsWith("/")) {
+            dir = dir.substring(0, dir.length() - 1);
+        }
+        loadResource(getPermitNames(), dir + "/permit-name-default.txt");
+        loadResource(getPermitSchemas(), dir + "/permit-schema-default.txt");
+        loadResource(getPermitFunctions(), dir + "/permit-function-default.txt");
+        loadResource(getPermitTables(), dir + "/permit-table-default.txt");
+        loadResource(getPermitObjects(), dir + "/permit-object-default.txt");
+    }
+
+    public void loadExtend(String dir) {
+        if (dir.endsWith("/")) {
+            dir = dir.substring(0, dir.length() - 1);
+        }
+
+        loadResource(getPermitNames(), dir + "permit-name.txt");
+        loadResource(getPermitSchemas(), dir + "permit-schema.txt");
+        loadResource(getPermitFunctions(), dir + "permit-function.txt");
+        loadResource(getPermitTables(), dir + "permit-table.txt");
+        loadResource(getPermitObjects(), dir + "permit-object.txt");
+    }
 
     public boolean isSelelctAllow() {
         return selelctAllow;
@@ -94,6 +123,30 @@ public class WallConfig {
 
     public void setMergeAllow(boolean mergeAllow) {
         this.mergeAllow = mergeAllow;
+    }
+
+    public boolean isShcemaCheck() {
+        return shcemaCheck;
+    }
+
+    public void setShcemaCheck(boolean shcemaCheck) {
+        this.shcemaCheck = shcemaCheck;
+    }
+
+    public boolean isTableCheck() {
+        return tableCheck;
+    }
+
+    public void setTableCheck(boolean tableCheck) {
+        this.tableCheck = tableCheck;
+    }
+
+    public boolean isFunctionCheck() {
+        return functionCheck;
+    }
+
+    public void setFunctionCheck(boolean functionCheck) {
+        this.functionCheck = functionCheck;
     }
 
     public Set<String> getPermitFunctions() {

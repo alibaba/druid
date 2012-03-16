@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
@@ -77,30 +78,64 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkCondition(this, x.getHaving());
+        WallVisitorUtils.checkHaving(this, x.getHaving());
         return true;
     }
 
     public boolean visit(MySqlSelectGroupBy x) {
-        WallVisitorUtils.checkCondition(this, x.getHaving());
+        WallVisitorUtils.checkHaving(this, x.getHaving());
         return true;
     }
 
     @Override
     public boolean visit(MySqlDeleteStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
-        return true;
+        return visit((SQLDeleteStatement) x);
     }
 
     @Override
     public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
+        if (!config.isDeleteAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        WallVisitorUtils.checkDeleteCondition(this, x.getWhere());
         return true;
     }
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
+        if (!config.isUpdateAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        WallVisitorUtils.checkUpdateCondition(this, x.getWhere());
+        return true;
+    }
+
+    @Override
+    public boolean visit(MySqlInsertStatement x) {
+        return visit((SQLInsertStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        if (!config.isInsertAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLSelectStatement x) {
+        if (!config.isSelelctAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
         return true;
     }
 

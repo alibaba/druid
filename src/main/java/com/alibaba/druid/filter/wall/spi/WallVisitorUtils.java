@@ -78,8 +78,40 @@ public class WallVisitorUtils {
         }
     }
 
-    public static void checkCondition(WallVisitor visitor, SQLExpr x) {
+    public static void checkHaving(WallVisitor visitor, SQLExpr x) {
         if (x == null) {
+            return;
+        }
+
+        if (!visitor.getConfig().isSelectHavingAlwayTrueCheck()) {
+            return;
+        }
+
+        if (Boolean.TRUE == getValue(x)) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+        }
+    }
+
+    public static void checkDeleteCondition(WallVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+
+        if (!visitor.getConfig().isDeleteWhereAlwayTrueCheck()) {
+            return;
+        }
+
+        if (Boolean.TRUE == getValue(x)) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+        }
+    }
+
+    public static void checkUpdateCondition(WallVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+
+        if (!visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
             return;
         }
 

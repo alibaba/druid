@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -92,7 +93,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     public boolean visit(SQLSelectGroupByClause x) {
-        WallVisitorUtils.checkCondition(this, x.getHaving());
+        WallVisitorUtils.checkHaving(this, x.getHaving());
         return true;
     }
 
@@ -116,30 +117,6 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
             violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
         }
 
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleDeleteStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLDeleteStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
-        return true;
-    }
-
-    @Override
-    public boolean visit(SQLUpdateStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
-        return true;
-    }
-
-    @Override
-    public boolean visit(OracleUpdateStatement x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
 
@@ -182,4 +159,70 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         return config.getPermitObjects().contains(name);
     }
 
+    @Override
+    public boolean visit(SQLSelectStatement x) {
+        if (!config.isSelelctAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleInsertStatement x) {
+        return visit((SQLInsertStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        if (!config.isInsertAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleMultiInsertStatement x) {
+        if (!config.isInsertAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleDeleteStatement x) {
+        return visit((SQLDeleteStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLDeleteStatement x) {
+        if (!config.isDeleteAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        WallVisitorUtils.checkDeleteCondition(this, x.getWhere());
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleUpdateStatement x) {
+        return visit((SQLUpdateStatement) x);
+    }
+
+    @Override
+    public boolean visit(SQLUpdateStatement x) {
+        if (!config.isUpdateAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        WallVisitorUtils.checkUpdateCondition(this, x.getWhere());
+        return true;
+    }
 }
