@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
-import com.alibaba.druid.filter.wall.WallProvider;
+import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -34,16 +34,15 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 
 public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVisitor {
 
-    private OracleWallProvider    provider;
+    private final WallConfig      config;
     private final List<Violation> violations = new ArrayList<Violation>();
 
-    public OracleWallVisitor(OracleWallProvider provider){
-        this.provider = provider;
+    public OracleWallVisitor(WallConfig config){
+        this.config = config;
     }
 
-    public boolean containsPermitObjects(String name) {
-        name = name.toLowerCase();
-        return provider.getPermitObjects().contains(name);
+    public WallConfig getConfig() {
+        return config;
     }
 
     public List<Violation> getViolations() {
@@ -107,7 +106,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     @Override
     public boolean visit(OracleSelectQueryBlock x) {
         WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
-        
+
         return true;
     }
 
@@ -155,7 +154,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         if (name.startsWith("v$") || name.startsWith("v_$")) {
             return true;
         }
-        return provider.getPermitTables().contains(name);
+        return config.getPermitTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {
@@ -179,7 +178,8 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     @Override
-    public WallProvider getProvider() {
-        return this.provider;
+    public boolean containsPermitObjects(String name) {
+        return config.getPermitObjects().contains(name);
     }
+
 }

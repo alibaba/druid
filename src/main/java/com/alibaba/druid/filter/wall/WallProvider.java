@@ -1,10 +1,8 @@
 package com.alibaba.druid.filter.wall;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
@@ -20,15 +18,9 @@ public abstract class WallProvider {
 
     private int                           whileListMaxSize  = 1024;
 
-    private int                           whiteSqlMaxLength = 1024;                 // 1k
+    private int                           whiteSqlMaxLength = 1024;        // 1k
 
-    protected final Set<String>           permitFunctions   = new HashSet<String>();
-    protected final Set<String>           permitTables      = new HashSet<String>();
-    protected final Set<String>           permitSchemas     = new HashSet<String>();
-    protected final Set<String>           permitNames       = new HashSet<String>();
-    protected final Set<String>           permitObjects     = new HashSet<String>();
-
-    private final WallConfig              config;
+    protected final WallConfig            config;
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -115,26 +107,6 @@ public abstract class WallProvider {
         }
 
         return true;
-    }
-
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
-    }
-
-    public Set<String> getPermitTables() {
-        return permitTables;
-    }
-
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
-    }
-
-    public Set<String> getPermitNames() {
-        return permitNames;
-    }
-
-    public Set<String> getPermitObjects() {
-        return permitObjects;
     }
 
 }

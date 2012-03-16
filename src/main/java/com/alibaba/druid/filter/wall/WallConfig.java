@@ -1,19 +1,28 @@
 package com.alibaba.druid.filter.wall;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class WallConfig {
 
-    private boolean selelctAllow               = true;
-    private boolean selectWhereAlwayTrueCheck  = true;
-    private boolean selectHavingAlwayTrueCheck = true;
+    private boolean             selelctAllow               = true;
+    private boolean             selectWhereAlwayTrueCheck  = true;
+    private boolean             selectHavingAlwayTrueCheck = true;
 
-    private boolean deleteAllow                = true;
-    private boolean deleteWhereAlwayTrueCheck  = true;
+    private boolean             deleteAllow                = true;
+    private boolean             deleteWhereAlwayTrueCheck  = true;
 
-    private boolean updateAllow                = true;
-    private boolean updateWhereAlayTrueCheck   = true;
+    private boolean             updateAllow                = true;
+    private boolean             updateWhereAlayTrueCheck   = true;
 
-    private boolean insertAllow                = true;
-    private boolean mergeAllow                 = true;
+    private boolean             insertAllow                = true;
+    private boolean             mergeAllow                 = true;
+
+    protected final Set<String> permitFunctions            = new HashSet<String>();
+    protected final Set<String> permitTables               = new HashSet<String>();
+    protected final Set<String> permitSchemas              = new HashSet<String>();
+    protected final Set<String> permitNames                = new HashSet<String>();
+    protected final Set<String> permitObjects              = new HashSet<String>();
 
     public boolean isSelelctAllow() {
         return selelctAllow;
@@ -87,4 +96,23 @@ public class WallConfig {
         this.mergeAllow = mergeAllow;
     }
 
+    public Set<String> getPermitFunctions() {
+        return permitFunctions;
+    }
+
+    public Set<String> getPermitTables() {
+        return permitTables;
+    }
+
+    public Set<String> getPermitSchemas() {
+        return permitSchemas;
+    }
+
+    public Set<String> getPermitNames() {
+        return permitNames;
+    }
+
+    public Set<String> getPermitObjects() {
+        return permitObjects;
+    }
 }
