@@ -179,7 +179,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     @Override
-    public WallProvider getWallProvider() {
+    public WallProvider getProvider() {
         return this.provider;
     }
 }

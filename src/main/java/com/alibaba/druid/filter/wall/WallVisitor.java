@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface WallVisitor extends SQLASTVisitor {
 
-    WallProvider getWallProvider();
+    WallProvider getProvider();
 
     List<Violation> getViolations();
 

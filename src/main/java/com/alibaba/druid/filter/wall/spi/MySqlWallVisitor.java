@@ -41,7 +41,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         this.provider = provider;
     }
 
-    public WallProvider getWallProvider() {
+    public WallProvider getProvider() {
         return provider;
     }
 

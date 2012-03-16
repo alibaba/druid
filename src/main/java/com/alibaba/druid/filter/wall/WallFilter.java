@@ -18,13 +18,15 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
 
-    private boolean      inited = false;
+    private boolean      inited                        = false;
 
     private WallProvider provider;
 
     private boolean      loadDefault;
 
     private boolean      loadExtend;
+
+    private boolean      checkSelectAlwayTrueCondition = true;
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -35,10 +37,14 @@ public class WallFilter extends FilterAdapter {
         this.inited = true;
     }
 
+    public WallProvider getProvider() {
+        return provider;
+    }
+
     public boolean isLoadDefault() {
         return loadDefault;
     }
-    
+
     public void checkInit() {
         if (inited) {
             throw new DruidRuntimeException("wall filter is inited");
@@ -200,15 +206,18 @@ public class WallFilter extends FilterAdapter {
     }
 
     public WallProvider createWallProvider(String dbType) {
+        WallProvider provider;
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlWallProvider(this.loadDefault, this.loadExtend);
+            provider = new MySqlWallProvider(this.loadDefault, this.loadExtend);
+        } else if (JdbcUtils.ORACLE.equals(dbType)) {
+            provider = new OracleWallProvider(this.loadDefault, this.loadExtend);
+        } else {
+            throw new IllegalStateException("dbType not support : " + dbType);
         }
 
-        if (JdbcUtils.ORACLE.equals(dbType)) {
-            return new OracleWallProvider(this.loadDefault, this.loadExtend);
-        }
+        provider.setCheckSelectAlwayTrueCondition(this.checkSelectAlwayTrueCondition);
 
-        throw new IllegalStateException("dbType not support : " + dbType);
+        return provider;
     }
 
 }

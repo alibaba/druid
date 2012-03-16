@@ -59,7 +59,7 @@ public class WallVisitorUtils {
             return;
         }
         
-        WallProvider provider = visitor.getWallProvider();
+        WallProvider provider = visitor.getProvider();
         if (!provider.isCheckSelectAlwayTrueCondition()) {
             return;
         }
@@ -366,7 +366,7 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName();
 
-        if (visitor.getWallProvider().getPermitFunctions().contains(methodName.toLowerCase())) {
+        if (visitor.getProvider().getPermitFunctions().contains(methodName.toLowerCase())) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
 
@@ -384,7 +384,7 @@ public class WallVisitorUtils {
 
                 ownerName = form(ownerName);
 
-                if (visitor.getWallProvider().getPermitSchemas().contains(ownerName.toLowerCase())) {
+                if (visitor.getProvider().getPermitSchemas().contains(ownerName.toLowerCase())) {
                     visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
                 }
             }
