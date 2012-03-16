@@ -17,6 +17,8 @@ public interface WallVisitor extends SQLASTVisitor {
     Set<String> getPermitTables();
     
     boolean containsPermitTable(String name);
+    
+    boolean containsPermitObjects(String name);
 
     Set<String> getPermitNames();
     

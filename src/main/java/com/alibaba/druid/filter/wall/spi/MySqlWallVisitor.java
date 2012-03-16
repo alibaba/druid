@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -33,27 +34,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     private final Set<String>     permitTables    = new HashSet<String>();
     private final Set<String>     permitSchemas   = new HashSet<String>();
     private final Set<String>     permiNames      = new HashSet<String>();
+    private final Set<String>     permitObjects   = new HashSet<String>();
 
     private final List<Violation> violations;
 
     public MySqlWallVisitor(){
         this(new ArrayList<Violation>());
-    }
-
-    public Set<String> getPermitNames() {
-        return permiNames;
-    }
-
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
-    }
-
-    public Set<String> getPermitTables() {
-        return permitTables;
-    }
-
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
     }
 
     public MySqlWallVisitor(List<Violation> violations){
@@ -76,8 +62,38 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         permitTables.add("outfile");
     }
 
+    public Set<String> getPermitNames() {
+        return permiNames;
+    }
+
+    public Set<String> getPermitFunctions() {
+        return permitFunctions;
+    }
+
+    public Set<String> getPermitTables() {
+        return permitTables;
+    }
+
+    public Set<String> getPermitSchemas() {
+        return permitSchemas;
+    }
+
+    public boolean containsPermitObjects(String name) {
+        name = name.toLowerCase();
+        return permitObjects.contains(name);
+    }
+
+    public Set<String> getPermitObjects() {
+        return permitObjects;
+    }
+
     public List<Violation> getViolations() {
         return violations;
+    }
+    
+    public boolean visit(SQLPropertyExpr x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
