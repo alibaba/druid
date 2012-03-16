@@ -30,10 +30,11 @@ public class OnlineOracleTest3 extends TestCase {
         dataSource.setMaxActive(50);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setMaxOpenPreparedStatements(100);
+//        dataSource.setFilters("wall");
     }
 
     public void test_connect() throws Exception {
-        executeQuery("select utl_inaddr.get_host_address from DUAL");
+        executeQuery("select * from all_users");
     }
 
     public void executeQuery(String sql) throws SQLException {

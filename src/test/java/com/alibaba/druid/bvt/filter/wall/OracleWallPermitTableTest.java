@@ -18,6 +18,8 @@ public class OracleWallPermitTableTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateOracle("select * from tab"));
         Assert.assertFalse(WallUtils.isValidateOracle("select * from SYS.TAB"));
         Assert.assertFalse(WallUtils.isValidateOracle("select * from SYS.\"TAB\""));
+        
+        Assert.assertFalse(WallUtils.isValidateOracle("select * from all_users"));
     }
     
     public void test_permitTable_subquery() throws Exception {
