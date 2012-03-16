@@ -38,6 +38,7 @@ import java.util.concurrent.Executor;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.stat.StatFilter;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -295,6 +296,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
             if (transcationInfo == null) {
                 long transactionId = this.dataSource.createTransactionId();
                 transcationInfo = new TransactionInfo(transactionId);
+                this.getAttributes().put(StatFilter.ATTR_TRANSACTION, transcationInfo); // compatible for druid 0.1.18
             }
         } else {
             transcationInfo = null;

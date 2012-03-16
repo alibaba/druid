@@ -39,6 +39,7 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcResultSetStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -53,8 +54,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public final static String   ATTR_SQL                   = "stat.sql";
     public final static String   ATTR_UPDATE_COUNT          = "stat.updteCount";
+    public final static String   ATTR_TRANSACTION           = "stat.tx";
 
     protected JdbcDataSourceStat dataSourceStat;
+    
+    @Deprecated
+    protected final JdbcStatementStat  statementStat              = JdbcStatManager.getInstance().getStatementStat();
+    
+    @Deprecated
+    protected final JdbcResultSetStat  resultSetStat              = JdbcStatManager.getInstance().getResultSetStat();
 
     private boolean              connectionStackTraceEnable = false;
 
@@ -630,7 +638,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return (JdbcSqlStat) statement.getAttributes().get(ATTR_SQL);
     }
 
-    @Deprecated
     public JdbcSqlStat getSqlCounter(String sql) {
         return getSqlStat(sql);
     }
