@@ -33,7 +33,7 @@ public class TestOnlineSQLTest3 extends TestCase {
 //        ResultSet rs = conn.getMetaData().getTables(null, null, null, null);
 //        JdbcUtils.printResultSet(rs);
         
-        String sql = "SELECT User,Password FROM mysql.user;";
+        String sql = "select benchmark( 1, sha1( 'test' ) )";
         Statement stmt = conn.createStatement();
 
         ResultSet rs = stmt.executeQuery(sql);

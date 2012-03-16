@@ -33,7 +33,7 @@ public class OnlineOracleTest3 extends TestCase {
     }
 
     public void test_connect() throws Exception {
-        executeQuery("select * from TAB");
+        executeQuery("select * from \"SYS\".TAB");
     }
 
     public void executeQuery(String sql) throws SQLException {

@@ -11,22 +11,23 @@ import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
-public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor {
+public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
     private final Set<String>     permitFunctions = new HashSet<String>();
     private final Set<String>     permitTables    = new HashSet<String>();
@@ -79,29 +80,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return violations;
     }
 
-    public boolean visit(MySqlExecuteStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlShowTablesStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlShowDatabasesStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
-    }
-
-    @Override
-    public boolean visit(MySqlShowColumnsStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
-    }
-
     public boolean visit(SQLBinaryOpExpr x) {
         WallVisitorUtils.check(this, x);
 
@@ -120,11 +98,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
-    }
-
-    public boolean visit(SQLDropTableStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
     }
 
     public boolean visit(SQLVariantRefExpr x) {
@@ -183,4 +156,21 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return permitTables.contains(name);
     }
 
+    public void preVisit(SQLObject x) {
+        if (!(x instanceof SQLStatement)) {
+            return;
+        }
+
+        if (x instanceof SQLInsertStatement) {
+
+        } else if (x instanceof SQLSelectStatement) {
+
+        } else if (x instanceof SQLDeleteStatement) {
+
+        } else if (x instanceof SQLUpdateStatement) {
+
+        } else {
+            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+        }
+    }
 }

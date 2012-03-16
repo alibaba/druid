@@ -1,7 +1,17 @@
 package com.alibaba.druid.filter.wall.spi;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Set;
+
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -24,8 +34,11 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class WallVisitorUtils {
+
+    private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
         if (Boolean.TRUE == getValue(x)) {
@@ -209,15 +222,15 @@ public class WallVisitorUtils {
                 return ((String) firstValue).length();
             }
         }
-        
+
         if ("if".equalsIgnoreCase(methodName) && x.getParameters().size() == 3) {
             SQLExpr first = x.getParameters().get(0);
             Object firstResult = getValue(first);
-            
+
             if (Boolean.TRUE == firstResult) {
                 return getValue(x.getParameters().get(1));
             }
-            
+
             if (Boolean.FALSE == firstResult) {
                 getValue(x.getParameters().get(2));
             }
@@ -290,7 +303,7 @@ public class WallVisitorUtils {
 
             if (propExpr.getOwner() instanceof SQLIdentifierExpr) {
                 String ownerName = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
-                
+
                 ownerName = form(ownerName);
 
                 if (visitor.getPermitSchemas().contains(ownerName.toLowerCase())) {
@@ -345,8 +358,41 @@ public class WallVisitorUtils {
         if (name.startsWith("`") && name.endsWith("`")) {
             name = name.substring(1, name.length() - 1);
         }
-        
+
         name = name.toLowerCase();
         return name;
+    }
+
+    public static void loadResource(Set<String> names, String resource) {
+        try {
+            Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources("META-INF/druid-filter-wall-permit-function.txt");
+            while (e.hasMoreElements()) {
+                URL url = e.nextElement();
+                InputStream in = null;
+                BufferedReader reader = null;
+                try {
+                    in = url.openStream();
+                    reader = new BufferedReader(new InputStreamReader(in));
+                    for (;;) {
+                        String line = reader.readLine();
+                        if (line == null) {
+                            break;
+                        }
+                        line = line.trim();
+                        if (line.length() > 0) {
+                            line = line.toLowerCase();
+                            names.add(line);
+                        }
+                    }
+
+                    url.openStream();
+                } finally {
+                    JdbcUtils.close(reader);
+                    JdbcUtils.close(in);
+                }
+            }
+        } catch (IOException e) {
+            LOG.error("load oracle permit tables errror", e);
+        }
     }
 }
