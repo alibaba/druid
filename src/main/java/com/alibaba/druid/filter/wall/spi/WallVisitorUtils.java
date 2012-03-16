@@ -41,7 +41,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class WallVisitorUtils {
 
     private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
-    
+
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = x.getOwner().toString();
@@ -56,7 +56,7 @@ public class WallVisitorUtils {
         if (x == null) {
             return;
         }
-        
+
         if (Boolean.TRUE == getValue(x)) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
         }
@@ -85,13 +85,30 @@ public class WallVisitorUtils {
             }
         }
 
+        if (x.getOperator() == SQLBinaryOperator.Like) {
+            if (x.getRight() instanceof SQLCharExpr) {
+                String text = ((SQLCharExpr) x.getRight()).getText();
+
+                if (text.length() >= 0) {
+                    for (char ch : text.toCharArray()) {
+                        if (ch != '%') {
+                            return null;
+                        }
+                    }
+
+                    return true;
+                }
+
+            }
+        }
+
+        if (leftResult == null || rightResult == null) {
+            return null;
+        }
+
         if (x.getOperator() == SQLBinaryOperator.Equality) {
             if (x.getLeft() instanceof SQLNullExpr && x.getRight() instanceof SQLNullExpr) {
                 return true;
-            }
-
-            if (leftResult == null || rightResult == null) {
-                return null;
             }
 
             return leftResult.equals(rightResult);
@@ -165,21 +182,8 @@ public class WallVisitorUtils {
             }
         }
 
-        if (x.getOperator() == SQLBinaryOperator.Like) {
-            if (x.getRight() instanceof SQLCharExpr) {
-                String text = ((SQLCharExpr) x.getRight()).getText();
-
-                if (text.length() >= 0) {
-                    for (char ch : text.toCharArray()) {
-                        if (ch != '%') {
-                            return null;
-                        }
-                    }
-
-                    return true;
-                }
-
-            }
+        if (x.getOperator() == SQLBinaryOperator.Concat) {
+            return leftResult.toString() + rightResult.toString();
         }
 
         return null;
@@ -252,6 +256,30 @@ public class WallVisitorUtils {
             }
         }
 
+        if ("chr".equalsIgnoreCase(methodName) && x.getParameters().size() == 1) {
+            SQLExpr first = x.getParameters().get(0);
+            Object firstResult = getValue(first);
+            if (firstResult instanceof Number) {
+                int intValue = ((Number) firstResult).intValue();
+                char ch = (char) intValue;
+
+                return "" + ch;
+            }
+        }
+
+        if ("concat".equalsIgnoreCase(methodName)) {
+            StringBuffer buf = new StringBuffer();
+            for (SQLExpr expr : x.getParameters()) {
+                Object value = getValue(expr);
+                if (value == null) {
+                    return null;
+                }
+
+                buf.append(value.toString());
+            }
+            return buf.toString();
+        }
+
         return null;
     }
 
@@ -302,6 +330,14 @@ public class WallVisitorUtils {
     }
 
     public static void check(WallVisitor visitor, SQLMethodInvokeExpr x) {
+        if (x.getOwner() instanceof SQLIdentifierExpr) {
+            String owner = x.getOwner().toString();
+            owner = WallVisitorUtils.form(owner);
+            if (visitor.containsPermitObjects(owner)) {
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            }
+        }
+
         String methodName = x.getMethodName();
 
         if (visitor.getWallProvider().getPermitFunctions().contains(methodName.toLowerCase())) {
@@ -363,8 +399,9 @@ public class WallVisitorUtils {
                     }
                 }
             }
-            
-            if (queryBlock.getSelectList().size() == 1 && queryBlock.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
+
+            if (queryBlock.getSelectList().size() == 1
+                && queryBlock.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
                 if (from instanceof SQLSubqueryTableSource) {
                     SQLSelectQuery subQuery = ((SQLSubqueryTableSource) from).getSelect().getQuery();
                     if (queryBlockFromIsNull(subQuery)) {
@@ -372,7 +409,7 @@ public class WallVisitorUtils {
                     }
                 }
             }
-            
+
             boolean allIsConst = true;
             for (SQLSelectItem item : queryBlock.getSelectList()) {
                 if (getValue(item.getExpr()) == null) {

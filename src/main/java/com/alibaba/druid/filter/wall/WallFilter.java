@@ -3,6 +3,7 @@ package com.alibaba.druid.filter.wall;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
@@ -17,13 +18,45 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
 
+    private boolean      inited = false;
+
     private WallProvider provider;
+
+    private boolean      loadDefault;
+
+    private boolean      loadExtend;
 
     @Override
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
         provider = createWallProvider(dataSource.getDbType());
+
+        this.inited = true;
+    }
+
+    public boolean isLoadDefault() {
+        return loadDefault;
+    }
+    
+    public void checkInit() {
+        if (inited) {
+            throw new DruidRuntimeException("wall filter is inited");
+        }
+    }
+
+    public void setLoadDefault(boolean loadDefault) {
+        checkInit();
+        this.loadDefault = loadDefault;
+    }
+
+    public boolean isLoadExtend() {
+        return loadExtend;
+    }
+
+    public void setLoadExtend(boolean loadExtend) {
+        checkInit();
+        this.loadExtend = loadExtend;
     }
 
     @Override
@@ -168,11 +201,11 @@ public class WallFilter extends FilterAdapter {
 
     public WallProvider createWallProvider(String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlWallProvider();
+            return new MySqlWallProvider(this.loadDefault, this.loadExtend);
         }
 
         if (JdbcUtils.ORACLE.equals(dbType)) {
-            return new OracleWallProvider();
+            return new OracleWallProvider(this.loadDefault, this.loadExtend);
         }
 
         throw new IllegalStateException("dbType not support : " + dbType);
