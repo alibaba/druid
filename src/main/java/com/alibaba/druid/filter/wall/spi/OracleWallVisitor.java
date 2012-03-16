@@ -44,12 +44,20 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     private final List<Violation> violations;
 
     public OracleWallVisitor(){
-        this(new ArrayList<Violation>());
+        this(new ArrayList<Violation>(), true);
+    }
+    
+    public OracleWallVisitor(boolean loadDefault) {
+        this(new ArrayList<Violation>(), loadDefault);
     }
 
-    public OracleWallVisitor(List<Violation> violations){
+    public OracleWallVisitor(List<Violation> violations, boolean loadDefault){
         this.violations = violations;
 
+        loadDefault();
+    }
+
+    public void loadDefault() {
         WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle.txt");
         WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle.txt");
         WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle.txt");
@@ -180,13 +188,13 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLUpdateStatement x) {
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
+
     @Override
     public boolean visit(OracleUpdateStatement x) {
         WallVisitorUtils.checkCondition(this, x.getWhere());

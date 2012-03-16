@@ -38,37 +38,35 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     private final Set<String>     permitFunctions = new HashSet<String>();
     private final Set<String>     permitTables    = new HashSet<String>();
     private final Set<String>     permitSchemas   = new HashSet<String>();
-    private final Set<String>     permiNames      = new HashSet<String>();
+    private final Set<String>     permitNames     = new HashSet<String>();
     private final Set<String>     permitObjects   = new HashSet<String>();
 
     private final List<Violation> violations;
 
     public MySqlWallVisitor(){
-        this(new ArrayList<Violation>());
+        this(new ArrayList<Violation>(), true);
+    }
+    
+    public MySqlWallVisitor(boolean loadDefault) {
+        this(new ArrayList<Violation>(), loadDefault);
     }
 
-    public MySqlWallVisitor(List<Violation> violations){
+    public MySqlWallVisitor(List<Violation> violations, boolean loadDefault){
         this.violations = violations;
 
-        permitFunctions.add("version");
-        permitFunctions.add("load_file");
-        permitFunctions.add("databse");
-        permitFunctions.add("schema");
-        permitFunctions.add("user");
-        permitFunctions.add("system_user");
-        permitFunctions.add("session_user");
-        permitFunctions.add("benchmark");
-        permitFunctions.add("connection_id");
-        permitFunctions.add("current_user");
+        loadDefault();
+    }
 
-        permitSchemas.add("information_schema");
-        permitSchemas.add("mysql");
-
-        permitTables.add("outfile");
+    public void loadDefault() {
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-mysql.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-mysql.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-mysql.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-mysql.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-mysql.txt");
     }
 
     public Set<String> getPermitNames() {
-        return permiNames;
+        return permitNames;
     }
 
     public Set<String> getPermitFunctions() {
@@ -116,7 +114,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         WallVisitorUtils.checkCondition(this, x.getHaving());
         return true;
     }
-    
+
     public boolean visit(MySqlSelectGroupBy x) {
         WallVisitorUtils.checkCondition(this, x.getHaving());
         return true;
@@ -127,26 +125,25 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
+
     @Override
     public boolean visit(MySqlDeleteStatement x) {
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
-    
+
     @Override
     public boolean visit(SQLDeleteStatement x) {
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLUpdateStatement x) {
         WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
-    
+
     @Override
     public boolean visit(Limit x) {
         if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
