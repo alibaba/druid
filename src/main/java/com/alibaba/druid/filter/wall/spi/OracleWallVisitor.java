@@ -50,11 +50,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     public OracleWallVisitor(List<Violation> violations){
         this.violations = violations;
 
-        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name.txt");
-        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema.txt");
-        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function.txt");
-        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table.txt");
-        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object.txt");
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle.txt");
     }
 
     public void addPermitName(String name) {
