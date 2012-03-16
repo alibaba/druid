@@ -46,23 +46,31 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     public OracleWallVisitor(){
         this(new ArrayList<Violation>(), true);
     }
-    
-    public OracleWallVisitor(boolean loadDefault) {
+
+    public OracleWallVisitor(boolean loadDefault){
         this(new ArrayList<Violation>(), loadDefault);
     }
 
     public OracleWallVisitor(List<Violation> violations, boolean loadDefault){
         this.violations = violations;
 
-        loadDefault();
-    }
-
-    public void loadDefault() {
+        if (loadDefault) {
+            loadDefault();
+        }
+        
         WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle.txt");
         WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle.txt");
         WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle.txt");
         WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle.txt");
         WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle.txt");
+    }
+
+    public void loadDefault() {
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle-default.txt");
     }
 
     public void addPermitName(String name) {

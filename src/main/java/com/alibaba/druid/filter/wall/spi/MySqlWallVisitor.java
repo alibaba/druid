@@ -46,23 +46,31 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public MySqlWallVisitor(){
         this(new ArrayList<Violation>(), true);
     }
-    
-    public MySqlWallVisitor(boolean loadDefault) {
+
+    public MySqlWallVisitor(boolean loadDefault){
         this(new ArrayList<Violation>(), loadDefault);
     }
 
     public MySqlWallVisitor(List<Violation> violations, boolean loadDefault){
         this.violations = violations;
 
-        loadDefault();
-    }
-
-    public void loadDefault() {
+        if (loadDefault) {
+            loadDefault();
+        }
+        
         WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-mysql.txt");
         WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-mysql.txt");
         WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-mysql.txt");
         WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-mysql.txt");
         WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-mysql.txt");
+    }
+
+    public void loadDefault() {
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-mysql-default.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-mysql-default.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-mysql-default.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-mysql-default.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-mysql-default.txt");
     }
 
     public Set<String> getPermitNames() {
