@@ -223,6 +223,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         }
 
         WallVisitorUtils.checkUpdateCondition(this, x.getWhere());
+
         return true;
     }
 }
