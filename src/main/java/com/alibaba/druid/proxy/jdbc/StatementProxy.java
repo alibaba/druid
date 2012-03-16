@@ -17,6 +17,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -32,4 +33,6 @@ public interface StatementProxy extends Statement, WrapperProxy {
     String getBatchSql();
 
     String getLastExecuteSql();
+    
+    Map<Integer, JdbcParameter> getParameters();
 }

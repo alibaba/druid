@@ -15,9 +15,15 @@
  */
 package com.alibaba.druid.filter.stat;
 
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.NClob;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -50,27 +56,30 @@ import com.alibaba.druid.stat.JdbcStatementStat;
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
-    private final static Log     LOG                        = LogFactory.getLog(StatFilter.class);
+    private final static Log          LOG                        = LogFactory.getLog(StatFilter.class);
 
-    public final static String   ATTR_SQL                   = "stat.sql";
-    public final static String   ATTR_UPDATE_COUNT          = "stat.updteCount";
-    public final static String   ATTR_TRANSACTION           = "stat.tx";
+    public final static String        ATTR_SQL                   = "stat.sql";
+    public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
+    public final static String        ATTR_TRANSACTION           = "stat.tx";
 
-    protected JdbcDataSourceStat dataSourceStat;
-    
+    protected JdbcDataSourceStat      dataSourceStat;
+
     @Deprecated
-    protected final JdbcStatementStat  statementStat              = JdbcStatManager.getInstance().getStatementStat();
-    
+    protected final JdbcStatementStat statementStat              = JdbcStatManager.getInstance().getStatementStat();
+
     @Deprecated
-    protected final JdbcResultSetStat  resultSetStat              = JdbcStatManager.getInstance().getResultSetStat();
+    protected final JdbcResultSetStat resultSetStat              = JdbcStatManager.getInstance().getResultSetStat();
 
-    private boolean              connectionStackTraceEnable = false;
+    private boolean                   connectionStackTraceEnable = false;
 
-    protected DataSourceProxy    dataSource;
+    protected DataSourceProxy         dataSource;
 
-    protected final AtomicLong   resetCount                 = new AtomicLong();
+    protected final AtomicLong        resetCount                 = new AtomicLong();
 
-    protected int                maxSqlStatCount            = 1000 * 100;
+    protected int                     maxSqlStatCount            = 1000 * 10;
+
+    // 3 seconds is slow sql
+    protected long                    slowSqlMillis              = 3 * 1000;
 
     public StatFilter(){
         String property = System.getProperty("druid.stat.maxSqlStatCount");
@@ -78,7 +87,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             try {
                 maxSqlStatCount = Integer.parseInt(property);
             } catch (Exception e) {
-
+                LOG.error("get property error 'druid.stat.maxSqlStatCount' : " + property);
             }
         }
     }
@@ -251,8 +260,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     protected void statementExecuteUpdateAfter(StatementProxy statement, String sql, int updateCount) {
         internalAfterStatementExecute(statement, updateCount);
-
-        // super.statementExecuteUpdateAfter(statement, sql, updateCount);
     }
 
     @Override
@@ -396,6 +403,36 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             sqlStat.decrementExecutingCount();
             sqlStat.addExecuteTime(nanoSpan);
+            
+            long millis = nanoSpan / (1000 * 1000);
+            if (millis >= slowSqlMillis) {
+                List<String> lastSlowParameters = new ArrayList<String>();
+                for (Object value : statement.getParameters().values()) {
+                    if (value == null) {
+                        lastSlowParameters.add("null");
+                    } else if (value instanceof String) {
+                        lastSlowParameters.add("'" + value.toString() + "'");
+                    } else if (value instanceof Number) {
+                        lastSlowParameters.add(value.toString());
+                    } else if (value instanceof java.util.Date) {
+                        java.util.Date date = (java.util.Date) value;
+                        lastSlowParameters.add(date.getClass().getSimpleName() + "(" + date.getTime() + ")");
+                    } else if (value instanceof Boolean) {
+                        lastSlowParameters.add(value.toString());
+                    } else if (value instanceof InputStream) {
+                        lastSlowParameters.add("<InputStream>");
+                    } else if (value instanceof Clob) {
+                        lastSlowParameters.add("<Clob>");
+                    } else if (value instanceof NClob) {
+                        lastSlowParameters.add("<NClob>");
+                    } else if (value instanceof Blob) {
+                        lastSlowParameters.add("<Blob>");
+                    } else {
+                        lastSlowParameters.add("<" + value.getClass() + ">");
+                    }
+                }
+                sqlStat.setLastSlowParameters(lastSlowParameters);
+            }
         }
 
         if (updateCountArray.length == 1) {

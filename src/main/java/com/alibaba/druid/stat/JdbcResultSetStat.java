@@ -164,7 +164,7 @@ public class JdbcResultSetStat implements JdbcResultSetStatMBean {
 
     @Override
     public long getHoldMillisTotal() {
-        return JdbcStatManager.getInstance().getResultSetStat().getAliveNanoTotal() / (1000 * 1000);
+        return getAliveNanoTotal() / (1000 * 1000);
     }
 
     @Override

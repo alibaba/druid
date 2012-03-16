@@ -17,6 +17,7 @@ package com.alibaba.druid.stat;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -64,6 +65,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong inTransactionCount    = new AtomicLong();
 
+    private List<String>     lastSlowParameters;
+
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
             1, 10, 100, 1000, 10 * 1000, //
@@ -73,6 +76,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
+    }
+
+    public List<String> getLastSlowParameters() {
+        return lastSlowParameters;
+    }
+
+    public void setLastSlowParameters(List<String> lastSlowParameters) {
+        this.lastSlowParameters = lastSlowParameters;
     }
 
     public String getDbType() {

@@ -22,7 +22,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
@@ -322,5 +324,10 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         }
         
         return super.unwrap(iface);
+    }
+
+    @Override
+    public Map<Integer, JdbcParameter> getParameters() {
+        return Collections.emptyMap();
     }
 }
