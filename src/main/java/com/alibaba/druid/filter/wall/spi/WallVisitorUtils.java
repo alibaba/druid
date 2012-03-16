@@ -387,7 +387,7 @@ public class WallVisitorUtils {
         return false;
     }
 
-    public static void check(WallVisitor visitor, SQLMethodInvokeExpr x) {
+    public static void checkFunction(WallVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
@@ -395,7 +395,11 @@ public class WallVisitorUtils {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
-
+        
+        if (!visitor.getConfig().isFunctionCheck()) {
+            return;
+        }
+        
         String methodName = x.getMethodName();
 
         if (visitor.getConfig().getPermitFunctions().contains(methodName.toLowerCase())) {

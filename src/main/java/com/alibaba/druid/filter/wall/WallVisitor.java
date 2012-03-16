@@ -10,7 +10,7 @@ public interface WallVisitor extends SQLASTVisitor {
     WallConfig getConfig();
 
     List<Violation> getViolations();
-
+    
     boolean containsPermitTable(String name);
 
     boolean containsPermitObjects(String name);

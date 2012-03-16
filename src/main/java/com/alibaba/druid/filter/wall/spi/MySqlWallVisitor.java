@@ -165,7 +165,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-        WallVisitorUtils.check(this, x);
+        WallVisitorUtils.checkFunction(this, x);
 
         return true;
     }
@@ -202,6 +202,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean containsPermitTable(String name) {
+        if (!config.isTableCheck()) {
+            return false;
+        }
+        
         name = WallVisitorUtils.form(name);
         return config.getPermitTables().contains(name);
     }

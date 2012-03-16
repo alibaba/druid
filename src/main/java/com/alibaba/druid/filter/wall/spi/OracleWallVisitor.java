@@ -72,7 +72,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-        WallVisitorUtils.check(this, x);
+        WallVisitorUtils.checkFunction(this, x);
 
         return true;
     }
@@ -127,6 +127,10 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean containsPermitTable(String name) {
+        if (!config.isTableCheck()) {
+            return false;
+        }
+
         name = WallVisitorUtils.form(name);
         if (name.startsWith("v$") || name.startsWith("v_$")) {
             return true;
