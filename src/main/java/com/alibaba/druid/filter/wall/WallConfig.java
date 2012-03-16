@@ -5,6 +5,8 @@ import static com.alibaba.druid.filter.wall.spi.WallVisitorUtils.loadResource;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.alibaba.druid.filter.wall.spi.WallVisitorUtils;
+
 public class WallConfig {
 
     private boolean             selelctAllow               = true;
@@ -169,5 +171,20 @@ public class WallConfig {
 
     public Set<String> getPermitObjects() {
         return permitObjects;
+    }
+    
+    public boolean isPermitObjects(String name) {
+        name = WallVisitorUtils.form(name);
+        return permitObjects.contains(name);
+    }
+
+    public boolean isPermitSchema(String name) {
+        name = WallVisitorUtils.form(name);
+        return this.permitSchemas.contains(name);
+    }
+    
+    public boolean isPermitFunction(String name) {
+        name = WallVisitorUtils.form(name);
+        return this.permitFunctions.contains(name);
     }
 }
