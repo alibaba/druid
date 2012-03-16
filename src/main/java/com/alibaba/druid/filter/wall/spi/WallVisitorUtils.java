@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.Set;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
+import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -21,6 +22,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNotExpr;
@@ -49,6 +51,30 @@ public class WallVisitorUtils {
             if (visitor.containsPermitObjects(owner)) {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
+        }
+    }
+
+    public static void checkSelelctCondition(WallVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+        
+        WallProvider provider = visitor.getWallProvider();
+        if (!provider.isCheckSelectAlwayTrueCondition()) {
+            return;
+        }
+
+        if (Boolean.TRUE == getValue(x)) {
+            if (x instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) x;
+                if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                        return;
+                    }
+                }
+            }
+
+            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
         }
     }
 

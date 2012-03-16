@@ -14,19 +14,29 @@ import com.alibaba.druid.sql.parser.Token;
 public abstract class WallProvider {
 
     // Dummy value to associate with an Object in the backing Map
-    private static final Object           PRESENT           = new Object();
+    private static final Object           PRESENT                       = new Object();
 
     private LinkedHashMap<String, Object> whiteList;
 
-    private int                           whileListMaxSize  = 1024;
+    private int                           whileListMaxSize              = 1024;
 
-    private int                           whiteSqlMaxLength = 1024;                 // 1k
+    private int                           whiteSqlMaxLength             = 1024;                 // 1k
 
-    protected final Set<String>           permitFunctions   = new HashSet<String>();
-    protected final Set<String>           permitTables      = new HashSet<String>();
-    protected final Set<String>           permitSchemas     = new HashSet<String>();
-    protected final Set<String>           permitNames       = new HashSet<String>();
-    protected final Set<String>           permitObjects     = new HashSet<String>();
+    protected final Set<String>           permitFunctions               = new HashSet<String>();
+    protected final Set<String>           permitTables                  = new HashSet<String>();
+    protected final Set<String>           permitSchemas                 = new HashSet<String>();
+    protected final Set<String>           permitNames                   = new HashSet<String>();
+    protected final Set<String>           permitObjects                 = new HashSet<String>();
+
+    private boolean                       checkSelectAlwayTrueCondition = true;
+
+    public boolean isCheckSelectAlwayTrueCondition() {
+        return checkSelectAlwayTrueCondition;
+    }
+
+    public void setCheckSelectAlwayTrueCondition(boolean checkSelectAlwayTrueCondition) {
+        this.checkSelectAlwayTrueCondition = checkSelectAlwayTrueCondition;
+    }
 
     public synchronized void addWhiteSql(String sql) {
         if (whiteList == null) {

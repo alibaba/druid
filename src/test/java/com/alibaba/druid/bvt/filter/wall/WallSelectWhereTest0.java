@@ -11,14 +11,14 @@ import com.alibaba.druid.filter.wall.WallUtils;
  * @author wenshao
  *
  */
-public class WallSelectWhereTest extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1";
+public class WallSelectWhereTest0 extends TestCase {
+    private String sql = "SELECT F1, F2 WHERE 1 = 1 OR F1 = ?";
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+        Assert.assertFalse(WallUtils.isValidateMySql(sql));
     }
     
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+        Assert.assertFalse(WallUtils.isValidateOracle(sql));
     }
 }

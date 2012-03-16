@@ -65,8 +65,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
+        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
 
+        return true;
+    }
+
+    @Override
+    public boolean visit(MySqlSelectQueryBlock x) {
+        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
         return true;
     }
 
@@ -77,12 +83,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     public boolean visit(MySqlSelectGroupBy x) {
         WallVisitorUtils.checkCondition(this, x.getHaving());
-        return true;
-    }
-
-    @Override
-    public boolean visit(MySqlSelectQueryBlock x) {
-        WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
 
