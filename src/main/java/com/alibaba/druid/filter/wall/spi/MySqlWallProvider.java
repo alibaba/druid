@@ -31,19 +31,19 @@ public class MySqlWallProvider extends WallProvider {
     }
 
     public void loadExtend() {
-        loadResource(config.getPermitNames(), "META-INF/druid-filter-wall-permit-name-mysql.txt");
-        loadResource(config.getPermitSchemas(), "META-INF/druid-filter-wall-permit-schema-mysql.txt");
-        loadResource(config.getPermitFunctions(), "META-INF/druid-filter-wall-permit-function-mysql.txt");
-        loadResource(config.getPermitTables(), "META-INF/druid-filter-wall-permit-table-mysql.txt");
-        loadResource(config.getPermitObjects(), "META-INF/druid-filter-wall-permit-object-mysql.txt");
+        loadResource(config.getPermitNames(), "META-INF/druid/wall/mysql/permit-name.txt");
+        loadResource(config.getPermitSchemas(), "META-INF/druid/wall/mysql/permit-schema.txt");
+        loadResource(config.getPermitFunctions(), "META-INF/druid/wall/mysql/permit-function.txt");
+        loadResource(config.getPermitTables(), "META-INF/druid/wall/mysql/permit-table.txt");
+        loadResource(config.getPermitObjects(), "META-INF/druid/wall/mysql/permit-object.txt");
     }
 
     public void loadDefault() {
-        loadResource(config.getPermitNames(), "META-INF/druid-filter-wall-permit-name-mysql-default.txt");
-        loadResource(config.getPermitSchemas(), "META-INF/druid-filter-wall-permit-schema-mysql-default.txt");
-        loadResource(config.getPermitFunctions(), "META-INF/druid-filter-wall-permit-function-mysql-default.txt");
-        loadResource(config.getPermitTables(), "META-INF/druid-filter-wall-permit-table-mysql-default.txt");
-        loadResource(config.getPermitObjects(), "META-INF/druid-filter-wall-permit-object-mysql-default.txt");
+        loadResource(config.getPermitNames(), "META-INF/druid/wall/mysql/permit-name-default.txt");
+        loadResource(config.getPermitSchemas(), "META-INF/druid/wall/mysql/permit-schema-default.txt");
+        loadResource(config.getPermitFunctions(), "META-INF/druid/wall/mysql/permit-function-default.txt");
+        loadResource(config.getPermitTables(), "META-INF/druid/wall/mysql/permit-table-default.txt");
+        loadResource(config.getPermitObjects(), "META-INF/druid/wall/mysql/permit-object-default.txt");
     }
 
     @Override

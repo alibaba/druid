@@ -31,19 +31,19 @@ public class OracleWallProvider extends WallProvider {
     }
 
     public void loadExtend() {
-        loadResource(config.getPermitNames(), "META-INF/druid-filter-wall-permit-name-oracle.txt");
-        loadResource(config.getPermitSchemas(), "META-INF/druid-filter-wall-permit-schema-oracle.txt");
-        loadResource(config.getPermitFunctions(), "META-INF/druid-filter-wall-permit-function-oracle.txt");
-        loadResource(config.getPermitTables(), "META-INF/druid-filter-wall-permit-table-oracle.txt");
-        loadResource(config.getPermitObjects(), "META-INF/druid-filter-wall-permit-object-oracle.txt");
+        loadResource(config.getPermitNames(), "META-INF/druid/wall/oracle/permit-name.txt");
+        loadResource(config.getPermitSchemas(), "META-INF/druid/wall/oracle/permit-schema.txt");
+        loadResource(config.getPermitFunctions(), "META-INF/druid/wall/oracle/permit-function.txt");
+        loadResource(config.getPermitTables(), "META-INF/druid/wall/oracle/permit-table.txt");
+        loadResource(config.getPermitObjects(), "META-INF/druid/wall/oracle/permit-object.txt");
     }
 
     public void loadDefault() {
-        loadResource(config.getPermitNames(), "META-INF/druid-filter-wall-permit-name-oracle-default.txt");
-        loadResource(config.getPermitSchemas(), "META-INF/druid-filter-wall-permit-schema-oracle-default.txt");
-        loadResource(config.getPermitFunctions(), "META-INF/druid-filter-wall-permit-function-oracle-default.txt");
-        loadResource(config.getPermitTables(), "META-INF/druid-filter-wall-permit-table-oracle-default.txt");
-        loadResource(config.getPermitObjects(), "META-INF/druid-filter-wall-permit-object-oracle-default.txt");
+        loadResource(config.getPermitNames(), "META-INF/druid/wall/oracle/permit-name-default.txt");
+        loadResource(config.getPermitSchemas(), "META-INF/druid/wall/oracle/permit-schema-default.txt");
+        loadResource(config.getPermitFunctions(), "META-INF/druid/wall/oracle/permit-function-default.txt");
+        loadResource(config.getPermitTables(), "META-INF/druid/wall/oracle/permit-table-default.txt");
+        loadResource(config.getPermitObjects(), "META-INF/druid/wall/oracle/permit-object-default.txt");
     }
 
     @Override
