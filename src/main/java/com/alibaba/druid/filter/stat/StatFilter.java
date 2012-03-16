@@ -39,7 +39,6 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
-import com.alibaba.druid.stat.JdbcResultSetStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
@@ -50,24 +49,20 @@ import com.alibaba.druid.stat.JdbcStatementStat;
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
-    private final static Log           LOG                        = LogFactory.getLog(StatFilter.class);
+    private final static Log     LOG                        = LogFactory.getLog(StatFilter.class);
 
-    public final static String         ATTR_SQL                   = "stat.sql";
-    public final static String         ATTR_UPDATE_COUNT          = "stat.updteCount";
+    public final static String   ATTR_SQL                   = "stat.sql";
+    public final static String   ATTR_UPDATE_COUNT          = "stat.updteCount";
 
-    protected JdbcDataSourceStat       dataSourceStat;
+    protected JdbcDataSourceStat dataSourceStat;
 
-    protected final JdbcConnectionStat connectStat                = JdbcStatManager.getInstance().getConnectionstat();
-    protected final JdbcStatementStat  statementStat              = JdbcStatManager.getInstance().getStatementStat();
-    protected final JdbcResultSetStat  resultSetStat              = JdbcStatManager.getInstance().getResultSetStat();
+    private boolean              connectionStackTraceEnable = false;
 
-    private boolean                    connectionStackTraceEnable = false;
+    protected DataSourceProxy    dataSource;
 
-    protected DataSourceProxy          dataSource;
+    protected final AtomicLong   resetCount                 = new AtomicLong();
 
-    protected final AtomicLong         resetCount                 = new AtomicLong();
-
-    protected int                      maxSqlStatCount            = 1000 * 100;
+    protected int                maxSqlStatCount            = 1000 * 100;
 
     public StatFilter(){
         String property = System.getProperty("druid.stat.maxSqlStatCount");
@@ -134,17 +129,14 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             long nanoSpan;
             long nowTime = System.currentTimeMillis();
 
-            connectStat.beforeConnect();
             dataSourceStat.getConnectionStat().beforeConnect();
             try {
                 connection = super.connection_connect(chain, info);
                 nanoSpan = System.nanoTime() - startNano;
             } catch (SQLException ex) {
-                connectStat.connectError(ex);
                 dataSourceStat.getConnectionStat().connectError(ex);
                 throw ex;
             }
-            connectStat.afterConnected(nanoSpan);
             dataSourceStat.getConnectionStat().afterConnected(nanoSpan);
 
             if (connection != null) {
@@ -158,7 +150,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 statEntry.setEstablishTime(nowTime);
                 statEntry.setConnectStackTrace(new Exception());
 
-                connectStat.setActiveCount(dataSourceStat.getConnections().size());
                 dataSourceStat.getConnectionStat().setActiveCount(dataSourceStat.getConnections().size());
             }
         }
@@ -169,7 +160,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_close(FilterChain chain, ConnectionProxy connection) throws SQLException {
         long nowNano = System.nanoTime();
 
-        connectStat.incrementConnectionCloseCount();
         dataSourceStat.getConnectionStat().incrementConnectionCloseCount();
 
         JdbcConnectionStat.Entry connectionInfo = getConnectionInfo(connection);
@@ -178,7 +168,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcConnectionStat.Entry existsConnection = dataSourceStat.getConnections().remove(connection.getId());
         if (existsConnection != null) {
-            connectStat.afterClose(aliveNanoSpan);
             dataSourceStat.getConnectionStat().afterClose(aliveNanoSpan);
         }
 
@@ -190,16 +179,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_commit(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_commit(chain, connection);
 
-        connectStat.incrementConnectionCommitCount();
         dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
     }
-
 
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
         super.connection_rollback(chain, connection);
 
-        connectStat.incrementConnectionRollbackCount();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
 
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
@@ -210,13 +196,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                                                                                                        throws SQLException {
         super.connection_rollback(chain, connection, savepoint);
 
-        connectStat.incrementConnectionRollbackCount();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
 
     @Override
     public void statementCreateAfter(StatementProxy statement) {
-        statementStat.incrementCreateCounter();
         dataSourceStat.getStatementStat().incrementCreateCounter();
 
         super.statementCreateAfter(statement);
@@ -224,7 +208,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void statementPrepareCallAfter(CallableStatementProxy statement) {
-        statementStat.incrementPrepareCallCount();
         dataSourceStat.getStatementStat().incrementPrepareCallCount();
 
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
@@ -236,7 +219,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void statementPrepareAfter(PreparedStatementProxy statement) {
-        statementStat.incrementPrepareCounter();
         dataSourceStat.getStatementStat().incrementPrepareCounter();
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
         statement.getAttributes().put(ATTR_SQL, sqlStat);
@@ -248,7 +230,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void statement_close(FilterChain chain, StatementProxy statement) throws SQLException {
         super.statement_close(chain, statement);
 
-        statementStat.incrementStatementCloseCounter();
         dataSourceStat.getStatementStat().incrementStatementCloseCounter();
     }
 
@@ -323,7 +304,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private final void internalBeforeStatementExecute(StatementProxy statement, String sql) {
 
-        statementStat.beforeExecute();
         dataSourceStat.getStatementStat().beforeExecute();
 
         final JdbcStatementStat.Entry statementStat = getStatementInfo(statement);
@@ -395,7 +375,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         long nanoSpan = nowNano - entry.getLastExecuteStartNano();
 
-        statementStat.afterExecute(nanoSpan);
         dataSourceStat.getStatementStat().afterExecute(nanoSpan);
 
         // // SQL
@@ -425,9 +404,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         long nanoSpan = System.nanoTime() - counter.getLastExecuteStartNano();
 
-        statementStat.error(error);
         dataSourceStat.getStatementStat().error(error);
-        statementStat.afterExecute(nanoSpan);
         dataSourceStat.getStatementStat().afterExecute(nanoSpan);
 
         connectionCounter.error(error);
@@ -445,7 +422,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     protected void resultSetOpenAfter(ResultSetProxy resultSet) {
-        resultSetStat.beforeOpen();
         dataSourceStat.getResultSetStat().beforeOpen();
 
         resultSet.setConstructNano();
@@ -459,13 +435,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         int fetchCount = resultSet.getFetchRowCount();
 
-        resultSetStat.afterClose(nanoSpan);
         dataSourceStat.getResultSetStat().afterClose(nanoSpan);
 
-        resultSetStat.addFetchRowCount(fetchCount);
         dataSourceStat.getResultSetStat().addFetchRowCount(fetchCount);
 
-        resultSetStat.incrementCloseCounter();
         dataSourceStat.getResultSetStat().incrementCloseCounter();
 
         String sql = resultSet.getSql();
@@ -661,7 +634,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public JdbcSqlStat getSqlCounter(String sql) {
         return getSqlStat(sql);
     }
-    
+
     public JdbcSqlStat getSqlStat(String sql) {
         return dataSourceStat.getSqlStatMap().get(sql);
     }
