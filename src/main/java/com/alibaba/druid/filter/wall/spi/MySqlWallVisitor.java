@@ -1,12 +1,11 @@
 package com.alibaba.druid.filter.wall.spi;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
+import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -35,67 +34,20 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
-    private final Set<String>     permitFunctions = new HashSet<String>();
-    private final Set<String>     permitTables    = new HashSet<String>();
-    private final Set<String>     permitSchemas   = new HashSet<String>();
-    private final Set<String>     permitNames     = new HashSet<String>();
-    private final Set<String>     permitObjects   = new HashSet<String>();
+    private final MySqlWallProvider provider;
+    private final List<Violation>   violations = new ArrayList<Violation>();
 
-    private final List<Violation> violations;
-
-    public MySqlWallVisitor(){
-        this(new ArrayList<Violation>(), true);
+    public MySqlWallVisitor(MySqlWallProvider provider){
+        this.provider = provider;
     }
 
-    public MySqlWallVisitor(boolean loadDefault){
-        this(new ArrayList<Violation>(), loadDefault);
-    }
-
-    public MySqlWallVisitor(List<Violation> violations, boolean loadDefault){
-        this.violations = violations;
-
-        if (loadDefault) {
-            loadDefault();
-        }
-        
-        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-mysql.txt");
-        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-mysql.txt");
-        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-mysql.txt");
-        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-mysql.txt");
-        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-mysql.txt");
-    }
-
-    public void loadDefault() {
-        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-mysql-default.txt");
-        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-mysql-default.txt");
-        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-mysql-default.txt");
-        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-mysql-default.txt");
-        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-mysql-default.txt");
-    }
-
-    public Set<String> getPermitNames() {
-        return permitNames;
-    }
-
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
-    }
-
-    public Set<String> getPermitTables() {
-        return permitTables;
-    }
-
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
+    public WallProvider getWallProvider() {
+        return provider;
     }
 
     public boolean containsPermitObjects(String name) {
         name = name.toLowerCase();
-        return permitObjects.contains(name);
-    }
-
-    public Set<String> getPermitObjects() {
-        return permitObjects;
+        return provider.getPermitObjects().contains(name);
     }
 
     public List<Violation> getViolations() {
@@ -216,7 +168,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean containsPermitTable(String name) {
         name = WallVisitorUtils.form(name);
-        return permitTables.contains(name);
+        return provider.getPermitTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {
@@ -236,4 +188,5 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
         }
     }
+
 }

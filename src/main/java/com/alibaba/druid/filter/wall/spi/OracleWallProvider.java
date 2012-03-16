@@ -5,8 +5,38 @@ import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-
 public class OracleWallProvider extends WallProvider {
+
+    public OracleWallProvider(){
+        this(true, true);
+    }
+
+    public OracleWallProvider(boolean loadDefault, boolean loadExtend){
+        if (loadDefault) {
+            loadDefault();
+        }
+
+        if (loadExtend) {
+            loadExtend();
+        }
+    }
+
+    public void loadExtend() {
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle.txt");
+    }
+
+    public void loadDefault() {
+        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitFunctions,
+                                      "META-INF/druid-filter-wall-permit-function-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle-default.txt");
+        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle-default.txt");
+    }
 
     @Override
     public SQLStatementParser createParser(String sql) {
@@ -15,7 +45,7 @@ public class OracleWallProvider extends WallProvider {
 
     @Override
     public WallVisitor createWallVisitor() {
-        return new OracleWallVisitor();
+        return new OracleWallVisitor(this);
     }
 
 }
