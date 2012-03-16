@@ -1,12 +1,11 @@
 package com.alibaba.druid.filter.wall.spi;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
+import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -35,82 +34,16 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 
 public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVisitor {
 
-    private final Set<String>     permitFunctions = new HashSet<String>();
-    private final Set<String>     permitTables    = new HashSet<String>();
-    private final Set<String>     permitSchemas   = new HashSet<String>();
-    private final Set<String>     permitNames     = new HashSet<String>();
-    private final Set<String>     permitObjects   = new HashSet<String>();
+    private OracleWallProvider    provider;
+    private final List<Violation> violations = new ArrayList<Violation>();
 
-    private final List<Violation> violations;
-
-    public OracleWallVisitor(){
-        this(new ArrayList<Violation>(), true);
-    }
-
-    public OracleWallVisitor(boolean loadDefault){
-        this(new ArrayList<Violation>(), loadDefault);
-    }
-
-    public OracleWallVisitor(List<Violation> violations, boolean loadDefault){
-        this.violations = violations;
-
-        if (loadDefault) {
-            loadDefault();
-        }
-        
-        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle.txt");
-        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle.txt");
-        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle.txt");
-        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle.txt");
-        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle.txt");
-    }
-
-    public void loadDefault() {
-        WallVisitorUtils.loadResource(this.permitNames, "META-INF/druid-filter-wall-permit-name-oracle-default.txt");
-        WallVisitorUtils.loadResource(this.permitSchemas, "META-INF/druid-filter-wall-permit-schema-oracle-default.txt");
-        WallVisitorUtils.loadResource(this.permitFunctions, "META-INF/druid-filter-wall-permit-function-oracle-default.txt");
-        WallVisitorUtils.loadResource(this.permitTables, "META-INF/druid-filter-wall-permit-table-oracle-default.txt");
-        WallVisitorUtils.loadResource(this.permitObjects, "META-INF/druid-filter-wall-permit-object-oracle-default.txt");
-    }
-
-    public void addPermitName(String name) {
-        name = name.toLowerCase();
-        permitNames.add(name);
-    }
-
-    public void addPermitFunction(String name) {
-        name = name.toLowerCase();
-        permitFunctions.add(name);
-    }
-
-    public void addPermitTable(String name) {
-        name = name.toLowerCase();
-        permitTables.add(name);
+    public OracleWallVisitor(OracleWallProvider provider){
+        this.provider = provider;
     }
 
     public boolean containsPermitObjects(String name) {
         name = name.toLowerCase();
-        return permitObjects.contains(name);
-    }
-
-    public Set<String> getPermitObjects() {
-        return permitObjects;
-    }
-
-    public Set<String> getPermitNames() {
-        return permitNames;
-    }
-
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
-    }
-
-    public Set<String> getPermitTables() {
-        return permitTables;
-    }
-
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
+        return provider.getPermitObjects().contains(name);
     }
 
     public List<Violation> getViolations() {
@@ -220,7 +153,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         if (name.startsWith("v$") || name.startsWith("v_$")) {
             return true;
         }
-        return permitTables.contains(name);
+        return provider.getPermitTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {
@@ -241,5 +174,10 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         } else {
             violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
         }
+    }
+
+    @Override
+    public WallProvider getWallProvider() {
+        return this.provider;
     }
 }

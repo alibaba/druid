@@ -6,9 +6,7 @@ import java.util.Properties;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.filter.wall.spi.MySqlWallVisitor;
 import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
-import com.alibaba.druid.filter.wall.spi.OracleWallVisitor;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -100,9 +98,9 @@ public class WallFilter extends FilterAdapter {
         check(connection, sql);
         return chain.connection_prepareCall(connection, sql, resultSetType, resultSetConcurrency, resultSetHoldability);
     }
-    
-    ////////////////
-    
+
+    // //////////////
+
     @Override
     public boolean statement_execute(FilterChain chain, StatementProxy statement, String sql) throws SQLException {
         check(statement.getConnectionProxy(), sql);
@@ -129,7 +127,7 @@ public class WallFilter extends FilterAdapter {
         check(statement.getConnectionProxy(), sql);
         return chain.statement_execute(statement, sql, columnNames);
     }
-    
+
     @Override
     public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
                                                                                                          throws SQLException {
@@ -172,24 +170,12 @@ public class WallFilter extends FilterAdapter {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlWallProvider();
         }
-        
+
         if (JdbcUtils.ORACLE.equals(dbType)) {
             return new OracleWallProvider();
         }
 
         throw new IllegalStateException("dbType not support : " + dbType);
-    }
-
-    public WallVisitor createWallVisitor(String dbType) throws SQLException {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
-            return new OracleWallVisitor();
-        }
-
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlWallVisitor();
-        }
-
-        throw new SQLException("dbType not support : " + dbType);
     }
 
 }

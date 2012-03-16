@@ -304,7 +304,7 @@ public class WallVisitorUtils {
     public static void check(WallVisitor visitor, SQLMethodInvokeExpr x) {
         String methodName = x.getMethodName();
 
-        if (visitor.getPermitFunctions().contains(methodName.toLowerCase())) {
+        if (visitor.getWallProvider().getPermitFunctions().contains(methodName.toLowerCase())) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
 
@@ -322,7 +322,7 @@ public class WallVisitorUtils {
 
                 ownerName = form(ownerName);
 
-                if (visitor.getPermitSchemas().contains(ownerName.toLowerCase())) {
+                if (visitor.getWallProvider().getPermitSchemas().contains(ownerName.toLowerCase())) {
                     visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
                 }
             }
