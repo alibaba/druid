@@ -12,7 +12,6 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
 
     private static final long     serialVersionUID = 1L;
     protected SQLExprTableSource  tableSource;
-    protected String              alias;
 
     protected final List<SQLExpr> columns          = new ArrayList<SQLExpr>();
     protected ValuesClause        values;
@@ -23,11 +22,11 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     }
 
     public String getAlias() {
-        return alias;
+        return tableSource.getAlias();
     }
 
     public void setAlias(String alias) {
-        this.alias = alias;
+        this.tableSource.setAlias(alias);
     }
 
     public SQLExprTableSource getTableSource() {
@@ -45,7 +44,7 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     public void setTableName(SQLName tableName) {
         this.setTableSource(new SQLExprTableSource(tableName));
     }
-    
+
     public void setTableSource(SQLName tableName) {
         this.setTableSource(new SQLExprTableSource(tableName));
     }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
@@ -13,259 +14,267 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class PGSelectQueryBlock extends SQLSelectQueryBlock {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private PGWithClause with;
-	private List<SQLExpr> distinctOn = new ArrayList<SQLExpr>(2);
-	private SQLExpr limit;
-	private SQLExpr offset;
-	private WindowClause window;
+    private PGWithClause      with;
+    private List<SQLExpr>     distinctOn       = new ArrayList<SQLExpr>(2);
+    private SQLExpr           limit;
+    private SQLExpr           offset;
+    private WindowClause      window;
 
-	private SQLOrderBy orderBy;
-	private FetchClause fetch;
-	private ForClause forClause;
-	private IntoClause into;
+    private SQLOrderBy        orderBy;
+    private FetchClause       fetch;
+    private ForClause         forClause;
+    private IntoClause        into;
 
-	public IntoClause getInto() {
-		return into;
-	}
+    public IntoClause getInto() {
+        return into;
+    }
 
-	public void setInto(IntoClause into) {
-		this.into = into;
-	}
+    public void setInto(IntoClause into) {
+        this.into = into;
+    }
 
-	@Override
-	protected void accept0(SQLASTVisitor visitor) {
-		accept0((PGASTVisitor) visitor);
-	}
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((PGASTVisitor) visitor);
+    }
 
-	protected void accept0(PGASTVisitor visitor) {
-		if (visitor.visit(this)) {
-			acceptChild(visitor, this.with);
-			acceptChild(visitor, this.distinctOn);
-			acceptChild(visitor, this.selectList);
-			acceptChild(visitor, this.into);
-			acceptChild(visitor, this.from);
-			acceptChild(visitor, this.where);
-			acceptChild(visitor, this.groupBy);
-			acceptChild(visitor, this.window);
-			acceptChild(visitor, this.orderBy);
-			acceptChild(visitor, this.limit);
-			acceptChild(visitor, this.offset);
-			acceptChild(visitor, this.fetch);
-			acceptChild(visitor, this.forClause);
-		}
-		visitor.endVisit(this);
-	}
+    protected void accept0(PGASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.with);
+            acceptChild(visitor, this.distinctOn);
+            acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.into);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.where);
+            acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.window);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.limit);
+            acceptChild(visitor, this.offset);
+            acceptChild(visitor, this.fetch);
+            acceptChild(visitor, this.forClause);
+        }
+        visitor.endVisit(this);
+    }
 
-	public FetchClause getFetch() {
-		return fetch;
-	}
+    public FetchClause getFetch() {
+        return fetch;
+    }
 
-	public void setFetch(FetchClause fetch) {
-		this.fetch = fetch;
-	}
+    public void setFetch(FetchClause fetch) {
+        this.fetch = fetch;
+    }
 
-	public ForClause getForClause() {
-		return forClause;
-	}
+    public ForClause getForClause() {
+        return forClause;
+    }
 
-	public void setForClause(ForClause forClause) {
-		this.forClause = forClause;
-	}
+    public void setForClause(ForClause forClause) {
+        this.forClause = forClause;
+    }
 
-	public WindowClause getWindow() {
-		return window;
-	}
+    public WindowClause getWindow() {
+        return window;
+    }
 
-	public void setWindow(WindowClause window) {
-		this.window = window;
-	}
+    public void setWindow(WindowClause window) {
+        this.window = window;
+    }
 
-	public PGWithClause getWith() {
-		return with;
-	}
+    public PGWithClause getWith() {
+        return with;
+    }
 
-	public void setWith(PGWithClause with) {
-		this.with = with;
-	}
+    public void setWith(PGWithClause with) {
+        this.with = with;
+    }
 
-	public SQLExpr getLimit() {
-		return limit;
-	}
+    public SQLExpr getLimit() {
+        return limit;
+    }
 
-	public void setLimit(SQLExpr limit) {
-		this.limit = limit;
-	}
+    public void setLimit(SQLExpr limit) {
+        this.limit = limit;
+    }
 
-	public SQLOrderBy getOrderBy() {
-		return orderBy;
-	}
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
 
-	public void setOrderBy(SQLOrderBy orderBy) {
-		this.orderBy = orderBy;
-	}
+    public void setOrderBy(SQLOrderBy orderBy) {
+        this.orderBy = orderBy;
+    }
 
-	public SQLExpr getOffset() {
-		return offset;
-	}
+    public SQLExpr getOffset() {
+        return offset;
+    }
 
-	public void setOffset(SQLExpr offset) {
-		this.offset = offset;
-	}
+    public void setOffset(SQLExpr offset) {
+        this.offset = offset;
+    }
 
-	public List<SQLExpr> getDistinctOn() {
-		return distinctOn;
-	}
+    public List<SQLExpr> getDistinctOn() {
+        return distinctOn;
+    }
 
-	public void setDistinctOn(List<SQLExpr> distinctOn) {
-		this.distinctOn = distinctOn;
-	}
+    public void setDistinctOn(List<SQLExpr> distinctOn) {
+        this.distinctOn = distinctOn;
+    }
 
-	public static class WindowClause extends PGSQLObjectImpl {
-		private static final long serialVersionUID = 1L;
-		private SQLExpr name;
-		private List<SQLExpr> definition = new ArrayList<SQLExpr>(2);
+    public static class WindowClause extends PGSQLObjectImpl {
 
-		public SQLExpr getName() {
-			return name;
-		}
+        private static final long serialVersionUID = 1L;
+        private SQLExpr           name;
+        private List<SQLExpr>     definition       = new ArrayList<SQLExpr>(2);
 
-		public void setName(SQLExpr name) {
-			this.name = name;
-		}
+        public SQLExpr getName() {
+            return name;
+        }
 
-		public List<SQLExpr> getDefinition() {
-			return definition;
-		}
+        public void setName(SQLExpr name) {
+            this.name = name;
+        }
 
-		public void setDefinition(List<SQLExpr> definition) {
-			this.definition = definition;
-		}
+        public List<SQLExpr> getDefinition() {
+            return definition;
+        }
 
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, name);
-				acceptChild(visitor, definition);
-			}
-			visitor.endVisit(this);
-		}
-	}
+        public void setDefinition(List<SQLExpr> definition) {
+            this.definition = definition;
+        }
 
-	public static class FetchClause extends PGSQLObjectImpl {
-		private static final long serialVersionUID = 1L;
+        @Override
+        public void accept0(PGASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, name);
+                acceptChild(visitor, definition);
+            }
+            visitor.endVisit(this);
+        }
+    }
 
-		public static enum Option {
-			FIRST, NEXT
-		}
+    public static class FetchClause extends PGSQLObjectImpl {
 
-		private Option option;
-		private SQLExpr count;
+        private static final long serialVersionUID = 1L;
 
-		public Option getOption() {
-			return option;
-		}
+        public static enum Option {
+            FIRST, NEXT
+        }
 
-		public void setOption(Option option) {
-			this.option = option;
-		}
+        private Option  option;
+        private SQLExpr count;
 
-		public SQLExpr getCount() {
-			return count;
-		}
+        public Option getOption() {
+            return option;
+        }
 
-		public void setCount(SQLExpr count) {
-			this.count = count;
-		}
+        public void setOption(Option option) {
+            this.option = option;
+        }
 
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, count);
-			}
-			visitor.endVisit(this);
-		}
+        public SQLExpr getCount() {
+            return count;
+        }
 
-	}
+        public void setCount(SQLExpr count) {
+            this.count = count;
+        }
 
-	public static class ForClause extends PGSQLObjectImpl {
-		private static final long serialVersionUID = 1L;
+        @Override
+        public void accept0(PGASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, count);
+            }
+            visitor.endVisit(this);
+        }
 
-		public static enum Option {
-			UPDATE, SHARE
-		}
+    }
 
-		private List<SQLExpr> of = new ArrayList<SQLExpr>(2);
-		private boolean noWait;
-		private Option option;
+    public static class ForClause extends PGSQLObjectImpl {
 
-		public Option getOption() {
-			return option;
-		}
+        private static final long serialVersionUID = 1L;
 
-		public void setOption(Option option) {
-			this.option = option;
-		}
+        public static enum Option {
+            UPDATE, SHARE
+        }
 
-		public List<SQLExpr> getOf() {
-			return of;
-		}
+        private List<SQLExpr> of = new ArrayList<SQLExpr>(2);
+        private boolean       noWait;
+        private Option        option;
 
-		public void setOf(List<SQLExpr> of) {
-			this.of = of;
-		}
+        public Option getOption() {
+            return option;
+        }
 
-		public boolean isNoWait() {
-			return noWait;
-		}
+        public void setOption(Option option) {
+            this.option = option;
+        }
 
-		public void setNoWait(boolean noWait) {
-			this.noWait = noWait;
-		}
+        public List<SQLExpr> getOf() {
+            return of;
+        }
 
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, of);
-			}
-			visitor.endVisit(this);
-		}
-	}
+        public void setOf(List<SQLExpr> of) {
+            this.of = of;
+        }
 
-	public static class IntoClause extends PGSQLObjectImpl {
-		public static enum Option {
-			TEMPORARY, TEMP, UNLOGGED
-		}
+        public boolean isNoWait() {
+            return noWait;
+        }
 
-		private static final long serialVersionUID = 1L;
+        public void setNoWait(boolean noWait) {
+            this.noWait = noWait;
+        }
 
-		private SQLExpr table;
-		private Option option;
+        @Override
+        public void accept0(PGASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, of);
+            }
+            visitor.endVisit(this);
+        }
+    }
 
-		public Option getOption() {
-			return option;
-		}
+    public static class IntoClause extends PGSQLObjectImpl {
 
-		public void setOption(Option option) {
-			this.option = option;
-		}
+        public static enum Option {
+            TEMPORARY, TEMP, UNLOGGED
+        }
 
-		public SQLExpr getTable() {
-			return table;
-		}
+        private static final long  serialVersionUID = 1L;
 
-		public void setTable(SQLExpr table) {
-			this.table = table;
-		}
+        private SQLExprTableSource table;
+        private Option             option;
 
-		@Override
-		public void accept0(PGASTVisitor visitor) {
-			if (visitor.visit(this)) {
-				acceptChild(visitor, table);
-			}
-			visitor.endVisit(this);
-		}
+        public Option getOption() {
+            return option;
+        }
 
-	}
+        public void setOption(Option option) {
+            this.option = option;
+        }
+
+        public SQLExprTableSource getTable() {
+            return table;
+        }
+
+        public void setTable(SQLExpr table) {
+            this.table = new SQLExprTableSource(table);
+        }
+
+        public void setTable(SQLExprTableSource table) {
+            this.table = table;
+        }
+
+        @Override
+        public void accept0(PGASTVisitor visitor) {
+            if (visitor.visit(this)) {
+                acceptChild(visitor, table);
+            }
+            visitor.endVisit(this);
+        }
+
+    }
 }

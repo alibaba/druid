@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
@@ -35,20 +36,23 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     private OracleSelectHierachicalQueryClause hierachicalQueryClause;
     private ModelClause                        modelClause;
-    private SQLExpr into;
+    private SQLExprTableSource                 into;
 
     public OracleSelectQueryBlock(){
 
     }
-    
-    public SQLExpr getInto() {
+
+    public SQLExprTableSource getInto() {
         return into;
     }
 
     public void setInto(SQLExpr into) {
-        this.into = into;
+        this.into = new SQLExprTableSource(into);
     }
 
+    public void setInto(SQLExprTableSource into) {
+        this.into = into;
+    }
 
     public ModelClause getModelClause() {
         return modelClause;
