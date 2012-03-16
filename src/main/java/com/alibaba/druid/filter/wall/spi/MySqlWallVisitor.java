@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
-import com.alibaba.druid.filter.wall.WallProvider;
+import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -34,20 +34,20 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
-    private final MySqlWallProvider provider;
-    private final List<Violation>   violations = new ArrayList<Violation>();
+    private final WallConfig      config;
+    private final List<Violation> violations = new ArrayList<Violation>();
 
-    public MySqlWallVisitor(MySqlWallProvider provider){
-        this.provider = provider;
+    public MySqlWallVisitor(WallConfig config){
+        this.config = config;
     }
 
-    public WallProvider getProvider() {
-        return provider;
+    public WallConfig getConfig() {
+        return config;
     }
 
     public boolean containsPermitObjects(String name) {
         name = name.toLowerCase();
-        return provider.getPermitObjects().contains(name);
+        return config.getPermitObjects().contains(name);
     }
 
     public List<Violation> getViolations() {
@@ -168,7 +168,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean containsPermitTable(String name) {
         name = WallVisitorUtils.form(name);
-        return provider.getPermitTables().contains(name);
+        return config.getPermitTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {

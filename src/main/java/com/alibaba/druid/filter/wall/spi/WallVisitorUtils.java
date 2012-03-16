@@ -9,7 +9,6 @@ import java.util.Enumeration;
 import java.util.Set;
 
 import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
-import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
@@ -59,8 +58,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        WallProvider provider = visitor.getProvider();
-        if (!provider.getConfig().isSelectHavingAlwayTrueCheck()) {
+        if (!visitor.getConfig().isSelectHavingAlwayTrueCheck()) {
             return;
         }
 
@@ -368,7 +366,7 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName();
 
-        if (visitor.getProvider().getPermitFunctions().contains(methodName.toLowerCase())) {
+        if (visitor.getConfig().getPermitFunctions().contains(methodName.toLowerCase())) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
 
@@ -386,7 +384,7 @@ public class WallVisitorUtils {
 
                 ownerName = form(ownerName);
 
-                if (visitor.getProvider().getPermitSchemas().contains(ownerName.toLowerCase())) {
+                if (visitor.getConfig().getPermitSchemas().contains(ownerName.toLowerCase())) {
                     visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
                 }
             }
