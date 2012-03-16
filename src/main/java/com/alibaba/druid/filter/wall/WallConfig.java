@@ -172,9 +172,19 @@ public class WallConfig {
     public Set<String> getPermitObjects() {
         return permitObjects;
     }
+    
+    public boolean isPermitObjects(String name) {
+        name = WallVisitorUtils.form(name);
+        return permitObjects.contains(name);
+    }
 
-    public boolean containsPermitSchema(String name) {
+    public boolean isPermitSchema(String name) {
         name = WallVisitorUtils.form(name);
         return this.permitSchemas.contains(name);
+    }
+    
+    public boolean isPermitFunction(String name) {
+        name = WallVisitorUtils.form(name);
+        return this.permitFunctions.contains(name);
     }
 }

@@ -46,11 +46,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return config;
     }
 
-    public boolean containsPermitObjects(String name) {
-        name = name.toLowerCase();
-        return config.getPermitObjects().contains(name);
-    }
-
     public List<Violation> getViolations() {
         return violations;
     }
@@ -205,7 +200,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (!config.isTableCheck()) {
             return false;
         }
-        
+
         name = WallVisitorUtils.form(name);
         return config.getPermitTables().contains(name);
     }

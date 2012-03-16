@@ -159,11 +159,6 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     @Override
-    public boolean containsPermitObjects(String name) {
-        return config.getPermitObjects().contains(name);
-    }
-
-    @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
             this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));

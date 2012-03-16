@@ -47,7 +47,7 @@ public class WallVisitorUtils {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
-            if (visitor.containsPermitObjects(owner)) {
+            if (visitor.getConfig().isPermitObjects(owner)) {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
@@ -391,7 +391,7 @@ public class WallVisitorUtils {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
-            if (visitor.containsPermitObjects(owner)) {
+            if (visitor.getConfig().isPermitObjects(owner)) {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
@@ -402,7 +402,7 @@ public class WallVisitorUtils {
         
         String methodName = x.getMethodName();
 
-        if (visitor.getConfig().getPermitFunctions().contains(methodName.toLowerCase())) {
+        if (visitor.getConfig().isPermitFunction(methodName.toLowerCase())) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
 
