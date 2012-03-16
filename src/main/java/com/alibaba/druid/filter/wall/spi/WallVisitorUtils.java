@@ -47,7 +47,7 @@ public class WallVisitorUtils {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
             if (visitor.containsPermitObjects(owner)) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toOracleString(x)));
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
     }

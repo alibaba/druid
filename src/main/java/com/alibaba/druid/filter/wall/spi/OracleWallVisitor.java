@@ -25,10 +25,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 
 public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVisitor {
@@ -164,6 +166,30 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
             violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
         }
 
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleDeleteStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLDeleteStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(OracleUpdateStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
         return true;
     }
 

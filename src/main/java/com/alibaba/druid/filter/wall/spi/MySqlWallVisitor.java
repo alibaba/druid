@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -25,8 +26,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 
@@ -121,7 +124,38 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
-        return visit((SQLSelectQueryBlock) x);
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(MySqlDeleteStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    
+    @Override
+    public boolean visit(SQLDeleteStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.checkCondition(this, x.getWhere());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(Limit x) {
+        if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
+            int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
+            if (rowCount == 0) {
+                this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            }
+        }
+        return true;
     }
 
     public boolean visit(SQLVariantRefExpr x) {
