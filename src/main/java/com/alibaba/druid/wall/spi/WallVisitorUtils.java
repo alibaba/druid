@@ -29,6 +29,8 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -56,7 +58,19 @@ public class WallVisitorUtils {
         }
     }
 
+    public static void checkInsert(WallVisitor visitor, SQLInsertInto x) {
+        checkReadOnly(visitor, x.getTableSource());
+        
+        if (!visitor.getConfig().isInsertAllow()) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+        }
+    }
+
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
+        if (x.getInto() != null) {
+            checkReadOnly(visitor, x.getInto());
+        }
+        
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, x);
             return;
@@ -98,6 +112,8 @@ public class WallVisitorUtils {
     }
 
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
+        checkReadOnly(visitor, x.getTableSource());
+        
         if (!visitor.getConfig().isDeleteAllow()) {
             addViolation(visitor, x);
             return;
@@ -112,7 +128,33 @@ public class WallVisitorUtils {
         }
     }
 
+    public static void checkReadOnly(WallVisitor visitor, SQLTableSource tableSource) {
+        if (tableSource instanceof SQLExprTableSource) {
+            String tableName = null;
+            SQLExpr tableNameExpr = ((SQLExprTableSource) tableSource).getExpr();
+            if (tableNameExpr instanceof SQLIdentifierExpr) {
+                tableName = tableNameExpr.toString();
+            } else if (tableNameExpr instanceof SQLPropertyExpr) {
+                tableName = ((SQLPropertyExpr) tableNameExpr).getName();
+            }
+
+            if (tableName != null) {
+                tableName = form(tableName);
+                if (visitor.getConfig().getReadOnlyTables().contains(tableName)) {
+                    addViolation(visitor, tableSource);
+                }
+            }
+        } else if (tableSource instanceof SQLJoinTableSource) {
+            SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
+
+            checkReadOnly(visitor, join.getLeft());
+            checkReadOnly(visitor, join.getRight());
+        }
+    }
+
     public static void checkUpdate(WallVisitor visitor, SQLUpdateStatement x) {
+        checkReadOnly(visitor, x.getTableSource());
+
         if (!visitor.getConfig().isUpdateAllow()) {
             addViolation(visitor, x);
             return;
@@ -455,7 +497,7 @@ public class WallVisitorUtils {
         if (!visitor.getConfig().isSelectUnionCheck()) {
             return;
         }
-        
+
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
             addViolation(visitor, x);
         }

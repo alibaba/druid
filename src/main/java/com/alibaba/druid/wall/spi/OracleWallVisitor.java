@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
@@ -155,7 +156,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         } else if (x instanceof OracleMergeStatement) {
         } else if (x instanceof SQLTruncateStatement) {
             if (!config.isTruncateAllow()) {
-                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));
             }
         } else {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
@@ -179,11 +180,15 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
-        if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
+        WallVisitorUtils.checkInsert(this, x);
 
+        return true;
+    }
+    
+    @Override
+    public boolean visit(InsertIntoClause x) {
+        WallVisitorUtils.checkInsert(this, x);
+        
         return true;
     }
 
