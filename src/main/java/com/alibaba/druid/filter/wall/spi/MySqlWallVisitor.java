@@ -167,8 +167,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlOutFileExpr x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        return false;
+        if (!config.isSelectIntoOutfileAllow()) {
+            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+        }
+
+        return true;
     }
 
     @Override
