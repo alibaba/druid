@@ -176,9 +176,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        }
+        WallVisitorUtils.checkUnion(this, x);
 
         return true;
     }
@@ -200,6 +198,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     public void preVisit(SQLObject x) {
         if (!(x instanceof SQLStatement)) {
+            return;
+        }
+        
+        if (config.isNoneBaseStatementAllow()) {
             return;
         }
 

@@ -9,11 +9,14 @@ import com.alibaba.druid.filter.wall.spi.WallVisitorUtils;
 
 public class WallConfig {
 
+    private boolean             noneBaseStatementAllow     = false;
+
     private boolean             selelctAllow               = true;
     private boolean             selectIntoAllow            = true;
     private boolean             selectIntoOutfileAllow     = false;
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
+    private boolean             selectUnionCheck           = true;
 
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
@@ -75,6 +78,14 @@ public class WallConfig {
         loadResource(getPermitObjects(), dir + "/permit-object.txt");
     }
 
+    public boolean isNoneBaseStatementAllow() {
+        return noneBaseStatementAllow;
+    }
+
+    public void setNoneBaseStatementAllow(boolean noneBaseStatementAllow) {
+        this.noneBaseStatementAllow = noneBaseStatementAllow;
+    }
+
     public boolean isSelelctAllow() {
         return selelctAllow;
     }
@@ -97,6 +108,14 @@ public class WallConfig {
 
     public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
         this.selectIntoOutfileAllow = selectIntoOutfileAllow;
+    }
+
+    public boolean isSelectUnionCheck() {
+        return selectUnionCheck;
+    }
+
+    public void setSelectUnionCheck(boolean selectUnionCheck) {
+        this.selectUnionCheck = selectUnionCheck;
     }
 
     public boolean isSelectWhereAlwayTrueCheck() {

@@ -16,7 +16,6 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
@@ -65,11 +64,6 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         return true;
     }
 
-    public boolean visit(SQLDropTableStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toOracleString(x)));
-        return false;
-    }
-
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
         WallVisitorUtils.checkFunction(this, x);
@@ -113,9 +107,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        }
+        WallVisitorUtils.checkUnion(this, x);
 
         return true;
     }
@@ -143,6 +135,10 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
             return;
         }
 
+        if (config.isNoneBaseStatementAllow()) {
+            return;
+        }
+
         if (x instanceof SQLInsertStatement) {
 
         } else if (x instanceof SQLSelectStatement) {
@@ -154,7 +150,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         } else if (x instanceof OracleMergeStatement) {
         } else {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
     }
 
