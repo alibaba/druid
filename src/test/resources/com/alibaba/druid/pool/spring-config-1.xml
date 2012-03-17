@@ -12,12 +12,12 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
 	</bean>
 
-	<bean id="wall-filter-config" class="com.alibaba.druid.filter.wall.WallConfig"
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
 		init-method="init">
 		<property name="dir" value="META-INF/druid/wall/mysql" />
 	</bean>
 
-	<bean id="wall-filter" class="com.alibaba.druid.filter.wall.WallFilter">
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
 		<property name="dbType" value="mysql" />
 		<property name="config" ref="wall-filter-config" />
 	</bean>

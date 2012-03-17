@@ -1,4 +1,4 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.wall;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -7,9 +7,6 @@ import java.util.Properties;
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
-import com.alibaba.druid.filter.wall.spi.SQLServerProvider;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -19,6 +16,9 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerProvider;
 
 public class WallFilter extends FilterAdapter {
 

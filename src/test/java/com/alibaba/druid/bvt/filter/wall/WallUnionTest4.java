@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.filter.wall.WallUtils;
+import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，被攻击者用于测试当前SQL拥有多少字段

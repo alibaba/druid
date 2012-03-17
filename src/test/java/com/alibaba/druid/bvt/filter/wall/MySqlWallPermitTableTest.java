@@ -2,8 +2,8 @@ package com.alibaba.druid.bvt.filter.wall;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.filter.wall.WallConfig;
-import com.alibaba.druid.filter.wall.WallUtils;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallUtils;
 
 import junit.framework.TestCase;
 

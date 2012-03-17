@@ -1,8 +1,8 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.wall;
 
-import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
-import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
-import com.alibaba.druid.filter.wall.spi.SQLServerProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.SQLServerProvider;
 
 public class WallUtils {
 

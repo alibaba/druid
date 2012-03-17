@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.filter.wall.WallUtils;
+import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景测试访问Oracle系统对象

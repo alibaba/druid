@@ -1,11 +1,11 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.wall;
 
-import static com.alibaba.druid.filter.wall.spi.WallVisitorUtils.loadResource;
+import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.alibaba.druid.filter.wall.spi.WallVisitorUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig {
 

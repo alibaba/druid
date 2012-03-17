@@ -3,8 +3,8 @@ package com.alibaba.druid.bvt.filter.wall;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.filter.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallVisitorUtilsTest extends TestCase {
 

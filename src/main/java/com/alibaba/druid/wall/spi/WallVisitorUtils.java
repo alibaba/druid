@@ -1,4 +1,4 @@
-package com.alibaba.druid.filter.wall.spi;
+package com.alibaba.druid.wall.spi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,8 +8,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Set;
 
-import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
-import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -41,6 +39,8 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.IllegalSQLObjectViolation;
+import com.alibaba.druid.wall.WallVisitor;
 
 public class WallVisitorUtils {
 

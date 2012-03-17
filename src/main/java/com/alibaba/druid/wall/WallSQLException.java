@@ -1,4 +1,4 @@
-package com.alibaba.druid.filter.wall;
+package com.alibaba.druid.wall;
 
 import java.sql.SQLException;
 
