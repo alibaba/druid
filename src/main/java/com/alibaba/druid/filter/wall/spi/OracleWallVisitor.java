@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -50,7 +51,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-
+        String name = x.getName();
+        name = WallVisitorUtils.form(name);
+        if (config.getPermitVariants().contains(name)) {
+            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+        }
         return true;
     }
 
@@ -118,7 +123,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     @Override
-    public boolean containsPermitTable(String name) {
+    public boolean isPermitTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
@@ -147,8 +152,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         } else if (x instanceof SQLUpdateStatement) {
         } else if (x instanceof OracleMultiInsertStatement) {
-
         } else if (x instanceof OracleMergeStatement) {
+        } else if (x instanceof SQLTruncateStatement) {
+            if (!config.isTruncateAllow()) {
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+            }
         } else {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }

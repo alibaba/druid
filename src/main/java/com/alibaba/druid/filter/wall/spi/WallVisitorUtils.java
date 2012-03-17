@@ -441,7 +441,7 @@ public class WallVisitorUtils {
 
         if (tableName != null) {
             tableName = form(tableName);
-            if (visitor.containsPermitTable(tableName)) {
+            if (visitor.isPermitTable(tableName)) {
                 addViolation(visitor, x);
             }
         }

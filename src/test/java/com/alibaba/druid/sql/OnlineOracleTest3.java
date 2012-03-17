@@ -34,7 +34,7 @@ public class OnlineOracleTest3 extends TestCase {
     }
 
     public void test_connect() throws Exception {
-        executeQuery("select * from all_users");
+        executeQuery("select UID, USER FROM DUAL");
     }
 
     public void executeQuery(String sql) throws SQLException {
