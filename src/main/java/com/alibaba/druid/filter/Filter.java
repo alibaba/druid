@@ -59,6 +59,8 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
 public interface Filter {
 
     void init(DataSourceProxy dataSource);
+    
+    void destory();
 
     ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException;
 

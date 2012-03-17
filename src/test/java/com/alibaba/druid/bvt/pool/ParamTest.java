@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class ParamTest extends TestCase {
@@ -29,31 +30,39 @@ public class ParamTest extends TestCase {
 
         JdbcStatManager.getInstance().reset();
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+        dataSource.init();
+        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
+
+        JdbcDataSourceStat stat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
+
+        Assert.assertEquals(0, stat.getConnectionStat().getConnectCount());
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         for (int i = 0; i < 2; ++i) {
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+            Assert.assertEquals(1, stat.getConnectionStat().getConnectCount());
+            Assert.assertEquals(0, stat.getConnectionStat().getCloseCount());
 
             conn.close();
 
-            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); // logic
-                                                                                                       // close不会导致计数器＋1
+            Assert.assertEquals(1, stat.getConnectionStat().getConnectCount());
+            Assert.assertEquals(0, stat.getConnectionStat().getCloseCount()); // logic
+                                                                              // close不会导致计数器＋1
         }
 
         dataSource.close();
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getDataSources().size());
+
+        Assert.assertEquals(1, stat.getConnectionStat().getConnectCount());
+        Assert.assertEquals(1, stat.getConnectionStat().getCloseCount());
 
         JdbcStatManager.getInstance().reset();
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+        Assert.assertEquals(1, stat.getConnectionStat().getConnectCount());
+        Assert.assertEquals(1, stat.getConnectionStat().getCloseCount());
     }
 
     public void test_zero() throws Exception {
@@ -70,7 +79,9 @@ public class ParamTest extends TestCase {
 
         JdbcStatManager.getInstance().reset();
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(0, JdbcStatManager.getInstance().getDataSources().size());
+
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         Exception error = null;
@@ -96,15 +107,21 @@ public class ParamTest extends TestCase {
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         JdbcStatManager.getInstance().reset();
+        
+        dataSource.init();
+        Assert.assertEquals(1, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+        JdbcDataSourceStat stat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
+
+        Assert.assertEquals(10, stat.getConnectionStat().getConnectCount());
 
         for (int i = 0; i < 10; ++i) {
             Connection conn = dataSource.getConnection();
             conn.close();
         }
 
-        Assert.assertEquals(10, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+        Assert.assertEquals(10, stat.getConnectionStat().getConnectCount());
 
         dataSource.close();
     }
