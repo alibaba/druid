@@ -26,21 +26,47 @@ public class WallFilter extends FilterAdapter {
 
     private WallProvider     provider;
 
-    private boolean          loadDefault;
-
-    private boolean          loadExtend;
-
     private boolean          logViolation = false;
 
-    private WallConfig       config       = new WallConfig();
+    private String           dbType;
+
+    private WallConfig       config;
 
     @Override
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
-        provider = createWallProvider(dataSource.getDbType());
+        String dbType = this.dbType;
+
+        if (this.dbType == null || this.dbType.trim().length() == 0) {
+            this.dbType = dataSource.getDbType();
+        }
+
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            provider = new MySqlWallProvider(config);
+
+            if (config == null) {
+                config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
+            }
+        } else if (JdbcUtils.ORACLE.equals(dbType)) {
+            provider = new OracleWallProvider(config);
+
+            if (config == null) {
+                config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
+            }
+        } else {
+            throw new IllegalStateException("dbType not support : " + dbType);
+        }
 
         this.inited = true;
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 
     public boolean isLogViolation() {
@@ -63,28 +89,10 @@ public class WallFilter extends FilterAdapter {
         this.config = config;
     }
 
-    public boolean isLoadDefault() {
-        return loadDefault;
-    }
-
     public void checkInit() {
         if (inited) {
             throw new DruidRuntimeException("wall filter is inited");
         }
-    }
-
-    public void setLoadDefault(boolean loadDefault) {
-        checkInit();
-        this.loadDefault = loadDefault;
-    }
-
-    public boolean isLoadExtend() {
-        return loadExtend;
-    }
-
-    public void setLoadExtend(boolean loadExtend) {
-        checkInit();
-        this.loadExtend = loadExtend;
     }
 
     @Override
@@ -232,19 +240,6 @@ public class WallFilter extends FilterAdapter {
             }
             throw e;
         }
-    }
-
-    public WallProvider createWallProvider(String dbType) {
-        WallProvider provider;
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            provider = new MySqlWallProvider(config, this.loadDefault, this.loadExtend);
-        } else if (JdbcUtils.ORACLE.equals(dbType)) {
-            provider = new OracleWallProvider(config, this.loadDefault, this.loadExtend);
-        } else {
-            throw new IllegalStateException("dbType not support : " + dbType);
-        }
-
-        return provider;
     }
 
 }

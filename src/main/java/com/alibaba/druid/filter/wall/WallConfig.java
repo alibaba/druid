@@ -32,6 +32,55 @@ public class WallConfig {
     protected final Set<String> permitNames                = new HashSet<String>();
     protected final Set<String> permitObjects              = new HashSet<String>();
 
+    private String              dir;
+
+    private boolean             loadDefault                = true;
+
+    private boolean             loadExtend                 = true;
+
+    public WallConfig(){
+
+    }
+
+    public WallConfig(String dir){
+        this.dir = dir;
+        this.init();
+    }
+
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public void init() {
+        if (loadDefault) {
+            loadDefault(dir);
+        }
+
+        if (loadExtend) {
+            loadExtend(dir);
+        }
+    }
+
+    public boolean isLoadDefault() {
+        return loadDefault;
+    }
+
+    public void setLoadDefault(boolean loadDefault) {
+        this.loadDefault = loadDefault;
+    }
+
+    public boolean isLoadExtend() {
+        return loadExtend;
+    }
+
+    public void setLoadExtend(boolean loadExtend) {
+        this.loadExtend = loadExtend;
+    }
+
     public void loadDefault(String dir) {
         if (dir.endsWith("/")) {
             dir = dir.substring(0, dir.length() - 1);
@@ -150,6 +199,8 @@ public class WallConfig {
     public void setFunctionCheck(boolean functionCheck) {
         this.functionCheck = functionCheck;
     }
+
+    // ///////////////////
 
     public Set<String> getPermitFunctions() {
         return permitFunctions;

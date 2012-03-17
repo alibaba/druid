@@ -9,8 +9,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 	
 	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringFilterTest$TestFilter">
 	</bean>
-	
 		<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+	</bean>
+	
+	<bean id="wall-filter-config">
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+	</bean>
+	
+	<bean id="wall-filter" class="com.alibaba.druid.filter.wall.WallFilter">
+		<property name="dbType" value="mysql" />
 	</bean>
 
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
@@ -27,6 +34,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 			<list>
 				<ref bean="test-filter"/>
 				<ref bean="stat-filter"/>
+				<ref bean="wall-filter"/>
 			</list>
 		</property>
 	</bean>

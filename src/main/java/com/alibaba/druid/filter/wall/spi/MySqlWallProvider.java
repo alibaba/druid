@@ -8,24 +8,14 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class MySqlWallProvider extends WallProvider {
 
+    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/mysql";
+
     public MySqlWallProvider(){
-        this(new WallConfig());
+        this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
     public MySqlWallProvider(WallConfig config){
-        this(config, true, true);
-    }
-
-    public MySqlWallProvider(WallConfig config, boolean loadDefault, boolean loadExtend){
         super(config);
-
-        if (loadDefault) {
-            config.loadDefault("META-INF/druid/wall/mysql");
-        }
-
-        if (loadExtend) {
-            config.loadExtend("META-INF/druid/wall/mysql");
-        }
     }
 
     @Override

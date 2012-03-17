@@ -50,6 +50,8 @@ import com.alibaba.druid.mapping.DruidMappingException;
  */
 public final class JdbcUtils {
 
+    public static final String      MOCK             = "mock";
+
     public static final String      HSQL             = "hsql";
 
     public static final String      DB2              = "db2";
@@ -353,7 +355,7 @@ public final class JdbcUtils {
 
         }
     }
-    
+
     public static String read(Reader reader) {
         try {
             final int DEFAULT_BUFFER_SIZE = 1024 * 4;
@@ -472,7 +474,7 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
             return "jtds";
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
-            return "mock";
+            return MOCK;
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
             return POSTGRESQL;
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {

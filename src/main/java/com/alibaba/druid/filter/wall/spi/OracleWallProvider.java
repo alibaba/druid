@@ -8,26 +8,15 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 public class OracleWallProvider extends WallProvider {
 
+    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/oracle";
+
     public OracleWallProvider(){
-        this(new WallConfig());
+        this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
     public OracleWallProvider(WallConfig config){
-        this(config, true, true);
-    }
-
-    public OracleWallProvider(WallConfig config, boolean loadDefault, boolean loadExtend){
         super(config);
-
-        if (loadDefault) {
-            config.loadDefault("META-INF/druid/wall/oracle");
-        }
-
-        if (loadExtend) {
-            config.loadExtend("META-INF/druid/wall/oracle");
-        }
     }
-
 
     @Override
     public SQLStatementParser createParser(String sql) {
