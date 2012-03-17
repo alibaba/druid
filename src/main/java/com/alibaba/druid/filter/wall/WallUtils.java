@@ -2,6 +2,7 @@ package com.alibaba.druid.filter.wall;
 
 import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
+import com.alibaba.druid.filter.wall.spi.SQLServerProvider;
 
 public class WallUtils {
 
@@ -22,6 +23,16 @@ public class WallUtils {
 
     public static boolean isValidateOracle(String sql, WallConfig config) {
         OracleWallProvider provider = new OracleWallProvider(config);
+        return provider.checkValid(sql);
+    }
+    
+    public static boolean isValidateSqlServer(String sql) {
+        SQLServerProvider provider = new SQLServerProvider();
+        return provider.checkValid(sql);
+    }
+    
+    public static boolean isValidateSqlServer(String sql, WallConfig config) {
+        SQLServerProvider provider = new SQLServerProvider(config);
         return provider.checkValid(sql);
     }
 }

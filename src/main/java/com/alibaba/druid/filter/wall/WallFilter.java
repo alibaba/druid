@@ -9,6 +9,7 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
+import com.alibaba.druid.filter.wall.spi.SQLServerProvider;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
@@ -55,6 +56,12 @@ public class WallFilter extends FilterAdapter {
 
             if (config == null) {
                 config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
+            }
+        } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            provider = new SQLServerProvider(config);
+            
+            if (config == null) {
+                config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }
         } else {
             throw new IllegalStateException("dbType not support : " + dbType);
