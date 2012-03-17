@@ -29,7 +29,7 @@ public class WallConfig {
 
     private boolean             truncateAllow              = false;
 
-    private boolean             shcemaCheck                = true;
+    private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
     private boolean             functionCheck              = true;
     private boolean             objectCheck                = true;
@@ -194,12 +194,12 @@ public class WallConfig {
         this.mergeAllow = mergeAllow;
     }
 
-    public boolean isShcemaCheck() {
-        return shcemaCheck;
+    public boolean isSchemaCheck() {
+        return schemaCheck;
     }
 
-    public void setShcemaCheck(boolean shcemaCheck) {
-        this.shcemaCheck = shcemaCheck;
+    public void setSchemaCheck(boolean schemaCheck) {
+        this.schemaCheck = schemaCheck;
     }
 
     public boolean isTableCheck() {
@@ -257,16 +257,28 @@ public class WallConfig {
     }
 
     public boolean isPermitObjects(String name) {
+        if (!objectCheck) {
+            return false;
+        }
+
         name = WallVisitorUtils.form(name);
         return permitObjects.contains(name);
     }
 
     public boolean isPermitSchema(String name) {
+        if (!schemaCheck) {
+            return false;
+        }
+        
         name = WallVisitorUtils.form(name);
         return this.permitSchemas.contains(name);
     }
 
     public boolean isPermitFunction(String name) {
+        if (!functionCheck) {
+            return false;
+        }
+        
         name = WallVisitorUtils.form(name);
         return this.permitFunctions.contains(name);
     }
