@@ -16,12 +16,12 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
@@ -63,11 +63,6 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     // executeQuery
     public boolean visit(SQLBinaryOpExpr x) {
         return true;
-    }
-
-    public boolean visit(SQLDropTableStatement x) {
-        violations.add(new IllegalSQLObjectViolation(SQLUtils.toOracleString(x)));
-        return false;
     }
 
     @Override
@@ -124,7 +119,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     @Override
-    public boolean containsPermitTable(String name) {
+    public boolean isPermitTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
@@ -141,6 +136,10 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
             return;
         }
 
+        if (config.isNoneBaseStatementAllow()) {
+            return;
+        }
+
         if (x instanceof SQLInsertStatement) {
 
         } else if (x instanceof SQLSelectStatement) {
@@ -149,10 +148,13 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         } else if (x instanceof SQLUpdateStatement) {
         } else if (x instanceof OracleMultiInsertStatement) {
-
         } else if (x instanceof OracleMergeStatement) {
+        } else if (x instanceof SQLTruncateStatement) {
+            if (!config.isTruncateAllow()) {
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+            }
         } else {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
     }
 

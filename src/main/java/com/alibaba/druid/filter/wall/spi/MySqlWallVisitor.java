@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
@@ -142,7 +143,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
 
         return false;
@@ -168,7 +169,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(MySqlOutFileExpr x) {
         if (!config.isSelectIntoOutfileAllow()) {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
 
         return true;
@@ -187,7 +188,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean containsPermitTable(String name) {
+    public boolean isPermitTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
@@ -200,6 +201,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (!(x instanceof SQLStatement)) {
             return;
         }
+        
+        if (config.isNoneBaseStatementAllow()) {
+            return;
+        }
 
         if (x instanceof SQLInsertStatement) {
 
@@ -208,9 +213,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         } else if (x instanceof SQLDeleteStatement) {
 
         } else if (x instanceof SQLUpdateStatement) {
-
+            
+        } else if (x instanceof SQLTruncateStatement) {
+            if (!config.isTruncateAllow()) {
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+            }
         } else {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
     }
 

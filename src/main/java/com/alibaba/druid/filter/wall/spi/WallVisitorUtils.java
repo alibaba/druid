@@ -12,9 +12,9 @@ import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -51,14 +51,14 @@ public class WallVisitorUtils {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
             if (visitor.getConfig().isPermitObjects(owner)) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+                addViolation(visitor, x);
             }
         }
     }
 
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
             return;
         }
 
@@ -79,7 +79,7 @@ public class WallVisitorUtils {
                 }
             }
 
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
         }
     }
 
@@ -93,13 +93,13 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getValue(x)) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
         }
     }
 
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
         if (!visitor.getConfig().isDeleteAllow()) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
             return;
         }
 
@@ -108,13 +108,13 @@ public class WallVisitorUtils {
         }
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
         }
     }
 
     public static void checkUpdate(WallVisitor visitor, SQLUpdateStatement x) {
         if (!visitor.getConfig().isUpdateAllow()) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
             return;
         }
 
@@ -123,7 +123,7 @@ public class WallVisitorUtils {
         }
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
         }
     }
 
@@ -399,7 +399,7 @@ public class WallVisitorUtils {
             String owner = x.getOwner().toString();
             owner = WallVisitorUtils.form(owner);
             if (visitor.getConfig().isPermitObjects(owner)) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+                addViolation(visitor, x);
             }
         }
 
@@ -410,7 +410,7 @@ public class WallVisitorUtils {
         String methodName = x.getMethodName();
 
         if (visitor.getConfig().isPermitFunction(methodName.toLowerCase())) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            addViolation(visitor, x);
         }
 
     }
@@ -428,7 +428,7 @@ public class WallVisitorUtils {
                 ownerName = form(ownerName);
 
                 if (visitor.getConfig().getPermitSchemas().contains(ownerName.toLowerCase())) {
-                    visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+                    addViolation(visitor, x);
                 }
             }
 
@@ -441,10 +441,14 @@ public class WallVisitorUtils {
 
         if (tableName != null) {
             tableName = form(tableName);
-            if (visitor.containsPermitTable(tableName)) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            if (visitor.isPermitTable(tableName)) {
+                addViolation(visitor, x);
             }
         }
+    }
+
+    private static void addViolation(WallVisitor visitor, SQLObject x) {
+        visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
@@ -453,7 +457,7 @@ public class WallVisitorUtils {
         }
         
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
+            addViolation(visitor, x);
         }
     }
 

@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleGrantStatement extends OracleSQLObjectImpl implements OracleStatement {
+public class OracleGrantStatement extends OracleStatementImpl implements OracleStatement {
 
     private static final long serialVersionUID = 1L;
 

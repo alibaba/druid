@@ -11,7 +11,7 @@ public interface WallVisitor extends SQLASTVisitor {
 
     List<Violation> getViolations();
     
-    boolean containsPermitTable(String name);
+    boolean isPermitTable(String name);
 
     String toSQL(SQLObject obj);
 }

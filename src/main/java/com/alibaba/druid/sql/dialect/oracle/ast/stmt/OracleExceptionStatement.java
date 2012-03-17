@@ -8,7 +8,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleExceptionStatement extends OracleSQLObjectImpl implements OracleStatement {
+public class OracleExceptionStatement extends OracleStatementImpl implements OracleStatement {
 
     private static final long serialVersionUID = 1L;
     private List<Item>        items            = new ArrayList<Item>();

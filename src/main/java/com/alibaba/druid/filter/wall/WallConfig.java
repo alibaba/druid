@@ -9,6 +9,8 @@ import com.alibaba.druid.filter.wall.spi.WallVisitorUtils;
 
 public class WallConfig {
 
+    private boolean             noneBaseStatementAllow     = false;
+
     private boolean             selelctAllow               = true;
     private boolean             selectIntoAllow            = true;
     private boolean             selectIntoOutfileAllow     = false;
@@ -24,6 +26,8 @@ public class WallConfig {
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
+
+    private boolean             truncateAllow              = false;
 
     private boolean             shcemaCheck                = true;
     private boolean             tableCheck                 = true;
@@ -74,6 +78,22 @@ public class WallConfig {
         loadResource(getPermitFunctions(), dir + "/permit-function.txt");
         loadResource(getPermitTables(), dir + "/permit-table.txt");
         loadResource(getPermitObjects(), dir + "/permit-object.txt");
+    }
+
+    public boolean isNoneBaseStatementAllow() {
+        return noneBaseStatementAllow;
+    }
+
+    public void setNoneBaseStatementAllow(boolean noneBaseStatementAllow) {
+        this.noneBaseStatementAllow = noneBaseStatementAllow;
+    }
+
+    public boolean isTruncateAllow() {
+        return truncateAllow;
+    }
+
+    public void setTruncateAllow(boolean truncateAllow) {
+        this.truncateAllow = truncateAllow;
     }
 
     public boolean isSelelctAllow() {
