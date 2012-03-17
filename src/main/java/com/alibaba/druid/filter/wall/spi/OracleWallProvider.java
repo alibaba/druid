@@ -3,6 +3,7 @@ package com.alibaba.druid.filter.wall.spi;
 import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleLexer;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
@@ -20,7 +21,9 @@ public class OracleWallProvider extends WallProvider {
 
     @Override
     public SQLStatementParser createParser(String sql) {
-        return new OracleStatementParser(sql);
+        OracleLexer lexer = new OracleLexer(sql);
+        lexer.setAllowComment(false);
+        return new OracleStatementParser(lexer);
     }
 
     @Override
