@@ -1,6 +1,7 @@
 package com.alibaba.druid.filter.wall;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -51,11 +52,17 @@ public abstract class WallProvider {
     public abstract WallVisitor createWallVisitor();
 
     public boolean check(String sql, boolean throwException) throws WallRuntimeException {
+        List<Violation> violations = check(sql);
+        return violations.size() > 0;
+    }
+
+    public List<Violation> check(String sql) {
         // first step, check whiteList
         boolean isWhite = whiteContains(sql);
         if (isWhite) {
-            return true;
+            return Collections.emptyList();
         }
+
 
         SQLStatementParser parser = createParser(sql);
         parser.getLexer().setAllowComment(false); // permit comment
@@ -65,26 +72,15 @@ public abstract class WallProvider {
         try {
             parser.parseStatementList(statementList);
         } catch (NotAllowCommentException e) {
-            if (throwException) {
-                throw new WallRuntimeException("not allow comment : " + sql);
-            }
-
-            return false;
+            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
         }
 
         if (parser.getLexer().token() != Token.EOF) {
-            if (throwException) {
-                throw new WallRuntimeException("illegal statement : " + sql);
-            }
-
-            return false;
+            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
         }
-        if (statementList.size() > 1) {
-            if (throwException) {
-                throw new WallRuntimeException("multi-statement : " + sql);
-            }
 
-            return false;
+        if (statementList.size() > 1) {
+            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
         }
 
         SQLStatement stmt = statementList.get(0);
@@ -93,20 +89,13 @@ public abstract class WallProvider {
 
         stmt.accept(visitor);
 
-        if (visitor.getViolations().size() > 0) {
-            if (throwException) {
-                Violation violation = visitor.getViolations().get(0);
-                throw new WallRuntimeException(violation.toString());
-            } else {
-                return false;
+        if (visitor.getViolations().size() == 0) {
+            if (sql.length() < whiteSqlMaxLength) {
+                this.addWhiteSql(sql);
             }
         }
 
-        if (sql.length() < whiteSqlMaxLength) {
-            this.addWhiteSql(sql);
-        }
-
-        return true;
+        return visitor.getViolations();
     }
 
 }

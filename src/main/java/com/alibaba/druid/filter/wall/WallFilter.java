@@ -1,6 +1,7 @@
 package com.alibaba.druid.filter.wall;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import com.alibaba.druid.DruidRuntimeException;
@@ -20,17 +21,18 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
 
-    private final static Log LOG          = LogFactory.getLog(WallFilter.class);
+    private final static Log LOG            = LogFactory.getLog(WallFilter.class);
 
-    private boolean          inited       = false;
+    private boolean          inited         = false;
 
     private WallProvider     provider;
-
-    private boolean          logViolation = false;
 
     private String           dbType;
 
     private WallConfig       config;
+
+    private boolean          logViolation   = false;
+    private boolean          throwException = true;
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -75,6 +77,14 @@ public class WallFilter extends FilterAdapter {
 
     public void setLogViolation(boolean logViolation) {
         this.logViolation = logViolation;
+    }
+
+    public boolean isThrowException() {
+        return throwException;
+    }
+
+    public void setThrowException(boolean throwException) {
+        this.throwException = throwException;
     }
 
     public WallProvider getProvider() {
@@ -232,13 +242,16 @@ public class WallFilter extends FilterAdapter {
     }
 
     public void check(ConnectionProxy connection, String sql) throws SQLException {
-        try {
-            provider.check(sql, true);
-        } catch (WallRuntimeException e) {
+        List<Violation> violations = provider.check(sql);
+
+        if (violations.size() > 0) {
             if (isLogViolation()) {
-                LOG.error("sql injection violation : " + sql, e);
+                LOG.error("sql injection violation : " + sql);
             }
-            throw e;
+
+            if (throwException) {
+                throw new SQLException("sql injection violation : " + sql);
+            }
         }
     }
 
