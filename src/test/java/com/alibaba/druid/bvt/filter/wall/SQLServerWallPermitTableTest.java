@@ -16,5 +16,6 @@ import com.alibaba.druid.filter.wall.WallUtils;
 public class SQLServerWallPermitTableTest extends TestCase {
     public void test_permitTable() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer("select * from sysObjects"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("select * from sysdatabases"));
     }
 }
