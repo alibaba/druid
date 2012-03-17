@@ -1,9 +1,11 @@
-package com.alibaba.druid.sql.dialect.sqlserver.ast;
+package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLServerUseStatement extends SQLServerObjectImpl implements SQLServerStatement {
+public class SQLUseStatement extends SQLStatementImpl implements SQLStatement {
 
     private static final long serialVersionUID = 1L;
     private SQLName           database;
@@ -17,7 +19,7 @@ public class SQLServerUseStatement extends SQLServerObjectImpl implements SQLSer
     }
 
     @Override
-    public void accept0(SQLServerASTVisitor visitor) {
+    public void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, database);
         }

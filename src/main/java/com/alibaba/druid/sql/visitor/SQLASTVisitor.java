@@ -76,6 +76,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 
 public interface SQLASTVisitor {
 
@@ -330,5 +331,9 @@ public interface SQLASTVisitor {
     void endVisit(SQLCommentStatement x);
 
     boolean visit(SQLCommentStatement x);
+    
+    void endVisit(SQLUseStatement x);
+    
+    boolean visit(SQLUseStatement x);
 
 }

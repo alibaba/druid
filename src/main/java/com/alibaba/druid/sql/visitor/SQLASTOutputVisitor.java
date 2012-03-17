@@ -82,6 +82,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
@@ -994,6 +995,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print(" IS ");
         x.getComment().accept(this);
 
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLUseStatement x) {
+        print("USE ");
+        x.getDatabase().accept(this);
         return false;
     }
 

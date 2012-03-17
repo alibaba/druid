@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 
 public class SQLStatementParser extends SQLParser {
 
@@ -155,8 +156,11 @@ public class SQLStatementParser extends SQLParser {
         }
     }
     
-    public SQLStatement parseUse() {
-        throw new ParserException("TODO " + lexer.token());
+    public SQLUseStatement parseUse() {
+        accept(Token.USE);
+        SQLUseStatement stmt = new SQLUseStatement();
+        stmt.setDatabase(this.exprParser.name());
+        return stmt;
     }
 
     protected SQLDropTableStatement parseDropTable(boolean acceptDrop) {

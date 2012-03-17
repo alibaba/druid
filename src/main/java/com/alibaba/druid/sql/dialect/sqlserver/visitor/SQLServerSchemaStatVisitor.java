@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerUseStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 
@@ -29,14 +28,5 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
         
     }
 
-    @Override
-    public boolean visit(SQLServerUseStatement x) {
-        return false;
-    }
-
-    @Override
-    public void endVisit(SQLServerUseStatement x) {
-        
-    }
 
 }
