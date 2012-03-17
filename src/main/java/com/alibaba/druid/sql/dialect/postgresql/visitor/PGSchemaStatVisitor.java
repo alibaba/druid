@@ -4,15 +4,16 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.ForClause;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.WindowClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGTruncateStatement;
@@ -85,20 +86,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     @Override
     public boolean visit(PGWithClause x) {
         return true;
-    }
-
-    @Override
-    public void endVisit(IntoClause x) {
-
-    }
-
-    @Override
-    public boolean visit(IntoClause x) {
-        String ident = x.getTable().toString();
-
-        TableStat stat = getTableStat(ident);
-        stat.incrementInsertCount();
-        return false;
     }
 
     @Override
@@ -196,7 +183,7 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
     public void endVisit(PGSelectStatement x) {
 
     }
-
+    
     @Override
     public boolean visit(PGSelectStatement x) {
         if (x.getWith() != null) {
@@ -235,6 +222,17 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
         setAliasMap(oldAliasMap);
 
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGSelectQueryBlock x) {
+        
+    }
+
+    @Override
+    public boolean visit(PGSelectQueryBlock x) {
+        this.visit((SQLSelectQueryBlock) x);
         return false;
     }
 }

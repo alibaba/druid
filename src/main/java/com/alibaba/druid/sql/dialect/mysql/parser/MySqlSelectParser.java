@@ -111,53 +111,58 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             if (lexer.token() == (Token.INTO)) {
                 lexer.nextToken();
-                acceptIdentifier("OUTFILE");
 
-                MySqlOutFileExpr outFile = new MySqlOutFileExpr();
-                outFile.setFile(expr());
-
-                queryBlock.setInto(outFile);
-
-                if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
+                if (identifierEquals("OUTFILE")) {
                     lexer.nextToken();
 
-                    if (identifierEquals("TERMINATED")) {
-                        lexer.nextToken();
-                        accept(Token.BY);
-                    }
-                    outFile.setColumnsTerminatedBy((SQLLiteralExpr) expr());
+                    MySqlOutFileExpr outFile = new MySqlOutFileExpr();
+                    outFile.setFile(expr());
 
-                    if (identifierEquals("OPTIONALLY")) {
+                    queryBlock.setInto(outFile);
+
+                    if (identifierEquals("FIELDS") || identifierEquals("COLUMNS")) {
                         lexer.nextToken();
-                        outFile.setColumnsEnclosedOptionally(true);
+
+                        if (identifierEquals("TERMINATED")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                        }
+                        outFile.setColumnsTerminatedBy((SQLLiteralExpr) expr());
+
+                        if (identifierEquals("OPTIONALLY")) {
+                            lexer.nextToken();
+                            outFile.setColumnsEnclosedOptionally(true);
+                        }
+
+                        if (identifierEquals("ENCLOSED")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            outFile.setColumnsEnclosedBy((SQLLiteralExpr) expr());
+                        }
+
+                        if (identifierEquals("ESCAPED")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            outFile.setColumnsEscaped((SQLLiteralExpr) expr());
+                        }
                     }
 
-                    if (identifierEquals("ENCLOSED")) {
+                    if (identifierEquals("LINES")) {
                         lexer.nextToken();
-                        accept(Token.BY);
-                        outFile.setColumnsEnclosedBy((SQLLiteralExpr) expr());
-                    }
 
-                    if (identifierEquals("ESCAPED")) {
-                        lexer.nextToken();
-                        accept(Token.BY);
-                        outFile.setColumnsEscaped((SQLLiteralExpr) expr());
+                        if (identifierEquals("STARTING")) {
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            outFile.setLinesStartingBy((SQLLiteralExpr) expr());
+                        } else {
+                            identifierEquals("TERMINATED");
+                            lexer.nextToken();
+                            accept(Token.BY);
+                            outFile.setLinesTerminatedBy((SQLLiteralExpr) expr());
+                        }
                     }
-                }
-
-                if (identifierEquals("LINES")) {
-                    lexer.nextToken();
-
-                    if (identifierEquals("STARTING")) {
-                        lexer.nextToken();
-                        accept(Token.BY);
-                        outFile.setLinesStartingBy((SQLLiteralExpr) expr());
-                    } else {
-                        identifierEquals("TERMINATED");
-                        lexer.nextToken();
-                        accept(Token.BY);
-                        outFile.setLinesTerminatedBy((SQLLiteralExpr) expr());
-                    }
+                } else {
+                    queryBlock.setInto(this.createExprParser().name());
                 }
             }
         }
@@ -198,7 +203,8 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
-            throw new ParserException("TODO");
+            SQLExpr expr = this.createExprParser().name();
+            queryBlock.setInto(expr);
         }
 
         if (lexer.token() == Token.FOR) {

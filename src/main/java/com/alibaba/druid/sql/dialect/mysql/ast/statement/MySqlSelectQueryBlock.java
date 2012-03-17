@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -30,41 +29,27 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 @SuppressWarnings("serial")
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
 
-    private boolean            hignPriority;
-    private boolean            straightJoin;
+    private boolean       hignPriority;
+    private boolean       straightJoin;
 
-    private boolean            smallResult;
-    private boolean            bigResult;
-    private boolean            bufferResult;
-    private Boolean            cache;
-    private boolean            calcFoundRows;
+    private boolean       smallResult;
+    private boolean       bigResult;
+    private boolean       bufferResult;
+    private Boolean       cache;
+    private boolean       calcFoundRows;
 
-    private SQLOrderBy         orderBy;
+    private SQLOrderBy    orderBy;
 
-    private Limit              limit;
+    private Limit         limit;
 
-    private SQLName            procedureName;
-    private List<SQLExpr>      procedureArgumentList = new ArrayList<SQLExpr>();
+    private SQLName       procedureName;
+    private List<SQLExpr> procedureArgumentList = new ArrayList<SQLExpr>();
 
-    private SQLExprTableSource into;
-
-    private boolean            forUpdate             = false;
-    private boolean            lockInShareMode       = false;
+    private boolean       forUpdate             = false;
+    private boolean       lockInShareMode       = false;
 
     public MySqlSelectQueryBlock(){
 
-    }
-
-    public SQLExprTableSource getInto() {
-        return into;
-    }
-
-    public void setInto(SQLExpr into) {
-        this.into = new SQLExprTableSource(into);
-    }
-
-    public void setInto(SQLExprTableSource into) {
-        this.into = into;
     }
 
     public boolean isForUpdate() {

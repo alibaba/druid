@@ -61,14 +61,14 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
+        WallVisitorUtils.checkSelelct(this, x);
 
         return true;
     }
 
     @Override
     public boolean visit(MySqlSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
+        WallVisitorUtils.checkSelelct(this, x);
         return true;
     }
 

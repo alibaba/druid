@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
@@ -25,14 +24,18 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
     private SQLOrderBy        orderBy;
     private FetchClause       fetch;
     private ForClause         forClause;
-    private IntoClause        into;
+    private IntoOption        intoOption;
 
-    public IntoClause getInto() {
-        return into;
+    public static enum IntoOption {
+        TEMPORARY, TEMP, UNLOGGED
     }
 
-    public void setInto(IntoClause into) {
-        this.into = into;
+    public IntoOption getIntoOption() {
+        return intoOption;
+    }
+
+    public void setIntoOption(IntoOption intoOption) {
+        this.intoOption = intoOption;
     }
 
     @Override
@@ -237,44 +240,4 @@ public class PGSelectQueryBlock extends SQLSelectQueryBlock {
         }
     }
 
-    public static class IntoClause extends PGSQLObjectImpl {
-
-        public static enum Option {
-            TEMPORARY, TEMP, UNLOGGED
-        }
-
-        private static final long  serialVersionUID = 1L;
-
-        private SQLExprTableSource table;
-        private Option             option;
-
-        public Option getOption() {
-            return option;
-        }
-
-        public void setOption(Option option) {
-            this.option = option;
-        }
-
-        public SQLExprTableSource getTable() {
-            return table;
-        }
-
-        public void setTable(SQLExpr table) {
-            this.table = new SQLExprTableSource(table);
-        }
-
-        public void setTable(SQLExprTableSource table) {
-            this.table = table;
-        }
-
-        @Override
-        public void accept0(PGASTVisitor visitor) {
-            if (visitor.visit(this)) {
-                acceptChild(visitor, table);
-            }
-            visitor.endVisit(this);
-        }
-
-    }
 }

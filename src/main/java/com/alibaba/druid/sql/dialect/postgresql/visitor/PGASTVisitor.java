@@ -12,8 +12,12 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface PGASTVisitor extends SQLASTVisitor {
 
-    void endVisit(PGSelectQueryBlock.WindowClause x);
+    void endVisit(PGSelectQueryBlock x);
 
+    boolean visit(PGSelectQueryBlock x);
+    
+    void endVisit(PGSelectQueryBlock.WindowClause x);
+    
     boolean visit(PGSelectQueryBlock.WindowClause x);
 
     void endVisit(PGSelectQueryBlock.FetchClause x);
@@ -32,27 +36,23 @@ public interface PGASTVisitor extends SQLASTVisitor {
 
     boolean visit(PGWithClause x);
 
-    void endVisit(PGSelectQueryBlock.IntoClause x);
-
-    boolean visit(PGSelectQueryBlock.IntoClause x);
-
     void endVisit(PGTruncateStatement x);
 
     boolean visit(PGTruncateStatement x);
-    
+
     void endVisit(PGDeleteStatement x);
-    
+
     boolean visit(PGDeleteStatement x);
-    
+
     void endVisit(PGInsertStatement x);
-    
+
     boolean visit(PGInsertStatement x);
-    
+
     void endVisit(PGSelectStatement x);
-    
+
     boolean visit(PGSelectStatement x);
-    
+
     void endVisit(PGUpdateStatement x);
-    
+
     boolean visit(PGUpdateStatement x);
 }

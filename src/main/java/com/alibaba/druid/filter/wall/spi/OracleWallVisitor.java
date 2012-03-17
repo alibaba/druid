@@ -99,14 +99,14 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
+        WallVisitorUtils.checkSelelct(this, x);
 
         return true;
     }
 
     @Override
     public boolean visit(OracleSelectQueryBlock x) {
-        WallVisitorUtils.checkSelelctCondition(this, x.getWhere());
+        WallVisitorUtils.checkSelelct(this, x);
 
         return true;
     }

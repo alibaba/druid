@@ -12,7 +12,6 @@ import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -55,18 +54,20 @@ public class WallVisitorUtils {
         }
     }
 
-    public static void checkSelelctCondition(WallVisitor visitor, SQLExpr x) {
-        if (x == null) {
+    public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
+        if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            return;
+        }
+        
+        if (!visitor.getConfig().isSelectWhereAlwayTrueCheck()) {
             return;
         }
 
-        if (!visitor.getConfig().isSelectHavingAlwayTrueCheck()) {
-            return;
-        }
-
-        if (Boolean.TRUE == getValue(x)) {
-            if (x instanceof SQLBinaryOpExpr) {
-                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) x;
+        SQLExpr where = x.getWhere();
+        if (where != null && Boolean.TRUE == getValue(where)) {
+            if (where instanceof SQLBinaryOpExpr) {
+                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
                 if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
                     || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
                     if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
@@ -76,7 +77,7 @@ public class WallVisitorUtils {
                 }
             }
 
-            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
     }
 
@@ -90,7 +91,7 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getValue(x)) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
     }
 
@@ -114,7 +115,7 @@ public class WallVisitorUtils {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             return;
         }
-        
+
         if (!visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
             return;
         }

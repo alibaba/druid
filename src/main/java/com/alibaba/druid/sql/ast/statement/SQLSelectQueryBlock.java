@@ -29,12 +29,25 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
     protected int                       distionOption;
     protected final List<SQLSelectItem> selectList       = new ArrayList<SQLSelectItem>();
 
-    protected SQLTableSource            from;                                              ;
+    protected SQLTableSource            from;
+    protected SQLExprTableSource        into;
     protected SQLExpr                   where;
     protected SQLSelectGroupByClause    groupBy;
 
     public SQLSelectQueryBlock(){
 
+    }
+
+    public SQLExprTableSource getInto() {
+        return into;
+    }
+
+    public void setInto(SQLExpr into) {
+        this.into = new SQLExprTableSource(into);
+    }
+
+    public void setInto(SQLExprTableSource into) {
+        this.into = into;
     }
 
     public SQLSelectGroupByClause getGroupBy() {

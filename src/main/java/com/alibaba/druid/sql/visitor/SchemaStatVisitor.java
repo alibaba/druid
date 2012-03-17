@@ -496,6 +496,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 x.putAttribute(ATTR_TABLE, table);
             }
         }
+        
+//      String ident = x.getTable().toString();
+        //
+//            TableStat stat = getTableStat(ident);
+//            stat.incrementInsertCount();
+//            return false;
 
         if (x.getWhere() != null) {
             x.getWhere().setParent(x);

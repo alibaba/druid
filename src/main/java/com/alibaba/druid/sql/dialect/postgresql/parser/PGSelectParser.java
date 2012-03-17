@@ -3,9 +3,10 @@ package com.alibaba.druid.sql.dialect.postgresql.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoClause;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -55,18 +56,17 @@ public class PGSelectParser extends SQLSelectParser {
             parseSelectList(queryBlock);
 
             if (lexer.token() == Token.INTO) {
-                IntoClause into = new IntoClause();
                 lexer.nextToken();
 
                 if (lexer.token() == Token.TEMPORARY) {
                     lexer.nextToken();
-                    into.setOption(IntoClause.Option.TEMPORARY);
+                    queryBlock.setIntoOption(IntoOption.TEMPORARY);
                 } else if (lexer.token() == Token.TEMP) {
                     lexer.nextToken();
-                    into.setOption(IntoClause.Option.TEMP);
+                    queryBlock.setIntoOption(IntoOption.TEMP);
                 } else if (lexer.token() == Token.UNLOGGED) {
                     lexer.nextToken();
-                    into.setOption(IntoClause.Option.UNLOGGED);
+                    queryBlock.setIntoOption(IntoOption.UNLOGGED);
                 }
 
                 if (lexer.token() == Token.TABLE) {
@@ -74,9 +74,8 @@ public class PGSelectParser extends SQLSelectParser {
                 }
 
                 SQLExpr name = this.createExprParser().name();
-                into.setTable(name);
 
-                queryBlock.setInto(into);
+                queryBlock.setInto(new SQLExprTableSource(name));
             }
         }
 
