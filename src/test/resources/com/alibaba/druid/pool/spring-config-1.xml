@@ -5,15 +5,25 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
-	default-lazy-init="true">
-	
+	default-lazy-init="false">
+
 	<bean id="test-filter" class="com.alibaba.druid.bvt.pool.SpringFilterTest$TestFilter">
 	</bean>
-	
-		<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
 	</bean>
 
-	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+	<bean id="wall-filter-config" class="com.alibaba.druid.filter.wall.WallConfig"
+		init-method="init">
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+	</bean>
+
+	<bean id="wall-filter" class="com.alibaba.druid.filter.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="config" ref="wall-filter-config" />
+	</bean>
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
 		<property name="url">
 			<value>jdbc:mock:</value>
 		</property>
@@ -25,8 +35,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 		<property name="proxyFilters">
 			<list>
-				<ref bean="test-filter"/>
-				<ref bean="stat-filter"/>
+				<ref bean="test-filter" />
+				<ref bean="stat-filter" />
+				<ref bean="wall-filter" />
 			</list>
 		</property>
 	</bean>
