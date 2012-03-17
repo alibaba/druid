@@ -67,6 +67,11 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
     }
+    
+    @Override
+    public void destory() {
+        
+    }
 
     @Override
     public Array callableStatement_getArray(FilterChain chain, CallableStatementProxy statement, int parameterIndex)

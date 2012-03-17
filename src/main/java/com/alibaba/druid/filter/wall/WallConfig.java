@@ -32,8 +32,6 @@ public class WallConfig {
     protected final Set<String> permitNames                = new HashSet<String>();
     protected final Set<String> permitObjects              = new HashSet<String>();
 
-  
-
     public void loadDefault(String dir) {
         if (dir.endsWith("/")) {
             dir = dir.substring(0, dir.length() - 1);
@@ -49,7 +47,7 @@ public class WallConfig {
         if (dir.endsWith("/")) {
             dir = dir.substring(0, dir.length() - 1);
         }
-        
+
         loadResource(getPermitNames(), dir + "permit-name.txt");
         loadResource(getPermitSchemas(), dir + "permit-schema.txt");
         loadResource(getPermitFunctions(), dir + "permit-function.txt");
@@ -172,7 +170,7 @@ public class WallConfig {
     public Set<String> getPermitObjects() {
         return permitObjects;
     }
-    
+
     public boolean isPermitObjects(String name) {
         name = WallVisitorUtils.form(name);
         return permitObjects.contains(name);
@@ -182,7 +180,7 @@ public class WallConfig {
         name = WallVisitorUtils.form(name);
         return this.permitSchemas.contains(name);
     }
-    
+
     public boolean isPermitFunction(String name) {
         name = WallVisitorUtils.form(name);
         return this.permitFunctions.contains(name);

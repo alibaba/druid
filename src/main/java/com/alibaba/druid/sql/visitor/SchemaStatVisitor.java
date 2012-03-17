@@ -671,6 +671,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
+            
+            if (variants.containsKey(ident)) {
+                return false;
+            }
 
             if (subQueryMap.containsKey(ident)) {
                 return false;

@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 
 public class DruidDataSourceFilterTest extends TestCase {
@@ -52,20 +53,24 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.setFilters("stat");
 
         JdbcStatManager.getInstance().reset();
+        
+        dataSource.init();
+        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
+        JdbcDataSourceStat dataSourceStat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
 
-        Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
+        Assert.assertEquals(0, dataSourceStat.getConnectionStat().getConnectCount());
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
         for (int i = 0; i < 2; ++i) {
             Connection conn = dataSource.getConnection();
 
-            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+            Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+            Assert.assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount());
 
             conn.close();
 
-            Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-            Assert.assertEquals(0, JdbcStatManager.getInstance().getConnectionstat().getCloseCount()); // logic
+            Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+            Assert.assertEquals(0, dataSourceStat.getConnectionStat().getCloseCount()); // logic
                                                                                                        // close不会导致计数器＋1
         }
 
@@ -73,7 +78,7 @@ public class DruidDataSourceFilterTest extends TestCase {
 
         dataSource.close();
 
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getConnectCount());
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getConnectionstat().getCloseCount());
+        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectCount());
+        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getCloseCount());
     }
 }

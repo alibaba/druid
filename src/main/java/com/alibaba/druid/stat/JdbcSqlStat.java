@@ -391,7 +391,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 -
                 new ArrayType<Long>(SimpleType.LONG, true), //
-                new ArrayType<Long>(SimpleType.STRING, true), //
+                new ArrayType<String>(SimpleType.STRING, false), //
         };
 
         String[] indexNames = {
@@ -490,6 +490,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("InTransactionCount", getInTransactionCount());
 
         map.put("Histogram", this.histogram.toArray());
+        
         map.put("LastSlowParameters", lastSlowParameters);
 
         return map;

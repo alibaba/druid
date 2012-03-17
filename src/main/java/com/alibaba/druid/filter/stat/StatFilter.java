@@ -123,7 +123,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    public void init(DataSourceProxy dataSource) {
+    public synchronized void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
         ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
@@ -135,6 +135,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             stat = dataSourceStats.get(url);
         }
         this.dataSourceStat = stat;
+    }
+    
+    @Override
+    public synchronized void destory() {
+        if (dataSource == null) {
+            return;
+        }
+        
+        ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
+        String url = dataSource.getUrl();
+        dataSourceStats.remove(url);
+        
+        dataSource = null;
     }
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {

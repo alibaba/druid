@@ -687,6 +687,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notEmptySignalCount++;
             
             this.closed = true;
+            
+            for (Filter filter : filters) {
+                filter.destory();
+            }
         } finally {
             lock.unlock();
         }

@@ -8,6 +8,8 @@ import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.filter.wall.spi.OracleWallProvider;
+import com.alibaba.druid.logging.Log;
+import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -18,15 +20,19 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class WallFilter extends FilterAdapter {
 
-    private boolean      inited = false;
+    private final static Log LOG          = LogFactory.getLog(WallFilter.class);
 
-    private WallProvider provider;
+    private boolean          inited       = false;
 
-    private boolean      loadDefault;
+    private WallProvider     provider;
 
-    private boolean      loadExtend;
+    private boolean          loadDefault;
 
-    private WallConfig   config = new WallConfig();
+    private boolean          loadExtend;
+
+    private boolean          logViolation = false;
+
+    private WallConfig       config       = new WallConfig();
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -35,6 +41,14 @@ public class WallFilter extends FilterAdapter {
         provider = createWallProvider(dataSource.getDbType());
 
         this.inited = true;
+    }
+
+    public boolean isLogViolation() {
+        return logViolation;
+    }
+
+    public void setLogViolation(boolean logViolation) {
+        this.logViolation = logViolation;
     }
 
     public WallProvider getProvider() {
@@ -210,7 +224,14 @@ public class WallFilter extends FilterAdapter {
     }
 
     public void check(ConnectionProxy connection, String sql) throws SQLException {
-        provider.check(sql, true);
+        try {
+            provider.check(sql, true);
+        } catch (WallRuntimeException e) {
+            if (isLogViolation()) {
+                LOG.error("sql injection violation : " + sql, e);
+            }
+            throw e;
+        }
     }
 
     public WallProvider createWallProvider(String dbType) {
