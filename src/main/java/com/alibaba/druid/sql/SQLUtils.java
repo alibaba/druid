@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -97,6 +98,14 @@ public class SQLUtils {
     public static String toPGString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
         sqlObject.accept(new PGOutputVisitor(out));
+
+        String sql = out.toString();
+        return sql;
+    }
+    
+    public static String toSQLServerString(SQLObject sqlObject) {
+        StringBuilder out = new StringBuilder();
+        sqlObject.accept(new SQLServerOutputVisitor(out));
 
         String sql = out.toString();
         return sql;
