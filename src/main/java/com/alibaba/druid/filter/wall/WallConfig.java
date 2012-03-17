@@ -34,10 +34,6 @@ public class WallConfig {
 
     private String              dir;
 
-    private boolean             loadDefault                = true;
-
-    private boolean             loadExtend                 = true;
-
     private boolean             inited;
 
     public WallConfig(){
@@ -62,54 +58,19 @@ public class WallConfig {
     }
 
     public void init() {
-        if (loadDefault) {
-            loadDefault(dir);
-        }
-
-        if (loadExtend) {
-            loadExtend(dir);
-        }
-
-        inited = true;
+        loadConfig(dir);
     }
 
-    public boolean isLoadDefault() {
-        return loadDefault;
-    }
-
-    public void setLoadDefault(boolean loadDefault) {
-        this.loadDefault = loadDefault;
-    }
-
-    public boolean isLoadExtend() {
-        return loadExtend;
-    }
-
-    public void setLoadExtend(boolean loadExtend) {
-        this.loadExtend = loadExtend;
-    }
-
-    public void loadDefault(String dir) {
-        if (dir.endsWith("/")) {
-            dir = dir.substring(0, dir.length() - 1);
-        }
-        loadResource(getPermitNames(), dir + "/permit-name-default.txt");
-        loadResource(getPermitSchemas(), dir + "/permit-schema-default.txt");
-        loadResource(getPermitFunctions(), dir + "/permit-function-default.txt");
-        loadResource(getPermitTables(), dir + "/permit-table-default.txt");
-        loadResource(getPermitObjects(), dir + "/permit-object-default.txt");
-    }
-
-    public void loadExtend(String dir) {
+    public void loadConfig(String dir) {
         if (dir.endsWith("/")) {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(getPermitNames(), dir + "permit-name.txt");
-        loadResource(getPermitSchemas(), dir + "permit-schema.txt");
-        loadResource(getPermitFunctions(), dir + "permit-function.txt");
-        loadResource(getPermitTables(), dir + "permit-table.txt");
-        loadResource(getPermitObjects(), dir + "permit-object.txt");
+        loadResource(getPermitNames(), dir + "/permit-name.txt");
+        loadResource(getPermitSchemas(), dir + "/permit-schema.txt");
+        loadResource(getPermitFunctions(), dir + "/permit-function.txt");
+        loadResource(getPermitTables(), dir + "/permit-table.txt");
+        loadResource(getPermitObjects(), dir + "/permit-object.txt");
     }
 
     public boolean isSelelctAllow() {
