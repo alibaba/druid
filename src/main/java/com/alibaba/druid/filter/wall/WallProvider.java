@@ -50,6 +50,10 @@ public abstract class WallProvider {
     public abstract SQLStatementParser createParser(String sql);
 
     public abstract WallVisitor createWallVisitor();
+    
+    public boolean checkValid(String sql) {
+        return check(sql).size() == 0;
+    }
 
     public List<Violation> check(String sql) {
         // first step, check whiteList
