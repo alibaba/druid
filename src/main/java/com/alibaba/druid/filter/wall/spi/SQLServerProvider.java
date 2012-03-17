@@ -3,6 +3,7 @@ package com.alibaba.druid.filter.wall.spi;
 import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallProvider;
 import com.alibaba.druid.filter.wall.WallVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
 /**
@@ -14,30 +15,29 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
  */
 public class SQLServerProvider extends WallProvider {
 
+    public final static String DEFAULT_CONFIG_DIR = "META-INF/druid/wall/sqlserver";
+
     /**
      * @param config
      */
-    public SQLServerProvider(WallConfig config) {
-        super(config);
-        // TODO Auto-generated constructor stub
+    public SQLServerProvider() {
+        this(new WallConfig(DEFAULT_CONFIG_DIR));
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallProvider#createParser(java.lang.String)
-     */
+
+    public SQLServerProvider(WallConfig config){
+        super(config);
+    }
+
     @Override
     public SQLStatementParser createParser(String sql) {
-        // TODO Auto-generated method stub
-        return null;
+        return new SQLServerStatementParser(sql);
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallProvider#createWallVisitor()
-     */
     @Override
     public WallVisitor createWallVisitor() {
-        // TODO Auto-generated method stub.
-        return null;
+        return new SQLServerWallVisitor(config);
     }
+
 
 }
