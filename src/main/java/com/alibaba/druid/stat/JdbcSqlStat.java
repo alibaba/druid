@@ -17,7 +17,6 @@ package com.alibaba.druid.stat;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -65,7 +64,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong inTransactionCount    = new AtomicLong();
 
-    private List<String>     lastSlowParameters;
+    private String[]         lastSlowParameters;
 
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
@@ -78,11 +77,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.sql = sql;
     }
 
-    public List<String> getLastSlowParameters() {
+    public String[] getLastSlowParameters() {
         return lastSlowParameters;
     }
 
-    public void setLastSlowParameters(List<String> lastSlowParameters) {
+    public void setLastSlowParameters(String[] lastSlowParameters) {
         this.lastSlowParameters = lastSlowParameters;
     }
 
@@ -391,7 +390,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.STRING, //
 
                 // 25 -
-                new ArrayType<Long>(SimpleType.LONG, true) //
+                new ArrayType<Long>(SimpleType.LONG, true), //
+                new ArrayType<Long>(SimpleType.STRING, true), //
         };
 
         String[] indexNames = {
@@ -431,7 +431,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "URL", //
 
                 // 25 -
-                "Histogram" //
+                "Histogram", //
+                "LastSlowParameters"
+        //
         };
         String[] indexDescriptions = indexNames;
         COMPOSITE_TYPE = new CompositeType("SqlStatistic", "Sql Statistic", indexNames, indexDescriptions, indexTypes);
@@ -446,6 +448,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public Map<String, Object> getData() throws JMException {
         Map<String, Object> map = new HashMap<String, Object>();
 
+        // 0 - 4
         map.put("ID", id);
         map.put("DataSource", dataSource);
         map.put("SQL", sql);
@@ -487,6 +490,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("InTransactionCount", getInTransactionCount());
 
         map.put("Histogram", this.histogram.toArray());
+        map.put("LastSlowParameters", lastSlowParameters);
 
         return map;
     }

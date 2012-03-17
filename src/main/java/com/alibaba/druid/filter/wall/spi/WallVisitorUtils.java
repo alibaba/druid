@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -36,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -92,8 +94,9 @@ public class WallVisitorUtils {
         }
     }
 
-    public static void checkDeleteCondition(WallVisitor visitor, SQLExpr x) {
-        if (x == null) {
+    public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
+        if (!visitor.getConfig().isDeleteAllow()) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             return;
         }
 
@@ -101,22 +104,23 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getValue(x)) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
     }
 
-    public static void checkUpdateCondition(WallVisitor visitor, SQLExpr x) {
-        if (x == null) {
+    public static void checkUpdate(WallVisitor visitor, SQLUpdateStatement x) {
+        if (!visitor.getConfig().isUpdateAllow()) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             return;
         }
-
+        
         if (!visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
             return;
         }
 
-        if (Boolean.TRUE == getValue(x)) {
-            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toSQLString(x)));
+        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
     }
 
@@ -395,11 +399,11 @@ public class WallVisitorUtils {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
-        
+
         if (!visitor.getConfig().isFunctionCheck()) {
             return;
         }
-        
+
         String methodName = x.getMethodName();
 
         if (visitor.getConfig().isPermitFunction(methodName.toLowerCase())) {

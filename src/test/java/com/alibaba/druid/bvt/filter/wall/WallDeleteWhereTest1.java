@@ -7,12 +7,12 @@ import org.junit.Assert;
 import com.alibaba.druid.filter.wall.WallUtils;
 
 /**
- * 这个场景，检测可疑的Where条件
+ * 这个场景，检测可疑的Having条件
  * @author wenshao
  *
  */
-public class WallSelectWhereTest4 extends TestCase {
-    private String sql = "select * from t WHERE FID = 256 OR CHR(67)||CHR(65)||CHR(84) = 'CAT'";
+public class WallDeleteWhereTest1 extends TestCase {
+    private String sql = "DELETE FROM T";
 
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(sql));

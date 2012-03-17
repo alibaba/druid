@@ -89,23 +89,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLDeleteStatement x) {
-        if (!config.isDeleteAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
-
-        WallVisitorUtils.checkDeleteCondition(this, x.getWhere());
+        WallVisitorUtils.checkDelete(this, x);
         return true;
     }
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
-        if (!config.isUpdateAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
-
-        WallVisitorUtils.checkUpdateCondition(this, x.getWhere());
+        WallVisitorUtils.checkUpdate(this, x);
         return true;
     }
 

@@ -200,12 +200,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLDeleteStatement x) {
-        if (!config.isDeleteAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
-
-        WallVisitorUtils.checkDeleteCondition(this, x.getWhere());
+        WallVisitorUtils.checkDelete(this, x);
         return true;
     }
 
@@ -216,12 +211,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLUpdateStatement x) {
-        if (!config.isUpdateAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
-
-        WallVisitorUtils.checkUpdateCondition(this, x.getWhere());
+        WallVisitorUtils.checkUpdate(this, x);
 
         return true;
     }

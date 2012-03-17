@@ -21,9 +21,8 @@ import java.sql.Clob;
 import java.sql.NClob;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,6 +39,7 @@ import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
@@ -406,29 +406,32 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
-                List<String> lastSlowParameters = new ArrayList<String>();
-                for (Object value : statement.getParameters().values()) {
+                Map<Integer, JdbcParameter> parameters = statement.getParameters();
+                String[] lastSlowParameters = new String[parameters.size()];
+                int index = 0;
+                for (JdbcParameter parameter : statement.getParameters().values()) {
+                    Object value = parameter.getValue();
                     if (value == null) {
-                        lastSlowParameters.add("null");
+                        lastSlowParameters[index] = "null";
                     } else if (value instanceof String) {
-                        lastSlowParameters.add("'" + value.toString() + "'");
+                        lastSlowParameters[index] = "'" + value.toString() + "'";
                     } else if (value instanceof Number) {
-                        lastSlowParameters.add(value.toString());
+                        lastSlowParameters[index] = value.toString();
                     } else if (value instanceof java.util.Date) {
                         java.util.Date date = (java.util.Date) value;
-                        lastSlowParameters.add(date.getClass().getSimpleName() + "(" + date.getTime() + ")");
+                        lastSlowParameters[index] = date.getClass().getSimpleName() + "(" + date.getTime() + ")";
                     } else if (value instanceof Boolean) {
-                        lastSlowParameters.add(value.toString());
+                        lastSlowParameters[index] = value.toString();
                     } else if (value instanceof InputStream) {
-                        lastSlowParameters.add("<InputStream>");
+                        lastSlowParameters[index] = "<InputStream>";
                     } else if (value instanceof Clob) {
-                        lastSlowParameters.add("<Clob>");
+                        lastSlowParameters[index] = "<Clob>";
                     } else if (value instanceof NClob) {
-                        lastSlowParameters.add("<NClob>");
+                        lastSlowParameters[index] = "<NClob>";
                     } else if (value instanceof Blob) {
-                        lastSlowParameters.add("<Blob>");
+                        lastSlowParameters[index] = "<Blob>";
                     } else {
-                        lastSlowParameters.add("<" + value.getClass() + ">");
+                        lastSlowParameters[index] = "<" + value.getClass() + ">";
                     }
                 }
                 sqlStat.setLastSlowParameters(lastSlowParameters);
