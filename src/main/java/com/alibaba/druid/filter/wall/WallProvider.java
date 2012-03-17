@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -51,18 +51,12 @@ public abstract class WallProvider {
 
     public abstract WallVisitor createWallVisitor();
 
-    public boolean check(String sql, boolean throwException) throws WallRuntimeException {
-        List<Violation> violations = check(sql);
-        return violations.size() > 0;
-    }
-
     public List<Violation> check(String sql) {
         // first step, check whiteList
         boolean isWhite = whiteContains(sql);
         if (isWhite) {
             return Collections.emptyList();
         }
-
 
         SQLStatementParser parser = createParser(sql);
         parser.getLexer().setAllowComment(false); // permit comment
@@ -71,23 +65,27 @@ public abstract class WallProvider {
 
         try {
             parser.parseStatementList(statementList);
-        } catch (NotAllowCommentException e) {
-            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
+        } catch (ParserException e) {
+            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
 
         if (parser.getLexer().token() != Token.EOF) {
-            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
+            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
 
         if (statementList.size() > 1) {
-            return Collections.<Violation>singletonList(new IllegalSQLObjectViolation(sql));
+            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
 
         SQLStatement stmt = statementList.get(0);
 
         WallVisitor visitor = createWallVisitor();
 
-        stmt.accept(visitor);
+        try {
+            stmt.accept(visitor);
+        } catch (ParserException e) {
+            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
+        }
 
         if (visitor.getViolations().size() == 0) {
             if (sql.length() < whiteSqlMaxLength) {
