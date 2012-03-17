@@ -12,6 +12,7 @@ import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -36,6 +37,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.util.JdbcUtils;
@@ -59,7 +61,7 @@ public class WallVisitorUtils {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             return;
         }
-        
+
         if (!visitor.getConfig().isSelectWhereAlwayTrueCheck()) {
             return;
         }
@@ -442,6 +444,16 @@ public class WallVisitorUtils {
             if (visitor.containsPermitTable(tableName)) {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
+        }
+    }
+
+    public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
+        if (!visitor.getConfig().isSelectUnionCheck()) {
+            return;
+        }
+        
+        if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
+            visitor.getViolations().add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
         }
     }
 

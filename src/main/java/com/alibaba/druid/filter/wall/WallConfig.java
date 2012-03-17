@@ -11,8 +11,10 @@ public class WallConfig {
 
     private boolean             selelctAllow               = true;
     private boolean             selectIntoAllow            = true;
+    private boolean             selectIntoOutfileAllow     = false;
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
+    private boolean             selectUnionCheck           = true;
 
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
@@ -88,6 +90,22 @@ public class WallConfig {
 
     public void setSelectIntoAllow(boolean selectIntoAllow) {
         this.selectIntoAllow = selectIntoAllow;
+    }
+
+    public boolean isSelectIntoOutfileAllow() {
+        return selectIntoOutfileAllow;
+    }
+
+    public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
+        this.selectIntoOutfileAllow = selectIntoOutfileAllow;
+    }
+
+    public boolean isSelectUnionCheck() {
+        return selectUnionCheck;
+    }
+
+    public void setSelectUnionCheck(boolean selectUnionCheck) {
+        this.selectUnionCheck = selectUnionCheck;
     }
 
     public boolean isSelectWhereAlwayTrueCheck() {

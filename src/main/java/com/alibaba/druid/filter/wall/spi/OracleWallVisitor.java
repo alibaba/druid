@@ -113,9 +113,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLUnionQuery x) {
-        if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            violations.add(new IllegalSQLObjectViolation(SQLUtils.toMySqlString(x)));
-        }
+        WallVisitorUtils.checkUnion(this, x);
 
         return true;
     }
