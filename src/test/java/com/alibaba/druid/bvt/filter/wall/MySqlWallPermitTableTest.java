@@ -8,7 +8,7 @@ import com.alibaba.druid.filter.wall.WallUtils;
 import junit.framework.TestCase;
 
 /**
- * 这个场景测试访问MySql系统函数
+ * 这个场景测试访问MySql系统表
  * 
  * @author admin
  */

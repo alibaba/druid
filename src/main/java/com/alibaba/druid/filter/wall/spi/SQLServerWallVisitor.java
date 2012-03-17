@@ -2,11 +2,28 @@ package com.alibaba.druid.filter.wall.spi;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.filter.wall.Violation;
 import com.alibaba.druid.filter.wall.WallConfig;
 import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 
@@ -23,25 +40,16 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         this.config = config;
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallVisitor#getConfig()
-     */
     @Override
     public WallConfig getConfig() {
         return this.config;
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallVisitor#getViolations()
-     */
     @Override
     public List<Violation> getViolations() {
         return violations;
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallVisitor#isPermitTable(java.lang.String)
-     */
     @Override
     public boolean isPermitTable(String name) {
         if(!config.isTableCheck()){
@@ -52,12 +60,122 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return config.getPermitTables().contains(name);
     }
 
-    /* (non-Javadoc)
-     * @see com.alibaba.druid.filter.wall.WallVisitor#toSQL(com.alibaba.druid.sql.ast.SQLObject)
-     */
     @Override
     public String toSQL(SQLObject obj) {
         return SQLUtils.toMySqlString(obj);
     }
+    
 
+    public boolean visit(SQLIdentifierExpr x) {
+        String name = x.getName();
+        name = WallVisitorUtils.form(name);
+        if (config.isVariantCheck() && config.getPermitVariants().contains(name)) {
+            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+        }
+        return true;
+    }
+
+    public boolean visit(SQLPropertyExpr x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    // executeQuery
+    public boolean visit(SQLBinaryOpExpr x) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLMethodInvokeExpr x) {
+        WallVisitorUtils.checkFunction(this, x);
+
+        return true;
+    }
+
+    public boolean visit(SQLExprTableSource x) {
+        WallVisitorUtils.check(this, x);
+
+        if (x.getExpr() instanceof SQLName) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean visit(SQLSelectGroupByClause x) {
+        WallVisitorUtils.checkHaving(this, x.getHaving());
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLSelectQueryBlock x) {
+        WallVisitorUtils.checkSelelct(this, x);
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLUnionQuery x) {
+        WallVisitorUtils.checkUnion(this, x);
+
+        return true;
+    }
+
+    public void preVisit(SQLObject x) {
+        if (!(x instanceof SQLStatement)) {
+            return;
+        }
+
+        if (config.isNoneBaseStatementAllow()) {
+            return;
+        }
+
+        if (x instanceof SQLInsertStatement) {
+
+        } else if (x instanceof SQLSelectStatement) {
+
+        } else if (x instanceof SQLDeleteStatement) {
+
+        } else if (x instanceof SQLUpdateStatement) {
+        } else if (x instanceof SQLTruncateStatement) {
+            if (!config.isTruncateAllow()) {
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+            }
+        } else {
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+        }
+    }
+
+    @Override
+    public boolean visit(SQLSelectStatement x) {
+        if (!config.isSelelctAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLInsertStatement x) {
+        if (!config.isInsertAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLDeleteStatement x) {
+        WallVisitorUtils.checkDelete(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLUpdateStatement x) {
+        WallVisitorUtils.checkUpdate(this, x);
+
+        return true;
+    }
 }
