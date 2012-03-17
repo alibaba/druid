@@ -84,7 +84,6 @@ public class SQLServerWallTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT name FROM master..sysobjects WHERE xtype = ‘U’; — use xtype = ‘V’ for views SELECT name FROM someotherdb..sysobjects WHERE xtype = ‘U’; "));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT sysobjects.name as tablename, syscolumns.name as columnname FROM sysobjects JOIN syscolumns ON sysobjects.id = syscolumns.id WHERE sysobjects.xtype = ‘U’ AND syscolumns.name LIKE ‘%PASSWORD%’ "));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT TOP 1 name FROM (SELECT TOP 9 name FROM master..syslogins ORDER BY name ASC) sq ORDER BY name DESC "));
-
         Assert.assertFalse(WallUtils.isValidateSqlServer("WAITFOR DELAY ’0:0:5′ "));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT HOST_NAME()"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("BULK INSERT mydata FROM ‘c:boot.ini’;"));
