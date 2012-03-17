@@ -142,7 +142,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
-        if (varName.startsWith("@@")) {
+        if (config.isVariantCheck() && varName.startsWith("@@")) {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
 
@@ -201,7 +201,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (!(x instanceof SQLStatement)) {
             return;
         }
-        
+
         if (config.isNoneBaseStatementAllow()) {
             return;
         }
@@ -213,10 +213,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         } else if (x instanceof SQLDeleteStatement) {
 
         } else if (x instanceof SQLUpdateStatement) {
-            
+
         } else if (x instanceof SQLTruncateStatement) {
             if (!config.isTruncateAllow()) {
-                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));
             }
         } else {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));

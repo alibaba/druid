@@ -32,11 +32,13 @@ public class WallConfig {
     private boolean             shcemaCheck                = true;
     private boolean             tableCheck                 = true;
     private boolean             functionCheck              = true;
+    private boolean             objectCheck                = true;
+    private boolean             variantCheck               = true;
 
     protected final Set<String> permitFunctions            = new HashSet<String>();
     protected final Set<String> permitTables               = new HashSet<String>();
     protected final Set<String> permitSchemas              = new HashSet<String>();
-    protected final Set<String> permitNames                = new HashSet<String>();
+    protected final Set<String> permitVariants             = new HashSet<String>();
     protected final Set<String> permitObjects              = new HashSet<String>();
 
     private String              dir;
@@ -73,7 +75,7 @@ public class WallConfig {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(getPermitNames(), dir + "/permit-name.txt");
+        loadResource(getPermitVariants(), dir + "/permit-variant.txt");
         loadResource(getPermitSchemas(), dir + "/permit-schema.txt");
         loadResource(getPermitFunctions(), dir + "/permit-function.txt");
         loadResource(getPermitTables(), dir + "/permit-table.txt");
@@ -216,6 +218,22 @@ public class WallConfig {
         this.functionCheck = functionCheck;
     }
 
+    public boolean isVariantCheck() {
+        return variantCheck;
+    }
+
+    public void setVariantCheck(boolean variantCheck) {
+        this.variantCheck = variantCheck;
+    }
+
+    public boolean isObjectCheck() {
+        return objectCheck;
+    }
+
+    public void setObjectCheck(boolean objectCheck) {
+        this.objectCheck = objectCheck;
+    }
+
     // ///////////////////
 
     public Set<String> getPermitFunctions() {
@@ -230,8 +248,8 @@ public class WallConfig {
         return permitSchemas;
     }
 
-    public Set<String> getPermitNames() {
-        return permitNames;
+    public Set<String> getPermitVariants() {
+        return permitVariants;
     }
 
     public Set<String> getPermitObjects() {

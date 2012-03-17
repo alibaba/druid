@@ -51,7 +51,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
     }
 
     public boolean visit(SQLIdentifierExpr x) {
-
+        String name = x.getName();
+        name = WallVisitorUtils.form(name);
+        if (config.isVariantCheck() && config.getPermitVariants().contains(name)) {
+            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+        }
         return true;
     }
 
