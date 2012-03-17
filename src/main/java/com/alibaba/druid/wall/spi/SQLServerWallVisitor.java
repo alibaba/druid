@@ -1,12 +1,8 @@
-package com.alibaba.druid.filter.wall.spi;
+package com.alibaba.druid.wall.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
-import com.alibaba.druid.filter.wall.Violation;
-import com.alibaba.druid.filter.wall.WallConfig;
-import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -26,6 +22,10 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
+import com.alibaba.druid.wall.IllegalSQLObjectViolation;
+import com.alibaba.druid.wall.Violation;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallVisitor;
 
 
 public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor{

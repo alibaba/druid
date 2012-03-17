@@ -1,12 +1,8 @@
-package com.alibaba.druid.filter.wall.spi;
+package com.alibaba.druid.wall.spi;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.filter.wall.IllegalSQLObjectViolation;
-import com.alibaba.druid.filter.wall.Violation;
-import com.alibaba.druid.filter.wall.WallConfig;
-import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -33,6 +29,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.wall.IllegalSQLObjectViolation;
+import com.alibaba.druid.wall.Violation;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallVisitor;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 

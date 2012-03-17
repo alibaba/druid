@@ -1,10 +1,10 @@
-package com.alibaba.druid.filter.wall.spi;
+package com.alibaba.druid.wall.spi;
 
-import com.alibaba.druid.filter.wall.WallConfig;
-import com.alibaba.druid.filter.wall.WallProvider;
-import com.alibaba.druid.filter.wall.WallVisitor;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallVisitor;
 
 public class OracleWallProvider extends WallProvider {
 

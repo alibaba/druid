@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.filter.wall.WallUtils;
+import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 测试禁止多条语句执行的场景
