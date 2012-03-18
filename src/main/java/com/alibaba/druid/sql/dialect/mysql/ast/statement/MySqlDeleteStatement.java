@@ -30,17 +30,24 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private static final long   serialVersionUID = 1L;
+    private static final long              serialVersionUID = 1L;
 
-    private boolean             lowPriority      = false;
-    private boolean             quick            = false;
-    private boolean             ignore           = false;
+    private boolean                        lowPriority      = false;
+    private boolean                        quick            = false;
+    private boolean                        ignore           = false;
 
-    private SQLTableSource      from;
-    private SQLTableSource      using;
-    private SQLOrderBy          orderBy;
-    private Limit               limit;
-    private final List<SQLExprTableSource> tableSources       = new ArrayList<SQLExprTableSource>();
+    private SQLTableSource                 from;
+    private SQLTableSource                 using;
+    private SQLOrderBy                     orderBy;
+    private Limit                          limit;
+    private final List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>();
+
+    public SQLExprTableSource getTableSource() {
+        if (tableSources.size() > 0) {
+            return tableSources.get(0);
+        }
+        return null;
+    }
 
     public boolean isLowPriority() {
         return lowPriority;
@@ -84,7 +91,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         }
         return (SQLName) tableSources.get(0).getExpr();
     }
-    
+
     public void setTableSource(SQLExprTableSource tableSource) {
         if (tableSources.size() == 0) {
             tableSources.add(tableSource);

@@ -107,10 +107,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLInsertStatement x) {
-        if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
-            return false;
-        }
+        WallVisitorUtils.checkInsert(this, x);
 
         return true;
     }

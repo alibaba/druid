@@ -41,6 +41,8 @@ public class WallConfig {
     protected final Set<String> permitVariants             = new HashSet<String>();
     protected final Set<String> permitObjects              = new HashSet<String>();
 
+    protected final Set<String> readOnlyTables             = new HashSet<String>();
+
     private String              dir;
 
     private boolean             inited;
@@ -256,6 +258,10 @@ public class WallConfig {
         return permitObjects;
     }
 
+    public Set<String> getReadOnlyTables() {
+        return readOnlyTables;
+    }
+
     public boolean isPermitObjects(String name) {
         if (!objectCheck) {
             return false;
@@ -269,7 +275,7 @@ public class WallConfig {
         if (!schemaCheck) {
             return false;
         }
-        
+
         name = WallVisitorUtils.form(name);
         return this.permitSchemas.contains(name);
     }
@@ -278,7 +284,7 @@ public class WallConfig {
         if (!functionCheck) {
             return false;
         }
-        
+
         name = WallVisitorUtils.form(name);
         return this.permitFunctions.contains(name);
     }
