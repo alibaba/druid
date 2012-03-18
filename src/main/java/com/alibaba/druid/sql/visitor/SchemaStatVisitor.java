@@ -472,9 +472,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getFrom().accept(this);
             return false;
         }
+        
+        if (x.getInto() != null) {
+            SQLName into = (SQLName) x.getInto().getExpr();
+            String ident = into.toString();
+            TableStat stat = getTableStat(ident);
+            stat.incrementInsertCount();
+        }
 
         String originalTable = getCurrentTable();
-
+        
         if (x.getFrom() instanceof SQLExprTableSource) {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
@@ -488,7 +495,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 x.putAttribute("_old_local_", originalTable);
             }
         }
-
+        
         if (x.getFrom() != null) {
             x.getFrom().accept(this); // 提前执行，获得aliasMap
             String table = (String) x.getFrom().getAttribute(ATTR_TABLE);

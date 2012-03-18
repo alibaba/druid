@@ -232,7 +232,6 @@ public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisit
 
     @Override
     public boolean visit(PGSelectQueryBlock x) {
-        this.visit((SQLSelectQueryBlock) x);
-        return false;
+        return this.visit((SQLSelectQueryBlock) x);
     }
 }

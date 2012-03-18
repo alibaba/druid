@@ -112,7 +112,7 @@ public class WallVisitorUtils {
     }
 
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
-        checkReadOnly(visitor, x.getTableSource());
+        checkReadOnly(visitor, x.getExprTableSource());
         
         if (!visitor.getConfig().isDeleteAllow()) {
             addViolation(visitor, x);

@@ -623,9 +623,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getFrom() == null) {
             print("FROM ");
-            printAndAccept(x.getTableSources(), ", ");
+            x.getTableSource().accept(this);
         } else {
-            printAndAccept(x.getTableSources(), ", ");
+            x.getTableSource().accept(this);
             println();
             print("FROM ");
             x.getFrom().accept(this);

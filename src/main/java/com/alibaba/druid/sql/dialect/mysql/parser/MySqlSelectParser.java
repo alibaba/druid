@@ -21,6 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
@@ -262,4 +263,13 @@ public class MySqlSelectParser extends SQLSelectParser {
     protected MySqlExprParser createExprParser() {
         return new MySqlExprParser(lexer);
     }
+    
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+        if (identifierEquals("USING")) {
+            return tableSource;
+        }
+        
+        return super.parseTableSourceRest(tableSource);
+    }
+ 
 }

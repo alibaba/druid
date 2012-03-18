@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -58,6 +57,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionSt
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -109,17 +109,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.IDENTIFIER) {
-                for (;;) {
-                    SQLName name = exprParser.name();
-                    deleteStatement.getTableSources().add(new SQLExprTableSource(name));
-
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
-                    }
-
-                    break;
-                }
+                deleteStatement.setTableSource(createSQLSelectParser().parseTableSource());
 
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
@@ -129,17 +119,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else {
                 if (lexer.token() == Token.FROM) {
                     lexer.nextToken();
-                }
-                for (;;) {
-                    SQLName name = exprParser.name();
-                    deleteStatement.getTableSources().add(new SQLExprTableSource(name));
-
-                    if (lexer.token() == Token.COMMA) {
-                        lexer.nextToken();
-                        continue;
-                    }
-
-                    break;
+                    deleteStatement.setTableSource(createSQLSelectParser().parseTableSource());
                 }
             }
 
@@ -1038,5 +1018,9 @@ public class MySqlStatementParser extends SQLStatementParser {
             break;
         }
         return stmt;
+    }
+    
+    public SQLSelectParser createSQLSelectParser() {
+        return new MySqlSelectParser(this.lexer);
     }
 }
