@@ -288,7 +288,12 @@ public class Lexer {
                         return;
                     } else if (ch == '.') {
                         scanChar();
-                        token = Token.DOTDOT;
+                        if (ch == '.') {
+                            scanChar();
+                            token = Token.DOTDOTDOT;
+                        } else {
+                            token = Token.DOTDOT;
+                        }
                     } else {
                         token = Token.DOT;
                     }
