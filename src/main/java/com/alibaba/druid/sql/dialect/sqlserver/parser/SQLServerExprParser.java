@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -27,15 +28,16 @@ public class SQLServerExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
-    public SQLName nameRest(SQLName name) throws ParserException {
+    public SQLName nameRest(SQLName expr) throws ParserException {
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
             String text = lexer.stringVal();
             lexer.nextToken();
 
-            name = new SQLServerObjectReferenceExpr(name, text);
+            SQLServerObjectReferenceExpr owner = new SQLServerObjectReferenceExpr(expr);
+            expr = new SQLPropertyExpr(owner, text);
         }
 
-        return super.nameRest(name);
+        return super.nameRest(expr);
     }
 }
