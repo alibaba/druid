@@ -213,6 +213,7 @@ public enum Token {
     COMMA(","), 
     DOT("."), 
     DOTDOT(".."), 
+    DOTDOTDOT("..,"), 
     EQ("="), 
     GT(">"), 
     LT("<"), 

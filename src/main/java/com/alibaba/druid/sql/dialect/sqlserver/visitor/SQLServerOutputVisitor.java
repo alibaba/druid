@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
@@ -42,7 +43,7 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
         }
 
         if (x.getGroupBy() != null) {
-            print(" ");
+            println();
             x.getGroupBy().accept(this);
         }
 
@@ -65,6 +66,17 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public void endVisit(Top x) {
 
+    }
+
+    @Override
+    public boolean visit(SQLServerObjectReferenceExpr x) {
+        print(x.toString());
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerObjectReferenceExpr x) {
+        
     }
 
 }

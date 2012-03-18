@@ -626,7 +626,13 @@ public class SQLExprParser extends SQLParser {
 
         SQLName name = new SQLIdentifierExpr(identName);
 
-        while (lexer.token() == Token.DOT) {
+        name = nameRest(name);
+
+        return name;
+    }
+
+    public SQLName nameRest(SQLName name) throws ParserException {
+        if (lexer.token() == Token.DOT) {
             lexer.nextToken();
 
             if (lexer.token() == Token.KEY) {
@@ -646,6 +652,7 @@ public class SQLExprParser extends SQLParser {
                 name = new SQLPropertyExpr(name, lexer.stringVal());
             }
             lexer.nextToken();
+            name = nameRest(name);
         }
 
         return name;

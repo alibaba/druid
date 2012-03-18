@@ -8,6 +8,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -75,5 +76,9 @@ public class SQLServerSelectParser extends SQLSelectParser {
         parseGroupBy(queryBlock);
 
         return queryRest(queryBlock);
+    }
+    
+    protected SQLExprParser createExprParser() {
+        return new SQLServerExprParser(lexer);
     }
 }

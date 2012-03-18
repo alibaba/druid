@@ -47,16 +47,16 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatementParser(String sql){
         super(sql);
 
-        this.exprParser = createExprParser();
+        this.exprParser = new SQLExprParser(lexer);
     }
 
     public SQLStatementParser(Lexer lexer){
         super(lexer);
-        this.exprParser = createExprParser();
+        this.exprParser = new SQLExprParser(lexer);
     }
 
-    protected SQLExprParser createExprParser() {
-        return new SQLExprParser(lexer);
+    public SQLExprParser getExprParser() {
+        return exprParser;
     }
 
     public List<SQLStatement> parseStatementList() throws ParserException {
@@ -255,7 +255,7 @@ public class SQLStatementParser extends SQLParser {
             insertStatement.setValues(values);
             accept(Token.RPAREN);
         } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
     }

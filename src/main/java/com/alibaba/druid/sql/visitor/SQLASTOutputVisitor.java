@@ -494,7 +494,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         x.getQuery().accept(this);
 
         if (x.getOrderBy() != null) {
-            print(" ");
+            println();
             x.getOrderBy().accept(this);
         }
 

@@ -22,18 +22,20 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleUpdateParser extends SQLStatementParser {
 
     public OracleUpdateParser(String sql) throws ParserException{
-        super(sql);
+        super(new OracleLexer(sql));
+        this.lexer.nextToken();
+        this.exprParser = new OracleExprParser(lexer);
     }
 
     public OracleUpdateParser(Lexer lexer){
         super(lexer);
+        this.exprParser = new OracleExprParser(lexer);
     }
 
     public OracleUpdateStatement parseUpdateStatement() throws ParserException {
@@ -141,9 +143,5 @@ public class OracleUpdateParser extends SQLStatementParser {
 
             lexer.nextToken();
         }
-    }
-
-    protected SQLExprParser createExprParser() {
-        return new OracleExprParser(lexer);
     }
 }

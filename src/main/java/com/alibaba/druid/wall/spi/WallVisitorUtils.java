@@ -464,8 +464,8 @@ public class WallVisitorUtils {
         if (expr instanceof SQLPropertyExpr) {
             SQLPropertyExpr propExpr = (SQLPropertyExpr) expr;
 
-            if (propExpr.getOwner() instanceof SQLIdentifierExpr) {
-                String ownerName = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
+            if (propExpr.getOwner() instanceof SQLName) {
+                String ownerName = ((SQLName) propExpr.getOwner()).getSimleName();
 
                 ownerName = form(ownerName);
 
