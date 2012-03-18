@@ -63,7 +63,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public String toSQL(SQLObject obj) {
-        return SQLUtils.toMySqlString(obj);
+        return SQLUtils.toSQLServerString(obj);
     }
     
 

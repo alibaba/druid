@@ -82,7 +82,5 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’, ‘sa’); "));
     }
 
-    public void test_system_user() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT system_user;"));
-    }
+
 }
