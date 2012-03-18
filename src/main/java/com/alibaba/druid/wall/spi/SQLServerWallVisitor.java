@@ -182,7 +182,10 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
-        if (config.isPermitSchema(x.getSchema()) || config.isPermitSchema(x.getDatabase())) {
+        if (x.getSchema() != null && config.isPermitSchema(x.getSchema())) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+        }
+        if (x.getDatabase() != null && config.isPermitSchema(x.getDatabase())) {
             this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
         }
         return true;

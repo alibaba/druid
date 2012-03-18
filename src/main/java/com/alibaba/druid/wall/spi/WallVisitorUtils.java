@@ -49,13 +49,7 @@ public class WallVisitorUtils {
     private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
 
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
-        if (x.getOwner() instanceof SQLIdentifierExpr) {
-            String owner = x.getOwner().toString();
-            owner = WallVisitorUtils.form(owner);
-            if (visitor.getConfig().isPermitObjects(owner)) {
-                addViolation(visitor, x);
-            }
-        }
+        checkSchema(visitor, x.getOwner());
     }
 
     public static void checkInsert(WallVisitor visitor, SQLInsertInto x) {
@@ -132,12 +126,10 @@ public class WallVisitorUtils {
         if (tableSource instanceof SQLExprTableSource) {
             String tableName = null;
             SQLExpr tableNameExpr = ((SQLExprTableSource) tableSource).getExpr();
-            if (tableNameExpr instanceof SQLIdentifierExpr) {
-                tableName = tableNameExpr.toString();
-            } else if (tableNameExpr instanceof SQLPropertyExpr) {
-                tableName = ((SQLPropertyExpr) tableNameExpr).getName();
+            if (tableNameExpr instanceof SQLName) {
+                tableName = ((SQLName) tableNameExpr).getSimleName();
             }
-
+            
             if (tableName != null) {
                 tableName = form(tableName);
                 if (visitor.getConfig().getReadOnlyTables().contains(tableName)) {
@@ -437,13 +429,7 @@ public class WallVisitorUtils {
     }
 
     public static void checkFunction(WallVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getOwner() instanceof SQLIdentifierExpr) {
-            String owner = x.getOwner().toString();
-            owner = WallVisitorUtils.form(owner);
-            if (visitor.getConfig().isPermitObjects(owner)) {
-                addViolation(visitor, x);
-            }
-        }
+        checkSchema(visitor, x.getOwner());
 
         if (!visitor.getConfig().isFunctionCheck()) {
             return;
@@ -457,32 +443,31 @@ public class WallVisitorUtils {
 
     }
 
+    private static void checkSchema(WallVisitor visitor, SQLExpr x) {
+        if (x instanceof SQLName) {
+            String owner = ((SQLName) x).getSimleName();
+            owner = WallVisitorUtils.form(owner);
+            if (visitor.getConfig().isPermitSchema(owner)) {
+                addViolation(visitor, x);
+            }
+        }
+        
+        //if (ownerExpr instanceof SQLPropertyExpr) {
+        if (x instanceof SQLPropertyExpr) {
+            checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
+        }
+    }
+
     public static void check(WallVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
-        String tableName = null;
+        
         if (expr instanceof SQLPropertyExpr) {
-            SQLPropertyExpr propExpr = (SQLPropertyExpr) expr;
-
-            if (propExpr.getOwner() instanceof SQLName) {
-                String ownerName = ((SQLName) propExpr.getOwner()).getSimleName();
-
-                ownerName = form(ownerName);
-
-                if (visitor.getConfig().getPermitSchemas().contains(ownerName.toLowerCase())) {
-                    addViolation(visitor, x);
-                }
-            }
-
-            tableName = propExpr.getName();
+            checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
         }
 
-        if (expr instanceof SQLIdentifierExpr) {
-            tableName = ((SQLIdentifierExpr) expr).getName();
-        }
-
-        if (tableName != null) {
-            tableName = form(tableName);
+        if (expr instanceof SQLName) {
+            String tableName = ((SQLName) expr).getSimleName();
             if (visitor.isPermitTable(tableName)) {
                 addViolation(visitor, x);
             }
