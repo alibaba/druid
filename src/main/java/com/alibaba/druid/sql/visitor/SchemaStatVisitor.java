@@ -379,7 +379,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         for (SQLExprTableSource tableSource : x.getTableSources()) {
             SQLName name = (SQLName) tableSource.getExpr();
-            
+
             String ident = name.toString();
             setCurrentTable(ident);
             x.putAttribute("_old_local_", originalTable);
@@ -472,16 +472,20 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             x.getFrom().accept(this);
             return false;
         }
-        
+
         if (x.getInto() != null) {
-            SQLName into = (SQLName) x.getInto().getExpr();
-            String ident = into.toString();
-            TableStat stat = getTableStat(ident);
-            stat.incrementInsertCount();
+            if (x.getInto().getExpr() instanceof SQLName) {
+                SQLName into = (SQLName) x.getInto().getExpr();
+                String ident = into.toString();
+                TableStat stat = getTableStat(ident);
+                if (stat != null) {
+                    stat.incrementInsertCount();
+                }
+            }
         }
 
         String originalTable = getCurrentTable();
-        
+
         if (x.getFrom() instanceof SQLExprTableSource) {
             SQLExprTableSource tableSource = (SQLExprTableSource) x.getFrom();
             if (tableSource.getExpr() instanceof SQLName) {
@@ -495,7 +499,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 x.putAttribute("_old_local_", originalTable);
             }
         }
-        
+
         if (x.getFrom() != null) {
             x.getFrom().accept(this); // 提前执行，获得aliasMap
             String table = (String) x.getFrom().getAttribute(ATTR_TABLE);
@@ -503,12 +507,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 x.putAttribute(ATTR_TABLE, table);
             }
         }
-        
-//      String ident = x.getTable().toString();
+
+        // String ident = x.getTable().toString();
         //
-//            TableStat stat = getTableStat(ident);
-//            stat.incrementInsertCount();
-//            return false;
+        // TableStat stat = getTableStat(ident);
+        // stat.incrementInsertCount();
+        // return false;
 
         if (x.getWhere() != null) {
             x.getWhere().setParent(x);
@@ -684,7 +688,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLExprTableSource x) {
         if (isSimpleExprTableSource(x)) {
             String ident = x.getExpr().toString();
-            
+
             if (variants.containsKey(ident)) {
                 return false;
             }
