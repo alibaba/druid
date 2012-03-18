@@ -124,7 +124,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
                 break;
             }
         } else if (lexer.token() == (Token.SELECT)) {
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.createExprParser().expr();
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr.getSubQuery());
         }
 
@@ -155,7 +155,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
             for (;;) {
-                SQLName name = this.createExprParser().name();
+                SQLName name = this.exprParser.name();
                 deleteStatement.getUsing().add(name);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
@@ -271,13 +271,13 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
     private PGWithQuery withQuery() {
         PGWithQuery withQuery = new PGWithQuery();
-        withQuery.setName(this.createExprParser().expr());
+        withQuery.setName(this.exprParser.expr());
 
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
             for (;;) {
-                SQLExpr expr = this.createExprParser().expr();
+                SQLExpr expr = this.exprParser.expr();
                 withQuery.getColumns().add(expr);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();

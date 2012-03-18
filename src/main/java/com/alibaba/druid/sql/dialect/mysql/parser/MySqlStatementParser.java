@@ -57,7 +57,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -67,16 +66,12 @@ public class MySqlStatementParser extends SQLStatementParser {
     public MySqlStatementParser(String sql) throws ParserException{
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
-        this.exprParser = this.createExprParser();
+        this.exprParser = new MySqlExprParser(lexer);
     }
 
     public MySqlStatementParser(Lexer lexer){
         super(lexer);
-        this.exprParser = this.createExprParser();
-    }
-
-    protected SQLExprParser createExprParser() {
-        return new MySqlExprParser(lexer);
+        this.exprParser = new MySqlExprParser(lexer);
     }
 
     public SQLCreateTableStatement parseCreateTable() throws ParserException {
@@ -179,11 +174,11 @@ public class MySqlStatementParser extends SQLStatementParser {
         for (;;) {
             MySqlCreateUserStatement.UserSpecification userSpec = new MySqlCreateUserStatement.UserSpecification();
 
-            SQLCharExpr expr = (SQLCharExpr) this.createExprParser().expr();
+            SQLCharExpr expr = (SQLCharExpr) exprParser.expr();
             String user = expr.toString();
             if (lexer.token() == Token.VARIANT) {
                 lexer.nextToken();
-                SQLCharExpr expr2 = (SQLCharExpr) this.createExprParser().expr();
+                SQLCharExpr expr2 = (SQLCharExpr) exprParser.expr();
                 user += '@';
                 user += expr2.toString();
             }
@@ -198,12 +193,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                         lexer.nextToken();
                     }
 
-                    SQLCharExpr password = (SQLCharExpr) this.createExprParser().expr();
+                    SQLCharExpr password = (SQLCharExpr) this.exprParser.expr();
                     userSpec.setPassword(password);
                 } else if (lexer.token() == Token.WITH) {
                     lexer.nextToken();
 
-                    SQLCharExpr text = (SQLCharExpr) this.createExprParser().expr();
+                    SQLCharExpr text = (SQLCharExpr) this.exprParser.expr();
                     userSpec.setAuthPlugin(text);
                 }
             }
@@ -346,7 +341,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
-        
+
         if (identifierEquals("DESCRIBE")) {
             SQLStatement stmt = parseDescribe();
             statementList.add(stmt);
@@ -355,13 +350,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return false;
     }
-    
+
     public SQLStatement parseDescribe() throws ParserException {
         acceptIdentifier("DESCRIBE");
-        
+
         MySqlDescribeStatement stmt = new MySqlDescribeStatement();
         stmt.setObject(this.exprParser.name());
-        
+
         return stmt;
     }
 
@@ -487,15 +482,15 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
 
-            SQLExpr temp = this.createExprParser().expr();
+            SQLExpr temp = this.exprParser.expr();
             if (lexer.token() == (Token.COMMA)) {
                 limit.setOffset(temp);
                 lexer.nextToken();
-                limit.setRowCount(createExprParser().expr());
+                limit.setRowCount(exprParser.expr());
             } else if (identifierEquals("OFFSET")) {
                 limit.setRowCount(temp);
                 lexer.nextToken();
-                limit.setOffset(createExprParser().expr());
+                limit.setOffset(exprParser.expr());
             } else {
                 limit.setRowCount(temp);
             }
@@ -991,11 +986,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         MySqlDropUser stmt = new MySqlDropUser();
         for (;;) {
-            SQLCharExpr expr = (SQLCharExpr) this.createExprParser().expr();
+            SQLCharExpr expr = (SQLCharExpr) this.exprParser.expr();
             String user = expr.toString();
             if (lexer.token() == Token.VARIANT) {
                 lexer.nextToken();
-                SQLCharExpr expr2 = (SQLCharExpr) this.createExprParser().expr();
+                SQLCharExpr expr2 = (SQLCharExpr) this.exprParser.expr();
                 user += '@';
                 user += expr2.toString();
             }
@@ -1035,7 +1030,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         return stmt;
     }
-    
+
     public SQLSelectParser createSQLSelectParser() {
         return new MySqlSelectParser(this.lexer);
     }

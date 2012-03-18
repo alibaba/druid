@@ -102,16 +102,21 @@ public class OracleStatementParser extends SQLStatementParser {
     public OracleStatementParser(String sql){
         super(new OracleLexer(sql));
         this.lexer.nextToken();
-        this.exprParser = createExprParser();
+        this.exprParser = new OracleExprParser(lexer);
     }
 
     public OracleStatementParser(Lexer lexer){
         super(lexer);
-        this.exprParser = createExprParser();
+        this.exprParser = new OracleExprParser(lexer);
     }
 
-    protected OracleExprParser createExprParser() {
-        return new OracleExprParser(lexer);
+    @Override
+    public OracleExprParser getExprParser() {
+        return (OracleExprParser) exprParser;
+    }
+    
+    public void parseHints(List<OracleHint> hints) {
+        this.getExprParser().parseHints(hints);
     }
 
     public OracleCreateTableParser getSQLCreateTableParser() {
@@ -121,10 +126,10 @@ public class OracleStatementParser extends SQLStatementParser {
     protected void parseInsert0_hinits(SQLInsertInto insertStatement) {
         if (insertStatement instanceof OracleInsertStatement) {
             OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
-            this.createExprParser().parseHints(stmt.getHints());
+            this.getExprParser().parseHints(stmt.getHints());
         } else {
             List<OracleHint> hints = new ArrayList<OracleHint>();
-            this.createExprParser().parseHints(hints);
+            this.getExprParser().parseHints(hints);
         }
     }
 
@@ -1124,8 +1129,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         OracleMergeStatement stmt = new OracleMergeStatement();
 
-        OracleExprParser exprParser = this.createExprParser();
-        exprParser.parseHints(stmt.getHints());
+        parseHints(stmt.getHints());
 
         accept(Token.INTO);
         stmt.setInto(exprParser.name());
@@ -1241,7 +1245,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         List<OracleHint> hints = new ArrayList<OracleHint>();
 
-        this.createExprParser().parseHints(hints);
+        parseHints(hints);
 
         if (lexer.token() == Token.INTO) {
             OracleInsertStatement stmt = new OracleInsertStatement();
@@ -1290,7 +1294,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 OracleMultiInsertStatement.ConditionalInsertClauseItem item = new OracleMultiInsertStatement.ConditionalInsertClauseItem();
 
-                item.setWhen(this.createExprParser().expr());
+                item.setWhen(this.exprParser.expr());
                 accept(Token.THEN);
                 OracleMultiInsertStatement.InsertIntoClause insertInto = new OracleMultiInsertStatement.InsertIntoClause();
                 parseInsert0(insertInto);
@@ -1430,7 +1434,7 @@ public class OracleStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
 
-            this.createExprParser().parseHints(deleteStatement.getHints());
+            parseHints(deleteStatement.getHints());
 
             if (lexer.token() == (Token.FROM)) {
                 lexer.nextToken();
