@@ -723,10 +723,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             if (aliasMap != null) {
-                if (x.getAlias() != null) {
-                    aliasMap.put(x.getAlias(), ident);
+                String alias = x.getAlias();
+                if (alias != null && !aliasMap.containsKey(alias)) {
+                    aliasMap.put(alias, ident);
                 }
-                aliasMap.put(ident, ident);
+                if (!aliasMap.containsKey(ident)) {
+                    aliasMap.put(ident, ident);
+                }
             }
         } else {
             accept(x.getExpr());

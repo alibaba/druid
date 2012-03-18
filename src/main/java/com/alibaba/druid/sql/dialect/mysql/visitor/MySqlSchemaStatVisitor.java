@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
@@ -63,8 +64,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setMode(x, Mode.Delete);
 
-        setAliasMap();
-
+        accept(x.getFrom());
+        accept(x.getUsing());
+        x.getTableSource().accept(this);
+        
         if (x.getTableSource() instanceof SQLExprTableSource) {
             SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
             String ident = tableName.toString();
@@ -72,18 +75,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
             TableStat stat = this.getTableStat(ident);
             stat.incrementDeleteCount();
-        } else {
-            MySqlSchemaStatVisitor tableSourceVisitor = new MySqlSchemaStatVisitor();
-            tableSourceVisitor.accept(x.getTableSource());
-            for (TableStat.Name name : tableSourceVisitor.getTables().keySet()) {
-                TableStat stat = this.getTableStat(name.getName());
-                stat.incrementDeleteCount();
-            }
-        }
+        } 
 
         accept(x.getWhere());
-        accept(x.getFrom());
-        accept(x.getUsing());
+        
         accept(x.getOrderBy());
         accept(x.getLimit());
 
@@ -486,5 +481,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     @Override
     public void endVisit(MySqlOutFileExpr x) {
 
+    }
+
+    @Override
+    public boolean visit(MySqlDescribeStatement x) {
+        getTableStat(x.getObject().toString());
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlDescribeStatement x) {
+        
     }
 }

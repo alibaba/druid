@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
@@ -1361,6 +1362,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlOutFileExpr x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlDescribeStatement x) {
+        print("DESCRIBE ");
+        x.getObject().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlDescribeStatement x) {
         
     }
 }

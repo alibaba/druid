@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
@@ -345,8 +346,23 @@ public class MySqlStatementParser extends SQLStatementParser {
             statementList.add(stmt);
             return true;
         }
+        
+        if (identifierEquals("DESCRIBE")) {
+            SQLStatement stmt = parseDescribe();
+            statementList.add(stmt);
+            return true;
+        }
 
         return false;
+    }
+    
+    public SQLStatement parseDescribe() throws ParserException {
+        acceptIdentifier("DESCRIBE");
+        
+        MySqlDescribeStatement stmt = new MySqlDescribeStatement();
+        stmt.setObject(this.exprParser.name());
+        
+        return stmt;
     }
 
     public SQLStatement parseShow() throws ParserException {
