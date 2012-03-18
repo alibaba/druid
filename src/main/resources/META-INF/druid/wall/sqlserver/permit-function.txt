@@ -1,9 +1,5 @@
-EXECUTE
-EXEC
 sp_executesql
 user_name
 is_srvrolemember
-system_user
 DB_NAME
 HOST_NAME
-system_user
