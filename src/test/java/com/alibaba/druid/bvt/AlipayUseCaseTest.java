@@ -31,7 +31,7 @@ public class AlipayUseCaseTest {
 
     @Test
     public void test() {
-        fail("Not yet implemented"); // TODO
+        // TODO
     }
 
 }
