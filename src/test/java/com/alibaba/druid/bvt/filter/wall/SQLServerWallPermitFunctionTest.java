@@ -36,7 +36,7 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
         super.tearDown();
     }
     
-    public void test_permitFunction01() throws Exception {
+    public void test01() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user_name();"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME()"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT DB_NAME(0); "));
@@ -46,6 +46,23 @@ public class SQLServerWallPermitFunctionTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC master.dbo.sp_addsrvrolemember ‘user’, ‘sysadmin"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb master"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("EXEC sp_helpdb pubs"));
+    }
+    
+    /**
+     * 测试权限结构
+     * @throws Exception
+     */
+    public void test02() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘dbcreator’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘bulkadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘diskadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘processadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘serveradmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘setupadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘securityadmin’);"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’); "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT is_srvrolemember(‘sysadmin’, ‘sa’); "));
     }
 
 }
