@@ -63,8 +63,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setMode(x, Mode.Delete);
 
-        setAliasMap();
-
+        accept(x.getFrom());
+        accept(x.getUsing());
+        x.getTableSource().accept(this);
+        
         if (x.getTableSource() instanceof SQLExprTableSource) {
             SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
             String ident = tableName.toString();
@@ -72,18 +74,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
             TableStat stat = this.getTableStat(ident);
             stat.incrementDeleteCount();
-        } else {
-            MySqlSchemaStatVisitor tableSourceVisitor = new MySqlSchemaStatVisitor();
-            tableSourceVisitor.accept(x.getTableSource());
-            for (TableStat.Name name : tableSourceVisitor.getTables().keySet()) {
-                TableStat stat = this.getTableStat(name.getName());
-                stat.incrementDeleteCount();
-            }
-        }
+        } 
 
         accept(x.getWhere());
-        accept(x.getFrom());
-        accept(x.getUsing());
+        
         accept(x.getOrderBy());
         accept(x.getLimit());
 
