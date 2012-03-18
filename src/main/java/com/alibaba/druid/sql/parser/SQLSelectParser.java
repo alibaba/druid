@@ -235,7 +235,7 @@ public class SQLSelectParser extends SQLParser {
         tableReference.setExpr(expr());
     }
 
-    private SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
                 tableSource.setAlias(as());

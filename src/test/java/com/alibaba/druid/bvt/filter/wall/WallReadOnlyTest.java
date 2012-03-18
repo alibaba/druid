@@ -21,7 +21,7 @@ public class WallReadOnlyTest extends TestCase {
     private String sql = "SELECT F1, F2 members";
     private String insert_sql = "INSERT INTO members (FID, FNAME) VALUES (?, ?)";
     private String update_sql = "UPDATE members SET FNAME = ? WHERe FID = ?";
-    private String delete_sql = "DELETE FROM members WHERE FID = ?";
+    private String delete_sql = "DELETE members WHERE FID = ?";
 
     public void testMySql() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(sql, config));

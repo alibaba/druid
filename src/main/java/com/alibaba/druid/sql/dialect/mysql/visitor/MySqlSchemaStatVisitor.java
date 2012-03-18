@@ -2,7 +2,6 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -66,17 +65,20 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         setAliasMap();
 
-        if (x.getTableSources().size() == 1) {
-            SQLName tableName = (SQLName) x.getTableSources().get(0).getExpr();
+        if (x.getTableSource() instanceof SQLExprTableSource) {
+            SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
             String ident = tableName.toString();
             setCurrentTable(x, ident);
-        }
 
-        for (SQLExprTableSource tableSource : x.getTableSources()) {
-            SQLExpr tableName = tableSource.getExpr();
-            String ident = tableName.toString();
-            TableStat stat = getTableStat(ident);
+            TableStat stat = this.getTableStat(ident);
             stat.incrementDeleteCount();
+        } else {
+            MySqlSchemaStatVisitor tableSourceVisitor = new MySqlSchemaStatVisitor();
+            tableSourceVisitor.accept(x.getTableSource());
+            for (TableStat.Name name : tableSourceVisitor.getTables().keySet()) {
+                TableStat stat = this.getTableStat(name.getName());
+                stat.incrementDeleteCount();
+            }
         }
 
         accept(x.getWhere());
@@ -483,6 +485,6 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlOutFileExpr x) {
-        
+
     }
 }

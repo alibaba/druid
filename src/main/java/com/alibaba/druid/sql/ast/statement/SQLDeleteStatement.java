@@ -23,34 +23,38 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLDeleteStatement extends SQLStatementImpl {
 
-    private static final long    serialVersionUID = 1L;
-    protected SQLExprTableSource tableSource;
-    protected SQLExpr            where;
+    private static final long serialVersionUID = 1L;
+    protected SQLTableSource  tableSource;
+    protected SQLExpr         where;
 
     public SQLDeleteStatement(){
 
     }
 
-    public SQLExprTableSource getTableSource() {
+    public SQLTableSource getTableSource() {
         return tableSource;
     }
-    
+
+    public SQLExprTableSource getExprTableSource() {
+        return (SQLExprTableSource) getTableSource();
+    }
+
     public void setTableSource(SQLExpr expr) {
         this.setTableSource(new SQLExprTableSource(expr));
     }
 
-    public void setTableSource(SQLExprTableSource tableSource) {
+    public void setTableSource(SQLTableSource tableSource) {
         this.tableSource = tableSource;
     }
 
     public SQLName getTableName() {
-        return (SQLName) tableSource.getExpr();
+        return (SQLName) getExprTableSource().getExpr();
     }
 
     public void setTableName(SQLName tableName) {
         this.setTableSource(new SQLExprTableSource(tableName));
     }
-    
+
     public void setTableName(String name) {
         setTableName(new SQLIdentifierExpr(name));
     }

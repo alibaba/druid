@@ -85,6 +85,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(MySqlDeleteStatement x) {
+        WallVisitorUtils.checkReadOnly(this, x.getFrom());
+        
         return visit((SQLDeleteStatement) x);
     }
 

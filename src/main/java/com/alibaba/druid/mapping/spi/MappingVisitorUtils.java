@@ -127,7 +127,7 @@ public class MappingVisitorUtils {
     }
 
     public static void setDataSource(MappingEngine engine, SQLDeleteStatement stmt) {
-        if (stmt.getTableSource() == null) {
+        if (stmt.getExprTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }

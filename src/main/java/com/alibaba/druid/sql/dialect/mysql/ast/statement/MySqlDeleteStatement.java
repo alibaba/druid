@@ -15,13 +15,8 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -30,24 +25,16 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlDeleteStatement extends SQLDeleteStatement {
 
-    private static final long              serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private boolean                        lowPriority      = false;
-    private boolean                        quick            = false;
-    private boolean                        ignore           = false;
+    private boolean           lowPriority      = false;
+    private boolean           quick            = false;
+    private boolean           ignore           = false;
 
-    private SQLTableSource                 from;
-    private SQLTableSource                 using;
-    private SQLOrderBy                     orderBy;
-    private Limit                          limit;
-    private final List<SQLExprTableSource> tableSources     = new ArrayList<SQLExprTableSource>();
-
-    public SQLExprTableSource getTableSource() {
-        if (tableSources.size() > 0) {
-            return tableSources.get(0);
-        }
-        return null;
-    }
+    private SQLTableSource    from;
+    private SQLTableSource    using;
+    private SQLOrderBy        orderBy;
+    private Limit             limit;
 
     public boolean isLowPriority() {
         return lowPriority;
@@ -85,25 +72,6 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
         this.using = using;
     }
 
-    public SQLName getTableName() {
-        if (tableSources.size() == 0) {
-            return null;
-        }
-        return (SQLName) tableSources.get(0).getExpr();
-    }
-
-    public void setTableSource(SQLExprTableSource tableSource) {
-        if (tableSources.size() == 0) {
-            tableSources.add(tableSource);
-        } else {
-            tableSources.set(0, tableSource);
-        }
-    }
-
-    public List<SQLExprTableSource> getTableSources() {
-        return tableSources;
-    }
-
     public void setFrom(SQLTableSource from) {
         this.from = from;
     }
@@ -139,7 +107,7 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
 
     protected void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, getTableSources());
+            acceptChild(visitor, getTableSource());
             acceptChild(visitor, getWhere());
             acceptChild(visitor, getFrom());
             acceptChild(visitor, getUsing());
