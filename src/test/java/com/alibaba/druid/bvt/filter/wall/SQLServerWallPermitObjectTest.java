@@ -36,7 +36,11 @@ public class SQLServerWallPermitObjectTest extends TestCase {
         super.tearDown();
     }
 
-    public void test01() throws Exception {
+    public void test_user() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT user;"));
+    }
+    
+    public void test_system_user() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT system_user;"));
     }
 }
