@@ -1,9 +1,13 @@
 package com.alibaba.druid.sql.dialect.sqlserver.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr {
+public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements SQLServerExpr, SQLName {
 
     private static final long serialVersionUID = 1L;
 
@@ -11,10 +15,32 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
     private String            database;
     private String            schema;
     private String            object;
-
+    
+    public SQLServerObjectReferenceExpr() {
+        
+    }
+    
+    public SQLServerObjectReferenceExpr(SQLExpr owner, String name) {
+        if (owner instanceof SQLIdentifierExpr) {
+            this.database = ((SQLIdentifierExpr) owner).getName();
+            this.object = name;
+        } else if (owner instanceof SQLPropertyExpr) {
+            SQLPropertyExpr propExpr = (SQLPropertyExpr) owner;
+            
+            this.server = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
+            this.database = propExpr.getName();
+            this.object = name;
+        } else {
+            throw new IllegalArgumentException(owner.toString());
+        }
+    }
+    
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
-
+        if (visitor.visit(this)) {
+            
+        }
+        visitor.endVisit(this);
     }
 
     public void output(StringBuffer buf) {
