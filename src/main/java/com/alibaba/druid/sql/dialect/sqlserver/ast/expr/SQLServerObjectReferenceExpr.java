@@ -14,31 +14,39 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
     private String            server;
     private String            database;
     private String            schema;
-    private String            object;
-    
-    public SQLServerObjectReferenceExpr() {
-        
+
+    public SQLServerObjectReferenceExpr(){
+
     }
-    
-    public SQLServerObjectReferenceExpr(SQLExpr owner, String name) {
+
+    public SQLServerObjectReferenceExpr(SQLExpr owner){
         if (owner instanceof SQLIdentifierExpr) {
             this.database = ((SQLIdentifierExpr) owner).getName();
-            this.object = name;
         } else if (owner instanceof SQLPropertyExpr) {
             SQLPropertyExpr propExpr = (SQLPropertyExpr) owner;
-            
+
             this.server = ((SQLIdentifierExpr) propExpr.getOwner()).getName();
             this.database = propExpr.getName();
-            this.object = name;
         } else {
             throw new IllegalArgumentException(owner.toString());
         }
     }
     
+    public String getSimleName() {
+        if (schema != null) {
+            return schema;
+        }
+        
+        if (database != null) {
+            return database;
+        }
+        return server;
+    }
+
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
         if (visitor.visit(this)) {
-            
+
         }
         visitor.endVisit(this);
     }
@@ -47,31 +55,25 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
         boolean flag = false;
         if (server != null) {
             buf.append(server);
-            buf.append('.');
             flag = true;
         }
 
+        if (flag) {
+            buf.append('.');
+        }
         if (database != null) {
             buf.append(database);
-            buf.append('.');
             flag = true;
-        } else {
-            if (flag) {
-                buf.append('.');
-            }
-        }
+        } 
 
+        if (flag) {
+            buf.append('.');
+        }
+        
         if (schema != null) {
             buf.append(schema);
-            buf.append('.');
             flag = true;
-        } else {
-            if (flag) {
-                buf.append('.');
-            }
         }
-
-        buf.append(object);
     }
 
     public String getServer() {
@@ -96,14 +98,6 @@ public class SQLServerObjectReferenceExpr extends SQLServerObjectImpl implements
 
     public void setSchema(String schema) {
         this.schema = schema;
-    }
-
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
     }
 
 }

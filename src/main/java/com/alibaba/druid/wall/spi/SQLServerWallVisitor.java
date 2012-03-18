@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.wall.IllegalSQLObjectViolation;
@@ -62,7 +63,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public String toSQL(SQLObject obj) {
-        return SQLUtils.toMySqlString(obj);
+        return SQLUtils.toSQLServerString(obj);
     }
     
 
@@ -176,6 +177,17 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public boolean visit(SQLUpdateStatement x) {
         WallVisitorUtils.checkUpdate(this, x);
 
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLServerObjectReferenceExpr x) {
+        if (x.getSchema() != null && config.isPermitSchema(x.getSchema())) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+        }
+        if (x.getDatabase() != null && config.isPermitSchema(x.getDatabase())) {
+            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+        }
         return true;
     }
 }
