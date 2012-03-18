@@ -18,7 +18,6 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -448,6 +447,10 @@ public class WallVisitorUtils {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (visitor.getConfig().isPermitSchema(owner)) {
+                addViolation(visitor, x);
+            }
+            
+            if (visitor.getConfig().isPermitObjects(owner)) {
                 addViolation(visitor, x);
             }
         }

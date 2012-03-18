@@ -11,6 +11,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -178,6 +179,19 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         WallVisitorUtils.checkUpdate(this, x);
 
         return true;
+    }
+    
+    public boolean visit(SQLVariantRefExpr x) {
+        String varName = x.getName();
+        if (varName == null) {
+            return false;
+        }
+
+        if (config.isVariantCheck() && varName.startsWith("@@")) {
+            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+        }
+
+        return false;
     }
     
     @Override
