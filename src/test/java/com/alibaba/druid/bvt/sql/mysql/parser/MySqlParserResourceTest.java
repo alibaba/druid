@@ -53,6 +53,8 @@ public class MySqlParserResourceTest extends TestCase {
         String text = output(statementList);
         System.out.println(text);
         System.out.println();
+        
+        expect = expect.replaceAll("\\r\\n", "\n");
         Assert.assertEquals(expect, text.trim());
 
         String mergeExpect = null;
@@ -78,6 +80,7 @@ public class MySqlParserResourceTest extends TestCase {
 
         System.out.println(out.toString());
 
+        expect = expect.replaceAll("\\r\\n", "\n");
         Assert.assertEquals(expect, out.toString());
     }
 

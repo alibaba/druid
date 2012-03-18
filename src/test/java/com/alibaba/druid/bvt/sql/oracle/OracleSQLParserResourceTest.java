@@ -41,6 +41,7 @@ public class OracleSQLParserResourceTest extends TestCase {
         Assert.assertEquals(1, statementList.size());
 
         String text = TestUtils.outputOracle(statementList);
+        expect = expect.replaceAll("\\r\\n", "\n");
         System.out.println(text);
         Assert.assertEquals(expect, text.trim());
 
