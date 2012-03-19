@@ -57,7 +57,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private final static Log          LOG                        = LogFactory.getLog(StatFilter.class);
 
-    public final static String        ATTR_SQL                   = "stat.sql";
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
 
@@ -228,14 +227,14 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getStatementStat().incrementPrepareCallCount();
 
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
-        statement.getAttributes().put(ATTR_SQL, sqlStat);
+        statement.setSqlStat(sqlStat);
     }
 
     @Override
     public void statementPrepareAfter(PreparedStatementProxy statement) {
         dataSourceStat.getStatementStat().incrementPrepareCounter();
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
-        statement.getAttributes().put(ATTR_SQL, sqlStat);
+        statement.setSqlStat(sqlStat);
     }
 
     @Override
@@ -283,7 +282,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcSqlStat sqlStat = getSqlStat(statement);
         if (sqlStat == null) {
             sqlStat = createSqlStat(statement, sql);
-            statement.getAttributes().put(ATTR_SQL, sqlStat);
+            statement.setSqlStat(sqlStat);
         }
 
         if (sqlStat != null) {
@@ -322,7 +321,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcSqlStat sqlStat = getSqlStat(statement);
         if (sqlStat == null) {
             sqlStat = createSqlStat(statement, sql);
-            statement.getAttributes().put(ATTR_SQL, sqlStat);
+            statement.setSqlStat(sqlStat);
         }
 
         JdbcStatContext statContext = JdbcStatManager.getInstance().getStatContext();
@@ -671,7 +670,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             return null;
         }
 
-        return (JdbcSqlStat) statement.getAttributes().get(ATTR_SQL);
+        return statement.getSqlStat();
     }
 
     public JdbcSqlStat getSqlCounter(String sql) {

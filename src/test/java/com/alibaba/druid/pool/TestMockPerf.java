@@ -16,7 +16,7 @@ public class TestMockPerf extends TestCase {
         dataSource.setMinIdle(3);
         dataSource.setMaxActive(20);
         dataSource.setDbType("mysql");
-        dataSource.setFilters("stat,wall");
+        dataSource.setFilters("stat");
         dataSource.init();
     }
 

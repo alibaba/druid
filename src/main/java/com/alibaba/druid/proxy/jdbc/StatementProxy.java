@@ -19,6 +19,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.stat.JdbcSqlStat;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -31,6 +33,10 @@ public interface StatementProxy extends Statement, WrapperProxy {
     List<String> getBatchSqlList();
 
     String getBatchSql();
+    
+    JdbcSqlStat getSqlStat();
+    
+    void setSqlStat(JdbcSqlStat sqlStat);
 
     String getLastExecuteSql();
     

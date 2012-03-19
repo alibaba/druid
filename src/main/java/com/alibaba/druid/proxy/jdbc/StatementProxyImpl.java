@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -43,6 +44,7 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     protected long                lastExecuteCompleteTime;
     protected long                lastExecuteCompleteNano;
     protected String              lastExecuteSql;
+    protected JdbcSqlStat         sqlStat;
 
     protected ArrayList<String>   batchSqlList;
 
@@ -316,13 +318,13 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     public boolean isCloseOnCompletion() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == Statement.class) {
             return (T) statement;
         }
-        
+
         return super.unwrap(iface);
     }
 
@@ -330,4 +332,13 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     public Map<Integer, JdbcParameter> getParameters() {
         return Collections.emptyMap();
     }
+
+    public JdbcSqlStat getSqlStat() {
+        return sqlStat;
+    }
+
+    public void setSqlStat(JdbcSqlStat sqlStat) {
+        this.sqlStat = sqlStat;
+    }
+
 }
