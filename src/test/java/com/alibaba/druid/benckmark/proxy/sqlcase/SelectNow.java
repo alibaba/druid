@@ -13,49 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.benckmark.sqlcase;
+package com.alibaba.druid.benckmark.proxy.sqlcase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Date;
 
 import junit.framework.Assert;
 
-import com.alibaba.druid.benckmark.BenchmarkCase;
-import com.alibaba.druid.benckmark.SQLExecutor;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
+import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 
-public class SelectEmptyTable extends BenchmarkCase {
+public class SelectNow extends BenchmarkCase {
 
     private String     sql;
     private Connection conn;
-    private String     tableName;
 
-    private String     createTableSql;
-    private String     dropTableSql;
+    public SelectNow(){
+        super("SelectNow");
 
-    public SelectEmptyTable(){
-        super("SelectEmptyTable");
-
-        tableName = "T_" + System.currentTimeMillis();
-
-        createTableSql = "CREATE TABLE " + tableName
-                         + "(F1 INT, F2 INT, F3 INT, F4 INT, F5 INT, F6 INT, F7 INT, F8 INT, F9 INT)";
-        dropTableSql = "DROP TABLE " + tableName;
-        sql = "SELECT * FROM T_" + tableName;
+        sql = "SELECT NOW()";
     }
 
     @Override
     public void setUp(SQLExecutor sqlExec) throws Exception {
         conn = sqlExec.getConnection();
-
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-            stmt.execute(createTableSql);
-        } finally {
-            JdbcUtils.close(stmt);
-        }
     }
 
     @Override
@@ -63,12 +46,12 @@ public class SelectEmptyTable extends BenchmarkCase {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         int rowCount = 0;
-        int value = 0;
+        Date now = null;
         while (rs.next()) {
-            value = rs.getInt(1);
+            now = rs.getTimestamp(1);
             rowCount++;
         }
-        Assert.assertEquals(1, value);
+        Assert.assertNotNull(now);
         Assert.assertEquals(1, rowCount);
         rs.close();
         stmt.close();
@@ -76,14 +59,6 @@ public class SelectEmptyTable extends BenchmarkCase {
 
     @Override
     public void tearDown(SQLExecutor sqlExec) throws Exception {
-        Statement stmt = null;
-        try {
-            stmt = conn.createStatement();
-            stmt.execute(dropTableSql);
-        } finally {
-            JdbcUtils.close(stmt);
-        }
-
         conn.close();
         conn = null;
     }

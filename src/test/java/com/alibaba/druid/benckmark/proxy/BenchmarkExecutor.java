@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.benckmark;
+package com.alibaba.druid.benckmark.proxy;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;

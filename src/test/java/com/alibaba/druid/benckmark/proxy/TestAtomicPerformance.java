@@ -1,4 +1,4 @@
-package com.alibaba.druid.benckmark;
+package com.alibaba.druid.benckmark.proxy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

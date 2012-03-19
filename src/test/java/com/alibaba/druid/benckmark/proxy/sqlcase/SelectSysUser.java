@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.benckmark.sqlcase;
+package com.alibaba.druid.benckmark.proxy.sqlcase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,18 +21,18 @@ import java.sql.Statement;
 
 import junit.framework.Assert;
 
-import com.alibaba.druid.benckmark.BenchmarkCase;
-import com.alibaba.druid.benckmark.SQLExecutor;
+import com.alibaba.druid.benckmark.proxy.BenchmarkCase;
+import com.alibaba.druid.benckmark.proxy.SQLExecutor;
 
-public class Select1 extends BenchmarkCase {
+public class SelectSysUser extends BenchmarkCase {
 
     private String     sql;
     private Connection conn;
 
-    public Select1(){
-        super("Select1");
+    public SelectSysUser(){
+        super("Dragoon-SelectSysUser");
 
-        sql = "SELECT 1";
+        sql = "SELECT * FROM sys_user s";
     }
 
     @Override
