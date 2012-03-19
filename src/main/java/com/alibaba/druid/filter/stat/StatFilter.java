@@ -160,7 +160,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             dataSourceStat.getConnectionStat().beforeConnect();
             try {
-                connection = super.connection_connect(chain, info);
+                connection = chain.connection_connect(info);
                 nanoSpan = System.nanoTime() - startNano;
             } catch (SQLException ex) {
                 dataSourceStat.getConnectionStat().connectError(ex);
@@ -200,20 +200,20 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             dataSourceStat.getConnectionStat().afterClose(aliveNanoSpan);
         }
 
-        super.connection_close(chain, connection);
+        chain.connection_close(connection);
         // duplicate close, C3P0等连接池，在某些情况下会关闭连接多次。
     }
 
     @Override
     public void connection_commit(FilterChain chain, ConnectionProxy connection) throws SQLException {
-        super.connection_commit(chain, connection);
+        chain.connection_commit(connection);
 
         dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
     }
 
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
-        super.connection_rollback(chain, connection);
+        chain.connection_rollback(connection);
 
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
 
@@ -223,7 +223,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savepoint)
                                                                                                        throws SQLException {
-        super.connection_rollback(chain, connection, savepoint);
+        chain.connection_rollback(connection, savepoint);
 
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
@@ -241,9 +241,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
         statement.getAttributes().put(ATTR_SQL, sqlStat);
-        ;
-
-        // super.statementPrepareCallAfter(statement);
     }
 
     @Override
@@ -251,13 +248,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getStatementStat().incrementPrepareCounter();
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
         statement.getAttributes().put(ATTR_SQL, sqlStat);
-
-        // super.statementPrepareAfter(statement);
     }
 
     @Override
     public void statement_close(FilterChain chain, StatementProxy statement) throws SQLException {
-        super.statement_close(chain, statement);
+        chain.statement_close(statement);
 
         dataSourceStat.getStatementStat().incrementStatementCloseCounter();
     }
@@ -265,8 +260,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     protected void statementExecuteUpdateBefore(StatementProxy statement, String sql) {
         internalBeforeStatementExecute(statement, sql);
-
-        // super.statementExecuteUpdateBefore(statement, sql);
     }
 
     @Override
@@ -277,29 +270,21 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     protected void statementExecuteQueryBefore(StatementProxy statement, String sql) {
         internalBeforeStatementExecute(statement, sql);
-
-        // super.statementExecuteQueryBefore(statement, sql);
     }
 
     @Override
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
         internalAfterStatementExecute(statement);
-
-        // super.statementExecuteQueryAfter(statement, sql, resultSet);
     }
 
     @Override
     protected void statementExecuteBefore(StatementProxy statement, String sql) {
         internalBeforeStatementExecute(statement, sql);
-
-        // super.statementExecuteBefore(statement, sql);
     }
 
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean result) {
         internalAfterStatementExecute(statement);
-
-        // super.statementExecuteAfter(statement, sql, result);
     }
 
     @Override
@@ -319,14 +304,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         internalBeforeStatementExecute(statement, sql);
 
-        // super.statementExecuteBatchBefore(statement);
     }
 
     @Override
     protected void statementExecuteBatchAfter(StatementProxy statement, int[] result) {
         internalAfterStatementExecute(statement, result);
 
-        // super.statementExecuteBatchAfter(statement, result);
     }
 
     private final void internalBeforeStatementExecute(StatementProxy statement, String sql) {
@@ -519,7 +502,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getResultSetStat().beforeOpen();
 
         resultSet.setConstructNano();
-        // super.resultSetOpenAfter(resultSet);
     }
 
     @Override
@@ -543,7 +525,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             }
         }
 
-        super.resultSet_close(chain, resultSet);
+        chain.resultSet_close(resultSet);
     }
 
     public final static String ATTR_NAME_CONNECTION_STAT = "stat.conn";
