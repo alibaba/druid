@@ -1,5 +1,6 @@
 package com.alibaba.druid.wall;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 public interface WallFilterMBean {
@@ -19,4 +20,6 @@ public interface WallFilterMBean {
     void clearProviderCache();
     
     Set<String> getProviderWhiteList();
+    
+    void check(String sql) throws SQLException;
 }
