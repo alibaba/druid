@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.pool.benckmark;
+package com.alibaba.druid.benckmark.pool;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.NumberFormat;
+import java.util.concurrent.CountDownLatch;
 
 import javax.sql.DataSource;
 
@@ -29,48 +30,55 @@ import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.jolbox.bonecp.BoneCPDataSource;
 
-public class Oracle_Case0 extends TestCase {
+public class Case_Concurrent_50 extends TestCase {
 
-    private String   jdbcUrl;
-    private String   user;
-    private String   password;
-    private String   driverClass;
-    private int      initialSize     = 1;
-    private int      minPoolSize     = 1;
-    private int      maxPoolSize     = 2;
-    private int      maxActive       = 2;
-    private String   validationQuery = "SELECT 1 FROM DUAL";
+    private String    jdbcUrl;
+    private String    user;
+    private String    password;
+    private String    driverClass;
+    private int       initialSize                = 0;
+    private int       minIdle                    = 3;
+    private int       maxIdle                    = 5;
+    private int       maxActive                  = 10;
+    private String    validationQuery            = "SELECT 1";
+    private boolean   testOnBorrow               = false;
 
-    public final int LOOP_COUNT      = 5;
+    private long      minEvictableIdleTimeMillis = 3000;
+    public final int  LOOP_COUNT                 = 5;
+    public final int  COUNT                      = 1000 * 10;
+
+    private final int THREAD_COUNT               = 50;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
-        user = "alibaba";
-        password = "ccbuauto";
-        driverClass = "oracle.jdbc.driver.OracleDriver";
+        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        user = "dragoon25";
+        password = "dragoon25";
+        driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
     public void test_0() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource();
+        final DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
-        dataSource.setMinIdle(minPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxIdle(maxIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         dataSource.setPoolPreparedStatements(true);
+        dataSource.setMaxWait(6000);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "druid");
         }
+
         System.out.println();
     }
 
@@ -79,8 +87,8 @@ public class Oracle_Case0 extends TestCase {
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
-        dataSource.setMinIdle(minPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxIdle(maxIdle);
         dataSource.setPoolPreparedStatements(true);
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
@@ -88,51 +96,49 @@ public class Oracle_Case0 extends TestCase {
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestOnBorrow(true);
+        dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
 
         for (int i = 0; i < LOOP_COUNT; ++i) {
             p0(dataSource, "dbcp");
         }
+
         System.out.println();
     }
 
-    public void test_2() throws Exception {
-        BoneCPDataSource dataSource = new BoneCPDataSource();
-        // dataSource.(10);
-        // dataSource.setMaxActive(50);
-        dataSource.setMinConnectionsPerPartition(minPoolSize);
-        dataSource.setMaxConnectionsPerPartition(maxPoolSize);
-
-        dataSource.setDriverClass(driverClass);
-        dataSource.setJdbcUrl(jdbcUrl);
-        // dataSource.setPoolPreparedStatements(true);
-        // dataSource.setMaxOpenPreparedStatements(100);
-        dataSource.setUsername(user);
-        dataSource.setPassword(password);
-        dataSource.setConnectionTestStatement(validationQuery);
-        dataSource.setPartitionCount(1);
-
-        for (int i = 0; i < LOOP_COUNT; ++i) {
-            p0(dataSource, "boneCP");
-        }
-        System.out.println();
-    }
-
-    private void p0(DataSource dataSource, String name) throws SQLException {
+    private void p0(final DataSource dataSource, String name) throws Exception {
         long startMillis = System.currentTimeMillis();
         long startYGC = TestUtil.getYoungGC();
         long startFullGC = TestUtil.getFullGC();
 
-        final int COUNT = 1000 * 1;
-        for (int i = 0; i < COUNT; ++i) {
-            Connection conn = dataSource.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM DUAL");
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            rs.close();
-            stmt.close();
-            conn.close();
+        final CountDownLatch endLatch = new CountDownLatch(THREAD_COUNT);
+        for (int i = 0; i < THREAD_COUNT; ++i) {
+            Thread thread = new Thread() {
+
+                public void run() {
+                    try {
+
+                        for (int i = 0; i < COUNT; ++i) {
+                            Connection conn = dataSource.getConnection();
+                            Statement stmt = conn.createStatement();
+                            ResultSet rs = stmt.executeQuery("SELECT 1");
+                            Thread.sleep(0, 1000 * 100);
+                            rs.close();
+                            stmt.close();
+                            conn.close();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        endLatch.countDown();
+                    }
+                }
+            };
+            thread.start();
         }
+        endLatch.await();
+
         long millis = System.currentTimeMillis() - startMillis;
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;

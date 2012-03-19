@@ -1,4 +1,4 @@
-package com.alibaba.druid.pool.benckmark;
+package com.alibaba.druid.benckmark.pool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,11 +10,12 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 import com.alibaba.druid.TestUtil;
-import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class CaseKylin_mysql_idle_2 extends TestCase {
+public class CaseKylin_mysql extends TestCase {
 
     private String  jdbcUrl;
     private String  user;
@@ -25,32 +26,30 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
     private int     maxIdle                       = 20;
     private int     maxActive                     = 20;
     private int     maxWait                       = 60000;
-    private String  validationQuery               = null;     // "SELECT 1";
+    private String  validationQuery               = null;      // "SELECT 1";
     private int     threadCount                   = 15;
     private int     TEST_COUNT                    = 3;
-    final int       LOOP_COUNT                    = 10 * 1;
+    final int       LOOP_COUNT                    = 1000 * 100;
     private boolean testWhileIdle                 = true;
     private boolean testOnBorrow                  = false;
     private boolean testOnReturn                  = false;
 
     private boolean removeAbandoned               = true;
     private int     removeAbandonedTimeout        = 180;
-    private long    timeBetweenEvictionRunsMillis = 60 * 10;
-    private long    minEvictableIdleTimeMillis    = 1800 * 10;
+    private long    timeBetweenEvictionRunsMillis = 60000;
+    private long    minEvictableIdleTimeMillis    = 1800000;
     private int     numTestsPerEvictionRun        = 20;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        user = "dragoon25";
-        password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
+        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        // user = "dragoon25";
+        // password = "dragoon25";
+        // driverClass = "com.alibaba.druid.mock.MockDriver";
 
-        MockDriver.instance.setIdleTimeCount(50 * 60 * 10);
-
-        // jdbcUrl = "jdbc:mysql://10.20.141.150:8066/amoeba";
-        // user = "root";
-        // password = "12345";
-        // driverClass = "com.mysql.jdbc.Driver";
+        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+        user = "root";
+        password = "root";
+        driverClass = "com.mysql.jdbc.Driver";
 
         // jdbcUrl = "jdbc:oracle:thin:@10.20.149.85:1521:ocnauto";
         // user = "alibaba";
@@ -59,8 +58,10 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
     }
 
     public void test_perf() throws Exception {
-        druid();
-
+        for (int i = 0; i < 5; ++i) {
+            druid();
+            dbcp();
+        }
     }
 
     public void druid() throws Exception {
@@ -87,14 +88,38 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
         dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
         dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
 
-        p0(dataSource, "druid", threadCount);
-
-        long startMillis = System.currentTimeMillis();
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < TEST_COUNT; ++i) {
             p0(dataSource, "druid", threadCount);
+        }
+        System.out.println();
+    }
 
-            long seconds = (System.currentTimeMillis() - startMillis) / 1000L;
-            System.out.println("seconds : " + seconds);
+    public void dbcp() throws Exception {
+        final BasicDataSource dataSource = new BasicDataSource();
+
+        dataSource.setInitialSize(initialSize);
+        dataSource.setMaxActive(maxActive);
+        dataSource.setMaxIdle(maxIdle);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxWait(maxWait);
+        dataSource.setPoolPreparedStatements(true);
+        dataSource.setDriverClassName(driverClass);
+        dataSource.setUrl(jdbcUrl);
+        dataSource.setPoolPreparedStatements(true);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        dataSource.setValidationQuery(validationQuery);
+        dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setTestOnBorrow(testWhileIdle);
+        dataSource.setTestOnBorrow(testOnReturn);
+        dataSource.setRemoveAbandoned(removeAbandoned);
+        dataSource.setRemoveAbandonedTimeout(removeAbandonedTimeout);
+        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        dataSource.setNumTestsPerEvictionRun(numTestsPerEvictionRun);
+
+        for (int i = 0; i < TEST_COUNT; ++i) {
+            p0(dataSource, "dbcp", threadCount);
         }
         System.out.println();
     }
@@ -112,7 +137,7 @@ public class CaseKylin_mysql_idle_2 extends TestCase {
 
                         for (int i = 0; i < LOOP_COUNT; ++i) {
                             Connection conn = dataSource.getConnection();
-                            PreparedStatement stmt = conn.prepareStatement("SELECT 1");
+                            PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM DUAL");
                             ResultSet rs = stmt.executeQuery();
                             rs.next();
                             rs.getInt(1);

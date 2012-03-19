@@ -1,4 +1,4 @@
-package com.alibaba.druid.pool.benckmark;
+package com.alibaba.druid.benckmark.pool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
