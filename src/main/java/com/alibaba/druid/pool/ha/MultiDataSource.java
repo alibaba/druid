@@ -30,6 +30,7 @@ import com.alibaba.druid.pool.ha.config.ConfigLoader;
 import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {
@@ -82,6 +83,8 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     private long                                    maxWaitMillis             = 0;
 
     private Balancer                                balancer                  = new WeightBalancer();
+
+    private JdbcDataSourceStat                      dataSourceStat;
 
     public long getMaxWaitMillis() {
         return maxWaitMillis;
@@ -168,9 +171,11 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             if (inited) {
                 return;
             }
+            
+            dataSourceStat = new JdbcDataSourceStat(name, null);
 
             this.balancer.init(this);
-            
+
             initInternal();
 
             scheduler = Executors.newScheduledThreadPool(schedulerThreadCount);
@@ -323,7 +328,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
         if (!this.balancer.isInited()) {
             this.balancer.init(this);
         }
-        
+
         this.balancer.afterDataSourceChanged(null);
     }
 
@@ -490,5 +495,10 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             }
         }
 
+    }
+
+    @Override
+    public JdbcDataSourceStat getDataSourceStat() {
+        return dataSourceStat;
     }
 }

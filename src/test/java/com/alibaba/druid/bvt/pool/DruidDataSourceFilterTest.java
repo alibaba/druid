@@ -43,8 +43,9 @@ public class DruidDataSourceFilterTest extends TestCase {
         JdbcStatManager.getInstance().reset();
         
         dataSource.init();
-        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
-        JdbcDataSourceStat dataSourceStat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
+        JdbcDataSourceStat dataSourceStat =dataSource.getDataSourceStat();
+//        Assert.assertEquals(1, JdbcStatManager.getInstance().getDataSources().size());
+//        JdbcDataSourceStat dataSourceStat = JdbcStatManager.getInstance().getDataSources().values().iterator().next();
 
         Assert.assertEquals(0, dataSourceStat.getConnectionStat().getConnectCount());
         Assert.assertEquals(1, dataSource.getProxyFilters().size());

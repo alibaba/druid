@@ -125,15 +125,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public synchronized void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
-        ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
-
-        String url = dataSource.getUrl();
-        JdbcDataSourceStat stat = dataSourceStats.get(url);
-        if (stat == null) {
-            dataSourceStats.putIfAbsent(url, new JdbcDataSourceStat(dataSource.getName(), url));
-            stat = dataSourceStats.get(url);
-        }
-        this.dataSourceStat = stat;
+        this.dataSourceStat = dataSource.getDataSourceStat();
     }
 
     @Override
@@ -141,10 +133,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (dataSource == null) {
             return;
         }
-
-        ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
-        String url = dataSource.getUrl();
-        dataSourceStats.remove(url);
 
         dataSource = null;
     }

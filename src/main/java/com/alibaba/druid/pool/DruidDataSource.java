@@ -55,6 +55,7 @@ import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -107,6 +108,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private String                  initStackTrace;
 
     private boolean                 closed                  = false;
+
+    private JdbcDataSourceStat      dataSourceStat;
 
     public DruidDataSource(){
     }
@@ -324,6 +327,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             }
+            
+            dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl);
 
             for (Filter filter : filters) {
                 filter.init(this);
@@ -1357,6 +1362,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     @Override
     public String getVersion() {
         return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+    }
+
+    @Override
+    public JdbcDataSourceStat getDataSourceStat() {
+        return dataSourceStat;
     }
 
 }

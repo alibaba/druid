@@ -60,11 +60,14 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     private final AtomicLong            resultSetIdSeed   = new AtomicLong(50000);
     private final AtomicLong            transactionIdSeed = new AtomicLong(0);
 
+    private final JdbcDataSourceStat    dataSourceStat;
+
     public DataSourceProxyImpl(Driver rawDriver, DataSourceProxyConfig config){
         super();
         this.rawDriver = rawDriver;
         this.config = config;
         this.dbType = JdbcUtils.getDbType(config.getRawUrl(), config.getRawDriverClassName());
+        this.dataSourceStat = new JdbcDataSourceStat(config.getName(), config.getUrl());
     }
 
     public String getDbType() {
@@ -370,4 +373,9 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     public long createTransactionId() {
         return transactionIdSeed.getAndIncrement();
     }
+
+    public JdbcDataSourceStat getDataSourceStat() {
+        return dataSourceStat;
+    }
+
 }

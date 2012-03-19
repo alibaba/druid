@@ -17,7 +17,6 @@ package com.alibaba.druid.stat;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -47,18 +46,12 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
     private final JdbcResultSetStat                         resultSetStat  = new JdbcResultSetStat();
     private final JdbcStatementStat                         statementStat  = new JdbcStatementStat();
 
-    private final ConcurrentMap<String, JdbcDataSourceStat> dataSources    = new ConcurrentHashMap<String, JdbcDataSourceStat>();
-
     private final AtomicLong                                resetCount     = new AtomicLong();
 
     public final ThreadLocal<JdbcStatContext>               contextLocal   = new ThreadLocal<JdbcStatContext>();
 
     private JdbcStatManager(){
 
-    }
-
-    public ConcurrentMap<String, JdbcDataSourceStat> getDataSources() {
-        return dataSources;
     }
 
     public JdbcStatContext getStatContext() {
@@ -305,8 +298,17 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         TabularType tabularType = new TabularType("SqlListStatistic", "SqlListStatistic", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        for (JdbcDataSourceStat dataSource : dataSources.values()) {
-            Map<String, JdbcSqlStat> statMap = dataSource.getSqlStatMap();
+        for (DataSourceProxyImpl dataSource : DruidDriver.getProxyDataSources().values()) {
+            Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
+            for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
+                Map<String, Object> map = entry.getValue().getData();
+                map.put("URL", dataSource.getUrl());
+                data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
+            }
+        }
+        
+        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
                 Map<String, Object> map = entry.getValue().getData();
                 map.put("URL", dataSource.getUrl());
