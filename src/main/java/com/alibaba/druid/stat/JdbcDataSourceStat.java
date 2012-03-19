@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.stat;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.management.JMException;
 import javax.management.openmbean.CompositeType;
@@ -38,7 +41,15 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final JdbcResultSetStat                             resultSetStat  = new JdbcResultSetStat();
     private final JdbcStatementStat                             statementStat  = new JdbcStatementStat();
 
-    private final ConcurrentMap<String, JdbcSqlStat>            sqlStatMap     = new ConcurrentHashMap<String, JdbcSqlStat>();
+    private int                                                 maxSize        = 2048;
+
+    private ReentrantReadWriteLock                              lock           = new ReentrantReadWriteLock();
+    private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap     = new LinkedHashMap<String, JdbcSqlStat>(
+                                                                                                                        maxSize,
+                                                                                                                        0.75f,
+                                                                                                                        true);
+
+    // private final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = new ConcurrentHashMap<String, JdbcSqlStat>();
 
     private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections    = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
@@ -52,7 +63,14 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         statementStat.reset();
         resultSetStat.reset();
 
-        sqlStatMap.clear();
+        lock.readLock().lock();
+        try {
+            for (JdbcSqlStat stat : sqlStatMap.values()) {
+                stat.reset();
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
 
         for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
             connectionStat.reset();
@@ -77,12 +95,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return url;
     }
 
-    public JdbcSqlStat getSqlStat(String sql) {
-        return this.sqlStatMap.get(sql);
-    }
-
     @Override
     public TabularData getSqlList() throws JMException {
+        Map<String, JdbcSqlStat> sqlStatMap = this.getSqlStatMap();
         CompositeType rowType = JdbcSqlStat.getCompositeType();
         String[] indexNames = rowType.keySet().toArray(new String[rowType.keySet().size()]);
 
@@ -107,13 +122,18 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     }
 
     public JdbcSqlStat getSqlStat(long id) {
-        for (Map.Entry<String, JdbcSqlStat> entry : this.sqlStatMap.entrySet()) {
-            if (entry.getValue().getId() == id) {
-                return entry.getValue();
+        lock.readLock().lock();
+        try {
+            for (Map.Entry<String, JdbcSqlStat> entry : this.sqlStatMap.entrySet()) {
+                if (entry.getValue().getId() == id) {
+                    return entry.getValue();
+                }
             }
-        }
 
-        return null;
+            return null;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public final ConcurrentMap<Long, JdbcConnectionStat.Entry> getConnections() {
@@ -144,8 +164,39 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         return url;
     }
 
-    public ConcurrentMap<String, JdbcSqlStat> getSqlStatMap() {
-        return sqlStatMap;
+    public Map<String, JdbcSqlStat> getSqlStatMap() {
+        Map<String, JdbcSqlStat> map = new HashMap<String, JdbcSqlStat>();
+        lock.readLock().lock();
+        try {
+            map.putAll(sqlStatMap);
+        } finally {
+            lock.readLock().unlock();
+        }
+        return map;
+    }
+
+    public JdbcSqlStat getSqlStat(String sql) {
+        lock.readLock().lock();
+        try {
+            return sqlStatMap.get(sql);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public JdbcSqlStat createSqlStat(String sql) {
+        lock.writeLock().lock();
+        try {
+            JdbcSqlStat sqlStat = sqlStatMap.get(sql);
+            if (sqlStat == null) {
+                sqlStat = new JdbcSqlStat(sql);
+                sqlStatMap.put(sql, sqlStat);
+            }
+
+            return sqlStat;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
     @Override

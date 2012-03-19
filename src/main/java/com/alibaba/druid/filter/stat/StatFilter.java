@@ -135,17 +135,17 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
         this.dataSourceStat = stat;
     }
-    
+
     @Override
     public synchronized void destory() {
         if (dataSource == null) {
             return;
         }
-        
+
         ConcurrentMap<String, JdbcDataSourceStat> dataSourceStats = JdbcStatManager.getInstance().getDataSources();
         String url = dataSource.getUrl();
         dataSourceStats.remove(url);
-        
+
         dataSource = null;
     }
 
@@ -398,7 +398,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             sqlStat.decrementExecutingCount();
             sqlStat.addExecuteTime(nanoSpan);
-            
+
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
                 StringBuilder buf = new StringBuilder();
@@ -675,27 +675,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
-        final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = dataSourceStat.getSqlStatMap();
-        JdbcSqlStat sqlStat = sqlStatMap.get(sql);
-        if (sqlStat == null) {
-            if (dataSourceStat.getSqlStatMap().size() >= maxSqlStatCount) {
-                return null;
-            }
-
-            JdbcSqlStat newSqlStat = new JdbcSqlStat(sql);
-            if (dataSourceStat.getSqlStatMap().putIfAbsent(sql, newSqlStat) == null) {
-                newSqlStat.setId(JdbcStatManager.getInstance().generateSqlId());
-                newSqlStat.setDataSource(this.dataSource.getUrl());
-            }
-
-            sqlStat = dataSourceStat.getSqlStatMap().get(sql);
-        }
-
-        if (sqlStat == null) {
-            LOG.error("stat is null");
-        }
-
-        return sqlStat;
+        return dataSourceStat.createSqlStat(sql);
     }
 
     public static JdbcSqlStat getSqlStat(StatementProxy statement) {
@@ -711,11 +691,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat getSqlStat(String sql) {
-        return dataSourceStat.getSqlStatMap().get(sql);
-    }
-
-    public ConcurrentMap<String, JdbcSqlStat> getSqlStatisticMap() {
-        return dataSourceStat.getSqlStatMap();
+        return dataSourceStat.getSqlStat(sql);
     }
 
     @Override
