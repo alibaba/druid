@@ -178,6 +178,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         fetchRowCount.set(0);
 
         histogram.reset();
+        this.lastSlowParameters = null;
         inTransactionCount.set(0);
     }
 
