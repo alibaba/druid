@@ -1185,28 +1185,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    public void clear() {
-        final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
-
-        lock.lock();
-        try {
-            for (int i = 0; i < poolingCount; ++i) {
-                ConnectionHolder connection = connections[i];
-                evictList.add(connection);
-            }
-
-            poolingCount = 0;
-        } finally {
-            lock.unlock();
-        }
-
-        for (ConnectionHolder item : evictList) {
-            Connection connection = item.getConnection();
-            JdbcUtils.close(connection);
-            destroyCount++;
-        }
-    }
-
     public int getWaitThreadCount() {
         lock.lock();
         try {

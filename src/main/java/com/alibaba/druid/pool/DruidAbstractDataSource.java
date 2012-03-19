@@ -840,62 +840,25 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return username;
     }
 
-    public void setUsername(String user) {
-        lock.lock();
-        try {
-            if (equals(this.username, user)) {
-                return;
-            }
-
-            if (inited) {
-                this.modCount++;
-                clear();
-            }
-
-            this.username = user;
-        } finally {
-            lock.unlock();
+    public void setUsername(String username) {
+        if (inited) {
+            throw new UnsupportedOperationException();
         }
+
+        this.username = username;
     }
     
-    public void setUrlAndUserAndPassword(String url, String user, String password) {
-        lock.lock();
-        try {
-            if (equals(this.jdbcUrl, url) && equals(this.username, user) && equals(this.password, password)) {
-                return;
-            }
-
-            if (inited) {
-                this.modCount++;
-                clear();
-            }
-
-            this.username = user;
-        } finally {
-            lock.unlock();
-        }
-    }
 
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        lock.lock();
-        try {
-            if (equals(this.password, password)) {
-                return;
-            }
-
-            if (inited) {
-                this.modCount++;
-                clear();
-            }
-
-            this.password = password;
-        } finally {
-            lock.unlock();
+        if (inited) {
+            throw new UnsupportedOperationException();
         }
+
+        this.password = password;
     }
 
     public Properties getConnectProperties() {
@@ -948,25 +911,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUrl(String jdbcUrl) {
-        lock.lock();
-        try {
-            if (equals(this.jdbcUrl, jdbcUrl)) {
-                return;
-            }
-
-            if (inited) {
-                this.modCount++;
-                clear();
-            }
-
-            this.jdbcUrl = jdbcUrl;
-        } finally {
-            lock.unlock();
+        if (inited) {
+            throw new UnsupportedOperationException();
         }
+
+        this.jdbcUrl = jdbcUrl;
     }
     
-    public abstract void clear();
-
     public String getDriverClassName() {
         return driverClass;
     }
