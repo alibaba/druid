@@ -41,7 +41,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final JdbcResultSetStat                             resultSetStat  = new JdbcResultSetStat();
     private final JdbcStatementStat                             statementStat  = new JdbcStatementStat();
 
-    private int                                                 maxSize        = 2048;
+    private int                                                 maxSize        = 1000 * 10;
 
     private ReentrantReadWriteLock                              lock           = new ReentrantReadWriteLock();
     private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap     = new LinkedHashMap<String, JdbcSqlStat>(

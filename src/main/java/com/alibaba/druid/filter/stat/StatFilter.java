@@ -74,20 +74,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     protected final AtomicLong        resetCount                 = new AtomicLong();
 
-    protected int                     maxSqlStatCount            = 1000 * 10;
-
     // 3 seconds is slow sql
     protected long                    slowSqlMillis              = 3 * 1000;
 
     public StatFilter(){
-        String property = System.getProperty("druid.stat.maxSqlStatCount");
-        if (property != null && property.length() > 0) {
-            try {
-                maxSqlStatCount = Integer.parseInt(property);
-            } catch (Exception e) {
-                LOG.error("get property error 'druid.stat.maxSqlStatCount' : " + property);
-            }
-        }
     }
 
     public boolean isConnectionStackTraceEnable() {
@@ -100,14 +90,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public JdbcDataSourceStat getDataSourceStat() {
         return this.dataSourceStat;
-    }
-
-    public int getMaxSqlStatCount() {
-        return maxSqlStatCount;
-    }
-
-    public void setMaxSqlStatCount(int maxSqlStatCount) {
-        this.maxSqlStatCount = maxSqlStatCount;
     }
 
     public void reset() {
