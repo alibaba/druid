@@ -328,7 +328,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
     }
 
-
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
         if (statementExecuteAfterLogEnable && isStatementLogEnabled()) {
@@ -517,11 +516,6 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         buf.append(statement.getId());
 
         return buf.toString();
-    }
-
-    protected void preparedStatement_setParameterBefore(PreparedStatementProxy statement, int parameterIndex,
-                                                        int sqlType, Object... values) {
-
     }
 
     protected void logParameter(PreparedStatementProxy statement) {
