@@ -291,8 +291,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
-
+            if (this.dbType == null || this.dbType.length() == 0) {
+                this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
+            }
+            
             if ("oracle".equals(this.dbType)) {
                 isOracle = true;
 

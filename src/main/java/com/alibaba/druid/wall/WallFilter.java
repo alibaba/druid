@@ -40,30 +40,28 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
-        String dbType = this.dbType;
-
         if (this.dbType == null || this.dbType.trim().length() == 0) {
             this.dbType = dataSource.getDbType();
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            provider = new MySqlWallProvider(config);
-
             if (config == null) {
                 config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
             }
+            
+            provider = new MySqlWallProvider(config);
         } else if (JdbcUtils.ORACLE.equals(dbType)) {
-            provider = new OracleWallProvider(config);
-
             if (config == null) {
                 config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
             }
+            
+            provider = new OracleWallProvider(config);
         } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-            provider = new SQLServerProvider(config);
-
             if (config == null) {
                 config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }
+            
+            provider = new SQLServerProvider(config);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType);
         }

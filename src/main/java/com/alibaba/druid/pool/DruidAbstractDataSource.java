@@ -493,6 +493,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public String getDbType() {
         return dbType;
     }
+    
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
+    }
 
     public void addConnectionProperty(String name, String value) {
         if (inited) {
