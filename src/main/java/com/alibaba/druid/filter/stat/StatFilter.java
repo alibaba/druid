@@ -427,7 +427,14 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                     if (value == null) {
                         lastSlowParameters[index] = "null";
                     } else if (value instanceof String) {
-                        lastSlowParameters[index] = "'" + value.toString() + "'";
+                        String text = (String) value;
+                        if (text.length() > 100) {
+                            text = text.substring(0, 97);
+                            text = "'" + text + "...'";
+                        } else {
+                            text = "'" + text + "'";
+                        }
+                        lastSlowParameters[index] = text;
                     } else if (value instanceof Number) {
                         lastSlowParameters[index] = value.toString();
                     } else if (value instanceof java.util.Date) {
