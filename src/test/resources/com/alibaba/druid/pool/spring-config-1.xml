@@ -22,8 +22,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="config" ref="wall-filter-config" />
 	</bean>
 
-	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
-		destroy-method="close">
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
 		<property name="url">
 			<value>jdbc:mock:</value>
 		</property>
@@ -42,4 +42,20 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		</property>
 	</bean>
 
+	<bean id="mbeanServer" class="com.alibaba.druid.spring.MBeanServerFactoryBean" />
+	
+	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter"
+		lazy-init="false">
+		<property name="beans">
+			<map>
+				<entry key="com.alibaba.druid.test:type=WallConfig"
+					value-ref="wall-filter-config" />
+				<entry key="com.alibaba.druid.test:type=WallFilter"
+					value-ref="wall-filter" />
+				<entry key="com.alibaba.druid.test:type=StatFilter"
+					value-ref="stat-filter" />
+			</map>
+		</property>
+		<property name="server" ref="mbeanServer" />
+	</bean>
 </beans>

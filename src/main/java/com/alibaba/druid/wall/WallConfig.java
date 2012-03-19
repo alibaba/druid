@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
-public class WallConfig {
+public class WallConfig implements WallConfigMBean {
 
     private boolean             noneBaseStatementAllow     = false;
 

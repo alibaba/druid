@@ -2,6 +2,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,6 +36,12 @@ public class SpringFilterTest extends TestCase {
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
+
+        Statement stmt = conn.createStatement();
+        stmt.execute("select 1");
+        stmt.execute("select 2");
+        stmt.execute("select 1");
+        stmt.close();
         conn.close();
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");

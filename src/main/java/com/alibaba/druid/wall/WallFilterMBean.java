@@ -1,5 +1,7 @@
 package com.alibaba.druid.wall;
 
+import java.util.Set;
+
 public interface WallFilterMBean {
 
     String getDbType();
@@ -15,4 +17,6 @@ public interface WallFilterMBean {
     boolean isInited();
     
     void clearProviderCache();
+    
+    Set<String> getProviderWhiteList();
 }
