@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.pool.basic;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Properties;
@@ -55,19 +56,32 @@ public class DataSourceTest3 extends TestCase {
         JdbcStatManager.getInstance().setStatContext(null);
     }
 
-    public void test_prepareStatement_error() throws Exception {
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-
-        conn.close();
+    public void test_setUser() throws Exception {
+        Connection real;
 
         {
-            Exception error = null;
-            try {
-                dataSource.setUsername("xxx");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setUsername(dataSource.getUsername());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setUsername("xxx_u1");
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
         }
     }
 
@@ -159,19 +173,119 @@ public class DataSourceTest3 extends TestCase {
         }
     }
 
-    public void test_error_7() throws Exception {
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-
-        conn.close();
+    public void test_setPassword() throws Exception {
+        Connection real;
 
         {
-            Exception error = null;
-            try {
-                dataSource.setPassword("xx");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setPassword(dataSource.getPassword());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setPassword("xxx_pass");
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
+        }
+    }
+    
+    public void test_setUrlAndUserAndPassword() throws Exception {
+        Connection real;
+
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword() + "_");
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
+        }
+    }
+    
+    public void test_setUrlAndUserAndPassword_1() throws Exception {
+        Connection real;
+
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl() + "_", dataSource.getUsername(), dataSource.getPassword() );
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
+        }
+    }
+    
+    public void test_setUrlAndUserAndPassword_2() throws Exception {
+        Connection real;
+
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setUrlAndUserAndPassword(dataSource.getUrl(), dataSource.getUsername() + "_", dataSource.getPassword() );
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
         }
     }
 
@@ -250,21 +364,32 @@ public class DataSourceTest3 extends TestCase {
         }
     }
 
-    public void test_error_11() throws Exception {
-        DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-
-        conn.close();
-
-        dataSource.getUrl();
+    public void test_setUrl() throws Exception {
+        Connection real;
 
         {
-            Exception error = null;
-            try {
-                dataSource.setUrl("x");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            real = conn.getConnection();
+            conn.close();
+        }
+        
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+
+        dataSource.setUrl(dataSource.getUrl());
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertSame(real, conn.getConnection());
+            conn.close();
+        }
+        dataSource.setUrl("jdbc:mock:xxx_123");
+        {
+            DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
+            Assert.assertNotSame(real, conn.getConnection());
+            conn.close();
         }
     }
 

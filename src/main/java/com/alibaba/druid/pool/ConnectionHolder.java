@@ -55,8 +55,11 @@ public final class ConnectionHolder {
     private int                                 underlyingHoldability;
     private int                                 underlyingTransactionIsolation;
     private boolean                             underlyingAutoCommit;
+    private final int                           modCount;
 
     public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
+        this.modCount = dataSource.getModCount();
+
         this.dataSource = dataSource;
         this.conn = conn;
         this.connecttimeMillis = System.currentTimeMillis();
@@ -73,6 +76,10 @@ public final class ConnectionHolder {
         this.underlyingTransactionIsolation = defaultTransactionIsolation;
 
         statementPool = null;
+    }
+
+    public int getModCount() {
+        return modCount;
     }
 
     public boolean isUnderlyingReadOnly() {
@@ -143,10 +150,10 @@ public final class ConnectionHolder {
     }
 
     public boolean isPoolPreparedStatements() {
-//        if (dataSource.isOracle()) {
-//            return false;
-//        }
-        
+        // if (dataSource.isOracle()) {
+        // return false;
+        // }
+
         boolean poolPreparedStatements = dataSource.isPoolPreparedStatements();
         if (poolPreparedStatements) {
             boolean transaction = !isUnderlyingAutoCommit();

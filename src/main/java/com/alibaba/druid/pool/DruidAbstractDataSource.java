@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import javax.management.JMException;
@@ -213,8 +214,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                           useOracleImplicitCache                    = true;
 
+    protected final ReentrantLock                                                               lock                                      = new ReentrantLock();
+
+    protected int                                                                               modCount                                  = 0;
+
     public boolean isOracle() {
         return isOracle;
+    }
+
+    protected int getModCount() {
+        return modCount;
     }
 
     public void setOracle(boolean isOracle) {
@@ -832,11 +841,39 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUsername(String user) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
+        lock.lock();
+        try {
+            if (equals(this.username, user)) {
+                return;
+            }
 
-        this.username = user;
+            if (inited) {
+                this.modCount++;
+                clear();
+            }
+
+            this.username = user;
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    public void setUrlAndUserAndPassword(String url, String user, String password) {
+        lock.lock();
+        try {
+            if (equals(this.jdbcUrl, url) && equals(this.username, user) && equals(this.password, password)) {
+                return;
+            }
+
+            if (inited) {
+                this.modCount++;
+                clear();
+            }
+
+            this.username = user;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public String getPassword() {
@@ -844,11 +881,21 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPassword(String password) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
+        lock.lock();
+        try {
+            if (equals(this.password, password)) {
+                return;
+            }
 
-        this.password = password;
+            if (inited) {
+                this.modCount++;
+                clear();
+            }
+
+            this.password = password;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public Properties getConnectProperties() {
@@ -901,12 +948,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setUrl(String jdbcUrl) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
+        lock.lock();
+        try {
+            if (equals(this.jdbcUrl, jdbcUrl)) {
+                return;
+            }
 
-        this.jdbcUrl = jdbcUrl;
+            if (inited) {
+                this.modCount++;
+                clear();
+            }
+
+            this.jdbcUrl = jdbcUrl;
+        } finally {
+            lock.unlock();
+        }
     }
+    
+    public abstract void clear();
 
     public String getDriverClassName() {
         return driverClass;
@@ -1531,5 +1590,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         closedPreparedStatementCount.incrementAndGet();
 
         JdbcUtils.close(stmtHolder.getStatement());
+    }
+    
+    public static boolean equals(Object object1, Object object2) {
+        if (object1 == object2) {
+            return true;
+        }
+        if ((object1 == null) || (object2 == null)) {
+            return false;
+        }
+        return object1.equals(object2);
     }
 }
