@@ -28,7 +28,6 @@ import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -66,8 +65,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
-
-    private final ReentrantLock     lock                    = new ReentrantLock();
 
     private final Condition         notEmpty                = lock.newCondition();
     private final Condition         empty                   = lock.newCondition();
@@ -295,7 +292,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
                                            + driver.getMinorVersion());
                 }
-                
+
                 if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
                     this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
                 }
@@ -605,16 +602,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
+            boolean neadDestory = false;
             lock.lockInterruptibly();
             try {
-                activeCount--;
-                closeCount++;
+                if (holder.getModCount() == this.modCount) {
+                    activeCount--;
+                    closeCount++;
 
-                // 第六步，加入队列中(putLast)
-                putLast(holder);
-                recycleCount++;
+                    // 第六步，加入队列中(putLast)
+                    putLast(holder);
+                    recycleCount++;
+                } else {
+                    destroyCount++;
+                    activeCount--;
+                    closeCount++;
+                    neadDestory = true;
+                }
             } finally {
                 lock.unlock();
+            }
+
+            if (neadDestory) {
+                JdbcUtils.close(conn);
             }
         } catch (Throwable e) {
             JdbcUtils.close(conn);
@@ -657,7 +666,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.closed) {
                 return;
             }
-            
+
             if (!this.inited) {
                 return;
             }
@@ -685,9 +694,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             enable = false;
             notEmpty.signalAll();
             notEmptySignalCount++;
-            
+
             this.closed = true;
-            
+
             for (Filter filter : filters) {
                 filter.destory();
             }
@@ -1165,6 +1174,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Arrays.fill(connections, poolingCount - removeCount, poolingCount, null);
                 poolingCount -= removeCount;
             }
+        } finally {
+            lock.unlock();
+        }
+
+        for (ConnectionHolder item : evictList) {
+            Connection connection = item.getConnection();
+            JdbcUtils.close(connection);
+            destroyCount++;
+        }
+    }
+
+    public void clear() {
+        final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
+
+        lock.lock();
+        try {
+            for (int i = 0; i < poolingCount; ++i) {
+                ConnectionHolder connection = connections[i];
+                evictList.add(connection);
+            }
+
+            poolingCount = 0;
         } finally {
             lock.unlock();
         }

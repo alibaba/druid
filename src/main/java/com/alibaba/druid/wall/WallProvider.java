@@ -46,6 +46,17 @@ public abstract class WallProvider {
             lock.writeLock().unlock();
         }
     }
+    
+    public void clearCache() {
+        lock.writeLock().lock();
+        try {
+            if (whiteList != null) {
+                whiteList = null;
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
 
     public boolean whiteContains(String sql) {
         lock.readLock().lock();
