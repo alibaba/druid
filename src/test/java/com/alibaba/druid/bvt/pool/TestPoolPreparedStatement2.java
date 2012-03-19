@@ -38,7 +38,7 @@ public class TestPoolPreparedStatement2 extends TestCase {
         dataSource.setPoolPreparedStatements(false);
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
         
-        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
+//        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
     protected void tearDown() throws Exception {

@@ -36,7 +36,7 @@ public class TestPoolPreparedStatement extends TestCase {
         dataSource.setValidationQuery("SELECT 1");
         dataSource.setFilters("stat");
         dataSource.setPoolPreparedStatements(true);
-        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
+//        ((StatFilter) dataSource.getProxyFilters().get(0)).setMaxSqlStatCount(100);
     }
 
     protected void tearDown() throws Exception {
