@@ -2,8 +2,10 @@ package com.alibaba.druid.wall;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -45,6 +47,20 @@ public abstract class WallProvider {
         } finally {
             lock.writeLock().unlock();
         }
+    }
+    
+    public Set<String> getWhiteList() {
+        Set<String> hashSet = new HashSet<String>();
+        lock.readLock().lock();
+        try {
+            if (whiteList != null) {
+                hashSet.addAll(whiteList.keySet());
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        
+        return hashSet;
     }
     
     public void clearCache() {

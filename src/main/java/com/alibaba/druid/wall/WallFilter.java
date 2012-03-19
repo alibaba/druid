@@ -1,8 +1,10 @@
 package com.alibaba.druid.wall;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
@@ -20,7 +22,7 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerProvider;
 
-public class WallFilter extends FilterAdapter {
+public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private final static Log LOG            = LogFactory.getLog(WallFilter.class);
 
@@ -32,8 +34,8 @@ public class WallFilter extends FilterAdapter {
 
     private WallConfig       config;
 
-    private boolean          logViolation   = false;
-    private boolean          throwException = true;
+    private volatile boolean logViolation   = false;
+    private volatile boolean throwException = true;
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -59,7 +61,7 @@ public class WallFilter extends FilterAdapter {
             }
         } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             provider = new SQLServerProvider(config);
-            
+
             if (config == null) {
                 config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }
@@ -94,6 +96,20 @@ public class WallFilter extends FilterAdapter {
         this.throwException = throwException;
     }
 
+    public void clearProviderCache() {
+        if (provider != null) {
+            provider.clearCache();
+        }
+    }
+
+    public Set<String> getProviderWhiteList() {
+        if (provider == null) {
+            return Collections.emptySet();
+        }
+
+        return provider.getWhiteList();
+    }
+
     public WallProvider getProvider() {
         return provider;
     }
@@ -104,6 +120,10 @@ public class WallFilter extends FilterAdapter {
 
     public void setConfig(WallConfig config) {
         this.config = config;
+    }
+
+    public boolean isInited() {
+        return inited;
     }
 
     public void checkInit() {
