@@ -27,6 +27,8 @@ public class WallConfig {
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
 
+    private boolean             multiStatementAllow        = false;
+
     private boolean             truncateAllow              = false;
 
     private boolean             commentAllow               = false;
@@ -196,6 +198,14 @@ public class WallConfig {
 
     public void setMergeAllow(boolean mergeAllow) {
         this.mergeAllow = mergeAllow;
+    }
+
+    public boolean isMultiStatementAllow() {
+        return multiStatementAllow;
+    }
+
+    public void setMultiStatementAllow(boolean multiStatementAllow) {
+        this.multiStatementAllow = multiStatementAllow;
     }
 
     public boolean isSchemaCheck() {

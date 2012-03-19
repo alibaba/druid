@@ -17,17 +17,5 @@ package com.alibaba.druid.stat;
 
 public interface JdbcTraceManagerMBean {
 
-    void setNotificationEnable(boolean notificationEnable);
 
-    boolean isNotificationEnable();
-
-    long getEventFiredCount();
-
-    long getEventSkipCount();
-
-    int getEventListenerSize();
-
-    boolean isTraceEnable();
-
-    void setTraceEnable(boolean traceEnable);
 }

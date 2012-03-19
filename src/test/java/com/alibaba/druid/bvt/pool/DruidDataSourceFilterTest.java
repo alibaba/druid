@@ -32,18 +32,6 @@ public class DruidDataSourceFilterTest extends TestCase {
         dataSource.close();
     }
 
-    public void test_filter_2() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource();
-
-        Assert.assertEquals(0, dataSource.getProxyFilters().size());
-
-        dataSource.setFilters("stat,trace");
-
-        Assert.assertEquals(2, dataSource.getProxyFilters().size());
-
-        dataSource.close();
-    }
-
     public void test_filter_3() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:");

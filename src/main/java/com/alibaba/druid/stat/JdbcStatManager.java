@@ -72,8 +72,6 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
     public JdbcStatContext createStatContext() {
         JdbcStatContext context = new JdbcStatContext();
 
-        context.setTraceEnable(JdbcTraceManager.getInstance().isTraceEnable());
-
         return context;
     }
 
@@ -180,9 +178,9 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 SimpleType.LONG, //
                 SimpleType.DATE, //
                 SimpleType.LONG, //
-                SimpleType.LONG, // 
-                new ArrayType<Long>(SimpleType.LONG, true), // 
-                
+                SimpleType.LONG, //
+                new ArrayType<Long>(SimpleType.LONG, true), //
+
                 // 55 -
                 new ArrayType<Long>(SimpleType.LONG, true)
         //
@@ -263,7 +261,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
                 "ConnectionAliveMillisMax", //
                 "ConnectionAliveMillisMin", //
                 "ConnectionHistogram", //
-                
+
                 // 55 -
                 "StatementHistogram",
         //

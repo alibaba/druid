@@ -104,7 +104,7 @@ public abstract class WallProvider {
             return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
 
-        if (statementList.size() > 1) {
+        if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
             return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
 
