@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -19,9 +20,11 @@ public abstract class WallProvider {
 
     private int                           whileListMaxSize  = 1024;
 
-    private int                           whiteSqlMaxLength = 1024;        // 1k
+    private int                           whiteSqlMaxLength = 1024;                        // 1k
 
     protected final WallConfig            config;
+
+    private final ReentrantReadWriteLock  lock              = new ReentrantReadWriteLock();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -31,26 +34,36 @@ public abstract class WallProvider {
         return config;
     }
 
-    public synchronized void addWhiteSql(String sql) {
-        if (whiteList == null) {
-            whiteList = new LinkedHashMap<String, Object>(whileListMaxSize, 0.75f, true);
-        }
+    public void addWhiteSql(String sql) {
+        lock.writeLock().lock();
+        try {
+            if (whiteList == null) {
+                whiteList = new LinkedHashMap<String, Object>(whileListMaxSize, 0.75f, true);
+            }
 
-        whiteList.put(sql, PRESENT);
+            whiteList.put(sql, PRESENT);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
 
-    public synchronized boolean whiteContains(String sql) {
-        if (whiteList == null) {
-            return false;
-        }
+    public boolean whiteContains(String sql) {
+        lock.readLock().lock();
+        try {
+            if (whiteList == null) {
+                return false;
+            }
 
-        return whiteList.get(sql) != null;
+            return whiteList.get(sql) != null;
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     public abstract SQLStatementParser createParser(String sql);
 
     public abstract WallVisitor createWallVisitor();
-    
+
     public boolean checkValid(String sql) {
         return check(sql).size() == 0;
     }
@@ -63,7 +76,10 @@ public abstract class WallProvider {
         }
 
         SQLStatementParser parser = createParser(sql);
-        parser.getLexer().setAllowComment(false); // permit comment
+
+        if (!config.isCommentAllow()) {
+            parser.getLexer().setAllowComment(false); // permit comment
+        }
 
         List<SQLStatement> statementList = new ArrayList<SQLStatement>();
 

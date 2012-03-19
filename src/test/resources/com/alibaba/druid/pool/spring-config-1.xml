@@ -22,7 +22,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="config" ref="wall-filter-config" />
 	</bean>
 
-	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
 		destroy-method="close">
 		<property name="url">
 			<value>jdbc:mock:</value>
