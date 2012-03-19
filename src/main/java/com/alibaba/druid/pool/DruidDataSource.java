@@ -41,6 +41,7 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
 import com.alibaba.druid.pool.vendor.MSSQLValidConnectionChecker;
@@ -276,7 +277,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
                 }
 
-                driver = JdbcUtils.createDriver(driverClass);
+                if (MockDriver.class.getName().equals(driverClass)) {
+                    driver = MockDriver.instance;
+                } else {
+                    driver = JdbcUtils.createDriver(driverClass);
+                }
             } else {
                 if (this.driverClass == null) {
                     this.driverClass = driver.getClass().getName();

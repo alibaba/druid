@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.mock;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -32,12 +33,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.mock.handler.MockExecuteHandler;
 import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
 
-public class MockDriver implements Driver {
+public class MockDriver implements Driver, MockDriverMBean {
 
     private final static Log               LOG                   = LogFactory.getLog(MockDriver.class);
 
@@ -60,6 +64,8 @@ public class MockDriver implements Driver {
     private long                           idleTimeCount         = 1000 * 60 * 3;
 
     private boolean                        logExecuteQueryEnable = true;
+
+    private final static String            MBEAN_NAME            = "com.alibaba.druid:type=MockDriver";
 
     static {
         registerDriver(instance);
@@ -85,6 +91,17 @@ public class MockDriver implements Driver {
         return connectionIdSeed.incrementAndGet();
     }
 
+    public void closeAllConnections() throws SQLException {
+        for (int i = 0, size = this.connections.size(); i < size; ++i) {
+            Connection conn = this.connections.get(size - i - 1);
+            conn.close();
+        }
+    }
+    
+    public int getConnectionsSize() {
+        return this.connections.size();
+    }
+    
     public List<MockConnection> getConnections() {
         return connections;
     }
@@ -111,6 +128,17 @@ public class MockDriver implements Driver {
         try {
             DriverManager.registerDriver(driver);
 
+            try {
+                MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+
+                ObjectName objectName = new ObjectName(MBEAN_NAME);
+                if (!mbeanServer.isRegistered(objectName)) {
+                    mbeanServer.registerMBean(instance, objectName);
+                }
+            } catch (Exception ex) {
+                LOG.error("register druid-driver mbean error", ex);
+            }
+
             return true;
         } catch (Exception e) {
             LOG.error("registerDriver error", e);
@@ -126,7 +154,7 @@ public class MockDriver implements Driver {
     public void setExecuteHandler(MockExecuteHandler executeHandler) {
         this.executeHandler = executeHandler;
     }
-
+    
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url)) {
