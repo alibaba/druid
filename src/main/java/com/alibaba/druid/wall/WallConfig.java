@@ -29,6 +29,8 @@ public class WallConfig {
 
     private boolean             truncateAllow              = false;
 
+    private boolean             commentAllow               = false;
+
     private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
     private boolean             functionCheck              = true;
@@ -237,6 +239,14 @@ public class WallConfig {
     }
 
     // ///////////////////
+
+    public boolean isCommentAllow() {
+        return commentAllow;
+    }
+
+    public void setCommentAllow(boolean commentAllow) {
+        this.commentAllow = commentAllow;
+    }
 
     public Set<String> getPermitFunctions() {
         return permitFunctions;
