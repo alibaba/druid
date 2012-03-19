@@ -22,7 +22,6 @@ import java.sql.NClob;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -419,35 +418,69 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
-                Map<Integer, JdbcParameter> parameters = statement.getParameters();
-                String[] lastSlowParameters = new String[parameters.size()];
+                StringBuilder buf = new StringBuilder();
+                buf.append('[');
                 int index = 0;
                 for (JdbcParameter parameter : statement.getParameters().values()) {
+                    if (index != 0) {
+                        buf.append(',');
+                    }
                     Object value = parameter.getValue();
                     if (value == null) {
-                        lastSlowParameters[index] = "null";
+                        buf.append("null");
                     } else if (value instanceof String) {
-                        lastSlowParameters[index] = "'" + value.toString() + "'";
+                        buf.append('"');
+                        String text = (String) value;
+                        if (text.length() > 100) {
+                            for (int i = 0; i < 97; ++i) {
+                                char ch = text.charAt(i);
+                                if (ch == '\'') {
+                                    buf.append('\\');
+                                    buf.append(ch);
+                                } else {
+                                    buf.append(ch);
+                                }
+                            }
+                            buf.append("...");
+                        } else {
+                            for (int i = 0; i < text.length(); ++i) {
+                                char ch = text.charAt(i);
+                                if (ch == '\'') {
+                                    buf.append('\\');
+                                    buf.append(ch);
+                                } else {
+                                    buf.append(ch);
+                                }
+                            }
+                        }
+                        buf.append('"');
                     } else if (value instanceof Number) {
-                        lastSlowParameters[index] = value.toString();
+                        buf.append(value.toString());
                     } else if (value instanceof java.util.Date) {
                         java.util.Date date = (java.util.Date) value;
-                        lastSlowParameters[index] = date.getClass().getSimpleName() + "(" + date.getTime() + ")";
+                        buf.append(date.getClass().getSimpleName());
+                        buf.append('(');
+                        buf.append(date.getTime());
+                        buf.append(')');
                     } else if (value instanceof Boolean) {
-                        lastSlowParameters[index] = value.toString();
+                        buf.append(value.toString());
                     } else if (value instanceof InputStream) {
-                        lastSlowParameters[index] = "<InputStream>";
+                        buf.append("<InputStream>");
                     } else if (value instanceof Clob) {
-                        lastSlowParameters[index] = "<Clob>";
+                        buf.append("<Clob>");
                     } else if (value instanceof NClob) {
-                        lastSlowParameters[index] = "<NClob>";
+                        buf.append("<NClob>");
                     } else if (value instanceof Blob) {
-                        lastSlowParameters[index] = "<Blob>";
+                        buf.append("<Blob>");
                     } else {
-                        lastSlowParameters[index] = "<" + value.getClass() + ">";
+                        buf.append('<');
+                        buf.append(value.getClass().getName());
+                        buf.append('>');
                     }
+                    index++;
                 }
-                sqlStat.setLastSlowParameters(lastSlowParameters);
+                buf.append(']');
+                sqlStat.setLastSlowParameters(buf.toString());
             }
         }
 

@@ -64,7 +64,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong inTransactionCount    = new AtomicLong();
 
-    private String[]         lastSlowParameters;
+    private String           lastSlowParameters;
 
     private final Histogram  histogram             = new Histogram(new long[] { //
                                                                                 //
@@ -77,11 +77,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.sql = sql;
     }
 
-    public String[] getLastSlowParameters() {
+    public String getLastSlowParameters() {
         return lastSlowParameters;
     }
 
-    public void setLastSlowParameters(String[] lastSlowParameters) {
+    public void setLastSlowParameters(String lastSlowParameters) {
         this.lastSlowParameters = lastSlowParameters;
     }
 
@@ -391,7 +391,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 -
                 new ArrayType<Long>(SimpleType.LONG, true), //
-                new ArrayType<String>(SimpleType.STRING, false), //
+                SimpleType.STRING, //
         };
 
         String[] indexNames = {
@@ -490,7 +490,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("InTransactionCount", getInTransactionCount());
 
         map.put("Histogram", this.histogram.toArray());
-        
+
         map.put("LastSlowParameters", lastSlowParameters);
 
         return map;
