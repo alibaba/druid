@@ -81,11 +81,12 @@ public class WallConfig implements WallConfigMBean {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(getPermitVariants(), dir + "/permit-variant.txt");
-        loadResource(getPermitSchemas(), dir + "/permit-schema.txt");
-        loadResource(getPermitFunctions(), dir + "/permit-function.txt");
-        loadResource(getPermitTables(), dir + "/permit-table.txt");
-        loadResource(getPermitObjects(), dir + "/permit-object.txt");
+        loadResource(this.permitVariants, dir + "/permit-variant.txt");
+        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
+        loadResource(this.permitFunctions, dir + "/permit-function.txt");
+        loadResource(this.permitTables, dir + "/permit-table.txt");
+        loadResource(this.permitObjects, dir + "/permit-object.txt");
+        loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
     }
 
     public boolean isNoneBaseStatementAllow() {

@@ -131,7 +131,7 @@ public class TableStat {
             buf.append("Update");
         }
         if (selectCount > 0) {
-            buf.append("Selelct");
+            buf.append("Select");
         }
         if (deleteCount > 0) {
             buf.append("Delete");
