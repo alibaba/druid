@@ -169,9 +169,8 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 }
             }
 
-            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); // 多线程处理需要
+            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); 
             if (oldDataSource == null) {
-                // 放进去的线程负责注册MBean
                 if (config.isJmxOption()) {
                     JMXUtils.register("com.alibaba.druid:type=JdbcStat", JdbcStatManager.getInstance());
                 }

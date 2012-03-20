@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public abstract class URLConnectionConfigLoader implements ConfigLoader {
@@ -71,7 +72,7 @@ public abstract class URLConnectionConfigLoader implements ConfigLoader {
                 conn.connect();
 
                 reader = new InputStreamReader(conn.getInputStream());
-                responseMessage = JdbcUtils.read(reader);
+                responseMessage = IOUtils.read(reader);
 
                 handleResponseMessage();
             } catch (Exception e) {

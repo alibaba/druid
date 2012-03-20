@@ -35,7 +35,7 @@ import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.IOUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -44,9 +44,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
     public final static String ATTR_CHARSET_PARAMETER = "ali.charset.param";
     public final static String ATTR_CHARSET_CONVERTER = "ali.charset.converter";
-    // 数据库客户端编码
     private String             clientEncoding;
-    // 数据库服务器端编码
     private String             serverEncoding;
 
     public void loadConfig(AbstractDruidFilterConfig druidFilterConfig) {
@@ -209,7 +207,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
         if (object instanceof Reader) {
             Reader reader = (Reader) object;
-            String text = JdbcUtils.read(reader);
+            String text = IOUtils.read(reader);
             return new StringReader(decode(connection, text));
         }
         
@@ -223,7 +221,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
         if (object instanceof Reader) {
             Reader reader = (Reader) object;
-            String text = JdbcUtils.read(reader);
+            String text = IOUtils.read(reader);
             return new StringReader(decode(stmt.getConnectionProxy(), text));
         }
         
@@ -401,7 +399,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     @Override
     public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
                                                      int parameterIndex, java.io.Reader reader) throws SQLException {
-        String text = JdbcUtils.read(reader);
+        String text = IOUtils.read(reader);
         String encodedText = encode(statement.getConnectionProxy(), text);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, new StringReader(encodedText));
     }
@@ -410,7 +408,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
                                                      int parameterIndex, java.io.Reader reader, int length)
                                                                                                            throws SQLException {
-        String text = JdbcUtils.read(reader, length);
+        String text = IOUtils.read(reader, length);
         String encodedText = encode(statement.getConnectionProxy(), text);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, new StringReader(encodedText),
                                                    encodedText.length());
@@ -420,7 +418,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     public void preparedStatement_setCharacterStream(FilterChain chain, PreparedStatementProxy statement,
                                                      int parameterIndex, java.io.Reader reader, long length)
                                                                                                             throws SQLException {
-        String text = JdbcUtils.read(reader, (int) length);
+        String text = IOUtils.read(reader, (int) length);
         String encodedText = encode(statement.getConnectionProxy(), text);
         super.preparedStatement_setCharacterStream(chain, statement, parameterIndex, new StringReader(encodedText),
                                                    encodedText.length());
@@ -433,7 +431,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             String encodedText = encode(statement.getConnectionProxy(), (String) x);
             super.preparedStatement_setObject(chain, statement, parameterIndex, encodedText);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.preparedStatement_setObject(chain, statement, parameterIndex, new StringReader(encodedText));
         } else {
@@ -448,7 +446,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             String encodedText = encode(statement.getConnectionProxy(), (String) x);
             super.preparedStatement_setObject(chain, statement, parameterIndex, encodedText, targetSqlType);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.preparedStatement_setObject(chain, statement, parameterIndex, new StringReader(encodedText),
                                               targetSqlType);
@@ -465,7 +463,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             super.preparedStatement_setObject(chain, statement, parameterIndex, encodedText, targetSqlType,
                                               scaleOrLength);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.preparedStatement_setObject(chain, statement, parameterIndex, new StringReader(encodedText),
                                               targetSqlType, scaleOrLength);
@@ -490,7 +488,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     @Override
     public java.io.Reader clob_getCharacterStream(FilterChain chain, ClobProxy wrapper) throws SQLException {
         Reader reader = super.clob_getCharacterStream(chain, wrapper);
-        String text = JdbcUtils.read(reader);
+        String text = IOUtils.read(reader);
         return new StringReader(decode(wrapper.getConnectionWrapper(), text));
     }
 
@@ -498,7 +496,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     public Reader clob_getCharacterStream(FilterChain chain, ClobProxy wrapper, long pos, long length)
                                                                                                       throws SQLException {
         Reader reader = super.clob_getCharacterStream(chain, wrapper, pos, length);
-        String text = JdbcUtils.read(reader);
+        String text = IOUtils.read(reader);
         return new StringReader(decode(wrapper.getConnectionWrapper(), text));
     }
 
@@ -518,7 +516,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     @Override
     public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
                                                      String parameterName, java.io.Reader reader) throws SQLException {
-        String text = JdbcUtils.read(reader);
+        String text = IOUtils.read(reader);
         Reader encodeReader = new StringReader(encode(statement.getConnectionProxy(), text));
         super.callableStatement_setCharacterStream(chain, statement, parameterName, encodeReader);
     }
@@ -527,7 +525,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
                                                      String parameterName, java.io.Reader reader, int length)
                                                                                                              throws SQLException {
-        String text = JdbcUtils.read(reader, length);
+        String text = IOUtils.read(reader, length);
         String encodeText = encode(statement.getConnectionProxy(), text);
         Reader encodeReader = new StringReader(encodeText);
         super.callableStatement_setCharacterStream(chain, statement, parameterName, encodeReader, encodeText.length());
@@ -537,7 +535,7 @@ public class EncodingConvertFilter extends FilterAdapter {
     public void callableStatement_setCharacterStream(FilterChain chain, CallableStatementProxy statement,
                                                      String parameterName, java.io.Reader reader, long length)
                                                                                                               throws SQLException {
-        String text = JdbcUtils.read(reader, (int) length);
+        String text = IOUtils.read(reader, (int) length);
         String encodeText = encode(statement.getConnectionProxy(), text);
         Reader encodeReader = new StringReader(encodeText);
         super.callableStatement_setCharacterStream(chain, statement, parameterName, encodeReader,
@@ -557,7 +555,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             String encodedText = encode(statement.getConnectionProxy(), (String) x);
             super.callableStatement_setObject(chain, statement, parameterName, encodedText);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.callableStatement_setObject(chain, statement, parameterName, new StringReader(encodedText));
         } else {
@@ -572,7 +570,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             String encodedText = encode(statement.getConnectionProxy(), (String) x);
             super.callableStatement_setObject(chain, statement, parameterName, encodedText, targetSqlType);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.callableStatement_setObject(chain, statement, parameterName, new StringReader(encodedText),
                                               targetSqlType);
@@ -588,7 +586,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             String encodedText = encode(statement.getConnectionProxy(), (String) x);
             super.callableStatement_setObject(chain, statement, parameterName, encodedText, targetSqlType, scale);
         } else if (x instanceof Reader) {
-            String text = JdbcUtils.read((Reader) x);
+            String text = IOUtils.read((Reader) x);
             String encodedText = encode(statement.getConnectionProxy(), text);
             super.callableStatement_setObject(chain, statement, parameterName, new StringReader(encodedText),
                                               targetSqlType, scale);
