@@ -47,7 +47,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap     = new LinkedHashMap<String, JdbcSqlStat>(
                                                                                                                         maxSize,
                                                                                                                         0.75f,
-                                                                                                                        true);
+                                                                                                                        false);
 
     // private final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = new ConcurrentHashMap<String, JdbcSqlStat>();
 

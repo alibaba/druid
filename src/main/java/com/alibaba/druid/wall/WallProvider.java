@@ -40,7 +40,7 @@ public abstract class WallProvider {
         lock.writeLock().lock();
         try {
             if (whiteList == null) {
-                whiteList = new LinkedHashMap<String, Object>(whileListMaxSize, 0.75f, true);
+                whiteList = new LinkedHashMap<String, Object>(whileListMaxSize, 0.75f, false);
             }
 
             whiteList.put(sql, PRESENT);
