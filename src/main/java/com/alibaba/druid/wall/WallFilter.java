@@ -20,6 +20,7 @@ import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerProvider;
+import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
@@ -48,19 +49,19 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             if (config == null) {
                 config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
             }
-            
+
             provider = new MySqlWallProvider(config);
         } else if (JdbcUtils.ORACLE.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
             }
-            
+
             provider = new OracleWallProvider(config);
         } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }
-            
+
             provider = new SQLServerProvider(config);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType);
@@ -128,7 +129,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             throw new DruidRuntimeException("wall filter is inited");
         }
     }
-    
+
     @Override
     public void statement_addBatch(FilterChain chain, StatementProxy statement, String sql) throws SQLException {
         check(sql);
@@ -275,7 +276,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             if (throwException) {
-                throw new SQLException("sql injection violation : " + sql);
+                if (violations.get(0) instanceof SyntaxErrorViolation) {
+                    SyntaxErrorViolation violation = (SyntaxErrorViolation) violations.get(0);
+                    throw new SQLException("sql injection violation : " + sql, violation.getException());
+                } else {
+                    throw new SQLException("sql injection violation : " + sql);
+                }
             }
         }
     }

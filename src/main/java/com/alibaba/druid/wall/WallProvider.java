@@ -12,6 +12,8 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
+import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
 
@@ -112,8 +114,8 @@ public abstract class WallProvider {
 
         try {
             parser.parseStatementList(statementList);
-        } catch (ParserException e) {
-            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
+        } catch (Exception e) {
+            return Collections.<Violation> singletonList(new SyntaxErrorViolation(e, sql));
         }
 
         if (parser.getLexer().token() != Token.EOF) {

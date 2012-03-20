@@ -40,8 +40,8 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.util.JdbcUtils;
-import com.alibaba.druid.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class WallVisitorUtils {
 

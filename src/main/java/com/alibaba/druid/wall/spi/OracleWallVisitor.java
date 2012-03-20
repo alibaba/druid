@@ -29,10 +29,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
-import com.alibaba.druid.wall.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVisitor {
 

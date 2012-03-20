@@ -1,4 +1,6 @@
-package com.alibaba.druid.wall;
+package com.alibaba.druid.wall.violation;
+
+import com.alibaba.druid.wall.Violation;
 
 public class IllegalSQLObjectViolation implements Violation {
 
