@@ -595,7 +595,7 @@ public final class JdbcUtils {
                 Map<String, Object> row = new LinkedHashMap<String, Object>();
 
                 for (int i = 0, size = rsMeta.getColumnCount(); i < size; ++i) {
-                    String columName = rsMeta.getColumnName(i + 1);
+                    String columName = rsMeta.getColumnLabel(i + 1);
                     Object value = rs.getObject(i + 1);
                     row.put(columName, value);
                 }
