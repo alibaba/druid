@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 
@@ -543,6 +545,16 @@ public final class JdbcUtils {
         }
     }
 
+    public static int executeUpdate(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            return executeUpdate(conn, sql, parameters);
+        } finally {
+            close(conn);
+        }
+    }
+
     public static int executeUpdate(Connection conn, String sql, List<Object> parameters) throws SQLException {
         PreparedStatement stmt = null;
 
@@ -560,6 +572,16 @@ public final class JdbcUtils {
         return updateCount;
     }
 
+    public static void execute(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            execute(conn, sql, parameters);
+        } finally {
+            close(conn);
+        }
+    }
+
     public static void execute(Connection conn, String sql, List<Object> parameters) throws SQLException {
         PreparedStatement stmt = null;
 
@@ -571,6 +593,17 @@ public final class JdbcUtils {
             stmt.executeUpdate();
         } finally {
             JdbcUtils.close(stmt);
+        }
+    }
+
+    public static List<Map<String, Object>> executeQuery(DataSource dataSource, String sql, List<Object> parameters)
+                                                                                                                    throws SQLException {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            return executeQuery(conn, sql, parameters);
+        } finally {
+            close(conn);
         }
     }
 
