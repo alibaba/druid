@@ -28,8 +28,8 @@ import javax.management.openmbean.OpenType;
 import javax.management.openmbean.SimpleType;
 
 import com.alibaba.druid.util.Histogram;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
-import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -477,7 +477,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             map.put("LastErrorMessage", lastError.getMessage());
             map.put("LastErrorClass", lastError.getClass().getName());
 
-            map.put("LastErrorStackTrace", JdbcUtils.getStackTrace(lastError));
+            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError));
             map.put("LastErrorTime", new Date(executeErrorLastTime));
         } else {
             map.put("LastErrorMessage", null);

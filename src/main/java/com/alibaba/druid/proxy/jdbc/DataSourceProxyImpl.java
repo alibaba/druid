@@ -36,6 +36,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -221,7 +222,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             if (lastConnectionConnectError != null) {
                 map.put("ConnectionConnectErrorLastTime", stat.getConnectionStat().getErrorLastTime());
                 map.put("ConnectionConnectErrorLastMessage", lastConnectionConnectError.getMessage());
-                map.put("ConnectionConnectErrorLastStackTrace", JdbcUtils.getStackTrace(lastConnectionConnectError));
+                map.put("ConnectionConnectErrorLastStackTrace", IOUtils.getStackTrace(lastConnectionConnectError));
             } else {
                 map.put("ConnectionConnectErrorLastTime", null);
                 map.put("ConnectionConnectErrorLastMessage", null);
@@ -242,7 +243,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
                 map.put("StatementLastErrorTime", stat.getStatementStat().getLastErrorTime());
                 map.put("StatementLastErrorMessage", lastStatementError.getMessage());
 
-                map.put("StatementLastErrorStackTrace", JdbcUtils.getStackTrace(lastStatementError));
+                map.put("StatementLastErrorStackTrace", IOUtils.getStackTrace(lastStatementError));
             } else {
                 map.put("StatementLastErrorTime", null);
                 map.put("StatementLastErrorMessage", null);
@@ -266,7 +267,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             Throwable lastResultSetError = stat.getResultSetStat().getLastError();
             if (lastResultSetError != null) {
                 map.put("ResultSetLastErrorMessage", lastResultSetError.getMessage());
-                map.put("ResultSetLastErrorStackTrace", JdbcUtils.getStackTrace(lastResultSetError));
+                map.put("ResultSetLastErrorStackTrace", IOUtils.getStackTrace(lastResultSetError));
             } else {
                 map.put("ResultSetLastErrorMessage", null);
                 map.put("ResultSetLastErrorStackTrace", null);
@@ -276,7 +277,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
             Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
             if (lastConnectionError != null) {
                 map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
-                map.put("ConnectionErrorLastStackTrace", JdbcUtils.getStackTrace(lastConnectionError));
+                map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(lastConnectionError));
             } else {
                 map.put("ConnectionErrorLastMessage", null);
                 map.put("ConnectionErrorLastStackTrace", null);

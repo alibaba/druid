@@ -33,6 +33,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class JdbcUtilsTest extends TestCase {
@@ -185,7 +186,7 @@ public class JdbcUtilsTest extends TestCase {
         {
             Exception error = null;
             try {
-                JdbcUtils.read(new Reader() {
+                IOUtils.read(new Reader() {
 
                     @Override
                     public int read(char[] cbuf, int off, int len) throws IOException {
@@ -206,7 +207,7 @@ public class JdbcUtilsTest extends TestCase {
         {
             Exception error = null;
             try {
-                JdbcUtils.read(new Reader() {
+                IOUtils.read(new Reader() {
 
                     @Override
                     public int read(char[] cbuf, int off, int len) throws IOException {
@@ -226,7 +227,7 @@ public class JdbcUtilsTest extends TestCase {
         }
 
         {
-            String text = JdbcUtils.read(new Reader() {
+            String text = IOUtils.read(new Reader() {
 
                 @Override
                 public int read(char[] cbuf, int off, int len) throws IOException {
@@ -242,7 +243,7 @@ public class JdbcUtilsTest extends TestCase {
             Assert.assertEquals("", text);
         }
         {
-            String text = JdbcUtils.read(new Reader() {
+            String text = IOUtils.read(new Reader() {
 
                 @Override
                 public int read(char[] cbuf, int off, int len) throws IOException {
@@ -275,7 +276,7 @@ public class JdbcUtilsTest extends TestCase {
                 }
 
             };
-            String text = JdbcUtils.read(reader, 2);
+            String text = IOUtils.read(reader, 2);
             Assert.assertEquals("AA", text);
         }
     }

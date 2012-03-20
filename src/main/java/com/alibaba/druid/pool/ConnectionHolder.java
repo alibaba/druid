@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -217,14 +218,14 @@ public final class ConnectionHolder {
         buf.append("{ID:");
         buf.append(System.identityHashCode(conn));
         buf.append(", ConnectTime:\"");
-        buf.append(JdbcUtils.toString(new Date(this.connecttimeMillis)));
+        buf.append(IOUtils.toString(new Date(this.connecttimeMillis)));
 
         buf.append("\", UseCount:");
         buf.append(useCount);
 
         if (lastActiveTimeMillis > 0) {
             buf.append(", LastActiveTime:\"");
-            buf.append(JdbcUtils.toString(new Date(this.lastActiveTimeMillis)));
+            buf.append(IOUtils.toString(new Date(this.lastActiveTimeMillis)));
             buf.append("\"");
         }
 
