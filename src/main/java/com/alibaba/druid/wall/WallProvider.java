@@ -1,5 +1,6 @@
 package com.alibaba.druid.wall;
 
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,17 +19,19 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 public abstract class WallProvider {
 
     // Dummy value to associate with an Object in the backing Map
-    private static final Object           PRESENT           = new Object();
+    private static final Object               PRESENT           = new Object();
 
-    private LinkedHashMap<String, Object> whiteList;
+    private LinkedHashMap<String, Object>     whiteList;
 
-    private int                           whileListMaxSize  = 1024;
+    private int                               whileListMaxSize  = 1024;
 
-    private int                           whiteSqlMaxLength = 1024;                        // 1k
+    private int                               whiteSqlMaxLength = 1024;                        // 1k
 
-    protected final WallConfig            config;
+    protected final WallConfig                config;
 
-    private final ReentrantReadWriteLock  lock              = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock      lock              = new ReentrantReadWriteLock();
+
+    private static final ThreadLocal<Boolean> privileged        = new ThreadLocal<Boolean>();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -50,7 +53,7 @@ public abstract class WallProvider {
             lock.writeLock().unlock();
         }
     }
-    
+
     public Set<String> getWhiteList() {
         Set<String> hashSet = new HashSet<String>();
         lock.readLock().lock();
@@ -61,10 +64,10 @@ public abstract class WallProvider {
         } finally {
             lock.readLock().unlock();
         }
-        
+
         return hashSet;
     }
-    
+
     public void clearCache() {
         lock.writeLock().lock();
         try {
@@ -98,6 +101,10 @@ public abstract class WallProvider {
     }
 
     public List<Violation> check(String sql) {
+        if (privileged.get() == Boolean.TRUE) {
+            return Collections.emptyList();
+        }
+
         // first step, check whiteList
         boolean isWhite = whiteContains(sql);
         if (isWhite) {
@@ -145,4 +152,12 @@ public abstract class WallProvider {
         return visitor.getViolations();
     }
 
+    public static <T> T doPrivileged(PrivilegedAction<T> action) {
+        privileged.set(Boolean.TRUE);
+        try {
+            return action.run();
+        } finally {
+            privileged.set(null);
+        }
+    }
 }
