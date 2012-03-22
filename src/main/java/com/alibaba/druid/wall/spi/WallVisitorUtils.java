@@ -138,7 +138,7 @@ public class WallVisitorUtils {
             addViolation(visitor, x);
             return;
         }
-        
+
         checkCondition(visitor, x.getWhere());
     }
 
@@ -146,11 +146,11 @@ public class WallVisitorUtils {
         if (x == null) {
             return;
         }
-        
+
         if (visitor.getConfig().isMustParameterized()) {
             ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
             x.accept(exportParameterVisitor);
-            
+
             if (exportParameterVisitor.getParameters().size() > 0) {
                 addViolation(visitor, x);
                 return;
