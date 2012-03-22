@@ -57,6 +57,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        WallVisitorUtils.check(this, x);
         return true;
     }
 

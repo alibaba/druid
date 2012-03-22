@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Set;
@@ -47,13 +48,23 @@ public class WallVisitorUtils {
 
     private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
 
+    public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
+        if (x.getOperator().isRelational()) {
+            if (x.getLeft() instanceof SQLName && getValue(x.getRight()) != null) {
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));    
+            } else if (x.getRight() instanceof SQLName && getValue(x.getLeft()) != null) {
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+            }
+        }
+    }
+    
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
         checkSchema(visitor, x.getOwner());
     }
 
     public static void checkInsert(WallVisitor visitor, SQLInsertInto x) {
         checkReadOnly(visitor, x.getTableSource());
-        
+
         if (!visitor.getConfig().isInsertAllow()) {
             visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
         }
@@ -63,7 +74,7 @@ public class WallVisitorUtils {
         if (x.getInto() != null) {
             checkReadOnly(visitor, x.getInto());
         }
-        
+
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, x);
             return;
@@ -106,7 +117,7 @@ public class WallVisitorUtils {
 
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
         checkReadOnly(visitor, x.getExprTableSource());
-        
+
         if (!visitor.getConfig().isDeleteAllow()) {
             addViolation(visitor, x);
             return;
@@ -128,7 +139,7 @@ public class WallVisitorUtils {
             if (tableNameExpr instanceof SQLName) {
                 tableName = ((SQLName) tableNameExpr).getSimleName();
             }
-            
+
             if (tableName != null) {
                 tableName = form(tableName);
                 if (visitor.getConfig().getReadOnlyTables().contains(tableName)) {
@@ -164,6 +175,33 @@ public class WallVisitorUtils {
     public static Object getValue(SQLBinaryOpExpr x) {
         x.getLeft().setParent(x);
         x.getRight().setParent(x);
+
+        if (x.getLeft() instanceof SQLName && x.getRight() instanceof SQLName) {
+            if (x.getLeft().toString().equalsIgnoreCase(x.getRight().toString())) {
+                if (x.getOperator() == SQLBinaryOperator.Equality) {
+                    return Boolean.TRUE;
+                } else if (x.getOperator() == SQLBinaryOperator.NotEqual) {
+                    return Boolean.FALSE;
+                }
+
+                switch (x.getOperator()) {
+                    case Equality:
+                    case Like:
+                        return Boolean.TRUE;
+                    case NotEqual:
+                    case GreaterThan:
+                    case GreaterThanOrEqual:
+                    case LessThan:
+                    case LessThanOrEqual:
+                    case LessThanOrGreater:
+                    case NotLike:
+                        return Boolean.FALSE;
+                    default:
+                        break;
+                }
+            }
+        }
+
         Object leftResult = getValue(x.getLeft());
         Object rightResult = getValue(x.getRight());
 
@@ -283,8 +321,31 @@ public class WallVisitorUtils {
         if (x.getOperator() == SQLBinaryOperator.Concat) {
             return leftResult.toString() + rightResult.toString();
         }
+        
+        if (x.getOperator() == SQLBinaryOperator.Add) {
+            if (leftResult == null || rightResult == null) {
+                return null;
+            }
+            
+            if (leftResult instanceof String || rightResult instanceof String) {
+                return leftResult.toString() + rightResult.toString();
+            }
+            
+            
+            if (leftResult instanceof Number || rightResult instanceof Number) {
+                return add((Number) leftResult, (Number) rightResult);
+            }
+        }
 
         return null;
+    }
+    
+    private static Number add(Number a, Number b) {
+        if (a instanceof BigDecimal) {
+            return ((BigDecimal) a).add(new BigDecimal(b.toString()));
+        }
+        
+        return a.longValue() + b.longValue();
     }
 
     public static Object getValue(SQLExpr x) {
@@ -449,13 +510,13 @@ public class WallVisitorUtils {
             if (visitor.getConfig().isPermitSchema(owner)) {
                 addViolation(visitor, x);
             }
-            
+
             if (visitor.getConfig().isPermitObjects(owner)) {
                 addViolation(visitor, x);
             }
         }
-        
-        //if (ownerExpr instanceof SQLPropertyExpr) {
+
+        // if (ownerExpr instanceof SQLPropertyExpr) {
         if (x instanceof SQLPropertyExpr) {
             checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
         }
@@ -464,7 +525,6 @@ public class WallVisitorUtils {
     public static void check(WallVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
-        
         if (expr instanceof SQLPropertyExpr) {
             checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
         }

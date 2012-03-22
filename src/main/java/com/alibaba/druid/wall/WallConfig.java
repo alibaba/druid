@@ -39,6 +39,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             objectCheck                = true;
     private boolean             variantCheck               = true;
 
+    private boolean             mustParameterized          = false;
+
     protected final Set<String> permitFunctions            = new HashSet<String>();
     protected final Set<String> permitTables               = new HashSet<String>();
     protected final Set<String> permitSchemas              = new HashSet<String>();
@@ -281,6 +283,14 @@ public class WallConfig implements WallConfigMBean {
 
     public Set<String> getReadOnlyTables() {
         return readOnlyTables;
+    }
+
+    public boolean isMustParameterized() {
+        return mustParameterized;
+    }
+
+    public void setMustParameterized(boolean mustParameterized) {
+        this.mustParameterized = mustParameterized;
     }
 
     public boolean isPermitObjects(String name) {

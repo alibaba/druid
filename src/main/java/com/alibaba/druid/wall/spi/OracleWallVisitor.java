@@ -65,8 +65,8 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         return true;
     }
 
-    // executeQuery
     public boolean visit(SQLBinaryOpExpr x) {
+        WallVisitorUtils.check(this, x);
         return true;
     }
 

@@ -84,6 +84,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     // executeQuery
     public boolean visit(SQLBinaryOpExpr x) {
+        WallVisitorUtils.check(this, x);
         return true;
     }
 

@@ -92,4 +92,27 @@ public enum SQLBinaryOperator {
         this.name = name;
         this.priority = priority;
     }
+    
+    public boolean isRelational() {
+        switch (this) {
+            case Equality:
+            case Like:
+            case NotEqual:
+            case GreaterThan:
+            case GreaterThanOrEqual:
+            case LessThan:
+            case LessThanOrEqual:
+            case LessThanOrGreater:
+            case NotLike:
+            case NotLessThan:
+            case NotGreaterThan:
+            case RLike:
+            case NotRLike:
+            case RegExp:
+            case NotRegExp:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
