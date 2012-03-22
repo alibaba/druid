@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.mapping.spi.ExportParameterVisitorUtils;
@@ -16,6 +17,10 @@ import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implements ExportParameterVisitor {
 
     private final List<Object> parameters;
+    
+    public MySqlExportParameterVisitor() {
+        this(new ArrayList<Object>());
+    }
 
     public MySqlExportParameterVisitor(List<Object> parameters){
         this.parameters = parameters;

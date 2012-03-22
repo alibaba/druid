@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
@@ -95,6 +96,8 @@ public abstract class WallProvider {
     public abstract SQLStatementParser createParser(String sql);
 
     public abstract WallVisitor createWallVisitor();
+    
+    public abstract ExportParameterVisitor createExportParameterVisitor();
 
     public boolean checkValid(String sql) {
         return check(sql).size() == 0;

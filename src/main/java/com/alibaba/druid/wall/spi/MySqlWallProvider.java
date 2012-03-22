@@ -1,7 +1,9 @@
 package com.alibaba.druid.wall.spi;
 
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -26,6 +28,11 @@ public class MySqlWallProvider extends WallProvider {
     @Override
     public WallVisitor createWallVisitor() {
         return new MySqlWallVisitor(config);
+    }
+
+    @Override
+    public ExportParameterVisitor createExportParameterVisitor() {
+        return new MySqlExportParameterVisitor();
     }
 
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.mapping.spi.ExportParameterVisitorUtils;
@@ -15,6 +16,10 @@ import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 public class MSSQLServerExportParameterVisitor extends SQLServerASTVisitorAdapter implements ExportParameterVisitor {
 
     private final List<Object> parameters;
+    
+    public MSSQLServerExportParameterVisitor() {
+        this(new ArrayList<Object>());
+    }
 
     public MSSQLServerExportParameterVisitor(List<Object> parameters){
         this.parameters = parameters;
