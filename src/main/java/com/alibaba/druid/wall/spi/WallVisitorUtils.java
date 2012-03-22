@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
@@ -50,24 +51,11 @@ public class WallVisitorUtils {
     private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
 
     public static void check(WallVisitor visitor, SQLInListExpr x) {
-        if (visitor.getConfig().isMustParameterized()) {
-            for (SQLExpr param : x.getTargetList()) {
-                if (getValue(param) != null) {
-                    visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
-                    break;
-                }
-            }
-        }
+
     }
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
-        if (x.getOperator().isRelational() && visitor.getConfig().isMustParameterized()) {
-            if (x.getLeft() instanceof SQLName && getValue(x.getRight()) != null) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
-            } else if (x.getRight() instanceof SQLName && getValue(x.getLeft()) != null) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
-            }
-        }
+
     }
 
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
@@ -97,19 +85,34 @@ public class WallVisitorUtils {
         }
 
         SQLExpr where = x.getWhere();
-        if (where != null && Boolean.TRUE == getValue(where)) {
-            if (where instanceof SQLBinaryOpExpr) {
-                SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
-                if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
-                    || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
-                    if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
-                        && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
-                        return;
-                    }
+
+        // if (visitor.getConfig().isMustParameterized()) {
+        if (where != null) {
+            if (visitor.getConfig().isMustParameterized()) {
+                ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
+                where.accept(exportParameterVisitor);
+                
+                if (exportParameterVisitor.getParameters().size() > 0) {
+                    addViolation(visitor, x);
+                    return;
                 }
             }
 
-            addViolation(visitor, x);
+            if (Boolean.TRUE == getValue(where)) {
+                if (where instanceof SQLBinaryOpExpr) {
+                    SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
+                    if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
+                        || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
+                        if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
+                            && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
+                            return;
+                        }
+                    }
+                }
+
+                addViolation(visitor, x);
+            }
+
         }
     }
 

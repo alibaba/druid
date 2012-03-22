@@ -8,6 +8,8 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public interface WallVisitor extends SQLASTVisitor {
 
     WallConfig getConfig();
+    
+    WallProvider getProvider();
 
     List<Violation> getViolations();
     

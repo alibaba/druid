@@ -37,7 +37,7 @@ public class SQLServerProvider extends WallProvider {
 
     @Override
     public WallVisitor createWallVisitor() {
-        return new SQLServerWallVisitor(config);
+        return new SQLServerWallVisitor(this);
     }
 
     @Override

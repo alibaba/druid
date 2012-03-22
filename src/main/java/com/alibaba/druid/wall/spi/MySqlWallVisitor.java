@@ -32,16 +32,23 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisitor, MySqlASTVisitor {
 
     private final WallConfig      config;
+    private final WallProvider    provider;
     private final List<Violation> violations = new ArrayList<Violation>();
 
-    public MySqlWallVisitor(WallConfig config){
-        this.config = config;
+    public MySqlWallVisitor(WallProvider provider){
+        this.config = provider.getConfig();
+        this.provider = provider;
+    }
+
+    public WallProvider getProvider() {
+        return provider;
     }
 
     public WallConfig getConfig() {
@@ -56,7 +63,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         WallVisitorUtils.check(this, x);
         return true;
@@ -93,7 +100,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(MySqlDeleteStatement x) {
         WallVisitorUtils.checkReadOnly(this, x.getFrom());
-        
+
         return visit((SQLDeleteStatement) x);
     }
 

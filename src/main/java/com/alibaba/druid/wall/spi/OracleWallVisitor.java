@@ -32,16 +32,23 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVisitor {
 
     private final WallConfig      config;
+    private final WallProvider    provider;
     private final List<Violation> violations = new ArrayList<Violation>();
 
-    public OracleWallVisitor(WallConfig config){
-        this.config = config;
+    public OracleWallVisitor(WallProvider provider){
+        this.config = provider.getConfig();
+        this.provider = provider;
+    }
+
+    public WallProvider getProvider() {
+        return provider;
     }
 
     public WallConfig getConfig() {
@@ -65,7 +72,7 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         WallVisitorUtils.check(this, x);
         return true;
@@ -190,11 +197,11 @@ public class OracleWallVisitor extends OracleASTVIsitorAdapter implements WallVi
 
         return true;
     }
-    
+
     @Override
     public boolean visit(InsertIntoClause x) {
         WallVisitorUtils.checkInsert(this, x);
-        
+
         return true;
     }
 

@@ -27,7 +27,7 @@ public class OracleWallProvider extends WallProvider {
 
     @Override
     public WallVisitor createWallVisitor() {
-        return new OracleWallVisitor(config);
+        return new OracleWallVisitor(this);
     }
 
     @Override

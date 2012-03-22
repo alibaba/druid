@@ -27,20 +27,23 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
-
-public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor{
+public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements WallVisitor, SQLServerASTVisitor {
 
     private final WallConfig      config;
+    private final WallProvider    provider;
     private final List<Violation> violations = new ArrayList<Violation>();
-    
-    /**
-     * @param config
-     */
-    public SQLServerWallVisitor(WallConfig config) {
-        this.config = config;
+
+    public SQLServerWallVisitor(WallProvider provider) {
+        this.config = provider.getConfig();
+        this.provider = provider;
+    }
+
+    public WallProvider getProvider() {
+        return provider;
     }
 
     @Override
@@ -55,10 +58,10 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean isPermitTable(String name) {
-        if(!config.isTableCheck()){
+        if (!config.isTableCheck()) {
             return false;
         }
-        
+
         name = WallVisitorUtils.form(name);
         return config.getPermitTables().contains(name);
     }
@@ -67,7 +70,6 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public String toSQL(SQLObject obj) {
         return SQLUtils.toSQLServerString(obj);
     }
-    
 
     public boolean visit(SQLIdentifierExpr x) {
         String name = x.getName();
@@ -82,7 +84,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         WallVisitorUtils.check(this, x);
         return true;
     }
-    
+
     public boolean visit(SQLInListExpr x) {
         WallVisitorUtils.check(this, x);
         return true;
@@ -147,7 +149,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         } else if (x instanceof SQLUpdateStatement) {
         } else if (x instanceof SQLTruncateStatement) {
             if (!config.isTruncateAllow()) {
-                violations.add(new IllegalSQLObjectViolation(toSQL(x)));    
+                violations.add(new IllegalSQLObjectViolation(toSQL(x)));
             }
         } else {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
@@ -186,7 +188,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
         return true;
     }
-    
+
     public boolean visit(SQLVariantRefExpr x) {
         String varName = x.getName();
         if (varName == null) {
@@ -199,7 +201,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         if (x.getSchema() != null && config.isPermitSchema(x.getSchema())) {

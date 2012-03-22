@@ -27,7 +27,7 @@ public class MySqlWallProvider extends WallProvider {
 
     @Override
     public WallVisitor createWallVisitor() {
-        return new MySqlWallVisitor(config);
+        return new MySqlWallVisitor(this);
     }
 
     @Override
