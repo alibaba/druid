@@ -1,4 +1,4 @@
-package com.alibaba.druid.mapping.spi;
+package com.alibaba.druid.sql.visitor;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class ExportParameterVisitorUtils {
     }
 
     public static void exportParameter(final List<Object> parameters, SQLBinaryOpExpr x) {
-        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr) {
+        if (x.getLeft() instanceof SQLLiteralExpr && x.getRight() instanceof SQLLiteralExpr && x.getOperator().isRelational()) {
             return;
         }
 

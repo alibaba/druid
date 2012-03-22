@@ -88,15 +88,7 @@ public class WallVisitorUtils {
 
         // if (visitor.getConfig().isMustParameterized()) {
         if (where != null) {
-            if (visitor.getConfig().isMustParameterized()) {
-                ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
-                where.accept(exportParameterVisitor);
-                
-                if (exportParameterVisitor.getParameters().size() > 0) {
-                    addViolation(visitor, x);
-                    return;
-                }
-            }
+            checkCondition(visitor, x.getWhere());
 
             if (Boolean.TRUE == getValue(where)) {
                 if (where instanceof SQLBinaryOpExpr) {
@@ -144,6 +136,25 @@ public class WallVisitorUtils {
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
             addViolation(visitor, x);
+            return;
+        }
+        
+        checkCondition(visitor, x.getWhere());
+    }
+
+    private static void checkCondition(WallVisitor visitor, SQLExpr x) {
+        if (x == null) {
+            return;
+        }
+        
+        if (visitor.getConfig().isMustParameterized()) {
+            ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
+            x.accept(exportParameterVisitor);
+            
+            if (exportParameterVisitor.getParameters().size() > 0) {
+                addViolation(visitor, x);
+                return;
+            }
         }
     }
 
@@ -183,7 +194,10 @@ public class WallVisitorUtils {
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
             addViolation(visitor, x);
+            return;
         }
+        
+        checkCondition(visitor, x.getWhere());
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
