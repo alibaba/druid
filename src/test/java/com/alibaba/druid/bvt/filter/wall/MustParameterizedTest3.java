@@ -18,6 +18,8 @@ public class MustParameterizedTest3 extends TestCase {
     public void testMySql() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql("select * from t where id  = (3 + 5 - 2 - 1)", config));
         Assert.assertFalse(WallUtils.isValidateMySql("select * from t where id  != id + 3", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("delete from t where id  != id + 3", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("delete from t where id = 'aa' + 'bbb'", config));
         Assert.assertTrue(WallUtils.isValidateMySql("select * from t where id  = ? ORDER BY 1", config));
         Assert.assertTrue(WallUtils.isValidateMySql("select 1, 2, 3 from t where id  = ?", config));
     }

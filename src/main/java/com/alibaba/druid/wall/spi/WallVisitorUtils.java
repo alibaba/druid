@@ -144,6 +144,17 @@ public class WallVisitorUtils {
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
             addViolation(visitor, x);
+            return;
+        }
+        
+        if (visitor.getConfig().isMustParameterized()) {
+            ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
+            x.getWhere().accept(exportParameterVisitor);
+            
+            if (exportParameterVisitor.getParameters().size() > 0) {
+                addViolation(visitor, x);
+                return;
+            }
         }
     }
 
@@ -183,6 +194,17 @@ public class WallVisitorUtils {
 
         if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
             addViolation(visitor, x);
+            return;
+        }
+        
+        if (visitor.getConfig().isMustParameterized()) {
+            ExportParameterVisitor exportParameterVisitor = visitor.getProvider().createExportParameterVisitor();
+            x.getWhere().accept(exportParameterVisitor);
+            
+            if (exportParameterVisitor.getParameters().size() > 0) {
+                addViolation(visitor, x);
+                return;
+            }
         }
     }
 
