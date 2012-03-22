@@ -1,7 +1,8 @@
-package com.alibaba.druid.mapping.spi;
+package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.mapping.spi.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -9,14 +10,13 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 
-public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implements ExportParameterVisitor {
+public class MSSQLServerExportParameterVisitor extends SQLServerASTVisitorAdapter implements ExportParameterVisitor {
 
     private final List<Object> parameters;
 
-    public MySqlExportParameterVisitor(List<Object> parameters){
+    public MSSQLServerExportParameterVisitor(List<Object> parameters){
         this.parameters = parameters;
     }
 
@@ -26,11 +26,6 @@ public class MySqlExportParameterVisitor extends MySqlASTVisitorAdapter implemen
 
     @Override
     public boolean visit(SQLSelectItem x) {
-        return false;
-    }
-
-    @Override
-    public boolean visit(Limit x) {
         return false;
     }
 

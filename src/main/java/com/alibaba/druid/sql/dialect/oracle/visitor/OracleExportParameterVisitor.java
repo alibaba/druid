@@ -1,7 +1,8 @@
-package com.alibaba.druid.mapping.spi;
+package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 
+import com.alibaba.druid.mapping.spi.ExportParameterVisitorUtils;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -9,7 +10,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
+import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 
 public class OracleExportParameterVisitor extends OracleASTVIsitorAdapter implements ExportParameterVisitor {
 

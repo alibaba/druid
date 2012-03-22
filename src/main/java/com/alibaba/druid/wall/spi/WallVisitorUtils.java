@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
@@ -48,16 +49,27 @@ public class WallVisitorUtils {
 
     private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
 
+    public static void check(WallVisitor visitor, SQLInListExpr x) {
+        if (visitor.getConfig().isMustParameterized()) {
+            for (SQLExpr param : x.getTargetList()) {
+                if (getValue(param) != null) {
+                    visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+                    break;
+                }
+            }
+        }
+    }
+
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
-        if (x.getOperator().isRelational()) {
+        if (x.getOperator().isRelational() && visitor.getConfig().isMustParameterized()) {
             if (x.getLeft() instanceof SQLName && getValue(x.getRight()) != null) {
-                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));    
+                visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             } else if (x.getRight() instanceof SQLName && getValue(x.getLeft()) != null) {
                 visitor.getViolations().add(new IllegalSQLObjectViolation(visitor.toSQL(x)));
             }
         }
     }
-    
+
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
         checkSchema(visitor, x.getOwner());
     }
@@ -321,17 +333,16 @@ public class WallVisitorUtils {
         if (x.getOperator() == SQLBinaryOperator.Concat) {
             return leftResult.toString() + rightResult.toString();
         }
-        
+
         if (x.getOperator() == SQLBinaryOperator.Add) {
             if (leftResult == null || rightResult == null) {
                 return null;
             }
-            
+
             if (leftResult instanceof String || rightResult instanceof String) {
                 return leftResult.toString() + rightResult.toString();
             }
-            
-            
+
             if (leftResult instanceof Number || rightResult instanceof Number) {
                 return add((Number) leftResult, (Number) rightResult);
             }
@@ -339,12 +350,12 @@ public class WallVisitorUtils {
 
         return null;
     }
-    
+
     private static Number add(Number a, Number b) {
         if (a instanceof BigDecimal) {
             return ((BigDecimal) a).add(new BigDecimal(b.toString()));
         }
-        
+
         return a.longValue() + b.longValue();
     }
 

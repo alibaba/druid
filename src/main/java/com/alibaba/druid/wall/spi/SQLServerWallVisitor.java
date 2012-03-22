@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -81,8 +82,12 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         WallVisitorUtils.check(this, x);
         return true;
     }
+    
+    public boolean visit(SQLInListExpr x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
 
-    // executeQuery
     public boolean visit(SQLBinaryOpExpr x) {
         WallVisitorUtils.check(this, x);
         return true;
