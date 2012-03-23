@@ -74,7 +74,9 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
-            stmt.setQueryTimeout(validationQueryTimeout);
+            if (validationQueryTimeout > 0) {
+                stmt.setQueryTimeout(validationQueryTimeout);
+            }
             rs = stmt.executeQuery(valiateQuery);
             return true;
         } catch (SQLException e) {
