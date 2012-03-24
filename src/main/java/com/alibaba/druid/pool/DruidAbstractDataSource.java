@@ -1088,12 +1088,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
             }
 
-            String query = getValidationQuery();
             if (conn.isClosed()) {
                 return false;
             }
 
-            if (null == query) {
+            if (null == validationQuery) {
                 return true;
             }
 
@@ -1102,9 +1101,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             try {
                 stmt = conn.createStatement();
                 if (getValidationQueryTimeout() > 0) {
-                    stmt.setQueryTimeout(getValidationQueryTimeout());
+                    stmt.setQueryTimeout(validationQueryTimeout);
                 }
-                rset = stmt.executeQuery(query);
+                rset = stmt.executeQuery(validationQuery);
                 if (!rset.next()) {
                     return false;
                 }
