@@ -160,6 +160,15 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             Driver rawDriver = createDriver(config.getRawDriverClassName());
 
             DataSourceProxyImpl newDataSource = new DataSourceProxyImpl(rawDriver, config);
+            
+            {
+                String property = System.getProperty("druid.filters");
+                if (property != null && property.length() > 0) {
+                    for (String filterItem : property.split(",")) {
+                        DruidLoaderUtils.loadFilter(config.getFilters(), filterItem);
+                    }
+                }
+            }
             {
                 int dataSourceId = createDataSourceId();
                 newDataSource.setId(dataSourceId);

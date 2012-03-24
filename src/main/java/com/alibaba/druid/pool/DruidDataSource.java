@@ -332,6 +332,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
             
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl);
+            
+            {
+                String property = System.getProperty("druid.filters");
+                if (property != null && property.length() > 0) {
+                    this.setFilters(property);
+                }
+            }
 
             for (Filter filter : filters) {
                 filter.init(this);
