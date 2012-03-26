@@ -33,11 +33,11 @@ public class TestMySqlPing extends TestCase {
 
         Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
 
-        com.mysql.jdbc.Connection oracleConn = (com.mysql.jdbc.Connection) conn;
+        com.mysql.jdbc.Connection mysqlConn = (com.mysql.jdbc.Connection) conn;
 
         for (int i = 0; i < 10; ++i) {
-            ping_1000(oracleConn);
-            select_1000(oracleConn);
+            ping_1000(mysqlConn);
+            select_1000(mysqlConn);
         }
 
         conn.close();
