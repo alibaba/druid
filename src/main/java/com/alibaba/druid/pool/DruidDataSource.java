@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -1330,16 +1331,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         buf.append(", \n\tpoolStatements:[");
 
                         int entryIndex = 0;
-                        for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                            if (entryIndex++ != 0) {
-                                buf.append(",");
+                        try {
+                            for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
+                                if (entryIndex++ != 0) {
+                                    buf.append(",");
+                                }
+                                buf.append("\n\t\t{hitCount:");
+                                buf.append(entry.getValue().getHitCount());
+                                buf.append(",sql:\"");
+                                buf.append(entry.getKey().getSql());
+                                buf.append("\"");
+                                buf.append("\t}");
                             }
-                            buf.append("\n\t\t{hitCount:");
-                            buf.append(entry.getValue().getHitCount());
-                            buf.append(",sql:\"");
-                            buf.append(entry.getKey().getSql());
-                            buf.append("\"");
-                            buf.append("\t}");
+                        } catch (ConcurrentModificationException e) {
+                            // skip ..
                         }
 
                         buf.append("\n\t\t]");
