@@ -64,7 +64,7 @@ public class TestMySqlPing2 extends TestCase {
         
 
 
-        Thread.sleep(1000 * 60 * 60); // 60 minutes
+        Thread.sleep(1000 * 60 * 60 * 6); // 6 hours
         Connection conn = dataSource.getConnection();
 
         Statement stmt = conn.createStatement();
