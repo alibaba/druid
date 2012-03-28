@@ -25,7 +25,7 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         this.setAcquireIncrement(3);
         this.setAcquireIncrement(30);
         this.setAcquireRetryDelay(1000);
-        this.setAutoCommitOnClose(false);
+        this.setAutoCommitOnClose(true);
         this.setAutomaticTestTable(null);
         this.setCheckoutTimeout(0);
         this.setDebugUnreturnedConnectionStackTraces(false);
