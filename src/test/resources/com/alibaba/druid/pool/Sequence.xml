@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Sequence">
+	<select id="getValue" resultClass="int" parameterClass="string">
+		SELECT value
+		FROM sequence_seed
+		WHERE name = #name#
+	</select>
+	
+	<select id="getValueForUpdate" resultClass="int" parameterClass="string">
+		SELECT value
+		FROM sequence_seed
+		WHERE name = #name#
+		FOR UPDATE
+	</select>
+	
+	<update id="compareAndSet">
+		UPDATE sequence_seed
+		SET value = #value#
+		WHERE name = #name# AND value = #expect#
+	</update>
+</sqlMap>

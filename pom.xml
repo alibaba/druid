@@ -238,10 +238,25 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.0</version>
+			<version>2.5.6</version>
 			<scope>provided</scope>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>2.3.4.726</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<!--  
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+			<scope>test</scope>
+		</dependency>
+-->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -345,12 +360,6 @@
 		<dependency>
 			<groupId>com.jolbox</groupId>
 			<artifactId>bonecp-benchmark</artifactId>
-			<version>0.7.1-rc2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp-test-commons</artifactId>
 			<version>0.7.1-rc2</version>
 			<scope>test</scope>
 		</dependency>

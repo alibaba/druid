@@ -301,6 +301,14 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             connectionLog("connect commited. id " + connection.getId());
         }
     }
+    
+    @Override
+    public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
+                                                                                                           throws SQLException {
+        
+        connectionLog("connect setAutoComment " + autoCommit + ". id " + connection.getId());
+        chain.connection_setAutoCommit(connection, autoCommit);
+    }
 
     @Override
     public void connection_close(FilterChain chain, ConnectionProxy connection) throws SQLException {
