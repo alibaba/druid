@@ -49,6 +49,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong executeSpanNanoMax    = new AtomicLong();
     private final AtomicLong runningCount          = new AtomicLong(0L);
     private final AtomicLong concurrentMax         = new AtomicLong();
+    private final AtomicLong resultSetHoldTimeNano = new AtomicLong();
+
     private String           name;
     private String           file;
     private String           dbType;
@@ -180,6 +182,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         histogram.reset();
         this.lastSlowParameters = null;
         inTransactionCount.set(0);
+        resultSetHoldTimeNano.set(0);
     }
 
     public long getConcurrentMax() {
@@ -393,6 +396,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 // 25 -
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 SimpleType.STRING, //
+                SimpleType.LONG, //
         };
 
         String[] indexNames = {
@@ -433,7 +437,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 -
                 "Histogram", //
-                "LastSlowParameters"
+                "LastSlowParameters",
+                "ResultSetHoldTime"
         //
         };
         String[] indexDescriptions = indexNames;
@@ -455,30 +460,33 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("SQL", sql);
         map.put("ExecuteCount", getExecuteCount());
         map.put("ErrorCount", getErrorCount());
-        map.put("TotalTime", getExecuteMillisTotal());
 
+        // 5 - 9
+        map.put("TotalTime", getExecuteMillisTotal());
         map.put("LastTime", getExecuteLastStartTime());
         map.put("MaxTimespan", getExecuteMillisMax());
         map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
         map.put("EffectedRowCount", getUpdateCount());
-        map.put("FetchRowCount", getFetchRowCount());
 
+        // 10 - 14
+        map.put("FetchRowCount", getFetchRowCount());
         map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
         map.put("BatchSizeMax", getExecuteBatchSizeMax());
         map.put("BatchSizeTotal", getExecuteBatchSizeTotal());
         map.put("ConcurrentMax", getConcurrentMax());
-        map.put("RunningCount", getRunningCount());
 
-        map.put("Name", getName());
-        map.put("File", getFile());
+        // 15 -
+        map.put("RunningCount", getRunningCount()); // 15
+        map.put("Name", getName()); // 16
+        map.put("File", getFile()); // 17
 
         Throwable lastError = this.executeErrorLast;
         if (lastError != null) {
-            map.put("LastErrorMessage", lastError.getMessage());
-            map.put("LastErrorClass", lastError.getClass().getName());
+            map.put("LastErrorMessage", lastError.getMessage()); // 18
+            map.put("LastErrorClass", lastError.getClass().getName()); // 19
 
-            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError));
-            map.put("LastErrorTime", new Date(executeErrorLastTime));
+            map.put("LastErrorStackTrace", IOUtils.getStackTrace(lastError)); // 20
+            map.put("LastErrorTime", new Date(executeErrorLastTime)); // 21
         } else {
             map.put("LastErrorMessage", null);
             map.put("LastErrorClass", null);
@@ -486,13 +494,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             map.put("LastErrorTime", null);
         }
 
-        map.put("DbType", dbType);
-        map.put("URL", null);
-        map.put("InTransactionCount", getInTransactionCount());
+        map.put("DbType", dbType); // 22
+        map.put("URL", null); // 23
+        map.put("InTransactionCount", getInTransactionCount()); // 24
 
-        map.put("Histogram", this.histogram.toArray());
-
-        map.put("LastSlowParameters", lastSlowParameters);
+        map.put("Histogram", this.histogram.toArray()); // 25
+        map.put("LastSlowParameters", lastSlowParameters); // 26
+        map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 26
 
         return map;
     }
@@ -511,4 +519,17 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         executeErrorLast = error;
 
     }
+
+    public long getResultSetHoldTimeMilis() {
+        return getResultSetHoldTimeNano() / (1000 * 1000);
+    }
+    
+    public long getResultSetHoldTimeNano() {
+        return resultSetHoldTimeNano.get();
+    }
+
+    public void addResultSetHoldTimeNano(long nano) {
+        resultSetHoldTimeNano.addAndGet(nano);
+    }
+
 }

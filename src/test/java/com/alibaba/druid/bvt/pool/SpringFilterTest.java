@@ -16,6 +16,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.spring.IUserService;
+import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class SpringFilterTest extends TestCase {
@@ -35,17 +37,37 @@ public class SpringFilterTest extends TestCase {
                                                                                     "com/alibaba/druid/pool/spring-config-1.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
-        Connection conn = dataSource.getConnection();
 
-        Statement stmt = conn.createStatement();
-        stmt.execute("select 1");
-        stmt.execute("select 2");
-        stmt.execute("select 1");
-        stmt.close();
-        conn.close();
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE TABLE sequence_seed (value INTEGER, name VARCHAR(50))");
+            stmt.close();
+            conn.close();
+        }
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("CREATE TABLE t_User (id BIGINT, name VARCHAR(50))");
+            stmt.close();
+            conn.close();
+        }
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("insert into sequence_seed (value ,name) values (0, 'druid-spring-test')");
+            stmt.close();
+            conn.close();
+        }
+
+        // user-service
+        IUserService service = (IUserService) context.getBean("user-service");
+        User user = new User();
+        user.setName("xx");
+        service.addUser(user);
 
         TestFilter filter = (TestFilter) context.getBean("test-filter");
-        Assert.assertEquals(1, filter.getConnectCount());
+        Assert.assertEquals(2, filter.getConnectCount());
 
         context.close();
 

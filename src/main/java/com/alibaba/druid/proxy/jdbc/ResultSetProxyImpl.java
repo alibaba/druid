@@ -40,6 +40,7 @@ import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -53,12 +54,14 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     protected int                cursorIndex   = 0;
     protected int                fetchRowCount = 0;
     protected long               constructNano;
+    protected final JdbcSqlStat  sqlStat;
 
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
         this.statement = statement;
         this.resultSet = resultSet;
         this.sql = sql;
+        sqlStat = this.statement.getSqlStat();
     }
 
     public long getConstructNano() {
@@ -68,7 +71,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     public void setConstructNano(long constructNano) {
         this.constructNano = constructNano;
     }
-    
+
     public void setConstructNano() {
         if (this.constructNano <= 0) {
             this.constructNano = System.nanoTime();
@@ -85,6 +88,10 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
 
     public String getSql() {
         return sql;
+    }
+
+    public JdbcSqlStat getSqlStat() {
+        return sqlStat;
     }
 
     public ResultSet getResultSetRaw() {
@@ -1061,7 +1068,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         if (iface == ResultSet.class) {
             return (T) resultSet;
         }
-        
+
         return super.unwrap(iface);
     }
 }

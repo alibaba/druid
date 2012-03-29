@@ -488,9 +488,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         String sql = resultSet.getSql();
         if (sql != null) {
-            JdbcSqlStat sqlStat = getSqlStat(sql);
+            JdbcSqlStat sqlStat = resultSet.getSqlStat();
             if (sqlStat != null) {
                 sqlStat.addFetchRowCount(fetchCount);
+                sqlStat.addResultSetHoldTimeNano(nanoSpan);
             }
         }
 

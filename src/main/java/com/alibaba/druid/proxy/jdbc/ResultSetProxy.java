@@ -17,6 +17,8 @@ package com.alibaba.druid.proxy.jdbc;
 
 import java.sql.ResultSet;
 
+import com.alibaba.druid.stat.JdbcSqlStat;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -27,6 +29,8 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     StatementProxy getStatementProxy();
 
     String getSql();
+    
+    JdbcSqlStat getSqlStat();
 
     int getCursorIndex();
 
