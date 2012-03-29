@@ -301,6 +301,10 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         for (DataSourceProxyImpl dataSource : DruidDriver.getProxyDataSources().values()) {
             Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
+                if (entry.getValue().getExecuteCount() == 0) {
+                    continue;
+                }
+                
                 Map<String, Object> map = entry.getValue().getData();
                 map.put("URL", dataSource.getUrl());
                 data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
@@ -310,6 +314,10 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
+                if (entry.getValue().getExecuteCount() == 0) {
+                    continue;
+                }
+                
                 Map<String, Object> map = entry.getValue().getData();
                 map.put("URL", dataSource.getUrl());
                 data.put(new CompositeDataSupport(JdbcSqlStat.getCompositeType(), map));
