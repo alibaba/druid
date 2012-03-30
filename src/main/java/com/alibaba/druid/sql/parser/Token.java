@@ -175,6 +175,7 @@ public enum Token {
     COMMIT("COMMIT"),
     ROLLBACK("ROLLBACK"),
     SAVEPOINT("SAVEPOINT"),
+    CROSS("CROSS"),
     
     // transact-sql
     TOP("TOP"),

@@ -142,6 +142,7 @@ public class OracleLexer extends Lexer {
         map.put("COMMIT", Token.COMMIT);
         map.put("ROLLBACK", Token.ROLLBACK);
         map.put("SAVEPOINT", Token.SAVEPOINT);
+        map.put("CROSS", Token.CROSS);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
