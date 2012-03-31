@@ -289,6 +289,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             }
         }
     }
+    
+    public void decrementRunningCount() {
+        runningCount.decrementAndGet();
+    }
 
     public void decrementExecutingCount() {
         runningCount.decrementAndGet();

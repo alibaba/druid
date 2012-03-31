@@ -434,7 +434,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 sqlStat.addUpdateCount(updateCount);
             }
 
-            sqlStat.decrementExecutingCount();
+            sqlStat.decrementRunningCount();
             sqlStat.addExecuteTime(nanoSpan);
 
             long millis = nanoSpan / (1000 * 1000);
