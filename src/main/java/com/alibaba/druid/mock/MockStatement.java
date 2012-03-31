@@ -127,7 +127,11 @@ public class MockStatement implements Statement {
     @Override
     public int executeUpdate(String sql) throws SQLException {
         checkOpen();
-
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
+        
         return 0;
     }
 
@@ -227,6 +231,10 @@ public class MockStatement implements Statement {
         if (ERROR_SQL.equals(sql)) {
             throw new SQLException();
         }
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
 
         return false;
     }
@@ -300,6 +308,11 @@ public class MockStatement implements Statement {
     @Override
     public int[] executeBatch() throws SQLException {
         checkOpen();
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
+        
         return new int[0];
     }
 

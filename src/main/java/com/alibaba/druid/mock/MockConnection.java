@@ -507,4 +507,18 @@ public class MockConnection implements Connection {
         throw new SQLFeatureNotSupportedException();
     }
 
+    public void handleSleep() {
+        if (getConnectProperties() != null) {
+            Object propertyValue = getConnectProperties().get("executeSleep");
+
+            if (propertyValue != null) {
+                long millis = Long.parseLong(propertyValue.toString());
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                    // skip
+                }
+            }
+        }
+    }
 }

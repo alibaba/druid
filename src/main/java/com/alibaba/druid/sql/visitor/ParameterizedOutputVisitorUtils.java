@@ -2,8 +2,6 @@ package com.alibaba.druid.sql.visitor;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -26,8 +24,6 @@ public class ParameterizedOutputVisitorUtils {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
-
-        Assert.assertEquals(1, statementList.size());
 
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createParameterizedOutputVisitor(out, dbType);

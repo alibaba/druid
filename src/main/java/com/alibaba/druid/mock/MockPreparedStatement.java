@@ -65,6 +65,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
         if (mockConnection != null && mockConnection.getDriver() != null) {
             return mockConnection.getDriver().createResultSet(this);
         }
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
 
         return new MockResultSet(this);
     }
@@ -76,6 +80,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
     @Override
     public int executeUpdate() throws SQLException {
         checkOpen();
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
 
         return 0;
     }
@@ -185,6 +193,10 @@ public class MockPreparedStatement extends MockStatement implements PreparedStat
     @Override
     public boolean execute() throws SQLException {
         checkOpen();
+        
+        if (mockConnection != null) {
+            mockConnection.handleSleep();
+        }
         
         return false;
     }

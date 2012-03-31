@@ -249,20 +249,7 @@ public class MockDriver implements Driver, MockDriverMBean {
 
         conn.setLastActiveTimeMillis(System.currentTimeMillis());
 
-        if (conn != null) {
-            if (conn.getConnectProperties() != null) {
-                Object propertyValue = conn.getConnectProperties().get("executeSleep");
-
-                if (propertyValue != null) {
-                    long millis = Long.parseLong(propertyValue.toString());
-                    try {
-                        Thread.sleep(millis);
-                    } catch (InterruptedException e) {
-                        // skip
-                    }
-                }
-            }
-        }
+        handleSleep(conn);
 
         if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
             MockResultSet rs = new MockResultSet(stmt);
@@ -275,6 +262,12 @@ public class MockDriver implements Driver, MockDriverMBean {
         }
 
         return this.executeHandler.executeQuery(stmt, sql);
+    }
+
+    public void handleSleep(MockConnection conn) {
+        if (conn != null) {
+            conn.handleSleep();
+        }
     }
 
     protected ResultSet createResultSet(MockPreparedStatement stmt) {
