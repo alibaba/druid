@@ -42,6 +42,7 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.stat.JdbcConnectionStat;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcResultSetStat;
@@ -77,7 +78,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     // 3 seconds is slow sql
     protected long                    slowSqlMillis              = 3 * 1000;
 
+    private String                    dbType;
+
+    private boolean                   mergeSql                   = false;
+
     public StatFilter(){
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType;
     }
 
     public boolean isConnectionStackTraceEnable() {
@@ -102,11 +115,67 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return resetCount.get();
     }
 
+    public boolean isMergeSql() {
+        return mergeSql;
+    }
+
+    public void setMergeSql(boolean mergeSql) {
+        this.mergeSql = mergeSql;
+    }
+
+    public String mergeSql(String sql) {
+        if (!mergeSql) {
+            return sql;
+        }
+
+        try {
+            sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
+        } catch (Exception e) {
+            LOG.error("merge sql error", e);
+        }
+
+        return sql;
+    }
+
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
 
         this.dataSourceStat = dataSource.getDataSourceStat();
+
+        if (this.dbType == null || this.dbType.trim().length() == 0) {
+            this.dbType = dataSource.getDbType();
+        }
+
+        initFromProperties(dataSource.getConnectProperties());
+        initFromProperties(System.getProperties());
+    }
+
+    private void initFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+
+        {
+            String property = properties.getProperty("druid.stat.mergeSql");
+            if ("true".equals(property)) {
+                this.mergeSql = true;
+            } else if ("false".equals(property)) {
+                this.mergeSql = false;
+            }
+        }
+
+        {
+            String property = properties.getProperty("druid.stat.slowSqlMillis");
+            if (property != null && property.trim().length() > 0) {
+                property = property.trim();
+                try {
+                    this.slowSqlMillis = Long.parseLong(property);
+                } catch (Exception e) {
+                    LOG.error("property 'druid.stat.slowSqlMillis' format error");
+                }
+            }
+        }
     }
 
     @Override

@@ -183,6 +183,10 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         return properties.toString();
     }
 
+    public Properties getConnectProperties() {
+        return properties;
+    }
+
     public CompositeDataSupport getCompositeData() throws JMException {
         StatFilter statFilter = null;
         JdbcDataSourceStat stat = null;
