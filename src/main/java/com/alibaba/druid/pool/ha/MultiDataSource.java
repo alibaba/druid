@@ -86,6 +86,8 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
 
     private JdbcDataSourceStat                      dataSourceStat;
 
+    protected Properties                            connectionProperties      = new Properties();
+
     public long getMaxWaitMillis() {
         return maxWaitMillis;
     }
@@ -171,7 +173,7 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
             if (inited) {
                 return;
             }
-            
+
             dataSourceStat = new JdbcDataSourceStat(name, null);
 
             this.balancer.init(this);
@@ -501,4 +503,10 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     public JdbcDataSourceStat getDataSourceStat() {
         return dataSourceStat;
     }
+
+    @Override
+    public Properties getConnectProperties() {
+        return connectionProperties;
+    }
+
 }

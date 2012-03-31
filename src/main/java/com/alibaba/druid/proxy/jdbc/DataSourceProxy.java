@@ -17,6 +17,7 @@ package com.alibaba.druid.proxy.jdbc;
 
 import java.sql.Driver;
 import java.util.List;
+import java.util.Properties;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
@@ -25,6 +26,7 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface DataSourceProxy {
+
     JdbcDataSourceStat getDataSourceStat();
 
     String getName();
@@ -46,4 +48,6 @@ public interface DataSourceProxy {
     long createResultSetId();
 
     long createTransactionId();
+
+    Properties getConnectProperties();
 }
