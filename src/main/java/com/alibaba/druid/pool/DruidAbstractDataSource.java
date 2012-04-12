@@ -781,12 +781,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return maxWait;
     }
 
-    public void setMaxWait(long maxWait) {
+    public void setMaxWait(long maxWaitMillis) {
         if (inited) {
             throw new UnsupportedOperationException();
         }
 
-        this.maxWait = maxWait;
+        this.maxWait = maxWaitMillis;
     }
 
     public int getMinIdle() {
