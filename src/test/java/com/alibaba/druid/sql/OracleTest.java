@@ -27,4 +27,6 @@ public class OracleTest extends TestCase {
         }
         System.out.println(text);
 	}
+	
+	
 }

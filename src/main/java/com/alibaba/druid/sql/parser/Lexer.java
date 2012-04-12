@@ -503,9 +503,11 @@ public class Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
-                    hasSpecial = true;
-                    putChar('\'');
+                	if (!hasSpecial) {
+	                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
+	                    hasSpecial = true;
+                	}
+                	putChar('\'');
                     continue;
                 }
             }

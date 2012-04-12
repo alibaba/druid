@@ -16,6 +16,7 @@
 package com.alibaba.druid.stat;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final JdbcResultSetStat                             resultSetStat  = new JdbcResultSetStat();
     private final JdbcStatementStat                             statementStat  = new JdbcStatementStat();
 
-    private int                                                 maxSize        = 1000 * 10;
+    private int                                                 maxSize        = 1000 * 1;
 
     private ReentrantReadWriteLock                              lock           = new ReentrantReadWriteLock();
     private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap     = new LinkedHashMap<String, JdbcSqlStat>(
@@ -62,14 +63,21 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         connectionStat.reset();
         statementStat.reset();
         resultSetStat.reset();
-
-        lock.readLock().lock();
+        
+        lock.writeLock().lock();
         try {
-            for (JdbcSqlStat stat : sqlStatMap.values()) {
-                stat.reset();
-            }
+        	Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+        	while (iter.hasNext()) {
+        		Map.Entry<String, JdbcSqlStat> entry = iter.next();
+        		JdbcSqlStat stat = entry.getValue();
+        		if (stat.getExecuteCount() == 0) {
+        			iter.remove();
+        		} else {
+        			stat.reset();
+        		}
+        	}
         } finally {
-            lock.readLock().unlock();
+            lock.writeLock().unlock();
         }
 
         for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
