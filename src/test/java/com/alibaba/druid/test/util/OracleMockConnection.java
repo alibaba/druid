@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.util;
+package com.alibaba.druid.test.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -151,8 +151,8 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
         return null;
     }
 
+    // TODO Auto-generated method stub
     public NUMBER createNUMBER(boolean arg0) throws SQLException {
-        // TODO Auto-generated method stub
         return null;
     }
 

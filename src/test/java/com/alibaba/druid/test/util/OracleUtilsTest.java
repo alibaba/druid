@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.util;
+package com.alibaba.druid.test.util;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

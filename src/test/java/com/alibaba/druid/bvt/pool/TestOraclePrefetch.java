@@ -9,8 +9,8 @@ import junit.framework.TestCase;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.internal.OraclePreparedStatement;
 
-import com.alibaba.druid.bvt.util.OracleMockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.test.util.OracleMockDriver;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class TestOraclePrefetch extends TestCase {

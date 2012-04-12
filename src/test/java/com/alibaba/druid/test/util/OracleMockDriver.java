@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.util;
+package com.alibaba.druid.test.util;
 
 import java.sql.Connection;
 import java.sql.SQLException;
