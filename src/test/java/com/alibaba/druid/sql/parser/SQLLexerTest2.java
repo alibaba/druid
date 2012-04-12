@@ -18,6 +18,10 @@ public class SQLLexerTest2 extends TestCase {
             } else {
                 System.out.println(tok.name() + "\t\t\t" + tok.name);
             }
+            
+            if (tok == Token.WHERE) {
+                System.out.println("where pos : " + lexer.pos());
+            }
 
             if (tok == Token.EOF) {
                 break;
