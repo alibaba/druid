@@ -34,18 +34,18 @@ public class ParameterizedOutputVisitorUtils {
 
     public static SQLASTOutputVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
         if (JdbcUtils.ORACLE.equals(dbType)) {
-            return new OracleParameterizedOutputVisitor();
+            return new OracleParameterizedOutputVisitor(out);
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlParameterizedOutputVisitor();
+            return new MySqlParameterizedOutputVisitor(out);
         }
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return new PGParameterizedOutputVisitor();
+            return new PGParameterizedOutputVisitor(out);
         }
 
-        return new ParameterizedOutputVisitor();
+        return new ParameterizedOutputVisitor(out);
     }
 
     public static boolean visit(SQLASTOutputVisitor v, SQLInListExpr x) {

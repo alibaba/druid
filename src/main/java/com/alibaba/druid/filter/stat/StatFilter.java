@@ -714,14 +714,20 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
+    	
+    	sql = mergeSql(sql);
         return dataSourceStat.createSqlStat(sql);
     }
 
     public JdbcSqlStat getSqlCounter(String sql) {
+    	
+    	sql = mergeSql(sql); //mergeSql
         return getSqlStat(sql);
     }
 
     public JdbcSqlStat getSqlStat(String sql) {
+    	
+    	sql = mergeSql(sql);
         return dataSourceStat.getSqlStat(sql);
     }
 
