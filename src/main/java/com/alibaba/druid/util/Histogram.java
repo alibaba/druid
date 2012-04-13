@@ -65,15 +65,6 @@ public class Histogram {
         return rangeCounters[index].get();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder strBuilder = new StringBuilder();
-        for (int i = 0; i < ranges.length; i++) {
-            strBuilder.append((i == 0 ? 0l : ranges[i - 1]) + " - " + ranges[i] + " : " + rangeCounters[i] + " ");
-        }
-        return strBuilder.toString();
-    }
-
     public long[] toArray() {
         long[] array = new long[rangeCounters.length];
         for (int i = 0; i < rangeCounters.length; i++) {
@@ -84,5 +75,18 @@ public class Histogram {
 
     public long[] getRanges() {
         return ranges;
+    }
+    
+    public String toString() {
+    	StringBuilder buf = new StringBuilder();
+    	buf.append('[');
+    	for (int i = 0; i < rangeCounters.length; ++i) {
+    		if (i != 0) {
+    			buf.append(',');
+    		}
+    		buf.append(rangeCounters[i].get());
+    	}
+    	buf.append(']');
+    	return buf.toString();
     }
 }

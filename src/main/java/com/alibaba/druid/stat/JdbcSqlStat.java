@@ -510,7 +510,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("Histogram", this.histogram.toArray()); // 25
         map.put("LastSlowParameters", lastSlowParameters); // 26
         map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 26
-        map.put("executeAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 26
+        map.put("executeAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 27
         
 
         return map;
