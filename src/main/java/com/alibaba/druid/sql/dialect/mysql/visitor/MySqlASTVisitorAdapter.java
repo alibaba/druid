@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
 public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
@@ -432,5 +433,15 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
     public void endVisit(MySqlDescribeStatement x) {
         
     }
+
+	@Override
+	public boolean visit(MySqlUpdateStatement x) {
+		return true;
+	}
+
+	@Override
+	public void endVisit(MySqlUpdateStatement x) {
+		
+	}
 
 }

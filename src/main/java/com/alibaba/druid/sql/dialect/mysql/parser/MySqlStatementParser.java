@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -55,6 +56,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -82,6 +84,37 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLSelectStatement parseSelect() throws ParserException {
         return new SQLSelectStatement(new MySqlSelectParser(lexer).select());
     }
+    
+    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+    	MySqlUpdateStatement stmt = (MySqlUpdateStatement) super.parseUpdateStatement();
+    	
+    	if (lexer.token() == Token.LIMIT) {
+            lexer.nextToken();
+
+            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
+
+            SQLExpr temp = this.exprParser.expr();
+            if (lexer.token() == (Token.COMMA)) {
+                limit.setOffset(temp);
+                lexer.nextToken();
+                limit.setRowCount(exprParser.expr());
+            } else if (identifierEquals("OFFSET")) {
+                limit.setRowCount(temp);
+                lexer.nextToken();
+                limit.setOffset(exprParser.expr());
+            } else {
+                limit.setRowCount(temp);
+            }
+            
+            stmt.setLimit(limit);
+    	}
+    	
+    	return stmt;
+    }
+    
+	protected MySqlUpdateStatement createUpdateStatement() {
+		return new MySqlUpdateStatement();
+	}
 
     public MySqlDeleteStatement parseDeleteStatement() throws ParserException {
         MySqlDeleteStatement deleteStatement = new MySqlDeleteStatement();

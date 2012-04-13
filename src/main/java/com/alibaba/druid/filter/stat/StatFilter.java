@@ -436,6 +436,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             sqlStat.decrementRunningCount();
             sqlStat.addExecuteTime(nanoSpan);
+            statement.setLastExecuteTimeNano(nanoSpan);
 
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
@@ -530,6 +531,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (sqlStat != null) {
             sqlStat.error(error);
             sqlStat.addExecuteTime(nanoSpan);
+            statement.setLastExecuteTimeNano(nanoSpan);
         }
 
         super.statement_executeErrorAfter(statement, sql, error);
@@ -560,7 +562,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             JdbcSqlStat sqlStat = resultSet.getSqlStat();
             if (sqlStat != null) {
                 sqlStat.addFetchRowCount(fetchCount);
-                sqlStat.addResultSetHoldTimeNano(nanoSpan);
+                long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
+                sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanoSpan);
             }
         }
 

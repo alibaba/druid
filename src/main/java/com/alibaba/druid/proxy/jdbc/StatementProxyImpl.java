@@ -38,13 +38,9 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     private final ConnectionProxy connection;
     private final Statement       statement;
 
-    // 通过CounterEventListener来维护
-    protected long                lastExecuteStartTime;
-    protected long                lastExecuteStartNano;
-    protected long                lastExecuteCompleteTime;
-    protected long                lastExecuteCompleteNano;
     protected String              lastExecuteSql;
-    protected JdbcSqlStat         sqlStat;
+    private long lastExecuteTimeNano;
+	protected JdbcSqlStat         sqlStat;
 
     protected ArrayList<String>   batchSqlList;
 
@@ -341,4 +337,11 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         this.sqlStat = sqlStat;
     }
 
+    public long getLastExecuteTimeNano() {
+		return lastExecuteTimeNano;
+	}
+
+	public void setLastExecuteTimeNano(long lastExecuteTimeNano) {
+		this.lastExecuteTimeNano = lastExecuteTimeNano;
+	}
 }

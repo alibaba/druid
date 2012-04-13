@@ -365,7 +365,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
-        SQLUpdateStatement udpateStatement = new SQLUpdateStatement();
+        SQLUpdateStatement udpateStatement = createUpdateStatement();
 
         if (lexer.token() == Token.UPDATE) {
             lexer.nextToken();
@@ -399,6 +399,10 @@ public class SQLStatementParser extends SQLParser {
 
         return udpateStatement;
     }
+
+	protected SQLUpdateStatement createUpdateStatement() {
+		return new SQLUpdateStatement();
+	}
 
     public SQLDeleteStatement parseDeleteStatement() throws ParserException {
         SQLDeleteStatement deleteStatement = new SQLDeleteStatement();

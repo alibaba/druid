@@ -50,7 +50,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final AtomicLong runningCount          = new AtomicLong(0L);
     private final AtomicLong concurrentMax         = new AtomicLong();
     private final AtomicLong resultSetHoldTimeNano = new AtomicLong();
-
+    private final  AtomicLong executeAndResultSetHoldTime = new AtomicLong();
+    
     private String           name;
     private String           file;
     private String           dbType;
@@ -66,6 +67,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong inTransactionCount    = new AtomicLong();
 
+    
     private String           lastSlowParameters;
 
     private final Histogram  histogram             = new Histogram(new long[] { //
@@ -183,6 +185,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.lastSlowParameters = null;
         inTransactionCount.set(0);
         resultSetHoldTimeNano.set(0);
+        executeAndResultSetHoldTime.set(0);
     }
 
     public long getConcurrentMax() {
@@ -401,6 +404,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 SimpleType.STRING, //
                 SimpleType.LONG, //
+                SimpleType.LONG //
         };
 
         String[] indexNames = {
@@ -442,7 +446,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 // 25 -
                 "Histogram", //
                 "LastSlowParameters",
-                "ResultSetHoldTime"
+                "ResultSetHoldTime",
+                "executeAndResultSetHoldTime"
         //
         };
         String[] indexDescriptions = indexNames;
@@ -505,6 +510,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("Histogram", this.histogram.toArray()); // 25
         map.put("LastSlowParameters", lastSlowParameters); // 26
         map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 26
+        map.put("executeAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 26
+        
 
         return map;
     }
@@ -528,12 +535,26 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return getResultSetHoldTimeNano() / (1000 * 1000);
     }
     
+    public long getExecuteAndResultSetHoldTimeMilis() {
+        return getExecuteAndResultSetHoldTimeNano() / (1000 * 1000);
+    }
+    
+    
+    
     public long getResultSetHoldTimeNano() {
         return resultSetHoldTimeNano.get();
     }
 
+    public long getExecuteAndResultSetHoldTimeNano() {
+        return executeAndResultSetHoldTime.get();
+    }
+    
     public void addResultSetHoldTimeNano(long nano) {
         resultSetHoldTimeNano.addAndGet(nano);
     }
 
+    public void addResultSetHoldTimeNano(long statementExecuteNano, long resultHoldTimeNano) {
+    	resultSetHoldTimeNano.addAndGet(resultHoldTimeNano);    	
+    	executeAndResultSetHoldTime.addAndGet(statementExecuteNano+resultHoldTimeNano);
+    }
 }

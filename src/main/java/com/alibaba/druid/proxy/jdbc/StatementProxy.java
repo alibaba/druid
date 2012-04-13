@@ -40,5 +40,8 @@ public interface StatementProxy extends Statement, WrapperProxy {
 
     String getLastExecuteSql();
     
+    long getLastExecuteTimeNano();
+    void setLastExecuteTimeNano(long nano);
+    
     Map<Integer, JdbcParameter> getParameters();
 }

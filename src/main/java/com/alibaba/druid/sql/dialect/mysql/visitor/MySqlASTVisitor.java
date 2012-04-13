@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MySqlASTVisitor extends SQLASTVisitor {
@@ -201,4 +202,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlDescribeStatement x);
     
     void endVisit(MySqlDescribeStatement x);
+    
+    boolean visit(MySqlUpdateStatement x);
+    
+    void endVisit(MySqlUpdateStatement x);
 }
