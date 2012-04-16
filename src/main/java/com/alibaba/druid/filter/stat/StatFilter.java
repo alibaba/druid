@@ -294,9 +294,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         chain.statement_close(statement);
 
         dataSourceStat.getStatementStat().incrementStatementCloseCounter();
-        JdbcStatManager.getInstance().getStatContext().setName(null);
-        JdbcStatManager.getInstance().getStatContext().setFile(null);
-        JdbcStatManager.getInstance().getStatContext().setSql(null);
+        JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
+        if (context != null) {
+            context.setName(null);
+            context.setFile(null);
+            context.setSql(null);
+        }
     }
 
     @Override
@@ -706,7 +709,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
-    	String contextSql = JdbcStatManager.getInstance().getStatContext().getSql();
+        JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
+    	String contextSql = context != null ? context.getSql() : null;
     	if (contextSql != null && contextSql.length() > 0) {
     		return dataSourceStat.createSqlStat(contextSql);
     	} else {
