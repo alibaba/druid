@@ -29,7 +29,8 @@ public class MultiDataSourcePreparedStatement extends PreparedStatementProxyImpl
             return this.statement.execute();
         }
         
-        return chain.preparedStatement_execute(this);
+        firstResultSet = chain.preparedStatement_execute(this);
+        return firstResultSet;
     }
 
     @Override

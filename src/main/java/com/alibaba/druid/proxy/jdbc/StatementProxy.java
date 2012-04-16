@@ -36,6 +36,8 @@ public interface StatementProxy extends Statement, WrapperProxy {
     
     JdbcSqlStat getSqlStat();
     
+    StatementExecuteType getLastExecuteType();
+    
     void setSqlStat(JdbcSqlStat sqlStat);
 
     String getLastExecuteSql();
@@ -44,4 +46,6 @@ public interface StatementProxy extends Statement, WrapperProxy {
     void setLastExecuteTimeNano(long nano);
     
     Map<Integer, JdbcParameter> getParameters();
+    
+    boolean isFirstResultSet();
 }

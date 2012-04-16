@@ -85,16 +85,20 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public boolean execute() throws SQLException {
-        return createChain().preparedStatement_execute(this);
+    	lastExecuteType = StatementExecuteType.Execute;
+    	firstResultSet = createChain().preparedStatement_execute(this);
+    	return firstResultSet;
     }
 
     @Override
     public ResultSet executeQuery() throws SQLException {
+    	lastExecuteType = StatementExecuteType.ExecuteUpdate;
         return createChain().preparedStatement_executeQuery(this);
     }
 
     @Override
     public int executeUpdate() throws SQLException {
+    	lastExecuteType = StatementExecuteType.ExecuteUpdate;
         return createChain().preparedStatement_executeUpdate(this);
     }
 

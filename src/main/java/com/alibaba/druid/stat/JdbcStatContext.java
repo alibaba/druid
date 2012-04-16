@@ -19,6 +19,7 @@ public class JdbcStatContext {
 
     private String  name;
     private String  file;
+    private String  sql;
     private String  requestId;
 
     private boolean traceEnable;
@@ -59,4 +60,13 @@ public class JdbcStatContext {
         this.file = file;
     }
 
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+    
 }

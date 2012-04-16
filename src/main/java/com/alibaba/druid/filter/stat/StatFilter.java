@@ -41,6 +41,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.stat.JdbcConnectionStat;
@@ -293,6 +294,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         chain.statement_close(statement);
 
         dataSourceStat.getStatementStat().incrementStatementCloseCounter();
+        JdbcStatManager.getInstance().getStatContext().setName(null);
+        JdbcStatManager.getInstance().getStatContext().setFile(null);
+        JdbcStatManager.getInstance().getStatContext().setSql(null);
     }
 
     @Override
@@ -394,25 +398,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 LOG.error("getAutoCommit error", e);
             }
         }
-
-        statement.getAttributes().put(ATTR_UPDATE_COUNT, 0);
-    }
-
-    @Override
-    public int statement_getUpdateCount(FilterChain chain, StatementProxy statement) throws SQLException {
-        int updateCount = chain.statement_getUpdateCount(statement);
-
-        Integer attr = (Integer) statement.getAttributes().get(ATTR_UPDATE_COUNT);
-        if (attr == null) {
-            statement.getAttributes().put(ATTR_UPDATE_COUNT, updateCount);
-
-            final JdbcSqlStat sqlStat = statement.getSqlStat();
-            if (sqlStat != null) {
-                sqlStat.addUpdateCount(updateCount);
-            }
-        }
-
-        return updateCount;
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, int... updateCountArray) {
@@ -435,8 +420,16 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             }
 
             sqlStat.decrementRunningCount();
-            sqlStat.addExecuteTime(nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
+            if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
+            	try {
+					int updateCount = statement.getUpdateCount();
+					sqlStat.addUpdateCount(updateCount);
+				} catch (SQLException e) {
+					LOG.error("getUpdateCount error", e);
+				}
+            }
 
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
@@ -505,10 +498,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 sqlStat.setLastSlowParameters(buf.toString());
             }
         }
-
-        if (updateCountArray.length == 1) {
-            statement.getAttributes().put(ATTR_UPDATE_COUNT, updateCountArray[0]);
-        }
     }
 
     @Override
@@ -530,7 +519,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (sqlStat != null) {
             sqlStat.error(error);
-            sqlStat.addExecuteTime(nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
         }
 
@@ -717,9 +706,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
-    	
-    	sql = mergeSql(sql);
-        return dataSourceStat.createSqlStat(sql);
+    	String contextSql = JdbcStatManager.getInstance().getStatContext().getSql();
+    	if (contextSql != null && contextSql.length() > 0) {
+    		return dataSourceStat.createSqlStat(contextSql);
+    	} else {
+    		sql = mergeSql(sql);
+    		return dataSourceStat.createSqlStat(sql);
+    	}
     }
 
     public JdbcSqlStat getSqlCounter(String sql) {
