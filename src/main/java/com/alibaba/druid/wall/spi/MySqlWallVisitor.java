@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
@@ -108,6 +109,11 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(SQLDeleteStatement x) {
         WallVisitorUtils.checkDelete(this, x);
         return true;
+    }
+    
+    @Override
+    public boolean visit(MySqlUpdateStatement x) {
+        return visit((SQLUpdateStatement) x);
     }
 
     @Override
