@@ -87,12 +87,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     
     private final Histogram  fetchRowCountHistogram             = new Histogram(new long[] { //
-            10, 100, 1000, 10 * 1000
+            1, 10, 100, 1000, 10 * 1000
     });
 
     
     private final Histogram  updateCountHistogram             = new Histogram(new long[] { //
-            10, 100, 1000, 10 * 1000
+            1, 10, 100, 1000, 10 * 1000
     });
     
     
