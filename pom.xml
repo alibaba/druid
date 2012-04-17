@@ -154,7 +154,7 @@
 					</links>
 				</configuration>
 			</plugin>
-			<!--	
+			
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<executions>
@@ -167,7 +167,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			-->
+			
 		</plugins>
 	</build>
 
