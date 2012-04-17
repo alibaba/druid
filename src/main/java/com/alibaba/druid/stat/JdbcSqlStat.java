@@ -164,6 +164,16 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         context.setFile(val);
     }
+    
+    public final static void setContextSql(String val) {
+        JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
+        if (context == null) {
+            context = JdbcStatManager.getInstance().createStatContext();
+            JdbcStatManager.getInstance().setStatContext(context);
+        }
+
+        context.setSql(val);
+    }
 
     public String getName() {
         return name;
