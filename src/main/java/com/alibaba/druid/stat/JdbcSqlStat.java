@@ -230,7 +230,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     }
 
     public void addUpdateCount(int delta) {
-        this.updateCount.addAndGet(delta);
+        if (delta > 0) {
+            this.updateCount.addAndGet(delta);
+        }
+        
         this.updateCountHistogram.recode(delta);
         this.fetchRowCountHistogram.recode(0);
         
