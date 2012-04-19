@@ -92,7 +92,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-    	lastExecuteType = StatementExecuteType.ExecuteUpdate;
+    	lastExecuteType = StatementExecuteType.ExecuteQuery;
         return createChain().preparedStatement_executeQuery(this);
     }
 
