@@ -353,10 +353,10 @@ public class OracleExprParser extends SQLExprParser {
             expr = dblink;
         }
         
-        if (lexer.token() == Token.DAY || lexer.token() == Token.YEAR) {
+        if (identifierEquals("DAY") || identifierEquals("YEAR")) {
             lexer.mark();
             
-            String name = lexer.token().name;
+            String name = lexer.stringVal();
             lexer.nextToken();
             
             if (lexer.token() == Token.COMMA) {
@@ -380,7 +380,7 @@ public class OracleExprParser extends SQLExprParser {
             }
             
             accept(Token.TO);
-            if (lexer.token() == Token.SECOND) {
+            if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
                 if (lexer.token() == Token.LPAREN) {
@@ -677,7 +677,7 @@ public class OracleExprParser extends SQLExprParser {
         lexer.nextToken();
 
         
-        OracleIntervalType type = OracleIntervalType.valueOf(lexer.token().name);
+        OracleIntervalType type = OracleIntervalType.valueOf(lexer.stringVal());
         interval.setType(type);
         lexer.nextToken();
         
@@ -702,7 +702,7 @@ public class OracleExprParser extends SQLExprParser {
         
         if (lexer.token() == Token.TO) {
             accept(Token.TO);
-            if (lexer.token() == Token.SECOND) {
+            if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
                 if (lexer.token() == Token.LPAREN) {

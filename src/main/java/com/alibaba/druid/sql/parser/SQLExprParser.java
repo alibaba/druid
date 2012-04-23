@@ -208,8 +208,6 @@ public class SQLExprParser extends SQLParser {
             case REFERENCE:
             case KEY:
             case DISTINCT:
-            case YEAR:
-            case MONTH:
             case TIME:
             case ZONE:
             case LOG:
