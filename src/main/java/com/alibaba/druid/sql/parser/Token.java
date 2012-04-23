@@ -132,6 +132,7 @@ public enum Token {
     CURRENT("CURRENT"),
     RETURNING("RETURNING"),
     COMMENT("COMMENT"),
+    OVER("OVER"),
     
     // oracle
     START("START"),
