@@ -34,7 +34,7 @@ public class OraclePivotClauseTest extends TestCase {
                      + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
         String expected = "SELECT *\n"
-                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS YEAR, order_mode, order_total\n"
+                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS year, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
                           + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
@@ -54,7 +54,7 @@ public class OraclePivotClauseTest extends TestCase {
                      + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
         String expected = "SELECT *\n"
-                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS YEAR, order_mode, order_total\n"
+                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS year, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
                           + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
@@ -73,7 +73,7 @@ public class OraclePivotClauseTest extends TestCase {
                      + "FROM (SELECT EXTRACT(YEAR FROM order_date) as day, order_mode, order_total FROM orders)\n"
                      + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
-        String expected = "SELECT *\n" + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS DAY, order_mode, order_total\n"
+        String expected = "SELECT *\n" + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS day, order_mode, order_total\n"
                           + "\tFROM orders\n" + ")\n"
                           + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
@@ -93,7 +93,7 @@ public class OraclePivotClauseTest extends TestCase {
                      + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
         String expected = "SELECT *\n"
-                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS DAY, order_mode AS YEAR, order_total\n"
+                          + "FROM (\n\tSELECT EXTRACT(YEAR FROM order_date) AS day, order_mode AS YEAR, order_total\n"
                           + "\tFROM orders\n" + ")\n"
                           + "PIVOT (SUM(order_total) FOR order_mode IN ('direct' AS Store, 'online' AS Internet));\n";
 
