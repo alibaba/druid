@@ -26,11 +26,11 @@ public class MergeStatFilterTest3 extends TestCase {
 	}
 
 	public void test_merge() throws Exception {
-		String sql = IOUtils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
-		//System.out.println(sql);
+		String sqllist = IOUtils.read(new InputStreamReader(this.getClass().getResourceAsStream("/bvt/parser/postgresql.txt")));
+		String[] ss = sqllist.split("--");
+		for(String sql:ss)
 		{
 			Connection conn = dataSource.getConnection();
-
 			Statement stmt = conn.createStatement();
 			stmt.execute(sql);
 			stmt.close();
@@ -41,8 +41,7 @@ public class MergeStatFilterTest3 extends TestCase {
 		Assert.assertEquals(1, dataSource.getDataSourceStat().getSqlStatMap()
 				.size());
 		System.out.println(dataSource.getDataSourceStat().getSqlStatMap().keySet().iterator().next());
-		System.out.println("---------------------------------------------------");
-		System.out.println(SQLUtils.formatPGSql(sql));
+		
 	}
 
 }
