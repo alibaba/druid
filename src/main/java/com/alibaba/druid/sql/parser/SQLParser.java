@@ -69,8 +69,7 @@ public class SQLParser {
                 return alias;
             }
 
-            if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.KEY
-                || lexer.token() == Token.CASE || lexer.token() == Token.TIMESTAMP) {
+            if (lexer.token() == Token.KEY || lexer.token() == Token.CASE || lexer.token() == Token.TIMESTAMP) {
                 alias = lexer.token.name();
                 lexer.nextToken();
                 return alias;
@@ -97,8 +96,7 @@ public class SQLParser {
         } else if (lexer.token() == Token.LITERAL_CHARS) {
             alias = "'" + lexer.stringVal() + "'";
             lexer.nextToken();
-        } else if (lexer.token() == Token.YEAR || lexer.token() == Token.DAY || lexer.token() == Token.TIME
-                   || lexer.token() == Token.MONTH || lexer.token() == Token.CASE || lexer.token() == Token.AT
+        } else if (lexer.token() == Token.TIME || lexer.token() == Token.CASE || lexer.token() == Token.AT
                    || lexer.token() == Token.TIMESTAMP || lexer.token() == Token.LOG) {
             alias = lexer.token.name();
             lexer.nextToken();
