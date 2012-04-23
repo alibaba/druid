@@ -9,6 +9,7 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -21,6 +22,10 @@ public class PGSelectParser extends SQLSelectParser {
     public PGSelectParser(String sql) throws ParserException{
         this(new PGLexer(sql));
         this.lexer.nextToken();
+    }
+    
+    protected SQLExprParser createExprParser() {
+        return new PGExprParser(lexer);
     }
 
     @Override
@@ -125,7 +130,8 @@ public class PGSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                 lexer.nextToken();
             } else {
-                throw new ParserException("expect 'ROW' or 'ROWS'");
+            	//TODO
+                //throw new ParserException("expect 'ROW' or 'ROWS'");
             }
         }
 

@@ -8,7 +8,7 @@
                               sum_prod_show_num, 
                               sum_prod_click_num, 
                               sum_prod_fb_num, 
-                              count(*) over(order by a,b,c) as total_cnt 
+                              count(*) over(order by a,ba,c) as total_cnt 
                          from (select product_id, 
                                       sum_prod_show_num, 
                                       sum_prod_click_num, 

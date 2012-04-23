@@ -1,9 +1,12 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
@@ -420,4 +423,46 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     public void endVisit(PGSelectQueryBlock x) {
         
     }
+
+	@Override
+	public void endVisit(PGAggregateExpr x) {
+		
+	}
+
+	@Override
+	public boolean visit(PGAggregateExpr x) {
+        print(x.getMethodName());
+        print("(");
+        printAndAccept(x.getArguments(), ", ");
+        print(")");
+        if(x.getOver() != null){
+        	x.getOver().accept(this);
+        }
+        return false;
+	}
+
+	@Override
+	public void endVisit(PGAnalytic x) {
+
+		
+	}
+
+	@Override
+	public boolean visit(PGAnalytic x) {
+		print(" OVER (");
+		if(x.getPartitionBy().size() > 0){
+			int mark = 0;
+			for(SQLExpr e:x.getPartitionBy()){
+				if(mark++ != 0){
+					print(", ");
+				}
+				e.accept(this);
+			}
+		}
+		if(x.getOrderBy() != null){
+			x.getOrderBy().accept(this);
+		}
+		print(")");
+		return false;
+	}
 }

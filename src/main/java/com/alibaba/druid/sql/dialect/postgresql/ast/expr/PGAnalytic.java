@@ -50,11 +50,11 @@ public class PGAnalytic extends SQLObjectImpl implements PGExpr {
     }
 
     public void accept0(PGASTVisitor visitor) {
-//        if (visitor.visit(this)) {
-//            acceptChild(visitor, this.partitionBy);
-//            acceptChild(visitor, this.orderBy);
-//        }
-//        visitor.endVisit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.partitionBy);
+            acceptChild(visitor, this.orderBy);
+        }
+        visitor.endVisit(this);
     }
 
 
