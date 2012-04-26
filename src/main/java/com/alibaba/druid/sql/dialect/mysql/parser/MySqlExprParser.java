@@ -475,4 +475,25 @@ public class MySqlExprParser extends SQLExprParser {
 
         return column;
     }
+    
+    public SQLExpr orRest(SQLExpr expr) throws ParserException {
+
+        for (;;) {
+            if (lexer.token() == Token.OR || lexer.token() == Token.BARBAR) {
+                lexer.nextToken();
+                SQLExpr rightExp = and();
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanOr, rightExp);
+            } else if (lexer.token() == Token.XOR) {
+                lexer.nextToken();
+                SQLExpr rightExp = and();
+
+                expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.BooleanXor, rightExp);
+            } else {
+                break;
+            }
+        }
+
+        return expr;
+    }
 }
