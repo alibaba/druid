@@ -861,12 +861,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr and() throws ParserException {
+    public SQLExpr and() throws ParserException {
         SQLExpr expr = relational();
         return andRest(expr);
     }
 
-    public final SQLExpr andRest(SQLExpr expr) throws ParserException {
+    public SQLExpr andRest(SQLExpr expr) throws ParserException {
         for (;;) {
             if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
                 lexer.nextToken();
@@ -881,12 +881,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr or() throws ParserException {
+    public SQLExpr or() throws ParserException {
         SQLExpr expr = and();
         return orRest(expr);
     }
 
-    public final SQLExpr orRest(SQLExpr expr) throws ParserException {
+    public SQLExpr orRest(SQLExpr expr) throws ParserException {
 
         for (;;) {
             if (lexer.token() == Token.OR) {
@@ -907,7 +907,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr relational() throws ParserException {
+    public SQLExpr relational() throws ParserException {
         SQLExpr expr = equality();
 
         return relationalRest(expr);
