@@ -121,7 +121,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateSetValueClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
-public class OracleASTVIsitorAdapter extends SQLASTVisitorAdapter implements OracleASTVisitor {
+public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements OracleASTVisitor {
 
     public boolean visit(OracleSelect x) {
         return true;

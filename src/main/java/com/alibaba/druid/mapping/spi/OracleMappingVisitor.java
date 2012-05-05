@@ -14,9 +14,9 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVIsitorAdapter;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitorAdapter;
 
-public class OracleMappingVisitor extends OracleASTVIsitorAdapter implements MappingVisitor {
+public class OracleMappingVisitor extends OracleASTVisitorAdapter implements MappingVisitor {
 
     private final LinkedHashMap<String, Entity> entities;
     private final Map<String, SQLTableSource>   tableSources = new LinkedHashMap<String, SQLTableSource>();

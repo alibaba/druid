@@ -13,7 +13,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class OracleExportParameterVisitor extends OracleASTVIsitorAdapter implements ExportParameterVisitor {
+public class OracleExportParameterVisitor extends OracleASTVisitorAdapter implements ExportParameterVisitor {
 
     private final List<Object> parameters;
 
