@@ -23,11 +23,12 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
-public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
+public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
 
     private boolean       hignPriority;
     private boolean       straightJoin;
@@ -158,6 +159,28 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock {
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+            return;
+        }
+        
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.selectList);
+            acceptChild(visitor, this.from);
+            acceptChild(visitor, this.where);
+            acceptChild(visitor, this.groupBy);
+            acceptChild(visitor, this.orderBy);
+            acceptChild(visitor, this.limit);
+            acceptChild(visitor, this.procedureName);
+            acceptChild(visitor, this.procedureArgumentList);
+            acceptChild(visitor, this.into);
+        }
+
+        visitor.endVisit(this);
+    }
+    
+    @Override
+    public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);

@@ -10,6 +10,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -20,7 +21,7 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 public class Demo2 extends TestCase {
 
     public void test_0() throws Exception {
-        String sql = "select * from user where uid = ? and uname = ?";
+        String sql = "select * from user where uid = 2 and uname = ?";
         List<Object> parameters = new ArrayList<Object>();
         parameters.add(1);
         parameters.add("wenshao");
@@ -33,13 +34,19 @@ public class Demo2 extends TestCase {
         MyVisitor visitor = new MyVisitor();
         first.accept(visitor);
 
-        SQLVariantRefExpr firstVar = visitor.getVariantList().get(0);
 
-        int varIndex = (Integer) firstVar.getAttribute("varIndex");
-        Integer param = (Integer) parameters.get(varIndex);
+        SQLExpr firstVar = visitor.getVariantList().get(0);
 
-        final String tableName;
-        if (param.intValue() == 1) {
+        int userId;
+        if (firstVar instanceof SQLVariantRefExpr) {
+            int varIndex = (Integer) firstVar.getAttribute("varIndex");
+            userId = (Integer) parameters.get(varIndex);
+        } else {
+            userId = ((SQLNumericLiteralExpr) firstVar).getNumber().intValue();
+        }
+
+        String tableName;
+        if (userId == 1) {
             tableName = "user_1";
         } else {
             tableName = "user_x";
@@ -71,7 +78,7 @@ public class Demo2 extends TestCase {
     private static class MyVisitor extends MySqlASTVisitorAdapter {
 
         private int                      varIndex        = 0;
-        private List<SQLVariantRefExpr>  variantList     = new ArrayList<SQLVariantRefExpr>();
+        private List<SQLExpr>  variantList     = new ArrayList<SQLExpr>();
         private List<SQLExprTableSource> tableSourceList = new ArrayList<SQLExprTableSource>();
 
         public boolean visit(SQLVariantRefExpr x) {
@@ -80,11 +87,15 @@ public class Demo2 extends TestCase {
         }
 
         public boolean visit(SQLBinaryOpExpr x) {
-            if (x.getLeft() instanceof SQLIdentifierExpr && x.getRight() instanceof SQLVariantRefExpr) {
-                SQLIdentifierExpr identExpr = (SQLIdentifierExpr) x.getLeft();
-                String ident = identExpr.getName();
-                if (ident.equals("uid")) {
-                    variantList.add((SQLVariantRefExpr) x.getRight());
+            if (x.getLeft() instanceof SQLIdentifierExpr) {
+                if (x.getRight() instanceof SQLVariantRefExpr) {
+                    SQLIdentifierExpr identExpr = (SQLIdentifierExpr) x.getLeft();
+                    String ident = identExpr.getName();
+                    if (ident.equals("uid")) {
+                        variantList.add(x.getRight());
+                    }
+                } else if (x.getRight() instanceof SQLNumericLiteralExpr) {
+                    variantList.add(x.getRight());
                 }
             }
 
@@ -104,7 +115,7 @@ public class Demo2 extends TestCase {
             this.varIndex = varIndex;
         }
 
-        public List<SQLVariantRefExpr> getVariantList() {
+        public List<SQLExpr> getVariantList() {
             return variantList;
         }
 
