@@ -100,7 +100,7 @@ public class OracleMappingVisitor extends OracleASTVisitorAdapter implements Map
     public boolean visit(SQLIdentifierExpr x) {
         return MappingVisitorUtils.visit(this, x);
     }
-
+    
     @Override
     public boolean visit(SQLPropertyExpr x) {
         return MappingVisitorUtils.visit(this, x);
