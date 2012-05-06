@@ -9,6 +9,7 @@ import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -32,7 +33,9 @@ public class MappingVisitorUtils {
                 throw new DruidMappingException("entity not foudn : " + entityName);
             }
 
-            tableExpr.setName(entity.getTableName());
+            x.putAttribute("mapping.entity", entity);
+            String tableName = visitor.getEngine().resolveTableName(entity, visitor.getParameters());
+            tableExpr.setName(tableName);
         }
 
         if (x.getAlias() != null) {
@@ -58,13 +61,42 @@ public class MappingVisitorUtils {
         }
     }
 
+    public static boolean visit(MappingVisitor visitor, SQLPropertyExpr x) {
+        SQLIdentifierExpr ownerExpr = (SQLIdentifierExpr) x.getOwner();
+        String ownerName = ownerExpr.getName();
+
+        String propertyName = x.getName();
+
+        Property property = null;
+        Entity entity = visitor.getEntity(ownerName);
+        property = entity.getProperty(propertyName);
+
+        if (property == null) {
+            throw new DruidMappingException("property not found : " + propertyName);
+        }
+
+        String dbColumName = visitor.getEngine().resovleColumnName(entity, property, visitor.getParameters());
+        x.setName(dbColumName);
+
+        if (x.getParent() instanceof SQLSelectItem) {
+            SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
+            if (selectItem.getAlias() == null) {
+                selectItem.setAlias('"' + property.getName() + '"');
+            }
+        }
+
+        return false;
+    }
+
     public static boolean visit(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
 
         Property property = null;
+        Entity propertyEntity = null;
         for (Entity entity : visitor.getEntities().values()) {
             property = entity.getProperty(propertyName);
             if (property != null) {
+                propertyEntity = entity;
                 break;
             }
         }
@@ -73,7 +105,7 @@ public class MappingVisitorUtils {
             throw new DruidMappingException("property not found : " + propertyName);
         }
 
-        String dbColumName = property.getDbColumnName();
+        String dbColumName = visitor.getEngine().resovleColumnName(propertyEntity, property, visitor.getParameters());
         x.setName(dbColumName);
 
         if (x.getParent() instanceof SQLSelectItem) {
@@ -101,6 +133,7 @@ public class MappingVisitorUtils {
         if (x.getFrom() == null) {
             Entity firstEntity = visitor.getFirstEntity();
             SQLExprTableSource from = new SQLExprTableSource(new SQLIdentifierExpr(firstEntity.getName()));
+            from.putAttribute("mapping.entity", firstEntity);
             x.setFrom(from);
         }
 
@@ -112,6 +145,27 @@ public class MappingVisitorUtils {
     }
 
     public static Entity getEntity(MappingVisitor visitor, String name) {
+        SQLTableSource tableSource = visitor.getTableSources().get(name);
+
+        if (tableSource != null) {
+            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            if (entity != null) {
+                return entity;
+            }
+
+            if (tableSource instanceof SQLExprTableSource) {
+                SQLExpr expr = ((SQLExprTableSource) tableSource).getExpr();
+
+                if (expr instanceof SQLIdentifierExpr) {
+                    name = ((SQLIdentifierExpr) expr).getName();
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+
         Entity entity = visitor.getEntities().get(name);
 
         if (entity == null) {
@@ -132,14 +186,14 @@ public class MappingVisitorUtils {
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
-    
+
     public static void setDataSource(MappingEngine engine, SQLUpdateStatement stmt) {
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
-    
+
     public static void setDataSource(MappingEngine engine, SQLInsertStatement stmt) {
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();

@@ -3,6 +3,7 @@ package com.alibaba.druid.mapping;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,10 @@ public class MappingEngine {
     public MappingVisitor createMappingVisitor() {
         return provider.createMappingVisitor(this);
     }
+    
+    public MappingVisitor createMappingVisitor(List<Object> parameters) {
+        return provider.createMappingVisitor(this, parameters);
+    }
 
     public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
         return provider.createOutputVisitor(this, out);
@@ -83,11 +88,15 @@ public class MappingEngine {
     public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
         return provider.explainToSelectSQLObject(this, sql);
     }
-
+    
     public String explainToSelectSQL(String sql) {
+        return explainToSelectSQL(sql, Collections.emptyList());
+    }
+
+    public String explainToSelectSQL(String sql, List<Object> parameters) {
         SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 
-        query.accept(this.createMappingVisitor());
+        query.accept(this.createMappingVisitor(parameters));
 
         return toSQL(query);
     }
@@ -102,6 +111,14 @@ public class MappingEngine {
         query.accept(this.createMappingVisitor());
 
         return toSQL(query);
+    }
+    
+    public String resolveTableName(Entity entity, List<Object> parameters) {
+        return entity.getTableName();
+    }
+    
+    public String resovleColumnName(Entity entity, Property property, List<Object> parameters) {
+        return property.getDbColumnName();
     }
 
     public SQLUpdateStatement explainToUpdateSQLObject(String sql) {

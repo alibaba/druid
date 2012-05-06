@@ -19,7 +19,12 @@ public class OracleMappingProvider implements MappingProvider {
 
     @Override
     public MappingVisitor createMappingVisitor(MappingEngine engine) {
-        return new OracleMappingVisitor(engine.getEntities());
+        return new OracleMappingVisitor(engine);
+    }
+    
+    @Override
+    public MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters) {
+        return new OracleMappingVisitor(engine, parameters);
     }
 
     @Override

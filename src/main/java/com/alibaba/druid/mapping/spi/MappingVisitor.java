@@ -1,12 +1,17 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public interface MappingVisitor extends SQLASTVisitor {
+    MappingEngine getEngine();
+    
+    List<Object> getParameters();
 
     Entity getFirstEntity();
 

@@ -22,7 +22,12 @@ public class MySqlMappingProvider implements MappingProvider {
 
     @Override
     public MappingVisitor createMappingVisitor(MappingEngine engine) {
-        return new MySqlMappingVisitor(engine.getEntities());
+        return new MySqlMappingVisitor(engine);
+    }
+    
+    @Override
+    public MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters) {
+        return new MySqlMappingVisitor(engine, parameters);
     }
 
     @Override
