@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.mapping;
 
+import java.util.Collections;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -35,6 +37,30 @@ public class MySqlMappingShardingTest extends TestCase {
         String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
                         "FROM user_a u\n" + //
                         "WHERE u.uid = 'a'";
+        
+        Assert.assertEquals(expected, sql);
+    }
+    
+    public void test_1() throws Exception {
+        String oql = "select * from 用户 u where u.名称 = ?";
+
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object>singletonList("a"));
+
+        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+                        "FROM user_a u\n" + //
+                        "WHERE u.uid = ?";
+        
+        Assert.assertEquals(expected, sql);
+    }
+    
+    public void test_2() throws Exception {
+        String oql = "select * from 用户 u where u.名称 = ?";
+
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object>singletonList("b"));
+
+        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+                        "FROM user_x u\n" + //
+                        "WHERE u.uid = ?";
         
         Assert.assertEquals(expected, sql);
     }
