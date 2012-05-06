@@ -1,7 +1,10 @@
 package com.alibaba.druid.bvt.mapping;
 
+<<<<<<< HEAD
 import java.util.Collections;
 
+=======
+>>>>>>> branch 'master' of https://wenshao@github.com/AlibabaTech/druid.git
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
