@@ -8,8 +8,13 @@ import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -34,7 +39,7 @@ public class MappingVisitorUtils {
             }
 
             x.putAttribute("mapping.entity", entity);
-            String tableName = visitor.getEngine().resolveTableName(entity, visitor.getParameters());
+            String tableName = visitor.resolveTableName(entity);
             tableExpr.setName(tableName);
         }
 
@@ -75,8 +80,10 @@ public class MappingVisitorUtils {
             throw new DruidMappingException("property not found : " + propertyName);
         }
 
-        String dbColumName = visitor.getEngine().resovleColumnName(entity, property, visitor.getParameters());
+        String dbColumName = visitor.resovleColumnName(entity, property);
         x.setName(dbColumName);
+        x.putAttribute("mapping.property", property);
+        x.putAttribute("mapping.entity", entity);
 
         if (x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
@@ -87,7 +94,7 @@ public class MappingVisitorUtils {
 
         return false;
     }
-
+    
     public static boolean visit(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
 
@@ -105,8 +112,11 @@ public class MappingVisitorUtils {
             throw new DruidMappingException("property not found : " + propertyName);
         }
 
-        String dbColumName = visitor.getEngine().resovleColumnName(propertyEntity, property, visitor.getParameters());
+        String dbColumName = visitor.resovleColumnName(propertyEntity, property);
         x.setName(dbColumName);
+        
+        x.putAttribute("mapping.property", property);
+        x.putAttribute("mapping.entity", propertyEntity);
 
         if (x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
@@ -115,6 +125,76 @@ public class MappingVisitorUtils {
             }
         }
 
+        return false;
+    }
+    
+    public static boolean visit(MappingVisitor visitor, SQLBinaryOpExpr x) {
+        if (x.getOperator() == SQLBinaryOperator.Equality) {
+            if (x.getLeft() instanceof SQLIdentifierExpr && isSimpleValue(visitor, x.getRight())) {
+                visit(visitor, (SQLIdentifierExpr) x.getLeft());
+                x.getRight().accept(visitor);
+                
+                Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
+                Property property = (Property) x.getLeft().getAttribute("mapping.property");
+                Object value = x.getRight().getAttribute("mapping.value");
+                
+                visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
+                
+                return false;
+            }
+            
+            if (x.getLeft() instanceof SQLPropertyExpr && isSimpleValue(visitor, x.getRight())) {
+                visit(visitor, (SQLPropertyExpr) x.getLeft());
+                x.getRight().accept(visitor);
+                
+                Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
+                Property property = (Property) x.getLeft().getAttribute("mapping.property");
+                Object value = x.getRight().getAttribute("mapping.value");
+                
+                visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
+                
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    private static boolean isSimpleValue(MappingVisitor visitor, SQLExpr expr) {
+        if (expr instanceof SQLNumericLiteralExpr) {
+            expr.putAttribute("mapping.value", ((SQLNumericLiteralExpr) expr).getNumber());
+            return true;
+        }
+        
+        if (expr instanceof SQLCharExpr) {
+            expr.putAttribute("mapping.value", ((SQLCharExpr) expr).getText());
+            return true;
+        }
+        
+        if (expr instanceof SQLVariantRefExpr) {
+            Map<String, Object> attributes = expr.getAttributes();
+            Integer varIndex = (Integer) attributes.get("mapping.varIndex");
+            if (varIndex == null) {
+                varIndex = visitor.getAndIncrementVariantIndex();
+                expr.putAttribute("mapping.varIndex", varIndex);
+            }
+            
+            Object parameter = visitor.getParameters().get(varIndex);
+            
+            expr.putAttribute("mapping.value", parameter);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public static boolean visit(MappingVisitor visitor, SQLVariantRefExpr x) {
+        Map<String, Object> attributes = x.getAttributes();
+        Integer varIndex = (Integer) attributes.get("mapping.varIndex");
+        if (varIndex == null) {
+            varIndex = visitor.getAndIncrementVariantIndex();
+            x.putAttribute("mapping.varIndex", varIndex);
+        }
         return false;
     }
 

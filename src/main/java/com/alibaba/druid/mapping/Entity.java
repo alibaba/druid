@@ -71,4 +71,17 @@ public class Entity {
         this.properties = properties;
     }
 
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("{name=");
+        buf.append(name);
+        
+        buf.append(", tableName=");
+        buf.append(tableName);
+        
+        buf.append("}");
+
+        return buf.toString();
+    }
+
 }

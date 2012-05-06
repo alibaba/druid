@@ -96,9 +96,15 @@ public class MappingEngine {
     public String explainToSelectSQL(String sql, List<Object> parameters) {
         SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 
-        query.accept(this.createMappingVisitor(parameters));
+        MappingVisitor visitor = this.createMappingVisitor(parameters);
+        query.accept(visitor);
+        afterResole(visitor);
 
         return toSQL(query);
+    }
+    
+    public void afterResole(MappingVisitor visitor) {
+        
     }
 
     public SQLDeleteStatement explainToDeleteSQLObject(String sql) {
@@ -106,11 +112,13 @@ public class MappingEngine {
     }
 
     public String explainToDeleteSQL(String sql) {
-        SQLDeleteStatement query = explainToDeleteSQLObject(sql);
+        SQLDeleteStatement stmt = explainToDeleteSQLObject(sql);
         
-        query.accept(this.createMappingVisitor());
+        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        stmt.accept(visitor);
+        afterResole(visitor);
 
-        return toSQL(query);
+        return toSQL(stmt);
     }
     
     public String resolveTableName(Entity entity, List<Object> parameters) {
@@ -126,11 +134,13 @@ public class MappingEngine {
     }
 
     public String explainToUpdateSQL(String sql) {
-        SQLUpdateStatement query = explainToUpdateSQLObject(sql);
+        SQLUpdateStatement stmt = explainToUpdateSQLObject(sql);
 
-        query.accept(this.createMappingVisitor());
+        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        stmt.accept(visitor);
+        afterResole(visitor);
 
-        return toSQL(query);
+        return toSQL(stmt);
     }
 
     public SQLInsertStatement explainToInsertSQLObject(String sql) {
@@ -138,11 +148,13 @@ public class MappingEngine {
     }
 
     public String explainToInsertSQL(String sql) {
-        SQLInsertStatement query = explainToInsertSQLObject(sql);
+        SQLInsertStatement stmt = explainToInsertSQLObject(sql);
 
-        query.accept(this.createMappingVisitor());
+        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        stmt.accept(visitor);
+        afterResole(visitor);
 
-        return toSQL(query);
+        return toSQL(stmt);
     }
 
     public List<Object> exportParameters(SQLObject sqlObject) {
