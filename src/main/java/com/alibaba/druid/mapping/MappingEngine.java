@@ -33,6 +33,10 @@ public class MappingEngine {
         this(new MySqlMappingProvider());
     }
     
+    public MappingEngine(MappingProvider provider){
+        this.provider = provider;
+    }
+    
     public Entity getFirstEntity() {
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
@@ -47,10 +51,6 @@ public class MappingEngine {
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public MappingEngine(MappingProvider provider){
-        this.provider = provider;
     }
 
     public MappingProvider getMappingProvider() {
