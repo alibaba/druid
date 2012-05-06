@@ -1,10 +1,18 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.mapping.Property;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -16,16 +24,36 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitorAdapte
 
 public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implements MappingVisitor {
 
-    private final LinkedHashMap<String, Entity> entities;
-    private final Map<String, SQLTableSource>   tableSources = new LinkedHashMap<String, SQLTableSource>();
+    private final MappingEngine               engine;
+    private final Map<String, SQLTableSource> tableSources   = new LinkedHashMap<String, SQLTableSource>();
 
-    public MSSQLServerMappingVisitor(LinkedHashMap<String, Entity> entities){
-        super();
-        this.entities = entities;
+    private final List<Object>                parameters;
+    private final List<PropertyValue>         propertyValues = new ArrayList<PropertyValue>();
+    private int                               variantIndex   = 0;
+
+    public MSSQLServerMappingVisitor(MappingEngine engine){
+        this(engine, Collections.emptyList());
+    }
+
+    public MSSQLServerMappingVisitor(MappingEngine engine, List<Object> parameters){
+        this.engine = engine;
+        this.parameters = parameters;
+    }
+
+    public MappingEngine getEngine() {
+        return engine;
+    }
+
+    public List<Object> getParameters() {
+        return parameters;
+    }
+
+    public List<PropertyValue> getPropertyValues() {
+        return propertyValues;
     }
 
     public LinkedHashMap<String, Entity> getEntities() {
-        return entities;
+        return engine.getEntities();
     }
 
     public Map<String, SQLTableSource> getTableSources() {
@@ -33,12 +61,18 @@ public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implem
     }
 
     @Override
-    public Entity getFirstEntity() {
-        for (Map.Entry<String, Entity> entry : entities.entrySet()) {
-            return entry.getValue();
-        }
+    public String resolveTableName(Entity entity) {
+        return engine.resolveTableName(entity, parameters);
+    }
 
-        return null;
+    @Override
+    public String resovleColumnName(Entity entity, Property property) {
+        return engine.resovleColumnName(entity, property, parameters);
+    }
+
+    @Override
+    public Entity getFirstEntity() {
+        return engine.getFirstEntity();
     }
 
     public Entity getEntity(String name) {
@@ -67,6 +101,21 @@ public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implem
     }
 
     @Override
+    public boolean visit(SQLPropertyExpr x) {
+        return MappingVisitorUtils.visit(this, x);
+    }
+
+    @Override
+    public boolean visit(SQLBinaryOpExpr x) {
+        return MappingVisitorUtils.visit(this, x);
+    }
+
+    @Override
+    public boolean visit(SQLVariantRefExpr x) {
+        return MappingVisitorUtils.visit(this, x);
+    }
+    
+    @Override
     public boolean visit(SQLSubqueryTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }
@@ -80,5 +129,13 @@ public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implem
     public boolean visit(SQLExprTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }
-
+    
+    @Override
+    public int getAndIncrementVariantIndex() {
+        return variantIndex++;
+    }
+    
+    public int getVariantIndex() {
+        return variantIndex;
+    }
 }

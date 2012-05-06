@@ -14,6 +14,8 @@ public interface MappingProvider {
 
     MappingVisitor createMappingVisitor(MappingEngine engine);
     
+    MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters);
+    
     ExportParameterVisitor createExportParameterVisitor(List<Object> parameters);
 
     SQLASTOutputVisitor createOutputVisitor(MappingEngine engine, Appendable out);

@@ -23,7 +23,12 @@ public class MSSQLServerMappingProvider implements MappingProvider {
 
     @Override
     public MappingVisitor createMappingVisitor(MappingEngine engine) {
-        return new MSSQLServerMappingVisitor(engine.getEntities());
+        return new MSSQLServerMappingVisitor(engine);
+    }
+    
+    @Override
+    public MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters) {
+        return new MSSQLServerMappingVisitor(engine, parameters);
     }
 
     @Override

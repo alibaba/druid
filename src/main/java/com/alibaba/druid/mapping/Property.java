@@ -1,7 +1,6 @@
 package com.alibaba.druid.mapping;
 
 public class Property {
-
     private String name;
     private String desciption;
     private String dbColumnName;
@@ -39,4 +38,16 @@ public class Property {
         this.desciption = desciption;
     }
 
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("{name=");
+        buf.append(name);
+        
+        buf.append(", dbColumnName=");
+        buf.append(dbColumnName);
+        
+        buf.append("}");
+
+        return buf.toString();
+    }
 }
