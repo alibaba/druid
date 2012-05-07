@@ -1,6 +1,6 @@
 package com.alibaba.druid.mapping;
 
-public class Property {
+public class Property extends MappingObject {
     private String name;
     private String desciption;
     private String dbColumnName;

@@ -3,7 +3,7 @@ package com.alibaba.druid.mapping;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Entity {
+public class Entity extends MappingObject {
 
     private String                name;
     private String                description;
