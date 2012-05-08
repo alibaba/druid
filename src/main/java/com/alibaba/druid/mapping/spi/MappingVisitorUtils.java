@@ -179,9 +179,11 @@ public class MappingVisitorUtils {
                 expr.putAttribute("mapping.varIndex", varIndex);
             }
             
-            Object parameter = visitor.getParameters().get(varIndex);
+            if (visitor.getParameters().size() > varIndex) {
+                Object parameter = visitor.getParameters().get(varIndex);
+                expr.putAttribute("mapping.value", parameter);
+            }
             
-            expr.putAttribute("mapping.value", parameter);
             return true;
         }
         
