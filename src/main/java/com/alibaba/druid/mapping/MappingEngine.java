@@ -78,7 +78,11 @@ public class MappingEngine {
     }
     
     public MappingVisitor createMappingVisitor(List<Object> parameters) {
-        return provider.createMappingVisitor(this, parameters);
+        return createMappingVisitor(new MappingContext(parameters));
+    }
+    
+    public MappingVisitor createMappingVisitor(MappingContext context) {
+        return provider.createMappingVisitor(this, context);
     }
 
     public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
@@ -94,9 +98,12 @@ public class MappingEngine {
     }
 
     public String explainToSelectSQL(String sql, List<Object> parameters) {
+        return explainToSelectSQL(sql, new MappingContext(parameters));
+    }
+    public String explainToSelectSQL(String sql, MappingContext context) {
         SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 
-        MappingVisitor visitor = this.createMappingVisitor(parameters);
+        MappingVisitor visitor = this.createMappingVisitor(context);
         query.accept(visitor);
         visitor.afterResolve();
         afterResole(visitor);

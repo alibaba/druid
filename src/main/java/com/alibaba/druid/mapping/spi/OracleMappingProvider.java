@@ -2,6 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import java.util.List;
 
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -23,8 +24,8 @@ public class OracleMappingProvider implements MappingProvider {
     }
     
     @Override
-    public MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters) {
-        return new OracleMappingVisitor(engine, parameters);
+    public MappingVisitor createMappingVisitor(MappingEngine engine, MappingContext context) {
+        return new OracleMappingVisitor(engine, context);
     }
 
     @Override

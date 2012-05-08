@@ -2,6 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import java.util.List;
 
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -14,7 +15,7 @@ public interface MappingProvider {
 
     MappingVisitor createMappingVisitor(MappingEngine engine);
     
-    MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters);
+    MappingVisitor createMappingVisitor(MappingEngine engine, MappingContext context);
     
     ExportParameterVisitor createExportParameterVisitor(List<Object> parameters);
 

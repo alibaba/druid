@@ -2,6 +2,7 @@ package com.alibaba.druid.mapping.spi;
 
 import java.util.List;
 
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
@@ -26,8 +27,8 @@ public class MySqlMappingProvider implements MappingProvider {
     }
     
     @Override
-    public MappingVisitor createMappingVisitor(MappingEngine engine, List<Object> parameters) {
-        return new MySqlMappingVisitor(engine, parameters);
+    public MappingVisitor createMappingVisitor(MappingEngine engine, MappingContext context) {
+        return new MySqlMappingVisitor(engine, context);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class MappingVisitorUtils {
 
         if (x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
-            if (selectItem.getAlias() == null) {
+            if (visitor.getContext().isGenerateAlias() && selectItem.getAlias() == null) {
                 selectItem.setAlias('"' + property.getName() + '"');
             }
         }
@@ -129,9 +129,9 @@ public class MappingVisitorUtils {
         x.putAttribute("mapping.property", property);
         x.putAttribute("mapping.entity", propertyEntity);
 
-        if (x.getParent() instanceof SQLSelectItem) {
+        if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
-            if (selectItem.getAlias() == null) {
+            if (visitor.getContext().isGenerateAlias() && selectItem.getAlias() == null) {
                 selectItem.setAlias('"' + property.getName() + '"');
             }
         }

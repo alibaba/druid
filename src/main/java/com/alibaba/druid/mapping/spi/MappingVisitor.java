@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -14,6 +15,8 @@ public interface MappingVisitor extends SQLASTVisitor {
     MappingEngine getEngine();
     
     List<Object> getParameters();
+    
+    MappingContext getContext();
 
     Entity getFirstEntity();
 

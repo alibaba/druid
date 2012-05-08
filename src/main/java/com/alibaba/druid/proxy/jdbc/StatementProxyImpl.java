@@ -29,8 +29,6 @@ import java.util.Map;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.stat.JdbcStatContext;
-import com.alibaba.druid.stat.JdbcStatManager;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

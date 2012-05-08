@@ -1,12 +1,12 @@
 package com.alibaba.druid.mapping.spi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -28,18 +28,18 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
     private final MappingEngine               engine;
     private final Map<String, SQLTableSource> tableSources   = new LinkedHashMap<String, SQLTableSource>();
 
-    private final List<Object>                parameters;
+    private final MappingContext              context;
     private final List<PropertyValue>         propertyValues = new ArrayList<PropertyValue>();
     private int                               variantIndex   = 0;
     private final List<SQLExpr>               unresolveList  = new ArrayList<SQLExpr>();
 
     public MySqlMappingVisitor(MappingEngine engine){
-        this(engine, Collections.emptyList());
+        this(engine, new MappingContext());
     }
 
-    public MySqlMappingVisitor(MappingEngine engine, List<Object> parameters){
+    public MySqlMappingVisitor(MappingEngine engine, MappingContext context){
         this.engine = engine;
-        this.parameters = parameters;
+        this.context = context;
     }
 
     public MappingEngine getEngine() {
@@ -47,7 +47,11 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
     }
 
     public List<Object> getParameters() {
-        return parameters;
+        return context.getParameters();
+    }
+
+    public MappingContext getContext() {
+        return context;
     }
 
     public List<PropertyValue> getPropertyValues() {
@@ -64,12 +68,12 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
 
     @Override
     public String resolveTableName(Entity entity) {
-        return engine.resolveTableName(entity, parameters);
+        return engine.resolveTableName(entity, context.getParameters());
     }
 
     @Override
     public String resovleColumnName(Entity entity, Property property) {
-        return engine.resovleColumnName(entity, property, parameters);
+        return engine.resovleColumnName(entity, property, context.getParameters());
     }
 
     public Entity getFirstEntity() {
@@ -109,7 +113,7 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
     public boolean visit(SQLBinaryOpExpr x) {
         return MappingVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public boolean visit(SQLVariantRefExpr x) {
         return MappingVisitorUtils.visit(this, x);
@@ -129,16 +133,16 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
     public boolean visit(SQLExprTableSource x) {
         return MappingVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public int getAndIncrementVariantIndex() {
         return variantIndex++;
     }
-    
+
     public int getVariantIndex() {
         return variantIndex;
     }
-    
+
     public List<SQLExpr> getUnresolveList() {
         return unresolveList;
     }
