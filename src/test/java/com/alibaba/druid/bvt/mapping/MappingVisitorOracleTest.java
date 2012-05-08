@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.mapping.spi.OracleMappingProvider;
@@ -27,13 +28,16 @@ public class MappingVisitorOracleTest extends TestCase {
     }
 
     public void test_0() throws Exception {
-
+        MappingContext context = new MappingContext();
+        context.setGenerateAlias(true);
+        context.setExplainAllColumnToList(true);
+        
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device",
-                            engine.explainToSelectSQL("select *"));
+                            engine.explainToSelectSQL("select *", context));
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
-                            engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
+                            engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'", context));
         Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
-                            engine.explainToSelectSQL("WHERE IP地址 = '127.0.0.1'"));
+                            engine.explainToSelectSQL("WHERE IP地址 = '127.0.0.1'", context));
 
     }
     

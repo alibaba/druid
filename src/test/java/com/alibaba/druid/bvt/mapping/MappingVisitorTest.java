@@ -26,11 +26,11 @@ public class MappingVisitorTest extends TestCase {
 
     public void test_0() throws Exception {
 
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device",
+        Assert.assertEquals("SELECT *\nFROM device",
                             engine.explainToSelectSQL("select *"));
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
+        Assert.assertEquals("SELECT serviceTag, ip\nFROM device\nWHERE ip = '127.0.0.1'",
                             engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'",
+        Assert.assertEquals("SELECT *\nFROM device\nWHERE ip = '127.0.0.1'",
                             engine.explainToSelectSQL("WHERE IP地址 = '127.0.0.1'"));
 
     }
@@ -53,11 +53,11 @@ public class MappingVisitorTest extends TestCase {
     public void test_1() throws Exception {
         engine.setMaxLimit(10);
 
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nLIMIT 10",
+        Assert.assertEquals("SELECT *\nFROM device\nLIMIT 10",
                             engine.explainToSelectSQL("select *"));
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'\nLIMIT 10",
+        Assert.assertEquals("SELECT serviceTag, ip\nFROM device\nWHERE ip = '127.0.0.1'\nLIMIT 10",
                             engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1'"));
-        Assert.assertEquals("SELECT serviceTag AS \"编号\", ip AS \"IP地址\"\nFROM device\nWHERE ip = '127.0.0.1'\nLIMIT 3",
+        Assert.assertEquals("SELECT serviceTag, ip\nFROM device\nWHERE ip = '127.0.0.1'\nLIMIT 3",
                             engine.explainToSelectSQL("select 编号, IP地址 WHERE IP地址 = '127.0.0.1' limit 3"));
         Assert.assertEquals(0, engine.exportParameters(engine.explainToSelectSQLObject("select 1")).size());
         Assert.assertEquals(0,

@@ -42,6 +42,8 @@ public class MappingVisitorUtils {
             x.putAttribute("mapping.entity", entity);
             String tableName = visitor.resolveTableName(entity);
             tableExpr.setName(tableName);
+            
+            visitor.getTableSources().put(entityName, x);
         }
 
         if (x.getAlias() != null) {
@@ -55,7 +57,7 @@ public class MappingVisitorUtils {
         if (x.getAlias() != null) {
             visitor.getTableSources().put(x.getAlias(), x);
         }
-
+        
         return true;
     }
 
@@ -63,12 +65,10 @@ public class MappingVisitorUtils {
         Entity entity = visitor.getFirstEntity();
 
         for (Property item : entity.getProperties().values()) {
-            String alias = null;
+            SQLExpr expr = new SQLIdentifierExpr(item.getName());
+            SQLSelectItem selelctItem = new SQLSelectItem(expr);
             
-            if (visitor.getContext().isGenerateAlias()) {
-                alias = '"' + item.getName() + '"';
-            }
-            x.getSelectList().add(new SQLSelectItem(new SQLIdentifierExpr(item.getName()), alias));
+            x.getSelectList().add(selelctItem);
         }
     }
 
@@ -239,11 +239,19 @@ public class MappingVisitorUtils {
 
                     x.putAttribute("mapping.entity", entity);
                     x.putAttribute("mapping.property", property);
+                    
+                    if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
+                        SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
+                        if (selectItem.getAlias() == null) {
+                            selectItem.setAlias('"' + property.getName() + '"');
+                        }
+                    }
+                    
                     return true;
                 }
             }
         }
-
+        
         return false;
     }
 
@@ -261,7 +269,7 @@ public class MappingVisitorUtils {
                     x.putAttribute("mapping.entity", entity);
                     x.putAttribute("mapping.property", property);
 
-                    if (x.getParent() instanceof SQLSelectItem) {
+                    if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
                         SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
                         if (selectItem.getAlias() == null) {
                             selectItem.setAlias('"' + property.getName() + '"');

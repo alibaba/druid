@@ -90,7 +90,7 @@ public class MySqlMappingShardingTest extends TestCase {
 
         String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
 
-        String expected = "SELECT h.uid AS \"用户名\", u.name AS \"昵称\"\n" + //
+        String expected = "SELECT h.uid, u.name\n" + //
                           "FROM user_x u LEFT JOIN hero h ON h.uid = u.uid\n" + //
                           "WHERE u.uid = 2";
 
@@ -115,7 +115,7 @@ public class MySqlMappingShardingTest extends TestCase {
 
         String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
 
-        String expected = "SELECT h.uid AS \"用户名\", u.name AS \"昵称\"\n" + //
+        String expected = "SELECT h.uid, u.name\n" + //
                           "FROM user_x u LEFT JOIN hero h ON h.uid = u.uid\n" + //
                           "WHERE uid = 2";
 
