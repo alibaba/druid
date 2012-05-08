@@ -6,6 +6,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
@@ -44,7 +45,10 @@ public class MySqlMappingShardingTest extends TestCase {
     public void test_0() throws Exception {
         String oql = "select * from 用户 u where u.名称 = 'a'";
 
-        String sql = engine.explainToSelectSQL(oql);
+        MappingContext context = new MappingContext();
+        context.setGenerateAlias(true);
+        context.setExplainAllColumnToList(true);
+        String sql = engine.explainToSelectSQL(oql, context);
 
         String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
                           "FROM user_a u\n" + //
@@ -56,9 +60,11 @@ public class MySqlMappingShardingTest extends TestCase {
     public void test_1() throws Exception {
         String oql = "select * from 用户 u where u.名称 = ?";
 
-        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("a"));
+        MappingContext context = new MappingContext(Collections.<Object> singletonList("a"));
+        context.setGenerateAlias(true);
+        String sql = engine.explainToSelectSQL(oql, context);
 
-        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+        String expected = "SELECT *\n" + //
                           "FROM user_a u\n" + //
                           "WHERE u.uid = ?";
 
@@ -67,10 +73,12 @@ public class MySqlMappingShardingTest extends TestCase {
 
     public void test_2() throws Exception {
         String oql = "select * from 用户 u where u.名称 = ?";
+        MappingContext context = new MappingContext(Collections.<Object> singletonList("b"));
+        context.setExplainAllColumnToList(true);
+        
+        String sql = engine.explainToSelectSQL(oql, context);
 
-        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
-
-        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+        String expected = "SELECT uid, name\n" + //
                           "FROM user_x u\n" + //
                           "WHERE u.uid = ?";
 
@@ -95,7 +103,7 @@ public class MySqlMappingShardingTest extends TestCase {
 
         String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
 
-        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+        String expected = "SELECT *\n" + //
                           "FROM user_x u\n" + //
                           "WHERE uid = ?";
 

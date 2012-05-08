@@ -29,6 +29,10 @@ public class SQLSelectItem extends SQLObjectImpl {
     public SQLSelectItem(){
 
     }
+    
+    public SQLSelectItem(SQLExpr expr) {
+        this(expr, null);
+    }
 
     public SQLSelectItem(SQLExpr expr, String alias){
 

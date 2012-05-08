@@ -100,6 +100,7 @@ public class MappingEngine {
     public String explainToSelectSQL(String sql, List<Object> parameters) {
         return explainToSelectSQL(sql, new MappingContext(parameters));
     }
+    
     public String explainToSelectSQL(String sql, MappingContext context) {
         SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 

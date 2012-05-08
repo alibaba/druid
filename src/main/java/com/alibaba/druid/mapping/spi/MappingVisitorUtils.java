@@ -63,7 +63,12 @@ public class MappingVisitorUtils {
         Entity entity = visitor.getFirstEntity();
 
         for (Property item : entity.getProperties().values()) {
-            x.getSelectList().add(new SQLSelectItem(new SQLIdentifierExpr(item.getName()), '"' + item.getName() + '"'));
+            String alias = null;
+            
+            if (visitor.getContext().isGenerateAlias()) {
+                alias = '"' + item.getName() + '"';
+            }
+            x.getSelectList().add(new SQLSelectItem(new SQLIdentifierExpr(item.getName()), alias));
         }
     }
 
@@ -75,7 +80,7 @@ public class MappingVisitorUtils {
 
         Property property = null;
         Entity entity = visitor.getEntity(ownerName);
-        
+
         if (entity == null) {
             visitor.getUnresolveList().add(x);
             return false;
@@ -100,13 +105,13 @@ public class MappingVisitorUtils {
 
         return false;
     }
-    
+
     public static boolean visit(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
 
         Property property = null;
         Entity propertyEntity = null;
-        
+
         for (SQLTableSource tableSource : visitor.getTableSources().values()) {
             Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
             if (entity != null) {
@@ -125,7 +130,7 @@ public class MappingVisitorUtils {
 
         String dbColumName = visitor.resovleColumnName(propertyEntity, property);
         x.setName(dbColumName);
-        
+
         x.putAttribute("mapping.property", property);
         x.putAttribute("mapping.entity", propertyEntity);
 
@@ -138,55 +143,55 @@ public class MappingVisitorUtils {
 
         return false;
     }
-    
+
     public static boolean visit(MappingVisitor visitor, SQLSelectItem x) {
         x.getExpr().setParent(x);
         return true;
     }
-    
+
     public static boolean visit(MappingVisitor visitor, SQLBinaryOpExpr x) {
         if (x.getOperator() == SQLBinaryOperator.Equality) {
             if (x.getLeft() instanceof SQLIdentifierExpr && isSimpleValue(visitor, x.getRight())) {
                 visit(visitor, (SQLIdentifierExpr) x.getLeft());
                 x.getRight().accept(visitor);
-                
+
                 Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
                 Property property = (Property) x.getLeft().getAttribute("mapping.property");
                 Object value = x.getRight().getAttribute("mapping.value");
-                
+
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
-                
+
                 return false;
             }
-            
+
             if (x.getLeft() instanceof SQLPropertyExpr && isSimpleValue(visitor, x.getRight())) {
                 visit(visitor, (SQLPropertyExpr) x.getLeft());
                 x.getRight().accept(visitor);
-                
+
                 Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
                 Property property = (Property) x.getLeft().getAttribute("mapping.property");
                 Object value = x.getRight().getAttribute("mapping.value");
-                
+
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
-                
+
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     private static boolean isSimpleValue(MappingVisitor visitor, SQLExpr expr) {
         if (expr instanceof SQLNumericLiteralExpr) {
             expr.putAttribute("mapping.value", ((SQLNumericLiteralExpr) expr).getNumber());
             return true;
         }
-        
+
         if (expr instanceof SQLCharExpr) {
             expr.putAttribute("mapping.value", ((SQLCharExpr) expr).getText());
             return true;
         }
-        
+
         if (expr instanceof SQLVariantRefExpr) {
             Map<String, Object> attributes = expr.getAttributes();
             Integer varIndex = (Integer) attributes.get("mapping.varIndex");
@@ -194,22 +199,22 @@ public class MappingVisitorUtils {
                 varIndex = visitor.getAndIncrementVariantIndex();
                 expr.putAttribute("mapping.varIndex", varIndex);
             }
-            
+
             if (visitor.getParameters().size() > varIndex) {
                 Object parameter = visitor.getParameters().get(varIndex);
                 expr.putAttribute("mapping.value", parameter);
             }
-            
+
             return true;
         }
-        
+
         return false;
     }
-    
+
     public static void afterResolve(MappingVisitor visitor) {
-        for (Iterator<SQLExpr> iter = visitor.getUnresolveList().iterator();iter.hasNext();) {
+        for (Iterator<SQLExpr> iter = visitor.getUnresolveList().iterator(); iter.hasNext();) {
             SQLExpr expr = iter.next();
-            if (expr instanceof  SQLIdentifierExpr) {
+            if (expr instanceof SQLIdentifierExpr) {
                 if (resolve(visitor, (SQLIdentifierExpr) expr)) {
                     iter.remove();
                 }
@@ -220,10 +225,10 @@ public class MappingVisitorUtils {
             }
         }
     }
-    
+
     public static boolean resolve(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
-        
+
         for (SQLTableSource tableSource : visitor.getTableSources().values()) {
             Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
             if (entity != null) {
@@ -231,23 +236,23 @@ public class MappingVisitorUtils {
                 if (property != null) {
                     String columnName = visitor.resovleColumnName(entity, property);
                     x.setName(columnName);
-                    
+
                     x.putAttribute("mapping.entity", entity);
                     x.putAttribute("mapping.property", property);
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public static boolean resolve(MappingVisitor visitor, SQLPropertyExpr x) {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String ownerName = ((SQLIdentifierExpr) x.getOwner()).getName();
             SQLTableSource tableSource = visitor.getTableSources().get(ownerName);
             Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
-            
+
             if (entity != null) {
                 Property property = entity.getProperty(x.getName());
                 if (property != null) {
@@ -255,22 +260,22 @@ public class MappingVisitorUtils {
                     x.setName(columnName);
                     x.putAttribute("mapping.entity", entity);
                     x.putAttribute("mapping.property", property);
-                    
+
                     if (x.getParent() instanceof SQLSelectItem) {
                         SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
                         if (selectItem.getAlias() == null) {
                             selectItem.setAlias('"' + property.getName() + '"');
                         }
                     }
-                    
+
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     public static boolean visit(MappingVisitor visitor, SQLVariantRefExpr x) {
         Map<String, Object> attributes = x.getAttributes();
         Integer varIndex = (Integer) attributes.get("mapping.varIndex");
@@ -283,13 +288,15 @@ public class MappingVisitorUtils {
 
     public static boolean visit(MappingVisitor visitor, SQLSelectQueryBlock x) {
         if (x.getSelectList().size() == 0) {
-            fillSelectList(visitor, x);
+            x.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
         }
 
-        if (x.getSelectList().size() == 1) {
-            if (x.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
-                x.getSelectList().clear();
-                fillSelectList(visitor, x);
+        if (visitor.getContext().isExplainAllColumnToList()) {
+            if (x.getSelectList().size() == 1) {
+                if (x.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
+                    x.getSelectList().clear();
+                    fillSelectList(visitor, x);
+                }
             }
         }
 

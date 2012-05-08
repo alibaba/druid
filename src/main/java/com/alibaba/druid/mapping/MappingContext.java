@@ -7,7 +7,8 @@ public class MappingContext {
 
     private List<Object> parameters;
 
-    private boolean      generateAlias = false;
+    private boolean      generateAlias          = false;
+    private boolean      explainAllColumnToList = false;
 
     public MappingContext(){
         this(new ArrayList<Object>());
@@ -31,6 +32,14 @@ public class MappingContext {
 
     public void setGenerateAlias(boolean generateAlias) {
         this.generateAlias = generateAlias;
+    }
+
+    public boolean isExplainAllColumnToList() {
+        return explainAllColumnToList;
+    }
+
+    public void setExplainAllColumnToList(boolean explainAllColumnToList) {
+        this.explainAllColumnToList = explainAllColumnToList;
     }
 
 }
