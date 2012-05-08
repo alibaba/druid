@@ -98,6 +98,7 @@ public class MappingEngine {
 
         MappingVisitor visitor = this.createMappingVisitor(parameters);
         query.accept(visitor);
+        visitor.afterResolve();
         afterResole(visitor);
 
         return toSQL(query);
@@ -116,6 +117,7 @@ public class MappingEngine {
         
         MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
         stmt.accept(visitor);
+        visitor.afterResolve();
         afterResole(visitor);
 
         return toSQL(stmt);
@@ -138,6 +140,7 @@ public class MappingEngine {
 
         MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
         stmt.accept(visitor);
+        visitor.afterResolve();
         afterResole(visitor);
 
         return toSQL(stmt);
@@ -152,6 +155,7 @@ public class MappingEngine {
 
         MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
         stmt.accept(visitor);
+        visitor.afterResolve();
         afterResole(visitor);
 
         return toSQL(stmt);

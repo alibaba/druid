@@ -19,14 +19,26 @@ public class MySqlMappingShardingTest extends TestCase {
     MappingEngine engine = new ShardingMappingEngine();
 
     protected void setUp() throws Exception {
-        Entity entity = new Entity();
-        entity.setName("用户");
-        entity.setTableName("user");
+        {
+            Entity entity = new Entity();
+            entity.setName("用户");
+            entity.setTableName("user");
 
-        entity.addProperty(new Property("名称", "", "uid"));
-        entity.addProperty(new Property("昵称", "", "name"));
+            entity.addProperty(new Property("名称", "", "uid"));
+            entity.addProperty(new Property("昵称", "", "name"));
+            
+            engine.addEntity(entity);
+        }
+        {
+            Entity entity = new Entity();
+            entity.setName("英雄");
+            entity.setTableName("hero");
 
-        engine.addEntity(entity);
+            entity.addProperty(new Property("用户名", "", "uid"));
+            entity.addProperty(new Property("称号", "", "name"));
+            
+            engine.addEntity(entity);
+        }
     }
 
     public void test_0() throws Exception {
@@ -35,33 +47,71 @@ public class MySqlMappingShardingTest extends TestCase {
         String sql = engine.explainToSelectSQL(oql);
 
         String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
-                        "FROM user_a u\n" + //
-                        "WHERE u.uid = 'a'";
-        
+                          "FROM user_a u\n" + //
+                          "WHERE u.uid = 'a'";
+
         Assert.assertEquals(expected, sql);
     }
-    
+
     public void test_1() throws Exception {
         String oql = "select * from 用户 u where u.名称 = ?";
 
-        String sql = engine.explainToSelectSQL(oql, Collections.<Object>singletonList("a"));
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("a"));
 
         String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
-                        "FROM user_a u\n" + //
-                        "WHERE u.uid = ?";
-        
+                          "FROM user_a u\n" + //
+                          "WHERE u.uid = ?";
+
         Assert.assertEquals(expected, sql);
     }
-    
+
     public void test_2() throws Exception {
         String oql = "select * from 用户 u where u.名称 = ?";
 
-        String sql = engine.explainToSelectSQL(oql, Collections.<Object>singletonList("b"));
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
 
         String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
-                        "FROM user_x u\n" + //
-                        "WHERE u.uid = ?";
-        
+                          "FROM user_x u\n" + //
+                          "WHERE u.uid = ?";
+
+        Assert.assertEquals(expected, sql);
+    }
+
+    public void test_3() throws Exception {
+        String oql = "select h.用户名, u.昵称 from 用户 u left join 英雄 h on h.用户名 = u.名称 where u.名称 = 2";
+
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
+
+        String expected = "SELECT h.uid AS \"用户名\", u.name AS \"昵称\"\n" + //
+                          "FROM user_x u LEFT JOIN hero h ON h.uid = u.uid\n" + //
+                          "WHERE u.uid = 2";
+
+        System.out.println(sql);
+        Assert.assertEquals(expected, sql);
+    }
+    
+    public void test_4() throws Exception {
+        String oql = "select * from 用户 u where 名称 = ?";
+
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
+
+        String expected = "SELECT uid AS \"名称\", name AS \"昵称\"\n" + //
+                          "FROM user_x u\n" + //
+                          "WHERE uid = ?";
+
+        Assert.assertEquals(expected, sql);
+    }
+    
+    public void test_5() throws Exception {
+        String oql = "select h.用户名, u.昵称 from 用户 u left join 英雄 h on h.用户名 = u.名称 where 名称 = 2";
+
+        String sql = engine.explainToSelectSQL(oql, Collections.<Object> singletonList("b"));
+
+        String expected = "SELECT h.uid AS \"用户名\", u.name AS \"昵称\"\n" + //
+                          "FROM user_x u LEFT JOIN hero h ON h.uid = u.uid\n" + //
+                          "WHERE uid = 2";
+
+        System.out.println(sql);
         Assert.assertEquals(expected, sql);
     }
 

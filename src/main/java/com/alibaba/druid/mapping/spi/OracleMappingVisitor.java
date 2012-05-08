@@ -9,6 +9,7 @@ import java.util.Map;
 import com.alibaba.druid.mapping.Entity;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -32,6 +33,7 @@ public class OracleMappingVisitor extends OracleASTVisitorAdapter implements Map
     private final List<Object>                parameters;
     private final List<PropertyValue>         propertyValues = new ArrayList<PropertyValue>();
     private int                               variantIndex   = 0;
+    private final List<SQLExpr>               unresolveList  = new ArrayList<SQLExpr>();
 
     public OracleMappingVisitor(MappingEngine engine){
         this(engine, Collections.emptyList());
@@ -82,8 +84,7 @@ public class OracleMappingVisitor extends OracleASTVisitorAdapter implements Map
 
     @Override
     public boolean visit(SQLSelectItem x) {
-        x.getExpr().setParent(x);
-        return true;
+        return MappingVisitorUtils.visit(this, x);
     }
 
     @Override
@@ -149,5 +150,14 @@ public class OracleMappingVisitor extends OracleASTVisitorAdapter implements Map
     
     public int getVariantIndex() {
         return variantIndex;
+    }
+    
+    public List<SQLExpr> getUnresolveList() {
+        return unresolveList;
+    }
+
+    @Override
+    public void afterResolve() {
+        MappingVisitorUtils.afterResolve(this);
     }
 }

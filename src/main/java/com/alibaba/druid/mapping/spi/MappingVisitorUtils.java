@@ -1,5 +1,6 @@
 package com.alibaba.druid.mapping.spi;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import com.alibaba.druid.mapping.DruidMappingException;
@@ -74,6 +75,11 @@ public class MappingVisitorUtils {
 
         Property property = null;
         Entity entity = visitor.getEntity(ownerName);
+        
+        if (entity == null) {
+            visitor.getUnresolveList().add(x);
+            return false;
+        }
         property = entity.getProperty(propertyName);
 
         if (property == null) {
@@ -100,16 +106,21 @@ public class MappingVisitorUtils {
 
         Property property = null;
         Entity propertyEntity = null;
-        for (Entity entity : visitor.getEntities().values()) {
-            property = entity.getProperty(propertyName);
-            if (property != null) {
-                propertyEntity = entity;
-                break;
+        
+        for (SQLTableSource tableSource : visitor.getTableSources().values()) {
+            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            if (entity != null) {
+                property = entity.getProperty(propertyName);
+                if (property != null) {
+                    propertyEntity = entity;
+                    break;
+                }
             }
         }
 
         if (property == null) {
-            throw new DruidMappingException("property not found : " + propertyName);
+            visitor.getUnresolveList().add(x);
+            return false;
         }
 
         String dbColumName = visitor.resovleColumnName(propertyEntity, property);
@@ -126,6 +137,11 @@ public class MappingVisitorUtils {
         }
 
         return false;
+    }
+    
+    public static boolean visit(MappingVisitor visitor, SQLSelectItem x) {
+        x.getExpr().setParent(x);
+        return true;
     }
     
     public static boolean visit(MappingVisitor visitor, SQLBinaryOpExpr x) {
@@ -185,6 +201,71 @@ public class MappingVisitorUtils {
             }
             
             return true;
+        }
+        
+        return false;
+    }
+    
+    public static void afterResolve(MappingVisitor visitor) {
+        for (Iterator<SQLExpr> iter = visitor.getUnresolveList().iterator();iter.hasNext();) {
+            SQLExpr expr = iter.next();
+            if (expr instanceof  SQLIdentifierExpr) {
+                if (resolve(visitor, (SQLIdentifierExpr) expr)) {
+                    iter.remove();
+                }
+            } else if (expr instanceof SQLPropertyExpr) {
+                if (resolve(visitor, (SQLPropertyExpr) expr)) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+    
+    public static boolean resolve(MappingVisitor visitor, SQLIdentifierExpr x) {
+        String propertyName = x.getName();
+        
+        for (SQLTableSource tableSource : visitor.getTableSources().values()) {
+            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            if (entity != null) {
+                Property property = entity.getProperty(propertyName);
+                if (property != null) {
+                    String columnName = visitor.resovleColumnName(entity, property);
+                    x.setName(columnName);
+                    
+                    x.putAttribute("mapping.entity", entity);
+                    x.putAttribute("mapping.property", property);
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    public static boolean resolve(MappingVisitor visitor, SQLPropertyExpr x) {
+        if (x.getOwner() instanceof SQLIdentifierExpr) {
+            String ownerName = ((SQLIdentifierExpr) x.getOwner()).getName();
+            SQLTableSource tableSource = visitor.getTableSources().get(ownerName);
+            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            
+            if (entity != null) {
+                Property property = entity.getProperty(x.getName());
+                if (property != null) {
+                    String columnName = visitor.resovleColumnName(entity, property);
+                    x.setName(columnName);
+                    x.putAttribute("mapping.entity", entity);
+                    x.putAttribute("mapping.property", property);
+                    
+                    if (x.getParent() instanceof SQLSelectItem) {
+                        SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
+                        if (selectItem.getAlias() == null) {
+                            selectItem.setAlias('"' + property.getName() + '"');
+                        }
+                    }
+                    
+                    return true;
+                }
+            }
         }
         
         return false;
