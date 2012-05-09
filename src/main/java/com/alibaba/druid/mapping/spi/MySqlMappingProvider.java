@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -89,5 +90,11 @@ public class MySqlMappingProvider implements MappingProvider {
     @Override
     public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
         return new MySqlExportParameterVisitor(parameters);
+    }
+    
+    @Override
+    public List<SQLStatement> explain(MappingEngine engine, String sql) {
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        return parser.parseStatementList();
     }
 }

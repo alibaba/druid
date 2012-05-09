@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -20,6 +21,8 @@ public interface MappingProvider {
     ExportParameterVisitor createExportParameterVisitor(List<Object> parameters);
 
     SQLASTOutputVisitor createOutputVisitor(MappingEngine engine, Appendable out);
+    
+    List<SQLStatement> explain(MappingEngine engine, String sql);
 
     SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql);
 

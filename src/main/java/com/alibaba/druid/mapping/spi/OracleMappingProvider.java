@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -69,5 +70,11 @@ public class OracleMappingProvider implements MappingProvider {
     @Override
     public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
         return new OracleExportParameterVisitor(parameters);
+    }
+    
+    @Override
+    public List<SQLStatement> explain(MappingEngine engine, String sql) {
+        OracleStatementParser parser = new OracleStatementParser(sql);
+        return parser.parseStatementList();
     }
 }
