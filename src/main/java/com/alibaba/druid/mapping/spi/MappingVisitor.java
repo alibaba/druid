@@ -18,8 +18,6 @@ public interface MappingVisitor extends SQLASTVisitor {
     
     MappingContext getContext();
 
-    Entity getFirstEntity();
-
     Entity getEntity(String name);
 
     Map<String, Entity> getEntities();

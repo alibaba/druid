@@ -26,6 +26,9 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
 public class MappingVisitorUtils {
 
+    private static final String MAPPING_PROPERTY = "mapping.property";
+    private static final String MAPPING_ENTITY   = "mapping.entity";
+
     public static boolean visit(MappingVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
@@ -33,16 +36,27 @@ public class MappingVisitorUtils {
             SQLIdentifierExpr tableExpr = (SQLIdentifierExpr) expr;
             String entityName = tableExpr.getName();
 
-            Entity entity = visitor.getEntity(entityName);
+            Entity entity = (Entity) x.getAttribute(MAPPING_ENTITY);
+
+            if (entity == null) {
+                entity = visitor.getEntity(entityName);
+            }
 
             if (entity == null) {
                 throw new DruidMappingException("entity not foudn : " + entityName);
             }
 
-            x.putAttribute("mapping.entity", entity);
+            if (x.getParent() instanceof SQLSelectQueryBlock) {
+                SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
+                if (queryBlock.getAttribute(MAPPING_ENTITY) == null) {
+                    queryBlock.putAttribute(MAPPING_ENTITY, entity);
+                }
+            }
+
+            x.putAttribute(MAPPING_ENTITY, entity);
             String tableName = visitor.resolveTableName(entity);
             tableExpr.setName(tableName);
-            
+
             visitor.getTableSources().put(entityName, x);
         }
 
@@ -57,19 +71,41 @@ public class MappingVisitorUtils {
         if (x.getAlias() != null) {
             visitor.getTableSources().put(x.getAlias(), x);
         }
-        
+
         return true;
     }
 
-    public static void fillSelectList(MappingVisitor visitor, SQLSelectQueryBlock x) {
-        Entity entity = visitor.getFirstEntity();
+    public static boolean fillSelectList(MappingVisitor visitor, SQLSelectQueryBlock x) {
+        Entity entity = (Entity) x.getAttribute(MAPPING_ENTITY);
+        
+        if (entity == null && x.getFrom() != null) {
+            entity = (Entity) x.getFrom().getAttribute(MAPPING_ENTITY);
+        }
 
-        for (Property item : entity.getProperties().values()) {
-            SQLExpr expr = new SQLIdentifierExpr(item.getName());
-            SQLSelectItem selelctItem = new SQLSelectItem(expr);
+        if (entity == null) {
+            return false;
+        }
+
+        x.getSelectList().clear();
+        
+        for (Property property : entity.getProperties().values()) {
+            String columnName = visitor.resovleColumnName(entity, property);
+            String alias = null;
+            if (visitor.getContext().isGenerateAlias()) {
+                alias = '"' + property.getName() + '"';
+            }
             
+            SQLExpr expr = new SQLIdentifierExpr(columnName);
+
+            expr.putAttribute(MAPPING_ENTITY, entity);
+            expr.putAttribute(MAPPING_PROPERTY, property);
+            
+            SQLSelectItem selelctItem = new SQLSelectItem(expr, alias);
+
             x.getSelectList().add(selelctItem);
         }
+        
+        return true;
     }
 
     public static boolean visit(MappingVisitor visitor, SQLPropertyExpr x) {
@@ -93,8 +129,8 @@ public class MappingVisitorUtils {
 
         String dbColumName = visitor.resovleColumnName(entity, property);
         x.setName(dbColumName);
-        x.putAttribute("mapping.property", property);
-        x.putAttribute("mapping.entity", entity);
+        x.putAttribute(MAPPING_PROPERTY, property);
+        x.putAttribute(MAPPING_ENTITY, entity);
 
         if (x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
@@ -106,6 +142,13 @@ public class MappingVisitorUtils {
         return false;
     }
 
+    public static boolean visit(MappingVisitor visitor, SQLAllColumnExpr x) {
+        if (visitor.getContext().isExplainAllColumnToList()) {
+            visitor.getUnresolveList().add(x);
+        }
+        
+        return true;
+    }
     public static boolean visit(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
 
@@ -113,7 +156,7 @@ public class MappingVisitorUtils {
         Entity propertyEntity = null;
 
         for (SQLTableSource tableSource : visitor.getTableSources().values()) {
-            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            Entity entity = (Entity) tableSource.getAttribute(MAPPING_ENTITY);
             if (entity != null) {
                 property = entity.getProperty(propertyName);
                 if (property != null) {
@@ -131,8 +174,8 @@ public class MappingVisitorUtils {
         String dbColumName = visitor.resovleColumnName(propertyEntity, property);
         x.setName(dbColumName);
 
-        x.putAttribute("mapping.property", property);
-        x.putAttribute("mapping.entity", propertyEntity);
+        x.putAttribute(MAPPING_PROPERTY, property);
+        x.putAttribute(MAPPING_ENTITY, propertyEntity);
 
         if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
             SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
@@ -150,13 +193,16 @@ public class MappingVisitorUtils {
     }
 
     public static boolean visit(MappingVisitor visitor, SQLBinaryOpExpr x) {
+        x.getLeft().setParent(x);
+        x.getRight().setParent(x);
+        
         if (x.getOperator() == SQLBinaryOperator.Equality) {
             if (x.getLeft() instanceof SQLIdentifierExpr && isSimpleValue(visitor, x.getRight())) {
                 visit(visitor, (SQLIdentifierExpr) x.getLeft());
                 x.getRight().accept(visitor);
 
-                Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
-                Property property = (Property) x.getLeft().getAttribute("mapping.property");
+                Entity entity = (Entity) x.getLeft().getAttribute(MAPPING_ENTITY);
+                Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
                 Object value = x.getRight().getAttribute("mapping.value");
 
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
@@ -168,8 +214,8 @@ public class MappingVisitorUtils {
                 visit(visitor, (SQLPropertyExpr) x.getLeft());
                 x.getRight().accept(visitor);
 
-                Entity entity = (Entity) x.getLeft().getAttribute("mapping.entity");
-                Property property = (Property) x.getLeft().getAttribute("mapping.property");
+                Entity entity = (Entity) x.getLeft().getAttribute(MAPPING_ENTITY);
+                Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
                 Object value = x.getRight().getAttribute("mapping.value");
 
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
@@ -222,36 +268,63 @@ public class MappingVisitorUtils {
                 if (resolve(visitor, (SQLPropertyExpr) expr)) {
                     iter.remove();
                 }
+            } else if (expr instanceof SQLAllColumnExpr) {
+                if (resolve(visitor, (SQLAllColumnExpr) expr)) {
+                    iter.remove();
+                }
             }
         }
     }
 
+    public static boolean resolve(MappingVisitor visitor, SQLAllColumnExpr x) {
+        if (! (x.getParent() instanceof SQLSelectItem)) {
+            return true;
+        }
+        SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
+        
+        if (! (selectItem.getParent() instanceof SQLSelectQueryBlock)) {
+            return true;
+        }
+        
+        SQLSelectQueryBlock select = (SQLSelectQueryBlock) selectItem.getParent();
+        
+        if (select.getSelectList().size() == 1) {
+            if (select.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
+                boolean result = fillSelectList(visitor, select);
+                if (!result && visitor.getContext().isExplainAllColumnToList()) {
+                    visitor.getUnresolveList().add(x);
+                }
+            }
+        }
+        
+        return false;
+    }
     public static boolean resolve(MappingVisitor visitor, SQLIdentifierExpr x) {
         String propertyName = x.getName();
 
         for (SQLTableSource tableSource : visitor.getTableSources().values()) {
-            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            Entity entity = (Entity) tableSource.getAttribute(MAPPING_ENTITY);
             if (entity != null) {
                 Property property = entity.getProperty(propertyName);
                 if (property != null) {
                     String columnName = visitor.resovleColumnName(entity, property);
                     x.setName(columnName);
 
-                    x.putAttribute("mapping.entity", entity);
-                    x.putAttribute("mapping.property", property);
-                    
+                    x.putAttribute(MAPPING_ENTITY, entity);
+                    x.putAttribute(MAPPING_PROPERTY, property);
+
                     if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
                         SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
                         if (selectItem.getAlias() == null) {
                             selectItem.setAlias('"' + property.getName() + '"');
                         }
                     }
-                    
+
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -259,15 +332,15 @@ public class MappingVisitorUtils {
         if (x.getOwner() instanceof SQLIdentifierExpr) {
             String ownerName = ((SQLIdentifierExpr) x.getOwner()).getName();
             SQLTableSource tableSource = visitor.getTableSources().get(ownerName);
-            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            Entity entity = (Entity) tableSource.getAttribute(MAPPING_ENTITY);
 
             if (entity != null) {
                 Property property = entity.getProperty(x.getName());
                 if (property != null) {
                     String columnName = visitor.resovleColumnName(entity, property);
                     x.setName(columnName);
-                    x.putAttribute("mapping.entity", entity);
-                    x.putAttribute("mapping.property", property);
+                    x.putAttribute(MAPPING_ENTITY, entity);
+                    x.putAttribute(MAPPING_PROPERTY, property);
 
                     if (visitor.getContext().isGenerateAlias() && x.getParent() instanceof SQLSelectItem) {
                         SQLSelectItem selectItem = (SQLSelectItem) x.getParent();
@@ -296,27 +369,33 @@ public class MappingVisitorUtils {
 
     public static boolean visit(MappingVisitor visitor, SQLSelectQueryBlock x) {
         if (x.getSelectList().size() == 0) {
-            x.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
-        }
-
-        if (visitor.getContext().isExplainAllColumnToList()) {
-            if (x.getSelectList().size() == 1) {
-                if (x.getSelectList().get(0).getExpr() instanceof SQLAllColumnExpr) {
-                    x.getSelectList().clear();
-                    fillSelectList(visitor, x);
-                }
-            }
+            SQLAllColumnExpr expr = new SQLAllColumnExpr();
+            SQLSelectItem selectItem = new SQLSelectItem(expr);
+            x.getSelectList().add(selectItem);
+            
+            expr.setParent(selectItem);
         }
 
         if (x.getFrom() == null) {
-            Entity firstEntity = visitor.getFirstEntity();
+            Entity firstEntity = visitor.getEngine().getFirstEntity();
             SQLExprTableSource from = new SQLExprTableSource(new SQLIdentifierExpr(firstEntity.getName()));
-            from.putAttribute("mapping.entity", firstEntity);
+            from.putAttribute(MAPPING_ENTITY, firstEntity);
             x.setFrom(from);
+            x.putAttribute(MAPPING_ENTITY, firstEntity);
         }
 
         for (SQLSelectItem item : x.getSelectList()) {
             item.setParent(x);
+            item.getExpr().setParent(item);
+        }
+
+        x.getFrom().setParent(x);
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+        }
+
+        if (x.getInto() != null) {
+            x.getInto().setParent(x);
         }
 
         return true;
@@ -326,7 +405,7 @@ public class MappingVisitorUtils {
         SQLTableSource tableSource = visitor.getTableSources().get(name);
 
         if (tableSource != null) {
-            Entity entity = (Entity) tableSource.getAttribute("mapping.entity");
+            Entity entity = (Entity) tableSource.getAttribute(MAPPING_ENTITY);
             if (entity != null) {
                 return entity;
             }
