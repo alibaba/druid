@@ -77,10 +77,6 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
         return engine.resovleColumnName(entity, property, context.getParameters());
     }
 
-    public Entity getFirstEntity() {
-        return engine.getFirstEntity();
-    }
-
     public Entity getEntity(String name) {
         return MappingVisitorUtils.getEntity(this, name);
     }

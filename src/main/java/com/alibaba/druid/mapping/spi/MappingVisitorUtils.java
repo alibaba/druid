@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 
 public class MappingVisitorUtils {
 
+    private static final String MAPPING_VAR_INDEX = "mapping.varIndex";
+    private static final String MAPPING_VALUE = "mapping.value";
     private static final String MAPPING_PROPERTY = "mapping.property";
     private static final String MAPPING_ENTITY   = "mapping.entity";
 
@@ -43,7 +45,7 @@ public class MappingVisitorUtils {
             }
 
             if (entity == null) {
-                throw new DruidMappingException("entity not foudn : " + entityName);
+                throw new DruidMappingException("entity not found : " + entityName);
             }
 
             if (x.getParent() instanceof SQLSelectQueryBlock) {
@@ -203,7 +205,7 @@ public class MappingVisitorUtils {
 
                 Entity entity = (Entity) x.getLeft().getAttribute(MAPPING_ENTITY);
                 Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
-                Object value = x.getRight().getAttribute("mapping.value");
+                Object value = x.getRight().getAttribute(MAPPING_VALUE);
 
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
 
@@ -216,7 +218,7 @@ public class MappingVisitorUtils {
 
                 Entity entity = (Entity) x.getLeft().getAttribute(MAPPING_ENTITY);
                 Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
-                Object value = x.getRight().getAttribute("mapping.value");
+                Object value = x.getRight().getAttribute(MAPPING_VALUE);
 
                 visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
 
@@ -229,26 +231,26 @@ public class MappingVisitorUtils {
 
     private static boolean isSimpleValue(MappingVisitor visitor, SQLExpr expr) {
         if (expr instanceof SQLNumericLiteralExpr) {
-            expr.putAttribute("mapping.value", ((SQLNumericLiteralExpr) expr).getNumber());
+            expr.putAttribute(MAPPING_VALUE, ((SQLNumericLiteralExpr) expr).getNumber());
             return true;
         }
 
         if (expr instanceof SQLCharExpr) {
-            expr.putAttribute("mapping.value", ((SQLCharExpr) expr).getText());
+            expr.putAttribute(MAPPING_VALUE, ((SQLCharExpr) expr).getText());
             return true;
         }
 
         if (expr instanceof SQLVariantRefExpr) {
             Map<String, Object> attributes = expr.getAttributes();
-            Integer varIndex = (Integer) attributes.get("mapping.varIndex");
+            Integer varIndex = (Integer) attributes.get(MAPPING_VAR_INDEX);
             if (varIndex == null) {
                 varIndex = visitor.getAndIncrementVariantIndex();
-                expr.putAttribute("mapping.varIndex", varIndex);
+                expr.putAttribute(MAPPING_VAR_INDEX, varIndex);
             }
 
             if (visitor.getParameters().size() > varIndex) {
                 Object parameter = visitor.getParameters().get(varIndex);
-                expr.putAttribute("mapping.value", parameter);
+                expr.putAttribute(MAPPING_VALUE, parameter);
             }
 
             return true;
@@ -359,10 +361,10 @@ public class MappingVisitorUtils {
 
     public static boolean visit(MappingVisitor visitor, SQLVariantRefExpr x) {
         Map<String, Object> attributes = x.getAttributes();
-        Integer varIndex = (Integer) attributes.get("mapping.varIndex");
+        Integer varIndex = (Integer) attributes.get(MAPPING_VAR_INDEX);
         if (varIndex == null) {
             varIndex = visitor.getAndIncrementVariantIndex();
-            x.putAttribute("mapping.varIndex", varIndex);
+            x.putAttribute(MAPPING_VAR_INDEX, varIndex);
         }
         return false;
     }
@@ -377,7 +379,7 @@ public class MappingVisitorUtils {
         }
 
         if (x.getFrom() == null) {
-            Entity firstEntity = visitor.getFirstEntity();
+            Entity firstEntity = visitor.getEngine().getFirstEntity();
             SQLExprTableSource from = new SQLExprTableSource(new SQLIdentifierExpr(firstEntity.getName()));
             from.putAttribute(MAPPING_ENTITY, firstEntity);
             x.setFrom(from);

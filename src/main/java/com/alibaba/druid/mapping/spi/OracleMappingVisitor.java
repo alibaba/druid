@@ -79,10 +79,6 @@ public class OracleMappingVisitor extends OracleASTVisitorAdapter implements Map
         return engine.resovleColumnName(entity, property, context.getParameters());
     }
 
-    public Entity getFirstEntity() {
-        return engine.getFirstEntity();
-    }
-
     public Entity getEntity(String name) {
         return MappingVisitorUtils.getEntity(this, name);
     }

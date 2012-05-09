@@ -77,11 +77,6 @@ public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implem
         return engine.resovleColumnName(entity, property, context.getParameters());
     }
 
-    @Override
-    public Entity getFirstEntity() {
-        return engine.getFirstEntity();
-    }
-
     public Entity getEntity(String name) {
         return MappingVisitorUtils.getEntity(this, name);
     }
