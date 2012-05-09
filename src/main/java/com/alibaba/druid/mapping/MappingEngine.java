@@ -141,7 +141,7 @@ public class MappingEngine {
     public SQLDeleteStatement explainToDeleteSQLObject(String sql) {
         return provider.explainToDeleteSQLObject(this, sql);
     }
-
+    
     public String explainToDeleteSQL(String sql) {
         return explainToDeleteSQL(sql, new MappingContext());
     }
@@ -168,7 +168,7 @@ public class MappingEngine {
     public SQLUpdateStatement explainToUpdateSQLObject(String sql) {
         return provider.explainToUpdateSQLObject(this, sql);
     }
-
+    
     public String explainToUpdateSQL(String sql) {
         return explainToUpdateSQL(sql, new MappingContext());
     }
@@ -187,7 +187,7 @@ public class MappingEngine {
     public SQLInsertStatement explainToInsertSQLObject(String sql) {
         return provider.explainToInsertSQLObject(this, sql);
     }
-
+    
     public String explainToInsertSQL(String sql) {
         return explainToInsertSQL(sql, new MappingContext());
     }
