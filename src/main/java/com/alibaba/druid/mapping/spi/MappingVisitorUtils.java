@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -23,6 +24,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 
 public class MappingVisitorUtils {
 
@@ -375,6 +378,26 @@ public class MappingVisitorUtils {
             x.putAttribute(MAPPING_VAR_INDEX, varIndex);
         }
         return false;
+    }
+    
+    public static boolean visit(MappingVisitor visitor, MySqlSelectQueryBlock x) {
+        Integer maxLimit = visitor.getEngine().getMaxLimit();
+
+        if (maxLimit != null) {
+            if (x.getLimit() == null) {
+                Limit limit = new Limit();
+                limit.setRowCount(new SQLIntegerExpr(maxLimit));
+                x.setLimit(limit);
+            } else {
+                SQLNumericLiteralExpr rowCountExpr = (SQLNumericLiteralExpr) x.getLimit().getRowCount();
+                int rowCount = rowCountExpr.getNumber().intValue();
+                if (rowCount > maxLimit.intValue()) {
+                    rowCountExpr.setNumber(maxLimit);
+                }
+            }
+        }
+        
+        return visit(visitor, (SQLSelectQueryBlock) x);
     }
 
     public static boolean visit(MappingVisitor visitor, SQLSelectQueryBlock x) {

@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerSelectParser;
@@ -70,7 +70,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
     }
 
     public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
-        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
         MappingVisitorUtils.setDataSource(engine, stmt);
@@ -79,7 +79,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
     }
 
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
-        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
 
         MappingVisitorUtils.setDataSource(engine, stmt);
@@ -90,5 +90,11 @@ public class MSSQLServerMappingProvider implements MappingProvider {
     @Override
     public ExportParameterVisitor createExportParameterVisitor(List<Object> parameters) {
         return new MSSQLServerExportParameterVisitor(parameters);
+    }
+
+    @Override
+    public List<SQLStatement> explain(MappingEngine engine, String sql) {
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        return parser.parseStatementList();
     }
 }

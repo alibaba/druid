@@ -14,6 +14,7 @@ import com.alibaba.druid.mapping.spi.MappingProvider;
 import com.alibaba.druid.mapping.spi.MappingVisitor;
 import com.alibaba.druid.mapping.spi.MySqlMappingProvider;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -88,6 +89,27 @@ public class MappingEngine {
     public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
         return provider.createOutputVisitor(this, out);
     }
+    
+    public String explain(String sql) {
+        return explain(sql);
+    }
+
+    public String explain(String sql, MappingContext context) {
+        List<SQLStatement> stmtList = provider.explain(this, sql);
+
+        if (stmtList.size() > 0) {
+            throw new IllegalArgumentException(sql);
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+
+        MappingVisitor visitor = this.createMappingVisitor(context);
+        stmt.accept(visitor);
+        visitor.afterResolve();
+        afterResole(visitor);
+
+        return toSQL(stmt);
+    }
 
     public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
         return provider.explainToSelectSQLObject(this, sql);
@@ -121,9 +143,13 @@ public class MappingEngine {
     }
 
     public String explainToDeleteSQL(String sql) {
+        return explainToDeleteSQL(sql, new MappingContext());
+    }
+
+    public String explainToDeleteSQL(String sql, MappingContext context) {
         SQLDeleteStatement stmt = explainToDeleteSQLObject(sql);
 
-        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
         visitor.afterResolve();
         afterResole(visitor);
@@ -144,9 +170,13 @@ public class MappingEngine {
     }
 
     public String explainToUpdateSQL(String sql) {
+        return explainToUpdateSQL(sql, new MappingContext());
+    }
+
+    public String explainToUpdateSQL(String sql, MappingContext context) {
         SQLUpdateStatement stmt = explainToUpdateSQLObject(sql);
 
-        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
         visitor.afterResolve();
         afterResole(visitor);
@@ -159,9 +189,13 @@ public class MappingEngine {
     }
 
     public String explainToInsertSQL(String sql) {
+        return explainToInsertSQL(sql, new MappingContext());
+    }
+
+    public String explainToInsertSQL(String sql, MappingContext context) {
         SQLInsertStatement stmt = explainToInsertSQLObject(sql);
 
-        MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
+        MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
         visitor.afterResolve();
         afterResole(visitor);
