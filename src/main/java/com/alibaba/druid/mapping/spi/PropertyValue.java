@@ -1,9 +1,10 @@
 package com.alibaba.druid.mapping.spi;
 
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingObject;
 import com.alibaba.druid.mapping.Property;
 
-public class PropertyValue {
+public class PropertyValue extends MappingObject {
 
     private Property property;
     private Entity   entity;
