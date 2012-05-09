@@ -208,7 +208,10 @@ public class MappingVisitorUtils {
                 Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
                 Object value = x.getRight().getAttribute(MAPPING_VALUE);
 
-                visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
+                PropertyValue propertyValue = new PropertyValue(entity, property, value);
+                propertyValue.putAttribute("mapping.expr", x.getRight());
+                
+                visitor.getPropertyValues().add(propertyValue);
 
                 return false;
             }
@@ -221,7 +224,10 @@ public class MappingVisitorUtils {
                 Property property = (Property) x.getLeft().getAttribute(MAPPING_PROPERTY);
                 Object value = x.getRight().getAttribute(MAPPING_VALUE);
 
-                visitor.getPropertyValues().add(new PropertyValue(entity, property, value));
+                PropertyValue propertyValue = new PropertyValue(entity, property, value);
+                propertyValue.putAttribute("mapping.expr", x.getRight());
+                
+                visitor.getPropertyValues().add(propertyValue);
 
                 return false;
             }

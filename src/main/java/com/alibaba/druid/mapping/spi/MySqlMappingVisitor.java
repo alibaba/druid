@@ -69,12 +69,12 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
 
     @Override
     public String resolveTableName(Entity entity) {
-        return engine.resolveTableName(entity, context.getParameters());
+        return engine.resolveTableName(entity, context);
     }
 
     @Override
     public String resovleColumnName(Entity entity, Property property) {
-        return engine.resovleColumnName(entity, property, context.getParameters());
+        return engine.resovleColumnName(entity, property, context);
     }
 
     public Entity getEntity(String name) {

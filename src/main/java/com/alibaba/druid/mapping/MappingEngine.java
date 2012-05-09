@@ -32,11 +32,11 @@ public class MappingEngine {
     public MappingEngine(){
         this(new MySqlMappingProvider());
     }
-    
+
     public MappingEngine(MappingProvider provider){
         this.provider = provider;
     }
-    
+
     public Entity getFirstEntity() {
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
@@ -76,11 +76,11 @@ public class MappingEngine {
     public MappingVisitor createMappingVisitor() {
         return provider.createMappingVisitor(this);
     }
-    
+
     public MappingVisitor createMappingVisitor(List<Object> parameters) {
         return createMappingVisitor(new MappingContext(parameters));
     }
-    
+
     public MappingVisitor createMappingVisitor(MappingContext context) {
         return provider.createMappingVisitor(this, context);
     }
@@ -92,7 +92,7 @@ public class MappingEngine {
     public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
         return provider.explainToSelectSQLObject(this, sql);
     }
-    
+
     public String explainToSelectSQL(String sql) {
         return explainToSelectSQL(sql, Collections.emptyList());
     }
@@ -100,7 +100,7 @@ public class MappingEngine {
     public String explainToSelectSQL(String sql, List<Object> parameters) {
         return explainToSelectSQL(sql, new MappingContext(parameters));
     }
-    
+
     public String explainToSelectSQL(String sql, MappingContext context) {
         SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
 
@@ -111,9 +111,9 @@ public class MappingEngine {
 
         return toSQL(query);
     }
-    
+
     public void afterResole(MappingVisitor visitor) {
-        
+
     }
 
     public SQLDeleteStatement explainToDeleteSQLObject(String sql) {
@@ -122,7 +122,7 @@ public class MappingEngine {
 
     public String explainToDeleteSQL(String sql) {
         SQLDeleteStatement stmt = explainToDeleteSQLObject(sql);
-        
+
         MappingVisitor visitor = this.createMappingVisitor(Collections.emptyList());
         stmt.accept(visitor);
         visitor.afterResolve();
@@ -130,12 +130,12 @@ public class MappingEngine {
 
         return toSQL(stmt);
     }
-    
-    public String resolveTableName(Entity entity, List<Object> parameters) {
+
+    public String resolveTableName(Entity entity, MappingContext context) {
         return entity.getTableName();
     }
-    
-    public String resovleColumnName(Entity entity, Property property, List<Object> parameters) {
+
+    public String resovleColumnName(Entity entity, Property property, MappingContext context) {
         return property.getDbColumnName();
     }
 
