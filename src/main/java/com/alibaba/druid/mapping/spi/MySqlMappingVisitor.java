@@ -10,6 +10,7 @@ import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
@@ -116,6 +117,11 @@ public class MySqlMappingVisitor extends MySqlASTVisitorAdapter implements Mappi
 
     @Override
     public boolean visit(SQLVariantRefExpr x) {
+        return MappingVisitorUtils.visit(this, x);
+    }
+    
+    @Override
+    public boolean visit(SQLAllColumnExpr x) {
         return MappingVisitorUtils.visit(this, x);
     }
 
