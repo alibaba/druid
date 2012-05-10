@@ -54,7 +54,10 @@ public class PreparedStatementPool {
         PreparedStatementHolder holder = map.get(key);
 
         if (holder != null) {
-            holder.incrementHitCount();
+            if (holder.isInUse() && (!dataSource.isSharePreparedStatements())) {
+                return null;
+            }
+            
             dataSource.incrementCachedPreparedStatementHitCount();
             if (holder.isEnterOracleImplicitCache()) {
                 OracleUtils.exitImplicitCacheToActive(holder.getStatement());

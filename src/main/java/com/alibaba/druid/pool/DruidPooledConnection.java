@@ -118,6 +118,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             return;
         }
 
+        stmt.getPreparedStatementHolder().decrementInUseCount();
         if (holder.isPoolPreparedStatements()) {
             holder.getStatementPool().put(stmt.getPreparedStatementHolder());
 
@@ -202,13 +203,18 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
         holder.addTrace(rtnVal);
 
         return rtnVal;
+    }
+    
+    private void initStatement(PreparedStatementHolder stmtHolder) throws SQLException {
+        stmtHolder.incrementInUseCount();
+        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
     }
 
     @Override
@@ -236,7 +242,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
@@ -271,7 +277,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
@@ -302,7 +308,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
@@ -333,7 +339,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
@@ -364,7 +370,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledPreparedStatement rtnVal = new DruidPooledPreparedStatement(this, stmtHolder);
 
@@ -397,7 +403,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
 
@@ -432,7 +438,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
 
@@ -465,7 +471,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
         }
 
-        holder.getDataSource().initStatement(this, stmtHolder.getStatement());
+        initStatement(stmtHolder);
 
         DruidPooledCallableStatement rtnVal = new DruidPooledCallableStatement(this, stmtHolder);
         holder.addTrace(rtnVal);

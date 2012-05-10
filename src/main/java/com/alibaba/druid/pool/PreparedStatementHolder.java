@@ -35,6 +35,8 @@ public final class PreparedStatementHolder {
 
     private boolean                    enterOracleImplicitCache = false;
 
+    private int                        inUseCount               = 0;
+
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
         this.statement = stmt;
@@ -90,4 +92,19 @@ public final class PreparedStatementHolder {
         return hitCount;
     }
 
+    public boolean isInUse() {
+        return inUseCount <= 0;
+    }
+
+    public void incrementInUseCount() {
+        inUseCount++;
+    }
+    
+    public void decrementInUseCount() {
+        inUseCount--;
+    }
+    
+    public int getInUseCount() {
+        return inUseCount;
+    }
 }
