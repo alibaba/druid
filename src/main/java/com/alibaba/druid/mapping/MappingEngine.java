@@ -38,7 +38,13 @@ public class MappingEngine {
         this.provider = provider;
     }
 
-    public Entity getFirstEntity() {
+    public Entity getFirstEntity(MappingContext context) {
+        Entity entity = context.getDefaultEntity();
+        
+        if (entity != null) {
+            return entity;
+        }
+        
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
         }
@@ -109,6 +115,10 @@ public class MappingEngine {
         afterResole(visitor);
 
         return toSQL(stmt);
+    }
+    
+    public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
+        return explainToSelectSQLObject(sql, new MappingContext());
     }
 
     public SQLSelectQueryBlock explainToSelectSQLObject(String sql, MappingContext context) {

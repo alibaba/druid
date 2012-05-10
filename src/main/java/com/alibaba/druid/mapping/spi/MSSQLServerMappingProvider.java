@@ -64,7 +64,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLDeleteStatement stmt = parser.parseDeleteStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
@@ -73,7 +73,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
@@ -82,7 +82,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }

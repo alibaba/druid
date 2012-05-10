@@ -45,7 +45,7 @@ public class OracleMappingProvider implements MappingProvider {
         OracleStatementParser parser = new OracleStatementParser(sql);
         OracleDeleteStatement stmt = parser.parseDeleteStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
@@ -54,7 +54,7 @@ public class OracleMappingProvider implements MappingProvider {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
@@ -62,7 +62,7 @@ public class OracleMappingProvider implements MappingProvider {
     public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql, MappingContext context) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
         return stmt;
 
     }
