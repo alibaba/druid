@@ -34,14 +34,14 @@ public class OracleMappingProvider implements MappingProvider {
         return new OracleOutputVisitor(out, false);
     }
 
-    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
+    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql, MappingContext context) {
         OracleSelectParser selectParser = new OracleSelectParser(sql);
         OracleSelectQueryBlock query = (OracleSelectQueryBlock) selectParser.query();
 
         return query;
     }
 
-    public OracleDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
+    public OracleDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql, MappingContext context) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         OracleDeleteStatement stmt = parser.parseDeleteStatement();
 
@@ -50,7 +50,7 @@ public class OracleMappingProvider implements MappingProvider {
         return stmt;
     }
 
-    public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
+    public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql, MappingContext context) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
@@ -59,7 +59,7 @@ public class OracleMappingProvider implements MappingProvider {
         return stmt;
     }
 
-    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
+    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql, MappingContext context) {
         OracleStatementParser parser = new OracleStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
         MappingVisitorUtils.setTableSource(engine, stmt);

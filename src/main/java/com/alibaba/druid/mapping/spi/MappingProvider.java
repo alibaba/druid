@@ -24,11 +24,11 @@ public interface MappingProvider {
     
     List<SQLStatement> explain(MappingEngine engine, String sql);
 
-    SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql);
+    SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql, MappingContext context);
 
-    SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql);
+    SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql, MappingContext context);
 
-    SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql);
+    SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql, MappingContext context);
     
-    SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql);
+    SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql, MappingContext context);
 }
