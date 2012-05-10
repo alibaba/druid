@@ -38,7 +38,13 @@ public class MappingEngine {
         this.provider = provider;
     }
 
-    public Entity getFirstEntity() {
+    public Entity getFirstEntity(MappingContext context) {
+        Entity entity = context.getDefaultEntity();
+        
+        if (entity != null) {
+            return entity;
+        }
+        
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
         }
@@ -111,8 +117,8 @@ public class MappingEngine {
         return toSQL(stmt);
     }
 
-    public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
-        return provider.explainToSelectSQLObject(this, sql);
+    public SQLSelectQueryBlock explainToSelectSQLObject(String sql, MappingContext context) {
+        return provider.explainToSelectSQLObject(this, sql, context);
     }
 
     public String explainToSelectSQL(String sql) {
@@ -124,7 +130,7 @@ public class MappingEngine {
     }
 
     public String explainToSelectSQL(String sql, MappingContext context) {
-        SQLSelectQueryBlock query = explainToSelectSQLObject(sql);
+        SQLSelectQueryBlock query = explainToSelectSQLObject(sql, context);
 
         MappingVisitor visitor = this.createMappingVisitor(context);
         query.accept(visitor);
@@ -137,9 +143,9 @@ public class MappingEngine {
     public void afterResole(MappingVisitor visitor) {
 
     }
-
-    public SQLDeleteStatement explainToDeleteSQLObject(String sql) {
-        return provider.explainToDeleteSQLObject(this, sql);
+    
+    public SQLDeleteStatement explainToDeleteSQLObject(String sql, MappingContext context) {
+        return provider.explainToDeleteSQLObject(this, sql, context);
     }
     
     public String explainToDeleteSQL(String sql) {
@@ -147,7 +153,7 @@ public class MappingEngine {
     }
 
     public String explainToDeleteSQL(String sql, MappingContext context) {
-        SQLDeleteStatement stmt = explainToDeleteSQLObject(sql);
+        SQLDeleteStatement stmt = explainToDeleteSQLObject(sql, context);
 
         MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
@@ -165,8 +171,8 @@ public class MappingEngine {
         return property.getDbColumnName();
     }
 
-    public SQLUpdateStatement explainToUpdateSQLObject(String sql) {
-        return provider.explainToUpdateSQLObject(this, sql);
+    public SQLUpdateStatement explainToUpdateSQLObject(String sql, MappingContext context) {
+        return provider.explainToUpdateSQLObject(this, sql, context);
     }
     
     public String explainToUpdateSQL(String sql) {
@@ -174,7 +180,7 @@ public class MappingEngine {
     }
 
     public String explainToUpdateSQL(String sql, MappingContext context) {
-        SQLUpdateStatement stmt = explainToUpdateSQLObject(sql);
+        SQLUpdateStatement stmt = explainToUpdateSQLObject(sql, context);
 
         MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
@@ -184,8 +190,8 @@ public class MappingEngine {
         return toSQL(stmt);
     }
 
-    public SQLInsertStatement explainToInsertSQLObject(String sql) {
-        return provider.explainToInsertSQLObject(this, sql);
+    public SQLInsertStatement explainToInsertSQLObject(String sql, MappingContext context) {
+        return provider.explainToInsertSQLObject(this, sql, context);
     }
     
     public String explainToInsertSQL(String sql) {
@@ -193,7 +199,7 @@ public class MappingEngine {
     }
 
     public String explainToInsertSQL(String sql, MappingContext context) {
-        SQLInsertStatement stmt = explainToInsertSQLObject(sql);
+        SQLInsertStatement stmt = explainToInsertSQLObject(sql, context);
 
         MappingVisitor visitor = this.createMappingVisitor(context);
         stmt.accept(visitor);
@@ -229,35 +235,51 @@ public class MappingEngine {
 
         return out.toString();
     }
-
+    
     public List<Map<String, Object>> select(Connection conn, String sql, List<Object> parameters) throws SQLException {
-        SQLSelectQueryBlock sqlObject = this.explainToSelectSQLObject(sql);
-        exportParameters(sqlObject, parameters);
-        String rawSql = this.toSQL(sqlObject);
-        return JdbcUtils.executeQuery(conn, rawSql, parameters);
+        return select(conn, sql, new MappingContext(parameters));
     }
 
+    public List<Map<String, Object>> select(Connection conn, String sql, MappingContext context) throws SQLException {
+        SQLSelectQueryBlock sqlObject = this.explainToSelectSQLObject(sql, context);
+        exportParameters(sqlObject, context.getParameters());
+        String rawSql = this.toSQL(sqlObject);
+        return JdbcUtils.executeQuery(conn, rawSql, context.getParameters());
+    }
+    
     public int delete(Connection conn, String sql, List<Object> parameters) throws SQLException {
-        SQLDeleteStatement sqlObject = this.explainToDeleteSQLObject(sql);
-        exportParameters(sqlObject, parameters);
-        String rawSql = this.toSQL(sqlObject);
-        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
-        return updateCount;
+        return delete(conn, sql, new MappingContext(parameters));
     }
 
+    public int delete(Connection conn, String sql, MappingContext context) throws SQLException {
+        SQLDeleteStatement sqlObject = this.explainToDeleteSQLObject(sql, context);
+        exportParameters(sqlObject, context.getParameters());
+        String rawSql = this.toSQL(sqlObject);
+        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, context.getParameters());
+        return updateCount;
+    }
+    
     public int update(Connection conn, String sql, List<Object> parameters) throws SQLException {
-        SQLUpdateStatement sqlObject = this.explainToUpdateSQLObject(sql);
-        exportParameters(sqlObject, parameters);
-        String rawSql = this.toSQL(sqlObject);
-        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, parameters);
-        return updateCount;
+        return update(conn, sql, new MappingContext(parameters));
     }
 
-    public void insert(Connection conn, String sql, List<Object> parameters) throws SQLException {
-        SQLInsertStatement sqlObject = this.explainToInsertSQLObject(sql);
-        exportParameters(sqlObject, parameters);
+    public int update(Connection conn, String sql, MappingContext context) throws SQLException {
+        SQLUpdateStatement sqlObject = this.explainToUpdateSQLObject(sql, context);
+        exportParameters(sqlObject, context.getParameters());
         String rawSql = this.toSQL(sqlObject);
-        JdbcUtils.execute(conn, rawSql, parameters);
+        int updateCount = JdbcUtils.executeUpdate(conn, rawSql, context.getParameters());
+        return updateCount;
+    }
+    
+    public void insert(Connection conn, String sql, List<Object> parameters) throws SQLException {
+        insert(conn, sql, new MappingContext(parameters));
+    }
+
+    public void insert(Connection conn, String sql, MappingContext context) throws SQLException {
+        SQLInsertStatement sqlObject = this.explainToInsertSQLObject(sql, context);
+        exportParameters(sqlObject, context.getParameters());
+        String rawSql = this.toSQL(sqlObject);
+        JdbcUtils.execute(conn, rawSql, context.getParameters());
     }
 
     public Connection getConnection() throws SQLException {

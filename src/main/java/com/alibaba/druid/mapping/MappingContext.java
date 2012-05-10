@@ -10,6 +10,8 @@ public class MappingContext {
     private boolean      generateAlias          = false;
     private boolean      explainAllColumnToList = false;
 
+    private Entity       defaultEntity;
+
     public MappingContext(){
         this(new ArrayList<Object>());
     }
@@ -40,6 +42,14 @@ public class MappingContext {
 
     public void setExplainAllColumnToList(boolean explainAllColumnToList) {
         this.explainAllColumnToList = explainAllColumnToList;
+    }
+
+    public Entity getDefaultEntity() {
+        return defaultEntity;
+    }
+
+    public void setDefaultEntity(Entity defaultEntity) {
+        this.defaultEntity = defaultEntity;
     }
 
 }

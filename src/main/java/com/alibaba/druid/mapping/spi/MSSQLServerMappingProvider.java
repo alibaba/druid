@@ -37,7 +37,7 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         return new SQLServerOutputVisitor(out);
     }
 
-    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql) {
+    public SQLSelectQueryBlock explainToSelectSQLObject(MappingEngine engine, String sql, MappingContext context) {
         SQLServerSelectParser selectParser = new SQLServerSelectParser(sql);
         SQLServerSelectQueryBlock query = (SQLServerSelectQueryBlock) selectParser.query();
 
@@ -60,29 +60,29 @@ public class MSSQLServerMappingProvider implements MappingProvider {
         return query;
     }
 
-    public SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql) {
+    public SQLDeleteStatement explainToDeleteSQLObject(MappingEngine engine, String sql, MappingContext context) {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLDeleteStatement stmt = parser.parseDeleteStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
 
-    public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql) {
+    public SQLUpdateStatement explainToUpdateSQLObject(MappingEngine engine, String sql, MappingContext context) {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }
 
-    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql) {
+    public SQLInsertStatement explainToInsertSQLObject(MappingEngine engine, String sql, MappingContext context) {
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
 
-        MappingVisitorUtils.setTableSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt, context);
 
         return stmt;
     }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.alibaba.druid.mapping.DruidMappingException;
 import com.alibaba.druid.mapping.Entity;
+import com.alibaba.druid.mapping.MappingContext;
 import com.alibaba.druid.mapping.MappingEngine;
 import com.alibaba.druid.mapping.Property;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -410,7 +411,7 @@ public class MappingVisitorUtils {
         }
 
         if (x.getFrom() == null) {
-            Entity firstEntity = visitor.getEngine().getFirstEntity();
+            Entity firstEntity = visitor.getEngine().getFirstEntity(visitor.getContext());
             SQLExprTableSource from = new SQLExprTableSource(new SQLIdentifierExpr(firstEntity.getName()));
             from.putAttribute(MAPPING_ENTITY, firstEntity);
             x.setFrom(from);
@@ -470,23 +471,23 @@ public class MappingVisitorUtils {
         return entity;
     }
 
-    public static void setTableSource(MappingEngine engine, SQLDeleteStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLDeleteStatement stmt, MappingContext context) {
         if (stmt.getExprTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
+            Entity entity = engine.getFirstEntity(context);
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
 
-    public static void setTableSource(MappingEngine engine, SQLUpdateStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLUpdateStatement stmt, MappingContext context) {
         if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
+            Entity entity = engine.getFirstEntity(context);
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
 
-    public static void setTableSource(MappingEngine engine, SQLInsertStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLInsertStatement stmt, MappingContext context) {
         if (stmt.getTableSource() == null) {
-            Entity entity = engine.getFirstEntity();
+            Entity entity = engine.getFirstEntity(context);
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
