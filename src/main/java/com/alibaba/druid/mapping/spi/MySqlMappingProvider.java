@@ -64,7 +64,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
 
         MySqlDeleteStatement stmt = parser.parseDeleteStatement();
-        MappingVisitorUtils.setDataSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt);
 
         return stmt;
     }
@@ -73,7 +73,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLUpdateStatement stmt = parser.parseUpdateStatement();
 
-        MappingVisitorUtils.setDataSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt);
 
         return stmt;
     }
@@ -82,7 +82,7 @@ public class MySqlMappingProvider implements MappingProvider {
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLInsertStatement stmt = (SQLInsertStatement) parser.parseInsert();
 
-        MappingVisitorUtils.setDataSource(engine, stmt);
+        MappingVisitorUtils.setTableSource(engine, stmt);
 
         return stmt;
     }

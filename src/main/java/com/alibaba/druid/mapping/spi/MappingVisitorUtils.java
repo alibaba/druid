@@ -470,21 +470,21 @@ public class MappingVisitorUtils {
         return entity;
     }
 
-    public static void setDataSource(MappingEngine engine, SQLDeleteStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLDeleteStatement stmt) {
         if (stmt.getExprTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
 
-    public static void setDataSource(MappingEngine engine, SQLUpdateStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLUpdateStatement stmt) {
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
         }
     }
 
-    public static void setDataSource(MappingEngine engine, SQLInsertStatement stmt) {
+    public static void setTableSource(MappingEngine engine, SQLInsertStatement stmt) {
         if (stmt.getTableSource() == null) {
             Entity entity = engine.getFirstEntity();
             stmt.setTableSource(new SQLIdentifierExpr(entity.getName()));
