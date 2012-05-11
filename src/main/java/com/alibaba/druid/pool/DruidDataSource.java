@@ -1376,9 +1376,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     @Override
     public String getVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+        return VERSION.getVersionNumber();
     }
-
+    
     @Override
     public JdbcDataSourceStat getDataSourceStat() {
         return dataSourceStat;

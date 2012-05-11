@@ -583,6 +583,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         return map;
     }
+    
+    public Histogram getHistogram() {
+        return this.histogram;
+    }
 
     public CompositeDataSupport getCompositeData() throws JMException {
         return new CompositeDataSupport(getCompositeType(), getData());

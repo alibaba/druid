@@ -321,6 +321,6 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     
     @Override
     public String getDruidVersion() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+        return VERSION.getVersionNumber();
     }
 }

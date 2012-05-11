@@ -3,15 +3,23 @@ package com.alibaba.druid.http;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServlet;
+
 import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandlerCollection;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.DefaultServlet;
+import org.mortbay.jetty.servlet.FilterMapping;
+import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.QueuedThreadPool;
 import org.mortbay.util.MultiException;
@@ -28,9 +36,10 @@ public class HttpServer {
 
     protected final WebAppContext         webAppContext;
     protected final Map<Context, Boolean> defaultContexts = new HashMap<Context, Boolean>();
+    protected final List<String>          filterNames     = new ArrayList<String>();
 
     public HttpServer() throws IOException{
-        this("stat", "0.0.0.0", 19790);
+        this("druid", "0.0.0.0", 19790);
     }
 
     public HttpServer(String name, String bindAddress, int port) throws IOException{
@@ -51,6 +60,7 @@ public class HttpServer {
         webAppContext.setDisplayName("WepAppsContext");
         webAppContext.setContextPath("/");
         webAppContext.setWar(appDir + "/" + name);
+        
         webServer.addHandler(webAppContext);
 
         addDefaultApps(contexts, appDir);
@@ -162,6 +172,53 @@ public class HttpServer {
     }
 
     protected void addDefaultServlets() {
+        addServlet("info", "/info", InfoServlet.class);
+    }
 
+    /**
+     * Add a servlet in the server.
+     * 
+     * @param name The name of the servlet (can be passed as null)
+     * @param pathSpec The path spec for the servlet
+     * @param clazz The servlet class
+     */
+    public void addServlet(String name, String pathSpec, Class<? extends HttpServlet> clazz) {
+        addInternalServlet(name, pathSpec, clazz, false);
+        addFilterPathMapping(pathSpec, webAppContext);
+    }
+
+    /**
+     * Add an internal servlet in the server, specifying whether or not to protect with Kerberos authentication. Note:
+     * This method is to be used for adding servlets that facilitate internal communication and not for user facing
+     * functionality. For servlets added using this method, filters (except internal Kerberized filters) are not
+     * enabled.
+     * 
+     * @param name The name of the servlet (can be passed as null)
+     * @param pathSpec The path spec for the servlet
+     * @param clazz The servlet class
+     */
+    public void addInternalServlet(String name, String pathSpec, Class<? extends HttpServlet> clazz, boolean requireAuth) {
+        ServletHolder holder = new ServletHolder(clazz);
+        if (name != null) {
+            holder.setName(name);
+        }
+        webAppContext.addServlet(holder, pathSpec);
+    }
+
+    /**
+     * Add the path spec to the filter path mapping.
+     * 
+     * @param pathSpec The path spec
+     * @param webAppCtx The WebApplicationContext to add to
+     */
+    protected void addFilterPathMapping(String pathSpec, Context webAppCtx) {
+        ServletHandler handler = webAppCtx.getServletHandler();
+        for (String name : filterNames) {
+            FilterMapping fmap = new FilterMapping();
+            fmap.setPathSpec(pathSpec);
+            fmap.setFilterName(name);
+            fmap.setDispatches(Handler.ALL);
+            handler.addFilterMapping(fmap);
+        }
     }
 }
