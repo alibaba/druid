@@ -65,8 +65,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1473,6 +1476,39 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     
     @Override
     public void endVisit(MySqlSetCharSetStatement x) {
+        
+    }
+
+    @Override
+    public void endVisit(MySqlShowAuthorsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowAuthorsStatement x) {
+        print("SHOW AUTHORS");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowBinaryLogsStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowBinaryLogsStatement x) {
+        print("SHOW BINARY LOGS");
+        return false;
+    }
+
+    @Override
+    public boolean visit(MySqlShowMasterLogsStatement x) {
+        print("SHOW MASTER LOGS");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowMasterLogsStatement x) {
         
     }
 }

@@ -55,8 +55,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -493,6 +496,23 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("COBAR_STATUS")) {
             lexer.nextToken();
             return new CobarShowStatus();
+        }
+        
+        if (identifierEquals("AUTHORS")) {
+            lexer.nextToken();
+            return new MySqlShowAuthorsStatement();
+        }
+        
+        if (identifierEquals("BINARY")) {
+            lexer.nextToken();
+            acceptIdentifier("LOGS");
+            return new MySqlShowBinaryLogsStatement();
+        }
+        
+        if (identifierEquals("MASTER")) {
+            lexer.nextToken();
+            acceptIdentifier("LOGS");
+            return new MySqlShowMasterLogsStatement();
         }
 
         throw new ParserException("TODO");

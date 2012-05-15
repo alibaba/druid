@@ -42,8 +42,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -536,6 +539,36 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     
     @Override
     public void endVisit(MySqlSetCharSetStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowAuthorsStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowAuthorsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowBinaryLogsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowBinaryLogsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowMasterLogsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowMasterLogsStatement x) {
         
     }
 }
