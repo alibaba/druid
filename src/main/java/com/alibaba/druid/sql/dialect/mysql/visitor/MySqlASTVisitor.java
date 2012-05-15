@@ -53,6 +53,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -256,4 +259,16 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowContributorsStatement x);
 
     void endVisit(MySqlShowContributorsStatement x);
+    
+    boolean visit(MySqlShowCreateDatabaseStatement x);
+    
+    void endVisit(MySqlShowCreateDatabaseStatement x);
+    
+    boolean visit(MySqlShowCreateEventStatement x);
+    
+    void endVisit(MySqlShowCreateEventStatement x);
+    
+    boolean visit(MySqlShowCreateFunctionStatement x);
+    
+    void endVisit(MySqlShowCreateFunctionStatement x);
 }

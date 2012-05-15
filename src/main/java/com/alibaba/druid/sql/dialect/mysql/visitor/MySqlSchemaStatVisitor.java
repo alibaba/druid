@@ -49,6 +49,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -613,6 +616,36 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     
     @Override
     public void endVisit(MySqlShowContributorsStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowCreateDatabaseStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowCreateDatabaseStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowCreateEventStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowCreateEventStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowCreateFunctionStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowCreateFunctionStatement x) {
         
     }
 }

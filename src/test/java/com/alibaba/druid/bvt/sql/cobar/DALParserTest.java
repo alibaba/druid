@@ -19,6 +19,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -337,32 +340,36 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW CONTRIBUTORS", output);
     }
     
+    public void test_show_create_database() throws Exception {
+        String sql = "SHOW CREATE DATABASE db_name";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateDatabaseStatement show = (MySqlShowCreateDatabaseStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE DATABASE db_name", output);
+    }
+    
+    public void test_show_create_event() throws Exception {
+        String sql = "SHOW CREATE event db_name";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateEventStatement show = (MySqlShowCreateEventStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE EVENT db_name", output);
+    }
+    
+    public void test_show_create_function() throws Exception {
+        String sql = "SHOW CREATE function x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateFunctionStatement show = (MySqlShowCreateFunctionStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE FUNCTION x", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
 //
-//        sql = "SHOW CREATE DATABASE db_name ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE DATABASE db_name", output);
-//
-//        sql = "SHOW create event expr ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE EVENT expr", output);
-//
-//        sql = "SHOW create function func ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE FUNCTION func", output);
 //
 //        sql = "SHOW create procedure pro ";
 //        lexer = new SQLLexer(sql);
