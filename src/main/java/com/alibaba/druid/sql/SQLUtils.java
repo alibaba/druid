@@ -7,18 +7,18 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUtils {
 
@@ -53,38 +53,11 @@ public class SQLUtils {
     }
 
     public static String formatMySql(String sql) {
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
-
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
+        return format(sql, JdbcUtils.MYSQL);
     }
 
     public static String formatOracle(String sql) {
-        OracleStatementParser parser = new OracleStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        StringBuilder out = new StringBuilder();
-
-        OracleOutputVisitor visitor;
-
-        if (statementList.size() == 1) {
-            visitor = new OracleOutputVisitor(out, false);
-        } else {
-            visitor = new OracleOutputVisitor(out, true);
-        }
-
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
+        return format(sql, JdbcUtils.ORACLE);
     }
 
     public static String toOracleString(SQLObject sqlObject) {
@@ -112,17 +85,7 @@ public class SQLUtils {
     }
 
     public static String formatPGSql(String sql) {
-        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-
-        StringBuilder out = new StringBuilder();
-        PGOutputVisitor visitor = new PGOutputVisitor(out);
-
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
-        }
-
-        return out.toString();
+        return format(sql, JdbcUtils.POSTGRESQL);
     }
     
     public static SQLExpr toSQLExpr(String sql) {
@@ -137,5 +100,55 @@ public class SQLUtils {
         }
 
         return expr;
+    }
+    
+    public static String format(String sql, String dbType) {
+        if (JdbcUtils.ORACLE.equals(dbType)) {
+            return formatOracle(sql);
+        }
+        
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return formatMySql(sql);
+        }
+        
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return formatPGSql(sql);
+        }
+        
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        List<SQLStatement> statementList = parser.parseStatementList();
+
+        StringBuilder out = new StringBuilder();
+        SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
+
+        for (SQLStatement stmt : statementList) {
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
+    }
+    
+    public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList, String dbType) {
+        if (JdbcUtils.ORACLE.equals(dbType)) {
+            if (statementList.size() == 1) {
+                return new OracleOutputVisitor(out, false);
+            } else {
+                return new OracleOutputVisitor(out, true);
+            }
+        }
+        
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return new MySqlOutputVisitor(out);
+        }
+        
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return new PGOutputVisitor(out);
+        }
+        
+        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerOutputVisitor(out);
+        }
+        
+        return new SQLASTOutputVisitor(out);
     }
 }
