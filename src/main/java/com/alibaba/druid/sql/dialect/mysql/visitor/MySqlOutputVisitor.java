@@ -1617,7 +1617,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlShowCreateFunctionStatement x) {
         print("SHOW CREATE FUNCTION ");
-        x.getFunctionName().accept(this);
+        x.getName().accept(this);
         return false;
     }
     

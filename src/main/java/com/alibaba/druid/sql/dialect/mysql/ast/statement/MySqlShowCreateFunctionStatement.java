@@ -7,21 +7,21 @@ public class MySqlShowCreateFunctionStatement extends MySqlStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
-    private SQLExpr           functionName;
+    private SQLExpr           name;
 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, functionName);
+            acceptChild(visitor, name);
         }
         visitor.endVisit(this);
     }
 
-    public SQLExpr getFunctionName() {
-        return functionName;
+    public SQLExpr getName() {
+        return name;
     }
 
-    public void setFunctionName(SQLExpr functionName) {
-        this.functionName = functionName;
+    public void setName(SQLExpr functionName) {
+        this.name = functionName;
     }
 
 }

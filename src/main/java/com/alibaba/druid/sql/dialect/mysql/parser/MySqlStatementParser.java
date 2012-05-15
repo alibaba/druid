@@ -623,7 +623,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 
                 MySqlShowCreateFunctionStatement stmt = new MySqlShowCreateFunctionStatement();
-                stmt.setFunctionName(this.exprParser.name());
+                stmt.setName(this.exprParser.name());
                 return stmt;
             }
             
