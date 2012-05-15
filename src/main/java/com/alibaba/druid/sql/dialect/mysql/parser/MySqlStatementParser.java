@@ -66,6 +66,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabase
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -632,6 +635,30 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 
                 MySqlShowCreateProcedureStatement stmt = new MySqlShowCreateProcedureStatement();
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            if (lexer.token() == Token.TABLE) {
+                lexer.nextToken();
+                
+                MySqlShowCreateTableStatement stmt = new MySqlShowCreateTableStatement();
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            if (lexer.token() == Token.VIEW) {
+                lexer.nextToken();
+                
+                MySqlShowCreateViewStatement stmt = new MySqlShowCreateViewStatement();
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            if (identifierEquals("TRIGGER")) {
+                lexer.nextToken();
+                
+                MySqlShowCreateTriggerStatement stmt = new MySqlShowCreateTriggerStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }

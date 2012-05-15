@@ -23,6 +23,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabase
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -377,25 +380,35 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW CREATE PROCEDURE x", output);
     }
     
+    public void test_show_create_table() throws Exception {
+        String sql = "SHOW CREATE table x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateTableStatement show = (MySqlShowCreateTableStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE TABLE x", output);
+    }
+    
+    public void test_show_create_trigger() throws Exception {
+        String sql = "SHOW CREATE trigger x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateTriggerStatement show = (MySqlShowCreateTriggerStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE TRIGGER x", output);
+    }
+    
+    public void test_show_create_view() throws Exception {
+        String sql = "SHOW CREATE VIEW x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateViewStatement show = (MySqlShowCreateViewStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE VIEW x", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//
-//        sql = "SHOW create procedure pro ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE PROCEDURE pro", output);
-//
-//        sql = "SHOW create table tb ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE TABLE tb", output);
 //
 //        sql = "SHOW create trigger tri ";
 //        lexer = new SQLLexer(sql);
