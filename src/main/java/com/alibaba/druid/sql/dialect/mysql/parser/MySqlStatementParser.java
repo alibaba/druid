@@ -65,6 +65,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -623,7 +624,15 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 
                 MySqlShowCreateFunctionStatement stmt = new MySqlShowCreateFunctionStatement();
-                stmt.setFunctionName(this.exprParser.name());
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            if (identifierEquals("PROCEDURE")) {
+                lexer.nextToken();
+                
+                MySqlShowCreateProcedureStatement stmt = new MySqlShowCreateProcedureStatement();
+                stmt.setName(this.exprParser.name());
                 return stmt;
             }
             

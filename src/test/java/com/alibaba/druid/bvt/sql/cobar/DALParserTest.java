@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -365,6 +366,15 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW CREATE FUNCTION x", output);
+    }
+    
+    public void test_show_create_PROCEDURE() throws Exception {
+        String sql = "SHOW CREATE PROCEDURE x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateProcedureStatement show = (MySqlShowCreateProcedureStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE PROCEDURE x", output);
     }
     
 //
