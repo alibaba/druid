@@ -70,6 +70,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -466,10 +469,48 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.LPAREN);
             accept(Token.STAR);
             accept(Token.RPAREN);
-            acceptIdentifier("WARNINGS");
 
-            MySqlShowWarningsStatement stmt = new MySqlShowWarningsStatement();
-            stmt.setCount(true);
+            if (identifierEquals("ERRORS")) {
+                lexer.nextToken();
+                
+                MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
+                stmt.setCount(true);
+
+                return stmt;
+            } else {
+                acceptIdentifier("WARNINGS");
+
+                MySqlShowWarningsStatement stmt = new MySqlShowWarningsStatement();
+                stmt.setCount(true);
+
+                return stmt;
+            }
+        }
+
+        if (identifierEquals("ERRORS")) {
+            lexer.nextToken();
+
+            MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
+            if (lexer.token() == Token.LIMIT) {
+                lexer.nextToken();
+
+                MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
+
+                SQLExpr temp = this.exprParser.expr();
+                if (lexer.token() == (Token.COMMA)) {
+                    limit.setOffset(temp);
+                    lexer.nextToken();
+                    limit.setRowCount(exprParser.expr());
+                } else if (identifierEquals("OFFSET")) {
+                    limit.setRowCount(temp);
+                    lexer.nextToken();
+                    limit.setOffset(exprParser.expr());
+                } else {
+                    limit.setRowCount(temp);
+                }
+
+                stmt.setLimit(limit);
+            }
 
             return stmt;
         }
@@ -603,67 +644,90 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             return new MySqlShowContributorsStatement();
         }
-        
+
         if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
-            
+
             if (identifierEquals("DATABASE")) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateDatabaseStatement stmt = new MySqlShowCreateDatabaseStatement();
                 stmt.setDatabase(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (identifierEquals("EVENT")) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateEventStatement stmt = new MySqlShowCreateEventStatement();
                 stmt.setEventName(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (identifierEquals("FUNCTION")) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateFunctionStatement stmt = new MySqlShowCreateFunctionStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (identifierEquals("PROCEDURE")) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateProcedureStatement stmt = new MySqlShowCreateProcedureStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (lexer.token() == Token.TABLE) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateTableStatement stmt = new MySqlShowCreateTableStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (lexer.token() == Token.VIEW) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateViewStatement stmt = new MySqlShowCreateViewStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             if (identifierEquals("TRIGGER")) {
                 lexer.nextToken();
-                
+
                 MySqlShowCreateTriggerStatement stmt = new MySqlShowCreateTriggerStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             throw new ParserException("TODO " + lexer.stringVal());
+        }
+
+        if (identifierEquals("ENGINE")) {
+            lexer.nextToken();
+            MySqlShowEngineStatement stmt = new MySqlShowEngineStatement();
+            stmt.setName(this.exprParser.name());
+            stmt.setOption(MySqlShowEngineStatement.Option.valueOf(lexer.stringVal().toUpperCase()));
+            lexer.nextToken();
+            return stmt;
+        }
+
+        if (identifierEquals("STORAGE")) {
+            lexer.nextToken();
+            acceptIdentifier("ENGINES");
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            stmt.setStorage(true);
+            return stmt;
+        }
+
+        if (identifierEquals("ENGINES")) {
+            lexer.nextToken();
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            return stmt;
         }
 
         throw new ParserException("TODO " + lexer.stringVal());

@@ -26,6 +26,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedur
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -407,112 +411,116 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW CREATE VIEW x", output);
     }
     
+    public void test_show_databases() throws Exception {
+        String sql = "SHOW DATABASES";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowDatabasesStatement show = (MySqlShowDatabasesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW DATABASES", output);
+    }
+    
+    public void test_show_databases_1() throws Exception {
+        String sql = "SHOW DATABASES LIKE 'a%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowDatabasesStatement show = (MySqlShowDatabasesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW DATABASES LIKE 'a%'", output);
+    }
+    
+    public void test_show_databases_2() throws Exception {
+        String sql = "SHOW DATABASES WHERE `Database` = 'mysql'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);    
+        MySqlShowDatabasesStatement show = (MySqlShowDatabasesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW DATABASES WHERE `Database` = 'mysql'", output);
+    }
+    
+    public void test_show_engine() throws Exception {
+        String sql = "SHOW ENGINE INNODB STATUS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEngineStatement show = (MySqlShowEngineStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ENGINE INNODB STATUS", output);
+    }
+    
+    public void test_show_engine_1() throws Exception {
+        String sql = "SHOW ENGINE PERFORMANCE_SCHEMA STATUS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEngineStatement show = (MySqlShowEngineStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ENGINE PERFORMANCE_SCHEMA STATUS", output);
+    }
+    
+    public void test_show_engine_2() throws Exception {
+        String sql = "SHOW ENGINE INNODB mutex";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEngineStatement show = (MySqlShowEngineStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ENGINE INNODB MUTEX", output);
+    }
+    
+    public void test_show_engines() throws Exception {
+        String sql = "SHOW ENGINES";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEnginesStatement show = (MySqlShowEnginesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ENGINES", output);
+    }
+    
+    public void test_show_engines_1() throws Exception {
+        String sql = "SHOW STORAGE ENGINES";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEnginesStatement show = (MySqlShowEnginesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW STORAGE ENGINES", output);
+    }
+    
+    public void test_show_errors() throws Exception {
+        String sql = "SHOW COUNT(*) ERRORS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowErrorsStatement show = (MySqlShowErrorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COUNT(*) ERRORS", output);
+    }
+    
+    public void test_show_errors_1() throws Exception {
+        String sql = "SHOW ERRORS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowErrorsStatement show = (MySqlShowErrorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ERRORS", output);
+    }
+    
+    public void test_show_errors_2() throws Exception {
+        String sql = "SHOW ERRORS limit 1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowErrorsStatement show = (MySqlShowErrorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ERRORS LIMIT 1", output);
+    }
+    
+    public void test_show_errors_3() throws Exception {
+        String sql = "SHOW ERRORS limit 1, 2";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowErrorsStatement show = (MySqlShowErrorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW ERRORS LIMIT 1, 2", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW create trigger tri ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE TRIGGER tri", output);
-//
-//        sql = "SHOW create view view";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE VIEW view", output);
-//
-//        sql = "SHOW databases like 'var'";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW DATABASES LIKE 'var'", output);
-//
-//        sql = "SHOW databases where (select * from `select`)is not null";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW DATABASES WHERE (SELECT * FROM `select`) IS NOT NULL", output);
-//
-//        sql = "SHOW databases ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW DATABASES", output);
-//
-//        sql = "SHOW engine innodb status";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ENGINE INNODB STATUS", output);
-//
-//        sql = "SHOW engine innodb mutex";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ENGINE INNODB MUTEX", output);
-//
-//        sql = "SHOW engine performance_schema status";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ENGINE PERFORMANCE SCHEMA STATUS", output);
-//
-//        sql = "SHOW engines";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ENGINES", output);
-//
-//        sql = "SHOW storage engines";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ENGINES", output);
-//
-//        sql = "SHOW errors";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ERRORS", output);
-//
-//        sql = "SHOW errors limit 1 ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW ERRORS LIMIT 0, 1", output);
-//
-//        sql = "SHOW count(*) errors";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW COUNT(*) ERRORS", output);
 //
 //        sql = "SHOW events";
 //        lexer = new SQLLexer(sql);

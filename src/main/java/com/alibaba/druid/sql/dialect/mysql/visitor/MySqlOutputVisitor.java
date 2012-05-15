@@ -80,6 +80,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -1675,6 +1678,54 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCreateViewStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowEngineStatement x) {
+        print("SHOW ENGINE ");
+        x.getName().accept(this);
+        print(' ');
+        print(x.getOption().name());
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowEngineStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowEnginesStatement x) {
+        if (x.isStorage()) {
+            print("SHOW STORAGE ENGINES");
+        } else {
+            print("SHOW ENGINES");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowEnginesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowErrorsStatement x) {
+        if (x.isCount()) {
+            print("SHOW COUNT(*) ERRORS");
+        } else {
+            print("SHOW ERRORS");
+            if (x.getLimit() != null) {
+                print(' ');
+                x.getLimit().accept(this);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowErrorsStatement x) {
         
     }
 }
