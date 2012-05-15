@@ -95,7 +95,6 @@ public class MySqlLexer extends Lexer {
         map.put("CAST", Token.CAST);
         map.put("IN", Token.IN);
         map.put("ASC", Token.ASC);
-        map.put("DESC", Token.DESC);
         map.put("LIKE", Token.LIKE);
         map.put("ESCAPE", Token.ESCAPE);
         map.put("BETWEEN", Token.BETWEEN);
@@ -126,6 +125,71 @@ public class MySqlLexer extends Lexer {
     public MySqlLexer(String input){
         super(input);
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
+    }
+
+    public void scanVariable() {
+        final char first = ch;
+
+        if (ch != '@' && ch != ':' && ch != '#') {
+            throw new SQLParseException("illegal variable");
+        }
+
+        int hash = first;
+
+        np = bp;
+        sp = 1;
+
+        if (buf[bp + 1] == '@') {
+            ch = buf[++bp];
+            hash = 31 * hash + ch;
+
+            sp++;
+        }
+
+        if (buf[bp + 1] == '`') {
+            ++bp;
+            ++sp;
+            char ch;
+            for (;;) {
+                ch = buf[++bp];
+
+                if (ch == '`') {
+                    sp++;
+                    ch = buf[++bp];
+                    break;
+                } else if (ch == EOI) {
+                    throw new SQLParseException("illegal identifier");
+                }
+
+                hash = 31 * hash + ch;
+
+                sp++;
+                continue;
+            }
+
+            this.ch = buf[bp];
+
+            stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+            token = Token.VARIANT;
+        } else {
+            for (;;) {
+                ch = buf[++bp];
+
+                if (!isIdentifierChar(ch)) {
+                    break;
+                }
+
+                hash = 31 * hash + ch;
+
+                sp++;
+                continue;
+            }
+        }
+
+        this.ch = buf[bp];
+
+        stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+        token = Token.VARIANT;
     }
 
     public void scanIdentifier() {

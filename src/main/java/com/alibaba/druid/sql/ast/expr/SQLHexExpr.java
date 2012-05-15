@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import com.alibaba.druid.util.HexBin;
+import com.alibaba.druid.util.IOUtils;
 
-public class SQLHexExpr extends SQLLiteralExpr {
+public class SQLHexExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 
@@ -75,5 +78,9 @@ public class SQLHexExpr extends SQLLiteralExpr {
             return false;
         }
         return true;
+    }
+    
+    public byte[] toBytes() {
+        return HexBin.decode(this.hex);
     }
 }

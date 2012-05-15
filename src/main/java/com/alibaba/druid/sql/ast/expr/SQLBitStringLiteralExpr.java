@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.ast.expr;
 
 import java.util.BitSet;
 
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 /**
@@ -28,7 +29,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
  * 
  * @author WENSHAO
  */
-public class SQLBitStringLiteralExpr extends SQLLiteralExpr {
+public class SQLBitStringLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 

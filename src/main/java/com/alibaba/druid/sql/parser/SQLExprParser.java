@@ -55,6 +55,7 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -195,8 +196,16 @@ public class SQLExprParser extends SQLParser {
                 lexer.nextToken();
                 break;
             case VARIANT:
-                sqlExpr = new SQLVariantRefExpr(lexer.stringVal());
+                SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(lexer.stringVal());
                 lexer.nextToken();
+                if (varRefExpr.getName().equals("@") && lexer.token() == Token.LITERAL_CHARS) {
+                    varRefExpr.setName("@'" + lexer.stringVal() + "'");
+                    lexer.nextToken();
+                } else if (varRefExpr.getName().equals("@@") && lexer.token() == Token.LITERAL_CHARS) {
+                    varRefExpr.setName("@@'" + lexer.stringVal() + "'");
+                    lexer.nextToken();
+                } 
+                sqlExpr = varRefExpr;
                 break;
             case DEFAULT:
                 sqlExpr = new SQLDefaultExpr();
@@ -473,10 +482,6 @@ public class SQLExprParser extends SQLParser {
 
             expr = dotRest(expr);
             return primaryRest(expr);
-        } else if (lexer.token() == Token.COLONEQ) {
-            lexer.nextToken();
-            SQLExpr rightExp = primary();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp);
         } else {
             if (lexer.token() == Token.LPAREN) {
                 return methodRest(expr, true);
@@ -779,6 +784,10 @@ public class SQLExprParser extends SQLParser {
             rightExp = equalityRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotEqual, rightExp);
+        } else if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+            rightExp = expr();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, rightExp);
         }
 
         return expr;
@@ -920,40 +929,40 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             rightExp = bitOr();
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThan, rightExp);
-//            expr = relationalRest(expr);
+            // expr = relationalRest(expr);
         } else if (lexer.token() == Token.LTEQ) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrEqual, rightExp);
         } else if (lexer.token() == Token.LTEQGT) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrEqualOrGreaterThan, rightExp);
         } else if (lexer.token() == Token.GT) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.GreaterThan, rightExp);
         } else if (lexer.token() == Token.GTEQ) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.GreaterThanOrEqual, rightExp);
         } else if (lexer.token() == Token.BANGLT) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotLessThan, rightExp);
         } else if (lexer.token() == Token.BANGGT) {
@@ -967,14 +976,14 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrGreater, rightExp);
         } else if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             rightExp = bitOr();
 
-//            rightExp = relationalRest(rightExp);
+            // rightExp = relationalRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Like, rightExp);
 
@@ -1167,5 +1176,24 @@ public class SQLExprParser extends SQLParser {
 
     public SQLPrimaryKey parsePrimaryKey() {
         throw new ParserException("TODO");
+    }
+    
+    public SQLAssignItem parseAssignItem() {
+        SQLAssignItem item = new SQLAssignItem();
+        
+        SQLExpr var = primary();
+        
+        if (var instanceof SQLIdentifierExpr) {
+            var = new SQLVariantRefExpr(((SQLIdentifierExpr) var).getName());
+        }
+        item.setTarget(var);
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+        } else {
+            accept(Token.EQ);
+        }
+        item.setValue(expr());
+
+        return item;
     }
 }

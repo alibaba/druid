@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinitio
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -100,7 +101,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getOrderBy() != null) {
             x.getOrderBy().setParent(x);
         }
-        
+
         print("SELECT ");
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) print("ALL ");
@@ -425,7 +426,30 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLVariantRefExpr x) {
-        print(x.getName());
+        if (x.isGlobal()) {
+            print("@@global.");
+        } else {
+            if ((!x.getName().startsWith("@")) && (!x.getName().equals("?"))) {
+                print("@@");
+            }
+        }
+
+        for (int i = 0; i < x.getName().length(); ++i) {
+            char ch = x.getName().charAt(i);
+            if (ch == '\'') {
+                if (x.getName().startsWith("@@") && i == 2) {
+                    print(ch);
+                } else if (x.getName().startsWith("@") && i == 1) {
+                    print(ch);
+                } else if (i != 0 && i != x.getName().length() - 1) {
+                    print("\\'");
+                } else {
+                    print(ch);
+                }
+            } else {
+                print(ch);
+            }
+        }
 
         String collate = (String) x.getAttribute("COLLATE");
         if (collate != null) {
@@ -1250,12 +1274,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(UserSpecification x) {
         x.getUser().accept(this);
-        
+
         if (x.getPassword() != null) {
             print(" IDENTIFIED BY ");
             x.getPassword().accept(this);
         }
-        
+
         if (x.getAuthPlugin() != null) {
             print(" IDENTIFIED WITH ");
             x.getAuthPlugin().accept(this);
@@ -1265,7 +1289,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlDropUser x) {
-        
+
     }
 
     @Override
@@ -1277,7 +1301,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlDropTableStatement x) {
-        
+
     }
 
     @Override
@@ -1286,14 +1310,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
-        
+
         printAndAccept(x.getTableSources(), ", ");
         return false;
     }
 
     @Override
     public void endVisit(MySqlPartitionByKey x) {
-        
+
     }
 
     @Override
@@ -1301,7 +1325,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print("PARTITION BY KEY (");
         printAndAccept(x.getColumns(), ", ");
         print(")");
-        
+
         if (x.getPartitionCount() != null) {
             print(" PARTITIONS ");
             x.getPartitionCount().accept(this);
@@ -1311,21 +1335,20 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlSelectQueryBlock x) {
-        
+
     }
 
     @Override
     public boolean visit(MySqlOutFileExpr x) {
         print("OUTFILE ");
         x.getFile().accept(this);
-        
+
         if (x.getCharset() != null) {
             print(" CHARACTER SET ");
             print(x.getCharset());
         }
 
-        if (x.getColumnsTerminatedBy() != null || x.getColumnsEnclosedBy() != null
-            || x.getColumnsEscaped() != null) {
+        if (x.getColumnsTerminatedBy() != null || x.getColumnsEnclosedBy() != null || x.getColumnsEscaped() != null) {
             print(" COLUMNS");
             if (x.getColumnsTerminatedBy() != null) {
                 print(" TERMINATED BY ");
@@ -1358,39 +1381,56 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getLinesTerminatedBy().accept(this);
             }
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(MySqlOutFileExpr x) {
-        
+
     }
 
     @Override
     public boolean visit(MySqlDescribeStatement x) {
-        print("DESCRIBE ");
+        print("DESC ");
         x.getObject().accept(this);
         return false;
     }
 
     @Override
     public void endVisit(MySqlDescribeStatement x) {
-        
+
     }
 
-	@Override
-	public boolean visit(MySqlUpdateStatement x) {
-		super.visit((SQLUpdateStatement) x);
-		if (x.getLimit() != null) {
-			println();
-			x.getLimit().accept(this);
-		}
-		return false;
-	}
+    @Override
+    public boolean visit(MySqlUpdateStatement x) {
+        super.visit((SQLUpdateStatement) x);
+        if (x.getLimit() != null) {
+            println();
+            x.getLimit().accept(this);
+        }
+        return false;
+    }
 
-	@Override
-	public void endVisit(MySqlUpdateStatement x) {
-		
-	}
+    @Override
+    public void endVisit(MySqlUpdateStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlSetTransactionIsolationLevelStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
+        if (x.getGlobal() == null) {
+            print("SET TRANSACTION ISOLATION LEVEL ");
+        } else if (x.getGlobal().booleanValue()) {
+            print("SET GLOBAL TRANSACTION ISOLATION LEVEL ");
+        } else {
+            print("SET SESSION TRANSACTION ISOLATION LEVEL ");
+        }
+        print(x.getLevel());
+    }
 }

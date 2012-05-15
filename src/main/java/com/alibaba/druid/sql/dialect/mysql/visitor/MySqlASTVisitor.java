@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -206,4 +207,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlUpdateStatement x);
     
     void endVisit(MySqlUpdateStatement x);
+    
+    boolean visit(MySqlSetTransactionIsolationLevelStatement x);
+    
+    void endVisit(MySqlSetTransactionIsolationLevelStatement x);
 }
