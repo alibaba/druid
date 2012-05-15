@@ -75,6 +75,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateEventStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateFunctionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateProcedureStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -1623,6 +1625,30 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     
     @Override
     public void endVisit(MySqlShowCreateFunctionStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowCreateProcedureStatement x) {
+        print("SHOW CREATE PROCEDURE ");
+        x.getName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowCreateProcedureStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowCreateTableStatement x) {
+        print("SHOW CREATE TABLE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowCreateTableStatement x) {
         
     }
 }
