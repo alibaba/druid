@@ -476,5 +476,4 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
     public void endVisit(MySqlSetCharSetStatement x) {
         
     }
-
 }

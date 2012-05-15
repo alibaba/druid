@@ -9,8 +9,11 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+<<<<<<< HEAD
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+=======
+>>>>>>> fc222e6172fe4786fb2c68d21d9ef79937042e92
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -120,6 +123,7 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE", output);
     }
     
+<<<<<<< HEAD
     public void test_setNames() throws Exception {
         String sql = "SET names default ";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
@@ -165,6 +169,51 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SET CHARACTER SET DEFAULT", output);
     }
     
+=======
+//    public void testSet() throws Exception {
+//
+//
+//        sql = "SET names default ";
+//        lexer = new SQLLexer(sql);
+//        parser = new DALParser(lexer, new SQLExprParser(lexer));
+//        set = (DALSetNamesStatement) parser.set();
+//        parser.match(Token.EOF);
+//        output = output2MySQL(set, sql);
+//        Assert.assertEquals("SET NAMES DEFAULT", output);
+//
+//        sql = "SET NAMEs 'utf8' collatE \"latin1_danish_ci\" ";
+//        lexer = new SQLLexer(sql);
+//        parser = new DALParser(lexer, new SQLExprParser(lexer));
+//        set = (DALSetNamesStatement) parser.set();
+//        parser.match(Token.EOF);
+//        output = output2MySQL(set, sql);
+//        Assert.assertEquals("SET NAMES utf8 COLLATE latin1_danish_ci", output);
+//
+//        sql = "SET NAMEs utf8  ";
+//        lexer = new SQLLexer(sql);
+//        parser = new DALParser(lexer, new SQLExprParser(lexer));
+//        set = (DALSetNamesStatement) parser.set();
+//        parser.match(Token.EOF);
+//        output = output2MySQL(set, sql);
+//        Assert.assertEquals("SET NAMES utf8", output);
+//
+//        sql = "SET CHARACTEr SEt 'utf8'  ";
+//        lexer = new SQLLexer(sql);
+//        parser = new DALParser(lexer, new SQLExprParser(lexer));
+//        set = (DALSetCharacterSetStatement) parser.set();
+//        parser.match(Token.EOF);
+//        output = output2MySQL(set, sql);
+//        Assert.assertEquals("SET CHARACTER SET utf8", output);
+//
+//        sql = "SET CHARACTEr SEt DEFaULT  ";
+//        lexer = new SQLLexer(sql);
+//        parser = new DALParser(lexer, new SQLExprParser(lexer));
+//        set = (DALSetCharacterSetStatement) parser.set();
+//        parser.match(Token.EOF);
+//        output = output2MySQL(set, sql);
+//        Assert.assertEquals("SET CHARACTER SET DEFAULT", output);
+//    }
+>>>>>>> fc222e6172fe4786fb2c68d21d9ef79937042e92
 //
 //    public void testShow() throws Exception {
 //        String sql = "shoW authors  ";
