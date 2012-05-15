@@ -49,6 +49,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsol
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -238,6 +239,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowMasterLogsStatement x);
     
     void endVisit(MySqlShowMasterLogsStatement x);
+    
+    boolean visit(MySqlShowCharacterSetStatement x);
+    
+    void endVisit(MySqlShowCharacterSetStatement x);
     
     boolean visit(MySqlShowCollationStatement x);
     

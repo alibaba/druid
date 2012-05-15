@@ -68,6 +68,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsol
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -1553,6 +1554,25 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     
     @Override
     public void endVisit(MySqlShowBinLogEventsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowCharacterSetStatement x) {
+        print("SHOW CHARACTER SET");
+        if (x.getPattern() != null) {
+            print(" LIKE ");
+            x.getPattern().accept(this);
+        }
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowCharacterSetStatement x) {
         
     }
 }

@@ -58,6 +58,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsol
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
@@ -515,6 +516,24 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             acceptIdentifier("LOGS");
             return new MySqlShowMasterLogsStatement();
+        }
+        
+        if (identifierEquals("CHARACTER")) {
+            lexer.nextToken();
+            accept(Token.SET);
+            MySqlShowCharacterSetStatement stmt = new MySqlShowCharacterSetStatement();
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setPattern(this.exprParser.expr());
+            }
+            
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
+            
+            return stmt;
         }
         
         if (identifierEquals("COLLATION")) {
