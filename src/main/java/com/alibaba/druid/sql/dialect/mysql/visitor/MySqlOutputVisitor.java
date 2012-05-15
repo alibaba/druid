@@ -71,6 +71,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -1022,12 +1023,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getTable() != null) {
             print(" FROM ");
+            if (x.getDatabase() != null) {
+                x.getDatabase().accept(this);
+                print('.');
+            }
             x.getTable().accept(this);
-        }
-
-        if (x.getDatabase() != null) {
-            print(" FROM ");
-            x.getDatabase().accept(this);
         }
 
         if (x.getLike() != null) {
@@ -1573,6 +1573,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCharacterSetStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowContributorsStatement x) {
+        print("SHOW CONTRIBUTORS");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowContributorsStatement x) {
         
     }
 }

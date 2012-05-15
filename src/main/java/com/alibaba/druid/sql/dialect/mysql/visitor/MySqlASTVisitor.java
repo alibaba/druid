@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -163,9 +164,9 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlShowStatusStatement x);
 
     boolean visit(MySqlShowStatusStatement x);
-    
+
     void endVisit(MySqlShowAuthorsStatement x);
-    
+
     boolean visit(MySqlShowAuthorsStatement x);
 
     void endVisit(CobarShowStatus x);
@@ -199,56 +200,60 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlDropTableStatement x);
 
     boolean visit(MySqlDropTableStatement x);
-    
+
     void endVisit(MySqlPartitionByKey x);
-    
+
     boolean visit(MySqlPartitionByKey x);
-    
+
     boolean visit(MySqlSelectQueryBlock x);
-    
+
     void endVisit(MySqlSelectQueryBlock x);
-    
+
     boolean visit(MySqlOutFileExpr x);
-    
+
     void endVisit(MySqlOutFileExpr x);
-    
+
     boolean visit(MySqlDescribeStatement x);
-    
+
     void endVisit(MySqlDescribeStatement x);
-    
+
     boolean visit(MySqlUpdateStatement x);
-    
+
     void endVisit(MySqlUpdateStatement x);
-    
+
     boolean visit(MySqlSetTransactionIsolationLevelStatement x);
-    
+
     void endVisit(MySqlSetTransactionIsolationLevelStatement x);
-    
+
     boolean visit(MySqlSetNamesStatement x);
-    
+
     void endVisit(MySqlSetNamesStatement x);
-    
+
     boolean visit(MySqlSetCharSetStatement x);
-    
+
     void endVisit(MySqlSetCharSetStatement x);
-    
+
     boolean visit(MySqlShowBinaryLogsStatement x);
-    
+
     void endVisit(MySqlShowBinaryLogsStatement x);
-    
+
     boolean visit(MySqlShowMasterLogsStatement x);
-    
+
     void endVisit(MySqlShowMasterLogsStatement x);
-    
+
     boolean visit(MySqlShowCharacterSetStatement x);
-    
+
     void endVisit(MySqlShowCharacterSetStatement x);
-    
+
     boolean visit(MySqlShowCollationStatement x);
-    
+
     void endVisit(MySqlShowCollationStatement x);
-    
+
     boolean visit(MySqlShowBinLogEventsStatement x);
-    
+
     void endVisit(MySqlShowBinLogEventsStatement x);
+
+    boolean visit(MySqlShowContributorsStatement x);
+
+    void endVisit(MySqlShowContributorsStatement x);
 }
