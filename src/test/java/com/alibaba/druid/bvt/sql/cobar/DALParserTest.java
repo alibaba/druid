@@ -12,6 +12,11 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -165,55 +170,89 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SET CHARACTER SET DEFAULT", output);
     }
     
+    public void test_show_authors() throws Exception {
+        String sql = "shoW authors ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowAuthorsStatement show = (MySqlShowAuthorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW AUTHORS", output);
+    }
+    
+    public void test_show_binaryLogs() throws Exception {
+        String sql = "SHOW BINARY LOGS ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowBinaryLogsStatement show = (MySqlShowBinaryLogsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW BINARY LOGS", output);
+    }
+    
+    public void test_show_masterLogs() throws Exception {
+        String sql = "SHOW MASTER LOGS ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowMasterLogsStatement show = (MySqlShowMasterLogsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW MASTER LOGS", output);
+    }
+    
+    public void test_show_collation() throws Exception {
+        String sql = "SHOW collation";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCollationStatement show = (MySqlShowCollationStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COLLATION", output);
+    }
+    
+    public void test_show_collation_1() throws Exception {
+        String sql = "SHOW Collation like 'var1'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCollationStatement show = (MySqlShowCollationStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COLLATION LIKE 'var1'", output);
+    }
+    
+    public void test_show_collation_2() throws Exception {
+        String sql = "SHOW COLLATION WHERE `Default` = 'Yes'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCollationStatement show = (MySqlShowCollationStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COLLATION WHERE `Default` = 'Yes'", output);
+    }
+    
+    public void test_binaryLog() throws Exception {
+        String sql = "SHOW binlog events in 'a' from 1 limit 1,2  ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowBinLogEventsStatement show = (MySqlShowBinLogEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW BINLOG EVENTS IN 'a' FROM 1 LIMIT 1, 2", output);
+    }
+    
+    public void test_binaryLog_1() throws Exception {
+        String sql = "SHOW binlog events from 1 limit 1,2";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowBinLogEventsStatement show = (MySqlShowBinLogEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW BINLOG EVENTS FROM 1 LIMIT 1, 2", output);
+    }
+    
+    public void test_binaryLog_2() throws Exception {
+        String sql = "SHOW binlog events ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowBinLogEventsStatement show = (MySqlShowBinLogEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW BINLOG EVENTS", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//        String sql = "shoW authors  ";
-//        SQLLexer lexer = new SQLLexer(sql);
-//        DALParser parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        DALShowStatement show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        String output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW AUTHORS", output);
-//
-//        sql = "SHOW BINARY LOGS  ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW BINARY LOGS", output);
-//
-//        sql = "SHOW MASTER LOGS  ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW BINARY LOGS", output);
-//
-//        sql = "SHOW binlog events in 'a' from 1 limit 1,2  ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW BINLOG EVENTS IN 'a' FROM 1 LIMIT 1, 2", output);
-//
-//        sql = "SHOW binlog events from 1 limit 1,2  ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW BINLOG EVENTS FROM 1 LIMIT 1, 2", output);
-//
-//        sql = "SHOW binlog events ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW BINLOG EVENTS", output);
 //
 //        sql = "SHOW CHARACTER SET like 'var' ";
 //        lexer = new SQLLexer(sql);
@@ -238,22 +277,6 @@ public class DALParserTest extends TestCase {
 //        parser.match(Token.EOF);
 //        output = output2MySQL(show, sql);
 //        Assert.assertEquals("SHOW CHARACTER SET", output);
-//
-//        sql = "SHOW collation ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW COLLATION", output);
-//
-//        sql = "SHOW Collation like 'var1' ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW COLLATION LIKE 'var1'", output);
 //
 //        sql = "SHOW collation where avg((select * from (tb1,tb2)))!=100 ";
 //        lexer = new SQLLexer(sql);

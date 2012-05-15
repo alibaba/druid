@@ -46,8 +46,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -157,6 +162,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     void endVisit(MySqlShowStatusStatement x);
 
     boolean visit(MySqlShowStatusStatement x);
+    
+    void endVisit(MySqlShowAuthorsStatement x);
+    
+    boolean visit(MySqlShowAuthorsStatement x);
 
     void endVisit(CobarShowStatus x);
 
@@ -221,4 +230,20 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlSetCharSetStatement x);
     
     void endVisit(MySqlSetCharSetStatement x);
+    
+    boolean visit(MySqlShowBinaryLogsStatement x);
+    
+    void endVisit(MySqlShowBinaryLogsStatement x);
+    
+    boolean visit(MySqlShowMasterLogsStatement x);
+    
+    void endVisit(MySqlShowMasterLogsStatement x);
+    
+    boolean visit(MySqlShowCollationStatement x);
+    
+    void endVisit(MySqlShowCollationStatement x);
+    
+    boolean visit(MySqlShowBinLogEventsStatement x);
+    
+    void endVisit(MySqlShowBinLogEventsStatement x);
 }

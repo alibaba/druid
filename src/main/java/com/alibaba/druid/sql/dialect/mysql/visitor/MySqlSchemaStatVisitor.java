@@ -42,8 +42,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -72,7 +77,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         accept(x.getFrom());
         accept(x.getUsing());
         x.getTableSource().accept(this);
-        
+
         if (x.getTableSource() instanceof SQLExprTableSource) {
             SQLName tableName = (SQLName) ((SQLExprTableSource) x.getTableSource()).getExpr();
             String ident = tableName.toString();
@@ -80,10 +85,10 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
             TableStat stat = this.getTableStat(ident);
             stat.incrementDeleteCount();
-        } 
+        }
 
         accept(x.getWhere());
-        
+
         accept(x.getOrderBy());
         accept(x.getLimit());
 
@@ -496,18 +501,18 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlDescribeStatement x) {
-        
+
     }
 
-	@Override
-	public boolean visit(MySqlUpdateStatement x) {
-		return visit((SQLUpdateStatement) x);
-	}
+    @Override
+    public boolean visit(MySqlUpdateStatement x) {
+        return visit((SQLUpdateStatement) x);
+    }
 
-	@Override
-	public void endVisit(MySqlUpdateStatement x) {
-		
-	}
+    @Override
+    public void endVisit(MySqlUpdateStatement x) {
+
+    }
 
     @Override
     public boolean visit(MySqlSetTransactionIsolationLevelStatement x) {
@@ -516,7 +521,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
-        
+
     }
 
     @Override
@@ -526,16 +531,66 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlSetNamesStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlSetCharSetStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlSetCharSetStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowAuthorsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowAuthorsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowBinaryLogsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowBinaryLogsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowMasterLogsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowMasterLogsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowCollationStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowCollationStatement x) {
+
+    }
+    
+    @Override
+    public boolean visit(MySqlShowBinLogEventsStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowBinLogEventsStatement x) {
         
     }
 }

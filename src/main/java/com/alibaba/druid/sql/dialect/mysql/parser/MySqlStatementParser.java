@@ -55,8 +55,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -494,8 +499,80 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
             return new CobarShowStatus();
         }
+        
+        if (identifierEquals("AUTHORS")) {
+            lexer.nextToken();
+            return new MySqlShowAuthorsStatement();
+        }
+        
+        if (identifierEquals("BINARY")) {
+            lexer.nextToken();
+            acceptIdentifier("LOGS");
+            return new MySqlShowBinaryLogsStatement();
+        }
+        
+        if (identifierEquals("MASTER")) {
+            lexer.nextToken();
+            acceptIdentifier("LOGS");
+            return new MySqlShowMasterLogsStatement();
+        }
+        
+        if (identifierEquals("COLLATION")) {
+            lexer.nextToken();
+            MySqlShowCollationStatement stmt = new MySqlShowCollationStatement();
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setPattern(this.exprParser.expr());
+            }
+            
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
+            
+            return stmt;
+        }
+        
+        if (identifierEquals("BINLOG")) {
+            lexer.nextToken();
+            acceptIdentifier("EVENTS");
+            MySqlShowBinLogEventsStatement stmt = new MySqlShowBinLogEventsStatement();
+            
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setIn(this.exprParser.expr());
+            }
+            
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                stmt.setFrom(this.exprParser.expr());
+            }
+            
+            if (lexer.token() == Token.LIMIT) {
+                lexer.nextToken();
+                
+                MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
 
-        throw new ParserException("TODO");
+                SQLExpr temp = this.exprParser.expr();
+                if (lexer.token() == (Token.COMMA)) {
+                    limit.setOffset(temp);
+                    lexer.nextToken();
+                    limit.setRowCount(exprParser.expr());
+                } else if (identifierEquals("OFFSET")) {
+                    limit.setRowCount(temp);
+                    lexer.nextToken();
+                    limit.setOffset(exprParser.expr());
+                } else {
+                    limit.setRowCount(temp);
+                }
+                stmt.setLimit(limit);
+            }
+            
+            return stmt;
+        }
+
+        throw new ParserException("TODO " + lexer.stringVal());
     }
 
     private MySqlShowStatusStatement parseShowStatus() throws ParserException {

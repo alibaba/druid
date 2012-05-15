@@ -65,8 +65,13 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowAuthorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1473,6 +1478,81 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     
     @Override
     public void endVisit(MySqlSetCharSetStatement x) {
+        
+    }
+
+    @Override
+    public void endVisit(MySqlShowAuthorsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowAuthorsStatement x) {
+        print("SHOW AUTHORS");
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowBinaryLogsStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowBinaryLogsStatement x) {
+        print("SHOW BINARY LOGS");
+        return false;
+    }
+
+    @Override
+    public boolean visit(MySqlShowMasterLogsStatement x) {
+        print("SHOW MASTER LOGS");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowMasterLogsStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowCollationStatement x) {
+        print("SHOW COLLATION");
+        if (x.getPattern() != null) {
+            print(" LIKE ");
+            x.getPattern().accept(this);
+        }
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowCollationStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowBinLogEventsStatement x) {
+        print("SHOW BINLOG EVENTS");
+        if (x.getIn() != null) {
+            print(" IN ");
+            x.getIn().accept(this);
+        }
+        if (x.getFrom() != null) {
+            print(" FROM ");
+            x.getFrom().accept(this);
+        }
+        if (x.getLimit() != null) {
+            print(" ");
+            x.getLimit().accept(this);
+        }
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowBinLogEventsStatement x) {
         
     }
 }
