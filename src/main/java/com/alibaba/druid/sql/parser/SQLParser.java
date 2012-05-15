@@ -124,6 +124,13 @@ public class SQLParser {
         }
     }
 
+    public void match(Token token) {
+        if (lexer.token() != token) {
+            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+                                        + lexer.stringVal());
+        }
+    }
+
     private int errorEndPos = -1;
 
     protected void setErrorEndPos(int errPos) {
@@ -131,4 +138,5 @@ public class SQLParser {
             errorEndPos = errPos;
         }
     }
+
 }

@@ -19,7 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlBooleanExpr extends SQLLiteralExpr implements MySqlExpr {
+public class MySqlBooleanExpr extends MySqlExprImpl implements MySqlExpr, SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,7 +46,7 @@ public class MySqlBooleanExpr extends SQLLiteralExpr implements MySqlExpr {
         this.accept0((MySqlASTVisitor) visitor);
     }
 
-    protected void accept0(MySqlASTVisitor visitor) {
+    public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
 
         visitor.endVisit(this);

@@ -15,11 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleTimestampExpr extends SQLLiteralExpr implements OracleExpr {
+public class OracleTimestampExpr extends SQLExprImpl implements SQLLiteralExpr, OracleExpr {
 
     private static final long serialVersionUID = 1L;
     private String            literal;

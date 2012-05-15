@@ -15,14 +15,9 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
-import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLExpr;
 
-public abstract class SQLLiteralExpr extends SQLExprImpl {
+public interface SQLLiteralExpr extends SQLExpr {
 
-    private static final long serialVersionUID = 1L;
-
-    public SQLLiteralExpr(){
-
-    }
 
 }

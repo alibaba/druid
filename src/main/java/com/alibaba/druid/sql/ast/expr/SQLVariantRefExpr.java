@@ -24,9 +24,15 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     private String            name;
 
-    public SQLVariantRefExpr(String name){
+    private boolean           global           = false;
 
+    public SQLVariantRefExpr(String name){
         this.name = name;
+    }
+    
+    public SQLVariantRefExpr(String name, boolean global){
+        this.name = name;
+        this.global = global;
     }
 
     public SQLVariantRefExpr(){
@@ -80,6 +86,14 @@ public class SQLVariantRefExpr extends SQLExprImpl {
             return false;
         }
         return true;
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
     }
 
 }

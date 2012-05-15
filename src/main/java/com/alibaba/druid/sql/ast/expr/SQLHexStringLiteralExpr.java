@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLHexStringLiteralExpr extends SQLLiteralExpr {
+public class SQLHexStringLiteralExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 

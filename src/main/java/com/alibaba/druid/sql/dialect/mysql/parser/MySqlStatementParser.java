@@ -25,10 +25,12 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -50,6 +52,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -84,11 +89,11 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLSelectStatement parseSelect() throws ParserException {
         return new SQLSelectStatement(new MySqlSelectParser(lexer).select());
     }
-    
+
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
-    	MySqlUpdateStatement stmt = (MySqlUpdateStatement) super.parseUpdateStatement();
-    	
-    	if (lexer.token() == Token.LIMIT) {
+        MySqlUpdateStatement stmt = (MySqlUpdateStatement) super.parseUpdateStatement();
+
+        if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
 
             MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
@@ -105,16 +110,16 @@ public class MySqlStatementParser extends SQLStatementParser {
             } else {
                 limit.setRowCount(temp);
             }
-            
+
             stmt.setLimit(limit);
-    	}
-    	
-    	return stmt;
+        }
+
+        return stmt;
     }
-    
-	protected MySqlUpdateStatement createUpdateStatement() {
-		return new MySqlUpdateStatement();
-	}
+
+    protected MySqlUpdateStatement createUpdateStatement() {
+        return new MySqlUpdateStatement();
+    }
 
     public MySqlDeleteStatement parseDeleteStatement() throws ParserException {
         MySqlDeleteStatement deleteStatement = new MySqlDeleteStatement();
@@ -375,7 +380,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (identifierEquals("DESCRIBE")) {
+        if (identifierEquals("DESC") || identifierEquals("DESCRIBE")) {
             SQLStatement stmt = parseDescribe();
             statementList.add(stmt);
             return true;
@@ -384,8 +389,12 @@ public class MySqlStatementParser extends SQLStatementParser {
         return false;
     }
 
-    public SQLStatement parseDescribe() throws ParserException {
-        acceptIdentifier("DESCRIBE");
+    public MySqlDescribeStatement parseDescribe() throws ParserException {
+        if (identifierEquals("DESC") || identifierEquals("DESCRIBE")) {
+            lexer.nextToken();
+        } else {
+            throw new ParserException("expect DESC, actual " + lexer.token());
+        }
 
         MySqlDescribeStatement stmt = new MySqlDescribeStatement();
         stmt.setObject(this.exprParser.name());
@@ -1066,5 +1075,115 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLSelectParser createSQLSelectParser() {
         return new MySqlSelectParser(this.lexer);
+    }
+
+    public SQLStatement parseSet() throws ParserException {
+        accept(Token.SET);
+
+        Boolean global = null;
+        if (identifierEquals("GLOBAL")) {
+            global = Boolean.TRUE;
+            lexer.nextToken();
+        } else if (identifierEquals("SESSION")) {
+            global = Boolean.FALSE;
+            lexer.nextToken();
+        }
+
+        if (identifierEquals("TRANSACTION")) {
+            lexer.nextToken();
+            acceptIdentifier("ISOLATION");
+            acceptIdentifier("LEVEL");
+            
+            MySqlSetTransactionIsolationLevelStatement stmt = new MySqlSetTransactionIsolationLevelStatement();
+            stmt.setGlobal(global);
+            
+            if (identifierEquals("READ")) {
+                lexer.nextToken();
+                
+                if (identifierEquals("UNCOMMITTED")) {
+                    stmt.setLevel("READ UNCOMMITTED");
+                    lexer.nextToken();
+                } else if (identifierEquals("WRITE")) {
+                    stmt.setLevel("READ WRITE");
+                    lexer.nextToken();
+                } else if (identifierEquals("ONLY")) {
+                    stmt.setLevel("READ ONLY");
+                    lexer.nextToken();
+                } else if (identifierEquals("COMMITTED")) {
+                    stmt.setLevel("READ COMMITTED");
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                }
+            } else if (identifierEquals("SERIALIZABLE")) {
+                stmt.setLevel("SERIALIZABLE");
+                lexer.nextToken();
+            } else if (identifierEquals("REPEATABLE")) {
+                lexer.nextToken();
+                if (identifierEquals("READ")) {
+                    stmt.setLevel("REPEATABLE READ");
+                    lexer.nextToken();
+                } else {
+                    throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+                }
+            } else {
+                throw new ParserException("UNKOWN TRANSACTION LEVEL : " + lexer.stringVal());
+            }
+            
+            return stmt;
+        } else if (identifierEquals("NAMES")) {
+            lexer.nextToken();
+            
+            MySqlSetNamesStatement stmt = new MySqlSetNamesStatement();
+            if (lexer.token() == Token.DEFAULT) {
+                lexer.nextToken();
+                stmt.setDefault(true);
+            } else {
+                String charSet = lexer.stringVal();
+                stmt.setCharSet(charSet);
+                lexer.nextToken();
+                if (identifierEquals("COLLATE")) {
+                    lexer.nextToken();
+
+                    String collate = lexer.stringVal();
+                    stmt.setCollate(collate);
+                    lexer.nextToken();
+                }
+            }
+            return stmt;
+        } else if (identifierEquals("CHARACTER")) {
+            lexer.nextToken();
+            
+            accept(Token.SET);
+            
+            MySqlSetCharSetStatement stmt = new MySqlSetCharSetStatement();
+            if (lexer.token() == Token.DEFAULT) {
+                lexer.nextToken();
+                stmt.setDefault(true);
+            } else {
+                String charSet = lexer.stringVal();
+                stmt.setCharSet(charSet);
+                lexer.nextToken();
+                if (identifierEquals("COLLATE")) {
+                    lexer.nextToken();
+                    
+                    String collate = lexer.stringVal();
+                    stmt.setCollate(collate);
+                    lexer.nextToken();
+                }
+            }
+            return stmt;
+        } else {
+            SQLSetStatement stmt = new SQLSetStatement();
+
+            parseAssignItems(stmt.getItems());
+            
+            if (global != null && global.booleanValue()) {
+                SQLVariantRefExpr varRef = (SQLVariantRefExpr) stmt.getItems().get(0).getTarget();
+                varRef.setGlobal(true);
+            }
+
+            return stmt;
+        }
     }
 }

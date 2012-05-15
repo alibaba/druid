@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -132,6 +133,21 @@ public class MySqlExprParser extends SQLExprParser {
                 String aliasValue = lexer.stringVal();
                 lexer.nextToken();
                 return primaryRest(new SQLCharExpr(aliasValue));
+            case VARIANT:
+                SQLVariantRefExpr varRefExpr = new SQLVariantRefExpr(lexer.stringVal());
+                lexer.nextToken();
+                if (varRefExpr.getName().equalsIgnoreCase("@@global")) {
+                    accept(Token.DOT);
+                    varRefExpr = new SQLVariantRefExpr(lexer.stringVal(), true);
+                    lexer.nextToken();
+                } else if (varRefExpr.getName().equals("@") && lexer.token() == Token.LITERAL_CHARS) {
+                    varRefExpr.setName("@'" + lexer.stringVal() + "'");
+                    lexer.nextToken();
+                } else if (varRefExpr.getName().equals("@@") && lexer.token() == Token.LITERAL_CHARS) {
+                    varRefExpr.setName("@@'" + lexer.stringVal() + "'");
+                    lexer.nextToken();
+                } 
+                return primaryRest(varRefExpr);
             default:
                 return super.primary();
         }
@@ -495,5 +511,36 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return expr;
+    }
+    
+    public SQLAssignItem parseAssignItem() {
+        SQLAssignItem item = new SQLAssignItem();
+        
+        SQLExpr var = primary();
+        
+        if (var instanceof SQLIdentifierExpr) {
+            String ident = ((SQLIdentifierExpr) var).getName();
+            
+            if ("GLOBAL".equalsIgnoreCase(ident)) {
+                ident = lexer.stringVal();
+                lexer.nextToken();
+                var = new SQLVariantRefExpr(ident, true);
+            } else if ("SESSION".equalsIgnoreCase(ident)) {
+                    ident = lexer.stringVal();
+                    lexer.nextToken();
+                    var = new SQLVariantRefExpr(ident, false);
+            } else {
+                var = new SQLVariantRefExpr(ident);
+            }
+        }
+        item.setTarget(var);
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+        } else {
+            accept(Token.EQ);
+        }
+        item.setValue(expr());
+
+        return item;
     }
 }

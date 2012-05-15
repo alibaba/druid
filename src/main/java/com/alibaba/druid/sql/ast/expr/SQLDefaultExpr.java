@@ -1,8 +1,9 @@
 package com.alibaba.druid.sql.ast.expr;
 
+import com.alibaba.druid.sql.ast.SQLExprImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLDefaultExpr extends SQLLiteralExpr {
+public class SQLDefaultExpr extends SQLExprImpl implements SQLLiteralExpr {
 
     private static final long serialVersionUID = 1L;
 

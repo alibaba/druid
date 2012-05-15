@@ -39,6 +39,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -505,4 +508,34 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 	public void endVisit(MySqlUpdateStatement x) {
 		
 	}
+
+    @Override
+    public boolean visit(MySqlSetTransactionIsolationLevelStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetTransactionIsolationLevelStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlSetNamesStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlSetNamesStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlSetCharSetStatement x) {
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlSetCharSetStatement x) {
+        
+    }
 }

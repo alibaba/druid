@@ -294,11 +294,7 @@ public class SQLStatementParser extends SQLParser {
 
     public void parseAssignItems(List<SQLAssignItem> items) {
         for (;;) {
-            SQLAssignItem item = new SQLAssignItem();
-            item.setTarget(exprParser.primary());
-            accept(Token.EQ);
-            item.setValue(exprParser.expr());
-
+            SQLAssignItem item = exprParser.parseAssignItem();
             items.add(item);
 
             if (lexer.token() == Token.COMMA) {
@@ -309,6 +305,7 @@ public class SQLStatementParser extends SQLParser {
             }
         }
     }
+
 
     public SQLStatement parseCreate() throws ParserException {
         char mark_ch = lexer.current();
