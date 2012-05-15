@@ -17,6 +17,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinLogEventsSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -290,64 +293,62 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW CHARACTER SET", output);
     }
     
+    public void test_show_columns() throws Exception {
+        String sql = "SHOW full columns from tb1 from db1 like 'var' ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowColumnsStatement show = (MySqlShowColumnsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FULL COLUMNS FROM db1.tb1 LIKE 'var'", output);
+    }
+    
+    public void test_show_columns_1() throws Exception {
+        String sql = "show columns from events where Field = 'name'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowColumnsStatement show = (MySqlShowColumnsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COLUMNS FROM events WHERE Field = 'name'", output);
+    }
+    
+    public void test_show_columns_2() throws Exception {
+        String sql = "SHOW COLUMNS FROM City";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowColumnsStatement show = (MySqlShowColumnsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW COLUMNS FROM City", output);
+    }
+    
+    public void test_show_columns_3() throws Exception {
+        String sql = "SHOW full columns from db1.tb1 like 'var' ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowColumnsStatement show = (MySqlShowColumnsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FULL COLUMNS FROM db1.tb1 LIKE 'var'", output);
+    }
+    
+    public void test_show_contributors() throws Exception {
+        String sql = "SHOW contributors";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowContributorsStatement show = (MySqlShowContributorsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CONTRIBUTORS", output);
+    }
+    
+    public void test_show_create_database() throws Exception {
+        String sql = "SHOW CREATE DATABASE db_name";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowCreateDatabaseStatement show = (MySqlShowCreateDatabaseStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW CREATE DATABASE db_name", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW full columns from tb1 from db1 like 'var' ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FULL COLUMNS FROM db1.tb1 LIKE 'var'", output);
-//
-//        sql = "SHOW full columns from tb1 from db1 where count(col)>10 ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FULL COLUMNS FROM db1.tb1 WHERE COUNT(col) > 10", output);
-//
-//        sql = "SHOW columns from tb1 from db1 like 'var' ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW COLUMNS FROM db1.tb1 LIKE 'var'", output);
-//
-//        sql = "SHOW columns from tb1 like 'var' ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW COLUMNS FROM tb1 LIKE 'var'", output);
-//
-//        sql = "SHOW full columns from tb1 from db1 ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FULL COLUMNS FROM db1.tb1", output);
-//
-//        sql = "SHOW contributors ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CONTRIBUTORS", output);
-//
-//        sql = "SHOW CREATE DATABASE db_name ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW CREATE DATABASE db_name", output);
 //
 //        sql = "SHOW create event expr ";
 //        lexer = new SQLLexer(sql);

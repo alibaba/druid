@@ -39,6 +39,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowBinaryLogsStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCharacterSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCollationStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowColumnsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowContributorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateDatabaseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
@@ -540,6 +542,26 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlShowCharacterSetStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowContributorsStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowContributorsStatement x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlShowCreateDatabaseStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowCreateDatabaseStatement x) {
         
     }
 }
