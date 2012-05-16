@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -706,55 +707,53 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW MASTER STATUS", output);
     }
     
+    public void test_open_tables() throws Exception {
+        String sql = "SHOW OPEN TABLES";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowOpenTablesStatement show = (MySqlShowOpenTablesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW OPEN TABLES", output);
+    }
+    
+    public void test_open_tables_1() throws Exception {
+        String sql = "SHOW OPEN TABLES FROM mysql";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowOpenTablesStatement show = (MySqlShowOpenTablesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW OPEN TABLES FROM mysql", output);
+    }
+    
+    public void test_open_tables_2() throws Exception {
+        String sql = "SHOW OPEN TABLES in mysql";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowOpenTablesStatement show = (MySqlShowOpenTablesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW OPEN TABLES FROM mysql", output);
+    }
+    
+    public void test_open_tables_3() throws Exception {
+        String sql = "SHOW OPEN TABLES in mysql like '%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowOpenTablesStatement show = (MySqlShowOpenTablesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW OPEN TABLES FROM mysql LIKE '%'", output);
+    }
+    
+    public void test_open_tables_4() throws Exception {
+        String sql = "SHOW OPEN TABLES in mysql where 1 = 1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowOpenTablesStatement show = (MySqlShowOpenTablesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW OPEN TABLES FROM mysql WHERE 1 = 1", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//        sql = "SHOW master status";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW MASTER STATUS", output);
-//
-//        sql = "SHOW open tables from db like 'expr'";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW OPEN TABLES FROM db LIKE 'expr'", output);
-//
-//        sql = "SHOW open tables from db where tb is not null";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW OPEN TABLES FROM db WHERE tb IS NOT NULL", output);
-//
-//        sql = "SHOW open tables from db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW OPEN TABLES FROM db", output);
-//
-//        sql = "SHOW open tables in db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW OPEN TABLES FROM db", output);
-//
-//        sql = "SHOW open tables";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW OPEN TABLES", output);
 //
 //        sql = "SHOW plugins";
 //        lexer = new SQLLexer(sql);

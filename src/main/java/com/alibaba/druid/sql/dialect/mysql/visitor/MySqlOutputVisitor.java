@@ -92,6 +92,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1875,6 +1876,33 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowMasterStatusStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowOpenTablesStatement x) {
+        print("SHOW OPEN TABLES");
+        
+        if (x.getDatabase() != null) {
+            print(" FROM ");
+            x.getDatabase().accept(this);
+        }
+        
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowOpenTablesStatement x) {
         
     }
 }

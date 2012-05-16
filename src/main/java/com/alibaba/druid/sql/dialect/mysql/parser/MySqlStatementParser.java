@@ -82,6 +82,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -796,6 +797,28 @@ public class MySqlStatementParser extends SQLStatementParser {
                 }
             }
             
+            return stmt;
+        }
+        
+        if (identifierEquals("OPEN")) {
+            lexer.nextToken();
+            acceptIdentifier("TABLES");
+            MySqlShowOpenTablesStatement stmt = new MySqlShowOpenTablesStatement();
+            
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setDatabase(this.exprParser.name());
+            }
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setLike(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
             return stmt;
         }
 
