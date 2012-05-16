@@ -81,6 +81,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -524,8 +525,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("MASTER")) {
             lexer.nextToken();
-            acceptIdentifier("LOGS");
-            return new MySqlShowMasterLogsStatement();
+            if (identifierEquals("LOGS")) {
+                lexer.nextToken();
+                return new MySqlShowMasterLogsStatement();
+            }
+            acceptIdentifier("STATUS");
+            return new MySqlShowMasterStatusStatement();
         }
 
         if (identifierEquals("CHARACTER")) {

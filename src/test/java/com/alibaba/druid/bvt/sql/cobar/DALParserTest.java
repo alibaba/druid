@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -694,6 +695,15 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW KEYS FROM db.tb1", output);
+    }
+    
+    public void test_master_status() throws Exception {
+        String sql = "SHOW MASTER STATUS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowMasterStatusStatement show = (MySqlShowMasterStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW MASTER STATUS", output);
     }
     
 //
