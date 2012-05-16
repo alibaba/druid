@@ -2209,4 +2209,5 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlAlterTableAddColumn x) {
 
     }
+
 }
