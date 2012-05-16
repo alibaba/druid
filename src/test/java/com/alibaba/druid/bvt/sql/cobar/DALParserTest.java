@@ -49,6 +49,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -897,6 +899,24 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW SLAVE STATUS", output);
+    }
+    
+    public void test_show_status() throws Exception {
+        String sql = "SHOW STATUS LIKE 'Key%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowStatusStatement show = (MySqlShowStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW STATUS LIKE 'Key%'", output);
+    }
+    
+    public void test_show_table_status() throws Exception {
+        String sql = "SHOW TABLE STATUS FROM mysql";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowTableStatusStatement show = (MySqlShowTableStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW TABLE STATUS FROM mysql", output);
     }
     
 //
