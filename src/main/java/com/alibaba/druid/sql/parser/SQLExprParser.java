@@ -217,7 +217,6 @@ public class SQLExprParser extends SQLParser {
             case REFERENCE:
             case KEY:
             case DISTINCT:
-            case ZONE:
             case LIMIT:
             case SCHEMA:
             case COLUMN:

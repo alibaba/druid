@@ -119,7 +119,6 @@ public class OracleLexer extends Lexer {
         map.put("SESSION", Token.SESSION);
         map.put("PROCEDURE", Token.PROCEDURE);
         map.put("LOCAL", Token.LOCAL);
-        map.put("ZONE", Token.ZONE);
         map.put("SYSDATE", Token.SYSDATE);
         map.put("DECLARE", Token.DECLARE);
         map.put("EXCEPTION", Token.EXCEPTION);

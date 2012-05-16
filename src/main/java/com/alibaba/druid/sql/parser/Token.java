@@ -156,7 +156,6 @@ public enum Token {
     SESSION("SESSION"),
     PROCEDURE("PROCEDURE"),
     LOCAL("LOCAL"),
-    ZONE("ZONE"),
     SYSDATE("SYSDATE"),
     DECLARE("DECLARE"),
     EXCEPTION("EXCEPTION"),

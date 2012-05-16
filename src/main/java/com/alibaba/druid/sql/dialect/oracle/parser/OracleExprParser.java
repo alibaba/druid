@@ -416,7 +416,7 @@ public class OracleExprParser extends SQLExprParser {
                     lexer.reset(mark_bp, mark_ch, Token.IDENTIFIER);
                     return expr;
                 }
-                accept(Token.ZONE);
+                acceptIdentifier("ZONE");
                 
                 SQLExpr timeZone = primary();
                 expr = new OracleDatetimeExpr(expr, timeZone);
