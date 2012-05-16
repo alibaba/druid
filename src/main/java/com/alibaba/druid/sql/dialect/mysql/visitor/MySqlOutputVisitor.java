@@ -100,6 +100,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatu
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -2019,6 +2020,33 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowProfilesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowRelayLogEventsStatement x) {
+        print("SHOW RELAYLOG EVENTS");
+        
+        if (x.getLogName() != null) {
+            print(" IN ");
+            x.getLogName().accept(this);
+        }
+        
+        if (x.getFrom() != null) {
+            print(" FROM ");
+            x.getFrom().accept(this);
+        }
+        
+        if (x.getLimit() != null) {
+            print(' ');
+            x.getLimit().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowRelayLogEventsStatement x) {
         
     }
 }

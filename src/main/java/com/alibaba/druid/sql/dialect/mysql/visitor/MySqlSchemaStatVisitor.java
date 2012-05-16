@@ -77,6 +77,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatu
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -899,6 +900,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProfilesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowRelayLogEventsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowRelayLogEventsStatement x) {
         
     }
 }

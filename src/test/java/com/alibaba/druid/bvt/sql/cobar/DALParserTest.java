@@ -46,6 +46,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatu
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -858,6 +859,24 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW PROFILE ALL, BLOCK IO, CONTEXT SWITCHES, CPU, IPC, MEMORY, PAGE FAULTS, SOURCE, SWAPS FOR QUERY 2 LIMIT 2, 1", output);
+    }
+    
+    public void test_show_relayLogEvents() throws Exception {
+        String sql = "SHOW RELAYLOG EVENTS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowRelayLogEventsStatement show = (MySqlShowRelayLogEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW RELAYLOG EVENTS", output);
+    }
+    
+    public void test_show_relayLogEvents_1() throws Exception {
+        String sql = "SHOW RELAYLOG EVENTS IN 'x' from 3 limit 5,6";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowRelayLogEventsStatement show = (MySqlShowRelayLogEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW RELAYLOG EVENTS IN 'x' FROM 3 LIMIT 5, 6", output);
     }
     
 //

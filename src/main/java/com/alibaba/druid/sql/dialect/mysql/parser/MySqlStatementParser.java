@@ -90,6 +90,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatu
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -936,6 +937,26 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 acceptIdentifier("QUERY");
                 stmt.setForQuery(this.exprParser.primary());
+            }
+            
+            stmt.setLimit(this.parseLimit());
+            
+            return stmt;
+        }
+        
+        if (identifierEquals("RELAYLOG")) {
+            lexer.nextToken();
+            acceptIdentifier("EVENTS");
+            MySqlShowRelayLogEventsStatement stmt = new MySqlShowRelayLogEventsStatement();
+            
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setLogName(this.exprParser.primary());
+            }
+            
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                stmt.setFrom(this.exprParser.primary());
             }
             
             stmt.setLimit(this.parseLimit());
