@@ -83,6 +83,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -819,6 +821,18 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setWhere(this.exprParser.expr());
             }
+            return stmt;
+        }
+        
+        if (identifierEquals("PLUGINS")) {
+            lexer.nextToken();
+            MySqlShowPluginsStatement stmt = new MySqlShowPluginsStatement();
+            return stmt;
+        }
+        
+        if (identifierEquals("PRIVILEGES")) {
+            lexer.nextToken();
+            MySqlShowPrivilegesStatement stmt = new MySqlShowPrivilegesStatement();
             return stmt;
         }
 
