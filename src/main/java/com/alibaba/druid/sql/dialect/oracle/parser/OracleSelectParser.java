@@ -350,7 +350,8 @@ public class OracleSelectParser extends SQLSelectParser {
             model.setReturnRowsClause(returnRowsClause);
         }
 
-        while (lexer.token() == Token.REFERENCE) {
+        
+        while (identifierEquals("REFERENCE")) {
             ReferenceModelClause referenceModelClause = new ReferenceModelClause();
             lexer.nextToken();
 
@@ -546,7 +547,7 @@ public class OracleSelectParser extends SQLSelectParser {
                 options.add(CellReferenceOption.UniqueDimension);
             } else {
                 acceptIdentifier("SINGLE");
-                accept(Token.REFERENCE);
+                acceptIdentifier("REFERENCE");
                 options.add(CellReferenceOption.UniqueDimension);
             }
         }

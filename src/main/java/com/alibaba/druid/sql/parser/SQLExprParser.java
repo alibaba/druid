@@ -214,7 +214,6 @@ public class SQLExprParser extends SQLParser {
             case USER:
             case PASSWORD:
             case DUAL:
-            case REFERENCE:
             case KEY:
             case DISTINCT:
             case LIMIT:
@@ -615,9 +614,6 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.IDENTIFIER) {
             identName = lexer.stringVal();
 
-            lexer.nextToken();
-        } else if (lexer.token() == Token.REFERENCE) {
-            identName = lexer.stringVal();
             lexer.nextToken();
         } else {
             throw new ParserException("error " + lexer.token());

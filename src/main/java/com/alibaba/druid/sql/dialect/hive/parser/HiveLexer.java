@@ -25,7 +25,6 @@ public class HiveLexer extends Lexer {
         map.put("FOR", Token.FOR);
         map.put("SCHEMA", Token.SCHEMA);
         map.put("FOREIGN", Token.FOREIGN);
-        map.put("REFERENCE", Token.REFERENCE);
         map.put("REFERENCES", Token.REFERENCES);
         map.put("CHECK", Token.CHECK);
         map.put("PRIMARY", Token.PRIMARY);

@@ -53,7 +53,6 @@ public enum Token {
     DISTINCT("DISTINCT"),
     UNIQUE("UNIQUE"), 
     FOREIGN("FOREIGN"), 
-    REFERENCE("REFERENCE"), 
     REFERENCES("REFERENCES"), 
     ALL("ALL"), 
     UNION("UNION"), 
