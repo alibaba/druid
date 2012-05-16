@@ -98,6 +98,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1977,6 +1979,46 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowProcessListStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProfileStatement x) {
+        print("SHOW PROFILE");
+        for (int i = 0; i < x.getTypes().size(); ++i) {
+            if (i == 0) {
+                print(' ');
+            } else {
+                print(", ");
+            }
+            print(x.getTypes().get(i).name);
+        }
+        
+        if (x.getForQuery() != null) {
+            print(" FOR QUERY ");
+            x.getForQuery().accept(this);
+        }
+        
+        if (x.getLimit() != null) {
+            print(' ');
+            x.getLimit().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProfileStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProfilesStatement x) {
+        print("SHOW PROFILES");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProfilesStatement x) {
         
     }
 }

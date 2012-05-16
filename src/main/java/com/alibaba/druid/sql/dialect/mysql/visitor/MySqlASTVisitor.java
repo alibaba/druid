@@ -79,6 +79,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -376,4 +378,12 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowProcessListStatement x);
     
     void endVisit(MySqlShowProcessListStatement x);
+    
+    boolean visit(MySqlShowProfileStatement x);
+    
+    void endVisit(MySqlShowProfileStatement x);
+    
+    boolean visit(MySqlShowProfilesStatement x);
+    
+    void endVisit(MySqlShowProfilesStatement x);
 }

@@ -44,6 +44,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -828,34 +830,38 @@ public class DALParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW FULL PROCESSLIST", output);
     }
+
     
+    public void test_show_profiles() throws Exception {
+        String sql = "SHOW profiles";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProfilesStatement show = (MySqlShowProfilesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROFILES", output);
+    }
+    
+    
+    public void test_show_profile() throws Exception {
+        String sql = "SHOW profile";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProfileStatement show = (MySqlShowProfileStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROFILE", output);
+    }
+    
+    public void test_show_profile_1() throws Exception {
+        String sql = "SHOW profile all,block io,context switches,cpu,ipc,memory, page faults,source,swaps for query 2 limit 1 offset 2";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProfileStatement show = (MySqlShowProfileStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROFILE ALL, BLOCK IO, CONTEXT SWITCHES, CPU, IPC, MEMORY, PAGE FAULTS, SOURCE, SWAPS FOR QUERY 2 LIMIT 2, 1", output);
+    }
     
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW processlist";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROCESSLIST", output);
-//
-//        sql = "SHOW full processlist";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FULL PROCESSLIST", output);
-//
-//        sql = "SHOW profiles";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROFILES", output);
 //
 //        sql =
 //                "SHOW profile all,block io,context switches,cpu,ipc,memory,"

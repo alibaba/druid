@@ -88,6 +88,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -875,6 +877,69 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("PROCESSLIST")) {
             lexer.nextToken();
             MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
+            return stmt;
+        }
+        
+        if (identifierEquals("PROFILES")) {
+            lexer.nextToken();
+            MySqlShowProfilesStatement stmt = new MySqlShowProfilesStatement();
+            return stmt;
+        }
+        
+        if (identifierEquals("PROFILE")) {
+            lexer.nextToken();
+            MySqlShowProfileStatement stmt = new MySqlShowProfileStatement();
+            
+            for (;;) {
+                if (lexer.token() == Token.ALL) {
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.ALL);
+                    lexer.nextToken();
+                } else if (identifierEquals("BLOCK")) {
+                    lexer.nextToken();
+                    acceptIdentifier("IO");
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.BLOCK_IO);
+                } else if (identifierEquals("CONTEXT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("SWITCHES");
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.CONTEXT_SWITCHES);
+                } else if (identifierEquals("CPU")) {
+                    lexer.nextToken();
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.CPU);
+                } else if (identifierEquals("IPC")) {
+                    lexer.nextToken();
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.IPC);
+                } else if (identifierEquals("MEMORY")) {
+                    lexer.nextToken();
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.MEMORY);
+                } else if (identifierEquals("PAGE")) {
+                    lexer.nextToken();
+                    acceptIdentifier("FAULTS");
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.PAGE_FAULTS);
+                } else if (identifierEquals("SOURCE")) {
+                    lexer.nextToken();
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.SOURCE);
+                } else if (identifierEquals("SWAPS")) {
+                    lexer.nextToken();
+                    stmt.getTypes().add(MySqlShowProfileStatement.Type.SWAPS);
+                } else {
+                    break;
+                }
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                break;
+            }
+            
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                acceptIdentifier("QUERY");
+                stmt.setForQuery(this.exprParser.primary());
+            }
+            
+            stmt.setLimit(this.parseLimit());
+            
             return stmt;
         }
 
