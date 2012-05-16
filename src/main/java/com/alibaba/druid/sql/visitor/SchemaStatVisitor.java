@@ -21,6 +21,8 @@ import com.alibaba.druid.sql.ast.expr.SQLInSubQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
@@ -898,5 +900,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String table = stmt.getName().toString();
+
+        for (SQLColumnDefinition column : x.getColumns()) {
+            String columnName = column.getName().toString();
+            addColumn(table, columnName);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableAddColumn x) {
+
     }
 }

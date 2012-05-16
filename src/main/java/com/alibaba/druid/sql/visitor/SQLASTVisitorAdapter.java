@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
@@ -585,4 +586,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         return true;
     }
 
+    @Override
+    public boolean visit(SQLAlterTableAddColumn x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableAddColumn x) {
+
+    }
 }

@@ -50,7 +50,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSessionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterSynonymStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddConstaint;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableDropPartition;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableModify;
@@ -1033,16 +1032,6 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(OracleAlterTableAddColumn x) {
-        return true;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableAddColumn x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateIndexStatement x) {
         return true;
     }
@@ -1391,15 +1380,15 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     public void endVisit(OracleSavePointStatement x) {
 
     }
-    
+
     @Override
     public boolean visit(OracleCreateProcedureStatement x) {
         return true;
     }
-    
+
     @Override
     public void endVisit(OracleCreateProcedureStatement x) {
-        
+
     }
 
 }

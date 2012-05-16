@@ -1,19 +1,19 @@
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAlterTableAddColumn extends OracleAlterTableItem {
+public class SQLAlterTableAddColumn extends SQLObjectImpl implements SQLAlterTableItem {
 
     private static final long         serialVersionUID = 1L;
 
     private List<SQLColumnDefinition> columns          = new ArrayList<SQLColumnDefinition>();
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columns);
         }
