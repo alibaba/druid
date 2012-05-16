@@ -184,10 +184,6 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
 
                 return primaryRest(extract);
-            case TIMESTAMP:
-                return primaryRest(parseTimestamp());
-            case DATE:
-                return primaryRest(parseDate());
             case BINARY_FLOAT:
                 OracleBinaryFloatExpr floatExpr = new OracleBinaryFloatExpr();
                 floatExpr.setValue(Float.parseFloat(lexer.numberString()));
@@ -284,6 +280,12 @@ public class OracleExprParser extends SQLExprParser {
                     sqlExpr = cursorExpr;
                     return  primaryRest(sqlExpr);
             default:
+                if (identifierEquals("DATE")) {
+                    return primaryRest(parseDate());     
+                }
+                if (identifierEquals("TIMESTAMP")) {
+                    return primaryRest(parseTimestamp());     
+                }
                 return super.primary();
         }
     }
@@ -460,7 +462,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public OracleDateExpr parseDate() {
-        accept(Token.DATE);
+        identifierEquals("DATE");
 
         OracleDateExpr timestamp = new OracleDateExpr();
 
@@ -472,7 +474,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLExpr parseTimestamp() {
-        accept(Token.TIMESTAMP);
+        acceptIdentifier("TIMESTAMP");
         
         if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.LITERAL_CHARS) {
             return new SQLIdentifierExpr("TIMESTAMP");

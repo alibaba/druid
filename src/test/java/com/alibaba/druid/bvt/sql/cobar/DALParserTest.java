@@ -30,6 +30,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesState
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -519,64 +523,98 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW ERRORS LIMIT 1, 2", output);
     }
     
+    public void test_show_events() throws Exception {
+        String sql = "SHOW EVENTS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEventsStatement show = (MySqlShowEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW EVENTS", output);
+    }
+    
+    public void test_show_events_1() throws Exception {
+        String sql = "SHOW EVENTS from x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEventsStatement show = (MySqlShowEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW EVENTS FROM x", output);
+    }
+    
+    public void test_show_events_2() throws Exception {
+        String sql = "SHOW EVENTS in x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEventsStatement show = (MySqlShowEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW EVENTS FROM x", output);
+    }
+    
+    public void test_show_events_3() throws Exception {
+        String sql = "SHOW EVENTS in x like '%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEventsStatement show = (MySqlShowEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW EVENTS FROM x LIKE '%'", output);
+    }
+    
+    public void test_show_events_4() throws Exception {
+        String sql = "SHOW EVENTS in x where 1 = 1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowEventsStatement show = (MySqlShowEventsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW EVENTS FROM x WHERE 1 = 1", output);
+    }
+    
+    public void test_show_function_code() throws Exception {
+        String sql = "SHOW function code x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowFunctionCodeStatement show = (MySqlShowFunctionCodeStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FUNCTION CODE x", output);
+    }
+    
+    public void test_show_function_status() throws Exception {
+        String sql = "SHOW function status like '%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowFunctionStatusStatement show = (MySqlShowFunctionStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FUNCTION STATUS LIKE '%'", output);
+    }
+    
+    public void test_show_function_status_1() throws Exception {
+        String sql = "SHOW function status where 1 = 1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowFunctionStatusStatement show = (MySqlShowFunctionStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FUNCTION STATUS WHERE 1 = 1", output);
+    }
+    
+    public void test_show_function_status_2() throws Exception {
+        String sql = "SHOW function status ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowFunctionStatusStatement show = (MySqlShowFunctionStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FUNCTION STATUS", output);
+    }
+    
+    public void test_show_grants() throws Exception {
+        String sql = "SHOW GRANTS FOR 'root'@'localhost';";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW GRANTS FOR 'root'@'localhost'", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW events";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW EVENTS", output);
-//
-//        sql = "SHOW events from expr like 'var' ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW EVENTS FROM expr LIKE 'var'", output);
-//
-//        sql = "SHOW events from expr where expr1";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW EVENTS FROM expr WHERE expr1", output);
-//
-//        sql = "SHOW function code expr";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FUNCTION CODE expr", output);
-//
-//        sql = "SHOW function status like 'expr'";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FUNCTION STATUS LIKE 'expr'", output);
-//
-//        sql = "SHOW function status where a is true";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FUNCTION STATUS WHERE a IS TRUE", output);
-//
-//        sql = "SHOW function status ";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW FUNCTION STATUS", output);
 //
 //        sql = "SHOW grants for 'expr'";
 //        lexer = new SQLLexer(sql);

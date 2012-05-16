@@ -620,7 +620,7 @@ public class SQLExprParser extends SQLParser {
             identName = lexer.stringVal();
 
             lexer.nextToken();
-        } else if (lexer.token() == Token.REFERENCE || lexer.token() == Token.DATE || lexer.token() == Token.TIMESTAMP) {
+        } else if (lexer.token() == Token.REFERENCE) {
             identName = lexer.stringVal();
             lexer.nextToken();
         } else {

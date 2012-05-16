@@ -95,8 +95,6 @@ public class OracleLexer extends Lexer {
         map.put("PRIOR", Token.PRIOR);
         map.put("WITH", Token.WITH);
         map.put("EXTRACT", Token.EXTRACT);
-        map.put("DATE", Token.DATE);
-        map.put("TIMESTAMP", Token.TIMESTAMP);
         map.put("COLUMN", Token.COLUMN);
 
         map.put("CURSOR", Token.CURSOR);

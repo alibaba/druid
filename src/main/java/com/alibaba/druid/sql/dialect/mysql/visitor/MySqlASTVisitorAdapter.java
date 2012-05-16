@@ -51,6 +51,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesState
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -656,11 +660,50 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public boolean visit(MySqlShowErrorsStatement x) {
-        return false;
+        return true;
     }
 
     @Override
     public void endVisit(MySqlShowErrorsStatement x) {
         
+    }
+    
+    @Override
+    public boolean visit(MySqlShowEventsStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlShowEventsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionCodeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionCodeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionStatusStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionStatusStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowGrantsStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowGrantsStatement x) {
     }
 }

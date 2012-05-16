@@ -83,6 +83,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesState
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -1469,9 +1473,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlSetNamesStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlSetCharSetStatement x) {
         print("SET CHARACTER SET ");
@@ -1486,15 +1490,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlSetCharSetStatement x) {
-        
+
     }
 
     @Override
     public void endVisit(MySqlShowAuthorsStatement x) {
-        
+
     }
 
     @Override
@@ -1502,12 +1506,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print("SHOW AUTHORS");
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowBinaryLogsStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowBinaryLogsStatement x) {
         print("SHOW BINARY LOGS");
@@ -1522,9 +1526,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowMasterLogsStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowCollationStatement x) {
         print("SHOW COLLATION");
@@ -1538,12 +1542,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowCollationStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowBinLogEventsStatement x) {
         print("SHOW BINLOG EVENTS");
@@ -1561,10 +1565,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowBinLogEventsStatement x) {
-        
+
     }
 
     @Override
@@ -1583,7 +1587,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCharacterSetStatement x) {
-        
+
     }
 
     @Override
@@ -1594,19 +1598,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowContributorsStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowCreateDatabaseStatement x) {
         print("SHOW CREATE DATABASE ");
         x.getDatabase().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowCreateDatabaseStatement x) {
-        
+
     }
 
     @Override
@@ -1618,31 +1622,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCreateEventStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowCreateFunctionStatement x) {
         print("SHOW CREATE FUNCTION ");
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowCreateFunctionStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowCreateProcedureStatement x) {
         print("SHOW CREATE PROCEDURE ");
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowCreateProcedureStatement x) {
-        
+
     }
 
     @Override
@@ -1654,7 +1658,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCreateTableStatement x) {
-        
+
     }
 
     @Override
@@ -1666,7 +1670,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCreateTriggerStatement x) {
-        
+
     }
 
     @Override
@@ -1678,7 +1682,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowCreateViewStatement x) {
-        
+
     }
 
     @Override
@@ -1692,7 +1696,66 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowEngineStatement x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowEventsStatement x) {
+        print("SHOW EVENTS");
+        if (x.getSchema() != null) {
+            print(" FROM ");
+            x.getSchema().accept(this);
+        }
+
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowEventsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionCodeStatement x) {
+        print("SHOW FUNCTION CODE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionCodeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionStatusStatement x) {
+        print("SHOW FUNCTION STATUS");
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionStatusStatement x) {
+
     }
 
     @Override
@@ -1707,7 +1770,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowEnginesStatement x) {
-        
+
     }
 
     @Override
@@ -1726,6 +1789,16 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowErrorsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowGrantsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowGrantsStatement x) {
         
     }
 }

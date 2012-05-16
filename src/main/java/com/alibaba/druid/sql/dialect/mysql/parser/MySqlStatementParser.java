@@ -52,6 +52,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetTransactionIsolationLevelStatement;
@@ -73,6 +74,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesState
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -110,26 +115,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
         MySqlUpdateStatement stmt = (MySqlUpdateStatement) super.parseUpdateStatement();
 
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-
-            SQLExpr temp = this.exprParser.expr();
-            if (lexer.token() == (Token.COMMA)) {
-                limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(exprParser.expr());
-            } else if (identifierEquals("OFFSET")) {
-                limit.setRowCount(temp);
-                lexer.nextToken();
-                limit.setOffset(exprParser.expr());
-            } else {
-                limit.setRowCount(temp);
-            }
-
-            stmt.setLimit(limit);
-        }
+        stmt.setLimit(parseLimit());
 
         return stmt;
     }
@@ -193,15 +179,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             deleteStatement.setOrderBy(orderBy);
         }
 
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-            SQLExpr rowCount = exprParser.expr();
-            limit.setRowCount(rowCount);
-
-            deleteStatement.setLimit(limit);
-        }
+        deleteStatement.setLimit(parseLimit());
 
         return deleteStatement;
     }
@@ -472,7 +450,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             if (identifierEquals("ERRORS")) {
                 lexer.nextToken();
-                
+
                 MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
                 stmt.setCount(true);
 
@@ -491,26 +469,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             MySqlShowErrorsStatement stmt = new MySqlShowErrorsStatement();
-            if (lexer.token() == Token.LIMIT) {
-                lexer.nextToken();
-
-                MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-
-                SQLExpr temp = this.exprParser.expr();
-                if (lexer.token() == (Token.COMMA)) {
-                    limit.setOffset(temp);
-                    lexer.nextToken();
-                    limit.setRowCount(exprParser.expr());
-                } else if (identifierEquals("OFFSET")) {
-                    limit.setRowCount(temp);
-                    lexer.nextToken();
-                    limit.setOffset(exprParser.expr());
-                } else {
-                    limit.setRowCount(temp);
-                }
-
-                stmt.setLimit(limit);
-            }
+            stmt.setLimit(parseLimit());
 
             return stmt;
         }
@@ -617,25 +576,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setFrom(this.exprParser.expr());
             }
 
-            if (lexer.token() == Token.LIMIT) {
-                lexer.nextToken();
-
-                MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-
-                SQLExpr temp = this.exprParser.expr();
-                if (lexer.token() == (Token.COMMA)) {
-                    limit.setOffset(temp);
-                    lexer.nextToken();
-                    limit.setRowCount(exprParser.expr());
-                } else if (identifierEquals("OFFSET")) {
-                    limit.setRowCount(temp);
-                    lexer.nextToken();
-                    limit.setOffset(exprParser.expr());
-                } else {
-                    limit.setRowCount(temp);
-                }
-                stmt.setLimit(limit);
-            }
+            stmt.setLimit(parseLimit());
 
             return stmt;
         }
@@ -730,6 +671,89 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
 
+        if (identifierEquals("EVENTS")) {
+            lexer.nextToken();
+            MySqlShowEventsStatement stmt = new MySqlShowEventsStatement();
+            
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setSchema(this.exprParser.name());
+            }
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setLike(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
+            return stmt;
+        }
+        
+        if (identifierEquals("FUNCTION")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("CODE")) {
+                lexer.nextToken();
+                MySqlShowFunctionCodeStatement stmt = new MySqlShowFunctionCodeStatement();
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            acceptIdentifier("STATUS");
+            MySqlShowFunctionStatusStatement stmt = new MySqlShowFunctionStatusStatement();
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setLike(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
+            return stmt;
+        }
+        
+        //MySqlShowFunctionStatusStatement
+
+        if (identifierEquals("ENGINE")) {
+            lexer.nextToken();
+            MySqlShowEngineStatement stmt = new MySqlShowEngineStatement();
+            stmt.setName(this.exprParser.name());
+            stmt.setOption(MySqlShowEngineStatement.Option.valueOf(lexer.stringVal().toUpperCase()));
+            lexer.nextToken();
+            return stmt;
+        }
+
+        if (identifierEquals("STORAGE")) {
+            lexer.nextToken();
+            acceptIdentifier("ENGINES");
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            stmt.setStorage(true);
+            return stmt;
+        }
+
+        if (identifierEquals("ENGINES")) {
+            lexer.nextToken();
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            return stmt;
+        }
+        
+        if (identifierEquals("GRANTS")) {
+            lexer.nextToken();
+            MySqlShowGrantsStatement stmt = new MySqlShowGrantsStatement();
+            
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                stmt.setUser(this.exprParser.name());
+            }
+            
+            return stmt;
+        }
+
         throw new ParserException("TODO " + lexer.stringVal());
     }
 
@@ -754,26 +778,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private MySqlShowWarningsStatement parseShowWarnings() throws ParserException {
         MySqlShowWarningsStatement stmt = new MySqlShowWarningsStatement();
 
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-
-            SQLExpr temp = this.exprParser.expr();
-            if (lexer.token() == (Token.COMMA)) {
-                limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(exprParser.expr());
-            } else if (identifierEquals("OFFSET")) {
-                limit.setRowCount(temp);
-                lexer.nextToken();
-                limit.setOffset(exprParser.expr());
-            } else {
-                limit.setRowCount(temp);
-            }
-
-            stmt.setLimit(limit);
-        }
+        stmt.setLimit(parseLimit());
 
         return stmt;
     }
@@ -1420,5 +1425,29 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
+    }
+
+    private Limit parseLimit() {
+        if (lexer.token() == Token.LIMIT) {
+            lexer.nextToken();
+
+            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
+
+            SQLExpr temp = this.exprParser.expr();
+            if (lexer.token() == (Token.COMMA)) {
+                limit.setOffset(temp);
+                lexer.nextToken();
+                limit.setRowCount(exprParser.expr());
+            } else if (identifierEquals("OFFSET")) {
+                limit.setRowCount(temp);
+                lexer.nextToken();
+                limit.setOffset(exprParser.expr());
+            } else {
+                limit.setRowCount(temp);
+            }
+            return limit;
+        }
+
+        return null;
     }
 }

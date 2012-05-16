@@ -60,6 +60,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesState
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -723,6 +727,46 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowErrorsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowEventsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowEventsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionCodeStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionCodeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionStatusStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionStatusStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowGrantsStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowGrantsStatement x) {
         
     }
 }

@@ -140,8 +140,6 @@ public enum Token {
     CONNECT("CONNECT"),
     WITH("WITH"),
     EXTRACT("EXTRACT"),
-    TIMESTAMP("TIMESTAMP"),
-    DATE("DATE"),
     CURSOR("CURSOR"),
     TO("TO"),
     MODEL("MODEL"),
