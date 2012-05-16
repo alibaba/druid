@@ -388,7 +388,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 OracleRollbackStatement stmt = new OracleRollbackStatement();
 
-                if (lexer.token() == Token.TO) {
+                if (identifierEquals("TO")) {
                     lexer.nextToken();
                     stmt.setTo(this.exprParser.name());
                 }
@@ -402,7 +402,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
                 OracleSavePointStatement stmt = new OracleSavePointStatement();
 
-                if (lexer.token() == Token.TO) {
+                if (identifierEquals("TO")) {
                     lexer.nextToken();
                     stmt.setTo(this.exprParser.name());
                 }
@@ -640,7 +640,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (identifierEquals("RENAME")) {
                 lexer.nextToken();
-                accept(Token.TO);
+                acceptIdentifier("TO");
                 stmt.setRenameTo(this.exprParser.name());
             }
 
@@ -915,7 +915,7 @@ public class OracleStatementParser extends SQLStatementParser {
     private OracleAlterTableItem parseAlterTableRename() {
         acceptIdentifier("RENAME");
 
-        if (lexer.token() == Token.TO) {
+        if (identifierEquals("TO")) {
             lexer.nextToken();
             OracleAlterTableRenameTo item = new OracleAlterTableRenameTo();
             item.setTo(this.exprParser.name());

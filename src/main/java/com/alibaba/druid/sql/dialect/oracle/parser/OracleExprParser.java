@@ -381,7 +381,7 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
             }
             
-            accept(Token.TO);
+            identifierEquals("TO");
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
@@ -702,8 +702,8 @@ public class OracleExprParser extends SQLExprParser {
             accept(Token.RPAREN);
         }
         
-        if (lexer.token() == Token.TO) {
-            accept(Token.TO);
+        if (identifierEquals("TO")) {
+            lexer.nextToken();
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
