@@ -117,27 +117,26 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE INDEX id_index ON lookup (id) USING BTREE", output);
     }
+    
+    public void test_createIndex_3() throws Exception {
+        String sql = "crEate index index_name using hash on tb(col(id))";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE INDEX index_name ON tb (col(id)) USING HASH", output);
+    }
+    
+    public void test_createIndex_4() throws Exception {
+        String sql = "crEate spatial index index_name on tb(col(id))";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE SPATIAL INDEX index_name ON tb (col(id))", output);
+    }
 
     // public void testDDLStmt() throws Exception {
-    // sql = "crEate unique index index_name on tb(col(id)) desc";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate fulltext index index_name on tb(col(id))";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate spatial index index_name on tb(col(id))";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate index index_name using hash on tb(col(id))";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
     //
     // sql = "drop index index_name on tb1";
     // lexer = new SQLLexer(sql);
