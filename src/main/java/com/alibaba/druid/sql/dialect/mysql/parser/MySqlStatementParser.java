@@ -90,6 +90,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatu
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProfilesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowRelayLogEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveHostsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -879,17 +882,17 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
             return stmt;
         }
-        
+
         if (identifierEquals("PROFILES")) {
             lexer.nextToken();
             MySqlShowProfilesStatement stmt = new MySqlShowProfilesStatement();
             return stmt;
         }
-        
+
         if (identifierEquals("PROFILE")) {
             lexer.nextToken();
             MySqlShowProfileStatement stmt = new MySqlShowProfileStatement();
-            
+
             for (;;) {
                 if (lexer.token() == Token.ALL) {
                     stmt.getTypes().add(MySqlShowProfileStatement.Type.ALL);
@@ -924,25 +927,58 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else {
                     break;
                 }
-                
+
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
                 }
                 break;
             }
-            
+
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
                 acceptIdentifier("QUERY");
                 stmt.setForQuery(this.exprParser.primary());
             }
-            
+
             stmt.setLimit(this.parseLimit());
-            
+
             return stmt;
         }
 
+        if (identifierEquals("RELAYLOG")) {
+            lexer.nextToken();
+            acceptIdentifier("EVENTS");
+            MySqlShowRelayLogEventsStatement stmt = new MySqlShowRelayLogEventsStatement();
+
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setLogName(this.exprParser.primary());
+            }
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                stmt.setFrom(this.exprParser.primary());
+            }
+
+            stmt.setLimit(this.parseLimit());
+
+            return stmt;
+        }
+
+        if (identifierEquals("SLAVE")) {
+            lexer.nextToken();
+            if (identifierEquals("STATUS")) {
+                lexer.nextToken();
+                return new MySqlShowSlaveStatusStatement();
+            } else {
+                acceptIdentifier("HOSTS");
+                MySqlShowSlaveHostsStatement stmt = new MySqlShowSlaveHostsStatement();
+                return stmt;
+            }
+        }
+
+        // MySqlShowSlaveHostsStatement
         throw new ParserException("TODO " + lexer.stringVal());
     }
 
