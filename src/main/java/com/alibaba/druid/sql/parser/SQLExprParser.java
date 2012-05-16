@@ -217,12 +217,9 @@ public class SQLExprParser extends SQLParser {
             case REFERENCE:
             case KEY:
             case DISTINCT:
-            case TIME:
             case ZONE:
-            case LOG:
             case LIMIT:
             case SCHEMA:
-            case AT:
             case COLUMN:
             case IF:
                 sqlExpr = new SQLIdentifierExpr(lexer.stringVal());

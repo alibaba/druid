@@ -104,7 +104,6 @@ public class OracleLexer extends Lexer {
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);
         map.put("MATCHED", Token.MATCHED);
-        map.put("LOG", Token.LOG);
         map.put("ERRORS", Token.ERRORS);
         map.put("REJECT", Token.REJECT);
         map.put("UNLIMITED", Token.UNLIMITED);
@@ -119,9 +118,7 @@ public class OracleLexer extends Lexer {
         map.put("NOWAIT", Token.NOWAIT);
         map.put("SESSION", Token.SESSION);
         map.put("PROCEDURE", Token.PROCEDURE);
-        map.put("AT", Token.AT);
         map.put("LOCAL", Token.LOCAL);
-        map.put("TIME", Token.TIME);
         map.put("ZONE", Token.ZONE);
         map.put("SYSDATE", Token.SYSDATE);
         map.put("DECLARE", Token.DECLARE);

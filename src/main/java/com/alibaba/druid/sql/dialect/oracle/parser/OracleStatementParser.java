@@ -592,7 +592,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
             if (identifierEquals("SNAPSHOT")) {
                 lexer.nextToken();
-                accept(Token.LOG);
+                acceptIdentifier("LOG");
                 stmt.setPurgeSnapshotLog(true);
             } else {
                 throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
@@ -964,7 +964,7 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleAlterTableSplitPartition item = new OracleAlterTableSplitPartition();
             item.setName(this.exprParser.name());
 
-            if (lexer.token() == Token.AT) {
+            if (identifierEquals("AT")) {
                 lexer.nextToken();
                 accept(Token.LPAREN);
                 this.exprParser.exprList(item.getAt());
@@ -1340,7 +1340,7 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     private OracleErrorLoggingClause parseErrorLoggingClause() {
-        if (lexer.token() == Token.LOG) {
+        if (identifierEquals("LOG")) {
             OracleErrorLoggingClause errorClause = new OracleErrorLoggingClause();
 
             lexer.nextToken();

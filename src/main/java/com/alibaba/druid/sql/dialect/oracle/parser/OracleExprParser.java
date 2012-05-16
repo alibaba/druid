@@ -402,7 +402,7 @@ public class OracleExprParser extends SQLExprParser {
             expr = interval;
         }
         
-        if (lexer.token() == Token.AT) {
+        if (identifierEquals("AT")) {
             char mark_ch = lexer.current();
             int mark_bp = lexer.bp();
             lexer.nextToken();
@@ -410,10 +410,10 @@ public class OracleExprParser extends SQLExprParser {
                 lexer.nextToken();
                 expr = new OracleDatetimeExpr(expr, new SQLIdentifierExpr("LOCAL"));
             } else {
-                if (lexer.token() == Token.TIME) {
+                if (identifierEquals("TIME")) {
                     lexer.nextToken();
                 } else {
-                    lexer.reset(mark_bp, mark_ch, Token.AT);
+                    lexer.reset(mark_bp, mark_ch, Token.IDENTIFIER);
                     return expr;
                 }
                 accept(Token.ZONE);
