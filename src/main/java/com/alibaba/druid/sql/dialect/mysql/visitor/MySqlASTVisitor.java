@@ -87,6 +87,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -406,4 +408,12 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowTableStatusStatement x);
     
     void endVisit(MySqlShowTableStatusStatement x);
+    
+    boolean visit(MySqlShowTriggersStatement x);
+    
+    void endVisit(MySqlShowTriggersStatement x);
+    
+    boolean visit(MySqlShowVariantsStatement x);
+    
+    void endVisit(MySqlShowVariantsStatement x);
 }

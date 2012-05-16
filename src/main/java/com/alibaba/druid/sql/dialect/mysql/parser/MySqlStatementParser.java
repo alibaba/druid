@@ -96,6 +96,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowSlaveStatusSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTableStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
@@ -504,6 +506,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
+        
+        if (identifierEquals("VARIABLES")) {
+            lexer.nextToken();
+            
+            MySqlShowVariantsStatement stmt = parseShowVariants();
+            
+            return stmt;
+        }
 
         if (identifierEquals("GLOBAL")) {
             lexer.nextToken();
@@ -511,6 +521,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (identifierEquals("STATUS")) {
                 lexer.nextToken();
                 MySqlShowStatusStatement stmt = parseShowStatus();
+                stmt.setGlobal(true);
+                return stmt;
+            }
+            
+            if (identifierEquals("VARIABLES")) {
+                lexer.nextToken();
+                MySqlShowVariantsStatement stmt = parseShowVariants();
                 stmt.setGlobal(true);
                 return stmt;
             }
@@ -522,6 +539,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (identifierEquals("STATUS")) {
                 lexer.nextToken();
                 MySqlShowStatusStatement stmt = parseShowStatus();
+                stmt.setSession(true);
+                return stmt;
+            }
+            
+            if (identifierEquals("VARIABLES")) {
+                lexer.nextToken();
+                MySqlShowVariantsStatement stmt = parseShowVariants();
                 stmt.setSession(true);
                 return stmt;
             }
@@ -1020,6 +1044,31 @@ public class MySqlStatementParser extends SQLStatementParser {
             
             return stmt;
         }
+        
+        if (identifierEquals("TRIGGERS")) {
+            lexer.nextToken();
+            MySqlShowTriggersStatement stmt = new MySqlShowTriggersStatement();
+
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                SQLName database = exprParser.name();
+                stmt.setDatabase(database);
+            }
+
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                SQLExpr like = exprParser.expr();
+                stmt.setLike(like);
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                SQLExpr where = exprParser.expr();
+                stmt.setWhere(where);
+            }
+
+            return stmt;
+        }
 
         // MySqlShowSlaveHostsStatement
         throw new ParserException("TODO " + lexer.stringVal());
@@ -1040,6 +1089,24 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setWhere(where);
         }
 
+        return stmt;
+    }
+    
+    private MySqlShowVariantsStatement parseShowVariants() throws ParserException {
+        MySqlShowVariantsStatement stmt = new MySqlShowVariantsStatement();
+        
+        if (lexer.token() == Token.LIKE) {
+            lexer.nextToken();
+            SQLExpr like = exprParser.expr();
+            stmt.setLike(like);
+        }
+        
+        if (lexer.token() == Token.WHERE) {
+            lexer.nextToken();
+            SQLExpr where = exprParser.expr();
+            stmt.setWhere(where);
+        }
+        
         return stmt;
     }
 
