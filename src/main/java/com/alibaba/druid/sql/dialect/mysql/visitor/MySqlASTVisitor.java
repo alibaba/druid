@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -440,4 +441,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlRenameTableStatement x);
     
     void endVisit(MySqlRenameTableStatement x);
+    
+    boolean visit(MySqlDropViewStatement x);
+    
+    void endVisit(MySqlDropViewStatement x);
 }

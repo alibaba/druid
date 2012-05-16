@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -1373,7 +1374,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         return false;
     }
-
+    
     @Override
     public void endVisit(MySqlPartitionByKey x) {
 
@@ -2272,6 +2273,27 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlRenameTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlDropViewStatement x) {
+        print("DROP VIEW ");
+        if (x.isIfExists()) {
+            print("IF EXISTS ");
+        }
+        
+        printAndAccept(x.getTableSources(), ", ");
+        
+        if (x.getOption() != null) {
+            print(' ');
+            print(x.getOption());
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlDropViewStatement x) {
         
     }
 
