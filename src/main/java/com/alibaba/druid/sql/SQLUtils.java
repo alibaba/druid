@@ -103,18 +103,6 @@ public class SQLUtils {
     }
     
     public static String format(String sql, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
-            return formatOracle(sql);
-        }
-        
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return formatMySql(sql);
-        }
-        
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return formatPGSql(sql);
-        }
-        
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         List<SQLStatement> statementList = parser.parseStatementList();
 

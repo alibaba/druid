@@ -63,7 +63,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
 
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertEquals(true, mockStmt != stmt.unwrap(MockPreparedStatement.class));
+            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();
@@ -77,7 +77,7 @@ public class TestSharePreparedStatements extends TestCase {
             conn.setAutoCommit(false);
             
             PreparedStatement stmt = conn.prepareStatement(sql);
-            Assert.assertEquals(true, mockStmt != stmt.unwrap(MockPreparedStatement.class));
+            Assert.assertSame(mockStmt, stmt.unwrap(MockPreparedStatement.class));
             ResultSet rs = stmt.executeQuery();
             rs.next();
             rs.close();

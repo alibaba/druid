@@ -300,15 +300,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         for (;;) {
             MySqlCreateUserStatement.UserSpecification userSpec = new MySqlCreateUserStatement.UserSpecification();
 
-            SQLCharExpr expr = (SQLCharExpr) exprParser.expr();
-            String user = expr.toString();
-            if (lexer.token() == Token.VARIANT) {
-                lexer.nextToken();
-                SQLCharExpr expr2 = (SQLCharExpr) exprParser.expr();
-                user += '@';
-                user += expr2.toString();
-            }
-            userSpec.setUser(new SQLIdentifierExpr(user));
+            SQLExpr expr = exprParser.primary();
+            userSpec.setUser(expr);
 
             if (lexer.token() == Token.IDENTIFIED) {
                 lexer.nextToken();
@@ -478,7 +471,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public MySqlDescribeStatement parseDescribe() throws ParserException {
-        if (identifierEquals("DESC") || identifierEquals("DESCRIBE")) {
+        if (lexer.token() == Token.DESC || identifierEquals("DESCRIBE")) {
             lexer.nextToken();
         } else {
             throw new ParserException("expect DESC, actual " + lexer.token());
@@ -1626,7 +1619,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             SQLName tableName = this.exprParser.name();
             insertStatement.setTableName(tableName);
 
-            if (lexer.token() == Token.IDENTIFIER) {
+            if (lexer.token() == Token.IDENTIFIER && !identifierEquals("VALUE")) {
                 insertStatement.setAlias(lexer.stringVal());
                 lexer.nextToken();
             }
@@ -1639,7 +1632,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             accept(Token.RPAREN);
         }
 
-        if (lexer.token() == (Token.VALUES)) {
+        if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
             lexer.nextToken();
 
             for (;;) {
@@ -1655,6 +1648,29 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else {
                     break;
                 }
+            }
+        } else if (lexer.token() == Token.SET) {
+            lexer.nextToken();
+
+            SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+            insertStatement.getValuesList().add(values);
+         
+            for (;;) {
+                SQLName name = this.exprParser.name();
+                insertStatement.getColumns().add(name);
+                if (lexer.token() == Token.EQ) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.COLONEQ);
+                }
+                values.getValues().add(this.exprParser.expr());
+                
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+                
+                break;
             }
 
         } else if (lexer.token() == (Token.SELECT)) {
@@ -1679,15 +1695,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         MySqlDropUser stmt = new MySqlDropUser();
         for (;;) {
-            SQLCharExpr expr = (SQLCharExpr) this.exprParser.expr();
-            String user = expr.toString();
-            if (lexer.token() == Token.VARIANT) {
-                lexer.nextToken();
-                SQLCharExpr expr2 = (SQLCharExpr) this.exprParser.expr();
-                user += '@';
-                user += expr2.toString();
-            }
-            stmt.getUsers().add(new SQLIdentifierExpr(user));
+            SQLExpr expr = this.exprParser.expr();
+            stmt.getUsers().add(expr);
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
@@ -1727,7 +1736,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             break;
         }
-        
+
         if (identifierEquals("RESTRICT")) {
             stmt.setOption("RESTRICT");
             lexer.nextToken();
@@ -1735,25 +1744,25 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setOption("CASCADE");
             lexer.nextToken();
         }
-        
+
         return stmt;
     }
-    
+
     protected SQLDropViewStatement parseDropView(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
         }
-        
+
         MySqlDropViewStatement stmt = new MySqlDropViewStatement();
-        
+
         accept(Token.VIEW);
-        
+
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
             accept(Token.EXISTS);
             stmt.setIfExists(true);
         }
-        
+
         for (;;) {
             SQLName name = this.exprParser.name();
             stmt.addTableSource(name);
@@ -1763,7 +1772,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             break;
         }
-        
+
         if (identifierEquals("RESTRICT")) {
             stmt.setOption("RESTRICT");
             lexer.nextToken();
@@ -1771,7 +1780,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setOption("CASCADE");
             lexer.nextToken();
         }
-        
+
         return stmt;
     }
 
@@ -2009,30 +2018,30 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
-    
+
     public SQLStatement parseRename() {
         MySqlRenameTableStatement stmt = new MySqlRenameTableStatement();
-        
+
         acceptIdentifier("RENAME");
-        
+
         accept(Token.TABLE);
-        
+
         for (;;) {
             MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
             item.setName(this.exprParser.name());
             acceptIdentifier("TO");
             item.setTo(this.exprParser.name());
-         
+
             stmt.getItems().add(item);
-            
+
             if (lexer.token() == Token.COMMA) {
                 lexer.nextToken();
                 continue;
             }
-            
+
             break;
         }
-        
+
         return stmt;
     }
 }

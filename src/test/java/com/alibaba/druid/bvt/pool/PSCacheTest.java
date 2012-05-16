@@ -38,7 +38,7 @@ public class PSCacheTest extends TestCase {
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
         Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;
@@ -66,7 +66,7 @@ public class PSCacheTest extends TestCase {
         DruidPooledPreparedStatement pooledStmt1 = (DruidPooledPreparedStatement) stmt1;
 
         Assert.assertEquals(1, pooledStmt1.getPreparedStatementHolder().getInUseCount());
-        Assert.assertNotSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
+        Assert.assertSame(pooledStmt1.getPreparedStatementHolder(), pooledStmt0.getPreparedStatementHolder()); // same
 
         PreparedStatement stmt2 = conn.prepareStatement(sql);
         DruidPooledPreparedStatement pooledStmt2 = (DruidPooledPreparedStatement) stmt2;

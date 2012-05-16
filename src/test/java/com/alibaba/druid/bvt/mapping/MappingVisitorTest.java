@@ -46,7 +46,7 @@ public class MappingVisitorTest extends TestCase {
     }
     
     public void test_insert() throws Exception {
-        Assert.assertEquals("INSERT INTO device\n\t(serviceTag, ip)\nVALUES\n(?, ?)",
+        Assert.assertEquals("INSERT INTO device (serviceTag, ip)\nVALUES (?, ?)",
                             engine.explainToInsertSQL("(编号, IP地址) VALUES (?, ?)"));
     }
 

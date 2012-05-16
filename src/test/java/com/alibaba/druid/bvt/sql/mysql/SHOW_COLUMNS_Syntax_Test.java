@@ -46,7 +46,7 @@ public class SHOW_COLUMNS_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SHOW COLUMNS FROM mytable FROM mydb;", text);
+        Assert.assertEquals("SHOW COLUMNS FROM mydb.mytable;", text);
     }
 
     public void test_2() throws Exception {

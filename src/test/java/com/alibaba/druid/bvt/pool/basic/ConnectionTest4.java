@@ -227,7 +227,7 @@ public class ConnectionTest4 extends TestCase {
         {
             PreparedStatement stmt = conn.prepareStatement("SELECT 1", ResultSet.TYPE_FORWARD_ONLY,
                                                            ResultSet.CONCUR_READ_ONLY);
-            Assert.assertEquals(raw, stmt.unwrap(MockPreparedStatement.class));
+            Assert.assertSame(raw, stmt.unwrap(MockPreparedStatement.class));
             stmt.close();
         }
 

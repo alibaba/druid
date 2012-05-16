@@ -1138,7 +1138,7 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == token) {
             lexer.nextToken();
         } else {
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token());
+            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " " + lexer.stringVal());
         }
     }
 

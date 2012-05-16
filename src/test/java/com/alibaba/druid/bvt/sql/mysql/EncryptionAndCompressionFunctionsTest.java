@@ -35,7 +35,7 @@ public class EncryptionAndCompressionFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO t\nVALUES\n(1, AES_ENCRYPT('text', 'password'));", text);
+        Assert.assertEquals("INSERT INTO t\nVALUES (1, AES_ENCRYPT('text', 'password'));", text);
     }
 
     public void test_1() throws Exception {

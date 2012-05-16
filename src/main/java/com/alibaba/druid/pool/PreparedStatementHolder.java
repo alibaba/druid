@@ -93,7 +93,7 @@ public final class PreparedStatementHolder {
     }
 
     public boolean isInUse() {
-        return inUseCount <= 0;
+        return inUseCount > 0;
     }
 
     public void incrementInUseCount() {

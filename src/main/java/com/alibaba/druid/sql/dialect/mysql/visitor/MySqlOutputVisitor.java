@@ -767,8 +767,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
-            println();
-            print("(");
+            print(" (");
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
@@ -785,8 +784,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getValuesList().size() != 0) {
             println();
-            print("VALUES");
-            println();
+            print("VALUES ");
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
                 if (i != 0) {
                     print(", ");

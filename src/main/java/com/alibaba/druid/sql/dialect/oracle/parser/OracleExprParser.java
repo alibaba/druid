@@ -381,7 +381,7 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
             }
             
-            identifierEquals("TO");
+            acceptIdentifier("TO");
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
@@ -462,7 +462,7 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public OracleDateExpr parseDate() {
-        identifierEquals("DATE");
+        acceptIdentifier("DATE");
 
         OracleDateExpr timestamp = new OracleDateExpr();
 
@@ -828,5 +828,17 @@ public class OracleExprParser extends SQLExprParser {
         }
         
         return column;
+    }
+    
+    public SQLExpr exprRest(SQLExpr expr) throws ParserException {
+        expr = super.exprRest(expr);
+        
+        if (lexer.token() == Token.COLONEQ) {
+            lexer.nextToken();
+            SQLExpr right = expr();
+            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Assignment, right);
+        }
+        
+        return expr;
     }
 }
