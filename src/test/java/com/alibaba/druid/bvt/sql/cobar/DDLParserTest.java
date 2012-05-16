@@ -189,6 +189,15 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("RENAME TABLE current_db.tbl_name TO other_db.tbl_name", output);
     }
+    
+    public void test_rename_1() throws Exception {
+        String sql = "rename table tb1 to ntb1,tb2 to ntb2";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("RENAME TABLE tb1 TO ntb1, tb2 TO ntb2", output);
+    }
 
 
     // public void testDDLStmt() throws Exception {

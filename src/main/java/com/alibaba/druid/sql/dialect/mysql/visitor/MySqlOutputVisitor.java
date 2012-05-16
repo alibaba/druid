@@ -2265,7 +2265,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlRenameTableStatement x) {
-        print("RENAME ");
+        print("RENAME TABLE ");
         printAndAccept(x.getItems(), ", ");
         return false;
     }

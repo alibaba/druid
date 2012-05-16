@@ -98,7 +98,6 @@ public class OracleLexer extends Lexer {
 
         map.put("CURSOR", Token.CURSOR);
         
-        map.put("TO", Token.TO);
         map.put("MODEL", Token.MODEL);
         map.put("MERGE", Token.MERGE);
         map.put("USING", Token.USING);

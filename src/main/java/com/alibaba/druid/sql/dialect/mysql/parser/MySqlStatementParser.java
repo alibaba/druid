@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
@@ -1969,5 +1970,31 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
+    
+    public SQLStatement parseRename() {
+        MySqlRenameTableStatement stmt = new MySqlRenameTableStatement();
+        
+        acceptIdentifier("RENAME");
+        
+        accept(Token.TABLE);
+        
+        for (;;) {
+            MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
+            item.setName(this.exprParser.name());
+            acceptIdentifier("TO");
+            item.setTo(this.exprParser.name());
+         
+            stmt.getItems().add(item);
+            
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            
+            break;
+        }
+        
+        return stmt;
     }
 }
