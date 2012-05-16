@@ -87,6 +87,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -410,6 +411,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.FULL) {
             lexer.nextToken();
+
+            if (identifierEquals("PROCESSLIST")) {
+                lexer.nextToken();
+                MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
+                stmt.setFull(true);
+                return stmt;
+            }
+
             acceptIdentifier("COLUMNS");
 
             MySqlShowColumnsStatement stmt = parseShowColumns();
@@ -686,12 +695,12 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("EVENTS")) {
             lexer.nextToken();
             MySqlShowEventsStatement stmt = new MySqlShowEventsStatement();
-            
+
             if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 stmt.setSchema(this.exprParser.name());
             }
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -703,20 +712,20 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return stmt;
         }
-        
+
         if (identifierEquals("FUNCTION")) {
             lexer.nextToken();
-            
+
             if (identifierEquals("CODE")) {
                 lexer.nextToken();
                 MySqlShowFunctionCodeStatement stmt = new MySqlShowFunctionCodeStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             acceptIdentifier("STATUS");
             MySqlShowFunctionStatusStatement stmt = new MySqlShowFunctionStatusStatement();
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -728,8 +737,8 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return stmt;
         }
-        
-        //MySqlShowFunctionStatusStatement
+
+        // MySqlShowFunctionStatusStatement
 
         if (identifierEquals("ENGINE")) {
             lexer.nextToken();
@@ -753,23 +762,23 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
             return stmt;
         }
-        
+
         if (identifierEquals("GRANTS")) {
             lexer.nextToken();
             MySqlShowGrantsStatement stmt = new MySqlShowGrantsStatement();
-            
+
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
                 stmt.setUser(this.exprParser.expr());
             }
-            
+
             return stmt;
         }
-        
+
         if (lexer.token() == Token.INDEX || identifierEquals("INDEXES")) {
             lexer.nextToken();
             MySqlShowIndexesStatement stmt = new MySqlShowIndexesStatement();
-            
+
             if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 SQLName table = exprParser.name();
@@ -781,14 +790,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.setDatabase(database);
                 }
             }
-            
+
             return stmt;
         }
-        
+
         if (identifierEquals("KEYS")) {
             lexer.nextToken();
             MySqlShowKeysStatement stmt = new MySqlShowKeysStatement();
-            
+
             if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 SQLName table = exprParser.name();
@@ -800,20 +809,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                     stmt.setDatabase(database);
                 }
             }
-            
+
             return stmt;
         }
-        
+
         if (identifierEquals("OPEN")) {
             lexer.nextToken();
             acceptIdentifier("TABLES");
             MySqlShowOpenTablesStatement stmt = new MySqlShowOpenTablesStatement();
-            
+
             if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
                 lexer.nextToken();
                 stmt.setDatabase(this.exprParser.name());
             }
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -825,32 +834,32 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             return stmt;
         }
-        
+
         if (identifierEquals("PLUGINS")) {
             lexer.nextToken();
             MySqlShowPluginsStatement stmt = new MySqlShowPluginsStatement();
             return stmt;
         }
-        
+
         if (identifierEquals("PRIVILEGES")) {
             lexer.nextToken();
             MySqlShowPrivilegesStatement stmt = new MySqlShowPrivilegesStatement();
             return stmt;
         }
-        
+
         if (identifierEquals("PROCEDURE")) {
             lexer.nextToken();
-            
+
             if (identifierEquals("CODE")) {
                 lexer.nextToken();
                 MySqlShowProcedureCodeStatement stmt = new MySqlShowProcedureCodeStatement();
                 stmt.setName(this.exprParser.name());
                 return stmt;
             }
-            
+
             acceptIdentifier("STATUS");
             MySqlShowProcedureStatusStatement stmt = new MySqlShowProcedureStatusStatement();
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -860,6 +869,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setWhere(this.exprParser.expr());
             }
+            return stmt;
+        }
+
+        if (identifierEquals("PROCESSLIST")) {
+            lexer.nextToken();
+            MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
             return stmt;
         }
 

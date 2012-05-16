@@ -97,6 +97,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1961,6 +1962,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowProcedureStatusStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProcessListStatement x) {
+        if (x.isFull()) {
+            print("SHOW FULL PROCESSLIST");
+        } else {
+            print("SHOW PROCESSLIST");
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProcessListStatement x) {
         
     }
 }

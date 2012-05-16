@@ -43,6 +43,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -808,6 +809,24 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW PROCEDURE STATUS", output);
+    }
+    
+    public void test_show_processList() throws Exception {
+        String sql = "SHOW processlist ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcessListStatement show = (MySqlShowProcessListStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROCESSLIST", output);
+    }
+    
+    public void test_show_processList_1() throws Exception {
+        String sql = "SHOW full processlist ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcessListStatement show = (MySqlShowProcessListStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW FULL PROCESSLIST", output);
     }
     
     

@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcessListStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -371,4 +372,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowProcedureStatusStatement x);
     
     void endVisit(MySqlShowProcedureStatusStatement x);
+    
+    boolean visit(MySqlShowProcessListStatement x);
+    
+    void endVisit(MySqlShowProcessListStatement x);
 }
