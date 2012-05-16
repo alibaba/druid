@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -48,6 +49,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
@@ -1716,6 +1718,42 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setIfExists(true);
         }
 
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            stmt.addTableSource(name);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        
+        if (identifierEquals("RESTRICT")) {
+            stmt.setOption("RESTRICT");
+            lexer.nextToken();
+        } else if (identifierEquals("CASCADE")) {
+            stmt.setOption("CASCADE");
+            lexer.nextToken();
+        }
+        
+        return stmt;
+    }
+    
+    protected SQLDropViewStatement parseDropView(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        
+        MySqlDropViewStatement stmt = new MySqlDropViewStatement();
+        
+        accept(Token.VIEW);
+        
+        if (lexer.token() == Token.IF) {
+            lexer.nextToken();
+            accept(Token.EXISTS);
+            stmt.setIfExists(true);
+        }
+        
         for (;;) {
             SQLName name = this.exprParser.name();
             stmt.addTableSource(name);

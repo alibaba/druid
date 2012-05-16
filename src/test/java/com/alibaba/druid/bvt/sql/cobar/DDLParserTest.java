@@ -199,7 +199,23 @@ public class DDLParserTest extends TestCase {
         Assert.assertEquals("RENAME TABLE tb1 TO ntb1, tb2 TO ntb2", output);
     }
 
-
+    public void test_drop_view_1() throws Exception {
+        String sql = "DROP VIEW IF EXISTS tb1, tb2, tb3 CASCADE";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP VIEW IF EXISTS tb1, tb2, tb3 CASCADE", output);
+    }
+    
+    public void test_drop_view_2() throws Exception {
+        String sql = "DROP VIEW t1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP VIEW t1", output);
+    }
     // public void testDDLStmt() throws Exception {
     //
     // sql = "rename table tb1 to ntb1,tb2 to ntb2";

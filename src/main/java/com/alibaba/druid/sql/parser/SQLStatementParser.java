@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -131,6 +132,10 @@ public class SQLStatementParser extends SQLParser {
                     SQLStatement stmt = parseDropIndex();
                     statementList.add(stmt);
                     continue;
+                } else if (lexer.token() == Token.VIEW) {
+                    SQLStatement stmt = parseDropView(false);
+                    statementList.add(stmt);
+                    continue;
                 } else {
                     throw new ParserException("TODO " + lexer.token());
                 }
@@ -192,6 +197,26 @@ public class SQLStatementParser extends SQLParser {
 
         SQLDropTableStatement stmt = new SQLDropTableStatement();
 
+        for (;;) {
+            SQLName name = this.exprParser.name();
+            stmt.getTableSources().add(new SQLExprTableSource(name));
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        return stmt;
+    }
+    
+    protected SQLDropViewStatement parseDropView(boolean acceptDrop) {
+        if (acceptDrop) {
+            accept(Token.DROP);
+        }
+        accept(Token.VIEW);
+        
+        SQLDropViewStatement stmt = new SQLDropViewStatement();
+        
         for (;;) {
             SQLName name = this.exprParser.name();
             stmt.getTableSources().add(new SQLExprTableSource(name));
