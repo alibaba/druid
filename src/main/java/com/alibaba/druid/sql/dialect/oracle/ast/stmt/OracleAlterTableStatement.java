@@ -6,7 +6,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleStatement {
+public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleDDLStatement {
 
     private static final long  serialVersionUID        = 1L;
 

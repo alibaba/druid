@@ -23,7 +23,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCreateViewStatement extends SQLStatementImpl {
+public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private static final long     serialVersionUID = 1L;
     protected SQLName             name;
