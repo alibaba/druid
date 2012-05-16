@@ -56,6 +56,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -715,6 +716,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlUserName x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowIndexesStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowIndexesStatement x) {
         
     }
 }

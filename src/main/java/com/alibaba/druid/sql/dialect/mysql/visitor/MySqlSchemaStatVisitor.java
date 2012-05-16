@@ -65,6 +65,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -778,6 +779,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUserName x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowIndexesStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowIndexesStatement x) {
         
     }
 }

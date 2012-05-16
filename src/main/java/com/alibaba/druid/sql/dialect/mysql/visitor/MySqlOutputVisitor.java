@@ -88,6 +88,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -1820,6 +1821,27 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUserName x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowIndexesStatement x) {
+        print("SHOW INDEX");
+        
+        if (x.getTable() != null) {
+            print(" FROM ");
+            if (x.getDatabase() != null) {
+                x.getDatabase().accept(this);
+                print('.');
+            }
+            x.getTable().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowIndexesStatement x) {
         
     }
 }
