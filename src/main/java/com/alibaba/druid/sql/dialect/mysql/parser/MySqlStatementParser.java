@@ -214,8 +214,9 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlCreateTableParser parser = new MySqlCreateTableParser(lexer);
             return parser.parseCrateTable(false);
         }
-        
-        if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals("FULLTEXT") || identifierEquals("SPATIAL")) {
+
+        if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals("FULLTEXT")
+            || identifierEquals("SPATIAL")) {
             return parseCreateIndex();
         }
 
@@ -225,10 +226,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         throw new ParserException("TODO " + lexer.token());
     }
-    
+
     public SQLStatement parseCreateIndex() throws ParserException {
         MySqlCreateIndexStatement stmt = new MySqlCreateIndexStatement();
-        
+
         if (lexer.token() == Token.UNIQUE) {
             stmt.setType("UNIQUE");
             lexer.nextToken();
@@ -239,17 +240,17 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setType("SPATIAL");
             lexer.nextToken();
         }
-        
+
         accept(Token.INDEX);
-        
+
         stmt.setName(this.exprParser.name());
-        
+
         parseCreateIndexUsing(stmt);
-        
+
         accept(Token.ON);
-        
+
         stmt.setTable(this.exprParser.name());
-        
+
         accept(Token.LPAREN);
 
         for (;;) {
@@ -262,16 +263,16 @@ public class MySqlStatementParser extends SQLStatementParser {
             break;
         }
         accept(Token.RPAREN);
-        
+
         parseCreateIndexUsing(stmt);
-        
+
         return stmt;
     }
 
     private void parseCreateIndexUsing(MySqlCreateIndexStatement stmt) {
         if (identifierEquals("USING")) {
             lexer.nextToken();
-            
+
             if (identifierEquals("BTREE")) {
                 stmt.setUsing("BTREE");
                 lexer.nextToken();
@@ -288,7 +289,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
         }
-        
+
         acceptIdentifier("USER");
 
         MySqlCreateUserStatement stmt = new MySqlCreateUserStatement();
@@ -1698,9 +1699,15 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (acceptDrop) {
             accept(Token.DROP);
         }
-        accept(Token.TABLE);
 
         MySqlDropTableStatement stmt = new MySqlDropTableStatement();
+
+        if (identifierEquals("TEMPORARY")) {
+            lexer.nextToken();
+            stmt.setTemporary(true);
+        }
+
+        accept(Token.TABLE);
 
         if (lexer.token() == Token.IF) {
             lexer.nextToken();
@@ -1717,6 +1724,15 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             break;
         }
+        
+        if (identifierEquals("RESTRICT")) {
+            stmt.setOption("RESTRICT");
+            lexer.nextToken();
+        } else if (identifierEquals("CASCADE")) {
+            stmt.setOption("CASCADE");
+            lexer.nextToken();
+        }
+        
         return stmt;
     }
 

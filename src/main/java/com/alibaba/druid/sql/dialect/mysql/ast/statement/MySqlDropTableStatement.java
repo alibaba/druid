@@ -7,8 +7,11 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class MySqlDropTableStatement extends SQLDropTableStatement implements MySqlStatement {
 
     private static final long serialVersionUID = 1L;
+    private boolean           temporary        = false;
 
     private boolean           ifExists         = false;
+
+    private String            option;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
@@ -32,6 +35,22 @@ public class MySqlDropTableStatement extends SQLDropTableStatement implements My
 
     public void setIfExists(boolean ifExists) {
         this.ifExists = ifExists;
+    }
+
+    public boolean isTemporary() {
+        return temporary;
+    }
+
+    public void setTemporary(boolean temporary) {
+        this.temporary = temporary;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 
 }

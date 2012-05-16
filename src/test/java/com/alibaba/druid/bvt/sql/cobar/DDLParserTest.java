@@ -153,51 +153,36 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DROP INDEX `PRIMARY` ON t", output);
     }
+    
+    public void test_drop_table_0() throws Exception {
+        String sql = "DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 RESTRICT";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 RESTRICT", output);
+    }
+    
+    public void test_drop_table_1() throws Exception {
+        String sql = "DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 CASCADE";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 CASCADE", output);
+    }
+    
+    public void test_drop_table_2() throws Exception {
+        String sql = "DROP TABLE t1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TABLE t1", output);
+    }
 
 
     // public void testDDLStmt() throws Exception {
-    //
-    // sql = "drop index index_name on tb1";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // String output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP INDEX index_name ON tb1", output);
-    //
-    // sql = "drop temporary tabLe if exists tb1,tb2,tb3 restrict";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 RESTRICT", output);
-    //
-    // sql = "drop temporary tabLe if exists tb1,tb2,tb3 cascade";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 CASCADE", output);
-    //
-    // sql = "drop temporary tabLe if exists tb1 cascade";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1 CASCADE", output);
-    //
-    // sql = "drop tabLe if exists tb1 cascade";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP TABLE IF EXISTS tb1 CASCADE", output);
-    //
-    // sql = "drop temporary tabLe tb1 cascade";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    // output = output2MySQL(dst, sql);
-    // Assert.assertEquals("DROP TEMPORARY TABLE tb1 CASCADE", output);
     //
     // sql = "rename table tb1 to ntb1,tb2 to ntb2";
     // lexer = new SQLLexer(sql);

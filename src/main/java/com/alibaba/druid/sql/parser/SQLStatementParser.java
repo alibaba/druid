@@ -117,7 +117,7 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == Token.DROP) {
                 lexer.nextToken();
 
-                if (lexer.token() == Token.TABLE) {
+                if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
 
                     SQLDropTableStatement stmt = parseDropTable(false);
 
