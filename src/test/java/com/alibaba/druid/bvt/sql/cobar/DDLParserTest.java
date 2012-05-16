@@ -99,6 +99,24 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE INDEX `idx1` ON tb1 (`fname` ASC)", output);
     }
+    
+    public void test_createIndex_1() throws Exception {
+        String sql = "create unique index `idx1` ON tb1 (`fname` desc) ;";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE UNIQUE INDEX `idx1` ON tb1 (`fname` DESC)", output);
+    }
+    
+    public void test_createIndex_2() throws Exception {
+        String sql = "CREATE INDEX id_index ON lookup (id) USING BTREE;";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE INDEX id_index ON lookup (id) USING BTREE", output);
+    }
 
     // public void testDDLStmt() throws Exception {
     // String sql = "alTer ignore table tb_name";

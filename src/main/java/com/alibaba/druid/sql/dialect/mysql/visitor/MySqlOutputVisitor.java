@@ -2221,18 +2221,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         
         print("INDEX ");
         
-        if (x.getUsing() != null) {
-            print("USING ");
-            print(x.getUsing());
-            print(' ');
-        }
-
         x.getName().accept(this);
         print(" ON ");
         x.getTable().accept(this);
         print(" (");
         printAndAccept(x.getItems(), ", ");
         print(")");
+        
+        if (x.getUsing() != null) {
+            print(" USING ");
+            print(x.getUsing());
+        }
         return false;
     }
 
