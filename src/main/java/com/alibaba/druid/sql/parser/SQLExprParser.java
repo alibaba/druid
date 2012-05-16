@@ -1163,6 +1163,12 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(new NotNullConstraint());
             return parseColumnRest(column);
         }
+        
+        if (lexer.token() == Token.NULL) {
+            lexer.nextToken();
+            column.setDefaultExpr(new SQLNullExpr());
+            return parseColumnRest(column);
+        }
 
         return column;
     }

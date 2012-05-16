@@ -25,6 +25,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
@@ -288,132 +290,140 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowContributorsStatement x);
 
     void endVisit(MySqlShowContributorsStatement x);
-    
+
     boolean visit(MySqlShowCreateDatabaseStatement x);
-    
+
     void endVisit(MySqlShowCreateDatabaseStatement x);
-    
+
     boolean visit(MySqlShowCreateEventStatement x);
-    
+
     void endVisit(MySqlShowCreateEventStatement x);
-    
+
     boolean visit(MySqlShowCreateFunctionStatement x);
-    
+
     void endVisit(MySqlShowCreateFunctionStatement x);
-    
+
     boolean visit(MySqlShowCreateProcedureStatement x);
-    
+
     void endVisit(MySqlShowCreateProcedureStatement x);
-    
+
     boolean visit(MySqlShowCreateTableStatement x);
-    
+
     void endVisit(MySqlShowCreateTableStatement x);
-    
+
     boolean visit(MySqlShowCreateTriggerStatement x);
-    
+
     void endVisit(MySqlShowCreateTriggerStatement x);
-    
+
     boolean visit(MySqlShowCreateViewStatement x);
-    
+
     void endVisit(MySqlShowCreateViewStatement x);
-    
+
     boolean visit(MySqlShowEngineStatement x);
-    
+
     void endVisit(MySqlShowEngineStatement x);
-    
+
     boolean visit(MySqlShowEnginesStatement x);
-    
+
     void endVisit(MySqlShowEnginesStatement x);
-    
+
     boolean visit(MySqlShowErrorsStatement x);
-    
+
     void endVisit(MySqlShowErrorsStatement x);
-    
+
     boolean visit(MySqlShowEventsStatement x);
-    
+
     void endVisit(MySqlShowEventsStatement x);
-    
+
     boolean visit(MySqlShowFunctionCodeStatement x);
-    
+
     void endVisit(MySqlShowFunctionCodeStatement x);
-    
+
     boolean visit(MySqlShowFunctionStatusStatement x);
-    
+
     void endVisit(MySqlShowFunctionStatusStatement x);
-    
+
     boolean visit(MySqlShowGrantsStatement x);
-    
+
     void endVisit(MySqlShowGrantsStatement x);
-    
+
     boolean visit(MySqlUserName x);
-    
+
     void endVisit(MySqlUserName x);
-    
+
     boolean visit(MySqlShowIndexesStatement x);
-    
+
     void endVisit(MySqlShowIndexesStatement x);
-    
+
     boolean visit(MySqlShowKeysStatement x);
-    
+
     void endVisit(MySqlShowKeysStatement x);
-    
+
     boolean visit(MySqlShowMasterStatusStatement x);
-    
+
     void endVisit(MySqlShowMasterStatusStatement x);
-    
+
     boolean visit(MySqlShowOpenTablesStatement x);
-    
+
     void endVisit(MySqlShowOpenTablesStatement x);
-    
+
     boolean visit(MySqlShowPluginsStatement x);
-    
+
     void endVisit(MySqlShowPluginsStatement x);
-    
+
     boolean visit(MySqlShowPrivilegesStatement x);
-    
+
     void endVisit(MySqlShowPrivilegesStatement x);
-    
+
     boolean visit(MySqlShowProcedureCodeStatement x);
-    
+
     void endVisit(MySqlShowProcedureCodeStatement x);
-    
+
     boolean visit(MySqlShowProcedureStatusStatement x);
-    
+
     void endVisit(MySqlShowProcedureStatusStatement x);
-    
+
     boolean visit(MySqlShowProcessListStatement x);
-    
+
     void endVisit(MySqlShowProcessListStatement x);
-    
+
     boolean visit(MySqlShowProfileStatement x);
-    
+
     void endVisit(MySqlShowProfileStatement x);
-    
+
     boolean visit(MySqlShowProfilesStatement x);
-    
+
     void endVisit(MySqlShowProfilesStatement x);
-    
+
     boolean visit(MySqlShowRelayLogEventsStatement x);
-    
+
     void endVisit(MySqlShowRelayLogEventsStatement x);
-    
+
     boolean visit(MySqlShowSlaveHostsStatement x);
-    
+
     void endVisit(MySqlShowSlaveHostsStatement x);
-    
+
     boolean visit(MySqlShowSlaveStatusStatement x);
-    
+
     void endVisit(MySqlShowSlaveStatusStatement x);
-    
+
     boolean visit(MySqlShowTableStatusStatement x);
-    
+
     void endVisit(MySqlShowTableStatusStatement x);
-    
+
     boolean visit(MySqlShowTriggersStatement x);
-    
+
     void endVisit(MySqlShowTriggersStatement x);
-    
+
     boolean visit(MySqlShowVariantsStatement x);
-    
+
     void endVisit(MySqlShowVariantsStatement x);
+
+    boolean visit(MySqlAlterTableStatement x);
+
+    void endVisit(MySqlAlterTableStatement x);
+    
+    boolean visit(MySqlAlterTableAddColumn x);
+    
+    void endVisit(MySqlAlterTableAddColumn x);
 }

@@ -22,7 +22,9 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -40,6 +42,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
@@ -250,8 +254,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getDataType().accept(this);
 
         if (x.getDefaultExpr() != null) {
-            print(" DEFAULT ");
-            x.getDefaultExpr().accept(this);
+            if (x.getDefaultExpr() instanceof SQLNullExpr) {
+                print(" NULL");
+            } else {
+                print(" DEFAULT");
+                x.getDefaultExpr().accept(this);
+            }
         }
 
         if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
@@ -2155,12 +2163,50 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
-        
+
         return false;
     }
 
     @Override
     public void endVisit(MySqlShowVariantsStatement x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableStatement x) {
+        if (x.isIgnore()) {
+            print("ALTER IGNORE TABLE ");
+        } else {
+            print("ALTER TABLE ");
+        }
+        x.getName().accept(this);
+        incrementIndent();
+        for (SQLAlterTableItem item : x.getItems()) {
+            println();
+            item.accept(this);
+        }
+        decrementIndent();
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableAddColumn x) {
+        print("ADD COLUMN ");
+        printAndAccept(x.getColumns(), ", ");
+        if (x.getAfter() != null) {
+            print(" AFTER ");
+            x.getAfter().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableAddColumn x) {
+
     }
 }

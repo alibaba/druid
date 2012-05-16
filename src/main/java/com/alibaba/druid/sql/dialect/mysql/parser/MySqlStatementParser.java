@@ -26,6 +26,8 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -35,6 +37,8 @@ import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
@@ -506,12 +510,12 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-        
+
         if (identifierEquals("VARIABLES")) {
             lexer.nextToken();
-            
+
             MySqlShowVariantsStatement stmt = parseShowVariants();
-            
+
             return stmt;
         }
 
@@ -524,7 +528,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setGlobal(true);
                 return stmt;
             }
-            
+
             if (identifierEquals("VARIABLES")) {
                 lexer.nextToken();
                 MySqlShowVariantsStatement stmt = parseShowVariants();
@@ -542,7 +546,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 stmt.setSession(true);
                 return stmt;
             }
-            
+
             if (identifierEquals("VARIABLES")) {
                 lexer.nextToken();
                 MySqlShowVariantsStatement stmt = parseShowVariants();
@@ -970,24 +974,24 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
-        
+
         if (identifierEquals("RELAYLOG")) {
             lexer.nextToken();
             acceptIdentifier("EVENTS");
             MySqlShowRelayLogEventsStatement stmt = new MySqlShowRelayLogEventsStatement();
-            
+
             if (lexer.token() == Token.IN) {
                 lexer.nextToken();
                 stmt.setLogName(this.exprParser.primary());
             }
-            
+
             if (lexer.token() == Token.FROM) {
                 lexer.nextToken();
                 stmt.setFrom(this.exprParser.primary());
             }
-            
+
             stmt.setLimit(this.parseLimit());
-            
+
             return stmt;
         }
 
@@ -1022,7 +1026,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 return stmt;
             }
         }
-        
+
         if (lexer.token() == Token.TABLE) {
             lexer.nextToken();
             acceptIdentifier("STATUS");
@@ -1031,7 +1035,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setDatabase(this.exprParser.name());
             }
-            
+
             if (lexer.token() == Token.LIKE) {
                 lexer.nextToken();
                 stmt.setLike(this.exprParser.expr());
@@ -1041,10 +1045,10 @@ public class MySqlStatementParser extends SQLStatementParser {
                 lexer.nextToken();
                 stmt.setWhere(this.exprParser.expr());
             }
-            
+
             return stmt;
         }
-        
+
         if (identifierEquals("TRIGGERS")) {
             lexer.nextToken();
             MySqlShowTriggersStatement stmt = new MySqlShowTriggersStatement();
@@ -1091,22 +1095,22 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     private MySqlShowVariantsStatement parseShowVariants() throws ParserException {
         MySqlShowVariantsStatement stmt = new MySqlShowVariantsStatement();
-        
+
         if (lexer.token() == Token.LIKE) {
             lexer.nextToken();
             SQLExpr like = exprParser.expr();
             stmt.setLike(like);
         }
-        
+
         if (lexer.token() == Token.WHERE) {
             lexer.nextToken();
             SQLExpr where = exprParser.expr();
             stmt.setWhere(where);
         }
-        
+
         return stmt;
     }
 
@@ -1785,9 +1789,101 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return null;
     }
-    
-    public SQLSetStatement parseAlter() {
+
+    public SQLStatement parseAlter() {
         accept(Token.ALTER);
+
+        boolean ignore = false;
+
+        if (identifierEquals("IGNORE")) {
+            ignore = true;
+            lexer.nextToken();
+        }
+
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+
+            MySqlAlterTableStatement stmt = new MySqlAlterTableStatement();
+            stmt.setIgnore(ignore);
+            stmt.setName(this.exprParser.name());
+
+            for (;;) {
+                if (identifierEquals("ADD")) {
+                    lexer.nextToken();
+
+                    if (identifierEquals("COLUMN")) {
+                        lexer.nextToken();
+                        MySqlAlterTableAddColumn item = new MySqlAlterTableAddColumn();
+                        SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+                        item.getColumns().add(columnDef);
+                        if (identifierEquals("AFTER")) {
+                            lexer.nextToken();
+                            item.setAfter(this.exprParser.name());
+                        }
+                        stmt.getItems().add(item);
+                    } else {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    }
+                } else if (identifierEquals("ALTER")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("CHANGE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("MODIFY")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (lexer.token() == Token.DROP) {
+                    lexer.nextToken();
+                    if (identifierEquals("COLUMN")) {
+                        lexer.nextToken();
+                    }
+                    SQLAlterTableDropColumnItem item = new SQLAlterTableDropColumnItem();
+                    item.setColumnName(this.exprParser.name());
+                    stmt.getItems().add(item);
+                } else if (identifierEquals("DISABLE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("ENABLE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("RENAME")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (lexer.token() == Token.ORDER) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("CONVERT")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (lexer.token() == Token.DEFAULT) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("DISCARD")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("IMPORT")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("FORCE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("TRUNCATE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("COALESCE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+
+                } else if (identifierEquals("REORGANIZE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("EXCHANGE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("ANALYZE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("CHECK")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("OPTIMIZE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("REBUILD")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("REPAIR")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("REMOVE")) {
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else {
+                    break;
+                }
+            }
+
+            return stmt;
+        }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 }
