@@ -41,7 +41,7 @@ public class DDLParserTest extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER ignore table tb_name", output);
+        Assert.assertEquals("ALTER IGNORE TABLE tb_name", output);
     }
 
 //    public void testDDLStmt() throws Exception {

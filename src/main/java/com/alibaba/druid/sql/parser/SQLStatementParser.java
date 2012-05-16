@@ -164,7 +164,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
     
-    public SQLSetStatement parseAlter() {
+    public SQLStatement parseAlter() {
         accept(Token.ALTER);
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
