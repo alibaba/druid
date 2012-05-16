@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 
-public class SQLAlterTableStatement extends SQLStatementImpl {
+public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private static final long       serialVersionUID = 1L;
 
