@@ -1,34 +1,32 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
+import com.alibaba.druid.sql.ast.statement.SQLCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleCreateIndexStatement extends OracleStatementImpl {
+public class OracleCreateIndexStatement extends SQLCreateIndexStatement implements OracleDDLStatement {
 
-    private static final long          serialVersionUID  = 1L;
+    private static final long serialVersionUID  = 1L;
 
-    private SQLName                    name;
+    private boolean           online            = false;
 
-    private SQLName                    table;
+    private boolean           indexOnlyTopLevel = false;
 
-    private List<SQLSelectOrderByItem> items             = new ArrayList<SQLSelectOrderByItem>();
+    private boolean           noParallel;
 
-    private SQLName                    tablespace;
+    private SQLExpr           parallel;
 
-    private Type                       type;
+    private SQLName           tablespace;
 
-    private boolean                    online            = false;
+    public SQLName getTablespace() {
+        return tablespace;
+    }
 
-    private boolean                    indexOnlyTopLevel = false;
-
-    private boolean                    noParallel;
-
-    private SQLExpr                    parallel;
+    public void setTablespace(SQLName tablespace) {
+        this.tablespace = tablespace;
+    }
 
     public SQLExpr getParallel() {
         return parallel;
@@ -46,14 +44,6 @@ public class OracleCreateIndexStatement extends OracleStatementImpl {
         this.noParallel = noParallel;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public boolean isIndexOnlyTopLevel() {
         return indexOnlyTopLevel;
     }
@@ -62,53 +52,25 @@ public class OracleCreateIndexStatement extends OracleStatementImpl {
         this.indexOnlyTopLevel = indexOnlyTopLevel;
     }
 
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
+    }
+
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, name);
-            acceptChild(visitor, table);
-            acceptChild(visitor, items);
-            acceptChild(visitor, tablespace);
+            acceptChild(visitor, getName());
+            acceptChild(visitor, getTable());
+            acceptChild(visitor, getItems());
+            acceptChild(visitor, getTablespace());
             acceptChild(visitor, parallel);
         }
         visitor.endVisit(this);
     }
 
-    public static enum Type {
-        UNIQUE, BITMAP
-    }
-
-    public SQLName getName() {
-        return name;
-    }
-
-    public void setName(SQLName name) {
-        this.name = name;
-    }
-
-    public SQLName getTable() {
-        return table;
-    }
-
-    public void setTable(SQLName table) {
-        this.table = table;
-    }
-
-    public List<SQLSelectOrderByItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<SQLSelectOrderByItem> items) {
-        this.items = items;
-    }
-
-    public SQLName getTablespace() {
-        return tablespace;
-    }
-
-    public void setTablespace(SQLName tablespace) {
-        this.tablespace = tablespace;
-    }
+    // public static enum Type {
+    // UNIQUE, BITMAP
+    // }
 
     public boolean isOnline() {
         return online;

@@ -46,6 +46,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColum
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
@@ -2208,6 +2209,36 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlAlterTableAddColumn x) {
 
+    }
+
+    @Override
+    public boolean visit(MySqlCreateIndexStatement x) {
+        print("CREATE ");
+        if (x.getType() != null) {
+            print(x.getType());
+            print(" ");
+        }
+        
+        print("INDEX ");
+        
+        if (x.getUsing() != null) {
+            print("USING ");
+            print(x.getUsing());
+            print(' ');
+        }
+
+        x.getName().accept(this);
+        print(" ON ");
+        x.getTable().accept(this);
+        print(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCreateIndexStatement x) {
+        
     }
 
 }

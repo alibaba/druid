@@ -94,6 +94,7 @@ public class MySqlLexer extends Lexer {
         map.put("CAST", Token.CAST);
         map.put("IN", Token.IN);
         map.put("ASC", Token.ASC);
+        map.put("DESC", Token.DESC);
         map.put("LIKE", Token.LIKE);
         map.put("ESCAPE", Token.ESCAPE);
         map.put("BETWEEN", Token.BETWEEN);

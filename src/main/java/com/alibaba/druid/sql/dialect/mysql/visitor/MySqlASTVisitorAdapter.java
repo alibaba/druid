@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColum
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -924,6 +925,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlAlterTableAddColumn x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlCreateIndexStatement x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(MySqlCreateIndexStatement x) {
         
     }
 }

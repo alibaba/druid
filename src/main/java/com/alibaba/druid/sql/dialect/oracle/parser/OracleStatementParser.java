@@ -1483,10 +1483,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
         OracleCreateIndexStatement stmt = new OracleCreateIndexStatement();
         if (lexer.token() == Token.UNIQUE) {
-            stmt.setType(OracleCreateIndexStatement.Type.UNIQUE);
+            stmt.setType("UNIQUE");
             lexer.nextToken();
         } else if (identifierEquals("BITMAP")) {
-            stmt.setType(OracleCreateIndexStatement.Type.BITMAP);
+            stmt.setType("BITMAP");
             lexer.nextToken();
         }
 
