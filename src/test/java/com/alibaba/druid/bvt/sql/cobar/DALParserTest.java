@@ -41,6 +41,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -772,56 +774,45 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW PRIVILEGES", output);
     }
     
+    public void test_show_procedure_code() throws Exception {
+        String sql = "SHOW procedure code x";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcedureCodeStatement show = (MySqlShowProcedureCodeStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROCEDURE CODE x", output);
+    }
+    
+    public void test_show_procedure_status() throws Exception {
+        String sql = "SHOW procedure status like '%'";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcedureStatusStatement show = (MySqlShowProcedureStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROCEDURE STATUS LIKE '%'", output);
+    }
+    
+    public void test_show_procedure_status_1() throws Exception {
+        String sql = "SHOW procedure status where 1 = 1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcedureStatusStatement show = (MySqlShowProcedureStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROCEDURE STATUS WHERE 1 = 1", output);
+    }
+    
+    public void test_show_procedure_status_2() throws Exception {
+        String sql = "SHOW procedure status ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowProcedureStatusStatement show = (MySqlShowProcedureStatusStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PROCEDURE STATUS", output);
+    }
+    
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW plugins";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PLUGINS", output);
-//
-//        sql = "SHOW privileges";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PRIVILEGES", output);
-//
-//        sql = "SHOW procedure code proc";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROCEDURE CODE proc", output);
-//
-//        sql = "SHOW procedure status like 'expr'";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROCEDURE STATUS LIKE 'expr'", output);
-//
-//        sql = "SHOW procedure status where (a||b)*(a&&b)";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROCEDURE STATUS WHERE (a OR b) * (a AND b)", output);
-//
-//        sql = "SHOW procedure status";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW PROCEDURE STATUS", output);
 //
 //        sql = "SHOW processlist";
 //        lexer = new SQLLexer(sql);

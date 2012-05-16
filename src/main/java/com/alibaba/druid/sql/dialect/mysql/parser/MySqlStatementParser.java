@@ -85,6 +85,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -833,6 +835,31 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals("PRIVILEGES")) {
             lexer.nextToken();
             MySqlShowPrivilegesStatement stmt = new MySqlShowPrivilegesStatement();
+            return stmt;
+        }
+        
+        if (identifierEquals("PROCEDURE")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("CODE")) {
+                lexer.nextToken();
+                MySqlShowProcedureCodeStatement stmt = new MySqlShowProcedureCodeStatement();
+                stmt.setName(this.exprParser.name());
+                return stmt;
+            }
+            
+            acceptIdentifier("STATUS");
+            MySqlShowProcedureStatusStatement stmt = new MySqlShowProcedureStatusStatement();
+            
+            if (lexer.token() == Token.LIKE) {
+                lexer.nextToken();
+                stmt.setLike(this.exprParser.expr());
+            }
+
+            if (lexer.token() == Token.WHERE) {
+                lexer.nextToken();
+                stmt.setWhere(this.exprParser.expr());
+            }
             return stmt;
         }
 

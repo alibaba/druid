@@ -63,6 +63,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -781,6 +783,26 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
     
     @Override
     public void endVisit(MySqlShowPrivilegesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProcedureCodeStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProcedureCodeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProcedureStatusStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProcedureStatusStatement x) {
         
     }
 }

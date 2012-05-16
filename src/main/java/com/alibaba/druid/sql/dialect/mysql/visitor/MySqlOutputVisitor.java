@@ -95,6 +95,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusSt
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPrivilegesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowProcedureStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1927,6 +1929,38 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     
     @Override
     public void endVisit(MySqlShowPrivilegesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProcedureCodeStatement x) {
+        print("SHOW PROCEDURE CODE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProcedureCodeStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowProcedureStatusStatement x) {
+        print("SHOW PROCEDURE STATUS");
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowProcedureStatusStatement x) {
         
     }
 }
