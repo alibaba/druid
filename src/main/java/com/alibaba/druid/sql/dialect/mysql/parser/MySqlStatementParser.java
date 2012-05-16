@@ -78,6 +78,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -749,6 +751,44 @@ public class MySqlStatementParser extends SQLStatementParser {
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
                 stmt.setUser(this.exprParser.expr());
+            }
+            
+            return stmt;
+        }
+        
+        if (lexer.token() == Token.INDEX || identifierEquals("INDEXES")) {
+            lexer.nextToken();
+            MySqlShowIndexesStatement stmt = new MySqlShowIndexesStatement();
+            
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                lexer.nextToken();
+                SQLName table = exprParser.name();
+                stmt.setTable(table);
+
+                if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    SQLName database = exprParser.name();
+                    stmt.setDatabase(database);
+                }
+            }
+            
+            return stmt;
+        }
+        
+        if (identifierEquals("KEYS")) {
+            lexer.nextToken();
+            MySqlShowKeysStatement stmt = new MySqlShowKeysStatement();
+            
+            if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                lexer.nextToken();
+                SQLName table = exprParser.name();
+                stmt.setTable(table);
+
+                if (lexer.token() == Token.FROM || lexer.token() == Token.IN) {
+                    lexer.nextToken();
+                    SQLName database = exprParser.name();
+                    stmt.setDatabase(database);
+                }
             }
             
             return stmt;

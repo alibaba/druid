@@ -34,6 +34,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowIndexesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -640,57 +642,62 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW GRANTS FOR CURRENT_USER()", output);
     }
     
+    public void test_show_index() throws Exception {
+        String sql = "SHOW index from tb1 from db";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowIndexesStatement show = (MySqlShowIndexesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW INDEX FROM db.tb1", output);
+    }
+    
+    public void test_show_index_1() throws Exception {
+        String sql = "SHOW index in tb1 in db";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowIndexesStatement show = (MySqlShowIndexesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW INDEX FROM db.tb1", output);
+    }
+    
+    public void test_show_index_2() throws Exception {
+        String sql = "SHOW index in db.tb1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowIndexesStatement show = (MySqlShowIndexesStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW INDEX FROM db.tb1", output);
+    }
+    
+    public void test_show_key() throws Exception {
+        String sql = "SHOW keys from tb1 from db";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowKeysStatement show = (MySqlShowKeysStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW KEYS FROM db.tb1", output);
+    }
+    
+    public void test_show_key_1() throws Exception {
+        String sql = "SHOW keys in tb1 in db";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowKeysStatement show = (MySqlShowKeysStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW KEYS FROM db.tb1", output);
+    }
+    
+    public void test_show_key_2() throws Exception {
+        String sql = "SHOW keys in db.tb1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowKeysStatement show = (MySqlShowKeysStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW KEYS FROM db.tb1", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW index from tb1 from db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW INDEX IN db.tb1", output);
-//
-//        sql = "SHOW index from tb1 in db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW INDEX IN db.tb1", output);
-//
-//        sql = "SHOW index in tb1 from db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW INDEX IN db.tb1", output);
-//
-//        sql = "SHOW index in tb1 in db";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW INDEX IN db.tb1", output);
-//
-//        sql = "SHOW indexes from tb1";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW INDEXES IN tb1", output);
-//
-//        sql = "SHOW keys in tb1";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW KEYS IN tb1", output);
-//
 //        sql = "SHOW master status";
 //        lexer = new SQLLexer(sql);
 //        parser = new DALParser(lexer, new SQLExprParser(lexer));
