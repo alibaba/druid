@@ -93,6 +93,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
@@ -1903,6 +1904,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlShowOpenTablesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlShowPluginsStatement x) {
+        print("SHOW PLUGINS");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowPluginsStatement x) {
         
     }
 }

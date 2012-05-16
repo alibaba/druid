@@ -39,6 +39,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowKeysStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowOpenTablesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowPluginsStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -750,6 +751,15 @@ public class DALParserTest extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(show);
         Assert.assertEquals("SHOW OPEN TABLES FROM mysql WHERE 1 = 1", output);
+    }
+    
+    public void test_open_plugins() throws Exception {
+        String sql = "SHOW plugins";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowPluginsStatement show = (MySqlShowPluginsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW PLUGINS", output);
     }
     
 //
