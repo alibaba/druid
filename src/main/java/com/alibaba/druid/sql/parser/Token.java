@@ -67,7 +67,6 @@ public enum Token {
     ON("ON"), 
     SCHEMA("SCHEMA"), 
     CAST("CAST"),
-    USER("USER"),
     COLUMN("COLUMN"),
     USE("USE"),
 

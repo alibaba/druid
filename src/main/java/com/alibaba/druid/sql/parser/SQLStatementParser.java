@@ -121,7 +121,7 @@ public class SQLStatementParser extends SQLParser {
 
                     statementList.add(stmt);
                     continue;
-                } else if (lexer.token() == Token.USER) {
+                } else if (identifierEquals("USER")) {
                     SQLStatement stmt = parseDropUser();
                     statementList.add(stmt);
                     continue;

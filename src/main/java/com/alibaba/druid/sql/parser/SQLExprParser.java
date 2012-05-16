@@ -211,8 +211,6 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLDefaultExpr();
                 lexer.nextToken();
                 break;
-            case USER:
-            case PASSWORD:
             case DUAL:
             case KEY:
             case DISTINCT:

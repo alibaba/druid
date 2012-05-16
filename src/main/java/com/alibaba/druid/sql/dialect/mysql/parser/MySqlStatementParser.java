@@ -192,7 +192,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return parser.parseCrateTable(false);
         }
 
-        if (lexer.token() == Token.USER) {
+        if (identifierEquals("USER")) {
             return parseCreateUser();
         }
 
@@ -200,7 +200,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseCreateUser() throws ParserException {
-        accept(Token.USER);
+        acceptIdentifier("USER");
 
         MySqlCreateUserStatement stmt = new MySqlCreateUserStatement();
 
@@ -222,7 +222,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                 if (lexer.token() == Token.BY) {
                     lexer.nextToken();
 
-                    if (lexer.token() == Token.PASSWORD) {
+                    if (identifierEquals("PASSWORD")) {
                         lexer.nextToken();
                     }
 
@@ -1264,7 +1264,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseDropUser() throws ParserException {
-        accept(Token.USER);
+        acceptIdentifier("USER");
 
         MySqlDropUser stmt = new MySqlDropUser();
         for (;;) {

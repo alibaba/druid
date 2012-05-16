@@ -102,7 +102,6 @@ public class MySqlLexer extends Lexer {
         map.put("SOME", Token.SOME);
         map.put("ANY", Token.ANY);
         map.put("TRUNCATE", Token.TRUNCATE);
-        map.put("USER", Token.USER);
         map.put("IF", Token.IF);
 
         map.put("TRUE", Token.TRUE);
@@ -110,7 +109,6 @@ public class MySqlLexer extends Lexer {
         map.put("LIMIT", Token.LIMIT);
         map.put("KILL", Token.KILL);
         map.put("IDENTIFIED", Token.IDENTIFIED);
-        map.put("PASSWORD", Token.PASSWORD);
         map.put("DUAL", Token.DUAL);
 
         DEFAULT_MYSQL_KEYWORDS = new Keywords(map);
