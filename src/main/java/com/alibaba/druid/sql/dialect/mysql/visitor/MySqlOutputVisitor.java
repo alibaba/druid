@@ -1355,12 +1355,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlDropTableStatement x) {
-        print("DROP TABLE ");
+        if (x.isTemporary()) {
+            print("DROP TEMPORARY TABLE ");    
+        } else {
+            print("DROP TABLE ");
+        }
         if (x.isIfExists()) {
             print("IF EXISTS ");
         }
 
         printAndAccept(x.getTableSources(), ", ");
+        
+        if (x.getOption() != null) {
+            print(' ');
+            print(x.getOption());
+        }
         return false;
     }
 

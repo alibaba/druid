@@ -153,6 +153,33 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DROP INDEX `PRIMARY` ON t", output);
     }
+    
+    public void test_drop_table_0() throws Exception {
+        String sql = "DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 RESTRICT";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 RESTRICT", output);
+    }
+    
+    public void test_drop_table_1() throws Exception {
+        String sql = "DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 CASCADE";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TEMPORARY TABLE IF EXISTS tb1, tb2, tb3 CASCADE", output);
+    }
+    
+    public void test_drop_table_2() throws Exception {
+        String sql = "DROP TABLE t1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP TABLE t1", output);
+    }
 
 
     // public void testDDLStmt() throws Exception {
