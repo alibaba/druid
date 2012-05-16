@@ -945,6 +945,26 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             return stmt;
         }
+        
+        if (identifierEquals("RELAYLOG")) {
+            lexer.nextToken();
+            acceptIdentifier("EVENTS");
+            MySqlShowRelayLogEventsStatement stmt = new MySqlShowRelayLogEventsStatement();
+            
+            if (lexer.token() == Token.IN) {
+                lexer.nextToken();
+                stmt.setLogName(this.exprParser.primary());
+            }
+            
+            if (lexer.token() == Token.FROM) {
+                lexer.nextToken();
+                stmt.setFrom(this.exprParser.primary());
+            }
+            
+            stmt.setLimit(this.parseLimit());
+            
+            return stmt;
+        }
 
         if (identifierEquals("RELAYLOG")) {
             lexer.nextToken();
