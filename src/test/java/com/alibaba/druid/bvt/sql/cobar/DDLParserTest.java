@@ -117,33 +117,17 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE INDEX id_index ON lookup (id) USING BTREE", output);
     }
+    
+    public void test_createIndex_3() throws Exception {
+        String sql = "crEate index index_name using hash on tb(col(id))";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE INDEX index_name ON tb (col(id)) USING HASH", output);
+    }
 
     // public void testDDLStmt() throws Exception {
-    // String sql = "alTer ignore table tb_name";
-    // SQLLexer lexer = new SQLLexer(sql);
-    // DDLParser parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // DDLStatement dst = parser.ddlStmt();
-    //
-    // sql = "alTeR table tb_name";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate temporary tabLe if not exists tb_name";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate tabLe if not exists tb_name";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
-    // sql = "crEate temporary tabLe tb_name";
-    // lexer = new SQLLexer(sql);
-    // parser = new DDLParser(lexer, new SQLExprParser(lexer));
-    // dst = parser.ddlStmt();
-    //
     // sql = "crEate unique index index_name on tb(col(id)) desc";
     // lexer = new SQLLexer(sql);
     // parser = new DDLParser(lexer, new SQLExprParser(lexer));
