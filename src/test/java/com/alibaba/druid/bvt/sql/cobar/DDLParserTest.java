@@ -72,6 +72,15 @@ public class DDLParserTest extends TestCase {
         Assert.assertEquals("ALTER TABLE `test`.`tb1`" + //
                 "\n\tDROP COLUMN `name`", output);
     }
+    
+    public void test_createTable_0() throws Exception {
+        String sql = "crEate temporary tabLe if not exists tb_name (fid int)";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE TEMPORARY TABLE IF NOT EXISTS tb_name (\n\tfid int\n)", output);
+    }
 
     // public void testDDLStmt() throws Exception {
     // String sql = "alTer ignore table tb_name";

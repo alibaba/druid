@@ -59,7 +59,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
         accept(Token.TABLE);
 
-        if (identifierEquals("IF")) {
+        if (lexer.token() == Token.IF || identifierEquals("IF")) {
             lexer.nextToken();
             accept(Token.NOT);
             accept(Token.EXISTS);
