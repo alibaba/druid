@@ -3,6 +3,7 @@ package com.alibaba.druid.sql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatementImpl;
 
 public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLStatement {
@@ -28,4 +29,14 @@ public class SQLAlterTableStatement extends SQLStatementImpl implements SQLDDLSt
         this.tableSource = tableSource;
     }
 
+    public SQLName getName() {
+        if (getTableSource() == null) {
+            return null;
+        }
+        return (SQLName) getTableSource().getExpr();
+    }
+
+    public void setName(SQLName name) {
+        this.setTableSource(new SQLExprTableSource(name));
+    }
 }

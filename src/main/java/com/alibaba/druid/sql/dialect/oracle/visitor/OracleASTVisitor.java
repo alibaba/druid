@@ -473,10 +473,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleAlterTableModify x);
 
-    boolean visit(OracleAlterTableAddColumn x);
-
-    void endVisit(OracleAlterTableAddColumn x);
-
     boolean visit(OracleCreateIndexStatement x);
 
     void endVisit(OracleCreateIndexStatement x);

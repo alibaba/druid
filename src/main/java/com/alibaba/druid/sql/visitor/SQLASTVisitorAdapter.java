@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableAddColumn;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -585,4 +586,13 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
         return true;
     }
 
+    @Override
+    public boolean visit(OracleAlterTableAddColumn x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleAlterTableAddColumn x) {
+
+    }
 }

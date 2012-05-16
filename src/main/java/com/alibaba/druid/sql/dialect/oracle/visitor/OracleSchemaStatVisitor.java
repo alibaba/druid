@@ -1423,23 +1423,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(OracleAlterTableAddColumn x) {
-        OracleAlterTableStatement stmt = (OracleAlterTableStatement) x.getParent();
-        String table = stmt.getName().toString();
-
-        for (SQLColumnDefinition column : x.getColumns()) {
-            String columnName = column.getName().toString();
-            addColumn(table, columnName);
-        }
-        return false;
-    }
-
-    @Override
-    public void endVisit(OracleAlterTableAddColumn x) {
-
-    }
-
-    @Override
     public boolean visit(OracleCreateIndexStatement x) {
         this.setCurrentTable(x);
         if (x.getTable() != null) {

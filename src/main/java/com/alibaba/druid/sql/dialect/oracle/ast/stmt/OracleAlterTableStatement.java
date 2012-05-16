@@ -1,12 +1,10 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
-import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleStatement {
+public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleDDLStatement {
 
     private static final long  serialVersionUID        = 1L;
 
@@ -40,16 +38,5 @@ public class OracleAlterTableStatement extends SQLAlterTableStatement implements
 
     public void setInvalidateGlobalIndexes(boolean invalidateGlobalIndexes) {
         this.invalidateGlobalIndexes = invalidateGlobalIndexes;
-    }
-
-    public SQLName getName() {
-        if (getTableSource() == null) {
-            return null;
-        }
-        return (SQLName) getTableSource().getExpr();
-    }
-
-    public void setName(SQLName name) {
-        this.setTableSource(new SQLExprTableSource(name));
     }
 }

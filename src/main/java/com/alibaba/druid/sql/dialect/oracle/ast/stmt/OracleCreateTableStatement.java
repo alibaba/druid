@@ -9,7 +9,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleStatement {
+public class OracleCreateTableStatement extends SQLCreateTableStatement implements OracleDDLStatement {
 
     private static final long        serialVersionUID  = 1L;
 
