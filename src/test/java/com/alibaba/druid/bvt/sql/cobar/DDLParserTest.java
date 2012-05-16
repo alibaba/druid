@@ -135,6 +135,25 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("CREATE SPATIAL INDEX index_name ON tb (col(id))", output);
     }
+    
+    public void test_drop_index_0() throws Exception {
+        String sql = "drop index index_name on tb1";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP INDEX index_name ON tb1", output);
+    }
+    
+    public void test_drop_index_1() throws Exception {
+        String sql = "DROP INDEX `PRIMARY` ON t;";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("DROP INDEX `PRIMARY` ON t", output);
+    }
+
 
     // public void testDDLStmt() throws Exception {
     //

@@ -60,6 +60,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -345,4 +346,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropColumnItem x);
     
     void endVisit(SQLAlterTableDropColumnItem x);
+    
+    boolean visit(SQLDropIndexStatement x);
+    
+    void endVisit(SQLDropIndexStatement x);
 }

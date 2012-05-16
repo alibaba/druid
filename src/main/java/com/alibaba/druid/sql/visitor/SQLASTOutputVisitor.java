@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -1025,5 +1026,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public void endVisit(SQLAlterTableAddColumn x) {
 
+    }
+    
+    @Override
+    public boolean visit(SQLDropIndexStatement x) {
+        print("DROP INDEX ");
+        x.getIndexName().accept(this);
+        print(" ON ");
+        x.getTableName().accept(this);
+        return false;
     }
 }
