@@ -718,6 +718,29 @@ public class MySqlStatementParser extends SQLStatementParser {
         
         //MySqlShowFunctionStatusStatement
 
+        if (identifierEquals("ENGINE")) {
+            lexer.nextToken();
+            MySqlShowEngineStatement stmt = new MySqlShowEngineStatement();
+            stmt.setName(this.exprParser.name());
+            stmt.setOption(MySqlShowEngineStatement.Option.valueOf(lexer.stringVal().toUpperCase()));
+            lexer.nextToken();
+            return stmt;
+        }
+
+        if (identifierEquals("STORAGE")) {
+            lexer.nextToken();
+            acceptIdentifier("ENGINES");
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            stmt.setStorage(true);
+            return stmt;
+        }
+
+        if (identifierEquals("ENGINES")) {
+            lexer.nextToken();
+            MySqlShowEnginesStatement stmt = new MySqlShowEnginesStatement();
+            return stmt;
+        }
+
         throw new ParserException("TODO " + lexer.stringVal());
     }
 

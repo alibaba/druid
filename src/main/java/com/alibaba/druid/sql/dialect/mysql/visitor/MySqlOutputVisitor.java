@@ -1699,6 +1699,65 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
+    public boolean visit(MySqlShowEventsStatement x) {
+        print("SHOW EVENTS");
+        if (x.getSchema() != null) {
+            print(" FROM ");
+            x.getSchema().accept(this);
+        }
+
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowEventsStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionCodeStatement x) {
+        print("SHOW FUNCTION CODE ");
+        x.getName().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionCodeStatement x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlShowFunctionStatusStatement x) {
+        print("SHOW FUNCTION STATUS");
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            print(" WHERE ");
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlShowFunctionStatusStatement x) {
+
+    }
+
+    @Override
     public boolean visit(MySqlShowEnginesStatement x) {
         if (x.isStorage()) {
             print("SHOW STORAGE ENGINES");
@@ -1730,64 +1789,5 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlShowErrorsStatement x) {
 
-    }
-
-    @Override
-    public boolean visit(MySqlShowEventsStatement x) {
-        print("SHOW EVENTS");
-        if (x.getSchema() != null) {
-            print(" FROM ");
-            x.getSchema().accept(this);
-        }
-        
-        if (x.getLike() != null) {
-            print(" LIKE ");
-            x.getLike().accept(this);
-        }
-        
-        if (x.getWhere() != null) {
-            print(" WHERE ");
-            x.getWhere().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlShowEventsStatement x) {
-
-    }
-
-    @Override
-    public boolean visit(MySqlShowFunctionCodeStatement x) {
-        print("SHOW FUNCTION CODE ");
-        x.getName().accept(this);
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlShowFunctionCodeStatement x) {
-        
-    }
-
-    @Override
-    public boolean visit(MySqlShowFunctionStatusStatement x) {
-        print("SHOW FUNCTION STATUS");
-        if (x.getLike() != null) {
-            print(" LIKE ");
-            x.getLike().accept(this);
-        }
-        
-        if (x.getWhere() != null) {
-            print(" WHERE ");
-            x.getWhere().accept(this);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlShowFunctionStatusStatement x) {
-        
     }
 }
