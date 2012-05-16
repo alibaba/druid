@@ -61,6 +61,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableSta
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTriggerStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowDatabasesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEngineStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEnginesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowErrorsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowEventsStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionCodeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowFunctionStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowMasterLogsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatusStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTablesStatement;
@@ -291,4 +297,28 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlShowCreateViewStatement x);
     
     void endVisit(MySqlShowCreateViewStatement x);
+    
+    boolean visit(MySqlShowEngineStatement x);
+    
+    void endVisit(MySqlShowEngineStatement x);
+    
+    boolean visit(MySqlShowEnginesStatement x);
+    
+    void endVisit(MySqlShowEnginesStatement x);
+    
+    boolean visit(MySqlShowErrorsStatement x);
+    
+    void endVisit(MySqlShowErrorsStatement x);
+    
+    boolean visit(MySqlShowEventsStatement x);
+    
+    void endVisit(MySqlShowEventsStatement x);
+    
+    boolean visit(MySqlShowFunctionCodeStatement x);
+    
+    void endVisit(MySqlShowFunctionCodeStatement x);
+    
+    boolean visit(MySqlShowFunctionStatusStatement x);
+    
+    void endVisit(MySqlShowFunctionStatusStatement x);
 }
