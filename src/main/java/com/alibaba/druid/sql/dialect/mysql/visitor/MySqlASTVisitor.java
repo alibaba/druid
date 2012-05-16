@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
@@ -423,12 +424,20 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlAlterTableStatement x);
 
     void endVisit(MySqlAlterTableStatement x);
-    
+
     boolean visit(MySqlAlterTableAddColumn x);
-    
+
     void endVisit(MySqlAlterTableAddColumn x);
-    
+
     boolean visit(MySqlCreateIndexStatement x);
-    
+
     void endVisit(MySqlCreateIndexStatement x);
+
+    boolean visit(MySqlRenameTableStatement.Item x);
+
+    void endVisit(MySqlRenameTableStatement.Item x);
+    
+    boolean visit(MySqlRenameTableStatement x);
+    
+    void endVisit(MySqlRenameTableStatement x);
 }

@@ -180,6 +180,15 @@ public class DDLParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("DROP TABLE t1", output);
     }
+    
+    public void test_rename_0() throws Exception {
+        String sql = "RENAME TABLE current_db.tbl_name TO other_db.tbl_name";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("RENAME TABLE current_db.tbl_name TO other_db.tbl_name", output);
+    }
 
 
     // public void testDDLStmt() throws Exception {

@@ -153,6 +153,12 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
                 continue;
             }
+            
+            if (identifierEquals("RENAME")) {
+                SQLStatement stmt = parseRename();
+                statementList.add(stmt);
+                continue;
+            }
 
             if (parseStatementListDialect(statementList)) {
                 continue;
@@ -171,6 +177,10 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseAlter() {
         accept(Token.ALTER);
+        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
+    
+    public SQLStatement parseRename() {
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 

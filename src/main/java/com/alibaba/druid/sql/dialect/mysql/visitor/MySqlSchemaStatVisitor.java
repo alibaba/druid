@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStat
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
@@ -998,6 +999,26 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     
     @Override
     public void endVisit(MySqlCreateIndexStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlRenameTableStatement.Item x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlRenameTableStatement.Item x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlRenameTableStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlRenameTableStatement x) {
         
     }
 }
