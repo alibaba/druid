@@ -613,24 +613,35 @@ public class DALParserTest extends TestCase {
         Assert.assertEquals("SHOW GRANTS FOR 'root'@'localhost'", output);
     }
     
+    public void test_show_grants_1() throws Exception {
+        String sql = "SHOW GRANTS";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW GRANTS", output);
+    }
+    
+    public void test_show_grants_2() throws Exception {
+        String sql = "SHOW GRANTS FOR CURRENT_USER";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW GRANTS FOR CURRENT_USER", output);
+    }
+    
+    public void test_show_grants_3() throws Exception {
+        String sql = "SHOW GRANTS FOR CURRENT_USER()";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        MySqlShowGrantsStatement show = (MySqlShowGrantsStatement) parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(show);
+        Assert.assertEquals("SHOW GRANTS FOR CURRENT_USER()", output);
+    }
+    
 //
 //    public void testShow() throws Exception {
-//
-//        sql = "SHOW grants for 'expr'";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW GRANTS FOR 'expr'", output);
-//
-//        sql = "SHOW grants";
-//        lexer = new SQLLexer(sql);
-//        parser = new DALParser(lexer, new SQLExprParser(lexer));
-//        show = (DALShowStatement) parser.show();
-//        parser.match(Token.EOF);
-//        output = output2MySQL(show, sql);
-//        Assert.assertEquals("SHOW GRANTS", output);
 //
 //        sql = "SHOW index from tb1 from db";
 //        lexer = new SQLLexer(sql);

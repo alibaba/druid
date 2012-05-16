@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -1794,11 +1795,31 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlShowGrantsStatement x) {
+        print("SHOW GRANTS");
+        if (x.getUser() != null) {
+            print(" FOR ");
+            x.getUser().accept(this);
+        }
         return false;
     }
 
     @Override
     public void endVisit(MySqlShowGrantsStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUserName x) {
+        print(x.getUserName());
+        if (x.getHost() != null) {
+            print('@');
+            print(x.getHost());
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUserName x) {
         
     }
 }

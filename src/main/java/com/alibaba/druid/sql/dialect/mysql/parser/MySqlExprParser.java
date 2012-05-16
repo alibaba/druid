@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -35,6 +36,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalUnit;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr.SearchModifier;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -427,6 +429,24 @@ public class MySqlExprParser extends SQLExprParser {
                 return primaryRest(expr);
             }
         }
+        
+        if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
+            lexer.nextToken();
+            MySqlUserName userName = new MySqlUserName();
+            if (expr instanceof SQLCharExpr) {
+                userName.setUserName(((SQLCharExpr)expr).toString());
+            } else {
+                userName.setUserName(((SQLIdentifierExpr)expr).getName());
+            }
+            
+            if (lexer.token() == Token.LITERAL_CHARS) {
+                userName.setHost("'" + lexer.stringVal() + "'");
+            } else {
+                userName.setHost(lexer.stringVal());
+            }
+            lexer.nextToken();
+            return userName;
+        }
 
         return super.primaryRest(expr);
     }
@@ -542,5 +562,22 @@ public class MySqlExprParser extends SQLExprParser {
         item.setValue(expr());
 
         return item;
+    }
+    
+    public SQLName nameRest(SQLName name) throws ParserException {
+        if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
+            lexer.nextToken();
+            MySqlUserName userName = new MySqlUserName();
+            userName.setUserName(((SQLIdentifierExpr)name).getName());
+            
+            if (lexer.token() == Token.LITERAL_CHARS) {
+                userName.setHost("'" + lexer.stringVal() + "'");
+            } else {
+                userName.setHost(lexer.stringVal());
+            }
+            lexer.nextToken();
+            return userName;
+        }
+        return super.nameRest(name);
     }
 }

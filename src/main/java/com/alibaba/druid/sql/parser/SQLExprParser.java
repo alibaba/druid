@@ -204,7 +204,7 @@ public class SQLExprParser extends SQLParser {
                 } else if (varRefExpr.getName().equals("@@") && lexer.token() == Token.LITERAL_CHARS) {
                     varRefExpr.setName("@@'" + lexer.stringVal() + "'");
                     lexer.nextToken();
-                } 
+                }
                 sqlExpr = varRefExpr;
                 break;
             case DEFAULT:
@@ -612,6 +612,9 @@ public class SQLExprParser extends SQLParser {
         } else if (lexer.token() == Token.IDENTIFIER) {
             identName = lexer.stringVal();
 
+            lexer.nextToken();
+        } else if (lexer.token() == Token.LITERAL_CHARS) {
+            identName = '\'' + lexer.stringVal() + '\'';
             lexer.nextToken();
         } else {
             throw new ParserException("error " + lexer.token());
@@ -1167,12 +1170,12 @@ public class SQLExprParser extends SQLParser {
     public SQLPrimaryKey parsePrimaryKey() {
         throw new ParserException("TODO");
     }
-    
+
     public SQLAssignItem parseAssignItem() {
         SQLAssignItem item = new SQLAssignItem();
-        
+
         SQLExpr var = primary();
-        
+
         if (var instanceof SQLIdentifierExpr) {
             var = new SQLVariantRefExpr(((SQLIdentifierExpr) var).getName());
         }

@@ -748,7 +748,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             
             if (lexer.token() == Token.FOR) {
                 lexer.nextToken();
-                stmt.setUser(this.exprParser.name());
+                stmt.setUser(this.exprParser.expr());
             }
             
             return stmt;
