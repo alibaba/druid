@@ -1,26 +1,27 @@
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAlterTableStatement extends OracleStatementImpl {
+public class OracleAlterTableStatement extends SQLAlterTableStatement implements OracleStatement {
 
-    private static final long          serialVersionUID        = 1L;
-    private SQLExprTableSource         tableSource;
-    private List<OracleAlterTableItem> items                   = new ArrayList<OracleAlterTableItem>();
+    private static final long  serialVersionUID        = 1L;
 
-    private boolean                    updateGlobalIndexes     = false;
-    private boolean                    invalidateGlobalIndexes = false;
+    private boolean            updateGlobalIndexes     = false;
+    private boolean            invalidateGlobalIndexes = false;
+
+    protected void accept0(SQLASTVisitor visitor) {
+        accept0((OracleASTVisitor) visitor);
+    }
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, tableSource);
-            acceptChild(visitor, items);
+            acceptChild(visitor, getTableSource());
+            acceptChild(visitor, getItems());
         }
         visitor.endVisit(this);
     }
@@ -42,30 +43,13 @@ public class OracleAlterTableStatement extends OracleStatementImpl {
     }
 
     public SQLName getName() {
-        if (tableSource == null) {
+        if (getTableSource() == null) {
             return null;
         }
-        return (SQLName) tableSource.getExpr();
+        return (SQLName) getTableSource().getExpr();
     }
 
     public void setName(SQLName name) {
         this.setTableSource(new SQLExprTableSource(name));
     }
-
-    public SQLExprTableSource getTableSource() {
-        return tableSource;
-    }
-
-    public void setTableSource(SQLExprTableSource tableSource) {
-        this.tableSource = tableSource;
-    }
-
-    public List<OracleAlterTableItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OracleAlterTableItem> items) {
-        this.items = items;
-    }
-
 }

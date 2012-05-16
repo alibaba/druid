@@ -1785,4 +1785,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return null;
     }
+    
+    public SQLSetStatement parseAlter() {
+        accept(Token.ALTER);
+        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
 }

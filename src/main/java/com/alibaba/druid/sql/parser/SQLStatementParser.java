@@ -109,7 +109,8 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == Token.ALTER) {
-                throw new ParserException("TODO");
+                statementList.add(parseAlter());
+                continue;
             }
 
             if (lexer.token() == Token.DROP) {
@@ -162,6 +163,11 @@ public class SQLStatementParser extends SQLParser {
         stmt.setDatabase(this.exprParser.name());
         return stmt;
     }
+    
+    public SQLSetStatement parseAlter() {
+        accept(Token.ALTER);
+        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+    }
 
     protected SQLDropTableStatement parseDropTable(boolean acceptDrop) {
         if (acceptDrop) {
@@ -185,7 +191,9 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseTruncate() {
         accept(Token.TRUNCATE);
-        accept(Token.TABLE);
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+        }
         SQLTruncateStatement stmt = new SQLTruncateStatement();
 
         for (;;) {
