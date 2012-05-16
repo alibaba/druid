@@ -244,19 +244,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         
         stmt.setName(this.exprParser.name());
         
-        if (identifierEquals("USING")) {
-            lexer.nextToken();
-            
-            if (identifierEquals("BTREE")) {
-                stmt.setType("BTREE");
-                lexer.nextToken();
-            } else if (identifierEquals("HASH")) {
-                stmt.setType("HASH");
-                lexer.nextToken();
-            } else {
-                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
-            }
-        }
+        parseCreateIndexUsing(stmt);
         
         accept(Token.ON);
         
@@ -275,7 +263,25 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
         accept(Token.RPAREN);
         
+        parseCreateIndexUsing(stmt);
+        
         return stmt;
+    }
+
+    private void parseCreateIndexUsing(MySqlCreateIndexStatement stmt) {
+        if (identifierEquals("USING")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("BTREE")) {
+                stmt.setUsing("BTREE");
+                lexer.nextToken();
+            } else if (identifierEquals("HASH")) {
+                stmt.setUsing("HASH");
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            }
+        }
     }
 
     public SQLStatement parseCreateUser() throws ParserException {
