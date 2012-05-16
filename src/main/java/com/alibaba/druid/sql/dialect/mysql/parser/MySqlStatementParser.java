@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -41,6 +42,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColum
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -212,6 +214,10 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlCreateTableParser parser = new MySqlCreateTableParser(lexer);
             return parser.parseCrateTable(false);
         }
+        
+        if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals("FULLTEXT") || identifierEquals("SPATIAL")) {
+            return parseCreateIndex();
+        }
 
         if (identifierEquals("USER")) {
             return parseCreateUser();
@@ -219,8 +225,64 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         throw new ParserException("TODO " + lexer.token());
     }
+    
+    public SQLStatement parseCreateIndex() throws ParserException {
+        MySqlCreateIndexStatement stmt = new MySqlCreateIndexStatement();
+        
+        if (lexer.token() == Token.UNIQUE) {
+            stmt.setType("UNIQUE");
+            lexer.nextToken();
+        } else if (identifierEquals("FULLTEXT")) {
+            stmt.setType("FULLTEXT");
+            lexer.nextToken();
+        } else if (identifierEquals("SPATIAL")) {
+            stmt.setType("SPATIAL");
+            lexer.nextToken();
+        }
+        
+        accept(Token.INDEX);
+        
+        stmt.setName(this.exprParser.name());
+        
+        if (identifierEquals("USING")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("BTREE")) {
+                stmt.setType("BTREE");
+                lexer.nextToken();
+            } else if (identifierEquals("HASH")) {
+                stmt.setType("HASH");
+                lexer.nextToken();
+            } else {
+                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            }
+        }
+        
+        accept(Token.ON);
+        
+        stmt.setTable(this.exprParser.name());
+        
+        accept(Token.LPAREN);
+
+        for (;;) {
+            SQLSelectOrderByItem item = this.exprParser.parseSelectOrderByItem();
+            stmt.getItems().add(item);
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextToken();
+                continue;
+            }
+            break;
+        }
+        accept(Token.RPAREN);
+        
+        return stmt;
+    }
 
     public SQLStatement parseCreateUser() throws ParserException {
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+        }
+        
         acceptIdentifier("USER");
 
         MySqlCreateUserStatement stmt = new MySqlCreateUserStatement();

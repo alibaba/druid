@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColum
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -426,4 +427,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlAlterTableAddColumn x);
     
     void endVisit(MySqlAlterTableAddColumn x);
+    
+    boolean visit(MySqlCreateIndexStatement x);
+    
+    void endVisit(MySqlCreateIndexStatement x);
 }

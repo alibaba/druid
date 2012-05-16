@@ -2180,11 +2180,13 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(OracleCreateIndexStatement x) {
-        print("CREATE INDEX ");
+        print("CREATE ");
         if (x.getType() != null) {
-            print(x.getType().name());
+            print(x.getType());
             print(" ");
         }
+        
+        print("INDEX ");
 
         x.getName().accept(this);
         print(" ON ");
