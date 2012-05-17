@@ -33,7 +33,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
-import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
@@ -377,20 +376,6 @@ public class OracleStatementParser extends SQLStatementParser {
 
                         break;
                     }
-                }
-
-                statementList.add(stmt);
-                continue;
-            }
-
-            if (lexer.token() == Token.ROLLBACK) {
-                lexer.nextToken();
-
-                SQLRollbackStatement stmt = new SQLRollbackStatement();
-
-                if (identifierEquals("TO")) {
-                    lexer.nextToken();
-                    stmt.setTo(this.exprParser.name());
                 }
 
                 statementList.add(stmt);
