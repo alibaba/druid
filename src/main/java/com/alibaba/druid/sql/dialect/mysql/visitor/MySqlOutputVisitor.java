@@ -795,7 +795,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getQuery() != null) {
-            print(" ");
+            println();
             x.getQuery().accept(this);
         }
 
@@ -935,12 +935,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getQuery() != null) {
             x.getQuery().accept(this);
-        }
-
-        if (x.getSetItems().size() != 0) {
-            println();
-            print("SET ");
-            printAndAccept(x.getSetItems(), ", ");
         }
 
         return false;

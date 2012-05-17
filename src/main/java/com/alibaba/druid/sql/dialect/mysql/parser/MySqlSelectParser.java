@@ -22,9 +22,12 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -177,24 +180,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         queryBlock.setOrderBy(this.createExprParser().parseOrderBy());
 
         if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-
-            MySqlSelectQueryBlock.Limit limit = new MySqlSelectQueryBlock.Limit();
-
-            SQLExpr temp = this.createExprParser().expr();
-            if (lexer.token() == (Token.COMMA)) {
-                limit.setOffset(temp);
-                lexer.nextToken();
-                limit.setRowCount(createExprParser().expr());
-            } else if (identifierEquals("OFFSET")) {
-                limit.setRowCount(temp);
-                lexer.nextToken();
-                limit.setOffset(createExprParser().expr());
-            } else {
-                limit.setRowCount(temp);
-            }
-
-            queryBlock.setLimit(limit);
+            queryBlock.setLimit(parseLimit());
         }
 
         if (identifierEquals("PROCEDURE")) {
@@ -271,5 +257,20 @@ public class MySqlSelectParser extends SQLSelectParser {
         
         return super.parseTableSourceRest(tableSource);
     }
- 
+
+    protected MySqlUnionQuery createSQLUnionQuery() {
+        return new MySqlUnionQuery();
+    }
+    
+    public SQLUnionQuery unionRest(SQLUnionQuery union) {
+        if (lexer.token() == Token.LIMIT) {
+            MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
+            mysqlUnionQuery.setLimit(parseLimit());
+        }
+        return super.unionRest(union);
+    }
+    
+    public Limit parseLimit() {
+        return this.createExprParser().parseLimit();
+    }
 }

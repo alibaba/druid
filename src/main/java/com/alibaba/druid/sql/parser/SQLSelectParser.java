@@ -52,12 +52,25 @@ public class SQLSelectParser extends SQLParser {
 
         return select;
     }
+    
+    protected SQLUnionQuery createSQLUnionQuery() {
+        return new SQLUnionQuery();
+    }
+    
+    public SQLUnionQuery unionRest(SQLUnionQuery union) {
+        if (lexer.token() == Token.ORDER) {
+            SQLOrderBy orderBy = this.createExprParser().parseOrderBy();
+            union.setOrderBy(orderBy);
+            return unionRest(union);
+        }
+        return union;
+    }
 
     public SQLSelectQuery queryRest(SQLSelectQuery selectQuery) throws ParserException {
         if (lexer.token() == Token.UNION) {
             lexer.nextToken();
 
-            SQLUnionQuery union = new SQLUnionQuery();
+            SQLUnionQuery union = createSQLUnionQuery();
             union.setLeft(selectQuery);
 
             if (lexer.token() == Token.ALL) {
@@ -68,7 +81,7 @@ public class SQLSelectParser extends SQLParser {
             SQLSelectQuery right = this.query();
             union.setRight(right);
 
-            return union;
+            return unionRest(union);
         }
 
         if (lexer.token() == Token.INTERSECT) {
