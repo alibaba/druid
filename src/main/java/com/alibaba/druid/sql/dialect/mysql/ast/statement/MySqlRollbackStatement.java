@@ -15,16 +15,23 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlRollbackStatement extends MySqlStatementImpl {
+public class MySqlRollbackStatement extends SQLRollbackStatement implements MySqlStatement {
 
     private static final long serialVersionUID = 1L;
 
-    private boolean           work             = false;
-
     private Boolean           chain;
     private Boolean           release;
+
+    private SQLExpr           force;
+
+    public MySqlRollbackStatement(){
+
+    }
 
     public Boolean getChain() {
         return chain;
@@ -42,17 +49,31 @@ public class MySqlRollbackStatement extends MySqlStatementImpl {
         this.release = release;
     }
 
-    public boolean isWork() {
-        return work;
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
     }
 
-    public void setWork(boolean work) {
-        this.work = work;
-    }
-
+    @Override
     public void accept0(MySqlASTVisitor visitor) {
-        visitor.visit(this);
+        if (visitor.visit(this)) {
+            acceptChild(visitor, getTo());
+            acceptChild(visitor, getForce());
+        }
 
         visitor.endVisit(this);
     }
+
+    public SQLExpr getForce() {
+        return force;
+    }
+
+    public void setForce(SQLExpr force) {
+        this.force = force;
+    }
+
 }

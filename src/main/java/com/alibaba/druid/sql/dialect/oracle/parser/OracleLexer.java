@@ -127,7 +127,6 @@ public class OracleLexer extends Lexer {
         map.put("ELSE", Token.ELSE);
         map.put("GOTO", Token.GOTO);
         map.put("COMMIT", Token.COMMIT);
-        map.put("ROLLBACK", Token.ROLLBACK);
         map.put("SAVEPOINT", Token.SAVEPOINT);
         map.put("CROSS", Token.CROSS);
 

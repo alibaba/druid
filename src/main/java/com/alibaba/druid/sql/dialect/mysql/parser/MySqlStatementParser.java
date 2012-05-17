@@ -1329,14 +1329,14 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public MySqlRollbackStatement parseRollback() throws ParserException {
+    @Override
+    public MySqlRollbackStatement parseRollback() {
         acceptIdentifier("ROLLBACK");
 
         MySqlRollbackStatement stmt = new MySqlRollbackStatement();
 
         if (identifierEquals("WORK")) {
             lexer.nextToken();
-            stmt.setWork(true);
         }
 
         if (lexer.token() == Token.AND) {
@@ -1349,6 +1349,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                 acceptIdentifier("CHAIN");
                 stmt.setChain(Boolean.TRUE);
             }
+        }
+        
+        if (identifierEquals("TO")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("SAVEPOINT")) {
+                lexer.nextToken();
+            }
+            
+            stmt.setTo(this.exprParser.name());
         }
 
         return stmt;

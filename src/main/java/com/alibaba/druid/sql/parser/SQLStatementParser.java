@@ -34,6 +34,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
@@ -166,8 +168,21 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
+            if (identifierEquals("RELEASE")) {
+                SQLStatement stmt = parseReleaseSavePoint();
+                statementList.add(stmt);
+                continue;
+            }
+
             if (identifierEquals("SAVEPOINT")) {
                 SQLStatement stmt = parseSavePoint();
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (identifierEquals("ROLLBACK")) {
+                SQLRollbackStatement stmt = parseRollback();
+
                 statementList.add(stmt);
                 continue;
             }
@@ -192,6 +207,27 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
+    public SQLRollbackStatement parseRollback() {
+        lexer.nextToken();
+        
+        if (identifierEquals("WORK")) {
+            lexer.nextToken();
+        }
+
+        SQLRollbackStatement stmt = new SQLRollbackStatement();
+
+        if (identifierEquals("TO")) {
+            lexer.nextToken();
+            
+            if (identifierEquals("SAVEPOINT")) {
+                lexer.nextToken();
+            }
+            
+            stmt.setTo(this.exprParser.name());
+        }
+        return stmt;
+    }
+
     public SQLUseStatement parseUse() {
         accept(Token.USE);
         SQLUseStatement stmt = new SQLUseStatement();
@@ -202,6 +238,14 @@ public class SQLStatementParser extends SQLParser {
     public SQLStatement parseSavePoint() {
         acceptIdentifier("SAVEPOINT");
         SQLSavePointStatement stmt = new SQLSavePointStatement();
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
+    public SQLStatement parseReleaseSavePoint() {
+        acceptIdentifier("RELEASE");
+        acceptIdentifier("SAVEPOINT");
+        SQLReleaseSavePointStatement stmt = new SQLReleaseSavePointStatement();
         stmt.setName(this.exprParser.name());
         return stmt;
     }

@@ -160,7 +160,6 @@ public enum Token {
     LOOP("LOOP"),
     GOTO("GOTO"),
     COMMIT("COMMIT"),
-    ROLLBACK("ROLLBACK"),
     SAVEPOINT("SAVEPOINT"),
     CROSS("CROSS"),
     

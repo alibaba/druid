@@ -31,7 +31,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -165,7 +164,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isHignPriority()) {
             print("HIGH_PRIORITY ");
         }
-        
+
         if (x.isStraightJoin()) {
             print("STRAIGHT_JOIN ");
         }
@@ -1028,10 +1027,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlRollbackStatement x) {
         print("ROLLBACK");
 
-        if (x.isWork()) {
-            print(" WORK");
-        }
-
         if (x.getChain() != null) {
             if (x.getChain().booleanValue()) {
                 print(" AND CHAIN");
@@ -1046,6 +1041,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             } else {
                 print(" AND NO RELEASE");
             }
+        }
+
+        if (x.getTo() != null) {
+            print(" TO ");
+            x.getTo().accept(this);
         }
 
         return false;
@@ -1465,11 +1465,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public boolean visit(MySqlUpdateStatement x) {
         print("UPDATE ");
-        
+
         if (x.isLowPriority()) {
             print("LOW_PRIORITY ");
         }
-        
+
         if (x.isIgnore()) {
             print("IGNORE ");
         }
@@ -1491,12 +1491,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
-        
+
         if (x.getOrderBy() != null) {
             println();
             x.getOrderBy().accept(this);
         }
-        
+
         if (x.getLimit() != null) {
             println();
             x.getLimit().accept(this);
@@ -2404,9 +2404,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUseIndexHint x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlIgnoreIndexHint x) {
         print("IGNORE INDEX ");
@@ -2420,10 +2420,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(')');
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlIgnoreIndexHint x) {
-        
+
     }
 
     public boolean visit(SQLExprTableSource x) {
@@ -2433,7 +2433,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
             print(x.getAlias());
         }
-        
+
         for (int i = 0; i < x.getHints().size(); ++i) {
             print(' ');
             x.getHints().get(i).accept(this);
