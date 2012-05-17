@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -32,11 +31,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
@@ -1356,6 +1355,17 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLName tableName = exprParser.name();
         stmt.setTableName(tableName);
 
+        if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            if (lexer.token() == Token.SELECT) {
+                SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+                stmt.setQuery(queryExpr);
+            } else {
+                this.exprParser.exprList(stmt.getColumns());
+            }
+            accept(Token.RPAREN);
+        }
+
         if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
             lexer.nextToken();
 
@@ -1378,13 +1388,17 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setQuery(queryExpr);
         } else if (lexer.token() == Token.SET) {
             lexer.nextToken();
-            for (;;) {
-                SQLUpdateSetItem item = new SQLUpdateSetItem();
-                item.setColumn(this.exprParser.name());
-                accept(Token.EQ);
-                item.setValue(this.exprParser.expr());
 
-                stmt.getSetItems().add(item);
+            SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+            stmt.getValuesList().add(values);
+            for (;;) {
+                stmt.getColumns().add(this.exprParser.name());
+                if (lexer.token() == Token.COLONEQ) {
+                    lexer.nextToken();
+                } else {
+                    accept(Token.EQ);
+                }
+                values.getValues().add(this.exprParser.expr());
 
                 if (lexer.token() == (Token.COMMA)) {
                     lexer.nextToken();
@@ -1393,6 +1407,11 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                 break;
             }
+        } else if (lexer.token() == Token.LPAREN) {
+            lexer.nextToken();
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+            stmt.setQuery(queryExpr);
+            accept(Token.RPAREN);
         }
 
         return stmt;
@@ -1628,7 +1647,13 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
-            this.exprParser.exprList(insertStatement.getColumns());
+            if (lexer.token() == (Token.SELECT)) {
+                SQLSelect select = this.exprParser.createSelectParser().select();
+                select.setParent(insertStatement);
+                insertStatement.setQuery(select);
+            } else {
+                this.exprParser.exprList(insertStatement.getColumns());
+            }
             accept(Token.RPAREN);
         }
 
@@ -1654,7 +1679,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
             insertStatement.getValuesList().add(values);
-         
+
             for (;;) {
                 SQLName name = this.exprParser.name();
                 insertStatement.getColumns().add(name);
@@ -1664,18 +1689,25 @@ public class MySqlStatementParser extends SQLStatementParser {
                     accept(Token.COLONEQ);
                 }
                 values.getValues().add(this.exprParser.expr());
-                
+
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();
                     continue;
                 }
-                
+
                 break;
             }
 
         } else if (lexer.token() == (Token.SELECT)) {
-            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
-            insertStatement.setQuery(queryExpr.getSubQuery());
+            SQLSelect select = this.exprParser.createSelectParser().select();
+            select.setParent(insertStatement);
+            insertStatement.setQuery(select);
+        } else if (lexer.token() == (Token.LPAREN)) {
+            lexer.nextToken();
+            SQLSelect select = this.exprParser.createSelectParser().select();
+            select.setParent(insertStatement);
+            insertStatement.setQuery(select);
+            accept(Token.RPAREN);
         }
 
         if (lexer.token() == Token.ON) {

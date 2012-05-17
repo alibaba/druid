@@ -22,7 +22,6 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 public class MySqlReplicateStatement extends MySqlStatementImpl {
@@ -35,7 +34,6 @@ public class MySqlReplicateStatement extends MySqlStatementImpl {
     private SQLName                tableName;
     private final List<SQLExpr>    columns          = new ArrayList<SQLExpr>();
     private List<ValuesClause>     valuesList       = new ArrayList<ValuesClause>();
-    private List<SQLUpdateSetItem> setItems         = new ArrayList<SQLUpdateSetItem>();
     private SQLQueryExpr           query;
 
     public SQLName getTableName() {
@@ -79,16 +77,11 @@ public class MySqlReplicateStatement extends MySqlStatementImpl {
         return valuesList;
     }
 
-    public List<SQLUpdateSetItem> getSetItems() {
-        return setItems;
-    }
-
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, tableName);
             acceptChild(visitor, columns);
             acceptChild(visitor, valuesList);
-            acceptChild(visitor, setItems);
             acceptChild(visitor, query);
         }
         visitor.endVisit(this);
