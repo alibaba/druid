@@ -187,10 +187,6 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (parseStatementListDialect(statementList)) {
-                continue;
-            }
-
             if (lexer.token() == Token.LPAREN) {
                 char mark_ch = lexer.current();
                 int mark_bp = lexer.bp();
@@ -201,6 +197,10 @@ public class SQLStatementParser extends SQLParser {
                     statementList.add(stmt);
                     continue;
                 }
+            }
+            
+            if (parseStatementListDialect(statementList)) {
+                continue;
             }
 
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
