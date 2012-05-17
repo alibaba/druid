@@ -55,6 +55,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
@@ -476,18 +478,6 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (identifierEquals("COMMIT")) {
-            MySqlCommitStatement stmt = parseCommit();
-            statementList.add(stmt);
-            return true;
-        }
-
-        if (identifierEquals("ROLLBACK")) {
-            MySqlRollbackStatement stmt = parseRollback();
-            statementList.add(stmt);
-            return true;
-        }
-
         if (identifierEquals("SHOW")) {
             SQLStatement stmt = parseShow();
             statementList.add(stmt);
@@ -508,6 +498,33 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("DESC") || identifierEquals("DESCRIBE")) {
             SQLStatement stmt = parseDescribe();
+            statementList.add(stmt);
+            return true;
+        }
+        
+        if (lexer.token() == Token.LOCK) {
+            lexer.nextToken();
+            acceptIdentifier("TABLES");
+            
+            MySqlLockTableStatement stmt = new MySqlLockTableStatement();
+            stmt.setTableSource(this.exprParser.name());
+            
+            if (identifierEquals("READ")) {
+                lexer.nextToken();
+                if (identifierEquals("LOCAL")) {
+                    lexer.nextToken();
+                    stmt.setLockType(LockType.READ_LOCAL);
+                } else {
+                    stmt.setLockType(LockType.READ);
+                }
+            } else if (identifierEquals("WRITE")) {
+                stmt.setLockType(LockType.WRITE);
+            } else if (identifierEquals("LOW_PRIORITY")) {
+                lexer.nextToken();
+                acceptIdentifier("WRITE");
+                stmt.setLockType(LockType.LOW_PRIORITY_WRITE);
+            }
+            
             statementList.add(stmt);
             return true;
         }

@@ -62,6 +62,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
@@ -2440,5 +2441,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         return false;
+    }
+
+    @Override
+    public boolean visit(MySqlLockTableStatement x) {
+        print("LOCK TABLES ");
+        x.getTableSource().accept(this);
+        if (x.getLockType() != null) {
+            print(' ');
+            print(x.getLockType().name);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlLockTableStatement x) {
+        
     }
 }
