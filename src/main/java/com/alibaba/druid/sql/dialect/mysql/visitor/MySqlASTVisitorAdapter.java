@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
@@ -989,6 +990,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlUseIndexHint x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlIgnoreIndexHint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlIgnoreIndexHint x) {
         
     }
 }

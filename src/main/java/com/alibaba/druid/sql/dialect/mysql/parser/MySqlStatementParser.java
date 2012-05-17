@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
@@ -137,7 +138,53 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
-        MySqlUpdateStatement stmt = (MySqlUpdateStatement) super.parseUpdateStatement();
+        MySqlUpdateStatement stmt = createUpdateStatement();
+
+        if (lexer.token() == Token.UPDATE) {
+            lexer.nextToken();
+            
+            if (identifierEquals("LOW_PRIORITY")) {
+                lexer.nextToken();
+                stmt.setLowPriority(true);
+            }
+            
+            if (identifierEquals("IGNORE")) {
+                lexer.nextToken();
+                stmt.setIgnore(true);
+            }
+
+            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+            stmt.setTableSource(tableSource);
+        }
+
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = new SQLUpdateSetItem();
+            item.setColumn(this.exprParser.name());
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            } else {
+                accept(Token.COLONEQ);
+            }
+            item.setValue(this.exprParser.expr());
+
+            stmt.getItems().add(item);
+
+            if (lexer.token() == (Token.COMMA)) {
+                lexer.nextToken();
+                continue;
+            }
+
+            break;
+        }
+
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            stmt.setWhere(this.exprParser.expr());
+        }
+        
+        stmt.setOrderBy(this.exprParser.parseOrderBy());
 
         stmt.setLimit(parseLimit());
 

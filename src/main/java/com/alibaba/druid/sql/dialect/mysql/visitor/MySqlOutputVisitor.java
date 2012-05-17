@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
@@ -1463,7 +1464,39 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlUpdateStatement x) {
-        super.visit((SQLUpdateStatement) x);
+        print("UPDATE ");
+        
+        if (x.isLowPriority()) {
+            print("LOW_PRIORITY ");
+        }
+        
+        if (x.isIgnore()) {
+            print("IGNORE ");
+        }
+
+        x.getTableSource().accept(this);
+
+        println();
+        print("SET ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                print(", ");
+            }
+            x.getItems().get(i).accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            println();
+            print("WHERE ");
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+        }
+        
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
+        
         if (x.getLimit() != null) {
             println();
             x.getLimit().accept(this);
@@ -2371,6 +2404,25 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUseIndexHint x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlIgnoreIndexHint x) {
+        print("IGNORE INDEX ");
+        if (x.getOption() != null) {
+            print("FOR ");
+            print(x.getOption().name);
+            print(' ');
+        }
+        print('(');
+        printAndAccept(x.getIndexList(), ", ");
+        print(')');
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlIgnoreIndexHint x) {
         
     }
 

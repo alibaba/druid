@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -158,9 +159,15 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (identifierEquals("RENAME")) {
                 SQLStatement stmt = parseRename();
+                statementList.add(stmt);
+                continue;
+            }
+
+            if (identifierEquals("SAVEPOINT")) {
+                SQLStatement stmt = parseSavePoint();
                 statementList.add(stmt);
                 continue;
             }
@@ -168,7 +175,7 @@ public class SQLStatementParser extends SQLParser {
             if (parseStatementListDialect(statementList)) {
                 continue;
             }
-            
+
             if (lexer.token() == Token.LPAREN) {
                 char mark_ch = lexer.current();
                 int mark_bp = lexer.bp();
@@ -192,11 +199,18 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
+    public SQLStatement parseSavePoint() {
+        acceptIdentifier("SAVEPOINT");
+        SQLSavePointStatement stmt = new SQLSavePointStatement();
+        stmt.setName(this.exprParser.name());
+        return stmt;
+    }
+
     public SQLStatement parseAlter() {
         accept(Token.ALTER);
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
-    
+
     public SQLStatement parseRename() {
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
@@ -220,15 +234,15 @@ public class SQLStatementParser extends SQLParser {
         }
         return stmt;
     }
-    
+
     protected SQLDropViewStatement parseDropView(boolean acceptDrop) {
         if (acceptDrop) {
             accept(Token.DROP);
         }
         accept(Token.VIEW);
-        
+
         SQLDropViewStatement stmt = new SQLDropViewStatement();
-        
+
         for (;;) {
             SQLName name = this.exprParser.name();
             stmt.getTableSources().add(new SQLExprTableSource(name));

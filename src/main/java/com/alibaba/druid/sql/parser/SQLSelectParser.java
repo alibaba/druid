@@ -223,8 +223,10 @@ public class SQLSelectParser extends SQLParser {
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = parseTableSource();
                 accept(Token.RPAREN);
+                accept(Token.RPAREN);
             } else {
-                throw new ParserException("TODO");
+                tableSource = parseTableSource();
+                accept(Token.RPAREN);
             }
 
             return parseTableSourceRest(tableSource);
