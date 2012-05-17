@@ -66,6 +66,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
@@ -204,7 +205,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLSelectQueryBlock x);
 
     void endVisit(SQLSelectQueryBlock x);
-    
+
     boolean visit(SQLExprTableSource x);
 
     void endVisit(SQLExprTableSource x);
@@ -336,28 +337,32 @@ public interface SQLASTVisitor {
     void endVisit(SQLCommentStatement x);
 
     boolean visit(SQLCommentStatement x);
-    
+
     void endVisit(SQLUseStatement x);
-    
+
     boolean visit(SQLUseStatement x);
 
     boolean visit(SQLAlterTableAddColumn x);
 
     void endVisit(SQLAlterTableAddColumn x);
-    
+
     boolean visit(SQLAlterTableDropColumnItem x);
-    
+
     void endVisit(SQLAlterTableDropColumnItem x);
-    
+
     boolean visit(SQLDropIndexStatement x);
-    
+
     void endVisit(SQLDropIndexStatement x);
-    
+
     boolean visit(SQLDropViewStatement x);
-    
+
     void endVisit(SQLDropViewStatement x);
-    
+
     boolean visit(SQLSavePointStatement x);
-    
+
     void endVisit(SQLSavePointStatement x);
+
+    boolean visit(SQLRollbackStatement x);
+
+    void endVisit(SQLRollbackStatement x);
 }

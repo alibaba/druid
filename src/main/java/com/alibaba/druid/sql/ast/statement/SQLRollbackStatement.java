@@ -1,16 +1,17 @@
-package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
+package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
+import com.alibaba.druid.sql.ast.SQLStatementImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleRollbackStatement extends OracleStatementImpl {
+public class SQLRollbackStatement extends SQLStatementImpl {
 
     private static final long serialVersionUID = 1L;
 
     private SQLName           to;
 
     @Override
-    public void accept0(OracleASTVisitor visitor) {
+    protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, to);
         }

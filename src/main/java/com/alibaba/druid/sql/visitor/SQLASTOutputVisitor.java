@@ -69,6 +69,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -1068,6 +1069,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLSavePointStatement x) {
         print("SAVEPOINT ");
         x.getName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLRollbackStatement x) {
+        print("ROLLBACK");
+        if (x.getTo() != null) {
+            print(" TO ");
+            x.getTo().accept(this);
+        }
         return false;
     }
 }
