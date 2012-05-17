@@ -3,8 +3,8 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -16,13 +16,13 @@ public class OracleInsertStatement extends SQLInsertStatement implements OracleS
 
     private OracleReturningClause    returning;
     private OracleErrorLoggingClause errorLogging;
-    private List<OracleHint>         hints            = new ArrayList<OracleHint>();
+    private List<SQLHint>            hints            = new ArrayList<SQLHint>();
 
-    public List<OracleHint> getHints() {
+    public List<SQLHint> getHints() {
         return hints;
     }
 
-    public void setHints(List<OracleHint> hints) {
+    public void setHints(List<SQLHint> hints) {
         this.hints = hints;
     }
 

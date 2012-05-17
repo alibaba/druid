@@ -15,11 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
@@ -37,18 +33,9 @@ public class OracleSelectTableReference extends SQLExprTableSource implements Or
     protected SampleClause             sampleClause;
 
     protected FlashbackQueryClause     flashback;
-    private List<OracleHint>           hints            = new ArrayList<OracleHint>();
 
     public OracleSelectTableReference(){
 
-    }
-
-    public List<OracleHint> getHints() {
-        return hints;
-    }
-
-    public void setHints(List<OracleHint> hints) {
-        this.hints = hints;
     }
 
     public FlashbackQueryClause getFlashback() {

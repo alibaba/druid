@@ -68,6 +68,7 @@ public class SQLUnionQuery extends SQLSelectQuery {
         if (visitor.visit(this)) {
             acceptChild(visitor, left);
             acceptChild(visitor, right);
+            acceptChild(visitor, orderBy);
         }
         visitor.endVisit(this);
     }

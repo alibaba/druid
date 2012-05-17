@@ -91,24 +91,24 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public static enum JoinType {
-        COMMA, JOIN, INNER_JOIN, CROSS_JOIN, NATURAL_JOIN, NATURAL_INNER_JOIN, LEFT_OUTER_JOIN, RIGHT_OUTER_JOIN,
-        FULL_OUTER_JOIN;
+        COMMA(","), // 
+        JOIN("JOIN"), //
+        INNER_JOIN("INNER JOIN"), // 
+        CROSS_JOIN("CROSS JOIN"), // 
+        NATURAL_JOIN("NATURAL JOIN"), // 
+        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), // 
+        LEFT_OUTER_JOIN("LEFT JOIN"), 
+        RIGHT_OUTER_JOIN("RIGHT JOIN"),
+        FULL_OUTER_JOIN("FULL JOIN"), 
+        STRAIGHT_JOIN("STRAIGHT_JOIN");
 
+        public final String name;
+
+        JoinType(String name){
+            this.name = name;
+        }
         public static String toString(JoinType joinType) {
-            if (JOIN.equals(joinType)) return "JOIN";
-            if (INNER_JOIN.equals(joinType)) return "INNER JOIN";
-            if (CROSS_JOIN.equals(joinType)) return "CROSS JOIN";
-            if (NATURAL_JOIN.equals(joinType)) return "NATURAL JOIN";
-            if (NATURAL_INNER_JOIN.equals(joinType)) return "NATURAL INNER JOIN";
-            if (LEFT_OUTER_JOIN.equals(joinType)) return "LEFT JOIN";
-            if (RIGHT_OUTER_JOIN.equals(joinType)) return "RIGHT JOIN";
-            if (FULL_OUTER_JOIN.equals(joinType)) {
-                return "FULL JOIN";
-            }
-            if (COMMA.equals(joinType)) {
-                return ",";
-            }
-            throw new IllegalStateException("not supported join " + joinType);
+            return joinType.name;
         }
     }
 }

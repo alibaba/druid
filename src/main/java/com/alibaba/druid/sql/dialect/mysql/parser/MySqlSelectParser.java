@@ -23,11 +23,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -249,19 +251,55 @@ public class MySqlSelectParser extends SQLSelectParser {
     protected MySqlExprParser createExprParser() {
         return new MySqlExprParser(lexer);
     }
-    
+
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
         if (identifierEquals("USING")) {
             return tableSource;
         }
-        
+
+        if (identifierEquals("USE")) {
+            lexer.nextToken();
+            MySqlUseIndexHint hint = new MySqlUseIndexHint();
+            if (lexer.token() == Token.INDEX) {
+                lexer.nextToken();
+            } else {
+                accept(Token.KEY);
+            }
+            
+            if (lexer.token() == Token.FOR) {
+                lexer.nextToken();
+                
+                if (lexer.token() == Token.JOIN) {
+                    lexer.nextToken();
+                    hint.setOption(MySqlIndexHint.Option.JOIN);
+                } else if (lexer.token() == Token.ORDER) {
+                    lexer.nextToken();
+                    accept(Token.BY);
+                    hint.setOption(MySqlIndexHint.Option.ORDER_BY);
+                } else {
+                    accept(Token.GROUP);
+                    accept(Token.BY);
+                    hint.setOption(MySqlIndexHint.Option.GROUP_BY);
+                }
+            }
+            
+            accept(Token.LPAREN);
+            this.createExprParser().names(hint.getIndexList());
+            accept(Token.RPAREN);
+            tableSource.getHints().add(hint);
+        }
+
+        if (identifierEquals("IGNORE")) {
+            throw new ParserException("TODO");
+        }
+
         return super.parseTableSourceRest(tableSource);
     }
 
     protected MySqlUnionQuery createSQLUnionQuery() {
         return new MySqlUnionQuery();
     }
-    
+
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.LIMIT) {
             MySqlUnionQuery mysqlUnionQuery = (MySqlUnionQuery) union;
@@ -269,7 +307,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
         return super.unionRest(union);
     }
-    
+
     public Limit parseLimit() {
         return this.createExprParser().parseLimit();
     }

@@ -2,6 +2,7 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
@@ -84,6 +85,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -967,6 +969,26 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlDropViewStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUnionQuery x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlUnionQuery x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUseIndexHint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlUseIndexHint x) {
         
     }
 }

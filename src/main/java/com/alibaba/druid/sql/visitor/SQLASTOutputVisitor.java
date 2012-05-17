@@ -797,7 +797,26 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         println();
         print(x.getOperator().name);
         println();
-        x.getRight().accept(this);
+
+        boolean needParen = false;
+        
+        if (x.getOrderBy() != null) {
+            needParen = true;
+        }
+        
+        if (needParen) {
+            print('(');
+            x.getRight().accept(this);
+            print(')');
+        } else {
+            x.getRight().accept(this);    
+        }
+        
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
+        
         return false;
     }
 

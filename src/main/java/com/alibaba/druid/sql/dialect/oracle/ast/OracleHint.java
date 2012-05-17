@@ -15,9 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast;
 
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
-public class OracleHint extends OracleSQLObjectImpl {
+public class OracleHint extends OracleSQLObjectImpl implements SQLHint {
 
     private static final long serialVersionUID = 1L;
 

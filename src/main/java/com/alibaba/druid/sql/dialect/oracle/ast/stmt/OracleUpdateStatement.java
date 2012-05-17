@@ -19,22 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleUpdateStatement extends SQLUpdateStatement implements OracleStatement {
 
-    private static final long      serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-    private final List<OracleHint> hints            = new ArrayList<OracleHint>(1);
-    private boolean                only             = false;
-    private String                 alias;
-    private SQLExpr                where;
+    private final List<SQLHint> hints            = new ArrayList<SQLHint>(1);
+    private boolean             only             = false;
+    private String              alias;
+    private SQLExpr             where;
 
-    private List<SQLExpr>          returning        = new ArrayList<SQLExpr>();
-    private List<SQLExpr>          returningInto    = new ArrayList<SQLExpr>();
+    private List<SQLExpr>       returning        = new ArrayList<SQLExpr>();
+    private List<SQLExpr>       returningInto    = new ArrayList<SQLExpr>();
 
     public OracleUpdateStatement(){
 
@@ -103,7 +103,7 @@ public class OracleUpdateStatement extends SQLUpdateStatement implements OracleS
         this.only = only;
     }
 
-    public List<OracleHint> getHints() {
+    public List<SQLHint> getHints() {
         return this.hints;
     }
 }

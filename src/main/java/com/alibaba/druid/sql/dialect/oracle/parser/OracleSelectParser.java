@@ -286,6 +286,9 @@ public class OracleSelectParser extends SQLSelectParser {
             if (lexer.token() == (Token.ALL)) {
                 union.setOperator(SQLUnionOperator.UNION_ALL);
                 lexer.nextToken();
+            } else if (lexer.token() == (Token.DISTINCT)) {
+                union.setOperator(SQLUnionOperator.DISTINCT);
+                lexer.nextToken();
             }
 
             SQLSelectQuery right = query();

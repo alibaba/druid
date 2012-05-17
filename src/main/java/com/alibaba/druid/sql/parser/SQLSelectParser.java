@@ -52,11 +52,11 @@ public class SQLSelectParser extends SQLParser {
 
         return select;
     }
-    
+
     protected SQLUnionQuery createSQLUnionQuery() {
         return new SQLUnionQuery();
     }
-    
+
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.ORDER) {
             SQLOrderBy orderBy = this.createExprParser().parseOrderBy();
@@ -76,8 +76,10 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == Token.ALL) {
                 union.setOperator(SQLUnionOperator.UNION_ALL);
                 lexer.nextToken();
+            } else if (lexer.token() == Token.DISTINCT) {
+                union.setOperator(SQLUnionOperator.DISTINCT);
+                lexer.nextToken();
             }
-
             SQLSelectQuery right = this.query();
             union.setRight(right);
 
@@ -240,18 +242,23 @@ public class SQLSelectParser extends SQLParser {
     }
 
     private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) throws ParserException {
-        if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED || lexer.token() == Token.LITERAL_CHARS) {
+        if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED
+            || lexer.token() == Token.LITERAL_CHARS) {
             tableReference.setExpr(this.createExprParser().name());
             return;
         }
-        
+
         tableReference.setExpr(expr());
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
-                tableSource.setAlias(as());
+                String alias = as();
+                if (alias != null) {
+                    tableSource.setAlias(alias);
+                    return parseTableSourceRest(tableSource);
+                }
             }
         }
 
@@ -289,6 +296,9 @@ public class SQLSelectParser extends SQLParser {
         } else if (lexer.token() == Token.COMMA) {
             lexer.nextToken();
             joinType = SQLJoinTableSource.JoinType.COMMA;
+        } else if (identifierEquals("STRAIGHT_JOIN")) {
+            lexer.nextToken();
+            joinType = SQLJoinTableSource.JoinType.STRAIGHT_JOIN;
         }
 
         if (joinType != null) {
