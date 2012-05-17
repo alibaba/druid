@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
@@ -16,7 +16,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
 
     private static final long      serialVersionUID = 1L;
 
-    private final List<OracleHint> hints            = new ArrayList<OracleHint>();
+    private final List<SQLHint> hints            = new ArrayList<SQLHint>();
 
     private SQLName                into;
     private String                 alias;
@@ -94,7 +94,7 @@ public class OracleMergeStatement extends OracleStatementImpl {
         this.errorLoggingClause = errorLoggingClause;
     }
 
-    public List<OracleHint> getHints() {
+    public List<SQLHint> getHints() {
         return hints;
     }
 

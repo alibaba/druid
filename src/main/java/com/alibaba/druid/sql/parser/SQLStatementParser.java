@@ -168,6 +168,18 @@ public class SQLStatementParser extends SQLParser {
             if (parseStatementListDialect(statementList)) {
                 continue;
             }
+            
+            if (lexer.token() == Token.LPAREN) {
+                char mark_ch = lexer.current();
+                int mark_bp = lexer.bp();
+                lexer.nextToken();
+                if (lexer.token() == Token.SELECT) {
+                    lexer.reset(mark_bp, mark_ch, Token.LPAREN);
+                    SQLStatement stmt = parseSelect();
+                    statementList.add(stmt);
+                    continue;
+                }
+            }
 
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }

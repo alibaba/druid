@@ -1,7 +1,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 public enum SQLUnionOperator {
-    UNION("UNION"), UNION_ALL("UNION ALL"), MINUS("MINUS"), INTERSECT("INTERSECT");
+    UNION("UNION"), UNION_ALL("UNION ALL"), MINUS("MINUS"), INTERSECT("INTERSECT"), DISTINCT("UNION DISTINCT");
 
     public final String name;
 

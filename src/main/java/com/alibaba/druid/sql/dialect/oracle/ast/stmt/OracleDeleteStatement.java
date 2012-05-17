@@ -18,8 +18,8 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
@@ -30,7 +30,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
 
     private boolean                only             = false;
     
-    private final List<OracleHint> hints            = new ArrayList<OracleHint>();
+    private final List<SQLHint> hints            = new ArrayList<SQLHint>();
     private OracleReturningClause  returning        = null;
 
     public OracleDeleteStatement(){
@@ -45,7 +45,7 @@ public class OracleDeleteStatement extends SQLDeleteStatement {
         this.returning = returning;
     }
 
-    public List<OracleHint> getHints() {
+    public List<SQLHint> getHints() {
         return this.hints;
     }
 

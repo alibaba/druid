@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLUnionQuery extends SQLSelectQuery {
@@ -24,6 +25,7 @@ public class SQLUnionQuery extends SQLSelectQuery {
     private SQLSelectQuery    left;
     private SQLSelectQuery    right;
     private SQLUnionOperator  operator         = SQLUnionOperator.UNION;
+    private SQLOrderBy        orderBy;
 
     public SQLUnionOperator getOperator() {
         return operator;
@@ -53,11 +55,20 @@ public class SQLUnionQuery extends SQLSelectQuery {
         this.right = right;
     }
 
+    public SQLOrderBy getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(SQLOrderBy orderBy) {
+        this.orderBy = orderBy;
+    }
+
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, left);
             acceptChild(visitor, right);
+            acceptChild(visitor, orderBy);
         }
         visitor.endVisit(this);
     }

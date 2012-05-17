@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
 
 public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTableSource {
@@ -22,6 +26,8 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     private static final long serialVersionUID = 1L;
 
     protected String          alias;
+
+    protected List<SQLHint>   hints            = new ArrayList<SQLHint>(2);
 
     public SQLTableSourceImpl(){
 
@@ -39,4 +45,13 @@ public abstract class SQLTableSourceImpl extends SQLObjectImpl implements SQLTab
     public void setAlias(String alias) {
         this.alias = alias;
     }
+
+    public List<SQLHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLHint> hints) {
+        this.hints = hints;
+    }
+
 }

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -39,7 +40,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleParameter;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
@@ -115,7 +115,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return (OracleExprParser) exprParser;
     }
     
-    public void parseHints(List<OracleHint> hints) {
+    public void parseHints(List<SQLHint> hints) {
         this.getExprParser().parseHints(hints);
     }
 
@@ -128,7 +128,7 @@ public class OracleStatementParser extends SQLStatementParser {
             OracleInsertStatement stmt = (OracleInsertStatement) insertStatement;
             this.getExprParser().parseHints(stmt.getHints());
         } else {
-            List<OracleHint> hints = new ArrayList<OracleHint>();
+            List<SQLHint> hints = new ArrayList<SQLHint>(1);
             this.getExprParser().parseHints(hints);
         }
     }
@@ -1243,7 +1243,7 @@ public class OracleStatementParser extends SQLStatementParser {
         
         accept(Token.INSERT);
 
-        List<OracleHint> hints = new ArrayList<OracleHint>();
+        List<SQLHint> hints = new ArrayList<SQLHint>();
 
         parseHints(hints);
 

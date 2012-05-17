@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObject;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleErrorLoggingClause;
@@ -25,13 +25,13 @@ public class OracleMultiInsertStatement extends OracleStatementImpl {
     private SQLSelect         subQuery;
     private Option            option;
     private List<Entry>       entries          = new ArrayList<Entry>();
-    private List<OracleHint>  hints            = new ArrayList<OracleHint>();
+    private List<SQLHint>     hints            = new ArrayList<SQLHint>(1);
 
-    public List<OracleHint> getHints() {
+    public List<SQLHint> getHints() {
         return hints;
     }
 
-    public void setHints(List<OracleHint> hints) {
+    public void setHints(List<SQLHint> hints) {
         this.hints = hints;
     }
 
