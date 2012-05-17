@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIndexHintImpl;
@@ -269,6 +270,13 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (identifierEquals("IGNORE")) {
             lexer.nextToken();
             MySqlIgnoreIndexHint hint = new MySqlIgnoreIndexHint();
+            parseIndexHint(hint);
+            tableSource.getHints().add(hint);
+        }
+        
+        if (identifierEquals("FORCE")) {
+            lexer.nextToken();
+            MySqlForceIndexHint hint = new MySqlForceIndexHint();
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
         }

@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -122,6 +123,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
@@ -2456,6 +2458,36 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlLockTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUnlockTablesStatement x) {
+        print("UNLOCK TABLES");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUnlockTablesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForceIndexHint x) {
+        print("FORCE INDEX ");
+        if (x.getOption() != null) {
+            print("FOR ");
+            print(x.getOption().name);
+            print(' ');
+        }
+        print('(');
+        printAndAccept(x.getIndexList(), ", ");
+        print(')');
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlForceIndexHint x) {
         
     }
 }

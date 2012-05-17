@@ -237,4 +237,32 @@ public class DMLSelectParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("SELECT t1.id, t2.*\nFROM t1, test.t2\nWHERE test.t1.id = '中''‘文'\n\tAND t1.id = test.t2.id", output);
     }
+    
+    public void test_select_19() throws Exception {
+        String sql = "select * from  offer  a  straight_join wp_image b force index for join(t1,t2) on a.member_id=b.member_id inner join product_visit c where a.member_id=c.member_id and c.member_id='abc' ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("SELECT *\n"
+                                    + //
+                                    "FROM offer a STRAIGHT_JOIN wp_image b FORCE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id INNER JOIN product_visit c\n"
+                                    + //
+                                    "WHERE a.member_id = c.member_id\n" + //
+                                    "\tAND c.member_id = 'abc'", output);
+    }
+    
+    public void test_select_20() throws Exception {
+        String sql = "select * from  offer  a  straight_join wp_image b ignore index for join(t1,t2) on a.member_id=b.member_id inner join product_visit c where a.member_id=c.member_id and c.member_id='abc' ";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("SELECT *\n"
+                + //
+                "FROM offer a STRAIGHT_JOIN wp_image b IGNORE INDEX FOR JOIN (t1, t2) ON a.member_id = b.member_id INNER JOIN product_visit c\n"
+                + //
+                "WHERE a.member_id = c.member_id\n" + //
+                "\tAND c.member_id = 'abc'", output);
+    }
 }

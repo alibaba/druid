@@ -110,6 +110,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowTriggersStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowVariantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -526,6 +527,13 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
             
             statementList.add(stmt);
+            return true;
+        }
+        
+        if (identifierEquals("UNLOCK")) {
+            lexer.nextToken();
+            acceptIdentifier("TABLES");
+            statementList.add(new MySqlUnlockTablesStatement());
             return true;
         }
 

@@ -90,4 +90,13 @@ public class MTSParserTest extends TestCase {
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("LOCK TABLES t2 READ LOCAL", output);
     }
+    
+    public void test_unlockTable() throws Exception {
+        String sql = "UNLOCK TABLES";
+        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        SQLStatement stmt = parser.parseStatementList().get(0);
+        parser.match(Token.EOF);
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("UNLOCK TABLES", output);
+    }
 }

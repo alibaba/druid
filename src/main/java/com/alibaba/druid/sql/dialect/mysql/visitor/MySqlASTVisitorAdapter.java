@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -88,6 +89,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowWarningsStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlStartTransactionStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitorAdapter;
 
@@ -1011,6 +1013,26 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlLockTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUnlockTablesStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlUnlockTablesStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForceIndexHint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlForceIndexHint x) {
         
     }
 }
