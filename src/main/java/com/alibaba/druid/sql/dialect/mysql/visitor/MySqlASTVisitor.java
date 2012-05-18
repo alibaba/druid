@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
@@ -28,6 +29,8 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -470,4 +473,16 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlUnlockTablesStatement x);
     
     void endVisit(MySqlUnlockTablesStatement x);
+    
+    boolean visit(MySqlForceIndexHint x);
+    
+    void endVisit(MySqlForceIndexHint x);
+    
+    boolean visit(MySqlAlterTableChangeColumn x);
+    
+    void endVisit(MySqlAlterTableChangeColumn x);
+    
+    boolean visit(MySqlAlterTableCharacter x);
+    
+    void endVisit(MySqlAlterTableCharacter x);
 }
