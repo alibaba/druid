@@ -16,6 +16,7 @@ public class HBaseResultSet extends ResultSetBase {
     private HBaseStatementInterface statement;
     private ResultScanner           scanner;
     private Result                  result;
+    private byte[]                  family = Bytes.toBytes("d");
 
     public HBaseResultSet(HBaseStatementInterface statement, ResultScanner scanner){
         super(statement);
@@ -60,13 +61,21 @@ public class HBaseResultSet extends ResultSetBase {
     public Object getObjectInternal(int columnIndex) {
         return null;
     }
-    
+
     @Override
     public String getString(String columnName) throws SQLException {
+        byte[] bytes = getBytes(columnName);
+        return Bytes.toString(bytes);
+    }
+    
+    public byte[] getBytes(String columnName) throws SQLException {
+        if ("@ROW".equals(columnName)) {
+            return result.getRow();
+        }
+        
         byte[] qualifier = Bytes.toBytes(columnName);
-        byte[] family = Bytes.toBytes("d");
         byte[] value = result.getValue(family, qualifier);
-        return Bytes.toString(value);
+        return value;
     }
 
     @Override

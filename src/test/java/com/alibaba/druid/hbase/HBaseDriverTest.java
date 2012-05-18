@@ -16,7 +16,10 @@ public class HBaseDriverTest extends TestCase {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM test");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
+            System.out.print(rs.getString("@ROW"));
+            System.out.print(' ');
             System.out.print(rs.getString("id"));
+            System.out.println();
         }
         rs.close();
         stmt.close();
