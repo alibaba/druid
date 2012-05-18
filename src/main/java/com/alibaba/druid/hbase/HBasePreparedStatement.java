@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import com.alibaba.druid.common.jdbc.PreparedStatementBase;
 
-public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement {
+public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement, HBaseStatementInterface {
 
     private final String    sql;
     private String[]        columnNames;
@@ -32,8 +32,13 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
     }
 
     @Override
+    public HBaseConnection getConnection() throws SQLException {
+        return hbaseConnection;
+    }
+
+    @Override
     public ResultSet executeQuery() throws SQLException {
-        return hbaseConnection.executeQuery(sql, getParameters());
+        return hbaseConnection.executeQuery(this, sql, getParameters());
     }
 
     @Override
