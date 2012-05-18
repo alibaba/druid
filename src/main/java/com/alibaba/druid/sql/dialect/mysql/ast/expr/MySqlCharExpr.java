@@ -16,6 +16,8 @@
 package com.alibaba.druid.sql.dialect.mysql.ast.expr;
 
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
 
@@ -60,5 +62,20 @@ public class MySqlCharExpr extends SQLCharExpr implements MySqlExpr {
             buf.append(" COLLATE ");
             buf.append(collate);
         }
+    }
+    
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            visitor.visit(this);
+            visitor.endVisit(this);
+        }
+    }
+
+    public void accept0(MySqlASTVisitor visitor) {
+        visitor.visit(this);
+        visitor.endVisit(this);
     }
 }

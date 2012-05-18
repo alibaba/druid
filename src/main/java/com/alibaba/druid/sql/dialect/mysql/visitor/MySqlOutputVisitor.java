@@ -486,16 +486,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLCharExpr x) {
-        if (x instanceof MySqlCharExpr) {
-            print(x.toString());
-        } else if ((x.getText() == null) || (x.getText().length() == 0)) {
-            print("NULL");
-        } else {
-            print("'");
-            print(x.getText().replaceAll("'", "''"));
-            print("'");
-        }
-
+        print(x.toString());
         return false;
     }
 
@@ -2601,6 +2592,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlHelpStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlCharExpr x) {
+        print(x.toString());
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlCharExpr x) {
         
     }
 }

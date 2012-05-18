@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlExtractExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlIntervalExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlMatchAgainstExpr;
@@ -505,4 +506,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlHelpStatement x);
     
     void endVisit(MySqlHelpStatement x);
+    
+    boolean visit(MySqlCharExpr x);
+    
+    void endVisit(MySqlCharExpr x);
 }

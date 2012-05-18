@@ -38,7 +38,12 @@ public class MySqlSelectGroupBy extends SQLSelectGroupByClause {
         if (visitor instanceof MySqlASTVisitor) {
             accept0((MySqlASTVisitor) visitor);
         } else {
-            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+            if (visitor.visit(this)) {
+                acceptChild(visitor, this.getItems());
+                acceptChild(visitor, this.getHaving());
+            }
+
+            visitor.endVisit(this);
         }
     }
 
