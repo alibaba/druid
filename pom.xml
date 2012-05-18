@@ -11,7 +11,7 @@
 	<description>An JDBC datasource implementation.</description>
 	<url>https://github.com/AlibabaTech/druid</url>
 	<inceptionYear>2012</inceptionYear>
-	
+
 	<repositories>
 		<repository>
 			<id>oracleReleases</id>
@@ -227,6 +227,19 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase</artifactId>
+			<version>0.92.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-core</artifactId>
+			<version>1.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.0.4</version>
@@ -236,14 +249,14 @@
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
 			<version>1.2.4</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.1-901-1.jdbc4</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 <!--  
 		<dependency>
