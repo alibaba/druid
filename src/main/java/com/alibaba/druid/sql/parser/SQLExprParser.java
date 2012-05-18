@@ -16,13 +16,14 @@
 package com.alibaba.druid.sql.parser;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
@@ -63,7 +64,6 @@ import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public class SQLExprParser extends SQLParser {
 
@@ -1199,9 +1199,17 @@ public class SQLExprParser extends SQLParser {
         return item;
     }
     
-    public void parseHints(List<SQLHint> hints) {
+    public List<SQLCommentHint> parseHints() {
+        List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
+        parseHints(hints);
+        return hints;
+    }
+    
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void parseHints(List hints) {
         if (lexer.token() == Token.HINT) {
-            hints.add(new OracleHint(lexer.stringVal()));
+            hints.add(new SQLCommentHint(lexer.stringVal()));
             lexer.nextToken();
         }
     }

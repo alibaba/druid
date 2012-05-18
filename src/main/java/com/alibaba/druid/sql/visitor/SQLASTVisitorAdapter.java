@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -85,7 +86,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -663,12 +663,12 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     }
 
     @Override
-    public boolean visit(OracleHint x) {
+    public boolean visit(SQLCommentHint x) {
         return true;
     }
 
     @Override
-    public void endVisit(OracleHint x) {
+    public void endVisit(SQLCommentHint x) {
 
     }
 }

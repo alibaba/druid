@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLHint;
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -30,7 +30,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     private static final long                  serialVersionUID = 1L;
 
-    private final List<SQLHint>                hints            = new ArrayList<SQLHint>(1);
+    private final List<SQLCommentHint>                hints            = new ArrayList<SQLCommentHint>(1);
 
     private OracleSelectHierachicalQueryClause hierachicalQueryClause;
     private ModelClause                        modelClause;
@@ -55,7 +55,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
         this.hierachicalQueryClause = hierachicalQueryClause;
     }
 
-    public List<SQLHint> getHints() {
+    public List<SQLCommentHint> getHints() {
         return this.hints;
     }
 

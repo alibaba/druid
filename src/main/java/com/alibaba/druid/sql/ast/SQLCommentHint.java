@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.dialect.oracle.ast;
+package com.alibaba.druid.sql.ast;
 
-import com.alibaba.druid.sql.ast.SQLHint;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleHint extends SQLObjectImpl implements SQLHint {
+public class SQLCommentHint extends SQLObjectImpl implements SQLHint {
 
     private static final long serialVersionUID = 1L;
 
     private String            text;
 
-    public OracleHint(){
+    public SQLCommentHint(){
 
     }
 
-    public OracleHint(String text){
+    public SQLCommentHint(String text){
 
         this.text = text;
     }

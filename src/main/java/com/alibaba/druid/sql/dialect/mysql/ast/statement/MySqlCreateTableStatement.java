@@ -15,9 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -35,6 +38,20 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
 
     public MySqlCreateTableStatement(){
 
+    }
+
+    private List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
+    }
+
+    public void setTableOptions(Map<String, String> tableOptions) {
+        this.tableOptions = tableOptions;
     }
 
     public SQLPartitioningClause getPartitioning() {

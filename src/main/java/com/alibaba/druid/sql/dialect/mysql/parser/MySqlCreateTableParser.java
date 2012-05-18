@@ -46,7 +46,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         return parseCrateTable(true);
     }
 
-    public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) throws ParserException {
+    public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) throws ParserException {
         if (acceptCreate) {
             accept(Token.CREATE);
         }
