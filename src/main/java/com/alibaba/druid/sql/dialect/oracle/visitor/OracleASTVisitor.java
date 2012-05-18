@@ -141,8 +141,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(OracleExtractExpr x);
 
-    void endVisit(OracleHint x);
-
     void endVisit(OracleIntervalExpr x);
 
     void endVisit(SQLObjectCreateExpr x);
@@ -202,8 +200,6 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDeleteStatement x);
 
     boolean visit(OracleExtractExpr x);
-
-    boolean visit(OracleHint x);
 
     boolean visit(OracleIntervalExpr x);
 
@@ -522,92 +518,92 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleStorageClause x);
 
     void endVisit(OracleStorageClause x);
-    
+
     boolean visit(OracleGotoStatement x);
-    
+
     void endVisit(OracleGotoStatement x);
-    
+
     boolean visit(OracleLabelStatement x);
-    
+
     void endVisit(OracleLabelStatement x);
-    
+
     boolean visit(OracleParameter x);
-    
+
     void endVisit(OracleParameter x);
-    
+
     boolean visit(OracleCommitStatement x);
-    
+
     void endVisit(OracleCommitStatement x);
-    
+
     boolean visit(OracleAlterTriggerStatement x);
-    
+
     void endVisit(OracleAlterTriggerStatement x);
-    
+
     boolean visit(OracleAlterSynonymStatement x);
-    
+
     void endVisit(OracleAlterSynonymStatement x);
-    
+
     boolean visit(OracleAlterViewStatement x);
-    
+
     void endVisit(OracleAlterViewStatement x);
-    
+
     boolean visit(AsOfSnapshotClause x);
-    
+
     void endVisit(AsOfSnapshotClause x);
-    
+
     boolean visit(OracleAlterTableMoveTablespace x);
-    
+
     void endVisit(OracleAlterTableMoveTablespace x);
-    
+
     boolean visit(OracleSizeExpr x);
-    
+
     void endVisit(OracleSizeExpr x);
-    
+
     boolean visit(OracleFileSpecification x);
-    
+
     void endVisit(OracleFileSpecification x);
-    
+
     boolean visit(OracleAlterTablespaceAddDataFile x);
-    
+
     void endVisit(OracleAlterTablespaceAddDataFile x);
-    
+
     boolean visit(OracleAlterTablespaceStatement x);
-    
+
     void endVisit(OracleAlterTablespaceStatement x);
-    
+
     boolean visit(OracleTruncateStatement x);
-    
+
     void endVisit(OracleTruncateStatement x);
-    
+
     boolean visit(OracleCreateSequenceStatement x);
-    
+
     void endVisit(OracleCreateSequenceStatement x);
-    
+
     boolean visit(OracleRangeValuesClause x);
-    
+
     void endVisit(OracleRangeValuesClause x);
-    
+
     boolean visit(OraclePartitionByRangeClause x);
-    
+
     void endVisit(OraclePartitionByRangeClause x);
-    
+
     boolean visit(OracleLoopStatement x);
-    
+
     void endVisit(OracleLoopStatement x);
-    
+
     boolean visit(OracleExitStatement x);
-    
+
     void endVisit(OracleExitStatement x);
-    
+
     boolean visit(OracleFetchStatement x);
-    
+
     void endVisit(OracleFetchStatement x);
-    
+
     boolean visit(OracleSavePointStatement x);
-    
+
     void endVisit(OracleSavePointStatement x);
-    
+
     boolean visit(OracleCreateProcedureStatement x);
-    
+
     void endVisit(OracleCreateProcedureStatement x);
 }

@@ -85,6 +85,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
@@ -609,7 +610,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLAlterTableDropColumnItem x) {
-        
+
     }
 
     @Override
@@ -619,7 +620,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLDropIndexStatement x) {
-        
+
     }
 
     @Override
@@ -629,7 +630,7 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLDropViewStatement x) {
-        
+
     }
 
     @Override
@@ -639,9 +640,9 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLSavePointStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLRollbackStatement x) {
         return true;
@@ -659,5 +660,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLReleaseSavePointStatement x) {
+    }
+
+    @Override
+    public boolean visit(OracleHint x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleHint x) {
+
     }
 }

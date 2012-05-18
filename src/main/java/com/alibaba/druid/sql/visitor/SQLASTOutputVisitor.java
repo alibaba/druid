@@ -90,6 +90,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
@@ -1087,6 +1088,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(" TO ");
             x.getTo().accept(this);
         }
+        return false;
+    }
+    
+    public boolean visit(OracleHint x) {
+        print(x.getText());
         return false;
     }
 }

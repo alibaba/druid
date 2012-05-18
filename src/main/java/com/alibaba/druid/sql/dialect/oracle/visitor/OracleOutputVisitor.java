@@ -320,11 +320,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
         return false;
     }
 
-    public boolean visit(OracleHint x) {
-        print(x.getText());
-        return false;
-    }
-
     public boolean visit(OracleIntervalExpr x) {
         if (x.getValue() instanceof SQLLiteralExpr) {
             print("INTERVAL ");

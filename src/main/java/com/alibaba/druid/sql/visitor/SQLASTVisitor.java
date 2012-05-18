@@ -84,6 +84,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public interface SQLASTVisitor {
 
@@ -370,4 +371,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLReleaseSavePointStatement x);
     
     void endVisit(SQLReleaseSavePointStatement x);
+    
+    void endVisit(OracleHint x);
+    
+    boolean visit(OracleHint x);
 }
