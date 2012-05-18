@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
@@ -27,7 +27,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
 
     private boolean               ifNotExiists = false;
 
-    private Map<String, String>   tableOptions = new HashMap<String, String>();
+    private Map<String, String>   tableOptions = new LinkedHashMap<String, String>();
 
     protected SQLSelect           query;
 

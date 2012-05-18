@@ -24,6 +24,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -1097,6 +1101,46 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlForceIndexHint x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableChangeColumn x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableChangeColumn x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableCharacter x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableCharacter x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableAddIndex x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableAddIndex x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableOption x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableOption x) {
         
     }
 }

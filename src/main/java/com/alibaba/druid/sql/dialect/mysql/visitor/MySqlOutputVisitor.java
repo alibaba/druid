@@ -46,6 +46,10 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
@@ -2228,7 +2232,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         x.getName().accept(this);
         incrementIndent();
-        for (SQLAlterTableItem item : x.getItems()) {
+        for (int i = 0; i < x.getItems().size(); ++i) {
+            SQLAlterTableItem item = x.getItems().get(i);
+            if (i != 0) {
+                print(',');
+            }
             println();
             item.accept(this);
         }
@@ -2458,7 +2466,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlLockTableStatement x) {
-        
+
     }
 
     @Override
@@ -2469,7 +2477,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUnlockTablesStatement x) {
-        
+
     }
 
     @Override
@@ -2488,6 +2496,86 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlForceIndexHint x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableChangeColumn x) {
+        print("CHANGE COLUMN ");
+        x.getColumnName().accept(this);
+        print(' ');
+        x.getNewColumnDefinition().accept(this);
+        if (x.getFirst() != null) {
+            if (x.getFirst().booleanValue()) {
+                print(" FIRST");
+            } else {
+                print(" AFTER");
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableChangeColumn x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableCharacter x) {
+        print("CHARACTER SET = ");
+        x.getCharacterSet().accept(this);
+        
+        if (x.getCollate() != null) {
+            print(", COLLATE = ");
+            x.getCollate().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableCharacter x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableAddIndex x) {
+        print("ADD ");
+        if (x.getType() != null) {
+            print(x.getType());
+            print(" ");
+        }
+
+        print("INDEX ");
+
+        x.getName().accept(this);
+        print(" (");
+        printAndAccept(x.getItems(), ", ");
+        print(")");
+
+        if (x.getUsing() != null) {
+            print(" USING ");
+            print(x.getUsing());
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableAddIndex x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableOption x) {
+        print(x.getName());
+        print(" = ");
+        print(x.getValue());
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableOption x) {
         
     }
 }
