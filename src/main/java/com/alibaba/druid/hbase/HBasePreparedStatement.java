@@ -8,12 +8,15 @@ import com.alibaba.druid.common.jdbc.PreparedStatementBase;
 
 public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement {
 
-    private final String sql;
-    private String[]     columnNames;
+    private final String    sql;
+    private String[]        columnNames;
+
+    private HBaseConnection hbaseConnection;
 
     public HBasePreparedStatement(HBaseConnection conn, String sql){
         super(conn);
         this.sql = sql;
+        this.hbaseConnection = conn;
     }
 
     public String[] getColumnNames() {
@@ -30,8 +33,7 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        return hbaseConnection.executeQuery(sql, getParameters());
     }
 
     @Override

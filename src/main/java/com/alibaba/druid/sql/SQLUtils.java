@@ -2,6 +2,7 @@ package com.alibaba.druid.sql;
 
 import java.util.List;
 
+import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -146,6 +147,10 @@ public class SQLUtils {
 
     public static List<SQLStatement> parseStatements(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-        return parser.parseStatementList();
+        List<SQLStatement> stmtList = parser.parseStatementList();
+        if (parser.getLexer().token() != Token.EOF) {
+            throw new DruidRuntimeException("syntax error : " + sql);
+        }
+        return stmtList;
     }
 }

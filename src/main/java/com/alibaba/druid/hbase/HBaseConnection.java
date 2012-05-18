@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -15,12 +16,15 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
 
 import com.alibaba.druid.common.jdbc.ConnectionBase;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class HBaseConnection extends ConnectionBase implements Connection {
 
@@ -28,7 +32,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
     public HBaseConnection(String url, Properties info){
         super(url, info);
-        config = new Configuration();
+        config = new Configuration(false);
         this.setClientInfo(info);
     }
 
@@ -234,4 +238,16 @@ public class HBaseConnection extends ConnectionBase implements Connection {
         return null;
     }
 
+    public ResultSet executeQuery(String sql, List<Object> parameters) throws SQLException {
+        String dbType = this.getConnectProperties().getProperty("dbType");
+        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+        
+        if (stmtList.size() != 1) {
+            throw new SQLException("not support multi-statement");
+        }
+        
+        SQLStatement stmt = stmtList.get(0);
+        
+        throw new SQLException("TODO");
+    }
 }

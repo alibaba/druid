@@ -1,6 +1,5 @@
 package com.alibaba.druid.hbase;
 
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
@@ -8,10 +7,18 @@ import java.util.Properties;
 
 public class HBaseDriver implements Driver {
 
-    private String prefix = "jdbc:druid-hbase:";
+    public static String PREFIX = "jdbc:druid-hbase:";
 
     @Override
-    public Connection connect(String url, Properties info) throws SQLException {
+    public HBaseConnection connect(String url, Properties info) throws SQLException {
+        if (!acceptsURL(url)) {
+            return null;
+        }
+
+        String rest = url.substring(PREFIX.length());
+        
+        info.put("hbase.zookeeper.quorum", rest);
+
         return new HBaseConnection(url, info);
     }
 
@@ -20,8 +27,8 @@ public class HBaseDriver implements Driver {
         if (url == null) {
             return false;
         }
-        
-        return url.startsWith(prefix);
+
+        return url.startsWith(PREFIX);
     }
 
     @Override
