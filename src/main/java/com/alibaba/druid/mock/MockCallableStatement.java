@@ -23,7 +23,6 @@ import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
@@ -43,7 +42,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
     private final List<Object> parameters = new ArrayList<Object>();
     private boolean            wasNull    = false;
 
-    public MockCallableStatement(Connection conn, String sql){
+    public MockCallableStatement(MockConnection conn, String sql){
         super(conn, sql);
     }
 
