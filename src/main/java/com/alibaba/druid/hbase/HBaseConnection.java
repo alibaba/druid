@@ -1,5 +1,6 @@
 package com.alibaba.druid.hbase;
 
+import java.io.IOException;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -22,6 +23,7 @@ import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 
@@ -244,6 +246,10 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
         return null;
     }
+    
+    public HTableInterface getHTable(String tableName) throws IOException {
+        return new HTable(config, tableName);
+    }
 
     public ResultSet executeQuery(HBaseStatementInterface jdbcHbaseStmt, String sql, List<Object> parameters) throws SQLException {
         try {
@@ -260,12 +266,12 @@ public class HBaseConnection extends ConnectionBase implements Connection {
             SQLExprTableSource tableSource = (SQLExprTableSource) selectQueryBlock.getFrom();
             String tableName = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
 
-            HTable htable = new HTable(config, tableName);
+            HTableInterface htable = getHTable(tableName);
 
             Scan scan = new Scan();
             ResultScanner scanner = htable.getScanner(scan);
 
-            return new HBaseResultSet(jdbcHbaseStmt, scanner);
+            return new HBaseResultSet(jdbcHbaseStmt, htable, scanner);
         } catch (SQLException ex) {
             throw ex;
         } catch (Exception ex) {

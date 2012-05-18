@@ -1,17 +1,25 @@
 package com.alibaba.druid.hbase.exec;
 
-import org.apache.hadoop.hbase.client.HTableInterface;
+import java.util.List;
+
+import com.alibaba.druid.hbase.HBaseConnection;
+
 
 public class SingleTableQueryExecutePlan implements ExecutePlan {
 
-    private HTableInterface htable;
+    private String tableName;
 
-    public HTableInterface getHtable() {
-        return htable;
+    public String getTableName() {
+        return tableName;
     }
 
-    public void setHtable(HTableInterface htable) {
-        this.htable = htable;
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    @Override
+    public void execute(HBaseConnection connection, List<Object> paramerers) {
+        
     }
 
 }
