@@ -26,7 +26,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
@@ -35,17 +34,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class MockConnection implements Connection {
+import com.alibaba.druid.common.jdbc.ConnectionBase;
+
+public class MockConnection extends ConnectionBase implements Connection {
 
     // private final static Log LOG = LogFactory.getLog(MockConnection.class);
 
-    private boolean    autoCommit           = false;
     private boolean    closed               = false;
-    private boolean    readOnly             = false;
-    private String     catalog              = null;
-    private int        transactionIsolation;
-    private SQLWarning warning;
-    private int        holdability;
 
     private MockDriver driver;
 
@@ -60,7 +55,7 @@ public class MockConnection implements Connection {
     public MockConnection(){
         this(null, null, null);
     }
-    
+
     public MockConnection(MockDriver driver, String url, Properties connectProperties){
         this.driver = driver;
         this.connectProperties = connectProperties;
@@ -164,12 +159,7 @@ public class MockConnection implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        this.autoCommit = autoCommit;
-    }
-
-    @Override
-    public boolean getAutoCommit() throws SQLException {
-        return autoCommit;
+        super.setAutoCommit(autoCommit);
     }
 
     @Override
@@ -206,46 +196,6 @@ public class MockConnection implements Connection {
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
         return null;
-    }
-
-    @Override
-    public void setReadOnly(boolean readOnly) throws SQLException {
-        this.readOnly = readOnly;
-    }
-
-    @Override
-    public boolean isReadOnly() throws SQLException {
-        return readOnly;
-    }
-
-    @Override
-    public void setCatalog(String catalog) throws SQLException {
-        this.catalog = catalog;
-    }
-
-    @Override
-    public String getCatalog() throws SQLException {
-        return catalog;
-    }
-
-    @Override
-    public void setTransactionIsolation(int level) throws SQLException {
-        this.transactionIsolation = level;
-    }
-
-    @Override
-    public int getTransactionIsolation() throws SQLException {
-        return transactionIsolation;
-    }
-
-    @Override
-    public SQLWarning getWarnings() throws SQLException {
-        return warning;
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        warning = null;
     }
 
     @Override
@@ -299,16 +249,6 @@ public class MockConnection implements Connection {
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
 
-    }
-
-    @Override
-    public void setHoldability(int holdability) throws SQLException {
-        this.holdability = holdability;
-    }
-
-    @Override
-    public int getHoldability() throws SQLException {
-        return holdability;
     }
 
     @Override
