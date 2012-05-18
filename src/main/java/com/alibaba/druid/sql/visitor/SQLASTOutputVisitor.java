@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.visitor;
 import java.io.IOException;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -90,7 +91,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
@@ -1091,7 +1091,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         return false;
     }
     
-    public boolean visit(OracleHint x) {
+    public boolean visit(SQLCommentHint x) {
         print(x.getText());
         return false;
     }

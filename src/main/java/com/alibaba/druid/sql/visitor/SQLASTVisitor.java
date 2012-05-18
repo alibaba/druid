@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -84,7 +85,6 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 
 public interface SQLASTVisitor {
 
@@ -372,7 +372,7 @@ public interface SQLASTVisitor {
     
     void endVisit(SQLReleaseSavePointStatement x);
     
-    void endVisit(OracleHint x);
+    void endVisit(SQLCommentHint x);
     
-    boolean visit(OracleHint x);
+    boolean visit(SQLCommentHint x);
 }
