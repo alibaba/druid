@@ -11,14 +11,14 @@ public class HBaseConnectTest extends TestCase {
 
     public void test_connection() throws Exception {
         Configuration config = new Configuration();//HBaseConfiguration.create();
-        config.set("dfs.support.append", "true");
-        config.set("hbase.rootdir", "hdfs://10.20.153.63:9000/hbase");
-        config.set("hbase.cluster.distributed", "true");
-        config.set("hbase.master", "10.20.153.63:60000");
+//        config.set("dfs.support.append", "true");
+//        config.set("hbase.rootdir", "hdfs://10.20.153.63:9000/hbase");
+//        config.set("hbase.cluster.distributed", "true");
+//        config.set("hbase.master", "10.20.153.63:60000");
         config.set("hbase.zookeeper.quorum", "10.20.153.63");
-        config.set("zookeeper.session.timeout", "30000");
-        config.set("hbase.regionserver.handler.count", "100");
-        config.set("hbase.client.keyvalue.maxsize", "67108864");
+//        config.set("zookeeper.session.timeout", "30000");
+//        config.set("hbase.regionserver.handler.count", "100");
+//        config.set("hbase.client.keyvalue.maxsize", "67108864");
         
 //        config = HBaseConfiguration.create();
         

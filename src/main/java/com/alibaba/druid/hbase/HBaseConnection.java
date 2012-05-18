@@ -28,7 +28,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
     public HBaseConnection(String url, Properties info){
         super(url, info);
-        config = new Configuration();
+        config = new Configuration(false);
         this.setClientInfo(info);
     }
 
