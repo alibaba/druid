@@ -24,9 +24,11 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
-public class MySqlCreateTableStatement extends SQLCreateTableStatement {
+public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
     private boolean               ifNotExiists = false;
 
@@ -111,4 +113,21 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
         this.ifNotExiists = ifNotExiists;
     }
 
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            this.acceptChild(visitor, getHints());
+            this.acceptChild(visitor, getTableSource());
+            this.acceptChild(visitor, getTableElementList());
+        }
+        visitor.endVisit(this);
+    }
 }

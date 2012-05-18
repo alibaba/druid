@@ -1092,7 +1092,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
     
     public boolean visit(SQLCommentHint x) {
+        print("/*");
         print(x.getText());
+        print("*/");
         return false;
     }
 }
