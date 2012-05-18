@@ -18,6 +18,10 @@ package com.alibaba.druid.mock;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+<<<<<<< HEAD
+=======
+import java.sql.SQLFeatureNotSupportedException;
+>>>>>>> branch 'master' of https://wenshao@github.com/AlibabaTech/druid.git
 import java.sql.Statement;
 
 import com.alibaba.druid.common.jdbc.StatementBase;
@@ -27,6 +31,11 @@ public class MockStatement extends StatementBase implements Statement {
     public final static String ERROR_SQL = "THROW ERROR";
 
     protected MockConnection   mockConnection;
+<<<<<<< HEAD
+=======
+
+    private int                updateCount;
+>>>>>>> branch 'master' of https://wenshao@github.com/AlibabaTech/druid.git
 
     public MockStatement(Connection connection){
         super(connection);
@@ -78,6 +87,19 @@ public class MockStatement extends StatementBase implements Statement {
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public void close() throws SQLException {
+        this.closed = true;
+    }
+
+    @Override
+    public void cancel() throws SQLException {
+        checkOpen();
+    }
+
+    @Override
+>>>>>>> branch 'master' of https://wenshao@github.com/AlibabaTech/druid.git
     public boolean execute(String sql) throws SQLException {
         checkOpen();
 
