@@ -15,15 +15,20 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLPartitioningClause;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
-public class MySqlCreateTableStatement extends SQLCreateTableStatement {
+public class MySqlCreateTableStatement extends SQLCreateTableStatement implements MySqlStatement {
 
     private boolean               ifNotExiists = false;
 
@@ -35,6 +40,20 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
 
     public MySqlCreateTableStatement(){
 
+    }
+
+    private List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
+    }
+
+    public void setTableOptions(Map<String, String> tableOptions) {
+        this.tableOptions = tableOptions;
     }
 
     public SQLPartitioningClause getPartitioning() {
@@ -94,4 +113,21 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement {
         this.ifNotExiists = ifNotExiists;
     }
 
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+
+    public void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            this.acceptChild(visitor, getHints());
+            this.acceptChild(visitor, getTableSource());
+            this.acceptChild(visitor, getTableElementList());
+        }
+        visitor.endVisit(this);
+    }
 }

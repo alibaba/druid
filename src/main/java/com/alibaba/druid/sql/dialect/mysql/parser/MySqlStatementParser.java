@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
@@ -48,6 +49,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatemen
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
@@ -265,9 +267,13 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLStatement parseCreate() throws ParserException {
         accept(Token.CREATE);
 
+        List<SQLCommentHint> hints = this.exprParser.parseHints();
+        
         if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
             MySqlCreateTableParser parser = new MySqlCreateTableParser(lexer);
-            return parser.parseCrateTable(false);
+            MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
+            stmt.setHints(hints);
+            return stmt;
         }
 
         if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals("FULLTEXT")

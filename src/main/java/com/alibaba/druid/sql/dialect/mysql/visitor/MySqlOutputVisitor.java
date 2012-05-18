@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import java.util.Map;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
@@ -359,20 +360,22 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
-    public boolean visit(SQLCreateTableStatement x) {
+    public boolean visit(MySqlCreateTableStatement x) {
 
-        MySqlCreateTableStatement mysqlCreateTableStatement = null;
-        if (x instanceof MySqlCreateTableStatement) {
-            mysqlCreateTableStatement = (MySqlCreateTableStatement) x;
+        print("CREATE ");
+
+        for (SQLCommentHint hint : x.getHints()) {
+            hint.accept(this);
+            print(' ');
         }
 
         if (SQLCreateTableStatement.Type.GLOBAL_TEMPORARY.equals(x.getType())) {
-            print("CREATE TEMPORARY TABLE ");
+            print("TEMPORARY TABLE ");
         } else {
-            print("CREATE TABLE ");
+            print("TABLE ");
         }
 
-        if (mysqlCreateTableStatement != null && mysqlCreateTableStatement.isIfNotExiists()) {
+        if (x.isIfNotExiists()) {
             print("IF NOT EXISTS ");
         }
 
@@ -391,20 +394,18 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         println();
         print(")");
 
-        if (mysqlCreateTableStatement != null) {
-            for (Map.Entry<String, String> option : mysqlCreateTableStatement.getTableOptions().entrySet()) {
-                print(" ");
-                print(option.getKey());
-                print(" = ");
-                print(option.getValue());
-            }
+        for (Map.Entry<String, String> option : x.getTableOptions().entrySet()) {
+            print(" ");
+            print(option.getKey());
+            print(" = ");
+            print(option.getValue());
         }
 
-        if (mysqlCreateTableStatement != null && mysqlCreateTableStatement.getQuery() != null) {
+        if (x.getQuery() != null) {
             print(" ");
             incrementIndent();
             println();
-            mysqlCreateTableStatement.getQuery().accept(this);
+            x.getQuery().accept(this);
             decrementIndent();
         }
 
@@ -2525,12 +2526,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlAlterTableCharacter x) {
         print("CHARACTER SET = ");
         x.getCharacterSet().accept(this);
-        
+
         if (x.getCollate() != null) {
             print(", COLLATE = ");
             x.getCollate().accept(this);
         }
-        
+
         return false;
     }
 
@@ -2563,7 +2564,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTableAddIndex x) {
-        
+
     }
 
     @Override
@@ -2576,6 +2577,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTableOption x) {
-        
+
+    }
+
+    @Override
+    public void endVisit(MySqlCreateTableStatement x) {
+
     }
 }

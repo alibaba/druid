@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
@@ -903,11 +902,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleExtractExpr x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLCommentHint x) {
 
     }
 
@@ -2181,7 +2175,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(x.getType());
             print(" ");
         }
-        
+
         print("INDEX ");
 
         x.getName().accept(this);

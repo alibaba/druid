@@ -15,11 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -611,10 +607,4 @@ public class MySqlExprParser extends SQLExprParser {
         return null;
     }
     
-    public void parseHints(List<SQLHint> hints) {
-        if (lexer.token() == Token.HINT) {
-            hints.add(new SQLCommentHint(lexer.stringVal()));
-            lexer.nextToken();
-        }
-    }
 }
