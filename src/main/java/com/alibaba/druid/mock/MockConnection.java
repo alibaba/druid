@@ -44,34 +44,23 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     private MockDriver driver;
 
-    private Properties connectProperties;
-
     private long       id;
 
     private final long createdTimeMillis    = System.currentTimeMillis();
     private long       lastActiveTimeMillis = System.currentTimeMillis();
-    private String     url;
 
     public MockConnection(){
         this(null, null, null);
     }
 
     public MockConnection(MockDriver driver, String url, Properties connectProperties){
+        super(url, connectProperties);
+
         this.driver = driver;
-        this.connectProperties = connectProperties;
-        this.url = url;
 
         if (driver != null) {
             this.id = driver.generateConnectionId();
         }
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public long getLastActiveTimeMillis() {
@@ -92,10 +81,6 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     public MockDriver getDriver() {
         return driver;
-    }
-
-    public Properties getConnectProperties() {
-        return connectProperties;
     }
 
     public void setDriver(MockDriver driver) {
