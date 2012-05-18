@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
 
@@ -58,6 +59,14 @@ public class HBaseResultSet extends ResultSetBase {
     @Override
     public Object getObjectInternal(int columnIndex) {
         return null;
+    }
+    
+    @Override
+    public String getString(String columnName) throws SQLException {
+        byte[] qualifier = Bytes.toBytes(columnName);
+        byte[] family = Bytes.toBytes("d");
+        byte[] value = result.getValue(family, qualifier);
+        return Bytes.toString(value);
     }
 
     @Override
