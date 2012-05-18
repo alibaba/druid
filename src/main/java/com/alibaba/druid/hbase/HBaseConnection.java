@@ -21,10 +21,17 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
 
 import com.alibaba.druid.common.jdbc.ConnectionBase;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
 public class HBaseConnection extends ConnectionBase implements Connection {
 
@@ -238,16 +245,31 @@ public class HBaseConnection extends ConnectionBase implements Connection {
         return null;
     }
 
-    public ResultSet executeQuery(String sql, List<Object> parameters) throws SQLException {
-        String dbType = this.getConnectProperties().getProperty("dbType");
-        List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
-        
-        if (stmtList.size() != 1) {
-            throw new SQLException("not support multi-statement");
+    public ResultSet executeQuery(HBaseStatementInterface jdbcHbaseStmt, String sql, List<Object> parameters) throws SQLException {
+        try {
+            String dbType = this.getConnectProperties().getProperty("dbType");
+            List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
+
+            if (stmtList.size() != 1) {
+                throw new SQLException("not support multi-statement");
+            }
+
+            SQLSelectStatement stmt = (SQLSelectStatement) stmtList.get(0);
+            SQLSelectQueryBlock selectQueryBlock = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
+
+            SQLExprTableSource tableSource = (SQLExprTableSource) selectQueryBlock.getFrom();
+            String tableName = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
+
+            HTable htable = new HTable(config, tableName);
+
+            Scan scan = new Scan();
+            ResultScanner scanner = htable.getScanner(scan);
+
+            return new HBaseResultSet(jdbcHbaseStmt, scanner);
+        } catch (SQLException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new SQLException("executeQuery error", ex);
         }
-        
-        SQLStatement stmt = stmtList.get(0);
-        
-        throw new SQLException("TODO");
     }
 }

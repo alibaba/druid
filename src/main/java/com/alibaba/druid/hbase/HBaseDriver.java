@@ -15,7 +15,7 @@ public class HBaseDriver implements Driver {
             return null;
         }
 
-        String rest = url.substring(PREFIX.length());
+        String rest = url.substring(PREFIX.length() + 1);
         
         info.put("hbase.zookeeper.quorum", rest);
 
