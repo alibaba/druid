@@ -5,13 +5,10 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
@@ -21,6 +18,21 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUtils {
+    public static String toSQLString(SQLObject sqlObject, String dbType) {
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return toMySqlString(sqlObject);
+        }
+        
+        if (JdbcUtils.ORACLE.equals(dbType)) {
+            return toOracleString(sqlObject);
+        }
+        
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return toPGString(sqlObject);
+        }
+        
+        return toSQLServerString(sqlObject);
+    }
 
     public static String toSQLString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
@@ -39,17 +51,7 @@ public class SQLUtils {
     }
 
     public static SQLExpr toMySqlExpr(String sql) {
-        MySqlLexer lexer = new MySqlLexer(sql);
-        lexer.nextToken();
-
-        MySqlExprParser parser = new MySqlExprParser(lexer);
-        SQLExpr expr = parser.expr();
-
-        if (lexer.token() != Token.EOF) {
-            throw new ParserException("illegal sql expr : " + sql);
-        }
-
-        return expr;
+        return toSQLExpr(sql, JdbcUtils.MYSQL);
     }
 
     public static String formatMySql(String sql) {
@@ -87,19 +89,20 @@ public class SQLUtils {
     public static String formatPGSql(String sql) {
         return format(sql, JdbcUtils.POSTGRESQL);
     }
-
-    public static SQLExpr toSQLExpr(String sql) {
-        Lexer lexer = new Lexer(sql);
-        lexer.nextToken();
-
-        SQLExprParser parser = new SQLExprParser(lexer);
+    
+    public static SQLExpr toSQLExpr(String sql, String dbType) {
+        SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
         SQLExpr expr = parser.expr();
 
-        if (lexer.token() != Token.EOF) {
+        if (parser.getLexer().token() != Token.EOF) {
             throw new ParserException("illegal sql expr : " + sql);
         }
 
         return expr;
+    }
+
+    public static SQLExpr toSQLExpr(String sql) {
+        return toSQLExpr(sql, null);
     }
 
     public static String format(String sql, String dbType) {
