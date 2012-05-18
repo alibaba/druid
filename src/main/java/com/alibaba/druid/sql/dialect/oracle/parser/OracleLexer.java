@@ -239,7 +239,7 @@ public class OracleLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 2).trim();
+                stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 1);
                 token = Token.HINT;
             } else {
                 stringVal = new String(buf, np, sp);

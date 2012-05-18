@@ -57,6 +57,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
@@ -503,6 +504,14 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (identifierEquals("RESET")) {
             SQLStatement stmt = parseReset();
+            statementList.add(stmt);
+            return true;
+        }
+        
+        if (identifierEquals("HELP")) {
+            lexer.nextToken();
+            MySqlHelpStatement stmt = new MySqlHelpStatement();
+            stmt.setContent(this.exprParser.primary());
             statementList.add(stmt);
             return true;
         }

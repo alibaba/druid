@@ -64,6 +64,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
@@ -162,6 +163,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print("SELECT ");
+        
+
+        for (SQLCommentHint hint : x.getHints()) {
+            hint.accept(this);
+            print(' ');
+        }
 
         if (SQLSetQuantifier.ALL == x.getDistionOption()) print("ALL ");
         else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) print("DISTINCT ");
@@ -2583,5 +2590,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlCreateTableStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(MySqlHelpStatement x) {
+        print("HELP ");
+        x.getContent().accept(this);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlHelpStatement x) {
+        
     }
 }

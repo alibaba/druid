@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObjectImpl;
@@ -30,27 +31,37 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 @SuppressWarnings("serial")
 public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlObject {
 
-    private boolean       hignPriority;
-    private boolean       straightJoin;
+    private boolean              hignPriority;
+    private boolean              straightJoin;
 
-    private boolean       smallResult;
-    private boolean       bigResult;
-    private boolean       bufferResult;
-    private Boolean       cache;
-    private boolean       calcFoundRows;
+    private boolean              smallResult;
+    private boolean              bigResult;
+    private boolean              bufferResult;
+    private Boolean              cache;
+    private boolean              calcFoundRows;
 
-    private SQLOrderBy    orderBy;
+    private SQLOrderBy           orderBy;
 
-    private Limit         limit;
+    private Limit                limit;
 
-    private SQLName       procedureName;
-    private List<SQLExpr> procedureArgumentList = new ArrayList<SQLExpr>();
+    private SQLName              procedureName;
+    private List<SQLExpr>        procedureArgumentList = new ArrayList<SQLExpr>();
 
-    private boolean       forUpdate             = false;
-    private boolean       lockInShareMode       = false;
+    private boolean              forUpdate             = false;
+    private boolean              lockInShareMode       = false;
+
+    private List<SQLCommentHint> hints                 = new ArrayList<SQLCommentHint>();
 
     public MySqlSelectQueryBlock(){
 
+    }
+
+    public List<SQLCommentHint> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<SQLCommentHint> hints) {
+        this.hints = hints;
     }
 
     public boolean isForUpdate() {
@@ -163,7 +174,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
             accept0((MySqlASTVisitor) visitor);
             return;
         }
-        
+
         if (visitor.visit(this)) {
             acceptChild(visitor, this.selectList);
             acceptChild(visitor, this.from);
@@ -178,7 +189,7 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
 
         visitor.endVisit(this);
     }
-    
+
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {

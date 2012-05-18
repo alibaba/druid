@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
@@ -1088,6 +1089,16 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlCreateTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlHelpStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlHelpStatement x) {
         
     }
 }

@@ -64,6 +64,10 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.HINT) {
+                this.createExprParser().parseHints(queryBlock.getHints());
+            }
 
             if (lexer.token() == (Token.DISTINCT)) {
                 queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);

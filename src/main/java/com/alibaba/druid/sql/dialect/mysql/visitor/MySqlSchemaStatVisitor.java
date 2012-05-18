@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropUser;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlExecuteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlHelpStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
@@ -1153,6 +1154,16 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlCreateTableStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlHelpStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlHelpStatement x) {
         
     }
 }
