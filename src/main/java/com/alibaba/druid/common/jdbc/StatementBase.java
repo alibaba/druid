@@ -2,6 +2,7 @@ package com.alibaba.druid.common.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Statement;
 
 public abstract class StatementBase implements Statement {
@@ -12,6 +13,12 @@ public abstract class StatementBase implements Statement {
     private int        resultSetType;
     private int        resultSetConcurrency;
     private int        resultSetHoldability;
+    private int        maxFieldSize;
+    private int        maxRows;
+    private int        queryTimeout;
+    private boolean    escapeProcessing;
+    private String     cursorName;
+    private SQLWarning warnings;
 
     public StatementBase(Connection connection){
         super();
@@ -83,5 +90,84 @@ public abstract class StatementBase implements Statement {
 
     public void setResultSetHoldability(int resultSetHoldability) {
         this.resultSetHoldability = resultSetHoldability;
+    }
+
+    @Override
+    public int getMaxFieldSize() throws SQLException {
+        checkOpen();
+
+        return maxFieldSize;
+    }
+
+    @Override
+    public void setMaxFieldSize(int max) throws SQLException {
+        checkOpen();
+
+        this.maxFieldSize = max;
+    }
+
+    @Override
+    public int getMaxRows() throws SQLException {
+        checkOpen();
+
+        return maxRows;
+    }
+
+    @Override
+    public void setMaxRows(int max) throws SQLException {
+        checkOpen();
+
+        this.maxRows = max;
+    }
+
+    @Override
+    public void setEscapeProcessing(boolean enable) throws SQLException {
+        checkOpen();
+        this.escapeProcessing = enable;
+    }
+
+    public boolean isEscapeProcessing() {
+        return escapeProcessing;
+    }
+
+    @Override
+    public int getQueryTimeout() throws SQLException {
+        checkOpen();
+        return queryTimeout;
+    }
+
+    @Override
+    public void setQueryTimeout(int seconds) throws SQLException {
+        checkOpen();
+        this.queryTimeout = seconds;
+    }
+
+    @Override
+    public void setCursorName(String name) throws SQLException {
+        checkOpen();
+
+        cursorName = name;
+    }
+
+    public String getCursorName() {
+        return cursorName;
+    }
+
+    @Override
+    public SQLWarning getWarnings() throws SQLException {
+        checkOpen();
+
+        return warnings;
+    }
+
+    @Override
+    public void clearWarnings() throws SQLException {
+        checkOpen();
+
+        warnings = null;
+    }
+
+    public void setWarning(SQLWarning warning) {
+        this.warnings = warning;
     }
 }

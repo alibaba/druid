@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.sql.SQLWarning;
 import java.sql.Statement;
 
 import com.alibaba.druid.common.jdbc.StatementBase;
@@ -31,12 +30,7 @@ public class MockStatement extends StatementBase implements Statement {
     protected boolean          closed    = false;
 
     protected MockConnection   mockConnection;
-    private int                maxFieldSize;
-    private int                maxRows;
-    private int                queryTimeout;
-    private boolean            escapeProcessing;
-    private SQLWarning         warnings;
-    private String             cursorName;
+
     private int                updateCount;
 
     public MockStatement(Connection connection){
@@ -121,87 +115,8 @@ public class MockStatement extends StatementBase implements Statement {
     }
 
     @Override
-    public int getMaxFieldSize() throws SQLException {
-        checkOpen();
-
-        return maxFieldSize;
-    }
-
-    @Override
-    public void setMaxFieldSize(int max) throws SQLException {
-        checkOpen();
-
-        this.maxFieldSize = max;
-    }
-
-    @Override
-    public int getMaxRows() throws SQLException {
-        checkOpen();
-
-        return maxRows;
-    }
-
-    @Override
-    public void setMaxRows(int max) throws SQLException {
-        checkOpen();
-
-        this.maxRows = max;
-    }
-
-    @Override
-    public void setEscapeProcessing(boolean enable) throws SQLException {
-        checkOpen();
-        this.escapeProcessing = enable;
-    }
-
-    public boolean isEscapeProcessing() {
-        return escapeProcessing;
-    }
-
-    @Override
-    public int getQueryTimeout() throws SQLException {
-        checkOpen();
-        return queryTimeout;
-    }
-
-    @Override
-    public void setQueryTimeout(int seconds) throws SQLException {
-        checkOpen();
-        this.queryTimeout = seconds;
-    }
-
-    @Override
     public void cancel() throws SQLException {
         checkOpen();
-    }
-
-    @Override
-    public SQLWarning getWarnings() throws SQLException {
-        checkOpen();
-
-        return warnings;
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        checkOpen();
-
-        warnings = null;
-    }
-
-    public void setWarning(SQLWarning warning) {
-        this.warnings = warning;
-    }
-
-    @Override
-    public void setCursorName(String name) throws SQLException {
-        checkOpen();
-
-        cursorName = name;
-    }
-
-    public String getCursorName() {
-        return cursorName;
     }
 
     @Override

@@ -3,15 +3,16 @@ package com.alibaba.druid.hbase;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.Statement;
 
-public class HBaseStatement implements Statement {
+import com.alibaba.druid.common.jdbc.StatementBase;
+
+public class HBaseStatement extends StatementBase implements Statement {
 
     private HBaseConnection conn;
 
     public HBaseStatement(HBaseConnection conn){
-        super();
+        super(conn);
         this.conn = conn;
     }
 
@@ -46,68 +47,7 @@ public class HBaseStatement implements Statement {
     }
 
     @Override
-    public int getMaxFieldSize() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setMaxFieldSize(int max) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getMaxRows() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setMaxRows(int max) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setEscapeProcessing(boolean enable) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getQueryTimeout() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setQueryTimeout(int seconds) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void cancel() throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public SQLWarning getWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void clearWarnings() throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setCursorName(String name) throws SQLException {
-        // TODO Auto-generated method stub
 
     }
 
@@ -133,42 +73,6 @@ public class HBaseStatement implements Statement {
     public boolean getMoreResults() throws SQLException {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    public void setFetchDirection(int direction) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getFetchDirection() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void setFetchSize(int rows) throws SQLException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public int getFetchSize() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getResultSetConcurrency() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public int getResultSetType() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     @Override
@@ -242,11 +146,6 @@ public class HBaseStatement implements Statement {
         return false;
     }
 
-    @Override
-    public int getResultSetHoldability() throws SQLException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
 
     @Override
     public boolean isClosed() throws SQLException {
@@ -267,6 +166,6 @@ public class HBaseStatement implements Statement {
     }
 
     public void checkOpen() {
-        
+
     }
 }
