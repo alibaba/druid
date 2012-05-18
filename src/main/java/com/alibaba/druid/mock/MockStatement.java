@@ -22,13 +22,14 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
-public class MockStatement implements Statement {
+import com.alibaba.druid.common.jdbc.StatementBase;
+
+public class MockStatement extends StatementBase implements Statement {
 
     public final static String ERROR_SQL = "THROW ERROR";
 
     protected boolean          closed    = false;
 
-    private Connection         connection;
     protected MockConnection   mockConnection;
     private int                maxFieldSize;
     private int                maxRows;
@@ -37,44 +38,23 @@ public class MockStatement implements Statement {
     private SQLWarning         warnings;
     private String             cursorName;
     private int                updateCount;
-    private int                fetchDirection;
-    private int                fetchSize;
-
-    private int                resultSetType;
-    private int                resultSetConcurrency;
-    private int                resultSetHoldability;
 
     public MockStatement(Connection connection){
-        super();
-        this.connection = connection;
+        super(connection);
 
         if (connection instanceof MockConnection) {
             mockConnection = (MockConnection) connection;
         }
     }
-    
+
     protected void checkOpen() throws SQLException, MockConnectionClosedException {
         if (closed) {
             throw new SQLException();
         }
-        
+
         if (this.mockConnection != null && this.mockConnection.isClosed()) {
             throw new MockConnectionClosedException();
         }
-    }
-
-    public int getResultSetType() throws SQLException {
-        checkOpen();
-
-        return resultSetType;
-    }
-
-    public void setResultSetType(int resultType) {
-        this.resultSetType = resultType;
-    }
-
-    public void setResultSetConcurrency(int resultSetConcurrency) {
-        this.resultSetConcurrency = resultSetConcurrency;
     }
 
     public MockConnection getMockConnection() {
@@ -83,7 +63,7 @@ public class MockStatement implements Statement {
 
     public void setFakeConnection(MockConnection fakeConnection) {
         this.mockConnection = fakeConnection;
-        this.connection = fakeConnection;
+        this.setConnection(fakeConnection);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,11 +107,11 @@ public class MockStatement implements Statement {
     @Override
     public int executeUpdate(String sql) throws SQLException {
         checkOpen();
-        
+
         if (mockConnection != null) {
             mockConnection.handleSleep();
         }
-        
+
         return 0;
     }
 
@@ -231,7 +211,7 @@ public class MockStatement implements Statement {
         if (ERROR_SQL.equals(sql)) {
             throw new SQLException();
         }
-        
+
         if (mockConnection != null) {
             mockConnection.handleSleep();
         }
@@ -265,37 +245,6 @@ public class MockStatement implements Statement {
     }
 
     @Override
-    public void setFetchDirection(int direction) throws SQLException {
-        checkOpen();
-
-        this.fetchDirection = direction;
-    }
-
-    @Override
-    public int getFetchDirection() throws SQLException {
-        checkOpen();
-        return fetchDirection;
-    }
-
-    @Override
-    public void setFetchSize(int rows) throws SQLException {
-        checkOpen();
-        this.fetchSize = rows;
-    }
-
-    @Override
-    public int getFetchSize() throws SQLException {
-        checkOpen();
-        return fetchSize;
-    }
-
-    @Override
-    public int getResultSetConcurrency() throws SQLException {
-        checkOpen();
-        return resultSetConcurrency;
-    }
-
-    @Override
     public void addBatch(String sql) throws SQLException {
         checkOpen();
     }
@@ -308,18 +257,12 @@ public class MockStatement implements Statement {
     @Override
     public int[] executeBatch() throws SQLException {
         checkOpen();
-        
+
         if (mockConnection != null) {
             mockConnection.handleSleep();
         }
-        
-        return new int[0];
-    }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        checkOpen();
-        return connection;
+        return new int[0];
     }
 
     @Override
@@ -368,16 +311,6 @@ public class MockStatement implements Statement {
     public boolean execute(String sql, String[] columnNames) throws SQLException {
         checkOpen();
         return false;
-    }
-
-    @Override
-    public int getResultSetHoldability() throws SQLException {
-        checkOpen();
-        return resultSetHoldability;
-    }
-
-    public void setResultSetHoldability(int resultSetHoldability) {
-        this.resultSetHoldability = resultSetHoldability;
     }
 
     @Override

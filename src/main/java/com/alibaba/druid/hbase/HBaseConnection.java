@@ -25,10 +25,16 @@ import com.alibaba.druid.common.jdbc.ConnectionBase;
 public class HBaseConnection extends ConnectionBase implements Connection {
 
     private Configuration config;
+    private final String  url;
 
-    public HBaseConnection(Properties info){
+    public HBaseConnection(String url, Properties info){
+        this.url = url;
         config = new Configuration();
         this.setClientInfo(info);
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     @SuppressWarnings("unchecked")

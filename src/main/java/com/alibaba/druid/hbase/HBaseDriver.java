@@ -6,17 +6,22 @@ import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.Properties;
 
-
 public class HBaseDriver implements Driver {
+
+    private String prefix = "jdbc:druid-hbase:";
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        return null;
+        return new HBaseConnection(url, info);
     }
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        return false;
+        if (url == null) {
+            return false;
+        }
+        
+        return url.startsWith(prefix);
     }
 
     @Override
