@@ -33,22 +33,89 @@ public class HBaseConnection extends ConnectionBase implements Connection {
         this.setClientInfo(info);
     }
 
+    @Override
+    public void close() throws SQLException {
+
+    }
+
+    @Override
+    public void commit() throws SQLException {
+
+    }
+
+    @Override
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Blob createBlob() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Clob createClob() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public NClob createNClob() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public SQLXML createSQLXML() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Statement createStatement() throws SQLException {
+        return new HBaseStatement(this);
+    }
+
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+                                                                                                           throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Properties getClientInfo() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public String getClientInfo(String name) throws SQLException {
+        return config.get(name);
+    }
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
+        return null;
+    }
+
     public String getUrl() {
         return url;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == Configuration.class) {
-            return (T) config;
-        }
+    public boolean isClosed() throws SQLException {
+        return false;
+    }
 
-        if (iface == Connection.class || iface == HBaseConnection.class) {
-            return (T) this;
-        }
-
-        return null;
+    @Override
+    public boolean isValid(int timeout) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
     @Override
@@ -65,12 +132,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     }
 
     @Override
-    public Statement createStatement() throws SQLException {
-        return new HBaseStatement(this);
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
+    public String nativeSQL(String sql) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
@@ -80,80 +142,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     }
 
     @Override
-    public String nativeSQL(String sql) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void commit() throws SQLException {
-
-    }
-
-    @Override
-    public void rollback() throws SQLException {
-
-    }
-
-    @Override
-    public void close() throws SQLException {
-
-    }
-
-    @Override
-    public boolean isClosed() throws SQLException {
-        return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-                                                                                                      throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public Savepoint setSavepoint() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public Savepoint setSavepoint(String name) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void rollback(Savepoint savepoint) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-                                                                                                           throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-                                              int resultSetHoldability) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
@@ -164,48 +153,52 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     }
 
     @Override
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        return new HBasePreparedStatement(this, sql);
+    }
+
+    @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return new HBasePreparedStatement(this, sql);
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+                                                                                                      throws SQLException {
+        return new HBasePreparedStatement(this, sql);
+    }
+
+    @Override
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+                                              int resultSetHoldability) throws SQLException {
+        return new HBasePreparedStatement(this, sql);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return new HBasePreparedStatement(this, sql);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
+        HBasePreparedStatement stmt = new HBasePreparedStatement(this, sql);
+        stmt.setColumnNames(columnNames);
+        return stmt;
+    }
+
+    @Override
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public Clob createClob() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+    public void rollback() throws SQLException {
+
     }
 
     @Override
-    public Blob createBlob() throws SQLException {
+    public void rollback(Savepoint savepoint) throws SQLException {
         throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public NClob createNClob() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public SQLXML createSQLXML() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public boolean isValid(int timeout) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
-    }
-
-    @Override
-    public void setClientInfo(String name, String value) throws SQLClientInfoException {
-        this.config.set(name, value);
     }
 
     @Override
@@ -218,23 +211,32 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     }
 
     @Override
-    public String getClientInfo(String name) throws SQLException {
-        return config.get(name);
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        this.config.set(name, value);
     }
 
     @Override
-    public Properties getClientInfo() throws SQLException {
+    public Savepoint setSavepoint() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+    public Savepoint setSavepoint(String name) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface == Configuration.class) {
+            return (T) config;
+        }
+
+        if (iface == Connection.class || iface == HBaseConnection.class) {
+            return (T) this;
+        }
+
+        return null;
     }
 
 }

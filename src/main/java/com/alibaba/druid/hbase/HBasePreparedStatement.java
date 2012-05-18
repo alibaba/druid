@@ -8,8 +8,24 @@ import com.alibaba.druid.common.jdbc.PreparedStatementBase;
 
 public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement {
 
-    public HBasePreparedStatement(HBaseConnection conn){
+    private final String sql;
+    private String[]     columnNames;
+
+    public HBasePreparedStatement(HBaseConnection conn, String sql){
         super(conn);
+        this.sql = sql;
+    }
+
+    public String[] getColumnNames() {
+        return columnNames;
+    }
+
+    public void setColumnNames(String[] columnNames) {
+        this.columnNames = columnNames;
+    }
+
+    public String getSql() {
+        return sql;
     }
 
     @Override
