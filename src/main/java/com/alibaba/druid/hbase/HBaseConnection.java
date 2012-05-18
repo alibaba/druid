@@ -25,10 +25,9 @@ import com.alibaba.druid.common.jdbc.ConnectionBase;
 public class HBaseConnection extends ConnectionBase implements Connection {
 
     private Configuration config;
-    private final String  url;
 
     public HBaseConnection(String url, Properties info){
-        this.url = url;
+        super(url, info);
         config = new Configuration();
         this.setClientInfo(info);
     }
@@ -102,10 +101,6 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
         return null;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     @Override

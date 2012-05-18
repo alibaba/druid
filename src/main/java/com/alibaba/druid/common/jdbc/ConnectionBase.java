@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public abstract class ConnectionBase implements Connection {
 
@@ -15,6 +16,22 @@ public abstract class ConnectionBase implements Connection {
     private Map<String, Class<?>> typeMap    = new HashMap<String, Class<?>>();
     private SQLWarning            warings;
     private boolean               readOnly;
+
+    private String                url;
+    private Properties            info;
+
+    public ConnectionBase(String url, Properties info){
+        this.url = url;
+        this.info = info;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Properties getConnectProperties() {
+        return info;
+    }
 
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
