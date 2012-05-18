@@ -22,23 +22,23 @@ public class OracleHint extends OracleSQLObjectImpl implements SQLHint {
 
     private static final long serialVersionUID = 1L;
 
-    private String            name;
+    private String            text;
 
     public OracleHint(){
 
     }
 
-    public OracleHint(String name){
+    public OracleHint(String text){
 
-        this.name = name;
+        this.text = text;
     }
 
-    public String getName() {
-        return this.name;
+    public String getText() {
+        return this.text;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void accept0(OracleASTVisitor visitor) {

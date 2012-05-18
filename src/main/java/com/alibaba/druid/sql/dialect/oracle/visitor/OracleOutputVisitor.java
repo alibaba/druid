@@ -321,7 +321,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleHint x) {
-        print(x.getName());
+        print(x.getText());
         return false;
     }
 

@@ -15,7 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -40,6 +43,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleHint;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -605,5 +609,12 @@ public class MySqlExprParser extends SQLExprParser {
         }
 
         return null;
+    }
+    
+    public void parseHints(List<SQLHint> hints) {
+        if (lexer.token() == Token.HINT) {
+            hints.add(new OracleHint(lexer.stringVal()));
+            lexer.nextToken();
+        }
     }
 }
