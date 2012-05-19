@@ -13,12 +13,16 @@ public class HBaseDriverTest extends TestCase {
         HBaseDriver driver = new HBaseDriver();
         Connection conn = driver.connect("jdbc:druid-hbase:10.20.153.63", new Properties());
         
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM test");
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user");
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            System.out.print(rs.getString("@ROW"));
+            System.out.print(rs.getInt("id"));
             System.out.print(' ');
-            System.out.print(rs.getString("id"));
+            System.out.print(rs.getString("name"));
+            System.out.print(' ');
+            System.out.print(rs.getString("gender"));
+            System.out.print(' ');
+            System.out.print(rs.getBigDecimal("salary"));
             System.out.println();
         }
         rs.close();

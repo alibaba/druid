@@ -1,6 +1,7 @@
 package com.alibaba.druid.hbase;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -76,10 +77,39 @@ public class HBaseResultSet extends ResultSetBase {
         if ("@ROW".equals(columnName)) {
             return result.getRow();
         }
+        
+        if ("id".equals(columnName)) { // TODO
+            return result.getRow();
+        }
 
         byte[] qualifier = Bytes.toBytes(columnName);
         byte[] value = result.getValue(family, qualifier);
+        
+        this.wasNull = value == null;
+        
         return value;
+    }
+    
+    @Override
+    public int getInt(String columnName) throws SQLException {
+        byte[] bytes = getBytes(columnName);
+        
+        if (bytes == null) {
+            return 0;
+        }
+        
+        return Bytes.toInt(bytes);
+    }
+    
+    @Override
+    public BigDecimal getBigDecimal(String columnName) throws SQLException {
+        byte[] bytes = getBytes(columnName);
+        
+        if (bytes == null) {
+            return null;
+        }
+        
+        return Bytes.toBigDecimal(bytes);
     }
 
     @Override
