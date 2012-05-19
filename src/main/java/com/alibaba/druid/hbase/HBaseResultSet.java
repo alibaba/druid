@@ -5,22 +5,26 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class HBaseResultSet extends ResultSetBase {
 
     private HBaseStatementInterface statement;
     private ResultScanner           scanner;
+    private HTableInterface         htable;
     private Result                  result;
     private byte[]                  family = Bytes.toBytes("d");
 
-    public HBaseResultSet(HBaseStatementInterface statement, ResultScanner scanner){
+    public HBaseResultSet(HBaseStatementInterface statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
         this.statement = statement;
+        this.htable = htable;
         this.scanner = scanner;
     }
 
@@ -67,12 +71,12 @@ public class HBaseResultSet extends ResultSetBase {
         byte[] bytes = getBytes(columnName);
         return Bytes.toString(bytes);
     }
-    
+
     public byte[] getBytes(String columnName) throws SQLException {
         if ("@ROW".equals(columnName)) {
             return result.getRow();
         }
-        
+
         byte[] qualifier = Bytes.toBytes(columnName);
         byte[] value = result.getValue(family, qualifier);
         return value;
@@ -80,8 +84,9 @@ public class HBaseResultSet extends ResultSetBase {
 
     @Override
     public void close() throws SQLException {
+        JdbcUtils.close(scanner);
         try {
-            scanner.close();
+            htable.close();
         } catch (Exception ex) {
             throw new SQLException("close error", ex);
         }

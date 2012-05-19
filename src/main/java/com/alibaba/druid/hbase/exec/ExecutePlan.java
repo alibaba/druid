@@ -1,9 +1,10 @@
 package com.alibaba.druid.hbase.exec;
 
-import java.util.List;
+import java.sql.SQLException;
 
-import com.alibaba.druid.hbase.HBaseConnection;
+import com.alibaba.druid.hbase.HBasePreparedStatement;
+import com.alibaba.druid.hbase.HBaseResultSet;
 
 public interface ExecutePlan {
-    void execute(HBaseConnection connection, List<Object> paramerers);
+    HBaseResultSet executeScan(HBasePreparedStatement statement) throws SQLException;
 }
