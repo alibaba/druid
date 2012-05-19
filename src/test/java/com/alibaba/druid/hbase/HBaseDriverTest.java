@@ -13,7 +13,7 @@ public class HBaseDriverTest extends TestCase {
         HBaseDriver driver = new HBaseDriver();
         Connection conn = driver.connect("jdbc:druid-hbase:10.20.153.63", new Properties());
         
-        PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user where id > 3 and id < ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user where id >= 3 and id <= ?");
         stmt.setInt(1, 6);
         
         ResultSet rs = stmt.executeQuery();
