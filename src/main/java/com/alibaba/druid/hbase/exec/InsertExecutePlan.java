@@ -44,6 +44,12 @@ public class InsertExecutePlan extends SingleTableExecutePlan {
                 } else if (value instanceof Integer) {
                     int intValue = ((Integer) value).intValue();
                     bytes = Bytes.toBytes(intValue);
+                } else if (value instanceof Long) {
+                    long longValue = ((Long) value).longValue();
+                    bytes = Bytes.toBytes(longValue);
+                } else if (value instanceof Boolean) {
+                    boolean booleanValue = ((Boolean) value).booleanValue();
+                    bytes = Bytes.toBytes(booleanValue);
                 } else {
                     throw new SQLException("TODO"); // TODO
                 }
