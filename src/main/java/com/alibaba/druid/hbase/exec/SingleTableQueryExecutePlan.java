@@ -12,6 +12,8 @@ import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.RowFilter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
@@ -26,6 +28,8 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     private List<String>  columeNames = new ArrayList<String>();
     private List<SQLExpr> conditions  = new ArrayList<SQLExpr>();
+
+    private byte[]        family      = Bytes.toBytes("d");
 
     public List<SQLExpr> getConditions() {
         return conditions;
@@ -49,7 +53,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             HBaseConnection connection = statement.getConnection();
             HTableInterface htable = connection.getHTable(getTableName());
             String dbType = connection.getConnectProperties().getProperty("dbType");
-            
+
             Scan scan = new Scan();
 
             for (SQLExpr item : conditions) {
@@ -70,7 +74,27 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                         throw new SQLException("TODO");
                     }
                 } else {
-                    
+                    byte[] qualifier = Bytes.toBytes(fieldName);
+
+                    CompareOp compareOp;
+                    if (condition.getOperator() == SQLBinaryOperator.Equality) {
+                        compareOp = CompareOp.EQUAL;
+                    } else if (condition.getOperator() == SQLBinaryOperator.GreaterThan) {
+                        compareOp = CompareOp.GREATER;
+                    } else if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
+                        compareOp = CompareOp.GREATER_OR_EQUAL;
+                    } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
+                        compareOp = CompareOp.LESS;
+                    } else if (condition.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
+                        compareOp = CompareOp.LESS_OR_EQUAL;
+                    } else if (condition.getOperator() == SQLBinaryOperator.NotEqual) {
+                        compareOp = CompareOp.NOT_EQUAL;
+                    } else {
+                        throw new SQLException("TODO");
+                    }
+
+                    SingleColumnValueFilter filter = new SingleColumnValueFilter(family, qualifier, compareOp, bytes);
+                    setFilter(scan, filter);
                 }
             }
 
@@ -83,7 +107,26 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             throw new SQLException("executeQuery error", e);
         }
     }
-    
+
+    CompareOp toCompareOp(SQLBinaryOperator operator) {
+        switch (operator) {
+            case Equality:
+                return CompareOp.EQUAL;
+            case NotEqual:
+                return CompareOp.NOT_EQUAL;
+            case GreaterThan:
+                return CompareOp.GREATER;
+            case GreaterThanOrEqual:
+                return CompareOp.GREATER_OR_EQUAL;
+            case LessThan:
+                return CompareOp.LESS;
+            case LessThanOrEqual:
+                return CompareOp.LESS_OR_EQUAL;
+            default:
+                throw new UnsupportedOperationException("TODO");
+        }
+    }
+
     void setFilter(Scan scan, Filter filter) {
         if (scan.getFilter() == null) {
             scan.setFilter(filter);
