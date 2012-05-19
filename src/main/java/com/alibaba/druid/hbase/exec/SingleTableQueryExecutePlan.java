@@ -23,7 +23,7 @@ public class SingleTableQueryExecutePlan implements ExecutePlan {
     }
 
     @Override
-    public HBaseResultSet executeScan(HBasePreparedStatement statement) throws SQLException {
+    public HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
             HTableInterface htable = connection.getHTable(tableName);

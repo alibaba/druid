@@ -40,16 +40,22 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             throw new SQLException("not support multi-statement");
         }
 
-        SQLSelectStatement stmt = (SQLSelectStatement) stmtList.get(0);
-        SQLSelectQueryBlock selectQueryBlock = (SQLSelectQueryBlock) stmt.getSelect().getQuery();
+        SQLStatement sqlStmt = stmtList.get(0);
+        if (sqlStmt instanceof SQLSelectStatement) {
+            SQLSelectStatement selectStmt = (SQLSelectStatement) sqlStmt;
 
-        SQLExprTableSource tableSource = (SQLExprTableSource) selectQueryBlock.getFrom();
-        String tableName = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
+            SQLSelectQueryBlock selectQueryBlock = (SQLSelectQueryBlock) selectStmt.getSelect().getQuery();
 
-        SingleTableQueryExecutePlan singleTableQueryExecuetePlan = new SingleTableQueryExecutePlan();
-        singleTableQueryExecuetePlan.setTableName(tableName);
+            SQLExprTableSource tableSource = (SQLExprTableSource) selectQueryBlock.getFrom();
+            String tableName = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
 
-        this.executePlan = singleTableQueryExecuetePlan;
+            SingleTableQueryExecutePlan singleTableQueryExecuetePlan = new SingleTableQueryExecutePlan();
+            singleTableQueryExecuetePlan.setTableName(tableName);
+
+            this.executePlan = singleTableQueryExecuetePlan;
+        } else {
+            throw new SQLException("TODO");
+        }
     }
 
     public ExecutePlan getExecutePlan() {
@@ -75,7 +81,7 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        return this.executePlan.executeScan(this);
+        return this.executePlan.executeQuery(this);
     }
 
     @Override

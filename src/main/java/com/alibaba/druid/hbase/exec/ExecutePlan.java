@@ -6,5 +6,5 @@ import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 
 public interface ExecutePlan {
-    HBaseResultSet executeScan(HBasePreparedStatement statement) throws SQLException;
+    HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException;
 }
