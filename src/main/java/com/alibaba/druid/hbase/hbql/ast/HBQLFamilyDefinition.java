@@ -4,7 +4,7 @@ import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class HFamilyDefinition extends SQLObjectImpl implements SQLTableElement {
+public class HBQLFamilyDefinition extends SQLObjectImpl implements SQLTableElement {
 
     private static final long serialVersionUID = 1L;
 
