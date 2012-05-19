@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 
@@ -53,6 +54,12 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             singleTableQueryExecuetePlan.setTableName(tableName);
 
             this.executePlan = singleTableQueryExecuetePlan;
+        } else if (sqlStmt instanceof SQLInsertStatement) {
+            SQLInsertStatement insertStmt = (SQLInsertStatement) sqlStmt;
+            
+            String tableName = ((SQLIdentifierExpr) insertStmt.getTableSource().getExpr()).getName();
+            
+            throw new SQLException("TODO");
         } else {
             throw new SQLException("TODO");
         }

@@ -10,7 +10,7 @@ import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 
-public class SingleTableQueryExecutePlan implements ExecutePlan {
+public class SingleTableQueryExecutePlan extends ExecutePlanAdapter {
 
     private String tableName;
 
@@ -27,10 +27,10 @@ public class SingleTableQueryExecutePlan implements ExecutePlan {
         try {
             HBaseConnection connection = statement.getConnection();
             HTableInterface htable = connection.getHTable(tableName);
-            
+
             Scan scan = new Scan();
             ResultScanner scanner = htable.getScanner(scan);
-            
+
             return new HBaseResultSet(statement, htable, scanner);
         } catch (SQLException e) {
             throw e;
