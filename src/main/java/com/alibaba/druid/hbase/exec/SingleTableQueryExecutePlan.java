@@ -10,27 +10,17 @@ import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 
-public class SingleTableQueryExecutePlan implements ExecutePlan {
-
-    private String tableName;
-
-    public String getTableName() {
-        return tableName;
-    }
-
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
+public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     @Override
     public HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
-            HTableInterface htable = connection.getHTable(tableName);
-            
+            HTableInterface htable = connection.getHTable(getTableName());
+
             Scan scan = new Scan();
             ResultScanner scanner = htable.getScanner(scan);
-            
+
             return new HBaseResultSet(statement, htable, scanner);
         } catch (SQLException e) {
             throw e;
