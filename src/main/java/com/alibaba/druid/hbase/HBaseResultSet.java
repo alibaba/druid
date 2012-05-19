@@ -13,23 +13,34 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
+import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class HBaseResultSet extends ResultSetBase {
 
     private HStatementInterface statement;
-    private ResultScanner           scanner;
-    private HTableInterface         htable;
-    private Result                  result;
-    private byte[]                  family = Bytes.toBytes("d");
+    private ResultScanner       scanner;
+    private HTableInterface     htable;
+    private Result              result;
+    private byte[]              family = Bytes.toBytes("d");
 
     private HResultSetMetaData  metaData;
+
+    private HMapping            mapping;
 
     public HBaseResultSet(HStatementInterface statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
         this.statement = statement;
         this.htable = htable;
         this.scanner = scanner;
+    }
+
+    public HMapping getMapping() {
+        return mapping;
+    }
+
+    public void setMapping(HMapping mapping) {
+        this.mapping = mapping;
     }
 
     @Override
@@ -70,7 +81,7 @@ public class HBaseResultSet extends ResultSetBase {
         ColumnMetaData column = this.metaData.getColumn(columnIndex);
         return getObjectInternal(column.getColumnName(), column.getColumnType());
     }
-    
+
     public Object getObjectInternal(String columnName, int type) throws SQLException {
         byte[] bytes = getBytes(columnName);
         switch (type) {
@@ -109,13 +120,13 @@ public class HBaseResultSet extends ResultSetBase {
         byte[] bytes = getBytes(columnIndex);
         return Bytes.toString(bytes);
     }
-    
+
     @Override
     public String getString(String columnName) throws SQLException {
         byte[] bytes = getBytes(columnName);
         return Bytes.toString(bytes);
     }
-    
+
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
         ColumnMetaData column = this.metaData.getColumn(columnIndex);
@@ -149,15 +160,15 @@ public class HBaseResultSet extends ResultSetBase {
 
         return Bytes.toInt(bytes);
     }
-    
+
     @Override
     public int getInt(int columnIndex) throws SQLException {
         byte[] bytes = getBytes(columnIndex);
-        
+
         if (bytes == null) {
             return 0;
         }
-        
+
         return Bytes.toInt(bytes);
     }
 
@@ -171,15 +182,15 @@ public class HBaseResultSet extends ResultSetBase {
 
         return Bytes.toBigDecimal(bytes);
     }
-    
+
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
         byte[] bytes = getBytes(columnIndex);
-        
+
         if (bytes == null) {
             return null;
         }
-        
+
         return Bytes.toBigDecimal(bytes);
     }
 

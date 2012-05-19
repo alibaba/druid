@@ -19,6 +19,7 @@ import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HPreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 import com.alibaba.druid.hbase.HResultSetMetaData;
+import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -27,12 +28,26 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
-    private List<String>           columeNames = new ArrayList<String>();
-    private List<SQLExpr>          conditions  = new ArrayList<SQLExpr>();
+    private List<String>       columeNames = new ArrayList<String>();
+    private List<SQLExpr>      conditions  = new ArrayList<SQLExpr>();
 
-    private byte[]                 family      = Bytes.toBytes("d");
+    private byte[]             family      = Bytes.toBytes("d");
 
     private HResultSetMetaData resultMetaData;
+
+    private HMapping           mapping;
+
+    public SingleTableQueryExecutePlan(){
+
+    }
+
+    public HMapping getMapping() {
+        return mapping;
+    }
+
+    public void setMapping(HMapping mapping) {
+        this.mapping = mapping;
+    }
 
     public List<SQLExpr> getConditions() {
         return conditions;
@@ -40,10 +55,6 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     public void setConditions(List<SQLExpr> conditions) {
         this.conditions = conditions;
-    }
-
-    public SingleTableQueryExecutePlan(){
-
     }
 
     public List<String> getColumeNames() {
@@ -62,7 +73,6 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     public HBaseResultSet executeQuery(HPreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
-            HTableInterface htable = connection.getHTable(getTableName());
             String dbType = connection.getConnectProperties().getProperty("dbType");
 
             Scan scan = new Scan();
@@ -109,11 +119,13 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                 }
             }
 
+            HTableInterface htable = connection.getHTable(getTableName());
             ResultScanner scanner = htable.getScanner(scan);
 
             HBaseResultSet resultSet = new HBaseResultSet(statement, htable, scanner);
             resultSet.setMetaData(resultMetaData);
-            
+            resultSet.setMapping(mapping);
+
             return resultSet;
         } catch (SQLException e) {
             throw e;
