@@ -12,6 +12,10 @@ import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
@@ -39,8 +43,27 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
         try {
             HBaseConnection connection = statement.getConnection();
             HTableInterface htable = connection.getHTable(getTableName());
-
+            String dbType = connection.getConnectProperties().getProperty("dbType");
+            
             Scan scan = new Scan();
+
+            for (SQLExpr item : conditions) {
+                SQLBinaryOpExpr condition = (SQLBinaryOpExpr) item;
+                String fieldName = ((SQLIdentifierExpr) condition.getLeft()).getName();
+                Object value = SQLEvalVisitorUtils.eval(dbType, condition.getRight(), statement.getParameters());
+
+                byte[] bytes = HBaseUtils.toBytes(value);
+                if ("id".equals(fieldName)) {
+                    if (condition.getOperator() == SQLBinaryOperator.GreaterThan) {
+                        scan.setStartRow(bytes);
+                    } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
+                        scan.setStopRow(bytes);
+                    } else {
+                        throw new SQLException("TODO");
+                    }
+                }
+            }
+
             ResultScanner scanner = htable.getScanner(scan);
 
             return new HBaseResultSet(statement, htable, scanner);

@@ -1,6 +1,5 @@
 package com.alibaba.druid.hbase.exec;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,26 +35,7 @@ public class InsertExecutePlan extends SingleTableExecutePlan {
                     continue;
                 }
 
-                byte[] bytes;
-
-                if (value instanceof String) {
-                    String strValue = (String) value;
-                    bytes = Bytes.toBytes(strValue);
-                } else if (value instanceof Integer) {
-                    int intValue = ((Integer) value).intValue();
-                    bytes = Bytes.toBytes(intValue);
-                } else if (value instanceof Long) {
-                    long longValue = ((Long) value).longValue();
-                    bytes = Bytes.toBytes(longValue);
-                } else if (value instanceof Boolean) {
-                    boolean booleanValue = ((Boolean) value).booleanValue();
-                    bytes = Bytes.toBytes(booleanValue);
-                } else if (value instanceof BigDecimal) {
-                    BigDecimal decimalValue = (BigDecimal) value;
-                    bytes = Bytes.toBytes(decimalValue);
-                } else {
-                    throw new SQLException("TODO"); // TODO
-                }
+                byte[] bytes = HBaseUtils.toBytes(value);
 
                 if (put == null) { // first value is key, TODO
                     put = new Put(bytes);

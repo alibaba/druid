@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.util.JdbcUtils;
@@ -40,12 +41,20 @@ public class SQLEvalVisitorUtils {
         return eval(dbType, sqlObject, Arrays.asList(parameters));
     }
 
+    public static Object getValue(SQLObject sqlObject) {
+        if (sqlObject instanceof SQLNumericLiteralExpr) {
+            return ((SQLNumericLiteralExpr) sqlObject).getNumber();
+        }
+
+        return sqlObject.getAttributes().get(EVAL_VALUE);
+    }
+
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters) {
         SQLEvalVisitor visitor = createEvalVisitor(dbType);
         visitor.setParameters(parameters);
         sqlObject.accept(visitor);
 
-        Object value = sqlObject.getAttributes().get(EVAL_VALUE);
+        Object value = getValue(sqlObject);
         if (value == null) {
             if (!sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
                 throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
