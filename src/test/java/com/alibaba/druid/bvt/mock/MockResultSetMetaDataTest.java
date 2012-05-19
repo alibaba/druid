@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.mock.MockResultSetMetaData.ColumnMetaData;
 
 public class MockResultSetMetaDataTest extends TestCase {
 

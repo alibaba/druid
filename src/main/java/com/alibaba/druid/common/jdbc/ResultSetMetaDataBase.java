@@ -61,102 +61,106 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
 
     @Override
     public boolean isAutoIncrement(int column) throws SQLException {
-        return columns.get(column - 1).isAutoIncrement();
+        return getColumn(column).isAutoIncrement();
     }
 
     @Override
     public boolean isCaseSensitive(int column) throws SQLException {
-        return columns.get(column - 1).isCaseSensitive();
+        return getColumn(column).isCaseSensitive();
     }
 
     @Override
     public boolean isSearchable(int column) throws SQLException {
-        return columns.get(column - 1).isSearchable();
+        return getColumn(column).isSearchable();
     }
 
     @Override
     public boolean isCurrency(int column) throws SQLException {
-        return columns.get(column - 1).isCurrency();
+        return getColumn(column).isCurrency();
     }
 
     @Override
     public int isNullable(int column) throws SQLException {
-        return columns.get(column - 1).getNullable();
+        return getColumn(column).getNullable();
     }
 
     @Override
     public boolean isSigned(int column) throws SQLException {
-        return columns.get(column - 1).isSigned();
+        return getColumn(column).isSigned();
     }
 
     @Override
     public int getColumnDisplaySize(int column) throws SQLException {
-        return columns.get(column - 1).getColumnDisplaySize();
+        return getColumn(column).getColumnDisplaySize();
     }
 
     @Override
     public String getColumnLabel(int column) throws SQLException {
-        return columns.get(column - 1).getColumnLabel();
+        return getColumn(column).getColumnLabel();
+    }
+    
+    public ColumnMetaData getColumn(int column) {
+        return columns.get(column - 1);
     }
 
     @Override
     public String getColumnName(int column) throws SQLException {
-        return columns.get(column - 1).getColumnName();
+        return getColumn(column).getColumnName();
     }
 
     @Override
     public String getSchemaName(int column) throws SQLException {
-        return columns.get(column - 1).getSchemaName();
+        return getColumn(column).getSchemaName();
     }
 
     @Override
     public int getPrecision(int column) throws SQLException {
-        return columns.get(column - 1).getPrecision();
+        return getColumn(column).getPrecision();
     }
 
     @Override
     public int getScale(int column) throws SQLException {
-        return columns.get(column - 1).getScale();
+        return getColumn(column).getScale();
     }
 
     @Override
     public String getTableName(int column) throws SQLException {
-        return columns.get(column - 1).getTableName();
+        return getColumn(column).getTableName();
     }
 
     @Override
     public String getCatalogName(int column) throws SQLException {
-        return columns.get(column - 1).getCatalogName();
+        return getColumn(column).getCatalogName();
     }
 
     @Override
     public int getColumnType(int column) throws SQLException {
-        return columns.get(column - 1).getColumnType();
+        return getColumn(column).getColumnType();
     }
 
     @Override
     public String getColumnTypeName(int column) throws SQLException {
-        return columns.get(column - 1).getColumnTypeName();
+        return getColumn(column).getColumnTypeName();
     }
 
     @Override
     public boolean isReadOnly(int column) throws SQLException {
-        return columns.get(column - 1).isReadOnly();
+        return getColumn(column).isReadOnly();
     }
 
     @Override
     public boolean isWritable(int column) throws SQLException {
-        return columns.get(column - 1).isWritable();
+        return getColumn(column).isWritable();
     }
 
     @Override
     public boolean isDefinitelyWritable(int column) throws SQLException {
-        return columns.get(column - 1).isDefinitelyWritable();
+        return getColumn(column).isDefinitelyWritable();
     }
 
     @Override
     public String getColumnClassName(int column) throws SQLException {
-        return columns.get(column - 1).getColumnClassName();
+        return getColumn(column).getColumnClassName();
     }
 
     public static class ColumnMetaData {

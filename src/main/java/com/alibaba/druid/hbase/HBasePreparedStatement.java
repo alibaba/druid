@@ -3,9 +3,11 @@ package com.alibaba.druid.hbase;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import com.alibaba.druid.common.jdbc.PreparedStatementBase;
+import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.exec.ExecutePlan;
 import com.alibaba.druid.hbase.exec.InsertExecutePlan;
 import com.alibaba.druid.hbase.exec.SingleTableQueryExecutePlan;
@@ -17,6 +19,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
@@ -75,6 +78,18 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             singleTableQueryExecuetePlan.setTableName(tableName);
             
             splitCondition(singleTableQueryExecuetePlan.getConditions(), selectQueryBlock.getWhere());
+            
+            HBaseResultSetMetaData resultMetaData = new HBaseResultSetMetaData();
+            for (SQLSelectItem selectItem : selectQueryBlock.getSelectList()) {
+                ColumnMetaData columnMetaData = new ColumnMetaData();
+                if (selectItem.getAlias() != null) {
+                    columnMetaData.setColumnLabel(selectItem.getAlias());
+                }
+                columnMetaData.setColumnName(SQLUtils.toSQLString(selectItem.getExpr(), dbType));
+                columnMetaData.setColumnType(Types.BINARY);
+                resultMetaData.getColumns().add(columnMetaData);
+            }
+            singleTableQueryExecuetePlan.setResultMetaData(resultMetaData);
 
             this.executePlan = singleTableQueryExecuetePlan;
         } else if (sqlStmt instanceof SQLInsertStatement) {

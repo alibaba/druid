@@ -302,7 +302,7 @@ public abstract class ResultSetBase implements ResultSet {
         return wasNull;
     }
 
-    public abstract Object getObjectInternal(int columnIndex);
+    public abstract Object getObjectInternal(int columnIndex) throws SQLException;
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {

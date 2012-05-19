@@ -18,6 +18,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
+import com.alibaba.druid.hbase.HBaseResultSetMetaData;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -26,10 +27,12 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
-    private List<String>  columeNames = new ArrayList<String>();
-    private List<SQLExpr> conditions  = new ArrayList<SQLExpr>();
+    private List<String>           columeNames = new ArrayList<String>();
+    private List<SQLExpr>          conditions  = new ArrayList<SQLExpr>();
 
-    private byte[]        family      = Bytes.toBytes("d");
+    private byte[]                 family      = Bytes.toBytes("d");
+
+    private HBaseResultSetMetaData resultMetaData;
 
     public List<SQLExpr> getConditions() {
         return conditions;
@@ -45,6 +48,14 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     public List<String> getColumeNames() {
         return columeNames;
+    }
+
+    public HBaseResultSetMetaData getResultMetaData() {
+        return resultMetaData;
+    }
+
+    public void setResultMetaData(HBaseResultSetMetaData resultMetaData) {
+        this.resultMetaData = resultMetaData;
     }
 
     @Override
@@ -100,7 +111,10 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
             ResultScanner scanner = htable.getScanner(scan);
 
-            return new HBaseResultSet(statement, htable, scanner);
+            HBaseResultSet resultSet = new HBaseResultSet(statement, htable, scanner);
+            resultSet.setMetaData(resultMetaData);
+            
+            return resultSet;
         } catch (SQLException e) {
             throw e;
         } catch (Exception e) {
