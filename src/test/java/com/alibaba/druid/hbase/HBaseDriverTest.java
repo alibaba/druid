@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 
 public class HBaseDriverTest extends TestCase {
-    public void test_0 () throws Exception {
+    public void test_select_0 () throws Exception {
         HBaseDriver driver = new HBaseDriver();
         Connection conn = driver.connect("jdbc:druid-hbase:10.20.153.63", new Properties());
         
