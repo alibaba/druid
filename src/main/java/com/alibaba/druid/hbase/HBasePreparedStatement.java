@@ -3,6 +3,7 @@ package com.alibaba.druid.hbase;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.common.jdbc.PreparedStatementBase;
@@ -12,6 +13,8 @@ import com.alibaba.druid.hbase.exec.SingleTableQueryExecutePlan;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -36,6 +39,18 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
         init();
     }
+    
+    private void splitCondition(List<SQLExpr> conditions, SQLExpr expr) {
+        if (expr instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) expr;
+            if (binaryExpr.getOperator() == SQLBinaryOperator.BooleanAnd) {
+                splitCondition(conditions, binaryExpr.getLeft());
+                splitCondition(conditions, binaryExpr.getRight());
+                return;
+            }
+        }
+        conditions.add(expr);
+    }
 
     public void init() throws SQLException {
         String dbType = this.hbaseConnection.getConnectProperties().getProperty("dbType");
@@ -48,6 +63,9 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
         SQLStatement sqlStmt = stmtList.get(0);
         if (sqlStmt instanceof SQLSelectStatement) {
             SQLSelectStatement selectStmt = (SQLSelectStatement) sqlStmt;
+            
+            SQLEvalVisitor evalVisitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
+            selectStmt.accept(evalVisitor);
 
             SQLSelectQueryBlock selectQueryBlock = (SQLSelectQueryBlock) selectStmt.getSelect().getQuery();
 
@@ -56,6 +74,9 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
             SingleTableQueryExecutePlan singleTableQueryExecuetePlan = new SingleTableQueryExecutePlan();
             singleTableQueryExecuetePlan.setTableName(tableName);
+            
+            List<SQLExpr> conditions = new ArrayList<SQLExpr>();
+            splitCondition(conditions, selectQueryBlock.getWhere());
 
             this.executePlan = singleTableQueryExecuetePlan;
         } else if (sqlStmt instanceof SQLInsertStatement) {

@@ -1,6 +1,8 @@
 package com.alibaba.druid.hbase.exec;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -11,6 +13,16 @@ import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
+
+    private List<String> columeNames = new ArrayList<String>();
+
+    public SingleTableQueryExecutePlan(){
+
+    }
+
+    public List<String> getColumeNames() {
+        return columeNames;
+    }
 
     @Override
     public HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException {
