@@ -72,7 +72,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        return new HBaseStatement(this);
+        return new HStatement(this);
     }
 
     @Override
@@ -151,8 +151,8 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     }
 
     @Override
-    public HBasePreparedStatement prepareStatement(String sql) throws SQLException {
-        return new HBasePreparedStatement(this, sql);
+    public HPreparedStatement prepareStatement(String sql) throws SQLException {
+        return new HPreparedStatement(this, sql);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        HBasePreparedStatement stmt = prepareStatement(sql);
+        HPreparedStatement stmt = prepareStatement(sql);
         stmt.setColumnNames(columnNames);
         return stmt;
     }

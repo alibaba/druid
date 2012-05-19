@@ -25,7 +25,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
-public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement, HBaseStatementInterface {
+public class HPreparedStatement extends PreparedStatementBase implements PreparedStatement, HStatementInterface {
 
     private final String    sql;
     private String[]        columnNames;
@@ -34,7 +34,7 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
     private ExecutePlan     executePlan;
 
-    public HBasePreparedStatement(HBaseConnection conn, String sql) throws SQLException{
+    public HPreparedStatement(HBaseConnection conn, String sql) throws SQLException{
         super(conn);
         this.sql = sql;
         this.hbaseConnection = conn;
@@ -79,7 +79,7 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             
             splitCondition(singleTableQueryExecuetePlan.getConditions(), selectQueryBlock.getWhere());
             
-            HBaseResultSetMetaData resultMetaData = new HBaseResultSetMetaData();
+            HResultSetMetaData resultMetaData = new HResultSetMetaData();
             for (SQLSelectItem selectItem : selectQueryBlock.getSelectList()) {
                 ColumnMetaData columnMetaData = new ColumnMetaData();
                 if (selectItem.getAlias() != null) {

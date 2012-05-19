@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class HBaseDriverTest_getIndex extends TestCase {
     public void test_select_0 () throws Exception {
-        HBaseDriver driver = new HBaseDriver();
+        HDriver driver = new HDriver();
         Connection conn = driver.connect("jdbc:druid-hbase:10.20.153.63", new Properties());
         
         PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user where id >= 3 and id <= ?");

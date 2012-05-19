@@ -17,15 +17,15 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class HBaseResultSet extends ResultSetBase {
 
-    private HBaseStatementInterface statement;
+    private HStatementInterface statement;
     private ResultScanner           scanner;
     private HTableInterface         htable;
     private Result                  result;
     private byte[]                  family = Bytes.toBytes("d");
 
-    private HBaseResultSetMetaData  metaData;
+    private HResultSetMetaData  metaData;
 
-    public HBaseResultSet(HBaseStatementInterface statement, HTableInterface htable, ResultScanner scanner){
+    public HBaseResultSet(HStatementInterface statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
         this.statement = statement;
         this.htable = htable;
@@ -48,11 +48,11 @@ public class HBaseResultSet extends ResultSetBase {
     }
 
     @Override
-    public HBaseResultSetMetaData getMetaData() throws SQLException {
+    public HResultSetMetaData getMetaData() throws SQLException {
         return metaData;
     }
 
-    public void setMetaData(HBaseResultSetMetaData metaData) {
+    public void setMetaData(HResultSetMetaData metaData) {
         this.metaData = metaData;
     }
 

@@ -16,9 +16,9 @@ import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hbase.HBaseConnection;
-import com.alibaba.druid.hbase.HBasePreparedStatement;
+import com.alibaba.druid.hbase.HPreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
-import com.alibaba.druid.hbase.HBaseResultSetMetaData;
+import com.alibaba.druid.hbase.HResultSetMetaData;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -32,7 +32,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     private byte[]                 family      = Bytes.toBytes("d");
 
-    private HBaseResultSetMetaData resultMetaData;
+    private HResultSetMetaData resultMetaData;
 
     public List<SQLExpr> getConditions() {
         return conditions;
@@ -50,16 +50,16 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
         return columeNames;
     }
 
-    public HBaseResultSetMetaData getResultMetaData() {
+    public HResultSetMetaData getResultMetaData() {
         return resultMetaData;
     }
 
-    public void setResultMetaData(HBaseResultSetMetaData resultMetaData) {
+    public void setResultMetaData(HResultSetMetaData resultMetaData) {
         this.resultMetaData = resultMetaData;
     }
 
     @Override
-    public HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException {
+    public HBaseResultSet executeQuery(HPreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
             HTableInterface htable = connection.getHTable(getTableName());

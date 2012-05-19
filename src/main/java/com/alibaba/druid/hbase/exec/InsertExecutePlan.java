@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hbase.HBaseConnection;
-import com.alibaba.druid.hbase.HBasePreparedStatement;
+import com.alibaba.druid.hbase.HPreparedStatement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
@@ -19,7 +19,7 @@ public class InsertExecutePlan extends SingleTableExecutePlan {
     private byte[]               family  = Bytes.toBytes("d");
 
     @Override
-    public boolean execute(HBasePreparedStatement statement) throws SQLException {
+    public boolean execute(HPreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");

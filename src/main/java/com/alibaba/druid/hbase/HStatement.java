@@ -5,11 +5,11 @@ import java.sql.Statement;
 
 import com.alibaba.druid.common.jdbc.StatementBase;
 
-public class HBaseStatement extends StatementBase implements Statement, HBaseStatementInterface {
+public class HStatement extends StatementBase implements Statement, HStatementInterface {
 
     private HBaseConnection conn;
 
-    public HBaseStatement(HBaseConnection conn){
+    public HStatement(HBaseConnection conn){
         super(conn);
         this.conn = conn;
     }
