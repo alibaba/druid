@@ -25,7 +25,7 @@ import java.util.Map;
 public abstract class ResultSetBase implements ResultSet {
 
     protected boolean  closed         = false;
-    private boolean    wasNull        = false;
+    protected boolean  wasNull        = false;
     private SQLWarning warning;
     private String     cursorName;
     private int        fetchSize      = 0;

@@ -48,6 +48,9 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
         SQLStatement sqlStmt = stmtList.get(0);
         if (sqlStmt instanceof SQLSelectStatement) {
             SQLSelectStatement selectStmt = (SQLSelectStatement) sqlStmt;
+            
+            SQLEvalVisitor evalVisitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
+            selectStmt.accept(evalVisitor);
 
             SQLSelectQueryBlock selectQueryBlock = (SQLSelectQueryBlock) selectStmt.getSelect().getQuery();
 
