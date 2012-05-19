@@ -2,8 +2,9 @@ package com.alibaba.druid.hbase.mapping;
 
 public class HMappingColumn {
 
-    private String   name;
-    private Class<?> type;
+    private String            name;
+    private Class<?>          type;
+    private transient boolean key = false;
 
     public String getName() {
         return name;
@@ -19,6 +20,14 @@ public class HMappingColumn {
 
     public void setType(Class<?> type) {
         this.type = type;
+    }
+
+    public boolean isKey() {
+        return key;
+    }
+
+    public void setKey(boolean key) {
+        this.key = key;
     }
 
 }
