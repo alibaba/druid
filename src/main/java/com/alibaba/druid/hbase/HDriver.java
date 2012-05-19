@@ -16,10 +16,12 @@ public class HDriver implements Driver {
         }
 
         String rest = url.substring(PREFIX.length());
-        
+
+        HEngine engine = HEngine.getHEngine(url, info);
+
         info.put("hbase.zookeeper.quorum", rest);
 
-        return new HBaseConnection(url, info);
+        return new HBaseConnection(engine, info);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.alibaba.druid.hbase;
 
-import java.io.IOException;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -20,19 +19,24 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import com.alibaba.druid.common.jdbc.ConnectionBase;
 
 public class HBaseConnection extends ConnectionBase implements Connection {
 
-    private Configuration config;
+    
+    private final HEngine       engine;
 
-    public HBaseConnection(String url, Properties info){
-        super(url, info);
-        config = new Configuration(false);
+    public HBaseConnection(HEngine engine, Properties info){
+        super(engine.getUrl(), info);
+        this.engine = engine;
+        
         this.setClientInfo(info);
+    }
+
+    public HEngine getEngine() {
+        return engine;
     }
 
     @Override
@@ -98,7 +102,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
     @Override
     public String getClientInfo(String name) throws SQLException {
-        return config.get(name);
+        return engine.getConfig().get(name);
     }
 
     @Override
@@ -203,14 +207,14 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     public void setClientInfo(Properties properties) {
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
-                config.set(entry.getKey().toString(), entry.getValue().toString());
+                engine.getConfig().set(entry.getKey().toString(), entry.getValue().toString());
             }
         }
     }
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
-        this.config.set(name, value);
+        this.engine.getConfig().set(name, value);
     }
 
     @Override
@@ -227,7 +231,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == Configuration.class) {
-            return (T) config;
+            return (T) engine.getConfig();
         }
 
         if (iface == Connection.class || iface == HBaseConnection.class) {
@@ -236,9 +240,9 @@ public class HBaseConnection extends ConnectionBase implements Connection {
 
         return null;
     }
-    
-    public HTableInterface getHTable(String tableName) throws IOException {
-        return new HTable(config, tableName);
+
+    public HTableInterface getHTable(String tableName) {
+        return engine.getHTable(tableName);
     }
 
 }
