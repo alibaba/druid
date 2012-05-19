@@ -7,8 +7,18 @@ import java.util.Map;
 
 public class HMapping {
 
+    private String                      tableName;
+
     private Map<String, HMappingColumn> columns = new LinkedHashMap<String, HMappingColumn>();
     private HMappingColumn              keyColumn;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public Collection<HMappingColumn> getColumns() {
         return Collections.unmodifiableCollection(columns.values());

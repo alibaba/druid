@@ -8,11 +8,13 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
+import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 
 public class HEngine {
-    private final static Log LOG = LogFactory.getLog(HEngine.class);
+
+    private final static Log                      LOG     = LogFactory.getLog(HEngine.class);
 
     private static ConcurrentMap<String, HEngine> engines = new ConcurrentHashMap<String, HEngine>();
 
@@ -28,11 +30,12 @@ public class HEngine {
 
     // =============================
 
-    private final String  url;
+    private final String                    url;
 
-    private HTablePool    tablePool;
-    private int           htablePoolMaxSize = 256;
-    private Configuration config;
+    private HTablePool                      tablePool;
+    private int                             htablePoolMaxSize = 256;
+    private Configuration                   config;
+    private ConcurrentMap<String, HMapping> mappings          = new ConcurrentHashMap<String, HMapping>();
 
     public HEngine(String url, Properties connectProperties){
         super();
@@ -62,6 +65,10 @@ public class HEngine {
 
     public Configuration getConfig() {
         return config;
+    }
+
+    public ConcurrentMap<String, HMapping> getMappings() {
+        return mappings;
     }
 
     public synchronized HTableInterface getHTable(String tableName) {

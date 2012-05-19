@@ -62,7 +62,6 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     public HBaseResultSet executeQuery(HPreparedStatement statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
-            HTableInterface htable = connection.getHTable(getTableName());
             String dbType = connection.getConnectProperties().getProperty("dbType");
 
             Scan scan = new Scan();
@@ -109,6 +108,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                 }
             }
 
+            HTableInterface htable = connection.getHTable(getTableName());
             ResultScanner scanner = htable.getScanner(scan);
 
             HBaseResultSet resultSet = new HBaseResultSet(statement, htable, scanner);
