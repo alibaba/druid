@@ -7,14 +7,18 @@ import java.util.List;
 
 import com.alibaba.druid.common.jdbc.PreparedStatementBase;
 import com.alibaba.druid.hbase.exec.ExecutePlan;
+import com.alibaba.druid.hbase.exec.InsertExecutePlan;
 import com.alibaba.druid.hbase.exec.SingleTableQueryExecutePlan;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class HBasePreparedStatement extends PreparedStatementBase implements PreparedStatement, HBaseStatementInterface {
 
@@ -56,10 +60,24 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             this.executePlan = singleTableQueryExecuetePlan;
         } else if (sqlStmt instanceof SQLInsertStatement) {
             SQLInsertStatement insertStmt = (SQLInsertStatement) sqlStmt;
+
+            SQLEvalVisitor evalVisitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
+            insertStmt.accept(evalVisitor);
             
             String tableName = ((SQLIdentifierExpr) insertStmt.getTableSource().getExpr()).getName();
             
-            throw new SQLException("TODO");
+            InsertExecutePlan insertExecutePlan = new InsertExecutePlan();
+            insertExecutePlan.setTableName(tableName);
+            
+            for (int i = 0; i < insertStmt.getColumns().size(); ++i) {
+                SQLExpr columnExpr = insertStmt.getColumns().get(i);
+                SQLExpr valueExpr = insertStmt.getValues().getValues().get(i);
+                
+                String columnName = ((SQLIdentifierExpr) columnExpr).getName();
+                insertExecutePlan.getColumns().put(columnName, valueExpr);
+            }
+            
+            this.executePlan = insertExecutePlan;
         } else {
             throw new SQLException("TODO");
         }
@@ -99,7 +117,7 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
 
     @Override
     public boolean execute() throws SQLException {
-        checkOpen();
+        this.executePlan.execute(this);
 
         return false;
     }

@@ -67,24 +67,24 @@ public class SQLEvalVisitorUtils {
         x.putAttribute(EVAL_VALUE, x.getText());
         return true;
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
         x.getLeft().accept(visitor);
         x.getRight().accept(visitor);
-        
+
         if (!x.getLeft().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
-        
+
         if (!x.getRight().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
-        
+
         if (SQLBinaryOperator.Add.equals(x.getOperator())) {
             Object value = _add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
             x.putAttribute(EVAL_VALUE, value);
         }
-        
+
         return false;
     }
 
@@ -96,10 +96,12 @@ public class SQLEvalVisitorUtils {
             x.putAttribute(EVAL_VAR_INDEX, varIndex);
         }
 
-        boolean containsValue = attributes.containsKey(EVAL_VALUE);
-        if (!containsValue) {
-            Object value = visitor.getParameters().get(varIndex.intValue());
-            attributes.put(EVAL_VALUE, value);
+        if (visitor.getParameters().size() > 0) {
+            boolean containsValue = attributes.containsKey(EVAL_VALUE);
+            if (!containsValue) {
+                Object value = visitor.getParameters().get(varIndex.intValue());
+                attributes.put(EVAL_VALUE, value);
+            }
         }
 
         return false;

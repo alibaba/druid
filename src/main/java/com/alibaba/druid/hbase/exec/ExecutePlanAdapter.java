@@ -13,7 +13,7 @@ public class ExecutePlanAdapter implements ExecutePlan {
     }
 
     @Override
-    public void execute(HBasePreparedStatement statement) throws SQLException {
+    public boolean execute(HBasePreparedStatement statement) throws SQLException {
         throw new UnsupportedOperationException();
     }
 

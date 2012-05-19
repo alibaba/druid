@@ -13,4 +13,8 @@ public interface SQLEvalVisitor extends SQLASTVisitor {
     void setParameters(List<Object> parameters);
 
     int incrementAndGetVariantIndex();
+    
+    boolean isMarkVariantIndex();
+    
+    void setMarkVariantIndex(boolean markVariantIndex);
 }

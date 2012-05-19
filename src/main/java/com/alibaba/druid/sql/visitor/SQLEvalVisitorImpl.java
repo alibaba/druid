@@ -9,9 +9,11 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 
 public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalVisitor {
 
-    private List<Object> parameters   = new ArrayList<Object>();
+    private List<Object> parameters       = new ArrayList<Object>();
 
-    private int          variantIndex = -1;
+    private int          variantIndex     = -1;
+
+    private boolean      markVariantIndex = true;
 
     public SQLEvalVisitorImpl(){
         this(new ArrayList<Object>(1));
@@ -48,4 +50,13 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public boolean visit(SQLBinaryOpExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
+
+    public boolean isMarkVariantIndex() {
+        return markVariantIndex;
+    }
+
+    public void setMarkVariantIndex(boolean markVariantIndex) {
+        this.markVariantIndex = markVariantIndex;
+    }
+
 }

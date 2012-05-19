@@ -11,9 +11,11 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLEvalVisitor {
 
-    private List<Object> parameters   = new ArrayList<Object>();
+    private List<Object> parameters       = new ArrayList<Object>();
 
-    private int          variantIndex = -1;
+    private int          variantIndex     = -1;
+
+    private boolean      markVariantIndex = true;
 
     public MySqlEvalVisitorImpl(){
         this(new ArrayList<Object>(1));
@@ -46,8 +48,17 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     public boolean visit(SQLVariantRefExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     public boolean visit(SQLBinaryOpExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
+
+    public boolean isMarkVariantIndex() {
+        return markVariantIndex;
+    }
+
+    public void setMarkVariantIndex(boolean markVariantIndex) {
+        this.markVariantIndex = markVariantIndex;
+    }
+
 }
