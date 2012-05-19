@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.alibaba.druid.common.jdbc.PreparedStatementBase;
 import com.alibaba.druid.hbase.exec.ExecutePlan;
+import com.alibaba.druid.hbase.exec.InsertExecutePlan;
 import com.alibaba.druid.hbase.exec.SingleTableQueryExecutePlan;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -58,6 +59,9 @@ public class HBasePreparedStatement extends PreparedStatementBase implements Pre
             SQLInsertStatement insertStmt = (SQLInsertStatement) sqlStmt;
             
             String tableName = ((SQLIdentifierExpr) insertStmt.getTableSource().getExpr()).getName();
+            
+            InsertExecutePlan insertExecutePlan = new InsertExecutePlan();
+            insertExecutePlan.setTableName(tableName);
             
             throw new SQLException("TODO");
         } else {
