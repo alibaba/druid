@@ -11,10 +11,20 @@ import org.apache.hadoop.hbase.client.Scan;
 import com.alibaba.druid.hbase.HBaseConnection;
 import com.alibaba.druid.hbase.HBasePreparedStatement;
 import com.alibaba.druid.hbase.HBaseResultSet;
+import com.alibaba.druid.sql.ast.SQLExpr;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
-    private List<String> columeNames = new ArrayList<String>();
+    private List<String>  columeNames = new ArrayList<String>();
+    private List<SQLExpr> conditions  = new ArrayList<SQLExpr>();
+
+    public List<SQLExpr> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(List<SQLExpr> conditions) {
+        this.conditions = conditions;
+    }
 
     public SingleTableQueryExecutePlan(){
 
