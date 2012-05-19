@@ -9,5 +9,5 @@ public interface ExecutePlan {
 
     HBaseResultSet executeQuery(HBasePreparedStatement statement) throws SQLException;
 
-    void execute(HBasePreparedStatement statement);
+    void execute(HBasePreparedStatement statement) throws SQLException;
 }
