@@ -24,7 +24,7 @@ public class HiveCreateTableParser extends SQLCreateTableParser {
     public SQLCreateTableStatement parseCrateTable(boolean acceptCreate) {
         HiveCreateTableStatement stmt = (HiveCreateTableStatement) super.parseCrateTable(acceptCreate);
 
-        if (lexer.token() == Token.PARTITIONED) {
+        if (identifierEquals("PARTITIONED")) {
             lexer.nextToken();
             accept(Token.BY);
             accept(Token.LPAREN);

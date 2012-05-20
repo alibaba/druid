@@ -185,6 +185,10 @@ public class Lexer {
     public final Token token() {
         return token;
     }
+    
+    public String info() {
+        return this.token + " " + this.stringVal();
+    }
 
     public final void nextToken() {
         sp = 0;

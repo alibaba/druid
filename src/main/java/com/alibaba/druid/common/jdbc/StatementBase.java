@@ -198,11 +198,7 @@ public abstract class StatementBase implements Statement {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == null) {
-            return null;
-        }
-
-        if (iface.isInstance(this)) {
+        if (isWrapperFor(iface)) {
             return (T) this;
         }
 
@@ -215,7 +211,7 @@ public abstract class StatementBase implements Statement {
             return false;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass() || iface.isInstance(this)) {
             return true;
         }
 

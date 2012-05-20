@@ -25,10 +25,10 @@ public class HiveStatementParser extends SQLStatementParser {
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
-        if (lexer.token() == Token.SHOW) {
+        if (identifierEquals("SHOW")) {
             lexer.nextToken();
 
-            if (lexer.token() == Token.TABLES) {
+            if (identifierEquals("TABLES")) {
                 lexer.nextToken();
 
                 HiveShowTablesStatement stmt = new HiveShowTablesStatement();
@@ -41,7 +41,7 @@ public class HiveStatementParser extends SQLStatementParser {
                 return true;
             }
 
-            throw new ParserException("TODO " + lexer.token());
+            throw new ParserException("TODO " + lexer.info());
         }
         return false;
     }

@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
@@ -68,7 +69,7 @@ public class Bug_for_happyday517 extends TestCase {
         String sql = "select 1";
         Statement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        MockPreparedStatement mockStmt = stmt.unwrap(MockPreparedStatement.class);
 
         Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
@@ -85,7 +86,7 @@ public class Bug_for_happyday517 extends TestCase {
         Statement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
                                                ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
-        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        MockPreparedStatement mockStmt = stmt.unwrap(MockPreparedStatement.class);
 
         Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
@@ -102,7 +103,7 @@ public class Bug_for_happyday517 extends TestCase {
         String sql = "select 1";
         Statement stmt = conn.prepareCall(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Statement mockStmt = stmt.unwrap(Statement.class);
 
         Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
@@ -119,7 +120,7 @@ public class Bug_for_happyday517 extends TestCase {
         Statement stmt = conn.prepareCall(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE,
                                           ResultSet.CLOSE_CURSORS_AT_COMMIT);
 
-        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Statement mockStmt = stmt.unwrap(Statement.class);
 
         Assert.assertEquals(ResultSet.TYPE_SCROLL_SENSITIVE, mockStmt.getResultSetType());
         Assert.assertEquals(ResultSet.CONCUR_UPDATABLE, mockStmt.getResultSetConcurrency());
