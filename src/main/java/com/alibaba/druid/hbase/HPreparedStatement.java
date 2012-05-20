@@ -34,6 +34,8 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
 
     private ExecutePlan     executePlan;
 
+    private String          dbType = "hbase";
+
     public HPreparedStatement(HBaseConnection conn, String sql) throws SQLException{
         super(conn);
         this.sql = sql;
@@ -41,7 +43,7 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
 
         init();
     }
-    
+
     private void splitCondition(List<SQLExpr> conditions, SQLExpr expr) {
         if (expr instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) expr;
@@ -55,7 +57,6 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
     }
 
     public void init() throws SQLException {
-        String dbType = this.hbaseConnection.getConnectProperties().getProperty("dbType");
         List<SQLStatement> stmtList = SQLUtils.parseStatements(sql, dbType);
 
         if (stmtList.size() != 1) {
@@ -65,7 +66,7 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
         SQLStatement sqlStmt = stmtList.get(0);
         if (sqlStmt instanceof SQLSelectStatement) {
             SQLSelectStatement selectStmt = (SQLSelectStatement) sqlStmt;
-            
+
             SQLEvalVisitor evalVisitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
             selectStmt.accept(evalVisitor);
 
@@ -76,9 +77,9 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
 
             SingleTableQueryExecutePlan singleTableQueryExecuetePlan = new SingleTableQueryExecutePlan();
             singleTableQueryExecuetePlan.setTableName(tableName);
-            
+
             splitCondition(singleTableQueryExecuetePlan.getConditions(), selectQueryBlock.getWhere());
-            
+
             HResultSetMetaData resultMetaData = new HResultSetMetaData();
             for (SQLSelectItem selectItem : selectQueryBlock.getSelectList()) {
                 ColumnMetaData columnMetaData = new ColumnMetaData();
@@ -97,20 +98,20 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
 
             SQLEvalVisitor evalVisitor = SQLEvalVisitorUtils.createEvalVisitor(dbType);
             insertStmt.accept(evalVisitor);
-            
+
             String tableName = ((SQLIdentifierExpr) insertStmt.getTableSource().getExpr()).getName();
-            
+
             InsertExecutePlan insertExecutePlan = new InsertExecutePlan();
             insertExecutePlan.setTableName(tableName);
-            
+
             for (int i = 0; i < insertStmt.getColumns().size(); ++i) {
                 SQLExpr columnExpr = insertStmt.getColumns().get(i);
                 SQLExpr valueExpr = insertStmt.getValues().getValues().get(i);
-                
+
                 String columnName = ((SQLIdentifierExpr) columnExpr).getName();
                 insertExecutePlan.getColumns().put(columnName, valueExpr);
             }
-            
+
             this.executePlan = insertExecutePlan;
         } else {
             throw new SQLException("TODO");

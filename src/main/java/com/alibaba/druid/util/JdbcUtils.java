@@ -62,6 +62,8 @@ public final class JdbcUtils {
     public static final String      MYSQL            = "mysql";
 
     public static final String      DERBY            = "derby";
+    
+    public static final String      HBASE            = "hbase";
 
     private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
