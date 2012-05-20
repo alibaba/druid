@@ -65,7 +65,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             lexer.nextToken();
             
             if (lexer.token() == Token.HINT) {
-                this.createExprParser().parseHints(queryBlock.getHints());
+                this.exprParser.parseHints(queryBlock.getHints());
             }
 
             if (lexer.token() == (Token.DISTINCT)) {
@@ -174,7 +174,7 @@ public class MySqlSelectParser extends SQLSelectParser {
                         }
                     }
                 } else {
-                    queryBlock.setInto(this.createExprParser().name());
+                    queryBlock.setInto(this.exprParser.name());
                 }
             }
         }
@@ -185,7 +185,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         parseGroupBy(queryBlock);
 
-        queryBlock.setOrderBy(this.createExprParser().parseOrderBy());
+        queryBlock.setOrderBy(this.exprParser.parseOrderBy());
 
         if (lexer.token() == Token.LIMIT) {
             queryBlock.setLimit(parseLimit());
@@ -198,7 +198,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
-            SQLExpr expr = this.createExprParser().name();
+            SQLExpr expr = this.exprParser.name();
             queryBlock.setInto(expr);
         }
 
@@ -227,7 +227,7 @@ public class MySqlSelectParser extends SQLSelectParser {
 
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
             while (true) {
-                groupBy.getItems().add(this.createExprParser().expr());
+                groupBy.getItems().add(this.exprParser.expr());
                 if (!(lexer.token() == (Token.COMMA))) break;
                 lexer.nextToken();
             }
@@ -246,16 +246,11 @@ public class MySqlSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.HAVING) {
                 lexer.nextToken();
 
-                groupBy.setHaving(this.createExprParser().expr());
+                groupBy.setHaving(this.exprParser.expr());
             }
 
             queryBlock.setGroupBy(groupBy);
         }
-    }
-
-    @Override
-    protected MySqlExprParser createExprParser() {
-        return new MySqlExprParser(lexer);
     }
 
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
@@ -312,7 +307,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
         
         accept(Token.LPAREN);
-        this.createExprParser().names(hint.getIndexList());
+        this.exprParser.names(hint.getIndexList());
         accept(Token.RPAREN);
     }
 
@@ -329,6 +324,6 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
 
     public Limit parseLimit() {
-        return this.createExprParser().parseLimit();
+        return ((MySqlExprParser)this.exprParser) .parseLimit();
     }
 }

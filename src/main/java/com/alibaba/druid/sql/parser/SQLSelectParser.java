@@ -65,7 +65,7 @@ public class SQLSelectParser extends SQLParser {
 
     public SQLUnionQuery unionRest(SQLUnionQuery union) {
         if (lexer.token() == Token.ORDER) {
-            SQLOrderBy orderBy = this.createExprParser().parseOrderBy();
+            SQLOrderBy orderBy = this.exprParser.parseOrderBy();
             union.setOrderBy(orderBy);
             return unionRest(union);
         }
@@ -193,7 +193,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
 
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
-            groupBy.setHaving(this.createExprParser().expr());
+            groupBy.setHaving(this.expr());
             queryBlock.setGroupBy(groupBy);
         }
     }
@@ -252,7 +252,7 @@ public class SQLSelectParser extends SQLParser {
     private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) throws ParserException {
         if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED
             || lexer.token() == Token.LITERAL_CHARS) {
-            tableReference.setExpr(this.createExprParser().name());
+            tableReference.setExpr(this.exprParser.name());
             return;
         }
 
@@ -327,15 +327,11 @@ public class SQLSelectParser extends SQLParser {
     }
 
     public SQLExpr expr() {
-        return createExprParser().expr();
-    }
-
-    protected SQLExprParser createExprParser() {
-        return new SQLExprParser(lexer);
+        return this.exprParser.expr();
     }
 
     public SQLOrderBy parseOrderBy() throws ParserException {
-        return createExprParser().parseOrderBy();
+        return this.exprParser.parseOrderBy();
     }
 
     public void acceptKeyword(String ident) {
