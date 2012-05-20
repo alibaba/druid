@@ -58,6 +58,7 @@ public class PreparedStatementPool {
                 return null;
             }
             
+            holder.incrementHitCount();
             dataSource.incrementCachedPreparedStatementHitCount();
             if (holder.isEnterOracleImplicitCache()) {
                 OracleUtils.exitImplicitCacheToActive(holder.getStatement());
