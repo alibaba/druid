@@ -161,7 +161,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == (Token.SELECT)) {
-                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.lexer).select()));
+                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.exprParser).select()));
                 continue;
             }
 
@@ -197,7 +197,7 @@ public class OracleStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() == Token.WITH) {
-                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.lexer).select()));
+                statementList.add(new SQLSelectStatement(new OracleSelectParser(this.exprParser).select()));
                 continue;
             }
 
@@ -1106,7 +1106,7 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     public OracleSelectParser createSQLSelectParser() {
-        return new OracleSelectParser(this.lexer);
+        return new OracleSelectParser(this.exprParser);
     }
 
     public OracleMergeStatement parseMerge() throws ParserException {

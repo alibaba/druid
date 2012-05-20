@@ -28,7 +28,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     }
     
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLServerSelectParser(this.lexer);
+        return new SQLServerSelectParser(this.exprParser);
     }
 
     public SQLServerStatementParser(Lexer lexer){

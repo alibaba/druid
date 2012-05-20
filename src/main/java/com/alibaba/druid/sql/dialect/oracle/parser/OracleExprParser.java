@@ -633,7 +633,7 @@ public class OracleExprParser extends SQLExprParser {
 
     @Override
     public OracleSelectParser createSelectParser() {
-        return new OracleSelectParser(this.lexer);
+        return new OracleSelectParser(this);
     }
 
     @Override
