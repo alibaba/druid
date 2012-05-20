@@ -3,19 +3,18 @@ package com.alibaba.druid.sql.dialect.hive.parser;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveCreateTableStatement.PartitionedBy;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class HiveCreateTableParser extends SQLCreateTableParser {
 
     public HiveCreateTableParser(String sql){
-        super(new HiveLexer(sql));
-        this.lexer.nextToken();
+        super(new SQLExprParser(sql));
     }
 
-    public HiveCreateTableParser(Lexer lexer){
-        super(lexer);
+    public HiveCreateTableParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     protected HiveCreateTableStatement newCreateStatement() {

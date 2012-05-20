@@ -59,6 +59,11 @@ public class SQLStatementParser extends SQLParser {
         super(lexer);
         this.exprParser = new SQLExprParser(lexer);
     }
+    
+    public SQLStatementParser(SQLExprParser exprParser){
+        super(exprParser.getLexer());
+        this.exprParser = exprParser;
+    }
 
     public SQLExprParser getExprParser() {
         return exprParser;
@@ -476,7 +481,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLCreateTableParser getSQLCreateTableParser() {
-        return new SQLCreateTableParser(lexer);
+        return new SQLCreateTableParser(this.exprParser);
     }
 
     public SQLSelectStatement parseSelect() throws ParserException {

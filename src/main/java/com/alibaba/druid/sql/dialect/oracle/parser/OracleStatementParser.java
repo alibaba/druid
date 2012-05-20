@@ -99,14 +99,11 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleStatementParser extends SQLStatementParser {
 
     public OracleStatementParser(String sql){
-        super(new OracleLexer(sql));
-        this.lexer.nextToken();
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(sql));
     }
 
     public OracleStatementParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(lexer));
     }
 
     @Override

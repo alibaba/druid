@@ -128,18 +128,15 @@ import com.alibaba.druid.sql.parser.Token;
 public class MySqlStatementParser extends SQLStatementParser {
 
     public MySqlStatementParser(String sql) throws ParserException{
-        this(new MySqlLexer(sql));
-        this.lexer.nextToken();
-        this.exprParser = new MySqlExprParser(lexer);
+        super (new MySqlExprParser(sql));
     }
 
     public MySqlStatementParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new MySqlExprParser(lexer);
+        super(new MySqlExprParser(lexer));
     }
 
     public SQLCreateTableStatement parseCreateTable() throws ParserException {
-        MySqlCreateTableParser parser = new MySqlCreateTableParser(lexer);
+        MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
         return parser.parseCrateTable();
     }
 
@@ -271,7 +268,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         List<SQLCommentHint> hints = this.exprParser.parseHints();
         
         if (lexer.token() == Token.TABLE || identifierEquals("TEMPORARY")) {
-            MySqlCreateTableParser parser = new MySqlCreateTableParser(lexer);
+            MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
             MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
             stmt.setHints(hints);
             return stmt;

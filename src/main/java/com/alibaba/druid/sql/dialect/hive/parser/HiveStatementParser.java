@@ -7,22 +7,22 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveShowTablesStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class HiveStatementParser extends SQLStatementParser {
 
     public HiveStatementParser(Lexer lexer){
-        super(lexer);
+        super(new SQLExprParser(lexer));
     }
 
     public HiveStatementParser(String sql){
-        super(new HiveLexer(sql));
-        this.lexer.nextToken();
+        super(new SQLExprParser(sql));
     }
 
     public HiveCreateTableParser getSQLCreateTableParser() {
-        return new HiveCreateTableParser(lexer);
+        return new HiveCreateTableParser(this.exprParser);
     }
 
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {

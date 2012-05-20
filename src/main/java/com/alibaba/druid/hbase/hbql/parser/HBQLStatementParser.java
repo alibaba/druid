@@ -9,13 +9,10 @@ public class HBQLStatementParser extends SQLStatementParser {
     protected SQLExprParser exprParser;
 
     public HBQLStatementParser(String sql){
-        super(sql);
-
-        this.exprParser = new SQLExprParser(lexer);
+        super(new SQLExprParser(sql));
     }
 
     public HBQLStatementParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new SQLExprParser(lexer);
+        super(new SQLExprParser(lexer));
     }
 }

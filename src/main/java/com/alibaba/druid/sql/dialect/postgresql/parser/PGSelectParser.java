@@ -7,7 +7,6 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -15,13 +14,12 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class PGSelectParser extends SQLSelectParser {
 
-    public PGSelectParser(Lexer lexer){
-        super(lexer);
+    public PGSelectParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     public PGSelectParser(String sql) throws ParserException{
-        this(new PGLexer(sql));
-        this.lexer.nextToken();
+        this(new PGExprParser(sql));
     }
     
     protected SQLExprParser createExprParser() {

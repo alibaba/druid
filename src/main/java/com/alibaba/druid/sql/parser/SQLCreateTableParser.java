@@ -25,8 +25,8 @@ public class SQLCreateTableParser extends SQLDDLParser {
         super(sql);
     }
 
-    public SQLCreateTableParser(Lexer lexer){
-        super(lexer);
+    public SQLCreateTableParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     public SQLCreateTableStatement parseCrateTable() {

@@ -24,8 +24,8 @@ public class SQLDDLParser extends SQLStatementParser {
         super(sql);
     }
 
-    public SQLDDLParser(Lexer lexer){
-        super(lexer);
+    public SQLDDLParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     protected SQLTableConstaint parseConstraint() {

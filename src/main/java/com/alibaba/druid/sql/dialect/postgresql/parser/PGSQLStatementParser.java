@@ -26,16 +26,15 @@ import com.alibaba.druid.sql.parser.Token;
 public class PGSQLStatementParser extends SQLStatementParser {
 
     public PGSQLStatementParser(String sql) throws ParserException{
-        this(new PGLexer(sql));
-        this.lexer.nextToken();
+        super (new PGExprParser(sql));
     }
 
     public PGSQLStatementParser(Lexer lexer){
-        super(lexer);
+        super(new PGExprParser(lexer));
     }
 
     public PGSelectParser createSQLSelectParser() {
-        return new PGSelectParser(this.lexer);
+        return new PGSelectParser(this.exprParser);
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {

@@ -15,14 +15,11 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleCreateTableParser extends SQLCreateTableParser {
 
     public OracleCreateTableParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(lexer));
     }
 
     public OracleCreateTableParser(String sql){
-        super(new OracleLexer(sql));
-        this.lexer.nextToken();
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(sql));
     }
 
     protected OracleCreateTableStatement newCreateStatement() {

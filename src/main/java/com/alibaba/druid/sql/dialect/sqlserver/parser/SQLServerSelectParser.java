@@ -6,7 +6,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
@@ -15,12 +14,11 @@ import com.alibaba.druid.sql.parser.Token;
 public class SQLServerSelectParser extends SQLSelectParser {
 
     public SQLServerSelectParser(String sql){
-        super(new SQLServerLexer(sql));
-        this.lexer.nextToken();
+        super(new SQLServerExprParser(sql));
     }
 
-    public SQLServerSelectParser(Lexer lexer){
-        super(lexer);
+    public SQLServerSelectParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     public SQLSelect select() throws ParserException {

@@ -28,14 +28,11 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleUpdateParser extends SQLStatementParser {
 
     public OracleUpdateParser(String sql) throws ParserException{
-        super(new OracleLexer(sql));
-        this.lexer.nextToken();
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(sql));
     }
 
     public OracleUpdateParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new OracleExprParser(lexer);
+        super(new OracleExprParser(lexer));
     }
 
     public OracleUpdateStatement parseUpdateStatement() throws ParserException {

@@ -22,17 +22,15 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 public class SQLServerStatementParser extends SQLStatementParser {
 
     public SQLServerStatementParser(String sql){
-        super(new SQLServerLexer(sql));
-        this.lexer.nextToken();
-        this.exprParser = new SQLServerExprParser(lexer);
+        super(new SQLServerExprParser(sql));
     }
     
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLServerSelectParser(this.lexer);
+        return new SQLServerSelectParser(this.exprParser);
     }
 
     public SQLServerStatementParser(Lexer lexer){
-        super(lexer);
+        super(new SQLServerExprParser(lexer));
     }
 
 }
