@@ -83,9 +83,6 @@ public class HiveLexer extends Lexer {
         map.put("ANY", Token.ANY);
 
         map.put("WITH", Token.WITH);
-        map.put("PARTITIONED", Token.PARTITIONED);
-        map.put("SHOW", Token.SHOW);
-        map.put("TABLES", Token.TABLES);
 
         DEFAULT_SQL_SERVER_KEYWORDS = new Keywords(map);
     }

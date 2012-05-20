@@ -2,11 +2,13 @@ package com.alibaba.druid.bvt.mock;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.ResultSetMetaData;
 
 import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase;
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 
@@ -17,6 +19,8 @@ public class MockResultSetMetaDataTest extends TestCase {
         Assert.assertTrue(meta.isWrapperFor(MockResultSetMetaData.class));
         Assert.assertFalse(meta.isWrapperFor(BigDecimal.class));
         Assert.assertTrue(meta.unwrap(MockResultSetMetaData.class) instanceof MockResultSetMetaData);
+        Assert.assertTrue(meta.unwrap(ResultSetMetaDataBase.class) instanceof MockResultSetMetaData);
+        Assert.assertTrue(meta.unwrap(ResultSetMetaData.class) instanceof MockResultSetMetaData);
         Assert.assertTrue(meta.unwrap(null) == null);
         Assert.assertTrue(meta.unwrap(java.sql.ResultSetMetaData.class) != null);
         Assert.assertTrue(meta.unwrap(Object.class) != null);

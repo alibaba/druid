@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.mock.MockStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
@@ -59,7 +59,7 @@ public class Case3 extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
 
-        MockStatement mockStmt = stmt.unwrap(MockStatement.class);
+        Statement mockStmt = stmt.unwrap(Statement.class);
         Assert.assertEquals(false, mockStmt.isClosed());
 
         conn.close();

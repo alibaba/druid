@@ -8,7 +8,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.hive.parser.HiveStatementParser;
 import com.alibaba.druid.sql.dialect.hive.visitor.HiveSchemaStatVisitor;
 import com.alibaba.druid.sql.hive.HiveTest;
-import com.alibaba.druid.stat.TableStat;
 
 public class HiveShowTableTest extends HiveTest {
 

@@ -7,6 +7,8 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 
+import com.alibaba.druid.mock.MockConnectionClosedException;
+
 public abstract class StatementBase implements Statement {
 
     private Connection connection;
@@ -41,8 +43,14 @@ public abstract class StatementBase implements Statement {
         this.connection = connection;
     }
 
-    protected void checkOpen() throws SQLException {
-
+    protected void checkOpen() throws SQLException, MockConnectionClosedException {
+        if (closed) {
+            throw new SQLException();
+        }
+        
+        if (this.connection != null && this.connection.isClosed()) {
+            throw new MockConnectionClosedException();
+        }
     }
 
     @Override
@@ -198,11 +206,7 @@ public abstract class StatementBase implements Statement {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == null) {
-            return null;
-        }
-
-        if (iface.isInstance(this)) {
+        if (isWrapperFor(iface)) {
             return (T) this;
         }
 
@@ -215,7 +219,7 @@ public abstract class StatementBase implements Statement {
             return false;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass() || iface.isInstance(this)) {
             return true;
         }
 

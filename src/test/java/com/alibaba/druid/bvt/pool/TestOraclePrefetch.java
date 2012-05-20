@@ -80,6 +80,5 @@ public class TestOraclePrefetch extends TestCase {
             conn.close();
         }
 
-        dataSource.close();
     }
 }
