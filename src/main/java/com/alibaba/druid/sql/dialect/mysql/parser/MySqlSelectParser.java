@@ -33,20 +33,19 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlSelectParser extends SQLSelectParser {
 
-    public MySqlSelectParser(Lexer lexer){
-        super(lexer);
+    public MySqlSelectParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     public MySqlSelectParser(String sql) throws ParserException{
-        this(new MySqlLexer(sql));
-        this.lexer.nextToken();
+        this(new MySqlExprParser(sql));
     }
 
     @Override

@@ -223,7 +223,7 @@ public class OracleCreateTableParser extends SQLCreateTableParser {
         if (lexer.token() == Token.AS) {
             lexer.nextToken();
 
-            OracleSelect select = new OracleSelectParser(lexer).select();
+            OracleSelect select = new OracleSelectParser(exprParser).select();
             stmt.setSelect(select);
         }
 

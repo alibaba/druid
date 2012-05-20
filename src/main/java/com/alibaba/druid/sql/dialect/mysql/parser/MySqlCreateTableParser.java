@@ -176,7 +176,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == (Token.SELECT)) {
-            SQLSelect query = new MySqlSelectParser(this.lexer).select();
+            SQLSelect query = new MySqlSelectParser(this.exprParser).select();
             stmt.setQuery(query);
         }
 

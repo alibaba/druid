@@ -454,7 +454,7 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLSelectParser createSelectParser() {
-        return new MySqlSelectParser(this.lexer);
+        return new MySqlSelectParser(this);
     }
 
     protected SQLExpr parseInterval() {

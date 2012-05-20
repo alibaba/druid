@@ -63,8 +63,8 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectSubqueryTableSo
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableReference;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -72,12 +72,11 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleSelectParser extends SQLSelectParser {
 
     public OracleSelectParser(String sql){
-        this(new OracleLexer(sql));
-        this.lexer.nextToken();
+        super (new OracleExprParser(sql));
     }
 
-    public OracleSelectParser(Lexer lexer){
-        super(lexer);
+    public OracleSelectParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     protected OracleExprParser createExprParser() {
