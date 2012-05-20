@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -24,14 +25,15 @@ import java.util.Map;
 
 public abstract class ResultSetBase implements ResultSet {
 
-    protected boolean  closed         = false;
-    protected boolean  wasNull        = false;
-    private SQLWarning warning;
-    private String     cursorName;
-    private int        fetchSize      = 0;
-    private int        fetchDirection = 0;
+    protected boolean         closed         = false;
+    protected boolean         wasNull        = false;
+    private SQLWarning        warning;
+    private String            cursorName;
+    private int               fetchSize      = 0;
+    private int               fetchDirection = 0;
 
-    private Statement  statement;
+    private Statement         statement;
+    protected ResultSetMetaData metaData;
 
     public ResultSetBase(Statement statement){
         super();
@@ -302,7 +304,14 @@ public abstract class ResultSetBase implements ResultSet {
         return wasNull;
     }
 
-    public abstract Object getObjectInternal(int columnIndex) throws SQLException;
+    public Object getObjectInternal(int columnIndex) throws SQLException {
+        if (this.getMetaData() != null) {
+            String columName = this.getMetaData().getColumnName(columnIndex);
+            return getObject(columName);
+        }
+        
+        return null;
+    }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
@@ -340,7 +349,7 @@ public abstract class ResultSetBase implements ResultSet {
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel) throws SQLException {
-        return getBigDecimal(Integer.parseInt(columnLabel));
+        return getBigDecimal(findColumn(columnLabel));
     }
 
     @Override
@@ -623,7 +632,7 @@ public abstract class ResultSetBase implements ResultSet {
 
     @Override
     public void updateObject(String columnLabel, Object x) throws SQLException {
-        updateObject(Integer.parseInt(columnLabel), x);
+        updateObject(findColumn(columnLabel), x);
     }
 
     @Override
@@ -966,82 +975,82 @@ public abstract class ResultSetBase implements ResultSet {
 
     @Override
     public String getString(String columnLabel) throws SQLException {
-        return getString(Integer.parseInt(columnLabel));
+        return getString(findColumn(columnLabel));
     }
 
     @Override
     public boolean getBoolean(String columnLabel) throws SQLException {
-        return getBoolean(Integer.parseInt(columnLabel));
+        return getBoolean(findColumn(columnLabel));
     }
 
     @Override
     public byte getByte(String columnLabel) throws SQLException {
-        return getByte(Integer.parseInt(columnLabel));
+        return getByte(findColumn(columnLabel));
     }
 
     @Override
     public short getShort(String columnLabel) throws SQLException {
-        return getShort(Integer.parseInt(columnLabel));
+        return getShort(findColumn(columnLabel));
     }
 
     @Override
     public int getInt(String columnLabel) throws SQLException {
-        return getInt(Integer.parseInt(columnLabel));
+        return getInt(findColumn(columnLabel));
     }
 
     @Override
     public long getLong(String columnLabel) throws SQLException {
-        return getLong(Integer.parseInt(columnLabel));
+        return getLong(findColumn(columnLabel));
     }
 
     @Override
     public float getFloat(String columnLabel) throws SQLException {
-        return getFloat(Integer.parseInt(columnLabel));
+        return getFloat(findColumn(columnLabel));
     }
 
     @Override
     public double getDouble(String columnLabel) throws SQLException {
-        return getDouble(Integer.parseInt(columnLabel));
+        return getDouble(findColumn(columnLabel));
     }
 
     @Override
     public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {
-        return getBigDecimal(Integer.parseInt(columnLabel), scale);
+        return getBigDecimal(findColumn(columnLabel), scale);
     }
 
     @Override
     public byte[] getBytes(String columnLabel) throws SQLException {
-        return getBytes(Integer.parseInt(columnLabel));
+        return getBytes(findColumn(columnLabel));
     }
 
     @Override
     public Date getDate(String columnLabel) throws SQLException {
-        return getDate(Integer.parseInt(columnLabel));
+        return getDate(findColumn(columnLabel));
     }
 
     @Override
     public Time getTime(String columnLabel) throws SQLException {
-        return getTime(Integer.parseInt(columnLabel));
+        return getTime(findColumn(columnLabel));
     }
 
     @Override
     public Timestamp getTimestamp(String columnLabel) throws SQLException {
-        return getTimestamp(Integer.parseInt(columnLabel));
+        return getTimestamp(findColumn(columnLabel));
     }
 
     @Override
     public InputStream getAsciiStream(String columnLabel) throws SQLException {
-        return getAsciiStream(Integer.parseInt(columnLabel));
+        return getAsciiStream(findColumn(columnLabel));
     }
 
     @Override
     public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-        return getUnicodeStream(Integer.parseInt(columnLabel));
+        return getUnicodeStream(findColumn(columnLabel));
     }
 
     @Override
     public InputStream getBinaryStream(String columnLabel) throws SQLException {
-        return getBinaryStream(Integer.parseInt(columnLabel));
+        return getBinaryStream(findColumn(columnLabel));
     }
 
     @Override
@@ -1156,5 +1165,14 @@ public abstract class ResultSetBase implements ResultSet {
         }
 
         return 0;
+    }
+    
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
+
+        return metaData;
     }
 }

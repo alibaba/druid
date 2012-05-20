@@ -16,15 +16,13 @@ import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class HBaseResultSet extends ResultSetBase {
+public class HBaseResultSet extends ResultSetBase implements HResultSet {
 
     private HStatementInterface statement;
     private ResultScanner       scanner;
     private HTableInterface     htable;
     private Result              result;
     private byte[]              family = Bytes.toBytes("d");
-
-    private HResultSetMetaData  metaData;
 
     private HMapping            mapping;
 
@@ -60,7 +58,7 @@ public class HBaseResultSet extends ResultSetBase {
 
     @Override
     public HResultSetMetaData getMetaData() throws SQLException {
-        return metaData;
+        return (HResultSetMetaData) metaData;
     }
 
     public void setMetaData(HResultSetMetaData metaData) {
@@ -78,7 +76,7 @@ public class HBaseResultSet extends ResultSetBase {
 
     @Override
     public Object getObjectInternal(int columnIndex) throws SQLException {
-        ColumnMetaData column = this.metaData.getColumn(columnIndex);
+        ColumnMetaData column = this.getMetaData().getColumn(columnIndex);
         return getObjectInternal(column.getColumnName(), column.getColumnType());
     }
 
@@ -129,7 +127,7 @@ public class HBaseResultSet extends ResultSetBase {
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
-        ColumnMetaData column = this.metaData.getColumn(columnIndex);
+        ColumnMetaData column = this.getMetaData().getColumn(columnIndex);
         return getBytes(column.getColumnName());
     }
 
