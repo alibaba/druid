@@ -449,7 +449,7 @@ public class SQLExprParser extends SQLParser {
     }
 
     public SQLSelectParser createSelectParser() {
-        return new SQLSelectParser(lexer);
+        return new SQLSelectParser(this);
     }
 
     public SQLExpr primaryRest(SQLExpr expr) throws ParserException {

@@ -484,7 +484,7 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new SQLSelectParser(this.lexer);
+        return new SQLSelectParser(this.exprParser);
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
@@ -573,7 +573,7 @@ public class SQLStatementParser extends SQLParser {
 
         this.accept(Token.AS);
 
-        createView.setSubQuery(new SQLSelectParser(this.lexer).select());
+        createView.setSubQuery(new SQLSelectParser(this.exprParser).select());
         return createView;
     }
 

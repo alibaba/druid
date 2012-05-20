@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 
 public class SQLSelectParser extends SQLParser {
+    protected SQLExprParser exprParser;
 
     public SQLSelectParser(String sql){
         super(sql);
@@ -38,6 +39,11 @@ public class SQLSelectParser extends SQLParser {
 
     public SQLSelectParser(Lexer lexer){
         super(lexer);
+    }
+    
+    public SQLSelectParser(SQLExprParser exprParser){
+        super(exprParser.getLexer());
+        this.exprParser = exprParser;
     }
 
     public SQLSelect select() throws ParserException {
