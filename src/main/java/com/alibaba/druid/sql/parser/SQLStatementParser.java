@@ -50,14 +50,7 @@ public class SQLStatementParser extends SQLParser {
     protected SQLExprParser exprParser;
 
     public SQLStatementParser(String sql){
-        super(sql);
-
-        this.exprParser = new SQLExprParser(lexer);
-    }
-
-    public SQLStatementParser(Lexer lexer){
-        super(lexer);
-        this.exprParser = new SQLExprParser(lexer);
+        this (new SQLExprParser(sql));
     }
     
     public SQLStatementParser(SQLExprParser exprParser){

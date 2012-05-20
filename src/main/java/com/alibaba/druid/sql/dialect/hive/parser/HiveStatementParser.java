@@ -5,7 +5,6 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveShowTablesStatement;
-import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -13,8 +12,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class HiveStatementParser extends SQLStatementParser {
 
-    public HiveStatementParser(Lexer lexer){
-        super(new SQLExprParser(lexer));
+    public HiveStatementParser(SQLExprParser exprParser){
+        super(exprParser);
     }
 
     public HiveStatementParser(String sql){
