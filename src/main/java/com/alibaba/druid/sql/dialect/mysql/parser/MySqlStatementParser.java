@@ -144,7 +144,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectStatement parseSelect() throws ParserException {
-        return new SQLSelectStatement(new MySqlSelectParser(lexer).select());
+        return new SQLSelectStatement(new MySqlSelectParser(this.exprParser).select());
     }
 
     public SQLUpdateStatement parseUpdateStatement() throws ParserException {
@@ -1917,7 +1917,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectParser createSQLSelectParser() {
-        return new MySqlSelectParser(this.lexer);
+        return new MySqlSelectParser(this.exprParser);
     }
 
     public SQLStatement parseSet() throws ParserException {
