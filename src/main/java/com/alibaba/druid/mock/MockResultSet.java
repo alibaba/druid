@@ -29,10 +29,9 @@ public class MockResultSet extends ResultSetBase implements ResultSet {
     private int                   rowIndex = -1;
     private List<Object[]>        rows     = new ArrayList<Object[]>();
 
-    private MockResultSetMetaData metaData = new MockResultSetMetaData();
-
     public MockResultSet(Statement statement){
         super(statement);
+        super.metaData = new MockResultSetMetaData();
     }
 
     public List<Object[]> getRows() {
@@ -59,11 +58,11 @@ public class MockResultSet extends ResultSetBase implements ResultSet {
             throw new SQLException("resultSet closed");
         }
 
-        return metaData;
+        return (MockResultSetMetaData) metaData;
     }
 
     public MockResultSetMetaData getMockMetaData() throws SQLException {
-        return metaData;
+        return (MockResultSetMetaData) metaData;
     }
 
     public Object getObjectInternal(int columnIndex) {

@@ -11,6 +11,7 @@ import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -24,14 +25,15 @@ import java.util.Map;
 
 public abstract class ResultSetBase implements ResultSet {
 
-    protected boolean  closed         = false;
-    protected boolean  wasNull        = false;
-    private SQLWarning warning;
-    private String     cursorName;
-    private int        fetchSize      = 0;
-    private int        fetchDirection = 0;
+    protected boolean         closed         = false;
+    protected boolean         wasNull        = false;
+    private SQLWarning        warning;
+    private String            cursorName;
+    private int               fetchSize      = 0;
+    private int               fetchDirection = 0;
 
-    private Statement  statement;
+    private Statement         statement;
+    protected ResultSetMetaData metaData;
 
     public ResultSetBase(Statement statement){
         super();
@@ -302,7 +304,14 @@ public abstract class ResultSetBase implements ResultSet {
         return wasNull;
     }
 
-    public abstract Object getObjectInternal(int columnIndex) throws SQLException;
+    public Object getObjectInternal(int columnIndex) throws SQLException {
+        if (this.getMetaData() != null) {
+            String columName = this.getMetaData().getColumnName(columnIndex);
+            return getObject(columName);
+        }
+        
+        return null;
+    }
 
     @Override
     public Object getObject(int columnIndex) throws SQLException {
@@ -1156,5 +1165,14 @@ public abstract class ResultSetBase implements ResultSet {
         }
 
         return 0;
+    }
+    
+    @Override
+    public ResultSetMetaData getMetaData() throws SQLException {
+        if (closed) {
+            throw new SQLException("resultSet closed");
+        }
+
+        return metaData;
     }
 }

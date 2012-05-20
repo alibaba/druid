@@ -1,10 +1,12 @@
 package com.alibaba.druid.hbase;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
@@ -76,6 +78,10 @@ public class HEngine {
             tablePool = new HTablePool(config, htablePoolMaxSize);
         }
         return tablePool.getTable(tableName);
+    }
+    
+    public HBaseAdmin getHBaseAdmin() throws IOException {
+        return new HBaseAdmin(this.config);
     }
 
 }

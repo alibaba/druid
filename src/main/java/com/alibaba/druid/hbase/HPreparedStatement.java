@@ -11,6 +11,7 @@ import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.exec.ExecutePlan;
 import com.alibaba.druid.hbase.exec.InsertExecutePlan;
 import com.alibaba.druid.hbase.exec.SingleTableQueryExecutePlan;
+import com.alibaba.druid.hbase.hbql.ast.HBQLShowStatement;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -113,6 +114,8 @@ public class HPreparedStatement extends PreparedStatementBase implements Prepare
             }
 
             this.executePlan = insertExecutePlan;
+        } else if (sqlStmt instanceof HBQLShowStatement) {
+            
         } else {
             throw new SQLException("TODO");
         }
