@@ -31,6 +31,17 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
     public List<ColumnMetaData> getColumns() {
         return columns;
     }
+    
+    public int findColumn(String columnName) throws SQLException {
+        for (int i = 0; i < columns.size(); ++i) {
+            ColumnMetaData column = columns.get(i);
+            if (column.getColumnName().equals(columnName)) {
+                return i + 1;
+            }
+        }
+        
+        throw new SQLException("column '" + columnName + "' not found.");
+    }
 
     @SuppressWarnings("unchecked")
     @Override

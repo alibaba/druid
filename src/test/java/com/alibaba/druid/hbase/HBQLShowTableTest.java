@@ -18,7 +18,18 @@ public class HBQLShowTableTest extends TestCase {
         
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
-            System.out.print(rs.getString(1));
+            System.out.print(rs.getString("name"));
+            System.out.print(' ');
+            System.out.print(rs.getString("owner"));
+            System.out.print(' ');
+            System.out.print(rs.getString("familys"));
+            System.out.print(' ');
+            System.out.print(rs.getLong("maxFileSize"));
+            System.out.print(' ');
+            System.out.print(rs.getLong("memStoreFlushSize"));
+            System.out.print(' ');
+            System.out.print(rs.getString("regionSplitPolicyClassName"));
+            System.out.print(' ');
             System.out.println();
         }
         rs.close();

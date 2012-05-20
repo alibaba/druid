@@ -2,14 +2,17 @@ package com.alibaba.druid.hbase.exec;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
+import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.HPreparedStatement;
 import com.alibaba.druid.hbase.HResultSet;
+import com.alibaba.druid.hbase.HResultSetMetaData;
 
 public class ShowTablesPlan implements ExecutePlan {
 
@@ -43,6 +46,51 @@ public class ShowTablesPlan implements ExecutePlan {
         public ShowTableResultSet(Statement statement, HTableDescriptor[] tables){
             super(statement);
             this.tables = tables;
+
+            HResultSetMetaData metaData = new HResultSetMetaData();
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("name");
+                column.setColumnType(Types.VARCHAR);
+                column.setColumnTypeName("VARCHAR");
+                metaData.getColumns().add(column);
+            }
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("owner");
+                column.setColumnType(Types.VARCHAR);
+                column.setColumnTypeName("VARCHAR");
+                metaData.getColumns().add(column);
+            }
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("familys");
+                column.setColumnType(Types.VARCHAR);
+                column.setColumnTypeName("VARCHAR");
+                metaData.getColumns().add(column);
+            }
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("maxFileSize");
+                column.setColumnType(Types.BIGINT);
+                column.setColumnTypeName("long");
+                metaData.getColumns().add(column);
+            }
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("memStoreFlushSize");
+                column.setColumnType(Types.BIGINT);
+                column.setColumnTypeName("long");
+                metaData.getColumns().add(column);
+            }
+            {
+                ColumnMetaData column = new ColumnMetaData();
+                column.setColumnName("regionSplitPolicyClassName");
+                column.setColumnType(Types.VARCHAR);
+                column.setColumnTypeName("VARCHAR");
+                metaData.getColumns().add(column);
+            }
+            this.metaData = metaData;
         }
 
         @Override
@@ -71,13 +119,17 @@ public class ShowTablesPlan implements ExecutePlan {
             return false;
         }
 
+        public String getString(String columnName) {
+            return (String) getObject(columnName);
+        }
+
         public Object getObject(String columnName) {
             HTableDescriptor table = tables[rowIndex];
-            
+
             if ("name".equals(columnName)) {
                 return table.getNameAsString();
             }
-            
+
             if ("owner".equals(columnName)) {
                 return table.getOwnerString();
             }
@@ -92,8 +144,26 @@ public class ShowTablesPlan implements ExecutePlan {
                 }
                 return buf.toString();
             }
+
+            if ("maxFileSize".equals(columnName)) {
+                return table.getMaxFileSize();
+            }
+            
+            if ("memStoreFlushSize".equals(columnName)) {
+                return table.getMemStoreFlushSize();
+            }
+            
+            if ("regionSplitPolicyClassName".equals(columnName)) {
+                return table.getRegionSplitPolicyClassName();
+            }
             
             return null;
+        }
+
+        @Override
+        public int findColumn(String columnName) throws SQLException {
+            HResultSetMetaData meta = (HResultSetMetaData) this.metaData;
+            return meta.findColumn(columnName);
         }
 
         @Override
