@@ -46,7 +46,7 @@ public class REPLACE_Syntax_Test extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("REPLACE DELAYED INTO `online_users`\nSET `session_id` = '3580cc4e61117c0785372c426eddd11c', `user_id` = 'XXX', `page` = '/', `lastview` = NOW();",
+        Assert.assertEquals("REPLACE DELAYED INTO `online_users` (`session_id`, `user_id`, `page`, `lastview`)\nVALUES ('3580cc4e61117c0785372c426eddd11c', 'XXX', '/', NOW());",
                             text);
     }
 

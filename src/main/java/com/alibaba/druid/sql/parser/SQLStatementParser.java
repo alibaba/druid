@@ -184,6 +184,13 @@ public class SQLStatementParser extends SQLParser {
                 statementList.add(stmt);
                 continue;
             }
+            
+            if (identifierEquals("COMMIT")) {
+                SQLStatement stmt = parseCommit();
+                
+                statementList.add(stmt);
+                continue;
+            }
 
             if (lexer.token() == Token.LPAREN) {
                 char mark_ch = lexer.current();
@@ -224,6 +231,10 @@ public class SQLStatementParser extends SQLParser {
             stmt.setTo(this.exprParser.name());
         }
         return stmt;
+    }
+    
+    public SQLStatement parseCommit() {
+        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
     public SQLUseStatement parseUse() {

@@ -11,7 +11,8 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class PGExprParser extends SQLExprParser{
     public PGExprParser(String sql) throws ParserException{
-        super(sql);
+        super(new PGLexer(sql));
+        this.lexer.nextToken();
     }
 
     public PGExprParser(Lexer lexer){

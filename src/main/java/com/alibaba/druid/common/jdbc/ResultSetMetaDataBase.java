@@ -35,11 +35,7 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == null) {
-            return null;
-        }
-
-        if (iface.isAssignableFrom(ResultSetMetaDataBase.class)) {
+        if (isWrapperFor(iface)) {
             return (T) this;
         }
         return null;
@@ -50,8 +46,12 @@ public class ResultSetMetaDataBase implements ResultSetMetaData {
         if (iface == null) {
             return false;
         }
+        
+        if (iface.isAssignableFrom(this.getClass())) {
+            return true;
+        }
 
-        return ResultSetMetaDataBase.class.isAssignableFrom(iface);
+        return false;
     }
 
     @Override
