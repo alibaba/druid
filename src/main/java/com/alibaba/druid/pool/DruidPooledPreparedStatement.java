@@ -998,6 +998,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return (T) stmt;
         }
         
+        if (iface == PreparedStatementHolder.class) {
+            return (T) this.holder;
+        }
+        
         return super.unwrap(iface);
     }
 }
