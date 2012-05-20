@@ -229,7 +229,6 @@ public class SQLSelectParser extends SQLParser {
             } else if (lexer.token() == Token.LPAREN) {
                 tableSource = parseTableSource();
                 accept(Token.RPAREN);
-                accept(Token.RPAREN);
             } else {
                 tableSource = parseTableSource();
                 accept(Token.RPAREN);
