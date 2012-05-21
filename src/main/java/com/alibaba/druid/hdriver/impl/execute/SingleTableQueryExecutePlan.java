@@ -15,7 +15,7 @@ import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnection;
+import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hdriver.impl.jdbc.HResultSetMetaData;
 import com.alibaba.druid.hdriver.impl.jdbc.HScannerResultSet;
@@ -72,7 +72,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     @Override
     public HScannerResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
-            HBaseConnection connection = statement.getConnection();
+            HBaseConnectionImpl connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");
 
             Scan scan = new Scan();

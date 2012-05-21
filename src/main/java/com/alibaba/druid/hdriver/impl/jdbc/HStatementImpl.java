@@ -8,15 +8,15 @@ import com.alibaba.druid.util.jdbc.StatementBase;
 
 public class HStatementImpl extends StatementBase implements Statement, HStatement {
 
-    private HBaseConnection conn;
+    private HBaseConnectionImpl conn;
 
-    public HStatementImpl(HBaseConnection conn){
+    public HStatementImpl(HBaseConnectionImpl conn){
         super(conn);
         this.conn = conn;
     }
 
     @Override
-    public HBaseConnection getConnection() throws SQLException {
+    public HBaseConnectionImpl getConnection() throws SQLException {
         return conn;
     }
 

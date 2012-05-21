@@ -3,8 +3,8 @@ package com.alibaba.druid.hdriver;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnection;
+import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnectionImpl;
 
 public interface HStatement extends Statement {
-    HBaseConnection getConnection() throws SQLException;
+    HBaseConnectionImpl getConnection() throws SQLException;
 }

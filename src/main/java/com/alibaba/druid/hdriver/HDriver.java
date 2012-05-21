@@ -5,14 +5,14 @@ import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnection;
+import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnectionImpl;
 
 public class HDriver implements Driver {
 
     public static String PREFIX = "jdbc:druid-hbase:";
 
     @Override
-    public HBaseConnection connect(String url, Properties info) throws SQLException {
+    public HBaseConnectionImpl connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url)) {
             return null;
         }
@@ -23,7 +23,7 @@ public class HDriver implements Driver {
 
         info.put("hbase.zookeeper.quorum", rest);
 
-        return new HBaseConnection(engine, info);
+        return new HBaseConnectionImpl(engine, info);
     }
 
     @Override

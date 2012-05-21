@@ -32,13 +32,13 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
     private final String    sql;
     private String[]        columnNames;
 
-    private HBaseConnection hbaseConnection;
+    private HBaseConnectionImpl hbaseConnection;
 
     private ExecutePlan     executePlan;
 
     private String          dbType = "hbase";
 
-    public HPreparedStatementImpl(HBaseConnection conn, String sql) throws SQLException{
+    public HPreparedStatementImpl(HBaseConnectionImpl conn, String sql) throws SQLException{
         super(conn);
         this.sql = sql;
         this.hbaseConnection = conn;
@@ -140,7 +140,7 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
     }
 
     @Override
-    public HBaseConnection getConnection() throws SQLException {
+    public HBaseConnectionImpl getConnection() throws SQLException {
         return hbaseConnection;
     }
 

@@ -21,15 +21,16 @@ import java.util.Properties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
+import com.alibaba.druid.hdriver.HConnection;
 import com.alibaba.druid.hdriver.HEngine;
 import com.alibaba.druid.util.jdbc.ConnectionBase;
 
-public class HBaseConnection extends ConnectionBase implements Connection {
+public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
 
     
     private final HEngine       engine;
 
-    public HBaseConnection(HEngine engine, Properties info){
+    public HBaseConnectionImpl(HEngine engine, Properties info){
         super(engine.getUrl(), info);
         this.engine = engine;
         
@@ -127,7 +128,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
             return true;
         }
 
-        if (iface == Connection.class || iface == HBaseConnection.class) {
+        if (iface == Connection.class || iface == HBaseConnectionImpl.class) {
             return true;
         }
 
@@ -239,7 +240,7 @@ public class HBaseConnection extends ConnectionBase implements Connection {
             return (T) engine;
         }
 
-        if (iface == Connection.class || iface == HBaseConnection.class) {
+        if (iface == Connection.class || iface == HBaseConnectionImpl.class) {
             return (T) this;
         }
 
