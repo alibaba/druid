@@ -82,7 +82,7 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
 
             splitCondition(singleTableQueryExecuetePlan.getConditions(), selectQueryBlock.getWhere());
 
-            HResultSetMetaData resultMetaData = new HResultSetMetaData();
+            HResultSetMetaDataImpl resultMetaData = new HResultSetMetaDataImpl();
             for (SQLSelectItem selectItem : selectQueryBlock.getSelectList()) {
                 ColumnMetaData columnMetaData = new ColumnMetaData();
                 if (selectItem.getAlias() != null) {

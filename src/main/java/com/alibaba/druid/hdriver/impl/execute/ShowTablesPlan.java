@@ -11,7 +11,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import com.alibaba.druid.hdriver.HResultSet;
 import com.alibaba.druid.hdriver.HStatement;
 import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
-import com.alibaba.druid.hdriver.impl.HResultSetMetaData;
+import com.alibaba.druid.hdriver.impl.HResultSetMetaDataImpl;
 import com.alibaba.druid.util.jdbc.ResultSetBase;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
@@ -48,7 +48,7 @@ public class ShowTablesPlan implements ExecutePlan {
             super(statement);
             this.tables = tables;
 
-            HResultSetMetaData metaData = new HResultSetMetaData();
+            HResultSetMetaDataImpl metaData = new HResultSetMetaDataImpl();
             {
                 ColumnMetaData column = new ColumnMetaData();
                 column.setColumnName("name");
@@ -163,7 +163,7 @@ public class ShowTablesPlan implements ExecutePlan {
 
         @Override
         public int findColumn(String columnName) throws SQLException {
-            HResultSetMetaData meta = (HResultSetMetaData) this.metaData;
+            HResultSetMetaDataImpl meta = (HResultSetMetaDataImpl) this.metaData;
             return meta.findColumn(columnName);
         }
 

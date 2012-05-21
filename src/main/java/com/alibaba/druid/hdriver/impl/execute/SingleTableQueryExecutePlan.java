@@ -17,8 +17,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
-import com.alibaba.druid.hdriver.impl.HResultSetMetaData;
-import com.alibaba.druid.hdriver.impl.HScannerResultSet;
+import com.alibaba.druid.hdriver.impl.HResultSetMetaDataImpl;
+import com.alibaba.druid.hdriver.impl.HScannerResultSetImpl;
 import com.alibaba.druid.hdriver.impl.mapping.HMappingTable;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -33,7 +33,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     private byte[]             family      = Bytes.toBytes("d");
 
-    private HResultSetMetaData resultMetaData;
+    private HResultSetMetaDataImpl resultMetaData;
 
     private HMappingTable      mapping;
 
@@ -61,16 +61,16 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
         return columeNames;
     }
 
-    public HResultSetMetaData getResultMetaData() {
+    public HResultSetMetaDataImpl getResultMetaData() {
         return resultMetaData;
     }
 
-    public void setResultMetaData(HResultSetMetaData resultMetaData) {
+    public void setResultMetaData(HResultSetMetaDataImpl resultMetaData) {
         this.resultMetaData = resultMetaData;
     }
 
     @Override
-    public HScannerResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
+    public HScannerResultSetImpl executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
             HBaseConnectionImpl connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");
@@ -122,7 +122,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             HTableInterface htable = connection.getHTable(getTableName());
             ResultScanner scanner = htable.getScanner(scan);
 
-            HScannerResultSet resultSet = new HScannerResultSet(statement, htable, scanner);
+            HScannerResultSetImpl resultSet = new HScannerResultSetImpl(statement, htable, scanner);
             resultSet.setMetaData(resultMetaData);
 
             return resultSet;
