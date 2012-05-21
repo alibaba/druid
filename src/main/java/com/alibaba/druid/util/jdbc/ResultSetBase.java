@@ -25,14 +25,14 @@ import java.util.Map;
 
 public abstract class ResultSetBase implements ResultSet {
 
-    protected boolean         closed         = false;
-    protected boolean         wasNull        = false;
-    private SQLWarning        warning;
-    private String            cursorName;
-    private int               fetchSize      = 0;
-    private int               fetchDirection = 0;
+    protected boolean           closed         = false;
+    protected boolean           wasNull        = false;
+    private SQLWarning          warning;
+    private String              cursorName;
+    private int                 fetchSize      = 0;
+    private int                 fetchDirection = 0;
 
-    private Statement         statement;
+    protected Statement         statement;
     protected ResultSetMetaData metaData;
 
     public ResultSetBase(Statement statement){
@@ -309,7 +309,7 @@ public abstract class ResultSetBase implements ResultSet {
             String columName = this.getMetaData().getColumnName(columnIndex);
             return getObject(columName);
         }
-        
+
         return null;
     }
 
@@ -1166,7 +1166,7 @@ public abstract class ResultSetBase implements ResultSet {
 
         return 0;
     }
-    
+
     @Override
     public ResultSetMetaData getMetaData() throws SQLException {
         if (closed) {

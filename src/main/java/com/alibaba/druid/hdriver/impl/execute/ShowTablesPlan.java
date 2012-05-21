@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import com.alibaba.druid.hdriver.HResultSet;
+import com.alibaba.druid.hdriver.HStatement;
 import com.alibaba.druid.hdriver.impl.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hdriver.impl.jdbc.HResultSetMetaData;
 import com.alibaba.druid.util.jdbc.ResultSetBase;
@@ -168,6 +169,11 @@ public class ShowTablesPlan implements ExecutePlan {
 
         @Override
         public void updateObject(int columnIndex, Object x) throws SQLException {
+        }
+        
+        @Override
+        public HStatement getStatement() throws SQLException {
+            return (HStatement) statement;
         }
     }
 }

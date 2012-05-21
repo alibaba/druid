@@ -12,7 +12,7 @@ public class HDriver implements Driver {
     public static String PREFIX = "jdbc:druid-hbase:";
 
     @Override
-    public HBaseConnectionImpl connect(String url, Properties info) throws SQLException {
+    public HConnection connect(String url, Properties info) throws SQLException {
         if (!acceptsURL(url)) {
             return null;
         }

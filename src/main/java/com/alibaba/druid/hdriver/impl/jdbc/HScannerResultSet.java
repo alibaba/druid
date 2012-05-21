@@ -3,7 +3,6 @@ package com.alibaba.druid.hdriver.impl.jdbc;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 
 import org.apache.hadoop.hbase.client.HTableInterface;
@@ -44,7 +43,7 @@ public class HScannerResultSet extends ResultSetBase implements HResultSet {
     }
 
     @Override
-    public Statement getStatement() throws SQLException {
+    public HStatement getStatement() throws SQLException {
         return statement;
     }
 
