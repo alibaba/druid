@@ -124,7 +124,6 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
             HScannerResultSet resultSet = new HScannerResultSet(statement, htable, scanner);
             resultSet.setMetaData(resultMetaData);
-            resultSet.setMapping(mapping);
 
             return resultSet;
         } catch (SQLException e) {

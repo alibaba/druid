@@ -13,18 +13,18 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-import com.alibaba.druid.hbase.mapping.HMappingTable;
+import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class HScannerResultSet extends ResultSetBase implements HResultSet {
 
-    private HStatement statement;
-    private ResultScanner       scanner;
-    private HTableInterface     htable;
-    private Result              result;
-    private byte[]              family = Bytes.toBytes("d");
+    private HStatement      statement;
+    private ResultScanner   scanner;
+    private HTableInterface htable;
+    private Result          result;
+    private byte[]          family = Bytes.toBytes("d");
 
-    private HMappingTable            mapping;
+    private HMapping        mapping;
 
     public HScannerResultSet(HStatement statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
@@ -33,11 +33,11 @@ public class HScannerResultSet extends ResultSetBase implements HResultSet {
         this.scanner = scanner;
     }
 
-    public HMappingTable getMapping() {
+    public HMapping getMapping() {
         return mapping;
     }
 
-    public void setMapping(HMappingTable mapping) {
+    public void setMapping(HMapping mapping) {
         this.mapping = mapping;
     }
 
