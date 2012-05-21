@@ -16,7 +16,7 @@ import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.mapping.HMappingTable;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class HBaseResultSet extends ResultSetBase implements HResultSet {
+public class HScannerResultSet extends ResultSetBase implements HResultSet {
 
     private HStatement statement;
     private ResultScanner       scanner;
@@ -26,7 +26,7 @@ public class HBaseResultSet extends ResultSetBase implements HResultSet {
 
     private HMappingTable            mapping;
 
-    public HBaseResultSet(HStatement statement, HTableInterface htable, ResultScanner scanner){
+    public HScannerResultSet(HStatement statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
         this.statement = statement;
         this.htable = htable;

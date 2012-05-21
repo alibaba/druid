@@ -16,7 +16,7 @@ import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hbase.jdbc.HBaseConnection;
-import com.alibaba.druid.hbase.jdbc.HBaseResultSet;
+import com.alibaba.druid.hbase.jdbc.HScannerResultSet;
 import com.alibaba.druid.hbase.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
 import com.alibaba.druid.hbase.mapping.HMappingTable;
@@ -70,7 +70,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     }
 
     @Override
-    public HBaseResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
+    public HScannerResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");
@@ -122,7 +122,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             HTableInterface htable = connection.getHTable(getTableName());
             ResultScanner scanner = htable.getScanner(scan);
 
-            HBaseResultSet resultSet = new HBaseResultSet(statement, htable, scanner);
+            HScannerResultSet resultSet = new HScannerResultSet(statement, htable, scanner);
             resultSet.setMetaData(resultMetaData);
             resultSet.setMapping(mapping);
 
