@@ -1,11 +1,11 @@
 package com.alibaba.druid.hdriver.impl.jdbc;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
 import com.alibaba.druid.hdriver.HPreparedStatement;
+import com.alibaba.druid.hdriver.HResultSet;
 import com.alibaba.druid.hdriver.impl.execute.ExecutePlan;
 import com.alibaba.druid.hdriver.impl.execute.InsertExecutePlan;
 import com.alibaba.druid.hdriver.impl.execute.ShowTablesPlan;
@@ -29,14 +29,14 @@ import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class HPreparedStatementImpl extends PreparedStatementBase implements HPreparedStatement {
 
-    private final String    sql;
-    private String[]        columnNames;
+    private final String        sql;
+    private String[]            columnNames;
 
     private HBaseConnectionImpl hbaseConnection;
 
-    private ExecutePlan     executePlan;
+    private ExecutePlan         executePlan;
 
-    private String          dbType = "hbase";
+    private String              dbType = "hbase";
 
     public HPreparedStatementImpl(HBaseConnectionImpl conn, String sql) throws SQLException{
         super(conn);
@@ -145,7 +145,7 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
     }
 
     @Override
-    public ResultSet executeQuery() throws SQLException {
+    public HResultSet executeQuery() throws SQLException {
         return this.executePlan.executeQuery(this);
     }
 
@@ -162,4 +162,7 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
         return false;
     }
 
+    public HResultSet getResultSet() throws SQLException {
+        return (HResultSet) super.getResultSet();
+    }
 }
