@@ -76,9 +76,13 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             scan = new Scan();
             this.statement = statement;
 
+            Filter filter = null;
             for (SQLExpr item : conditions) {
                 SQLBinaryOpExpr condition = (SQLBinaryOpExpr) item;
-                setFilter(condition);
+                filter = setFilter(condition, filter, true);
+            }
+            if (filter != null) {
+                scan.setFilter(filter);
             }
 
             HTableInterface htable = connection.getHTable(getTableName());
@@ -98,24 +102,35 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
         }
     }
 
-    private void setFilter(SQLBinaryOpExpr condition) throws IOException,
-                                                                                       SQLException {
+    private Filter setFilter(SQLBinaryOpExpr condition, Filter filter, boolean and) throws IOException, SQLException {
         HMapping mapping = this.getMapping();
 
+        if (condition.getOperator() == SQLBinaryOperator.BooleanAnd) {
+            filter = setFilter((SQLBinaryOpExpr) condition.getLeft(), filter, true);
+            filter = setFilter((SQLBinaryOpExpr) condition.getRight(), filter, true);
+            return filter;
+        } else if (condition.getOperator() == SQLBinaryOperator.BooleanOr) {
+            filter = setFilter((SQLBinaryOpExpr) condition.getLeft(), filter, false);
+            filter = setFilter((SQLBinaryOpExpr) condition.getRight(), filter, false);
+            return filter;
+        }
+        
         String fieldName = ((SQLIdentifierExpr) condition.getLeft()).getName();
         Object value = SQLEvalVisitorUtils.eval(dbType, condition.getRight(), statement.getParameters());
 
         byte[] bytes = mapping.toBytes(fieldName, value);
         if (mapping.isRow(fieldName)) {
-            if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
+            if (filter == null && condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
                 scan.setStartRow(bytes);
-            } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
+                return null;
+            } else if (filter == null && condition.getOperator() == SQLBinaryOperator.LessThan) {
                 scan.setStopRow(bytes);
-            } else if (condition.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
-                RowFilter filter = new RowFilter(CompareOp.LESS_OR_EQUAL, new BinaryComparator(bytes));
-                setFilter(scan, filter);
+                return null;
             } else {
-                throw new SQLException("TODO");
+                CompareOp compareOp = toCompareOp(condition.getOperator());
+                RowFilter rowFilter = new RowFilter(compareOp, new BinaryComparator(bytes));
+
+                return setFilter(filter, rowFilter, and);
             }
         } else {
             byte[] qualifier = mapping.getQualifier(fieldName);
@@ -123,9 +138,10 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
             CompareOp compareOp = toCompareOp(condition.getOperator());
 
-            SingleColumnValueFilter filter = new SingleColumnValueFilter(family, qualifier, compareOp, bytes);
-            setFilter(scan, filter);
+            SingleColumnValueFilter columnFilter = new SingleColumnValueFilter(family, qualifier, compareOp, bytes);
+            return setFilter(filter, columnFilter, and);
         }
+
     }
 
     CompareOp toCompareOp(SQLBinaryOperator operator) {
@@ -147,15 +163,29 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
         }
     }
 
-    void setFilter(Scan scan, Filter filter) {
-        if (scan.getFilter() == null) {
-            scan.setFilter(filter);
-        } else if (scan.getFilter() instanceof FilterList) {
-            FilterList filterList = (FilterList) scan.getFilter();
-            filterList.addFilter(filter);
+    Filter setFilter(Filter parentFilter, Filter filter, boolean and) {
+        if (parentFilter == null) {
+            return filter;
+        } else if (parentFilter instanceof FilterList) {
+            FilterList filterList = (FilterList) parentFilter;
+            if (and) {
+                if (filterList.getOperator() == FilterList.Operator.MUST_PASS_ALL) {
+                    filterList.addFilter(filter);
+                    return filterList;
+                } else {
+                    return new FilterList(FilterList.Operator.MUST_PASS_ALL, parentFilter, filter);
+                }
+            } else {
+                if (filterList.getOperator() == FilterList.Operator.MUST_PASS_ONE) {
+                    filterList.addFilter(filter);
+                    return filterList;
+                } else {
+                    return new FilterList(FilterList.Operator.MUST_PASS_ONE, parentFilter, filter);
+                }
+            }
         } else {
-            FilterList filterList = new FilterList(scan.getFilter(), filter);
-            scan.setFilter(filterList);
+            FilterList.Operator filterOp = and ? FilterList.Operator.MUST_PASS_ALL : FilterList.Operator.MUST_PASS_ONE;
+            return new FilterList(filterOp, parentFilter, filter);
         }
     }
 
