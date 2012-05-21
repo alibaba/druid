@@ -2,10 +2,10 @@ package com.alibaba.druid.pool.ha;
 
 import javax.sql.DataSource;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ManagedDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class HADataSource extends MultiDataSource implements HADataSourceMBean, ManagedDataSource, DataSource {
 

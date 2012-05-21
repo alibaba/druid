@@ -9,8 +9,6 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Set;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -42,6 +40,8 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;

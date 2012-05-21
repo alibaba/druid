@@ -36,14 +36,14 @@ import javax.management.ObjectName;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.config.DruidFilterConfigLoader;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;

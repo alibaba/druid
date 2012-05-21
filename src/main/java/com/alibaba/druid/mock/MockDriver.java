@@ -36,10 +36,10 @@ import java.util.logging.Logger;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.mock.handler.MockExecuteHandler;
 import com.alibaba.druid.mock.handler.MySqlMockExecuteHandlerImpl;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class MockDriver implements Driver, MockDriverMBean {
 

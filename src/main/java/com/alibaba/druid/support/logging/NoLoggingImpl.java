@@ -1,4 +1,4 @@
-package com.alibaba.druid.logging;
+package com.alibaba.druid.support.logging;
 
 public class NoLoggingImpl implements Log {
 

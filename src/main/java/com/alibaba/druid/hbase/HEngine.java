@@ -11,8 +11,8 @@ import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
 import com.alibaba.druid.hbase.mapping.HMappingTable;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class HEngine {
 

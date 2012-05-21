@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class CobarFailureDetecter extends DefaultDataSourceFailureDetecter {

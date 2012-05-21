@@ -1,14 +1,13 @@
-package com.alibaba.druid.logging;
+package com.alibaba.druid.support.logging;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
-public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log {
+public class Log4jImpl implements Log {
 
-    private Log log;
+    private Logger log;
 
-    public JakartaCommonsLoggingImpl(Class<?> clazz){
-        log = LogFactory.getLog(clazz);
+    public Log4jImpl(Class<?> clazz){
+        log = Logger.getLogger(clazz);
     }
 
     public boolean isDebugEnabled() {
@@ -35,7 +34,6 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.logging.Log 
         log.warn(s);
     }
 
-    @Override
     public void warn(String s, Throwable e) {
         log.warn(s, e);
     }

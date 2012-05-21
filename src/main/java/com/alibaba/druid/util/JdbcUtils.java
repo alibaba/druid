@@ -37,8 +37,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

@@ -3,13 +3,13 @@ package com.alibaba.druid.pool.ha.balance;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.ha.DataSourceChangedEvent;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiConnectionHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceConnection;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class RoundRobinBlancer extends AbstractBalancer {
 

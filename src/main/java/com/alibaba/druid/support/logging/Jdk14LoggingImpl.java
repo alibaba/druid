@@ -1,4 +1,4 @@
-package com.alibaba.druid.logging;
+package com.alibaba.druid.support.logging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

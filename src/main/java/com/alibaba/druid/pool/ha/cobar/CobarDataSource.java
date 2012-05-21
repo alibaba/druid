@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.MultiDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class CobarDataSource extends MultiDataSource {

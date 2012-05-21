@@ -1,4 +1,4 @@
-package com.alibaba.druid.logging;
+package com.alibaba.druid.support.logging;
 
 import java.io.File;
 import java.io.IOException;

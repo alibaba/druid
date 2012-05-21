@@ -28,11 +28,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.ValidConnectionChecker;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidLoaderUtils;
 import com.alibaba.druid.util.JdbcUtils;
 

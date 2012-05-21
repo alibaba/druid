@@ -23,9 +23,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

@@ -33,8 +33,6 @@ import javax.management.openmbean.TabularData;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -51,6 +49,8 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.stat.JdbcStatementStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

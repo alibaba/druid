@@ -39,12 +39,12 @@ import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

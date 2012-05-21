@@ -9,10 +9,10 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.ConnectionHolder;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class XAPoolableConnection extends DruidPooledConnection implements XAResource {
 

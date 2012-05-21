@@ -21,8 +21,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.management.ObjectName;
 
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.pool.DataSourceAdapter;
 import com.alibaba.druid.pool.ha.balance.Balancer;
 import com.alibaba.druid.pool.ha.balance.WeightBalancer;
@@ -31,6 +29,8 @@ import com.alibaba.druid.pool.ha.valid.DataSourceFailureDetecter;
 import com.alibaba.druid.pool.ha.valid.DefaultDataSourceFailureDetecter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class MultiDataSource extends DataSourceAdapter implements MultiDataSourceMBean, DataSourceProxy {

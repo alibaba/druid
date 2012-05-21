@@ -40,8 +40,6 @@ import javax.sql.ConnectionEventListener;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.logging.Log;
-import com.alibaba.druid.logging.LogFactory;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
@@ -57,6 +55,8 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
