@@ -1,4 +1,4 @@
-package com.alibaba.druid.hbase;
+package com.alibaba.druid.hbase.jdbc;
 
 import java.sql.ResultSet;
 

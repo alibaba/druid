@@ -1,4 +1,4 @@
-package com.alibaba.druid.hbase;
+package com.alibaba.druid.hbase.jdbc;
 
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase;
 

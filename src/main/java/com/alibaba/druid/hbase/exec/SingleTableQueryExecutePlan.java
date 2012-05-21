@@ -15,10 +15,10 @@ import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.alibaba.druid.hbase.HBaseConnection;
-import com.alibaba.druid.hbase.HPreparedStatement;
-import com.alibaba.druid.hbase.HBaseResultSet;
-import com.alibaba.druid.hbase.HResultSetMetaData;
+import com.alibaba.druid.hbase.jdbc.HBaseConnection;
+import com.alibaba.druid.hbase.jdbc.HBaseResultSet;
+import com.alibaba.druid.hbase.jdbc.HPreparedStatement;
+import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
 import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;

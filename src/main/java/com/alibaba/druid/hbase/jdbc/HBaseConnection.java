@@ -1,4 +1,4 @@
-package com.alibaba.druid.hbase;
+package com.alibaba.druid.hbase.jdbc;
 
 import java.sql.Array;
 import java.sql.Blob;
@@ -22,6 +22,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import com.alibaba.druid.common.jdbc.ConnectionBase;
+import com.alibaba.druid.hbase.HEngine;
 
 public class HBaseConnection extends ConnectionBase implements Connection {
 

@@ -10,9 +10,9 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-import com.alibaba.druid.hbase.HPreparedStatement;
-import com.alibaba.druid.hbase.HResultSet;
-import com.alibaba.druid.hbase.HResultSetMetaData;
+import com.alibaba.druid.hbase.jdbc.HPreparedStatement;
+import com.alibaba.druid.hbase.jdbc.HResultSet;
+import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
 
 public class ShowTablesPlan implements ExecutePlan {
 

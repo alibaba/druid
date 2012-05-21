@@ -5,6 +5,8 @@ import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.alibaba.druid.hbase.jdbc.HBaseConnection;
+
 public class HDriver implements Driver {
 
     public static String PREFIX = "jdbc:druid-hbase:";
