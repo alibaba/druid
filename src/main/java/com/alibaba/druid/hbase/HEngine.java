@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
-import com.alibaba.druid.hbase.mapping.HMapping;
+import com.alibaba.druid.hbase.mapping.HMappingTable;
 import com.alibaba.druid.logging.Log;
 import com.alibaba.druid.logging.LogFactory;
 
@@ -37,7 +37,7 @@ public class HEngine {
     private HTablePool                      tablePool;
     private int                             htablePoolMaxSize = 256;
     private Configuration                   config;
-    private ConcurrentMap<String, HMapping> mappings          = new ConcurrentHashMap<String, HMapping>();
+    private ConcurrentMap<String, HMappingTable> mappings          = new ConcurrentHashMap<String, HMappingTable>();
 
     public HEngine(String url, Properties connectProperties){
         super();
@@ -69,7 +69,7 @@ public class HEngine {
         return config;
     }
 
-    public ConcurrentMap<String, HMapping> getMappings() {
+    public ConcurrentMap<String, HMappingTable> getMappings() {
         return mappings;
     }
 

@@ -19,7 +19,7 @@ import com.alibaba.druid.hbase.jdbc.HBaseConnection;
 import com.alibaba.druid.hbase.jdbc.HBaseResultSet;
 import com.alibaba.druid.hbase.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
-import com.alibaba.druid.hbase.mapping.HMapping;
+import com.alibaba.druid.hbase.mapping.HMappingTable;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -35,17 +35,17 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     private HResultSetMetaData resultMetaData;
 
-    private HMapping           mapping;
+    private HMappingTable           mapping;
 
     public SingleTableQueryExecutePlan(){
 
     }
 
-    public HMapping getMapping() {
+    public HMappingTable getMapping() {
         return mapping;
     }
 
-    public void setMapping(HMapping mapping) {
+    public void setMapping(HMappingTable mapping) {
         this.mapping = mapping;
     }
 
