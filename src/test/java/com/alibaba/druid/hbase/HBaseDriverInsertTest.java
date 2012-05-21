@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Properties;
 
+import com.alibaba.druid.hdriver.HDriver;
+
 import junit.framework.TestCase;
 
 public class HBaseDriverInsertTest extends TestCase {

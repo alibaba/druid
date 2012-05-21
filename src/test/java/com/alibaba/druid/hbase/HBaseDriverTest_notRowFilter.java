@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
+import com.alibaba.druid.hdriver.HDriver;
+
 import junit.framework.TestCase;
 
 

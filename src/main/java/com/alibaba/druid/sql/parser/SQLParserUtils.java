@@ -1,7 +1,7 @@
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.hbase.hbql.parser.HBQLExprParser;
-import com.alibaba.druid.hbase.hbql.parser.HBQLStatementParser;
+import com.alibaba.druid.hdriver.hbql.parser.HBQLExprParser;
+import com.alibaba.druid.hdriver.hbql.parser.HBQLStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
