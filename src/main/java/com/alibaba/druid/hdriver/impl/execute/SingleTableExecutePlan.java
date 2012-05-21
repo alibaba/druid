@@ -1,6 +1,7 @@
 package com.alibaba.druid.hdriver.impl.execute;
 
 import com.alibaba.druid.hdriver.impl.mapping.HMapping;
+import com.alibaba.druid.hdriver.impl.mapping.HMappingDefaultImpl;
 
 public class SingleTableExecutePlan extends ExecutePlanAdapter {
 
@@ -17,6 +18,10 @@ public class SingleTableExecutePlan extends ExecutePlanAdapter {
     }
 
     public HMapping getMapping() {
+        HMapping mapping = this.mapping;
+        if (mapping == null) {
+            mapping = new HMappingDefaultImpl();
+        }
         return mapping;
     }
 

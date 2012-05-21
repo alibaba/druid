@@ -1,8 +1,5 @@
 package com.alibaba.druid.hdriver.impl.mapping;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
 import org.apache.hadoop.hbase.util.Bytes;
 
 public class HMappingDefaultImpl extends HMappingAdapter implements HMapping {

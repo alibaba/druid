@@ -1,5 +1,6 @@
 package com.alibaba.druid.hdriver.impl.execute;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,11 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     private List<SQLExpr>          conditions  = new ArrayList<SQLExpr>();
 
     private HResultSetMetaDataImpl resultMetaData;
+
+    private String                 dbType      = "hbase";
+
+    private Scan                   scan;
+    private HPreparedStatementImpl statement;
 
     public SingleTableQueryExecutePlan(){
 
@@ -66,51 +72,13 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             }
 
             HBaseConnectionImpl connection = statement.getConnection();
-            String dbType = connection.getConnectProperties().getProperty("dbType");
 
-            Scan scan = new Scan();
+            scan = new Scan();
+            this.statement = statement;
 
             for (SQLExpr item : conditions) {
                 SQLBinaryOpExpr condition = (SQLBinaryOpExpr) item;
-                String fieldName = ((SQLIdentifierExpr) condition.getLeft()).getName();
-                Object value = SQLEvalVisitorUtils.eval(dbType, condition.getRight(), statement.getParameters());
-
-                byte[] bytes = mapping.toBytes(fieldName, value);
-                if (mapping.isRow(fieldName)) {
-                    if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
-                        scan.setStartRow(bytes);
-                    } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
-                        scan.setStopRow(bytes);
-                    } else if (condition.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
-                        RowFilter filter = new RowFilter(CompareOp.LESS_OR_EQUAL, new BinaryComparator(bytes));
-                        setFilter(scan, filter);
-                    } else {
-                        throw new SQLException("TODO");
-                    }
-                } else {
-                    byte[] qualifier = mapping.getQualifier(fieldName);
-                    byte[] family = mapping.getFamily(fieldName);
-
-                    CompareOp compareOp;
-                    if (condition.getOperator() == SQLBinaryOperator.Equality) {
-                        compareOp = CompareOp.EQUAL;
-                    } else if (condition.getOperator() == SQLBinaryOperator.GreaterThan) {
-                        compareOp = CompareOp.GREATER;
-                    } else if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
-                        compareOp = CompareOp.GREATER_OR_EQUAL;
-                    } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
-                        compareOp = CompareOp.LESS;
-                    } else if (condition.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
-                        compareOp = CompareOp.LESS_OR_EQUAL;
-                    } else if (condition.getOperator() == SQLBinaryOperator.NotEqual) {
-                        compareOp = CompareOp.NOT_EQUAL;
-                    } else {
-                        throw new SQLException("TODO");
-                    }
-
-                    SingleColumnValueFilter filter = new SingleColumnValueFilter(family, qualifier, compareOp, bytes);
-                    setFilter(scan, filter);
-                }
+                setFilter(condition);
             }
 
             HTableInterface htable = connection.getHTable(getTableName());
@@ -124,6 +92,39 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
             throw e;
         } catch (Exception e) {
             throw new SQLException("executeQuery error", e);
+        } finally {
+            scan = null;
+            this.statement = null;
+        }
+    }
+
+    private void setFilter(SQLBinaryOpExpr condition) throws IOException,
+                                                                                       SQLException {
+        HMapping mapping = this.getMapping();
+
+        String fieldName = ((SQLIdentifierExpr) condition.getLeft()).getName();
+        Object value = SQLEvalVisitorUtils.eval(dbType, condition.getRight(), statement.getParameters());
+
+        byte[] bytes = mapping.toBytes(fieldName, value);
+        if (mapping.isRow(fieldName)) {
+            if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
+                scan.setStartRow(bytes);
+            } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
+                scan.setStopRow(bytes);
+            } else if (condition.getOperator() == SQLBinaryOperator.LessThanOrEqual) {
+                RowFilter filter = new RowFilter(CompareOp.LESS_OR_EQUAL, new BinaryComparator(bytes));
+                setFilter(scan, filter);
+            } else {
+                throw new SQLException("TODO");
+            }
+        } else {
+            byte[] qualifier = mapping.getQualifier(fieldName);
+            byte[] family = mapping.getFamily(fieldName);
+
+            CompareOp compareOp = toCompareOp(condition.getOperator());
+
+            SingleColumnValueFilter filter = new SingleColumnValueFilter(family, qualifier, compareOp, bytes);
+            setFilter(scan, filter);
         }
     }
 
