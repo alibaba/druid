@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.HTablePool;
 
-import com.alibaba.druid.hdriver.mapping.HMappingTable;
+import com.alibaba.druid.hdriver.impl.mapping.HMappingTable;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 

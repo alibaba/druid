@@ -5,7 +5,7 @@ import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.alibaba.druid.hdriver.jdbc.HBaseConnection;
+import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnection;
 
 public class HDriver implements Driver {
 
