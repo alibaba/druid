@@ -11,6 +11,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import com.alibaba.druid.hdriver.HResultSet;
+import com.alibaba.druid.hdriver.HStatement;
 import com.alibaba.druid.hdriver.impl.mapping.HMapping;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.jdbc.ResultSetBase;

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
+import com.alibaba.druid.hdriver.HPreparedStatement;
 import com.alibaba.druid.hdriver.impl.execute.ExecutePlan;
 import com.alibaba.druid.hdriver.impl.execute.InsertExecutePlan;
 import com.alibaba.druid.hdriver.impl.execute.ShowTablesPlan;

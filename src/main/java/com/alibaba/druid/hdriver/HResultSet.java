@@ -1,4 +1,4 @@
-package com.alibaba.druid.hdriver.impl.jdbc;
+package com.alibaba.druid.hdriver;
 
 import java.sql.ResultSet;
 

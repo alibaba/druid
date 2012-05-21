@@ -8,8 +8,8 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
+import com.alibaba.druid.hdriver.HResultSet;
 import com.alibaba.druid.hdriver.impl.jdbc.HPreparedStatementImpl;
-import com.alibaba.druid.hdriver.impl.jdbc.HResultSet;
 import com.alibaba.druid.hdriver.impl.jdbc.HResultSetMetaData;
 import com.alibaba.druid.util.jdbc.ResultSetBase;
 import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;

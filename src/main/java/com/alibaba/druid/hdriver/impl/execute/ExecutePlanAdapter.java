@@ -2,8 +2,8 @@ package com.alibaba.druid.hdriver.impl.execute;
 
 import java.sql.SQLException;
 
+import com.alibaba.druid.hdriver.HResultSet;
 import com.alibaba.druid.hdriver.impl.jdbc.HPreparedStatementImpl;
-import com.alibaba.druid.hdriver.impl.jdbc.HResultSet;
 
 public class ExecutePlanAdapter implements ExecutePlan {
 
