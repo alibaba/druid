@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Savepoint;
-import java.sql.Statement;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
@@ -22,6 +21,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import com.alibaba.druid.hdriver.HConnection;
+import com.alibaba.druid.hdriver.HStatement;
 import com.alibaba.druid.util.jdbc.ConnectionBase;
 
 public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
@@ -76,17 +76,17 @@ public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
     }
 
     @Override
-    public Statement createStatement() throws SQLException {
+    public HStatement createStatement() throws SQLException {
         return new HStatementImpl(this);
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+    public HStatement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 
     @Override
-    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+    public HStatement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
                                                                                                            throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
