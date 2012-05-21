@@ -184,8 +184,12 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                 }
             }
         } else {
+            List<Filter> filters = new ArrayList<Filter>();
+            filters.add(parentFilter);
+            filters.add(filter);
+            
             FilterList.Operator filterOp = and ? FilterList.Operator.MUST_PASS_ALL : FilterList.Operator.MUST_PASS_ONE;
-            return new FilterList(filterOp, parentFilter, filter);
+            return new FilterList(filterOp, filters);
         }
     }
 

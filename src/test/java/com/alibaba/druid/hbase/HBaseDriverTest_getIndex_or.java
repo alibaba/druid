@@ -15,7 +15,7 @@ public class HBaseDriverTest_getIndex_or extends TestCase {
         HDriver driver = new HDriver();
         Connection conn = driver.connect("jdbc:druid-hbase:10.20.153.63", new Properties());
         
-        PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user where id = 3 or id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, name, gender, salary FROM test_user where id = 3 or id = ? or name = 'user-4'");
         stmt.setInt(1, 6);
         
         ResultSet rs = stmt.executeQuery();
