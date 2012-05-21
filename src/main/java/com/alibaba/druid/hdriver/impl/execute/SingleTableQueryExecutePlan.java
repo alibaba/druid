@@ -19,7 +19,7 @@ import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
 import com.alibaba.druid.hdriver.impl.HResultSetMetaDataImpl;
 import com.alibaba.druid.hdriver.impl.HScannerResultSetImpl;
-import com.alibaba.druid.hdriver.impl.mapping.HMappingTable;
+import com.alibaba.druid.hdriver.impl.mapping.HMapping;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -28,24 +28,24 @@ import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
-    private List<String>       columeNames = new ArrayList<String>();
-    private List<SQLExpr>      conditions  = new ArrayList<SQLExpr>();
+    private List<String>           columeNames = new ArrayList<String>();
+    private List<SQLExpr>          conditions  = new ArrayList<SQLExpr>();
 
-    private byte[]             family      = Bytes.toBytes("d");
+    private byte[]                 family      = Bytes.toBytes("d");
 
     private HResultSetMetaDataImpl resultMetaData;
 
-    private HMappingTable      mapping;
+    private HMapping               mapping;
 
     public SingleTableQueryExecutePlan(){
 
     }
 
-    public HMappingTable getMapping() {
+    public HMapping getMapping() {
         return mapping;
     }
 
-    public void setMapping(HMappingTable mapping) {
+    public void setMapping(HMapping mapping) {
         this.mapping = mapping;
     }
 

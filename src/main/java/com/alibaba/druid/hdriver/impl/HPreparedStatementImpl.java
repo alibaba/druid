@@ -11,6 +11,7 @@ import com.alibaba.druid.hdriver.impl.execute.InsertExecutePlan;
 import com.alibaba.druid.hdriver.impl.execute.ShowTablesPlan;
 import com.alibaba.druid.hdriver.impl.execute.SingleTableQueryExecutePlan;
 import com.alibaba.druid.hdriver.impl.hbql.ast.HBQLShowStatement;
+import com.alibaba.druid.hdriver.impl.mapping.HMapping;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -38,10 +39,13 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
 
     private String              dbType = "hbase";
 
-    public HPreparedStatementImpl(HBaseConnectionImpl conn, String sql) throws SQLException{
+    private HMapping            mapping;
+
+    public HPreparedStatementImpl(HBaseConnectionImpl conn, String sql, HMapping mapping) throws SQLException{
         super(conn);
         this.sql = sql;
         this.hbaseConnection = conn;
+        this.mapping = mapping;
 
         init();
     }
@@ -56,6 +60,10 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
             }
         }
         conditions.add(expr);
+    }
+
+    public HMapping getMapping() {
+        return mapping;
     }
 
     public void init() throws SQLException {
@@ -78,6 +86,7 @@ public class HPreparedStatementImpl extends PreparedStatementBase implements HPr
             String tableName = ((SQLIdentifierExpr) tableSource.getExpr()).getName();
 
             SingleTableQueryExecutePlan singleTableQueryExecuetePlan = new SingleTableQueryExecutePlan();
+            singleTableQueryExecuetePlan.setMapping(mapping);
             singleTableQueryExecuetePlan.setTableName(tableName);
 
             splitCondition(singleTableQueryExecuetePlan.getConditions(), selectQueryBlock.getWhere());

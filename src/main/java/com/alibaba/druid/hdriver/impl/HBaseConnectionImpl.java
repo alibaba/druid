@@ -21,7 +21,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import com.alibaba.druid.hdriver.HConnection;
-import com.alibaba.druid.hdriver.HPreparedStatement;
 import com.alibaba.druid.hdriver.HStatement;
 import com.alibaba.druid.hdriver.impl.mapping.HMapping;
 import com.alibaba.druid.util.jdbc.ConnectionBase;
@@ -159,7 +158,12 @@ public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
 
     @Override
     public HPreparedStatementImpl prepareStatement(String sql) throws SQLException {
-        return new HPreparedStatementImpl(this, sql);
+        return prepareStatement(sql, (HMapping) null);
+    }
+    
+    @Override
+    public HPreparedStatementImpl prepareStatement(String sql, HMapping mapping) throws SQLException {
+        return new HPreparedStatementImpl(this, sql, mapping);
     }
 
     @Override
@@ -250,11 +254,6 @@ public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
 
     public HTableInterface getHTable(String tableName) {
         return engine.getHTable(tableName);
-    }
-
-    @Override
-    public HPreparedStatement prepareStatement(String sql, HMapping mapping) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
     }
 
 }
