@@ -1,6 +1,5 @@
 package com.alibaba.druid.hbase.jdbc;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -27,7 +26,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
-public class HPreparedStatementImpl extends PreparedStatementBase implements PreparedStatement, HStatement {
+public class HPreparedStatementImpl extends PreparedStatementBase implements HPreparedStatement {
 
     private final String    sql;
     private String[]        columnNames;

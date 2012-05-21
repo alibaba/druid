@@ -234,6 +234,10 @@ public class HBaseConnection extends ConnectionBase implements Connection {
         if (iface == Configuration.class) {
             return (T) engine.getConfig();
         }
+        
+        if (iface == HEngine.class) {
+            return (T) engine;
+        }
 
         if (iface == Connection.class || iface == HBaseConnection.class) {
             return (T) this;
