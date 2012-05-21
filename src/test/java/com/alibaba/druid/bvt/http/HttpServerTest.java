@@ -1,6 +1,6 @@
 package com.alibaba.druid.bvt.http;
 
-import com.alibaba.druid.http.HttpServer;
+import com.alibaba.druid.support.http.HttpServer;
 
 import junit.framework.TestCase;
 

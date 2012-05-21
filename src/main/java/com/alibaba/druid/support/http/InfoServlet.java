@@ -1,4 +1,4 @@
-package com.alibaba.druid.http;
+package com.alibaba.druid.support.http;
 
 import java.io.IOException;
 import java.io.PrintWriter;

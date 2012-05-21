@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.http.HttpServer;
 
 public class HttpServerTest2 extends TestCase {
     private DruidDataSource dataSource;
