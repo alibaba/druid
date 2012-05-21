@@ -6,21 +6,26 @@ import java.util.Map;
 
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
+import com.alibaba.druid.hdriver.impl.mapping.HMapping;
+import com.alibaba.druid.hdriver.impl.mapping.HMappingDefaultImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 
 public class InsertExecutePlan extends SingleTableExecutePlan {
 
     private Map<String, SQLExpr> columns = new LinkedHashMap<String, SQLExpr>();
-    private byte[]               family  = Bytes.toBytes("d");
 
     @Override
     public boolean execute(HPreparedStatementImpl statement) throws SQLException {
         try {
+            HMapping mapping = this.getMapping();
+            if (mapping == null) {
+                mapping = new HMappingDefaultImpl();
+            }
+            
             HBaseConnectionImpl connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");
 
@@ -34,13 +39,14 @@ public class InsertExecutePlan extends SingleTableExecutePlan {
                 if (value == null) {
                     continue;
                 }
+                
+                byte[] bytes = mapping.toBytes(column, value);
 
-                byte[] bytes = HBaseUtils.toBytes(value);
-
-                if (put == null) { // first value is key, TODO
+                if (mapping.isRow(column)) {
                     put = new Put(bytes);
                 } else {
-                    byte[] qualifier = Bytes.toBytes(column);
+                    byte[] family = mapping.getFamily(column);
+                    byte[] qualifier = mapping.getQualifier(column);
                     put.add(family, qualifier, bytes);
                 }
             }

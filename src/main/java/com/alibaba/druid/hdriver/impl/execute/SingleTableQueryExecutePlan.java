@@ -13,13 +13,13 @@ import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
 import com.alibaba.druid.hdriver.impl.HResultSetMetaDataImpl;
 import com.alibaba.druid.hdriver.impl.HScannerResultSetImpl;
 import com.alibaba.druid.hdriver.impl.mapping.HMapping;
+import com.alibaba.druid.hdriver.impl.mapping.HMappingDefaultImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
@@ -31,22 +31,10 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     private List<String>           columeNames = new ArrayList<String>();
     private List<SQLExpr>          conditions  = new ArrayList<SQLExpr>();
 
-    private byte[]                 family      = Bytes.toBytes("d");
-
     private HResultSetMetaDataImpl resultMetaData;
-
-    private HMapping               mapping;
 
     public SingleTableQueryExecutePlan(){
 
-    }
-
-    public HMapping getMapping() {
-        return mapping;
-    }
-
-    public void setMapping(HMapping mapping) {
-        this.mapping = mapping;
     }
 
     public List<SQLExpr> getConditions() {
@@ -72,6 +60,11 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     @Override
     public HScannerResultSetImpl executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
+            HMapping mapping = this.getMapping();
+            if (mapping == null) {
+                mapping = new HMappingDefaultImpl();
+            }
+
             HBaseConnectionImpl connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");
 
@@ -82,8 +75,8 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                 String fieldName = ((SQLIdentifierExpr) condition.getLeft()).getName();
                 Object value = SQLEvalVisitorUtils.eval(dbType, condition.getRight(), statement.getParameters());
 
-                byte[] bytes = HBaseUtils.toBytes(value);
-                if ("id".equals(fieldName)) {
+                byte[] bytes = mapping.toBytes(fieldName, value);
+                if (mapping.isRow(fieldName)) {
                     if (condition.getOperator() == SQLBinaryOperator.GreaterThanOrEqual) {
                         scan.setStartRow(bytes);
                     } else if (condition.getOperator() == SQLBinaryOperator.LessThan) {
@@ -95,7 +88,8 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
                         throw new SQLException("TODO");
                     }
                 } else {
-                    byte[] qualifier = Bytes.toBytes(fieldName);
+                    byte[] qualifier = mapping.getQualifier(fieldName);
+                    byte[] family = mapping.getFamily(fieldName);
 
                     CompareOp compareOp;
                     if (condition.getOperator() == SQLBinaryOperator.Equality) {
