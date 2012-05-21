@@ -18,7 +18,7 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class HBaseResultSet extends ResultSetBase implements HResultSet {
 
-    private HStatementInterface statement;
+    private HStatement statement;
     private ResultScanner       scanner;
     private HTableInterface     htable;
     private Result              result;
@@ -26,7 +26,7 @@ public class HBaseResultSet extends ResultSetBase implements HResultSet {
 
     private HMapping            mapping;
 
-    public HBaseResultSet(HStatementInterface statement, HTableInterface htable, ResultScanner scanner){
+    public HBaseResultSet(HStatement statement, HTableInterface htable, ResultScanner scanner){
         super(statement);
         this.statement = statement;
         this.htable = htable;

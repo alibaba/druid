@@ -17,7 +17,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.alibaba.druid.hbase.jdbc.HBaseConnection;
 import com.alibaba.druid.hbase.jdbc.HBaseResultSet;
-import com.alibaba.druid.hbase.jdbc.HPreparedStatement;
+import com.alibaba.druid.hbase.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
 import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -70,7 +70,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
     }
 
     @Override
-    public HBaseResultSet executeQuery(HPreparedStatement statement) throws SQLException {
+    public HBaseResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
             HBaseConnection connection = statement.getConnection();
             String dbType = connection.getConnectProperties().getProperty("dbType");

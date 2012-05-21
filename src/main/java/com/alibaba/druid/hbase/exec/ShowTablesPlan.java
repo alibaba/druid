@@ -10,14 +10,14 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import com.alibaba.druid.common.jdbc.ResultSetBase;
 import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
-import com.alibaba.druid.hbase.jdbc.HPreparedStatement;
+import com.alibaba.druid.hbase.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hbase.jdbc.HResultSet;
 import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
 
 public class ShowTablesPlan implements ExecutePlan {
 
     @Override
-    public HResultSet executeQuery(HPreparedStatement statement) throws SQLException {
+    public HResultSet executeQuery(HPreparedStatementImpl statement) throws SQLException {
         try {
             HBaseAdmin admin = statement.getConnection().getEngine().getHBaseAdmin();
 
@@ -32,7 +32,7 @@ public class ShowTablesPlan implements ExecutePlan {
     }
 
     @Override
-    public boolean execute(HPreparedStatement statement) throws SQLException {
+    public boolean execute(HPreparedStatementImpl statement) throws SQLException {
         HResultSet resultSet = executeQuery(statement);
         statement.setResultSet(resultSet);
         return true;
