@@ -35,7 +35,7 @@ public class SingleTableQueryExecutePlan extends SingleTableExecutePlan {
 
     private HResultSetMetaData resultMetaData;
 
-    private HMappingTable           mapping;
+    private HMappingTable      mapping;
 
     public SingleTableQueryExecutePlan(){
 
