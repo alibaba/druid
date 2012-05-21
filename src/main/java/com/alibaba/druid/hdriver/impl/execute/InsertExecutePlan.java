@@ -8,8 +8,8 @@ import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.alibaba.druid.hdriver.impl.jdbc.HBaseConnectionImpl;
-import com.alibaba.druid.hdriver.impl.jdbc.HPreparedStatementImpl;
+import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
+import com.alibaba.druid.hdriver.impl.HPreparedStatementImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 

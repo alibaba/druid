@@ -1,4 +1,4 @@
-package com.alibaba.druid.hdriver.impl.jdbc;
+package com.alibaba.druid.hdriver.impl;
 
 import java.sql.SQLException;
 import java.sql.Statement;
