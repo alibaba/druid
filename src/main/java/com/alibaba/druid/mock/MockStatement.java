@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.alibaba.druid.common.jdbc.StatementBase;
+import com.alibaba.druid.util.jdbc.StatementBase;
 
 public class MockStatement extends StatementBase implements Statement {
 

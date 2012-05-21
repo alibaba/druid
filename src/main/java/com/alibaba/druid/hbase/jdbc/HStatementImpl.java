@@ -3,7 +3,7 @@ package com.alibaba.druid.hbase.jdbc;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.alibaba.druid.common.jdbc.StatementBase;
+import com.alibaba.druid.util.jdbc.StatementBase;
 
 public class HStatementImpl extends StatementBase implements Statement, HStatement {
 

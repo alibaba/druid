@@ -17,7 +17,7 @@ package com.alibaba.druid.mock;
 
 import java.sql.ResultSetMetaData;
 
-import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase;
 
 public class MockResultSetMetaData extends ResultSetMetaDataBase implements ResultSetMetaData {
 

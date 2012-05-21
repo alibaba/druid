@@ -1,4 +1,4 @@
-package com.alibaba.druid.common.jdbc;
+package com.alibaba.druid.util.jdbc;
 
 import java.io.InputStream;
 import java.io.Reader;

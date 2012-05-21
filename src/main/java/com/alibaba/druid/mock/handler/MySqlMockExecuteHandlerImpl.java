@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
-import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatement;
@@ -31,6 +30,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
 

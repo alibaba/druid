@@ -1,4 +1,4 @@
-package com.alibaba.druid.common.jdbc;
+package com.alibaba.druid.util.jdbc;
 
 import java.sql.Connection;
 import java.sql.SQLException;

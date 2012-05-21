@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import com.alibaba.druid.common.jdbc.ConnectionBase;
+import com.alibaba.druid.util.jdbc.ConnectionBase;
 
 public class MockConnection extends ConnectionBase implements Connection {
 

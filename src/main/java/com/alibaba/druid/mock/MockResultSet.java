@@ -22,7 +22,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.common.jdbc.ResultSetBase;
+import com.alibaba.druid.util.jdbc.ResultSetBase;
 
 public class MockResultSet extends ResultSetBase implements ResultSet {
 

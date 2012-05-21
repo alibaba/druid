@@ -21,8 +21,8 @@ import java.util.Properties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
-import com.alibaba.druid.common.jdbc.ConnectionBase;
 import com.alibaba.druid.hbase.HEngine;
+import com.alibaba.druid.util.jdbc.ConnectionBase;
 
 public class HBaseConnection extends ConnectionBase implements Connection {
 

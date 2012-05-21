@@ -19,7 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.alibaba.druid.common.jdbc.PreparedStatementBase;
+import com.alibaba.druid.util.jdbc.PreparedStatementBase;
 
 public class MockPreparedStatement extends PreparedStatementBase implements PreparedStatement {
 

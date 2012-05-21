@@ -8,11 +8,11 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
-import com.alibaba.druid.common.jdbc.ResultSetBase;
-import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.jdbc.HPreparedStatementImpl;
 import com.alibaba.druid.hbase.jdbc.HResultSet;
 import com.alibaba.druid.hbase.jdbc.HResultSetMetaData;
+import com.alibaba.druid.util.jdbc.ResultSetBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class ShowTablesPlan implements ExecutePlan {
 

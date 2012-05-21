@@ -11,10 +11,10 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.util.Bytes;
 
-import com.alibaba.druid.common.jdbc.ResultSetBase;
-import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.mapping.HMapping;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.jdbc.ResultSetBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class HScannerResultSet extends ResultSetBase implements HResultSet {
 

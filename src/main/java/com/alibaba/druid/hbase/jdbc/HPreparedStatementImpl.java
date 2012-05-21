@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import com.alibaba.druid.common.jdbc.PreparedStatementBase;
-import com.alibaba.druid.common.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 import com.alibaba.druid.hbase.exec.ExecutePlan;
 import com.alibaba.druid.hbase.exec.InsertExecutePlan;
 import com.alibaba.druid.hbase.exec.ShowTablesPlan;
@@ -25,6 +23,8 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.util.jdbc.PreparedStatementBase;
+import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 
 public class HPreparedStatementImpl extends PreparedStatementBase implements HPreparedStatement {
 
