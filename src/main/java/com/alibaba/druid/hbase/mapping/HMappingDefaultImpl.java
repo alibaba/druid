@@ -13,7 +13,7 @@ public class HMappingDefaultImpl implements HMapping {
 
         byte[] bytes;
         if (isRow(columnName)) {
-            bytes = result.getRow();
+            bytes = getRow(result, columnName);
         } else {
             byte[] qualifier = Bytes.toBytes(columnName);
             bytes = result.getValue(family, qualifier);
@@ -24,6 +24,10 @@ public class HMappingDefaultImpl implements HMapping {
 
     public byte[] getFamily(String columnName) {
         return family;
+    }
+    
+    public byte[] getRow(Result result, String columnName) {
+        return result.getRow();
     }
 
     @Override

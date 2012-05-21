@@ -8,6 +8,8 @@ public interface HMapping {
 
     byte[] getQualifier(String columnName);
     
+    byte[] getRow(Result result, String columnName);
+    
     boolean isRow(String columnName);
 
     Object getObject(Result result, String name);
