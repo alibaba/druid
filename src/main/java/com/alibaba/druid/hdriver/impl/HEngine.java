@@ -1,4 +1,4 @@
-package com.alibaba.druid.hdriver;
+package com.alibaba.druid.hdriver.impl;
 
 import java.io.IOException;
 import java.util.Properties;

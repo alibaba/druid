@@ -22,7 +22,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import com.alibaba.druid.hdriver.HConnection;
-import com.alibaba.druid.hdriver.HEngine;
+import com.alibaba.druid.hdriver.impl.HEngine;
 import com.alibaba.druid.util.jdbc.ConnectionBase;
 
 public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
