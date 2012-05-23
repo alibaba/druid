@@ -1,7 +1,6 @@
 package com.alibaba.druid.sql.visitor;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VAR_INDEX;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -104,16 +103,12 @@ public class SQLEvalVisitorUtils {
         
         Map<String, Object> attributes = x.getAttributes();
         
-        Integer varIndex = (Integer) attributes.get(EVAL_VAR_INDEX);
-        if (varIndex == null) {
-            varIndex = visitor.incrementAndGetVariantIndex();
-            x.putAttribute(EVAL_VAR_INDEX, varIndex);
-        }
+        int varIndex = x.getIndex();
 
-        if (visitor.getParameters().size() > 0) {
+        if (varIndex != -1 && visitor.getParameters().size() > varIndex) {
             boolean containsValue = attributes.containsKey(EVAL_VALUE);
             if (!containsValue) {
-                Object value = visitor.getParameters().get(varIndex.intValue());
+                Object value = visitor.getParameters().get(varIndex);
                 attributes.put(EVAL_VALUE, value);
             }
         }

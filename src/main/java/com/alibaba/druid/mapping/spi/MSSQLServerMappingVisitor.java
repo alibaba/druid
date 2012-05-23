@@ -14,7 +14,6 @@ import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -111,11 +110,6 @@ public class MSSQLServerMappingVisitor extends SQLServerASTVisitorAdapter implem
         return MappingVisitorUtils.visit(this, x);
     }
 
-    @Override
-    public boolean visit(SQLVariantRefExpr x) {
-        return MappingVisitorUtils.visit(this, x);
-    }
-    
     @Override
     public boolean visit(SQLAllColumnExpr x) {
         return MappingVisitorUtils.visit(this, x);

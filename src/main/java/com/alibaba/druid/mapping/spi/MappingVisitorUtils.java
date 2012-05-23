@@ -30,7 +30,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.L
 
 public class MappingVisitorUtils {
 
-    private static final String MAPPING_VAR_INDEX = "mapping.varIndex";
     private static final String MAPPING_VALUE     = "mapping.value";
     private static final String MAPPING_PROPERTY  = "mapping.property";
     private static final String MAPPING_ENTITY    = "mapping.entity";
@@ -252,14 +251,9 @@ public class MappingVisitorUtils {
         }
 
         if (expr instanceof SQLVariantRefExpr) {
-            Map<String, Object> attributes = expr.getAttributes();
-            Integer varIndex = (Integer) attributes.get(MAPPING_VAR_INDEX);
-            if (varIndex == null) {
-                varIndex = visitor.getAndIncrementVariantIndex();
-                expr.putAttribute(MAPPING_VAR_INDEX, varIndex);
-            }
+            int varIndex = ((SQLVariantRefExpr) expr).getIndex();
 
-            if (visitor.getParameters().size() > varIndex) {
+            if (varIndex != -1 && visitor.getParameters().size() > varIndex) {
                 Object parameter = visitor.getParameters().get(varIndex);
                 expr.putAttribute(MAPPING_VALUE, parameter);
             }
@@ -371,16 +365,6 @@ public class MappingVisitorUtils {
         return false;
     }
 
-    public static boolean visit(MappingVisitor visitor, SQLVariantRefExpr x) {
-        Map<String, Object> attributes = x.getAttributes();
-        Integer varIndex = (Integer) attributes.get(MAPPING_VAR_INDEX);
-        if (varIndex == null) {
-            varIndex = visitor.getAndIncrementVariantIndex();
-            x.putAttribute(MAPPING_VAR_INDEX, varIndex);
-        }
-        return false;
-    }
-    
     public static boolean visit(MappingVisitor visitor, MySqlSelectQueryBlock x) {
         Integer maxLimit = visitor.getEngine().getMaxLimit();
 

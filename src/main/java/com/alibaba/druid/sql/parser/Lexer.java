@@ -82,6 +82,8 @@ public class Lexer {
      */
     private boolean                            allowComment = true;
 
+    private int                                varIndex     = -1;
+
     public Lexer(String input){
         this(input, true);
     }
@@ -92,6 +94,10 @@ public class Lexer {
 
     public void setAllowComment(boolean allowComment) {
         this.allowComment = allowComment;
+    }
+    
+    public int nextVarIndex() {
+        return ++varIndex;
     }
 
     private static class SavePoint {
@@ -185,7 +191,7 @@ public class Lexer {
     public final Token token() {
         return token;
     }
-    
+
     public String info() {
         return this.token + " " + this.stringVal();
     }
@@ -507,11 +513,11 @@ public class Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                	if (!hasSpecial) {
-	                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
-	                    hasSpecial = true;
-                	}
-                	putChar('\'');
+                    if (!hasSpecial) {
+                        System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                        hasSpecial = true;
+                    }
+                    putChar('\'');
                     continue;
                 }
             }
