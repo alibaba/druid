@@ -2081,8 +2081,25 @@ public class MySqlStatementParser extends SQLStatementParser {
                         accept(Token.RPAREN);
 
                         stmt.getItems().add(item);
-                    } else {
+                    } else if (lexer.token() == Token.UNIQUE) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    } else if (lexer.token() == Token.KEY) {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    } else if (lexer.token() == Token.CONSTRAINT) {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    } else if (identifierEquals("FULLTEXT")) {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    } else if (identifierEquals("SPATIAL")) {
+                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    } else {
+                        MySqlAlterTableAddColumn item = new MySqlAlterTableAddColumn();
+                        SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+                        item.getColumns().add(columnDef);
+                        if (identifierEquals("AFTER")) {
+                            lexer.nextToken();
+                            item.setAfter(this.exprParser.name());
+                        }
+                        stmt.getItems().add(item);
                     }
                 } else if (identifierEquals("ALTER")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
