@@ -1,7 +1,5 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveShowTablesStatement;
@@ -24,25 +22,21 @@ public class HiveStatementParser extends SQLStatementParser {
         return new HiveCreateTableParser(this.exprParser);
     }
 
-    public boolean parseStatementListDialect(List<SQLStatement> statementList) {
-        if (identifierEquals("SHOW")) {
+    public SQLStatement parseShow() {
+        acceptIdentifier("SHOW");
+
+        if (identifierEquals("TABLES")) {
             lexer.nextToken();
 
-            if (identifierEquals("TABLES")) {
-                lexer.nextToken();
+            HiveShowTablesStatement stmt = new HiveShowTablesStatement();
 
-                HiveShowTablesStatement stmt = new HiveShowTablesStatement();
-
-                if (lexer.token() == Token.LITERAL_CHARS) {
-                    stmt.setPattern((SQLCharExpr) exprParser.primary());
-                }
-
-                statementList.add(stmt);
-                return true;
+            if (lexer.token() == Token.LITERAL_CHARS) {
+                stmt.setPattern((SQLCharExpr) exprParser.primary());
             }
 
-            throw new ParserException("TODO " + lexer.info());
+            return stmt;
         }
-        return false;
+
+        throw new ParserException("TODO " + lexer.info());
     }
 }
