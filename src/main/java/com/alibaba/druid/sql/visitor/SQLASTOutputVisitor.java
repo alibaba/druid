@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
@@ -227,44 +228,43 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             incrementIndent();
         }
 
-        if (x.getLeft() instanceof SQLBinaryOpExpr) {
-            SQLBinaryOpExpr left = (SQLBinaryOpExpr) x.getLeft();
-            boolean leftRational = left.getOperator() == SQLBinaryOperator.BooleanAnd
-                                   || left.getOperator() == SQLBinaryOperator.BooleanOr;
-
-            if (left.getOperator().priority > x.getOperator().priority) {
-                if (leftRational) {
-                    incrementIndent();
-                }
-                print('(');
-                left.accept(this);
-                print(')');
-
-                if (leftRational) {
-                    decrementIndent();
-                }
+        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
+        SQLExpr left = x.getLeft();
+        for (;;) {
+            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
+                SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
+                groupList.add(binaryLeft.getRight());
+                left = binaryLeft.getLeft();
             } else {
-                left.accept(this);
+                groupList.add(left);
+                break;
             }
-        } else {
-            x.getLeft().accept(this);
         }
+
+        for (int i = groupList.size() - 1; i >= 0; --i) {
+            SQLExpr item = groupList.get(i);
+            visitBinaryLeft(item, x.getOperator());
+            
+            if (relational) {
+                println();
+            } else {
+                print(" ");
+            }
+            print(x.getOperator().name);
+            print(" ");
+        }
+
+
+        visitorBinaryRight(x);
 
         if (isRoot && relational) {
             decrementIndent();
         }
 
-        if (relational) {
-            if (isRoot) {
-                incrementIndent();
-            }
-            println();
-        } else {
-            print(" ");
-        }
-        print(x.getOperator().name);
-        print(" ");
+        return false;
+    }
 
+    private void visitorBinaryRight(SQLBinaryOpExpr x) {
         if (x.getRight() instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr right = (SQLBinaryOpExpr) x.getRight();
             boolean rightRational = right.getOperator() == SQLBinaryOperator.BooleanAnd
@@ -288,12 +288,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         } else {
             x.getRight().accept(this);
         }
+    }
 
-        if (isRoot && relational) {
-            decrementIndent();
+    private void visitBinaryLeft(SQLExpr left, SQLBinaryOperator op) {
+        if (left instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
+            boolean leftRational = binaryLeft.getOperator() == SQLBinaryOperator.BooleanAnd
+                                   || binaryLeft.getOperator() == SQLBinaryOperator.BooleanOr;
+
+            if (binaryLeft.getOperator().priority > op.priority) {
+                if (leftRational) {
+                    incrementIndent();
+                }
+                print('(');
+                left.accept(this);
+                print(')');
+
+                if (leftRational) {
+                    decrementIndent();
+                }
+            } else {
+                left.accept(this);
+            }
+        } else {
+            left.accept(this);
         }
-
-        return false;
     }
 
     public boolean visit(SQLCaseExpr x) {
@@ -606,7 +625,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         printAndAccept(x.getTableSources(), ", ");
         return false;
     }
-    
+
     public boolean visit(SQLDropViewStatement x) {
         print("DROP VIEW ");
         printAndAccept(x.getTableSources(), ", ");
@@ -803,24 +822,24 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         println();
 
         boolean needParen = false;
-        
+
         if (x.getOrderBy() != null) {
             needParen = true;
         }
-        
+
         if (needParen) {
             print('(');
             x.getRight().accept(this);
             print(')');
         } else {
-            x.getRight().accept(this);    
+            x.getRight().accept(this);
         }
-        
+
         if (x.getOrderBy() != null) {
             println();
             x.getOrderBy().accept(this);
         }
-        
+
         return false;
     }
 
@@ -1045,7 +1064,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print(")");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropColumnItem x) {
         print("DROP COLUMN ");
@@ -1057,7 +1076,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public void endVisit(SQLAlterTableAddColumn x) {
 
     }
-    
+
     @Override
     public boolean visit(SQLDropIndexStatement x) {
         print("DROP INDEX ");
@@ -1066,21 +1085,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         x.getTableName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLSavePointStatement x) {
         print("SAVEPOINT ");
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLReleaseSavePointStatement x) {
         print("RELEASE SAVEPOINT ");
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLRollbackStatement x) {
         print("ROLLBACK");
@@ -1090,7 +1109,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     public boolean visit(SQLCommentHint x) {
         print("/*");
         print(x.getText());

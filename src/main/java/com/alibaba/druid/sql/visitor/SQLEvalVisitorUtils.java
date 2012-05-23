@@ -98,7 +98,12 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLVariantRefExpr x) {
+        if (!"?".equals(x.getName())) {
+            return false;
+        }
+        
         Map<String, Object> attributes = x.getAttributes();
+        
         Integer varIndex = (Integer) attributes.get(EVAL_VAR_INDEX);
         if (varIndex == null) {
             varIndex = visitor.incrementAndGetVariantIndex();
