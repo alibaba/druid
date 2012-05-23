@@ -26,10 +26,12 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     private boolean           global           = false;
 
+    private int               index            = -1;
+
     public SQLVariantRefExpr(String name){
         this.name = name;
     }
-    
+
     public SQLVariantRefExpr(String name, boolean global){
         this.name = name;
         this.global = global;
@@ -37,6 +39,14 @@ public class SQLVariantRefExpr extends SQLExprImpl {
 
     public SQLVariantRefExpr(){
 
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getName() {

@@ -356,7 +356,9 @@ public class SQLExprParser extends SQLParser {
                 break;
             case QUES:
                 lexer.nextToken();
-                sqlExpr = new SQLVariantRefExpr("?");
+                SQLVariantRefExpr quesVarRefExpr = new SQLVariantRefExpr("?");
+                quesVarRefExpr.setIndex(lexer.nextVarIndex());
+                sqlExpr = quesVarRefExpr;
                 break;
             case LEFT:
                 sqlExpr = new SQLIdentifierExpr("LEFT");

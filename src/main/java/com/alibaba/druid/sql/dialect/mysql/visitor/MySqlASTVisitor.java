@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
@@ -510,4 +511,8 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlCharExpr x);
     
     void endVisit(MySqlCharExpr x);
+    
+    boolean visit(MySqlAlterTableAddUnique x);
+    
+    void endVisit(MySqlAlterTableAddUnique x);
 }

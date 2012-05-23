@@ -48,6 +48,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlUserName;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
@@ -163,7 +164,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         print("SELECT ");
-        
 
         for (SQLCommentHint hint : x.getHints()) {
             hint.accept(this);
@@ -2548,8 +2548,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         print("INDEX ");
 
-        x.getName().accept(this);
-        print(" (");
+        if (x.getName() != null) {
+            x.getName().accept(this);
+            print(' ');
+        }
+        print("(");
         printAndAccept(x.getItems(), ", ");
         print(")");
 
@@ -2563,6 +2566,36 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlAlterTableAddIndex x) {
 
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterTableAddUnique x) {
+        print("ADD ");
+        if (x.getType() != null) {
+            print(x.getType());
+            print(" ");
+        }
+        
+        print("UNIQUE ");
+        
+        if (x.getName() != null) {
+            x.getName().accept(this);
+            print(' ');
+        }
+        print("(");
+        printAndAccept(x.getItems(), ", ");
+        print(")");
+        
+        if (x.getUsing() != null) {
+            print(" USING ");
+            print(x.getUsing());
+        }
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlAlterTableAddUnique x) {
+        
     }
 
     @Override
@@ -2592,7 +2625,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlHelpStatement x) {
-        
+
     }
 
     @Override
@@ -2603,6 +2636,6 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlCharExpr x) {
-        
+
     }
 }
