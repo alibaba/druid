@@ -37,6 +37,11 @@
 			<url>http://code.alibabatech.com/mvn/releases/</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<id>local-file</id>
+			<url>file://${basedir}/lib/</url>
+			<layout>default</layout>
+		</repository>
 
 		<repository>
 			<id>springsource-repo</id>
