@@ -16,7 +16,9 @@
 package com.alibaba.druid.stat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TableStat {
 
@@ -341,8 +343,10 @@ public class TableStat {
 
     public static class Column {
 
-        private String table;
-        private String name;
+        private String              table;
+        private String              name;
+
+        private Map<String, Object> attributes = new HashMap<String, Object>();
 
         public Column(){
 
@@ -367,6 +371,14 @@ public class TableStat {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public Map<String, Object> getAttributes() {
+            return attributes;
+        }
+
+        public void setAttributes(Map<String, Object> attributes) {
+            this.attributes = attributes;
         }
 
         public int hashCode() {

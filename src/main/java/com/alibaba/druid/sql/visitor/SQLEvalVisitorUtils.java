@@ -22,6 +22,8 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLEvalVisitorUtils {
@@ -47,15 +49,19 @@ public class SQLEvalVisitorUtils {
 
         return sqlObject.getAttributes().get(EVAL_VALUE);
     }
-
+    
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters) {
+        return eval(dbType, sqlObject, parameters, true);
+    }
+
+    public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters, boolean throwError) {
         SQLEvalVisitor visitor = createEvalVisitor(dbType);
         visitor.setParameters(parameters);
         sqlObject.accept(visitor);
 
         Object value = getValue(sqlObject);
         if (value == null) {
-            if (!sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
+            if (throwError && !sqlObject.getAttributes().containsKey(EVAL_VALUE)) {
                 throw new DruidRuntimeException("eval error : " + SQLUtils.toSQLString(sqlObject, dbType));
             }
         }
@@ -66,6 +72,14 @@ public class SQLEvalVisitorUtils {
     public static SQLEvalVisitor createEvalVisitor(String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
+        }
+        
+        if (JdbcUtils.ORACLE.equals(dbType)) {
+            return new OracleEvalVisitor();
+        }
+        
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return new PGEvalVisitor();
         }
 
         return new SQLEvalVisitorImpl();

@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -53,9 +54,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
     protected final Set<Column>                        columns        = new LinkedHashSet<Column>();
-    protected final List<Condition>                     conditions     = new ArrayList<Condition>();
+    protected final List<Condition>                    conditions     = new ArrayList<Condition>();
     protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
-    protected final Set<Column>                        orderByColumns = new LinkedHashSet<Column>();
+    protected final List<Column>                       orderByColumns = new ArrayList<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
 
     protected final Map<String, SQLObject>             subQueryMap    = new LinkedHashMap<String, SQLObject>();
@@ -192,6 +193,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         public OrderByStatVisitor(SQLOrderBy orderBy){
             this.orderBy = orderBy;
+            for (SQLSelectOrderByItem item : orderBy.getItems()) {
+                item.getExpr().setParent(item);
+            }
         }
 
         public SQLOrderBy getOrderBy() {
@@ -206,9 +210,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             }
 
             if (currentTable != null) {
-                orderByColumns.add(new Column(currentTable, x.getName()));
+                addOrderByColumn(currentTable, x.getName(), x);
             } else {
-                orderByColumns.add(new Column("UNKOWN", x.getName()));
+                addOrderByColumn("UNKOWN", x.getName(), x);
             }
             return false;
         }
@@ -224,11 +228,23 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 owner = aliasWrap(owner);
 
                 if (owner != null) {
-                    orderByColumns.add(new Column(owner, x.getName()));
+                    addOrderByColumn(owner, x.getName(), x);
                 }
             }
 
             return false;
+        }
+
+        public void addOrderByColumn(String table, String columnName, SQLObject expr) {
+            Column column = new Column(table, columnName);
+            
+            SQLObject parent = expr.getParent();
+            if (parent instanceof SQLSelectOrderByItem) {
+                SQLOrderingSpecification type = ((SQLSelectOrderByItem) parent).getType();
+                column.getAttributes().put("orderBy.type", type);
+            }
+            
+            orderByColumns.add(column);
         }
     }
 
@@ -258,7 +274,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return relationships;
     }
 
-    public Set<Column> getOrderByColumns() {
+    public List<Column> getOrderByColumns() {
         return orderByColumns;
     }
 
@@ -340,13 +356,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             condition.setOperator(operator);
             this.conditions.add(condition);
         }
-        
+
         for (SQLExpr item : valueExprs) {
-            Object value = SQLEvalVisitorUtils.eval(getDbType(), item, parameters);
+            Object value = SQLEvalVisitorUtils.eval(getDbType(), item, parameters, false);
             condition.getValues().add(value);
         }
     }
-    
+
     public String getDbType() {
         return null;
     }
