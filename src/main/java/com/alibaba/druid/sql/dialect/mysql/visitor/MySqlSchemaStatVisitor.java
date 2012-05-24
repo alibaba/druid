@@ -113,6 +113,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlASTVisitor {
 
@@ -121,6 +122,11 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
         getAliasMap().put("DUAL", null);
 
         return true;
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcUtils.MYSQL;
     }
 
     // DUAL

@@ -1,5 +1,7 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -140,14 +142,25 @@ import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Mode;
 import com.alibaba.druid.stat.TableStat.Relationship;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
 
     public OracleSchemaStatVisitor(){
+        this (new ArrayList<Object>());
+    }
+    
+    public OracleSchemaStatVisitor(List<Object> parameters) {
+        super (parameters);
         this.variants.put("DUAL", null);
         this.variants.put("NOTFOUND", null);
         this.variants.put("TRUE", null);
         this.variants.put("FALSE", null);
+    }
+    
+    @Override
+    public String getDbType() {
+        return JdbcUtils.ORACLE;
     }
 
     protected Column getColumn(SQLExpr expr) {

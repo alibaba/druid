@@ -4,9 +4,15 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveCreateTableStatement;
 import com.alibaba.druid.sql.dialect.hive.ast.stmt.HiveShowTablesStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class HiveSchemaStatVisitor extends SchemaStatVisitor implements HiveASTVisitor {
 
+    @Override
+    public String getDbType() {
+        return JdbcUtils.HIVE;
+    }
+    
     @Override
     public void endVisit(HiveCreateTableStatement x) {
         

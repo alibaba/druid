@@ -21,6 +21,7 @@ public class DruidDataSourceFilterTest extends TestCase {
     }
 
     public void test_filter() throws Exception {
+        System.out.println(System.nanoTime()/(1000 * 1000));
         DruidDataSource dataSource = new DruidDataSource();
 
         Assert.assertEquals(0, dataSource.getProxyFilters().size());

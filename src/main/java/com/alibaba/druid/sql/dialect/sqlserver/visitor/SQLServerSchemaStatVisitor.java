@@ -5,10 +5,16 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.util.JdbcUtils;
 
 
 public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQLServerASTVisitor {
 
+    @Override
+    public String getDbType() {
+        return JdbcUtils.SQL_SERVER;
+    }
+    
     @Override
     public boolean visit(SQLServerSelectQueryBlock x) {
         return visit((SQLSelectQueryBlock) x);
