@@ -1,5 +1,6 @@
 package com.alibaba.druid.sql.visitor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -52,7 +53,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     protected final HashMap<TableStat.Name, TableStat> tableStats     = new LinkedHashMap<TableStat.Name, TableStat>();
     protected final Set<Column>                        columns        = new LinkedHashSet<Column>();
-    protected final Set<Condition>                     conditions     = new LinkedHashSet<Condition>();
+    protected final List<Condition>                     conditions     = new ArrayList<Condition>();
     protected final Set<Relationship>                  relationships  = new LinkedHashSet<Relationship>();
     protected final Set<Column>                        orderByColumns = new LinkedHashSet<Column>();
     protected final Set<Column>                        groupByColumns = new LinkedHashSet<Column>();
@@ -68,7 +69,25 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public final static String                         ATTR_TABLE     = "_table_";
     public final static String                         ATTR_COLUMN    = "_column_";
 
+    private List<Object>                               parameters;
+
     private Mode                                       mode;
+
+    public SchemaStatVisitor(){
+        this(new ArrayList<Object>());
+    }
+
+    public SchemaStatVisitor(List<Object> parameters){
+        this.parameters = parameters;
+    }
+
+    public List<Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<Object> parameters) {
+        this.parameters = parameters;
+    }
 
     public TableStat getTableStat(String ident) {
         return getTableStat(ident, null);
@@ -247,7 +266,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         return groupByColumns;
     }
 
-    public Set<Condition> getConditions() {
+    public List<Condition> getConditions() {
         return conditions;
     }
 
@@ -267,8 +286,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             case NotLike:
             case Is:
             case IsNot:
-                handleCondition(x.getLeft(), x.getOperator().name);
-                handleCondition(x.getRight(), x.getOperator().name);
+                handleCondition(x.getLeft(), x.getOperator().name, x.getRight());
+                handleCondition(x.getRight(), x.getOperator().name, x.getLeft());
 
                 handleRelationship(x.getLeft(), x.getOperator().name, x.getRight());
                 break;
@@ -297,16 +316,39 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         this.relationships.add(relationship);
     }
 
-    protected void handleCondition(SQLExpr expr, String operator) {
+    protected void handleCondition(SQLExpr expr, String operator, List<SQLExpr> values) {
+        handleCondition(expr, operator, values.toArray(new SQLExpr[values.size()]));
+    }
+
+    protected void handleCondition(SQLExpr expr, String operator, SQLExpr... valueExprs) {
         Column column = getColumn(expr);
         if (column == null) {
             return;
         }
 
-        Condition condition = new Condition();
-        condition.setColumn(column);
-        condition.setOperator(operator);
-        this.conditions.add(condition);
+        Condition condition = null;
+        for (Condition item : this.getConditions()) {
+            if (item.getColumn().equals(column) && item.getOperator().equals(operator)) {
+                condition = item;
+                break;
+            }
+        }
+
+        if (condition == null) {
+            condition = new Condition();
+            condition.setColumn(column);
+            condition.setOperator(operator);
+            this.conditions.add(condition);
+        }
+        
+        for (SQLExpr item : valueExprs) {
+            Object value = SQLEvalVisitorUtils.eval(getDbType(), item, parameters);
+            condition.getValues().add(value);
+        }
+    }
+    
+    public String getDbType() {
+        return null;
     }
 
     protected Column getColumn(SQLExpr expr) {
@@ -820,9 +862,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLInListExpr x) {
         if (x.isNot()) {
-            handleCondition(x.getExpr(), "NOT IN");
+            handleCondition(x.getExpr(), "NOT IN", x.getTargetList());
         } else {
-            handleCondition(x.getExpr(), "IN");
+            handleCondition(x.getExpr(), "IN", x.getTargetList());
         }
 
         return true;
@@ -901,7 +943,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();

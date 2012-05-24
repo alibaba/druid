@@ -64,6 +64,8 @@ public final class JdbcUtils {
     public static final String      DERBY            = "derby";
     
     public static final String      HBASE            = "hbase";
+    
+    public static final String      HIVE            = "hive";
 
     private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 

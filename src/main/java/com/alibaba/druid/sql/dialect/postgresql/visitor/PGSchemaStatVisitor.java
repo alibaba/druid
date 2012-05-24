@@ -23,9 +23,15 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGUpdateStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Mode;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class PGSchemaStatVisitor extends SchemaStatVisitor implements PGASTVisitor {
 
+    @Override
+    public String getDbType() {
+        return JdbcUtils.POSTGRESQL;
+    }
+    
     @Override
     public void endVisit(WindowClause x) {
 

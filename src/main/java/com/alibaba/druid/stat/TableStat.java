@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.stat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TableStat {
 
     int selectCount      = 0;
@@ -268,8 +271,10 @@ public class TableStat {
 
     public static class Condition {
 
-        private Column column;
-        private String operator;
+        private Column       column;
+        private String       operator;
+
+        private List<Object> values = new ArrayList<Object>();
 
         public Column getColumn() {
             return column;
@@ -285,6 +290,10 @@ public class TableStat {
 
         public void setOperator(String operator) {
             this.operator = operator;
+        }
+
+        public List<Object> getValues() {
+            return values;
         }
 
         @Override

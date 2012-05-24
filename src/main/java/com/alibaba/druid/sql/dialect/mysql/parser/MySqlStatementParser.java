@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
@@ -2065,10 +2066,14 @@ public class MySqlStatementParser extends SQLStatementParser {
                     } else if (lexer.token() == Token.INDEX) {
                         lexer.nextToken();
                         MySqlAlterTableAddIndex item = new MySqlAlterTableAddIndex();
-                        item.setName(this.exprParser.name());
                         
-                        accept(Token.LPAREN);
-
+                        if (lexer.token() == Token.LPAREN) {
+                            lexer.nextToken();
+                        } else {
+                            item.setName(this.exprParser.name());
+                            accept(Token.LPAREN);
+                        }
+                        
                         for (;;) {
                             SQLSelectOrderByItem column = this.exprParser.parseSelectOrderByItem();
                             item.getItems().add(column);
@@ -2082,7 +2087,28 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.UNIQUE) {
-                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                        lexer.nextToken();
+                        MySqlAlterTableAddUnique item = new MySqlAlterTableAddUnique();
+                        
+                        if (lexer.token() == Token.LPAREN) {
+                            lexer.nextToken();
+                        } else {
+                            item.setName(this.exprParser.name());
+                            accept(Token.LPAREN);
+                        }
+                        
+                        for (;;) {
+                            SQLSelectOrderByItem column = this.exprParser.parseSelectOrderByItem();
+                            item.getItems().add(column);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+
+                        stmt.getItems().add(item);
                     } else if (lexer.token() == Token.KEY) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     } else if (lexer.token() == Token.CONSTRAINT) {
