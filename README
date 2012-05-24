@@ -1,12 +1,6 @@
-mvn install:install-file -Dfile=lib/oracle/9.2.0.8/ojdbc14_g.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=9.2.0.8 -Dpackaging=jar -DgeneratePom=true
+Introduction
+---
+* git clone git://github.com/argan/druid.git
+* cd druid && mvn install
+* have fun.
 
-mvn install:install-file -Dfile=lib/oracle/10.1.0.5/ojdbc14_g.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.1.0.5 -Dpackaging=jar -DgeneratePom=true
-
-mvn install:install-file -Dfile=lib/oracle/10.2.0.2/ojdbc14_g.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/oracle/10.2.0.5/ojdbc14_g.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.5 -Dpackaging=jar -DgeneratePom=true
-
-mvn install:install-file -Dfile=lib/oracle/11.2.0.3/ojdbc5_g.jar -DgroupId=com.oracle -DartifactId=ojdbc5 -Dversion=11.2.0.3 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/oracle/11.2.0.3/ojdbc6_g.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -DgeneratePom=true
-
-mvn install:install-file -Dfile=lib/proxool/proxool-0.9.1.jar -DgroupId=proxool -DartifactId=proxool -Dversion=0.9.1 -Dpackaging=jar -DgeneratePom=true
-mvn install:install-file -Dfile=lib/proxool/proxool-cglib.jar -DgroupId=proxool -DartifactId=proxool-cglib -Dversion=0.9.1 -Dpackaging=jar -DgeneratePom=true
