@@ -28,6 +28,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
@@ -273,6 +274,10 @@ public class MySqlStatementParser extends SQLStatementParser {
             MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
             stmt.setHints(hints);
             return stmt;
+        }
+        
+        if (lexer.token() == Token.DATABASE) {
+            return parseCreateDatabase();
         }
 
         if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals("FULLTEXT")
@@ -2275,6 +2280,23 @@ public class MySqlStatementParser extends SQLStatementParser {
             break;
         }
 
+        return stmt;
+    }
+    
+    public SQLStatement parseCreateDatabase() {
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+        }
+        
+        accept(Token.DATABASE);
+        
+        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement();
+        stmt.setName(this.exprParser.name());
+        
+        if (lexer.token() == Token.DEFAULT) {
+            lexer.nextToken();
+        }
+        
         return stmt;
     }
 }

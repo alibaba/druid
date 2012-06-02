@@ -69,6 +69,7 @@ public enum Token {
     CAST("CAST"),
     COLUMN("COLUMN"),
     USE("USE"),
+    DATABASE("DATABASE"),
 
     AND("AND"), 
     OR("OR"), 

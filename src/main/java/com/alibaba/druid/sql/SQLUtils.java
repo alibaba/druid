@@ -101,14 +101,18 @@ public class SQLUtils {
 
         return expr;
     }
+    
+    public static List<SQLStatement> toStatementList(String sql, String dbType) {
+        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
+        return parser.parseStatementList();
+    }
 
     public static SQLExpr toSQLExpr(String sql) {
         return toSQLExpr(sql, null);
     }
 
     public static String format(String sql, String dbType) {
-        SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
-        List<SQLStatement> statementList = parser.parseStatementList();
+        List<SQLStatement> statementList = toStatementList(sql, dbType);
 
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);

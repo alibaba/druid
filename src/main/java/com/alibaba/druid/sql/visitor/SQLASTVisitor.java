@@ -58,6 +58,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -367,12 +368,16 @@ public interface SQLASTVisitor {
     boolean visit(SQLRollbackStatement x);
 
     void endVisit(SQLRollbackStatement x);
-    
+
     boolean visit(SQLReleaseSavePointStatement x);
-    
+
     void endVisit(SQLReleaseSavePointStatement x);
-    
+
     void endVisit(SQLCommentHint x);
-    
+
     boolean visit(SQLCommentHint x);
+
+    void endVisit(SQLCreateDatabaseStatement x);
+
+    boolean visit(SQLCreateDatabaseStatement x);
 }

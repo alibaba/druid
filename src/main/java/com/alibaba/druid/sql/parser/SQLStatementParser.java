@@ -25,6 +25,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
@@ -478,9 +479,23 @@ public class SQLStatementParser extends SQLParser {
 
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+        } else if (token == Token.DATABASE) {
+            return parseCreateDatabase();
         }
 
         throw new ParserException("TODO " + lexer.token());
+    }
+    
+    public SQLStatement parseCreateDatabase() {
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+        }
+        
+        accept(Token.DATABASE);
+        
+        SQLCreateDatabaseStatement stmt = new SQLCreateDatabaseStatement();
+        stmt.setName(this.exprParser.name());
+        return stmt;
     }
 
     public SQLStatement parseCreateProcedure() {
