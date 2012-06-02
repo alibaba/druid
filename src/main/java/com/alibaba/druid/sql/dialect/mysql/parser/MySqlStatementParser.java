@@ -801,7 +801,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
 
-            if (identifierEquals("DATABASE")) {
+            if (lexer.token() == Token.DATABASE) {
                 lexer.nextToken();
 
                 MySqlShowCreateDatabaseStatement stmt = new MySqlShowCreateDatabaseStatement();

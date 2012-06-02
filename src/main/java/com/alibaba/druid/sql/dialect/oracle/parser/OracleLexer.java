@@ -19,116 +19,53 @@ public class OracleLexer extends Lexer {
 
     static {
         Map<String, Token> map = new HashMap<String, Token>();
-        map.put("EXISTS", Token.EXISTS);
-        map.put("THEN", Token.THEN);
-        map.put("AS", Token.AS);
-        map.put("GROUP", Token.GROUP);
-        map.put("BY", Token.BY);
-        map.put("HAVING", Token.HAVING);
-        map.put("DELETE", Token.DELETE);
-        map.put("ORDER", Token.ORDER);
-        map.put("INDEX", Token.INDEX);
-        map.put("FOR", Token.FOR);
-        map.put("SCHEMA", Token.SCHEMA);
-        map.put("FOREIGN", Token.FOREIGN);
-        map.put("REFERENCES", Token.REFERENCES);
-        map.put("CHECK", Token.CHECK);
-        map.put("PRIMARY", Token.PRIMARY);
-        map.put("KEY", Token.KEY);
-        map.put("CONSTRAINT", Token.CONSTRAINT);
-        map.put("DEFAULT", Token.DEFAULT);
-        map.put("VIEW", Token.VIEW);
-        map.put("CREATE", Token.CREATE);
-        map.put("VALUES", Token.VALUES);
-        map.put("ALTER", Token.ALTER);
-        map.put("TABLE", Token.TABLE);
-        map.put("DROP", Token.DROP);
-        map.put("SET", Token.SET);
-        map.put("INTO", Token.INTO);
-        map.put("UPDATE", Token.UPDATE);
-        map.put("NULL", Token.NULL);
-        map.put("IS", Token.IS);
-        map.put("NOT", Token.NOT);
-        map.put("SELECT", Token.SELECT);
-        map.put("INSERT", Token.INSERT);
-        map.put("FROM", Token.FROM);
-        map.put("WHERE", Token.WHERE);
-        map.put("AND", Token.AND);
-        map.put("OR", Token.OR);
-        map.put("XOR", Token.XOR);
-        map.put("DISTINCT", Token.DISTINCT);
-        map.put("UNIQUE", Token.UNIQUE);
-        map.put("ALL", Token.ALL);
-        map.put("UNION", Token.UNION);
-        map.put("INTERSECT", Token.INTERSECT);
-        map.put("MINUS", Token.MINUS);
-        map.put("INNER", Token.INNER);
-        map.put("LEFT", Token.LEFT);
-        map.put("RIGHT", Token.RIGHT);
-        map.put("FULL", Token.FULL);
-        map.put("ON", Token.ON);
-        map.put("OUTER", Token.OUTER);
-        map.put("JOIN", Token.JOIN);
-        map.put("NEW", Token.NEW);
-        map.put("CASE", Token.CASE);
-        map.put("WHEN", Token.WHEN);
-        map.put("END", Token.END);
-        map.put("WHEN", Token.WHEN);
-        map.put("ELSE", Token.ELSE);
-        map.put("EXISTS", Token.EXISTS);
-        map.put("CAST", Token.CAST);
-        map.put("IN", Token.IN);
-        map.put("ASC", Token.ASC);
-        map.put("DESC", Token.DESC);
-        map.put("LIKE", Token.LIKE);
-        map.put("ESCAPE", Token.ESCAPE);
-        map.put("BETWEEN", Token.BETWEEN);
-        map.put("INTERVAL", Token.INTERVAL);
-        map.put("LOCK", Token.LOCK);
-        map.put("SOME", Token.SOME);
-        map.put("ANY", Token.ANY);
-        map.put("TRUNCATE", Token.TRUNCATE);
-
-        map.put("START", Token.START);
-        map.put("CONNECT", Token.CONNECT);
-        map.put("PRIOR", Token.PRIOR);
-        map.put("WITH", Token.WITH);
-        map.put("EXTRACT", Token.EXTRACT);
-        map.put("COLUMN", Token.COLUMN);
-
-        map.put("CURSOR", Token.CURSOR);
         
-        map.put("MODEL", Token.MODEL);
-        map.put("MERGE", Token.MERGE);
-        map.put("USING", Token.USING);
-        map.put("MATCHED", Token.MATCHED);
-        map.put("ERRORS", Token.ERRORS);
-        map.put("REJECT", Token.REJECT);
-        map.put("UNLIMITED", Token.UNLIMITED);
-        map.put("RETURNING", Token.RETURNING);
-        map.put("LIMIT", Token.LIMIT);
-        map.put("OF", Token.OF);
+        map.putAll(Keywords.DEFAULT_KEYWORDS.getKeywords());
+
         map.put("BEGIN", Token.BEGIN);
-        map.put("SHARE", Token.SHARE);
-        map.put("EXCLUSIVE", Token.EXCLUSIVE);
-        map.put("MODE", Token.MODE);
-        map.put("WAIT", Token.WAIT);
-        map.put("NOWAIT", Token.NOWAIT);
-        map.put("SESSION", Token.SESSION);
-        map.put("PROCEDURE", Token.PROCEDURE);
-        map.put("LOCAL", Token.LOCAL);
-        map.put("SYSDATE", Token.SYSDATE);
-        map.put("DECLARE", Token.DECLARE);
-        map.put("EXCEPTION", Token.EXCEPTION);
-        map.put("GRANT", Token.GRANT);
+        map.put("COLUMN", Token.COLUMN);
         map.put("COMMENT", Token.COMMENT);
-        map.put("LOOP", Token.LOOP);
-        map.put("IF", Token.IF);
-        map.put("ELSE", Token.ELSE);
-        map.put("GOTO", Token.GOTO);
         map.put("COMMIT", Token.COMMIT);
-        map.put("SAVEPOINT", Token.SAVEPOINT);
+        map.put("CONNECT", Token.CONNECT);
+
         map.put("CROSS", Token.CROSS);
+        map.put("CURSOR", Token.CURSOR);
+        map.put("DECLARE", Token.DECLARE);
+        map.put("ERRORS", Token.ERRORS);
+        map.put("EXCEPTION", Token.EXCEPTION);
+
+        map.put("EXCLUSIVE", Token.EXCLUSIVE);
+        map.put("EXTRACT", Token.EXTRACT);
+        map.put("GOTO", Token.GOTO);
+        map.put("GRANT", Token.GRANT);
+        map.put("IF", Token.IF);
+
+        map.put("LIMIT", Token.LIMIT);
+        map.put("LOCAL", Token.LOCAL);
+        map.put("LOOP", Token.LOOP);
+        map.put("MATCHED", Token.MATCHED);
+        map.put("MERGE", Token.MERGE);
+
+        map.put("MODE", Token.MODE);
+        map.put("MODEL", Token.MODEL);
+        map.put("NOWAIT", Token.NOWAIT);
+        map.put("OF", Token.OF);
+        map.put("PRIOR", Token.PRIOR);
+
+        map.put("PROCEDURE", Token.PROCEDURE);
+        map.put("REJECT", Token.REJECT);
+        map.put("RETURNING", Token.RETURNING);
+        map.put("SAVEPOINT", Token.SAVEPOINT);
+        map.put("SESSION", Token.SESSION);
+
+        map.put("SHARE", Token.SHARE);
+        map.put("START", Token.START);
+        map.put("SYSDATE", Token.SYSDATE);
+        map.put("UNLIMITED", Token.UNLIMITED);
+        map.put("USING", Token.USING);
+
+        map.put("WAIT", Token.WAIT);
+        map.put("WITH", Token.WITH);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
@@ -245,14 +182,14 @@ public class OracleLexer extends Lexer {
                 stringVal = new String(buf, np, sp);
                 token = Token.MULTI_LINE_COMMENT;
             }
-            
+
             if (token != Token.HINT && !isAllowComment()) {
                 throw new NotAllowCommentException();
             }
 
             return;
         }
-        
+
         if (!isAllowComment()) {
             throw new NotAllowCommentException();
         }
@@ -367,5 +304,5 @@ public class OracleLexer extends Lexer {
             token = Token.LITERAL_INT;
         }
     }
-    
+
 }

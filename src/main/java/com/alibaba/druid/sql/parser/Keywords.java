@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.parser;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

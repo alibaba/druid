@@ -368,6 +368,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLIdentifierExpr("RIGHT");
                 lexer.nextToken();
                 break;
+            case DATABASE:
+                sqlExpr = new SQLIdentifierExpr("DATABASE");
+                lexer.nextToken();
+                break;
             case LOCK:
                 sqlExpr = new SQLIdentifierExpr("LOCK");
                 lexer.nextToken();
