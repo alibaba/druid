@@ -779,7 +779,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
         long estimate = unit.toNanos(timeout);
 
-        for (;;) {
+        for (int i = 0;;++i) {
             if (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
 
@@ -820,7 +820,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (createError != null) {
                         throw new GetConnectionTimeoutException(createError);
                     } else {
-                        throw new GetConnectionTimeoutException();
+                        throw new GetConnectionTimeoutException("loopWaitCount " + i);
                     }
                 }
             }
@@ -928,7 +928,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     // 必须存在线程等待，才创建连接
                     if (poolingCount >= notEmptyWaitThreadCount) {
                         empty.await();
-                        continue;
                     }
 
                     // 防止创建超过maxActive数量的连接

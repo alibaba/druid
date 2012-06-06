@@ -215,7 +215,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                           useOracleImplicitCache                    = true;
 
-    protected final ReentrantLock                                                               lock                                      = new ReentrantLock();
+    protected final ReentrantLock                                                               lock                                      = new ReentrantLock(true);
 
     protected int                                                                               modCount                                  = 0;
 
