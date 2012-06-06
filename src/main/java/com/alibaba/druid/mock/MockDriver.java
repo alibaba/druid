@@ -43,51 +43,32 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class MockDriver implements Driver, MockDriverMBean {
 
-    private final static Log               LOG                      = LogFactory.getLog(MockDriver.class);
+    private final static Log               LOG                   = LogFactory.getLog(MockDriver.class);
 
-    public final static MockExecuteHandler DEFAULT_HANDLER          = new MySqlMockExecuteHandlerImpl();
+    public final static MockExecuteHandler DEFAULT_HANDLER       = new MySqlMockExecuteHandlerImpl();
 
-    private String                         prefix                   = "jdbc:fake:";
-    private String                         mockPrefix               = "jdbc:mock:";
+    private String                         prefix                = "jdbc:fake:";
+    private String                         mockPrefix            = "jdbc:mock:";
 
-    private MockExecuteHandler             executeHandler           = DEFAULT_HANDLER;
+    private MockExecuteHandler             executeHandler        = DEFAULT_HANDLER;
 
-    public final static MockDriver         instance                 = new MockDriver();
+    public final static MockDriver         instance              = new MockDriver();
 
-    private final AtomicLong               connectCount             = new AtomicLong();
-    private final AtomicLong               connectionCloseCount     = new AtomicLong();
+    private final AtomicLong               connectCount          = new AtomicLong();
+    private final AtomicLong               connectionCloseCount  = new AtomicLong();
 
-    private final AtomicLong               connectionIdSeed         = new AtomicLong(1000L);
+    private final AtomicLong               connectionIdSeed      = new AtomicLong(1000L);
 
-    private final List<MockConnection>     connections              = new CopyOnWriteArrayList<MockConnection>();
+    private final List<MockConnection>     connections           = new CopyOnWriteArrayList<MockConnection>();
 
-    private long                           idleTimeCount            = 1000 * 60 * 3;
+    private long                           idleTimeCount         = 1000 * 60 * 3;
 
-    private boolean                        logExecuteQueryEnable    = true;
+    private boolean                        logExecuteQueryEnable = true;
 
-    private final static String            MBEAN_NAME               = "com.alibaba.druid:type=MockDriver";
-
-    private MockConnectionFactory          connectionFactory        = new MockConnectionFactoryImpl();
-    private MockPreparedStatementFactory   preparedStatementFactory = new MockPreparedStatementFactoryImpl();
+    private final static String            MBEAN_NAME            = "com.alibaba.druid:type=MockDriver";
 
     static {
         registerDriver(instance);
-    }
-
-    public MockConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    public void setConnectionFactory(MockConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
-    }
-
-    public MockPreparedStatementFactory getPreparedStatementFactory() {
-        return preparedStatementFactory;
-    }
-
-    public void setPreparedStatementFactory(MockPreparedStatementFactory preparedStatementFactory) {
-        this.preparedStatementFactory = preparedStatementFactory;
     }
 
     public boolean isLogExecuteQueryEnable() {
@@ -192,7 +173,7 @@ public class MockDriver implements Driver, MockDriverMBean {
             }
         }
 
-        MockConnection conn = connectionFactory.createConnection(this, url, info);
+        MockConnection conn = createMockConnection(this, url, info);
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("connect, url " + url + ", id " + conn.getId());
@@ -323,5 +304,17 @@ public class MockDriver implements Driver, MockDriverMBean {
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    public MockConnection createMockConnection(MockDriver driver, String url, Properties connectProperties) {
+        return new MockConnection(this, url, connectProperties);
+    }
+
+    public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
+        return new MockPreparedStatement(conn, sql);
+    }
+    
+    public MockStatement createMockStatement(MockConnection conn) {
+        return new MockStatement(conn);
     }
 }

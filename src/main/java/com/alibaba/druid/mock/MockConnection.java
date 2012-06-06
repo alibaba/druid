@@ -108,6 +108,10 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
+        return createMockStatement();
+    }
+
+    private MockStatement createMockStatement() {
         return new MockStatement(this);
     }
 
@@ -189,7 +193,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockStatement stmt = new MockStatement(this);
+        MockStatement stmt = createMockStatement();
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
@@ -273,7 +277,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockStatement stmt = new MockStatement(this);
+        MockStatement stmt = createMockStatement();
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
@@ -300,10 +304,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     private MockPreparedStatement createMockPreparedStatement(String sql) {
         if (driver != null) {
-            MockPreparedStatementFactory preparedStatementFactory = driver.getPreparedStatementFactory();
-            if (preparedStatementFactory != null) {
-                return preparedStatementFactory.createMockPreparedStatement(this, sql);
-            }
+            return driver.createMockPreparedStatement(this, sql);
         }
         return new MockPreparedStatement(this, sql);
     }

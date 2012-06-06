@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.mock.MockPreparedStatementFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -21,15 +20,13 @@ public class TestGetUpdateCount extends TestCase {
     private MockDriver      driver;
 
     protected void setUp() throws Exception {
-        driver = new MockDriver();
-        driver.setPreparedStatementFactory(new MockPreparedStatementFactory() {
+        driver = new MockDriver() {
 
             @Override
             public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
                 return new MyPreparedStatement(conn, sql);
             }
-
-        });
+        };
 
         // /////////////////////////////
 
@@ -108,20 +105,20 @@ public class TestGetUpdateCount extends TestCase {
         }
         {
             Connection conn = dataSource.getConnection();
-            
+
             PreparedStatement stmt = conn.prepareStatement("update t set id = ?");
-            
+
             myStmtB = stmt.unwrap(MyPreparedStatement.class);
             Assert.assertSame(myStmtA, myStmtB);
             Assert.assertNotNull(myStmtB.updateCount);
-            
+
             stmt.setString(1, "xxx");
             stmt.execute();
-            
+
             Assert.assertNotNull(myStmtB.updateCount);
-            
+
             Assert.assertEquals(1, stmt.getUpdateCount());
-            
+
             stmt.close();
             conn.close();
         }
@@ -134,12 +131,12 @@ public class TestGetUpdateCount extends TestCase {
         public MyPreparedStatement(MockConnection conn, String sql){
             super(conn, sql);
         }
-        
+
         public boolean execute() throws SQLException {
             updateCount = null;
             return false;
         }
-        
+
         public ResultSet executeQuery() throws SQLException {
             updateCount = -1;
             return super.executeQuery();
