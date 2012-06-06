@@ -85,6 +85,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public boolean execute() throws SQLException {
+        updateCount = null;
     	lastExecuteType = StatementExecuteType.Execute;
     	firstResultSet = createChain().preparedStatement_execute(this);
     	return firstResultSet;
@@ -92,6 +93,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public ResultSet executeQuery() throws SQLException {
+        updateCount = null;
     	lastExecuteType = StatementExecuteType.ExecuteQuery;
         return createChain().preparedStatement_executeQuery(this);
     }
@@ -99,7 +101,8 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     @Override
     public int executeUpdate() throws SQLException {
     	lastExecuteType = StatementExecuteType.ExecuteUpdate;
-        return createChain().preparedStatement_executeUpdate(this);
+    	updateCount = createChain().preparedStatement_executeUpdate(this);
+    	return updateCount;
     }
 
     @Override

@@ -432,6 +432,7 @@ public class PoolableStatementTest2 extends TestCase {
         Statement stmt = conn.createStatement();
 
         stmt.getUpdateCount();
+        stmt.executeQuery("select 1");
         ((DruidPooledStatement) stmt).getStatement().close();
 
         {

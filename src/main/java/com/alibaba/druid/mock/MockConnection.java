@@ -117,7 +117,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        return createMockPreparedStatement(sql);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockPreparedStatement stmt = new MockPreparedStatement(this, sql);
+        MockPreparedStatement stmt = createMockPreparedStatement(sql);
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
@@ -289,13 +289,23 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockPreparedStatement stmt = new MockPreparedStatement(this, sql);
+        MockPreparedStatement stmt = createMockPreparedStatement(sql);
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
         stmt.setResultSetHoldability(resultSetHoldability);
 
         return stmt;
+    }
+
+    private MockPreparedStatement createMockPreparedStatement(String sql) {
+        if (driver != null) {
+            MockPreparedStatementFactory preparedStatementFactory = driver.getPreparedStatementFactory();
+            if (preparedStatementFactory != null) {
+                return preparedStatementFactory.createMockPreparedStatement(this, sql);
+            }
+        }
+        return new MockPreparedStatement(this, sql);
     }
 
     @Override
@@ -320,7 +330,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        return createMockPreparedStatement(sql);
     }
 
     @Override
@@ -329,7 +339,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        return createMockPreparedStatement(sql);
     }
 
     @Override
@@ -338,7 +348,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockPreparedStatement(this, sql);
+        return createMockPreparedStatement(sql);
     }
 
     @Override
