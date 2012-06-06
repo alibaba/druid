@@ -72,8 +72,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private boolean                   connectionStackTraceEnable = false;
 
-    protected DataSourceProxy         dataSource;
-
     protected final AtomicLong        resetCount                 = new AtomicLong();
 
     // 3 seconds is slow sql
@@ -140,7 +138,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
-        this.dataSource = dataSource;
 
         this.dataSourceStat = dataSource.getDataSourceStat();
 
@@ -426,12 +423,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.addExecuteTime(statement.getLastExecuteType(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
             if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
-            	try {
-					int updateCount = statement.getUpdateCount();
-					sqlStat.addUpdateCount(updateCount);
-				} catch (SQLException e) {
-					LOG.error("getUpdateCount error", e);
-				}
+                try {
+                    int updateCount = statement.getUpdateCount();
+                    sqlStat.addUpdateCount(updateCount);
+                } catch (SQLException e) {
+                    LOG.error("getUpdateCount error", e);
+                }
             }
 
             long millis = nanoSpan / (1000 * 1000);
@@ -569,8 +566,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
 
         if (counter == null) {
+            String dataSourceName = connection.getDirectDataSource().getName();
             connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT,
-                                           new JdbcConnectionStat.Entry(this.dataSource.getName(), connection.getId()));
+                                           new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
             counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
         }
 
@@ -705,29 +703,33 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public String getConnectionUrl() {
+        if (dataSource == null) {
+            return null;
+        }
+        
         return dataSource.getUrl();
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
-    	String contextSql = context != null ? context.getSql() : null;
-    	if (contextSql != null && contextSql.length() > 0) {
-    		return dataSourceStat.createSqlStat(contextSql);
-    	} else {
-    		sql = mergeSql(sql);
-    		return dataSourceStat.createSqlStat(sql);
-    	}
+        String contextSql = context != null ? context.getSql() : null;
+        if (contextSql != null && contextSql.length() > 0) {
+            return dataSourceStat.createSqlStat(contextSql);
+        } else {
+            sql = mergeSql(sql);
+            return dataSourceStat.createSqlStat(sql);
+        }
     }
 
     public JdbcSqlStat getSqlCounter(String sql) {
-    	
-    	sql = mergeSql(sql); //mergeSql
+
+        sql = mergeSql(sql); // mergeSql
         return getSqlStat(sql);
     }
 
     public JdbcSqlStat getSqlStat(String sql) {
-    	
-    	sql = mergeSql(sql);
+
+        sql = mergeSql(sql);
         return dataSourceStat.getSqlStat(sql);
     }
 

@@ -68,6 +68,18 @@ public class TestClone extends TestCase {
         Assert.assertTrue(mockConn_0.isClosed());
         Assert.assertTrue(mockConn_1.isClosed());
         Assert.assertTrue(mockConn_2.isClosed());
+        
+        // now is new dataSource;
+        dataSource = clone;
+        
+        Connection conn_3 = dataSource.getConnection();
+        Connection conn_4 = dataSource.getConnection();
+        Connection conn_5 = dataSource.getConnection();
+        
+        conn_3.close();
+        conn_4.close();
+        conn_5.close();
+        
     }
     
     protected void tearDown() throws Exception {

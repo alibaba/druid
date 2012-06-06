@@ -210,10 +210,10 @@ public class EncodingConvertFilter extends FilterAdapter {
             String text = IOUtils.read(reader);
             return new StringReader(decode(connection, text));
         }
-        
-        return object; 
+
+        return object;
     }
-    
+
     public Object decodeObject(CallableStatementProxy stmt, Object object) throws SQLException {
         if (object instanceof String) {
             return decode(stmt.getConnectionProxy(), (String) object);
@@ -224,11 +224,11 @@ public class EncodingConvertFilter extends FilterAdapter {
             String text = IOUtils.read(reader);
             return new StringReader(decode(stmt.getConnectionProxy(), text));
         }
-        
+
         if (object instanceof ResultSet) {
+            long resultSetId = stmt.getConnectionProxy().getDirectDataSource().createResultSetId();
             ResultSet resultSet = (ResultSet) object;
-            return new ResultSetProxyImpl(stmt, resultSet, dataSource.createResultSetId(),
-                                          stmt.getLastExecuteSql());
+            return new ResultSetProxyImpl(stmt, resultSet, resultSetId, stmt.getLastExecuteSql());
         }
 
         return object;
