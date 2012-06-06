@@ -494,7 +494,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public String getDbType() {
         return dbType;
     }
-    
+
     public void setDbType(String dbType) {
         this.dbType = dbType;
     }
@@ -852,7 +852,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         this.username = username;
     }
-    
 
     public String getPassword() {
         return password;
@@ -922,7 +921,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         this.jdbcUrl = jdbcUrl;
     }
-    
+
     public String getDriverClassName() {
         return driverClass;
     }
@@ -1546,7 +1545,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         JdbcUtils.close(stmtHolder.getStatement());
     }
-    
+
     public static boolean equals(Object object1, Object object2) {
         if (object1 == object2) {
             return true;
@@ -1556,4 +1555,62 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
         return object1.equals(object2);
     }
+
+    protected void cloneTo(DruidAbstractDataSource to) {
+        to.defaultAutoCommit = this.defaultAutoCommit;
+        to.defaultReadOnly = this.defaultReadOnly;
+        to.defaultTransactionIsolation = this.defaultTransactionIsolation;
+        to.defaultCatalog = this.defaultCatalog;
+        to.name = this.name;
+        to.username = this.username;
+        to.password = this.password;
+        to.jdbcUrl = this.jdbcUrl;
+        to.driverClass = this.driverClass;
+        to.connectionProperties = this.connectionProperties;
+        to.passwordCallback = this.passwordCallback;
+        to.userCallback = this.userCallback;
+        to.connectionFactory = this.connectionFactory;
+        to.initialSize = this.initialSize;
+        to.maxActive = this.maxActive;
+        to.minIdle = this.minIdle;
+        to.maxIdle = this.maxIdle;
+        to.maxWait = this.maxWait;
+        to.validationQuery = this.validationQuery;
+        to.validationQueryTimeout = this.validationQueryTimeout;
+        to.testOnBorrow = this.testOnBorrow;
+        to.testOnReturn = this.testOnReturn;
+        to.testWhileIdle = this.testWhileIdle;
+        to.poolPreparedStatements = this.poolPreparedStatements;
+        to.sharePreparedStatements = this.sharePreparedStatements;
+        to.maxPoolPreparedStatementPerConnectionSize = this.maxPoolPreparedStatementPerConnectionSize;
+        to.logWriter = this.logWriter;
+        if (this.filters != null) {
+            to.filters = new ArrayList<Filter>(this.filters);
+        }
+        to.exceptionSorter = this.exceptionSorter;
+        to.driver = this.driver;
+        to.queryTimeout = this.queryTimeout;
+        to.transactionQueryTimeout = this.transactionQueryTimeout;
+        to.accessToUnderlyingConnectionAllowed = this.accessToUnderlyingConnectionAllowed;
+        to.timeBetweenEvictionRunsMillis = this.timeBetweenEvictionRunsMillis;
+        to.numTestsPerEvictionRun = this.numTestsPerEvictionRun;
+        to.minEvictableIdleTimeMillis = this.minEvictableIdleTimeMillis;
+        to.removeAbandoned = this.removeAbandoned;
+        to.removeAbandonedTimeoutMillis = this.removeAbandonedTimeoutMillis;
+        to.logAbandoned = this.logAbandoned;
+        to.maxOpenPreparedStatements = this.maxOpenPreparedStatements;
+        if (connectionInitSqls != null) {
+            to.connectionInitSqls = new ArrayList<String>(this.connectionInitSqls);
+        }
+        to.dbType = this.dbType;
+        to.timeBetweenConnectErrorMillis = this.timeBetweenConnectErrorMillis;
+        to.validConnectionChecker = this.validConnectionChecker;
+        to.connectionErrorRetryAttempts = this.connectionErrorRetryAttempts;
+        to.breakAfterAcquireFailure = this.breakAfterAcquireFailure;
+        to.transactionThresholdMillis = this.transactionThresholdMillis;
+        to.dupCloseLogEnable = this.dupCloseLogEnable;
+        to.isOracle = this.isOracle;
+        to.useOracleImplicitCache = this.useOracleImplicitCache;
+    }
+
 }

@@ -64,7 +64,7 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable {
+public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable {
 
     private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
@@ -1384,4 +1384,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return dataSourceStat;
     }
 
+    public DruidDataSource clone() {
+        DruidDataSource x = new DruidDataSource();
+        
+        cloneTo(x);
+        
+        return x;
+    }
 }
