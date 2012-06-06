@@ -30,8 +30,16 @@ public class TestClone extends TestCase {
         Connection conn_1 = dataSource.getConnection();
         Connection conn_2 = dataSource.getConnection();
         
-        DruidDataSource clone = dataSource.clone();
+        DruidDataSource clone = (DruidDataSource) dataSource.clone();
         clone.init();
+        
+        Connection conn_3 = dataSource.getConnection();
+        Connection conn_4 = dataSource.getConnection();
+        Connection conn_5 = dataSource.getConnection();
+        
+        conn_3.close();
+        conn_4.close();
+        conn_5.close();
         
         dataSource.close();
         
@@ -72,13 +80,13 @@ public class TestClone extends TestCase {
         // now is new dataSource;
         dataSource = clone;
         
-        Connection conn_3 = dataSource.getConnection();
-        Connection conn_4 = dataSource.getConnection();
-        Connection conn_5 = dataSource.getConnection();
+        Connection conn_6 = dataSource.getConnection();
+        Connection conn_7 = dataSource.getConnection();
+        Connection conn_8 = dataSource.getConnection();
         
-        conn_3.close();
-        conn_4.close();
-        conn_5.close();
+        conn_6.close();
+        conn_7.close();
+        conn_8.close();
         
     }
     

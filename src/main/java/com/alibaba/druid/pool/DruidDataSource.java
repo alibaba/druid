@@ -1383,8 +1383,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public JdbcDataSourceStat getDataSourceStat() {
         return dataSourceStat;
     }
+    
+    public Object clone() throws CloneNotSupportedException {
+        return cloneDruidDataSource();
+    }
 
-    public DruidDataSource clone() {
+    public DruidDataSource cloneDruidDataSource() {
         DruidDataSource x = new DruidDataSource();
         
         cloneTo(x);
