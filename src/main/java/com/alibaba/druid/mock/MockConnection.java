@@ -112,6 +112,9 @@ public class MockConnection extends ConnectionBase implements Connection {
     }
 
     private MockStatement createMockStatement() {
+        if (driver != null) {
+            return driver.createMockStatement(this);
+        }
         return new MockStatement(this);
     }
 
@@ -130,7 +133,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        return new MockCallableStatement(this, sql);
+        return createMockCallableStatement(sql);
     }
 
     @Override
@@ -222,7 +225,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockCallableStatement stmt = new MockCallableStatement(this, sql);
+        MockCallableStatement stmt = createMockCallableStatement(sql);
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
@@ -316,13 +319,20 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
-        MockCallableStatement stmt = new MockCallableStatement(this, sql);
+        MockCallableStatement stmt = createMockCallableStatement(sql);
 
         stmt.setResultSetType(resultSetType);
         stmt.setResultSetConcurrency(resultSetConcurrency);
         stmt.setResultSetHoldability(resultSetHoldability);
 
         return stmt;
+    }
+
+    private MockCallableStatement createMockCallableStatement(String sql) {
+        if (driver != null) {
+            return driver.createMockCallableStatement(this, sql);
+        }
+        return new MockCallableStatement(this, sql);
     }
 
     @Override

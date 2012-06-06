@@ -41,15 +41,17 @@ public class MockPreparedStatement extends PreparedStatementBase implements Prep
     @Override
     public ResultSet executeQuery() throws SQLException {
         checkOpen();
+        
+        MockConnection conn = getConnection();
 
-        if (getConnection() != null && getConnection().getDriver() != null) {
+        if (conn != null && conn.getDriver() != null) {
             return getConnection().getDriver().createResultSet(this);
         }
 
-        if (getConnection() != null) {
-            getConnection().handleSleep();
+        if (conn != null) {
+            conn.handleSleep();
         }
-
+        
         return new MockResultSet(this);
     }
 

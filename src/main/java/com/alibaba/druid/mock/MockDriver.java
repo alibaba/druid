@@ -27,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -313,8 +314,12 @@ public class MockDriver implements Driver, MockDriverMBean {
     public MockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
         return new MockPreparedStatement(conn, sql);
     }
-    
+
     public MockStatement createMockStatement(MockConnection conn) {
         return new MockStatement(conn);
+    }
+
+    public MockCallableStatement createMockCallableStatement(MockConnection conn, String sql) {
+        return new MockCallableStatement(conn, sql);
     }
 }
