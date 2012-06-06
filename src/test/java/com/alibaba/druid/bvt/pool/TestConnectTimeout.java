@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -44,6 +45,7 @@ public class TestConnectTimeout extends TestCase {
             connections.add(conn);
         }
 
+        final AtomicLong errorCount = new AtomicLong();
         final int THREAD_COUNT = 10;
         final CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
         for (int i = 0; i < THREAD_COUNT; ++i) {
@@ -58,6 +60,7 @@ public class TestConnectTimeout extends TestCase {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                        errorCount.incrementAndGet();
                     } finally {
                         latch.countDown();
                     }
@@ -67,6 +70,7 @@ public class TestConnectTimeout extends TestCase {
         }
 
         latch.await();
+        Assert.assertEquals(0, errorCount.get());
     }
 
     protected void tearDown() throws Exception {
