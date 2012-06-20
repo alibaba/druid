@@ -1274,10 +1274,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                     conn = new FilterChainImpl(dataSource).connection_connect(info);
                 } else {
                     conn = dataSource.getDriver().connect(url, info);
-
-                    if (conn == null) {
-                        throw new SQLException("connect error, url " + url);
-                    }
+                }
+                
+                if (conn == null) {
+                    throw new SQLException("connect error, url " + url);
                 }
 
                 conn.setAutoCommit(dataSource.isDefaultAutoCommit());
