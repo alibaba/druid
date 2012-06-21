@@ -14,18 +14,6 @@
 
 	<repositories>
 		<repository>
-			<id>oracleReleases</id>
-			<name>Oracle Released Java Packages</name>
-			<url>http://download.oracle.com/maven</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>vars.sourceforge.net</id>
-			<name>vars.sourceforge.net</name>
-			<url>http://vars.sourceforge.net/maven2/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
 			<id>bonecp</id>
 			<name>bonecp</name>
 			<url>http://jolbox.com/bonecp/downloads/maven/</url>
@@ -247,7 +235,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.0.4</version>
+			<version>5.1.20</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
