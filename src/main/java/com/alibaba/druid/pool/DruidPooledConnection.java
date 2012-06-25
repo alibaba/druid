@@ -31,6 +31,7 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -39,6 +40,8 @@ import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -156,12 +159,11 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     @Override
     public void close() throws SQLException {
-        ConnectionHolder holder = this.holder;
-
         if (this.diable) {
             return;
         }
 
+        ConnectionHolder holder = this.holder;
         if (holder == null && dupCloseLogEnable) {
             LOG.error("dup close");
             return;
@@ -169,6 +171,27 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
             listener.connectionClosed(new ConnectionEvent(this));
+        }
+
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        List<Filter> filters = dataSource.getProxyFilters();
+        if (filters.size() > 0) {
+            FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+            filterChain.dataSource_recycle(this);
+        } else {
+            recycle();
+        }
+    }
+
+    public void recycle() throws SQLException {
+        if (this.diable) {
+            return;
+        }
+
+        ConnectionHolder holder = this.holder;
+        if (holder == null && dupCloseLogEnable) {
+            LOG.error("dup close");
+            return;
         }
 
         holder.getDataSource().recycle(this);
@@ -211,7 +234,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
         return rtnVal;
     }
-    
+
     private void initStatement(PreparedStatementHolder stmtHolder) throws SQLException {
         stmtHolder.incrementInUseCount();
         holder.getDataSource().initStatement(this, stmtHolder.getStatement());

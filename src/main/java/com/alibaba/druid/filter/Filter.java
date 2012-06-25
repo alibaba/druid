@@ -44,6 +44,8 @@ import java.sql.Wrapper;
 import java.util.Calendar;
 import java.util.Properties;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
@@ -1278,4 +1280,8 @@ public interface Filter {
     // /////////
 
     void loadConfig(AbstractDruidFilterConfig druidFilterConfig);
+    
+    void dataSource_recycle(FilterChain chain, DruidPooledConnection connection) throws SQLException;
+    
+    DruidPooledConnection dataSource_connect(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException;
 }

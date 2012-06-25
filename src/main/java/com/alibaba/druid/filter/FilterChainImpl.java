@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
@@ -4388,6 +4390,16 @@ public class FilterChainImpl implements FilterChain {
         }
 
         return new NClobProxyImpl(dataSource, connection, nclob);
+    }
+
+    @Override
+    public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
+        connection.recycle();
+    }
+
+    @Override
+    public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+        return dataSource.getConnectionDirect(maxWaitMillis);
     }
 
 }

@@ -41,6 +41,8 @@ import java.sql.Wrapper;
 import java.util.Calendar;
 import java.util.Properties;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -52,7 +54,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  * @author wenshao<szujobs@hotmail.com>
  */
 public interface FilterChain {
-    
+
     int getFilterSize();
 
     FilterChain cloneChain();
@@ -1174,4 +1176,8 @@ public interface FilterChain {
     public void clob_truncate(ClobProxy wrapper, long len) throws SQLException;
 
     // ////
+
+    void dataSource_recycle(DruidPooledConnection connection) throws SQLException;
+
+    DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis) throws SQLException;
 }

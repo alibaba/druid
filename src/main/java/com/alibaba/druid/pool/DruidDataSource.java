@@ -40,6 +40,7 @@ import javax.sql.ConnectionEventListener;
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.vendor.InformixExceptionSorter;
@@ -296,7 +297,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
             }
-            
+
             if ("oracle".equals(this.dbType)) {
                 isOracle = true;
 
@@ -331,9 +332,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             }
-            
+
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl);
-            
+
             {
                 String property = System.getProperty("druid.filters");
                 if (property != null && property.length() > 0) {
@@ -389,13 +390,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    public DruidPooledConnection getConnection() throws SQLException {
         return getConnection(maxWait);
     }
 
-    public Connection getConnection(long maxWaitMillis) throws SQLException {
+    public DruidPooledConnection getConnection(long maxWaitMillis) throws SQLException {
         init();
 
+        if (filters.size() > 0) {
+            FilterChainImpl filterChain = new FilterChainImpl(this);
+            return filterChain.dataSource_connect(this, maxWaitMillis);
+        } else {
+            return getConnectionDirect(maxWaitMillis);
+        }
+    }
+
+    public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (notEmptyWaitThreadCount > maxWaitThreadCount) {
@@ -779,7 +789,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
         long estimate = unit.toNanos(timeout);
 
-        for (int i = 0;;++i) {
+        for (int i = 0;; ++i) {
             if (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
 
@@ -1377,21 +1387,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public String getVersion() {
         return VERSION.getVersionNumber();
     }
-    
+
     @Override
     public JdbcDataSourceStat getDataSourceStat() {
         return dataSourceStat;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         return cloneDruidDataSource();
     }
 
     public DruidDataSource cloneDruidDataSource() {
         DruidDataSource x = new DruidDataSource();
-        
+
         cloneTo(x);
-        
+
         return x;
     }
 }

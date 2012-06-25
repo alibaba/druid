@@ -42,6 +42,8 @@ import java.util.Properties;
 
 import javax.management.NotificationBroadcasterSupport;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
@@ -57,6 +59,7 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  * @author wenshao<szujobs@hotmail.com>
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {
+
     protected DataSourceProxy dataSource;
 
     @Override
@@ -67,10 +70,10 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     public void init(DataSourceProxy dataSource) {
         this.dataSource = dataSource;
     }
-    
+
     @Override
     public void destory() {
-        
+
     }
 
     @Override
@@ -2700,4 +2703,13 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
 
     // ///////////////////
 
+    @Override
+    public void dataSource_recycle(FilterChain chain, DruidPooledConnection connection) throws SQLException {
+        chain.dataSource_recycle(connection);
+    }
+
+    @Override
+    public DruidPooledConnection dataSource_connect(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+        return chain.dataSource_connect(dataSource, maxWaitMillis);
+    }
 }
