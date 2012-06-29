@@ -4394,11 +4394,21 @@ public class FilterChainImpl implements FilterChain {
 
     @Override
     public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
+        if (this.pos < filterSize) {
+            nextFilter().dataSource_recycle(this, connection);
+            return;
+        }
+        
         connection.recycle();
     }
 
     @Override
     public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+        if (this.pos < filterSize) {
+            DruidPooledConnection conn = nextFilter().dataSource_connect(this, dataSource, maxWaitMillis);
+            return conn;
+        }
+        
         return dataSource.getConnectionDirect(maxWaitMillis);
     }
 
