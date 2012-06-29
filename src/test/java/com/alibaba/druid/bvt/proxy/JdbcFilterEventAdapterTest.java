@@ -25,6 +25,8 @@ import junit.framework.TestCase;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -778,6 +780,116 @@ public class JdbcFilterEventAdapterTest extends TestCase {
             Throwable error = null;
             try {
                 filter.preparedStatement_executeQuery(chain, statement);
+            } catch (Error ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+        
+
+        // //////////////////////////
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
+                    throw new SQLException();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_recycle(chain, null);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
+                    throw new RuntimeException();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_recycle(chain, null);
+            } catch (RuntimeException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
+                    throw new Error();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_recycle(chain, null);
+            } catch (Error ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        // //////////////////////////
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis)
+                                                                                                               throws SQLException {
+                    throw new SQLException();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_connect(chain, null, 0L);
+            } catch (SQLException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis)
+                                                                                                               throws SQLException {
+                    throw new RuntimeException();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_connect(chain, null, 0L);
+            } catch (RuntimeException ex) {
+                error = ex;
+            }
+            Assert.assertNotNull(error);
+        }
+
+        {
+            FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+
+                public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis)
+                                                                                                               throws SQLException {
+                    throw new Error();
+                }
+            };
+
+            Throwable error = null;
+            try {
+                filter.dataSource_connect(chain, null, 0L);
             } catch (Error ex) {
                 error = ex;
             }
