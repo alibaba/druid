@@ -16,6 +16,7 @@ import java.sql.Savepoint;
 import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HTableInterface;
@@ -254,6 +255,27 @@ public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
 
     public HTableInterface getHTable(String tableName) {
         return engine.getHTable(tableName);
+    }
+
+    public void setSchema(String schema) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public String getSchema() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void abort(Executor executor) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    public int getNetworkTimeout() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }

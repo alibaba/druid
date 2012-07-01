@@ -3,7 +3,9 @@ package com.alibaba.druid.hdriver;
 import java.sql.Driver;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import com.alibaba.druid.hdriver.impl.HBaseConnectionImpl;
 import com.alibaba.druid.hdriver.impl.HEngine;
@@ -54,6 +56,10 @@ public class HDriver implements Driver {
     @Override
     public boolean jdbcCompliant() {
         return false;
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
     }
 
 }
