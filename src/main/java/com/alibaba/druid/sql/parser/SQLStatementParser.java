@@ -215,6 +215,11 @@ public class SQLStatementParser extends SQLParser {
             if (parseStatementListDialect(statementList)) {
                 continue;
             }
+            
+            if (lexer.token() == Token.HINT) {
+                lexer.nextToken();
+                continue;
+            }
 
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         }
