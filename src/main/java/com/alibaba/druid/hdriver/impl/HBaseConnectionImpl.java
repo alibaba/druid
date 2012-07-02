@@ -261,7 +261,6 @@ public class HBaseConnectionImpl extends ConnectionBase implements HConnection {
         throw new SQLFeatureNotSupportedException();
     }
 
-    @Override
     public String getSchema() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
