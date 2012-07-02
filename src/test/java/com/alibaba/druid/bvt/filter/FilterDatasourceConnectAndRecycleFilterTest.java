@@ -19,12 +19,16 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
 
     TestFilter      filter     = new TestFilter();
     List<Filter>    filterList = new ArrayList<Filter>();
-    DruidDataSource dataSource = new DruidDataSource();
+    private DruidDataSource dataSource = new DruidDataSource();
 
     protected void setUp() throws Exception {
         filterList.add(filter);
         dataSource.setProxyFilters(filterList);
         dataSource.setUrl("jdbc:mock:");
+    }
+    
+    protected void tearDown() throws Exception {
+        dataSource.close();
     }
 
     public void test() throws Exception {
