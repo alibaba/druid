@@ -49,13 +49,13 @@ public class FilterDatasourceConnectAndRecycleFilterTest extends TestCase {
         private AtomicLong dataSourceRecycleCount = new AtomicLong();
 
         @Override
-        public void dataSource_recycle(FilterChain chain, DruidPooledConnection connection) throws SQLException {
+        public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection connection) throws SQLException {
             chain.dataSource_recycle(connection);
             dataSourceRecycleCount.incrementAndGet();
         }
 
         @Override
-        public DruidPooledConnection dataSource_connect(FilterChain chain, DruidDataSource dataSource,
+        public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
                                                         long maxWaitMillis) throws SQLException {
             dataSourceConnectCount.incrementAndGet();
             return chain.dataSource_connect(dataSource, maxWaitMillis);

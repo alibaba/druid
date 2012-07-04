@@ -33,6 +33,8 @@ import javax.management.openmbean.TabularData;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -706,7 +708,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (dataSource == null) {
             return null;
         }
-        
+
         return dataSource.getUrl();
     }
 
@@ -764,6 +766,26 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     public TabularData getConnectionList() throws JMException {
         return dataSourceStat.getConnectionList();
+    }
+
+    public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection conn) throws SQLException {
+        chain.dataSource_recycle(conn);
+
+        long nanos = System.nanoTime() - conn.getConnectedTimeNano();
+        
+        long millis = nanos / (1000L * 1000L);
+        dataSourceStat.getConnectionHoldHistogram().recode(millis);
+    }
+
+    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
+                                                          long maxWaitMillis) throws SQLException {
+        DruidPooledConnection conn = chain.dataSource_connect(dataSource, maxWaitMillis);
+
+        if (conn != null) {
+            conn.setConnectedTimeNano(System.nanoTime());
+        }
+        
+        return conn;
     }
 
     public static enum Feature {

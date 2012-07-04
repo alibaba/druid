@@ -799,7 +799,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_recycle(chain, null);
+                filter.dataSource_releaseConnection(chain, null);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -816,7 +816,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_recycle(chain, null);
+                filter.dataSource_releaseConnection(chain, null);
             } catch (RuntimeException ex) {
                 error = ex;
             }
@@ -833,7 +833,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_recycle(chain, null);
+                filter.dataSource_releaseConnection(chain, null);
             } catch (Error ex) {
                 error = ex;
             }
@@ -853,7 +853,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_connect(chain, null, 0L);
+                filter.dataSource_getConnection(chain, null, 0L);
             } catch (SQLException ex) {
                 error = ex;
             }
@@ -871,7 +871,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_connect(chain, null, 0L);
+                filter.dataSource_getConnection(chain, null, 0L);
             } catch (RuntimeException ex) {
                 error = ex;
             }
@@ -889,7 +889,7 @@ public class JdbcFilterEventAdapterTest extends TestCase {
 
             Throwable error = null;
             try {
-                filter.dataSource_connect(chain, null, 0L);
+                filter.dataSource_getConnection(chain, null, 0L);
             } catch (Error ex) {
                 error = ex;
             }

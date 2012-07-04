@@ -1277,11 +1277,9 @@ public interface Filter {
 
     void clob_truncate(FilterChain chain, ClobProxy wrapper, long len) throws SQLException;
 
-    // /////////
-
     void loadConfig(AbstractDruidFilterConfig druidFilterConfig);
     
-    void dataSource_recycle(FilterChain chain, DruidPooledConnection connection) throws SQLException;
+    void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection connection) throws SQLException;
     
-    DruidPooledConnection dataSource_connect(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException;
+    DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException;
 }

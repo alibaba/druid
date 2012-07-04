@@ -2704,12 +2704,12 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     // ///////////////////
 
     @Override
-    public void dataSource_recycle(FilterChain chain, DruidPooledConnection connection) throws SQLException {
+    public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection connection) throws SQLException {
         chain.dataSource_recycle(connection);
     }
 
     @Override
-    public DruidPooledConnection dataSource_connect(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
         return chain.dataSource_connect(dataSource, maxWaitMillis);
     }
 }

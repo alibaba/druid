@@ -4395,7 +4395,7 @@ public class FilterChainImpl implements FilterChain {
     @Override
     public void dataSource_recycle(DruidPooledConnection connection) throws SQLException {
         if (this.pos < filterSize) {
-            nextFilter().dataSource_recycle(this, connection);
+            nextFilter().dataSource_releaseConnection(this, connection);
             return;
         }
         
@@ -4405,7 +4405,7 @@ public class FilterChainImpl implements FilterChain {
     @Override
     public DruidPooledConnection dataSource_connect(DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
         if (this.pos < filterSize) {
-            DruidPooledConnection conn = nextFilter().dataSource_connect(this, dataSource, maxWaitMillis);
+            DruidPooledConnection conn = nextFilter().dataSource_getConnection(this, dataSource, maxWaitMillis);
             return conn;
         }
         

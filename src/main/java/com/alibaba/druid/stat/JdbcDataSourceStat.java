@@ -32,27 +32,35 @@ import javax.management.openmbean.TabularType;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.util.Histogram;
 
 public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final String                                        name;
     private final String                                        url;
 
-    private final JdbcConnectionStat                            connectionStat = new JdbcConnectionStat();
-    private final JdbcResultSetStat                             resultSetStat  = new JdbcResultSetStat();
-    private final JdbcStatementStat                             statementStat  = new JdbcStatementStat();
+    private final JdbcConnectionStat                            connectionStat          = new JdbcConnectionStat();
+    private final JdbcResultSetStat                             resultSetStat           = new JdbcResultSetStat();
+    private final JdbcStatementStat                             statementStat           = new JdbcStatementStat();
 
-    private int                                                 maxSize        = 1000 * 1;
+    private int                                                 maxSize                 = 1000 * 1;
 
-    private ReentrantReadWriteLock                              lock           = new ReentrantReadWriteLock();
-    private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap     = new LinkedHashMap<String, JdbcSqlStat>(
-                                                                                                                        maxSize,
-                                                                                                                        0.75f,
-                                                                                                                        false);
+    private ReentrantReadWriteLock                              lock                    = new ReentrantReadWriteLock();
+    private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap              = new LinkedHashMap<String, JdbcSqlStat>(
+                                                                                                                                 maxSize,
+                                                                                                                                 0.75f,
+                                                                                                                                 false);
+
+    private final Histogram                                     connectionHoldHistogram = new Histogram(new long[] { //
+                                                                                                        //
+            1, 10, 100, 1000, 10 * 1000, //
+            100 * 1000, 1000 * 1000
+                                                                                                        //
+                                                                                                        });
 
     // private final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = new ConcurrentHashMap<String, JdbcSqlStat>();
 
-    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections    = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
+    private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
     public JdbcDataSourceStat(String name, String url){
         this.name = name;
@@ -63,19 +71,20 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         connectionStat.reset();
         statementStat.reset();
         resultSetStat.reset();
-        
+        connectionHoldHistogram.reset();
+
         lock.writeLock().lock();
         try {
-        	Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
-        	while (iter.hasNext()) {
-        		Map.Entry<String, JdbcSqlStat> entry = iter.next();
-        		JdbcSqlStat stat = entry.getValue();
-        		if (stat.getExecuteCount() == 0) {
-        			iter.remove();
-        		} else {
-        			stat.reset();
-        		}
-        	}
+            Iterator<Map.Entry<String, JdbcSqlStat>> iter = sqlStatMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, JdbcSqlStat> entry = iter.next();
+                JdbcSqlStat stat = entry.getValue();
+                if (stat.getExecuteCount() == 0) {
+                    iter.remove();
+                } else {
+                    stat.reset();
+                }
+            }
         } finally {
             lock.writeLock().unlock();
         }
@@ -84,6 +93,10 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             connectionStat.reset();
         }
         // connections.clear();
+    }
+
+    public Histogram getConnectionHoldHistogram() {
+        return connectionHoldHistogram;
     }
 
     public JdbcConnectionStat getConnectionStat() {

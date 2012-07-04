@@ -65,6 +65,8 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private boolean            closed      = false;
     private final Thread       ownerThread;
 
+    private long               connectedTimeNano;
+
     public DruidPooledConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
@@ -74,6 +76,14 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     public Thread getOwnerThread() {
         return ownerThread;
+    }
+
+    public long getConnectedTimeNano() {
+        return connectedTimeNano;
+    }
+
+    public void setConnectedTimeNano(long connectedTimeNano) {
+        this.connectedTimeNano = connectedTimeNano;
     }
 
     public boolean isTraceEnable() {
