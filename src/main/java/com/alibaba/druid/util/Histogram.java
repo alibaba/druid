@@ -77,6 +77,10 @@ public class Histogram {
         return ranges;
     }
     
+    public long getValue(int index) {
+        return rangeCounters[index].get();
+    }
+    
     public String toString() {
     	StringBuilder buf = new StringBuilder();
     	buf.append('[');
