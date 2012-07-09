@@ -5,7 +5,7 @@
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
 	<version>0.2.4-SNAPSHOT</version>
-	
+
 	<packaging>jar</packaging>
 	<name>druid</name>
 	<description>An JDBC datasource implementation.</description>
@@ -56,7 +56,7 @@
 			<email>szujobs@hotmail.com</email>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<url>https://wenshao@github.com/AlibabaTech/druid.git</url>
 		<connection>scm:git:https://wenshao@github.com/AlibabaTech/druid.git</connection>
@@ -66,7 +66,7 @@
 		<name>Alibaba Group</name>
 		<url>http://code.alibabatech.com/</url>
 	</organization>
-	
+
 	<licenses>
 		<license>
 			<name>Apache 2</name>
@@ -75,7 +75,7 @@
 			<comments>A business-friendly OSS license</comments>
 		</license>
 	</licenses>
-	
+
 	<issueManagement>
 		<system>Jira</system>
 		<url>http://code.alibabatech.com/jira/browse/DRUID</url>
@@ -126,17 +126,17 @@
 					<attach>true</attach>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
-                    <execution>
-                        <id>attach-javadoc</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<show>public</show>
 					<charset>UTF-8</charset>
@@ -147,7 +147,7 @@
 					</links>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<executions>
@@ -160,7 +160,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
@@ -251,14 +251,8 @@
 			<version>9.1-901-1.jdbc4</version>
 			<scope>test</scope>
 		</dependency>
-<!--  
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc5</artifactId>
-			<version>11.2.0.3</version>
-			<scope>provided</scope>
-		</dependency>
--->
+		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc5</artifactId> 
+			<version>11.2.0.3</version> <scope>provided</scope> </dependency> -->
 
 		<dependency>
 			<groupId>com.oracle</groupId>
@@ -317,7 +311,7 @@
 			<version>0.7.1-rc2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>proxool</groupId>
 			<artifactId>proxool</artifactId>
@@ -330,18 +324,25 @@
 			<version>0.9.1</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.1.2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
 			<version>2.3.4.726</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.167</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

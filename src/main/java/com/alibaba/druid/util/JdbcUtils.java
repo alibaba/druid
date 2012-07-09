@@ -62,10 +62,12 @@ public final class JdbcUtils {
     public static final String      MYSQL            = "mysql";
 
     public static final String      DERBY            = "derby";
-    
+
     public static final String      HBASE            = "hbase";
-    
-    public static final String      HIVE            = "hive";
+
+    public static final String      HIVE             = "hive";
+
+    public static final String      H2               = "h2";
 
     private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
@@ -445,7 +447,7 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return "ingres";
         } else if (rawUrl.startsWith("jdbc:h2:")) {
-            return "h2";
+            return H2;
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return "mckoi";
         } else if (rawUrl.startsWith("jdbc:cloudscape:")) {

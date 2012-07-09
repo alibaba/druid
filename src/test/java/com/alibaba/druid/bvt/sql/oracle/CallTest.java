@@ -26,7 +26,7 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 public class CallTest extends TestCase {
 
     public void test_select() throws Exception {
-        String sql = "CALL test(1)";
+        String sql = "call dbms_session.set_identifier('nfs_special_syncview')";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

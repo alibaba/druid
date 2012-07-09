@@ -37,7 +37,7 @@ public class Case0 extends TestCase {
     private String   user;
     private String   password;
     private String   driverClass;
-    private int      initialSize                = 10;
+    private int      initialSize                = 1;
     private int      minIdle                    = 3;
     private int      maxIdle                    = 8;
     private int      maxActive                  = 8;

@@ -102,7 +102,6 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         return rs;
     }
 
-    @SuppressWarnings("resource")
     public ResultSet executeQueryFromDual(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
         MockResultSet rs = new MockResultSet(statement);
         MockResultSetMetaData metaData = rs.getMockMetaData();
