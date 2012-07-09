@@ -51,6 +51,8 @@ public final class JdbcUtils {
 
     public static final String      DB2              = "db2";
 
+    private static final String     DB2_DRIVER       = "COM.ibm.db2.jdbc.app.DB2Driver";
+
     public static final String      POSTGRESQL       = "postgresql";
 
     public static final String      SYBASE           = "sybase";
@@ -59,7 +61,11 @@ public final class JdbcUtils {
 
     public static final String      ORACLE           = "oracle";
 
+    private static final String     ORACLE_DRIVER    = "oracle.jdbc.driver.OracleDriver";
+
     public static final String      MYSQL            = "mysql";
+
+    private static final String     MYSQL_DRIVER     = "com.mysql.jdbc.Driver";
 
     public static final String      DERBY            = "derby";
 
@@ -68,6 +74,8 @@ public final class JdbcUtils {
     public static final String      HIVE             = "hive";
 
     public static final String      H2               = "h2";
+
+    private static final String     H2_DRIVER        = "org.h2.Driver";
 
     private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
@@ -361,9 +369,9 @@ public final class JdbcUtils {
         if (rawUrl.startsWith("jdbc:derby:")) {
             return "org.apache.derby.jdbc.EmbeddedDriver";
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
-            return "com.mysql.jdbc.Driver";
+            return MYSQL_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
-            return "oracle.jdbc.driver.OracleDriver";
+            return ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
@@ -379,13 +387,13 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:hsqldb:")) {
             return "org.hsqldb.jdbcDriver";
         } else if (rawUrl.startsWith("jdbc:db2:")) {
-            return "COM.ibm.db2.jdbc.app.DB2Driver";
+            return DB2_DRIVER;
         } else if (rawUrl.startsWith("jdbc:sqlite:")) {
             return "org.sqlite.JDBC";
         } else if (rawUrl.startsWith("jdbc:ingres:")) {
             return "com.ingres.jdbc.IngresDriver";
         } else if (rawUrl.startsWith("jdbc:h2:")) {
-            return "org.h2.Driver";
+            return H2_DRIVER;
         } else if (rawUrl.startsWith("jdbc:mckoi:")) {
             return "com.mckoi.JDBCDriver";
         } else if (rawUrl.startsWith("jdbc:cloudscape:")) {
