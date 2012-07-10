@@ -46,17 +46,17 @@ public class Case0 extends TestCase {
 
     private long     minEvictableIdleTimeMillis = 3000;
     public final int LOOP_COUNT                 = 5;
-    public final int COUNT                      = 1000 * 1;
+    public final int COUNT                      = 1000 * 1000;
 
     protected void setUp() throws Exception {
-        // jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
-        // user = "dragoon25";
-        // password = "dragoon25";
-        // driverClass = "com.alibaba.druid.mock.MockDriver";
+         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+         user = "dragoon25";
+         password = "dragoon25";
+         driverClass = "com.alibaba.druid.mock.MockDriver";
 
-        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
-        user = "root";
-        password = "root";
+//        jdbcUrl = "jdbc:mysql://10.20.153.104:3306/druid2";
+//        user = "root";
+//        password = "root";
     }
 
     public void test_0() throws Exception {
