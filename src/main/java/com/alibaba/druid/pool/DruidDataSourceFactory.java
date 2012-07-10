@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -29,6 +30,7 @@ import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import javax.sql.DataSource;
+
 
 public class DruidDataSourceFactory implements ObjectFactory {
 
@@ -117,21 +119,21 @@ public class DruidDataSourceFactory implements ObjectFactory {
      * @throws Exception if an error occurs creating the data source
      */
     @SuppressWarnings("deprecation")
-    public static DataSource createDataSource(Properties properties) throws Exception {
+    public static DataSource createDataSource(Map properties) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         String value = null;
 
-        value = properties.getProperty(PROP_DEFAULTAUTOCOMMIT);
+        value = (String) properties.get(PROP_DEFAULTAUTOCOMMIT);
         if (value != null) {
             dataSource.setDefaultAutoCommit(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_DEFAULTREADONLY);
+        value = (String) properties.get(PROP_DEFAULTREADONLY);
         if (value != null) {
             dataSource.setDefaultReadOnly(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_DEFAULTTRANSACTIONISOLATION);
+        value = (String) properties.get(PROP_DEFAULTTRANSACTIONISOLATION);
         if (value != null) {
             int level = UNKNOWN_TRANSACTIONISOLATION;
             if ("NONE".equalsIgnoreCase(value)) {
@@ -157,148 +159,148 @@ public class DruidDataSourceFactory implements ObjectFactory {
             dataSource.setDefaultTransactionIsolation(level);
         }
 
-        value = properties.getProperty(PROP_DEFAULTCATALOG);
+        value = (String) properties.get(PROP_DEFAULTCATALOG);
         if (value != null) {
             dataSource.setDefaultCatalog(value);
         }
 
-        value = properties.getProperty(PROP_DRIVERCLASSNAME);
+        value = (String) properties.get(PROP_DRIVERCLASSNAME);
         if (value != null) {
             dataSource.setDriverClassName(value);
         }
 
-        value = properties.getProperty(PROP_MAXACTIVE);
+        value = (String) properties.get(PROP_MAXACTIVE);
         if (value != null) {
             dataSource.setMaxActive(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_MAXIDLE);
+        value = (String) properties.get(PROP_MAXIDLE);
         if (value != null) {
             dataSource.setMaxIdle(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_MINIDLE);
+        value = (String) properties.get(PROP_MINIDLE);
         if (value != null) {
             dataSource.setMinIdle(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_INITIALSIZE);
+        value = (String) properties.get(PROP_INITIALSIZE);
         if (value != null) {
             dataSource.setInitialSize(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_MAXWAIT);
+        value = (String) properties.get(PROP_MAXWAIT);
         if (value != null) {
             dataSource.setMaxWait(Long.parseLong(value));
         }
 
-        value = properties.getProperty(PROP_TESTONBORROW);
+        value = (String) properties.get(PROP_TESTONBORROW);
         if (value != null) {
             dataSource.setTestOnBorrow(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_TESTONRETURN);
+        value = (String) properties.get(PROP_TESTONRETURN);
         if (value != null) {
             dataSource.setTestOnReturn(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_TIMEBETWEENEVICTIONRUNSMILLIS);
+        value = (String) properties.get(PROP_TIMEBETWEENEVICTIONRUNSMILLIS);
         if (value != null) {
             dataSource.setTimeBetweenEvictionRunsMillis(Long.parseLong(value));
         }
 
-        value = properties.getProperty(PROP_NUMTESTSPEREVICTIONRUN);
+        value = (String) properties.get(PROP_NUMTESTSPEREVICTIONRUN);
         if (value != null) {
             dataSource.setNumTestsPerEvictionRun(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_MINEVICTABLEIDLETIMEMILLIS);
+        value = (String) properties.get(PROP_MINEVICTABLEIDLETIMEMILLIS);
         if (value != null) {
             dataSource.setMinEvictableIdleTimeMillis(Long.parseLong(value));
         }
 
-        value = properties.getProperty(PROP_TESTWHILEIDLE);
+        value = (String) properties.get(PROP_TESTWHILEIDLE);
         if (value != null) {
             dataSource.setTestWhileIdle(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_PASSWORD);
+        value = (String) properties.get(PROP_PASSWORD);
         if (value != null) {
             dataSource.setPassword(value);
         }
 
-        value = properties.getProperty(PROP_URL);
+        value = (String) properties.get(PROP_URL);
         if (value != null) {
             dataSource.setUrl(value);
         }
 
-        value = properties.getProperty(PROP_USERNAME);
+        value = (String) properties.get(PROP_USERNAME);
         if (value != null) {
             dataSource.setUsername(value);
         }
 
-        value = properties.getProperty(PROP_VALIDATIONQUERY);
+        value = (String) properties.get(PROP_VALIDATIONQUERY);
         if (value != null) {
             dataSource.setValidationQuery(value);
         }
 
-        value = properties.getProperty(PROP_VALIDATIONQUERY_TIMEOUT);
+        value = (String) properties.get(PROP_VALIDATIONQUERY_TIMEOUT);
         if (value != null) {
             dataSource.setValidationQueryTimeout(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED);
+        value = (String) properties.get(PROP_ACCESSTOUNDERLYINGCONNECTIONALLOWED);
         if (value != null) {
             dataSource.setAccessToUnderlyingConnectionAllowed(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_REMOVEABANDONED);
+        value = (String) properties.get(PROP_REMOVEABANDONED);
         if (value != null) {
             dataSource.setRemoveAbandoned(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_REMOVEABANDONEDTIMEOUT);
+        value = (String) properties.get(PROP_REMOVEABANDONEDTIMEOUT);
         if (value != null) {
             dataSource.setRemoveAbandonedTimeout(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_LOGABANDONED);
+        value = (String) properties.get(PROP_LOGABANDONED);
         if (value != null) {
             dataSource.setLogAbandoned(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_POOLPREPAREDSTATEMENTS);
+        value = (String) properties.get(PROP_POOLPREPAREDSTATEMENTS);
         if (value != null) {
             dataSource.setPoolPreparedStatements(Boolean.valueOf(value).booleanValue());
         }
 
-        value = properties.getProperty(PROP_MAXOPENPREPAREDSTATEMENTS);
+        value = (String) properties.get(PROP_MAXOPENPREPAREDSTATEMENTS);
         if (value != null) {
             dataSource.setMaxOpenPreparedStatements(Integer.parseInt(value));
         }
 
-        value = properties.getProperty(PROP_FILTERS);
+        value = (String) properties.get(PROP_FILTERS);
         if (value != null) {
             dataSource.setFilters(value);
         }
 
-        value = properties.getProperty(PROP_EXCEPTION_SORTER);
+        value = (String) properties.get(PROP_EXCEPTION_SORTER);
         if (value != null) {
             dataSource.setExceptionSorter(value);
         }
 
-        value = properties.getProperty(PROP_EXCEPTION_SORTER_CLASS_NAME);
+        value = (String) properties.get(PROP_EXCEPTION_SORTER_CLASS_NAME);
         if (value != null) {
             dataSource.setExceptionSorter(value);
         }
 
-        value = properties.getProperty(PROP_INITCONNECTIONSQLS);
+        value = (String) properties.get(PROP_INITCONNECTIONSQLS);
         if (value != null) {
             StringTokenizer tokenizer = new StringTokenizer(value, ";");
             dataSource.setConnectionInitSqls(Collections.list(tokenizer));
         }
 
-        value = properties.getProperty(PROP_CONNECTIONPROPERTIES);
+        value = (String) properties.get(PROP_CONNECTIONPROPERTIES);
         if (value != null) {
             Properties p = getProperties(value);
             Enumeration<?> e = p.propertyNames();
