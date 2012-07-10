@@ -1,5 +1,7 @@
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,5 +52,91 @@ public class PGLexer extends Lexer {
     public PGLexer(String input){
         super(input);
         super.keywods = DEFAULT_PG_KEYWORDS;
+    }
+    
+    protected void scanString() {
+        np = bp;
+        boolean hasSpecial = false;
+
+        for (;;) {
+            if (bp >= buflen) {
+                lexError(tokenPos, "unclosed.str.lit");
+                return;
+            }
+
+            ch = buf[++bp];
+
+            if (ch == '\\') {
+                scanChar();
+                if (!hasSpecial) {
+                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                    hasSpecial = true;
+                }
+
+                switch (ch) {
+                    case '\0':
+                        putChar('\0');
+                        break;
+                    case '\'':
+                        putChar('\'');
+                        break;
+                    case '"':
+                        putChar('"');
+                        break;
+                    case 'b':
+                        putChar('\b');
+                        break;
+                    case 'n':
+                        putChar('\n');
+                        break;
+                    case 'r':
+                        putChar('\r');
+                        break;
+                    case 't':
+                        putChar('\t');
+                        break;
+                    case '\\':
+                        putChar('\\');
+                        break;
+                    case 'Z':
+                        putChar((char) 0x1A); // ctrl + Z
+                        break;
+                    default:
+                        putChar(ch);
+                        break;
+                }
+                scanChar();
+            }
+
+            if (ch == '\'') {
+                scanChar();
+                if (ch != '\'') {
+                    token = LITERAL_CHARS;
+                    break;
+                } else {
+                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                    hasSpecial = true;
+                    putChar('\'');
+                    continue;
+                }
+            }
+
+            if (!hasSpecial) {
+                sp++;
+                continue;
+            }
+
+            if (sp == sbuf.length) {
+                putChar(ch);
+            } else {
+                sbuf[sp++] = ch;
+            }
+        }
+
+        if (!hasSpecial) {
+            stringVal = new String(buf, np + 1, sp);
+        } else {
+            stringVal = new String(sbuf, 0, sp);
+        }
     }
 }

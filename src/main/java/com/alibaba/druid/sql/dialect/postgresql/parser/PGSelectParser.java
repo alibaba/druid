@@ -1,10 +1,15 @@
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.IntoOption;
 import com.alibaba.druid.sql.parser.ParserException;
@@ -200,4 +205,44 @@ public class PGSelectParser extends SQLSelectParser {
         return queryRest(queryBlock);
     }
 
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+        if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
+            String alias = this.as();
+            
+            if (lexer.token() == Token.LPAREN) {
+                SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
+                
+                PGFunctionTableSource functionTableSource = new PGFunctionTableSource(exprTableSource.getExpr());
+                functionTableSource.setAlias(alias);
+                
+                lexer.nextToken();
+                parserParameters(functionTableSource.getParameters());
+                accept(Token.RPAREN);
+                
+                return super.parseTableSourceRest(functionTableSource);
+            }
+        }
+        
+        return super.parseTableSourceRest(tableSource);
+    }
+    
+    private void parserParameters(List<PGParameter> parameters) {
+        for (;;) {
+            PGParameter parameter = new PGParameter();
+
+            parameter.setName(this.exprParser.name());
+            parameter.setDataType(this.exprParser.parseDataType());
+            
+            parameters.add(parameter);
+            if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {
+                lexer.nextToken();
+            }
+
+            if (lexer.token() != Token.BEGIN && lexer.token() != Token.RPAREN) {
+                continue;
+            }
+
+            break;
+        }
+    }
 }

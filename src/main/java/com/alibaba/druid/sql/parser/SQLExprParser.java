@@ -1081,6 +1081,11 @@ public class SQLExprParser extends SQLParser {
 
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
+        
+        if ("character".equalsIgnoreCase(typeName) && "varying".equalsIgnoreCase(lexer.stringVal())) {
+            typeName += ' ' + lexer.stringVal();
+            lexer.nextToken();
+        }
 
         SQLDataType dataType = new SQLDataTypeImpl(typeName);
         return parseDataTypeRest(dataType);

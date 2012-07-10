@@ -7,7 +7,9 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
+import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGParameter;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGDeleteStatement;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGFunctionTableSource;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGInsertStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock.FetchClause;
@@ -163,7 +165,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 print(x.getIntoOption().name());
                 print(" ");
             }
-            
+
             x.getInto().accept(this);
         }
 
@@ -220,7 +222,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
-
 
     @Override
     public void endVisit(PGTruncateStatement x) {
@@ -291,7 +292,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
-        
+
         if (x.isReturning()) {
             println();
             print("RETURNING *");
@@ -302,16 +303,16 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(PGInsertStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(PGInsertStatement x) {
         if (x.getWith() != null) {
             x.getWith().accept(this);
             println();
         }
-        
+
         print("INSERT INTO ");
 
         x.getTableName().accept(this);
@@ -343,7 +344,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
                 x.getQuery().accept(this);
             }
         }
-        
+
         if (x.getReturning() != null) {
             println();
             print("RETURNING ");
@@ -352,36 +353,36 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
         return false;
     }
-    
+
     @Override
     public void endVisit(PGSelectStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(PGSelectStatement x) {
         if (x.getWith() != null) {
             x.getWith().accept(this);
             println();
         }
-        
+
         return visit((SQLSelectStatement) x);
     }
-    
+
     @Override
     public void endVisit(PGUpdateStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(PGUpdateStatement x) {
         if (x.getWith() != null) {
             x.getWith().accept(this);
             println();
         }
-        
+
         print("UPDATE ");
-        
+
         if (x.isOnly()) {
             print("ONLY ");
         }
@@ -396,7 +397,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             }
             x.getItems().get(i).accept(this);
         }
-        
+
         if (x.getFrom() != null) {
             println();
             print("FROM ");
@@ -409,7 +410,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
-        
+
         if (x.getReturning().size() > 0) {
             println();
             print("RETURNING ");
@@ -421,48 +422,86 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(PGSelectQueryBlock x) {
-        
+
     }
 
-	@Override
-	public void endVisit(PGAggregateExpr x) {
-		
-	}
+    @Override
+    public void endVisit(PGAggregateExpr x) {
 
-	@Override
-	public boolean visit(PGAggregateExpr x) {
+    }
+
+    @Override
+    public boolean visit(PGAggregateExpr x) {
         print(x.getMethodName());
         print("(");
         printAndAccept(x.getArguments(), ", ");
         print(")");
-        if(x.getOver() != null){
-        	x.getOver().accept(this);
+        if (x.getOver() != null) {
+            x.getOver().accept(this);
         }
         return false;
-	}
+    }
 
-	@Override
-	public void endVisit(PGAnalytic x) {
+    @Override
+    public void endVisit(PGAnalytic x) {
 
-		
-	}
+    }
 
-	@Override
-	public boolean visit(PGAnalytic x) {
-		print(" OVER (");
-		if(x.getPartitionBy().size() > 0){
-			int mark = 0;
-			for(SQLExpr e:x.getPartitionBy()){
-				if(mark++ != 0){
-					print(", ");
-				}
-				e.accept(this);
-			}
-		}
-		if(x.getOrderBy() != null){
-			x.getOrderBy().accept(this);
-		}
-		print(")");
-		return false;
-	}
+    @Override
+    public boolean visit(PGAnalytic x) {
+        print(" OVER (");
+        if (x.getPartitionBy().size() > 0) {
+            int mark = 0;
+            for (SQLExpr e : x.getPartitionBy()) {
+                if (mark++ != 0) {
+                    print(", ");
+                }
+                e.accept(this);
+            }
+        }
+        if (x.getOrderBy() != null) {
+            x.getOrderBy().accept(this);
+        }
+        print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGParameter x) {
+
+    }
+
+    @Override
+    public boolean visit(PGParameter x) {
+        x.getName().accept(this);
+        print(" ");
+
+        x.getDataType().accept(this);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(PGFunctionTableSource x) {
+        x.getExpr().accept(this);
+
+        if (x.getAlias() != null) {
+            print(" AS ");
+            print(x.getAlias());
+        }
+        
+        if (x.getParameters().size() > 0) {
+            print('(');
+            printAndAccept(x.getParameters(), ", ");
+            print(')');
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(PGFunctionTableSource x) {
+        
+    }
+
 }
