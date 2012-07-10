@@ -345,5 +345,13 @@
 			<version>1.3.167</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.1.4.Final</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>

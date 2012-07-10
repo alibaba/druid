@@ -36,6 +36,8 @@ import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.PooledConnection;
 
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
@@ -65,7 +67,7 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author ljw<ljw2083@alibaba-inc.com>
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable {
+public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
     private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
@@ -403,6 +405,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } else {
             return getConnectionDirect(maxWaitMillis);
         }
+    }
+    
+    @Override
+    public PooledConnection getPooledConnection() throws SQLException {
+        return getConnection(maxWait);
+    }
+
+    @Override
+    public PooledConnection getPooledConnection(String user, String password) throws SQLException {
+        throw new UnsupportedOperationException("Not supported by DruidDataSource");
     }
 
     public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
@@ -1404,4 +1416,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         return x;
     }
+
+
 }
