@@ -54,9 +54,11 @@ public class SpringFilterTest extends TestCase {
         }
         {
             Connection conn = dataSource.getConnection();
+            conn.setAutoCommit(false);
             Statement stmt = conn.createStatement();
             stmt.execute("insert into sequence_seed (value ,name) values (0, 'druid-spring-test')");
             stmt.close();
+            conn.commit();
             conn.close();
         }
 
