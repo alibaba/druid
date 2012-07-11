@@ -13,7 +13,7 @@ public class MBeanServerFactoryBean implements FactoryBean {
     }
 
     public Class<?> getObjectType() {
-        return ManagementFactory.getPlatformMBeanServer().getClass();
+        return MBeanServer.class;
     }
 
     public boolean isSingleton() {
