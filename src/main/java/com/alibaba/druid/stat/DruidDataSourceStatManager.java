@@ -32,10 +32,9 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.JMXUtils;
 

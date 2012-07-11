@@ -23,9 +23,8 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 
 public class MultiDataSourceStatManager implements MultiDataSourceStatManagerMBean {
