@@ -12,6 +12,9 @@
 	<url>https://github.com/AlibabaTech/druid</url>
 	<inceptionYear>2012</inceptionYear>
 
+	<properties>
+		<gpg.skip>true</gpg.skip>
+	</properties>
 	<repositories>
 		<repository>
 			<id>bonecp</id>
@@ -150,6 +153,9 @@
 
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
+				<configuration>
+					<skip>${gpg.skip}</skip>
+				</configuration>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
