@@ -22,6 +22,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.util.JMXUtils;
 
@@ -51,7 +52,7 @@ public class Case2 extends TestCase {
         properties.put("url", "jdbc:mock:");
         properties.put("filters", "stat");
         properties.put("validationQuery", "SELECT 1");
-        final DruidDataSource dataSource = (DruidDataSource) com.alibaba.druid.pool.DruidDataSourceFactory.createDataSource(properties);
+        DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(properties);
         JMXUtils.register("com.alibaba.druid:type=DruidDataSource", dataSource);
 
         final int COUNT = 10;
