@@ -205,9 +205,13 @@ public class Lexer {
             if (isWhitespace(ch)) {
                 scanChar();
                 continue;
-            }// QS_TODO skip comment
+            }
+            
+            if (ch == '$' && buf[bp + 1] == '{') {
+                scanVariable();
+                return;
+            }
 
-            // QS_TODO id may start from digit
             if (isFirstIdentifierChar(ch)) {
                 if (ch == 'N') {
                     if (buf[bp + 1] == '\'') {
@@ -571,7 +575,7 @@ public class Lexer {
     public void scanVariable() {
         final char first = ch;
 
-        if (ch != '@' && ch != ':' && ch != '#') {
+        if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
             throw new SQLParseException("illegal variable");
         }
 
@@ -581,11 +585,17 @@ public class Lexer {
         sp = 1;
         char ch;
 
+        boolean mybatisFlag = false;
         if (buf[bp + 1] == '@') {
             ch = buf[++bp];
             hash = 31 * hash + ch;
 
             sp++;
+        } else if (buf[bp + 1] == '{') {
+            hash = 31 * hash + '"';
+            bp++;
+            sp++;
+            mybatisFlag = true;
         }
 
         for (;;) {
@@ -599,6 +609,15 @@ public class Lexer {
 
             sp++;
             continue;
+        }
+        
+        if (mybatisFlag) {
+            if (ch != '}') {
+                throw new SQLParseException("syntax error");
+            }
+            hash = 31 * hash + '"';
+            ++bp;
+            sp++;
         }
 
         this.ch = buf[bp];
