@@ -49,7 +49,7 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
         super(methodName);
     }
 
-    public OracleAggregateExpr(String methodName, int option){
+    public OracleAggregateExpr(String methodName, Option option){
         super(methodName, option);
     }
 

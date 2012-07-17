@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -524,8 +525,10 @@ public class OracleExprParser extends SQLExprParser {
         return null;
     }
 
-    protected OracleAggregateExpr parseAggregateExpr(String method_name) {
+    protected OracleAggregateExpr parseAggregateExpr(String methodName) {
         boolean unique = false;
+        
+        methodName = methodName.toUpperCase();
         
         if (lexer.token() == Token.UNIQUE) {
             lexer.nextToken();
@@ -534,13 +537,13 @@ public class OracleExprParser extends SQLExprParser {
         
         OracleAggregateExpr aggregateExpr;
         if (lexer.token() == (Token.ALL)) {
-            aggregateExpr = new OracleAggregateExpr(method_name, 1);
+            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
             lexer.nextToken();
         } else if (lexer.token() == (Token.DISTINCT)) {
-            aggregateExpr = new OracleAggregateExpr(method_name, 0);
+            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
             lexer.nextToken();
         } else {
-            aggregateExpr = new OracleAggregateExpr(method_name, 1);
+            aggregateExpr = new OracleAggregateExpr(methodName);
         }
         aggregateExpr.setUnique(unique);
         exprList(aggregateExpr.getArguments());

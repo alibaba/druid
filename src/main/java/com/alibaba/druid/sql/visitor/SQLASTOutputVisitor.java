@@ -426,6 +426,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAggregateExpr x) {
         print(x.getMethodName());
         print("(");
+        
+        if (x.getOption() != null) {
+            print(x.getOption().toString());
+            print(' ');
+        }
+        
         printAndAccept(x.getArguments(), ", ");
         print(")");
         return false;
