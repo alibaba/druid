@@ -217,9 +217,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(' ');
         }
         
-        if (expr.isUnique()) {
-            print("UNIQUE ");
-        }
         printAndAccept(expr.getArguments(), ", ");
         print(")");
 

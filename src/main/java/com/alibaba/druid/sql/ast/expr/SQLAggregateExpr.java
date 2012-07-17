@@ -122,6 +122,6 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     }
 
     public static enum Option {
-        DISTINCT, ALL
+        DISTINCT, ALL, UNIQUE
     }
 }

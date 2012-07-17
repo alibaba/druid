@@ -526,17 +526,13 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     protected OracleAggregateExpr parseAggregateExpr(String methodName) {
-        boolean unique = false;
-        
         methodName = methodName.toUpperCase();
         
-        if (lexer.token() == Token.UNIQUE) {
-            lexer.nextToken();
-            unique = true;
-        }
-        
         OracleAggregateExpr aggregateExpr;
-        if (lexer.token() == (Token.ALL)) {
+        if (lexer.token() == Token.UNIQUE) {
+            aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.UNIQUE);
+            lexer.nextToken();
+        } else if (lexer.token() == (Token.ALL)) {
             aggregateExpr = new OracleAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
             lexer.nextToken();
         } else if (lexer.token() == (Token.DISTINCT)) {
@@ -545,7 +541,6 @@ public class OracleExprParser extends SQLExprParser {
         } else {
             aggregateExpr = new OracleAggregateExpr(methodName);
         }
-        aggregateExpr.setUnique(unique);
         exprList(aggregateExpr.getArguments());
 
         if (lexer.stringVal().equalsIgnoreCase("IGNORE")) {

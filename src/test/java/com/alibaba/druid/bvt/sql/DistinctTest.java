@@ -18,6 +18,10 @@ public class DistinctTest extends TestCase {
         Assert.assertEquals("SELECT COUNT(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.ORACLE));
     }
     
+    public void test_oracle_unique() throws Exception {
+        Assert.assertEquals("SELECT COUNT(UNIQUE *)\nFROM t", SQLUtils.format("select count(unique *) from t", JdbcUtils.ORACLE));
+    }
+    
     public void test_postgres() throws Exception {
         Assert.assertEquals("SELECT COUNT(DISTINCT *)\nFROM t", SQLUtils.format(sql, JdbcUtils.POSTGRESQL));
     }
