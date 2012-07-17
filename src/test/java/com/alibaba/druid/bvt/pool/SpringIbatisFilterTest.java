@@ -20,7 +20,7 @@ import com.alibaba.druid.spring.IUserService;
 import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class SpringFilterTest extends TestCase {
+public class SpringIbatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
@@ -34,7 +34,7 @@ public class SpringFilterTest extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                                    "com/alibaba/druid/pool/spring-config-1.xml");
+                                                                                    "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
 
