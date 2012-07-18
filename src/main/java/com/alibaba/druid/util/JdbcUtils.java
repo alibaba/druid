@@ -488,8 +488,19 @@ public final class JdbcUtils {
     }
 
     public static Driver createDriver(String driverClassName) throws SQLException {
+        ClassNotFoundException exception = null;
         try {
             return (Driver) Class.forName(driverClassName).newInstance();
+        } catch (IllegalAccessException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (InstantiationException e) {
+            throw new SQLException(e.getMessage(), e);
+        } catch (ClassNotFoundException e) {
+            exception = e;
+        }
+        
+        try {
+            return (Driver) Thread.currentThread().getContextClassLoader().loadClass(driverClassName).newInstance();
         } catch (IllegalAccessException e) {
             throw new SQLException(e.getMessage(), e);
         } catch (InstantiationException e) {
