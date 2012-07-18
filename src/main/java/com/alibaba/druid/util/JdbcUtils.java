@@ -488,7 +488,6 @@ public final class JdbcUtils {
     }
 
     public static Driver createDriver(String driverClassName) throws SQLException {
-        ClassNotFoundException exception = null;
         try {
             return (Driver) Class.forName(driverClassName).newInstance();
         } catch (IllegalAccessException e) {
@@ -496,7 +495,7 @@ public final class JdbcUtils {
         } catch (InstantiationException e) {
             throw new SQLException(e.getMessage(), e);
         } catch (ClassNotFoundException e) {
-            exception = e;
+            // skip
         }
         
         try {
