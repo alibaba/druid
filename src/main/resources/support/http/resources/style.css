@@ -1,0 +1,68 @@
+
+body{
+    font-family: 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
+	font-weight:normal;
+	font-size:12px;
+}
+#menu {
+	height:50px;
+}
+
+ #menu a{
+    color: #0082FF;
+    font: 18px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
+ }
+tr{
+	background-color:white;
+}
+th{
+	background-color:#D3EAEF;
+}
+#main h2 {
+    border: 0 dashed red;
+    color: #0082FF;
+    font: 24px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
+    margin: 0 0 10px;
+}
+#main h2 a{
+    font-size: 13px;
+	color: black;
+}
+#main h3 {
+    border: 0 dashed red;
+    color: #0082FF;
+    margin: 0 0 10px;
+}
+table{
+	background-color:#A8C7CE;
+	line-height:18px;
+}
+
+.td_lable{
+	background-color:#D3EAEF;
+	font-weight:bolder;
+ }
+ 
+ a{
+    color: #0082FF;
+    font: 13px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
+ }
+ 
+ li{
+	line-height:18px;
+ }
+
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #fff;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<title>Druid Stat</title>
+		<link href="style.css" type="text/css" rel="stylesheet"/>
+		<script src="js.js" type="text/javascript"></script>
+    </head>
+	<body onload="init()">
+		</br>
+		<div id="main">
+            <table cellspacing="1" cellpadding="5">
+				<tr >
+					<td valign="top" width="100" class="td_lable">
+						Version
+                    </td>
+					<td id="DruidVersion" width="95%">
+						
+                    </td>
+                </tr>
+				<tr >
+					<td valign="top" class="td_lable">
+						drivers
+                    </td>
+					<td id="DruidDrivers">
+						
+                    </td>
+                </tr>
+            </table>
+			</br>
+			</br>
+			<div id="menu" >
+				&nbsp;
+			</div>
+            <div id="dataSourceInfo">
+                <h2>Basic Info : <span id="DS-Info-Title"></span></h2>
+                <table cellpadding="5" cellspacing="1" width="960">
+    				<tr >
+    					<td class="td_lable" width="150">UserName</td><td width="150" id="DS-Info-UserName">&nbsp;</td>
+    					<td class="td_lable" width="140">URL</td><td id="DS-Info-URL" colspan="3">&nbsp;</td>
+                    </tr>
+    				<tr >
+    					<td class="td_lable">DbType</td><td id="DS-Info-DbType">&nbsp;</td>
+    					<td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName" colspan="3">&nbsp;</td>
+    				</tr>
+                    <tr>
+    					<td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow">&nbsp;</td>
+    					<td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle" colspan="3">&nbsp;</td>
+    				</tr>
+                    <tr>
+    					<td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize">&nbsp;</td>
+    					<td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle" width="150">&nbsp;</td>
+    					<td class="td_lable"  width="190">MaxActive</td><td id="DS-Info-MaxActive">&nbsp;</td>
+    				</tr>
+                    <tr>
+    					<td class="td_lable">LogicConnectCount</td><td id="DS-Info-LogicConnectCount">&nbsp;</td>
+    					<td class="td_lable">LogicCloseCount</td><td id="DS-Info-LogicCloseCount">&nbsp;</td>
+    					<td class="td_lable">LogicConnectErrorCount</td><td id="DS-Info-LogicConnectErrorCount">&nbsp;</td>
+    				</tr>
+                    <tr>
+    					<td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount">&nbsp;</td>
+    					<td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount">&nbsp;</td>
+    					<td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount">&nbsp;</td>
+    				</tr>
+                    <tr>
+    					<td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount">&nbsp;</td>
+    					<td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount">&nbsp;</td>
+    					<td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount">&nbsp;</td>
+    				</tr>
+                </table>
+    			</br>
+                <h2>SqlStat Info</h2>
+                <table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
+    				<thead>
+                        <th class="td_lable">SQL</th>
+                        <th class="td_lable">File</th>
+                        <th class="td_lable">Name</th>
+                        <th class="td_lable" width="50">Execute Count</th>
+                        <th class="td_lable" width="50">Execute Millis Total</th>
+                        <th class="td_lable" width="50">Execute Millis Max</th>
+                        <th class="td_lable" width="50">InTxn Count</th>
+                        <th class="td_lable" width="50">Error Count</th>
+                        <th class="td_lable" width="50">Effected Row Count</th>
+                        <th class="td_lable" width="50">Fetch Row Count</th>
+                        <th class="td_lable" width="50">Running Count</th>
+                        <th class="td_lable" width="80">Concurrent Max</th>
+                        <th class="td_lable" width="370">Histogram</th>
+                    </thead> 
+                 </table>
+			</div>
+        </div>
+	</body>
+</html>
