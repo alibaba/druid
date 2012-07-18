@@ -2,12 +2,11 @@ package com.alibaba.druid.support.http;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,16 +34,6 @@ public class StatServlet extends HttpServlet {
     private final static int  RESULT_CODE_SUCCESS = 1;
     private final static int  RESULT_CODE_ERROR   = -1;
 
-    private static JarFile    druidJarFile;
-
-    public void init() throws ServletException {
-        try {
-            druidJarFile = new JarFile(StatServlet.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        } catch (IOException e) {
-            throw new ServletException("error to contruct druid JarFile Object ", e);
-        }
-    }
-
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String requestPath = req.getPathInfo();
 
@@ -62,13 +51,6 @@ public class StatServlet extends HttpServlet {
         }
         // find file in jar resources path
         returnResourceFile(requestPath, resp);
-        return;
-    }
-
-    private void returnResourceFile(String fileName, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter out = resp.getWriter();
-        // TODO cache the file
-        out.print(readResourceFile(fileName));
     }
 
     private JSONArray getJSONDrivers() {
@@ -221,31 +203,29 @@ public class StatServlet extends HttpServlet {
         out.print(json.toJSONString());
     }
 
-    private String readResourceFile(String fileName) throws ServletException {
-        ZipEntry fileEntry = druidJarFile.getEntry("support/http/resources" + fileName);
-        if (fileEntry == null) {
-            return null;
-        }
+    private void returnResourceFile(String fileName, HttpServletResponse resp) throws ServletException, IOException {
+        OutputStream out = resp.getOutputStream();
 
         InputStream in = null;
-        byte[] result = null;
         try {
-            in = druidJarFile.getInputStream(fileEntry);
+            in = Thread.currentThread().getContextClassLoader().getResourceAsStream("support/http/resources" + fileName);
+            if (in == null) {
+                return;
+            }
 
-            int size = (int) fileEntry.getSize();
-            result = new byte[size];
-            int offer = 0;
-            while (offer < size)
-                offer += in.read(result, offer, size - offer);
+            byte[] temp = new byte[1024];
+            int read = 0;
+            while ((read = in.read(temp)) != -1)
+                out.write(temp, 0, read);
         } catch (IOException e) {
+            throw new ServletException("error when response static file: " + fileName, e);
+        } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e1) {
                 }
             }
-            throw new ServletException("error read file: " + fileName, e);
         }
-        return result == null ? null : new String(result);
     }
 }
