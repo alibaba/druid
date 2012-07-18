@@ -6,7 +6,7 @@ import javax.management.MBeanServer;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class MBeanServerFactoryBean implements FactoryBean {
+public class MBeanServerFactoryBean implements FactoryBean<MBeanServer> {
 
     public MBeanServer getObject() throws Exception {
         return ManagementFactory.getPlatformMBeanServer();

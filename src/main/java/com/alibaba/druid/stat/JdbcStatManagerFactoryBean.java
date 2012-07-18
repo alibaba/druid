@@ -17,10 +17,10 @@ package com.alibaba.druid.stat;
 
 import org.springframework.beans.factory.FactoryBean;
 
-public class JdbcStatManagerFactoryBean implements FactoryBean {
+public class JdbcStatManagerFactoryBean implements FactoryBean<JdbcStatManager> {
 
     @Override
-    public Object getObject() throws Exception {
+    public JdbcStatManager getObject() throws Exception {
         return JdbcStatManager.getInstance();
     }
 

@@ -20,7 +20,7 @@ import com.alibaba.druid.spring.IUserService;
 import com.alibaba.druid.spring.User;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
-public class SpringFilterTest extends TestCase {
+public class SpringIbatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
@@ -34,7 +34,7 @@ public class SpringFilterTest extends TestCase {
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                                                                                    "com/alibaba/druid/pool/spring-config-1.xml");
+                                                                                    "com/alibaba/druid/pool/ibatis/spring-config-ibatis.xml");
 
         DataSource dataSource = (DataSource) context.getBean("dataSource");
 
@@ -71,6 +71,22 @@ public class SpringFilterTest extends TestCase {
         TestFilter filter = (TestFilter) context.getBean("test-filter");
         Assert.assertEquals(2, filter.getConnectCount());
 
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE sequence_seed");
+            stmt.close();
+            conn.close();
+        }
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE t_User");
+            stmt.close();
+            conn.close();
+        }
+
+        
         context.close();
 
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());

@@ -24,17 +24,16 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class OracleAggregateExpr extends SQLAggregateExpr implements Serializable, OracleExpr {
 
-    private boolean           unique           = false;
     private static final long serialVersionUID = 1L;
     private OracleAnalytic    over;
     private boolean           ignoreNulls      = false;
 
     public boolean isUnique() {
-        return unique;
+        return Option.UNIQUE.equals(this.getOption());
     }
 
     public void setUnique(boolean unique) {
-        this.unique = unique;
+        this.setOption(Option.UNIQUE);
     }
 
     public boolean isIgnoreNulls() {
@@ -49,7 +48,7 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
         super(methodName);
     }
 
-    public OracleAggregateExpr(String methodName, int option){
+    public OracleAggregateExpr(String methodName, Option option){
         super(methodName, option);
     }
 

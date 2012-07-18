@@ -494,7 +494,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.isGlobal()) {
             print("@@global.");
         } else {
-            if ((!x.getName().startsWith("@")) && (!x.getName().equals("?"))) {
+            String varName = x.getName();
+            if ((!varName.startsWith("@")) && (!varName.equals("?")) && (!varName.startsWith("#")) && (!varName.startsWith("$"))) {
                 print("@@");
             }
         }

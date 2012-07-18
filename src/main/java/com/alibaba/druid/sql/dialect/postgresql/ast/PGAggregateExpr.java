@@ -20,7 +20,7 @@ public class PGAggregateExpr extends SQLAggregateExpr implements PGSQLObject {
 
 	private static final long serialVersionUID = 1L;
 
-	public PGAggregateExpr(String methodName, int option) {
+	public PGAggregateExpr(String methodName, Option option) {
 		super(methodName, option);
 	}
 

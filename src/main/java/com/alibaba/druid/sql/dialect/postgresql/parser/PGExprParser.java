@@ -19,16 +19,18 @@ public class PGExprParser extends SQLExprParser{
         super(lexer);
     }
     
-    protected SQLAggregateExpr parseAggregateExpr(String method_name) throws ParserException {
+    protected SQLAggregateExpr parseAggregateExpr(String methodName) throws ParserException {
+        methodName = methodName.toUpperCase();
+        
         PGAggregateExpr aggregateExpr;
         if (lexer.token() == Token.ALL) {
-            aggregateExpr = new PGAggregateExpr(method_name, 1);
+            aggregateExpr = new PGAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
             lexer.nextToken();
         } else if (lexer.token() == Token.DISTINCT) {
-            aggregateExpr = new PGAggregateExpr(method_name, 0);
+            aggregateExpr = new PGAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
             lexer.nextToken();
         } else {
-            aggregateExpr = new PGAggregateExpr(method_name, 1);
+            aggregateExpr = new PGAggregateExpr(methodName);
         }
 
         exprList(aggregateExpr.getArguments());

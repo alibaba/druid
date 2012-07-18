@@ -63,7 +63,7 @@ public class MySqlLexer extends Lexer {
     public void scanVariable() {
         final char first = ch;
 
-        if (ch != '@' && ch != ':' && ch != '#') {
+        if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
             throw new SQLParseException("illegal variable");
         }
 
@@ -104,6 +104,31 @@ public class MySqlLexer extends Lexer {
 
             stringVal = symbolTable.addSymbol(buf, np, sp, hash);
             token = Token.VARIANT;
+        } else if (buf[bp + 1] == '{') {
+                ++bp;
+                ++sp;
+                char ch;
+                for (;;) {
+                    ch = buf[++bp];
+                    
+                    if (ch == '}') {
+                        sp++;
+                        ch = buf[++bp];
+                        break;
+                    } else if (ch == EOI) {
+                        throw new SQLParseException("illegal identifier");
+                    }
+                    
+                    hash = 31 * hash + ch;
+                    
+                    sp++;
+                    continue;
+                }
+                
+                this.ch = buf[bp];
+                
+                stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+                token = Token.VARIANT;
         } else {
             for (;;) {
                 ch = buf[++bp];

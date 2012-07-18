@@ -675,16 +675,18 @@ public class SQLExprParser extends SQLParser {
         return false;
     }
 
-    protected SQLAggregateExpr parseAggregateExpr(String method_name) throws ParserException {
+    protected SQLAggregateExpr parseAggregateExpr(String methodName) throws ParserException {
+        methodName = methodName.toUpperCase();
+        
         SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.ALL) {
-            aggregateExpr = new SQLAggregateExpr(method_name, 1);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
             lexer.nextToken();
         } else if (lexer.token() == Token.DISTINCT) {
-            aggregateExpr = new SQLAggregateExpr(method_name, 0);
+            aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
             lexer.nextToken();
         } else {
-            aggregateExpr = new SQLAggregateExpr(method_name, 1);
+            aggregateExpr = new SQLAggregateExpr(methodName);
         }
 
         exprList(aggregateExpr.getArguments());

@@ -433,12 +433,21 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     @Override
     public boolean visit(PGAggregateExpr x) {
         print(x.getMethodName());
+        
         print("(");
+        
+        if (x.getOption() != null) {
+            print(x.getOption().toString());
+            print(' ');
+        }
+        
         printAndAccept(x.getArguments(), ", ");
         print(")");
+        
         if (x.getOver() != null) {
             x.getOver().accept(this);
         }
+        
         return false;
     }
 

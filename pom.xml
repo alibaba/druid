@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.4</version>
+	<version>0.2.5-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -170,32 +170,56 @@
 		</plugins>
 	</build>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.26</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.1</version>
 			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring</artifactId>
-			<version>2.0</version>
+			<artifactId>spring-core</artifactId>
+			<version>3.1.1.RELEASE</version>
 			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>3.1.1.RELEASE</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-ibatis</artifactId>
+			<version>2.0.8</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis</artifactId>
+		    <version>3.1.1</version>
+		    <scope>provided</scope>
+		    <optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis-spring</artifactId>
+		    <version>1.1.1</version>
+		    <scope>provided</scope>
+		    <optional>true</optional>
 		</dependency>
 
 		<dependency>

@@ -27,16 +27,15 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
 
     private static final long     serialVersionUID = 1L;
     protected String              methodName;
-    protected int                 option;
+    protected Option              option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
 
     public SQLAggregateExpr(String methodName){
 
         this.methodName = methodName;
-        this.option = 1;
     }
 
-    public SQLAggregateExpr(String methodName, int option){
+    public SQLAggregateExpr(String methodName, Option option){
         this.methodName = methodName;
         this.option = option;
     }
@@ -49,11 +48,11 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         this.methodName = methodName;
     }
 
-    public int getOption() {
+    public Option getOption() {
         return this.option;
     }
 
-    public void setOption(int option) {
+    public void setOption(Option option) {
         this.option = option;
     }
 
@@ -86,7 +85,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         int result = 1;
         result = prime * result + ((arguments == null) ? 0 : arguments.hashCode());
         result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-        result = prime * result + option;
+        result = prime * result + ((option == null) ? 0 : option.hashCode());
         return result;
     }
 
@@ -120,5 +119,9 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public static enum Option {
+        DISTINCT, ALL, UNIQUE
     }
 }

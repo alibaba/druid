@@ -87,7 +87,7 @@ public class OracleLexer extends Lexer {
             return;
         }
 
-        if (ch != ':' && ch != '#') {
+        if (ch != ':' && ch != '#' && ch != '$') {
             throw new SQLParseException("illegal variable");
         }
 
@@ -98,12 +98,19 @@ public class OracleLexer extends Lexer {
         char ch;
 
         boolean quoteFlag = false;
+        boolean mybatisFlag = false;
         if (buf[bp + 1] == '"') {
             hash = 31 * hash + '"';
             bp++;
             sp++;
             quoteFlag = true;
+        } else if (buf[bp + 1] == '{') {
+            hash = 31 * hash + '"';
+            bp++;
+            sp++;
+            mybatisFlag = true;
         }
+        
         for (;;) {
             ch = buf[++bp];
 
@@ -116,8 +123,16 @@ public class OracleLexer extends Lexer {
             sp++;
             continue;
         }
+        
         if (quoteFlag) {
             if (ch != '"') {
+                throw new SQLParseException("syntax error");
+            }
+            hash = 31 * hash + '"';
+            ++bp;
+            sp++;
+        } else if (mybatisFlag) {
+            if (ch != '}') {
                 throw new SQLParseException("syntax error");
             }
             hash = 31 * hash + '"';
