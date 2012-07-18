@@ -65,6 +65,21 @@ public class SpringMybatisFilterTest extends TestCase {
 
             userMapper.addUser(user);
         }
+        
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE sequence_seed");
+            stmt.close();
+            conn.close();
+        }
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE t_User");
+            stmt.close();
+            conn.close();
+        }
 
         context.close();
 

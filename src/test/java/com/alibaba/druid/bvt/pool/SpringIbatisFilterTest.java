@@ -71,6 +71,22 @@ public class SpringIbatisFilterTest extends TestCase {
         TestFilter filter = (TestFilter) context.getBean("test-filter");
         Assert.assertEquals(2, filter.getConnectCount());
 
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE sequence_seed");
+            stmt.close();
+            conn.close();
+        }
+        {
+            Connection conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DROP TABLE t_User");
+            stmt.close();
+            conn.close();
+        }
+
+        
         context.close();
 
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
