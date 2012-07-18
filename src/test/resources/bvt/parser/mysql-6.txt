@@ -37,7 +37,7 @@ from (
 
 
 ---------------------------
-SELECT count(*)
+SELECT COUNT(*)
 FROM (SELECT a.activity_offer_id AS adResourceId, a.title AS adResourceName, a.b2boffer_url AS adResourceURL, a.custid, b.memberid
 		, c.position_name AS positionName, c.charge_setting AS feeRegulation, a.priority_weight AS priorityWeight, a.audit_state AS adResourceState, 0 AS adResourceType
 		, a.gmt_create, a.refuse_remark
