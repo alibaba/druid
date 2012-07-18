@@ -7,7 +7,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
 	default-lazy-init="false">
 	
-	<bean id="statMbeanServer" class="com.alibaba.druid.spring.MBeanServerFactoryBean" />
+	<bean id="statMbeanServer" class="com.alibaba.druid.support.spring.MBeanServerFactoryBean" />
 	
 	<bean id="statManager" class="com.alibaba.druid.stat.JdbcStatManagerFactoryBean" />
 	
