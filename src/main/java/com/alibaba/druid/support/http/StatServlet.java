@@ -2,11 +2,12 @@ package com.alibaba.druid.support.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,8 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -167,9 +170,9 @@ public class StatServlet extends HttpServlet {
         return array;
     }
 
-    private JSONObject getJSONDataSource(DruidDataSource dataSource) {
+    private Map<String, Object> getJSONDataSource(DruidDataSource dataSource) {
 
-        JSONObject json = new JSONObject();
+        Map<String, Object> json = new HashMap<String, Object>();
         json.put("Identity", System.identityHashCode(dataSource));
         json.put("Name", dataSource.getName());
         json.put("URL", dataSource.getUrl());
@@ -193,19 +196,19 @@ public class StatServlet extends HttpServlet {
         return json;
     }
 
-    private void returnJSONResult(HttpServletRequest req, HttpServletResponse resp, int resultCode, JSON jsonObject)
-                                                                                                                    throws IOException {
+    private void returnJSONResult(HttpServletRequest req, HttpServletResponse resp, int resultCode, Object content)
+                                                                                                                  throws IOException {
         PrintWriter out = resp.getWriter();
 
-        JSONObject json = new JSONObject();
+        Map<String, Object> json = new HashMap<String, Object>();
         json.put("ResultCode", resultCode);
-        json.put("Content", jsonObject);
-        out.print(json.toJSONString());
+        json.put("Content", content);
+        
+        String jsonString = JSON.toJSONString(json);
+        out.print(jsonString);
     }
 
-    private void returnResourceFile(String fileName, HttpServletResponse resp) throws ServletException, IOException {
-        OutputStream out = resp.getOutputStream();
-
+    private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
         InputStream in = null;
         try {
             in = Thread.currentThread().getContextClassLoader().getResourceAsStream("support/http/resources" + fileName);
@@ -213,19 +216,12 @@ public class StatServlet extends HttpServlet {
                 return;
             }
 
-            byte[] temp = new byte[1024];
-            int read = 0;
-            while ((read = in.read(temp)) != -1)
-                out.write(temp, 0, read);
+            String text = IOUtils.read(in);
+            response.getWriter().write(text);
         } catch (IOException e) {
             throw new ServletException("error when response static file: " + fileName, e);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e1) {
-                }
-            }
+            JdbcUtils.close(in);
         }
     }
 }

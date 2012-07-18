@@ -1,6 +1,8 @@
 package com.alibaba.druid.util;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -9,6 +11,11 @@ import java.text.SimpleDateFormat;
 public class IOUtils {
 
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
+
+    public static String read(InputStream in) {
+        InputStreamReader reader = new InputStreamReader(in);
+        return read(reader);
+    }
 
     public static String read(Reader reader) {
         try {
