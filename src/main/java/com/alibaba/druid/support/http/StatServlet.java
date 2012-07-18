@@ -5,8 +5,10 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -21,8 +23,6 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
@@ -56,8 +56,8 @@ public class StatServlet extends HttpServlet {
         returnResourceFile(requestPath, resp);
     }
 
-    private JSONArray getJSONDrivers() {
-        JSONArray drivers = new JSONArray();
+    private List<String> getJSONDrivers() {
+        List<String> drivers = new ArrayList<String>();
         for (Enumeration<Driver> e = DriverManager.getDrivers(); e.hasMoreElements();) {
             Driver driver = e.nextElement();
             drivers.add(driver.getClass().getName());
@@ -66,7 +66,7 @@ public class StatServlet extends HttpServlet {
     }
 
     private void returnJSON_BasicStat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JSONObject json = new JSONObject();
+        Map<String, Object> json = new HashMap<String, Object>();
         json.put("Version", VERSION.getVersionNumber());
         json.put("Drivers", getJSONDrivers());
         json.put("DataSources", getJSONDataSources());
@@ -81,7 +81,7 @@ public class StatServlet extends HttpServlet {
             identity = Integer.parseInt(req.getParameter("identity"));
         } catch (Exception e) {
         }
-        JSONObject json = getJSONDataSourceStat(identity);
+        Map<String, Object> json = getJSONDataSourceStat(identity);
         if (identity == null) {
             returnJSONResult(req, resp, RESULT_CODE_ERROR, null);
         } else {
@@ -96,24 +96,24 @@ public class StatServlet extends HttpServlet {
             identity = Integer.parseInt(req.getParameter("identity"));
         } catch (Exception e) {
         }
-        JSONArray re = getJSONDataSourceSqlStat(identity);
-        if (identity == null || re == null) {
+        List<Object> sqlStatList = getJSONDataSourceSqlStat(identity);
+        if (identity == null || sqlStatList == null) {
             returnJSONResult(req, resp, RESULT_CODE_ERROR, null);
         } else {
-            returnJSONResult(req, resp, RESULT_CODE_SUCCESS, re);
+            returnJSONResult(req, resp, RESULT_CODE_SUCCESS, sqlStatList);
         }
 
     }
 
-    private JSONArray getJSONDataSources() {
-        JSONArray drivers = new JSONArray();
+    private List<Object> getJSONDataSources() {
+        List<Object> drivers = new ArrayList<Object>();
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             drivers.add(getJSONDataSource(dataSource));
         }
         return drivers;
     }
 
-    private JSONObject getJSONDataSourceStat(Integer id) {
+    private Map<String, Object> getJSONDataSourceStat(Integer id) {
         if (id == null) {
             return null;
         }
@@ -137,7 +137,7 @@ public class StatServlet extends HttpServlet {
         return null;
     }
 
-    private JSONArray getJSONDataSourceSqlStat(Integer id) {
+    private List<Object> getJSONDataSourceSqlStat(Integer id) {
         if (id == null) {
             return null;
         }
@@ -145,9 +145,9 @@ public class StatServlet extends HttpServlet {
         if (ds == null) {
             return null;
         }
-        JSONArray array = new JSONArray();
+        List<Object> array = new ArrayList<Object>();
         for (JdbcSqlStat sqlStat : ds.getDataSourceStat().getSqlStatMap().values()) {
-            JSONObject json = new JSONObject();
+            Map<String, Object> json = new HashMap<String, Object>();
             json.put("SQL", sqlStat.getSql());
             json.put("File", sqlStat.getFile());
             json.put("Name", sqlStat.getName());
@@ -197,15 +197,14 @@ public class StatServlet extends HttpServlet {
     }
 
     private void returnJSONResult(HttpServletRequest req, HttpServletResponse resp, int resultCode, Object content)
-                                                                                                                  throws IOException {
+                                                                                                                   throws IOException {
         PrintWriter out = resp.getWriter();
 
         Map<String, Object> json = new HashMap<String, Object>();
         json.put("ResultCode", resultCode);
         json.put("Content", content);
-        
-        String jsonString = JSON.toJSONString(json);
-        out.print(jsonString);
+
+        out.print(JSON.toJSONString(json));
     }
 
     private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
