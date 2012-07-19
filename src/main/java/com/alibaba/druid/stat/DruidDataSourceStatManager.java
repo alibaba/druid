@@ -55,7 +55,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instance;
     }
 
-    public synchronized static void add(DruidDataSource dataSource) {
+    public synchronized static ObjectName add(DruidDataSource dataSource, String name) {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         if (dataSources.size() == 0) {
             try {
@@ -70,9 +70,9 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         }
 
         ObjectName objectName = null;
-        if (dataSource.getNameInternal() != null) {
+        if (name != null) {
             try {
-                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + dataSource.getNameInternal());
+                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
                 mbeanServer.registerMBean(dataSource, objectName);
             } catch (JMException ex) {
                 LOG.error("register mbean error", ex);
@@ -92,7 +92,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         }
 
         dataSources.put(dataSource, objectName);
-        dataSource.setObjectName(objectName);
+        return objectName;
     }
 
     public synchronized static void remove(DruidDataSource dataSource) {

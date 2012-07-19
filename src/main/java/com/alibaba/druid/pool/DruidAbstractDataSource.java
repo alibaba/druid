@@ -766,10 +766,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return "DataSource-" + System.identityHashCode(this);
     }
 
-    public String getNameInternal() {
-        return this.name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }

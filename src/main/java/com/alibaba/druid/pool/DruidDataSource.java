@@ -30,6 +30,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 
+import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
@@ -377,7 +378,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
 
             createdTime = new Date();
-            DruidDataSourceStatManager.add(this);
+            ObjectName objectName = DruidDataSourceStatManager.add(this, this.name);
+            this.setObjectName(objectName);
 
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
