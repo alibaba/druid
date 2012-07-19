@@ -1,6 +1,20 @@
+
+
 var xmlHttpForBasicInfo;
 var xmlHttpForDataSourceInfo;
 var xmlHttpForDataSourceSqlStatInfo;
+var xmlHttpForReset;
+
+function ajaxRequestForReset() {
+	if (window.XMLHttpRequest)
+		xmlHttpForReset = new XMLHttpRequest();
+	else if (window.ActiveXObject)
+		xmlHttpForReset = new ActiveXObject("Microsoft.XMLHTTP");
+	xmlHttpForReset.onreadystatechange = ajaxResponseForReset;
+	xmlHttpForReset.open("GET", 'reset-all.json', true);
+	xmlHttpForReset.send(null);
+	return false;
+}
 function ajaxRequestForBasicInfo() {
 	if (window.XMLHttpRequest)
 		xmlHttpForBasicInfo = new XMLHttpRequest();
@@ -27,6 +41,17 @@ function ajaxRequestForDataSourceInfo() {
 	xmlHttpForDataSourceInfo.onreadystatechange = ajaxResponseForDataSourceInfo;
 	xmlHttpForDataSourceInfo.open("GET", 'datasource.json', true);
 	xmlHttpForDataSourceInfo.send(null);
+}
+function ajaxResponseForReset() {
+	var html = '';
+	if (xmlHttpForReset.readyState == 4) {
+		if (xmlHttpForReset.status == 200) {
+			var jsonResp = eval("(" + xmlHttpForReset.responseText + ")");
+			if (jsonResp.ResultCode == 1) {
+				alert("already reset all stat");
+			}
+		}
+	}
 }
 function ajaxResponseForBasicInfo() {
 	var html = '';
@@ -88,41 +113,26 @@ function ajaxResponseForDataSourceInfo() {
 						var listHtml = '';
 						var datasourceId = datasource.Identity;
 						listHtml += '<div id="dataSourceStat' + datasourceId + '">';
-						listHtml += '<h2>Basic Info For <span id="DS-Info-Title' + datasourceId + '"></span></h2>';
-						listHtml += '<table cellpadding="5" cellspacing="1" width="960">';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable" width="150">UserName</td><td width="150" id="DS-Info-UserName' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable" width="140">URL</td><td id="DS-Info-URL' + datasourceId + '" colspan="3">&nbsp;</td>';
-						listHtml += '</tr>';
-
-						listHtml += '<tr >';
-						listHtml += '<td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '" colspan="3">&nbsp;</td>';
-						listHtml += '</tr>';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '" colspan="3">&nbsp;</td>';
-						listHtml += '</tr>';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '" width="150">&nbsp;</td>';
-						listHtml += '<td class="td_lable"  width="190">MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td>';
-						listHtml += '</tr>';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable">LogicConnectCount</td><td id="DS-Info-LogicConnectCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">LogicCloseCount</td><td id="DS-Info-LogicCloseCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">LogicConnectErrorCount</td><td id="DS-Info-LogicConnectErrorCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '</tr>';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '</tr>';
-						listHtml += '<tr>';
-						listHtml += '<td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '<td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td>';
-						listHtml += '</tr>';
+						listHtml += '<h2>Basic Info For <span id="DS-Info-Title' + datasourceId + '"></span><a href="datasource-'+datasourceId+'.json" target="_blank">[View JSON API]</a></h2>';
+						listHtml += '<table cellpadding="5" cellspacing="1" width="99%">';
+						listHtml += '<tr><td class="td_lable" width="230">UserName</td><td id="DS-Info-UserName' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicConnectCount</td><td id="DS-Info-LogicConnectCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicCloseCount</td><td id="DS-Info-LogicCloseCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicConnectErrorCount</td><td id="DS-Info-LogicConnectErrorCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td></tr>';
 						listHtml += '</table>';
 						listHtml += '</div>';
 

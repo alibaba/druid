@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    	<title>Druid DataSource Stat List</title>
+    	<title>Druid DataSourceStat</title>
 		<link href="style.css" type="text/css" rel="stylesheet"/>
 		<script src="js.js" type="text/javascript"></script>
 		<script >
@@ -14,10 +14,11 @@
 	<body onload="init()">
 		</br>
 		<div id="menu" >
-			<a href="index.html">Index</a> | <a href="datasource.html">DataSourceStatList</a> | <a href="sql.html">SqlStatList</a>
+			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
 		</div>
 		</br>
 		<div id="main">
+			<h2>DataSourceStat List<a href="datasource.json" target="_blank">[View JSON API]</a></h2>
             <div id="dataSourceStatList">
 			</div>
         </div>

@@ -7,7 +7,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +20,7 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
+import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
@@ -58,15 +59,18 @@ public class StatServlet extends HttpServlet {
             returnJSONBasicStat(request, response);
             return;
         }
-
-        if (path.equals("/datasource.html")) {
-            returnResourceFile(path, response);
+        
+        if (path.equals("/reset-all.json")) {
+            resetAllStat();
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, null);
             return;
         }
+
         if (path.equals("/datasource.json")) {
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONDataSourceStatList());
             return;
         }
+        
         if (path.startsWith("/datasource-")) {
             Integer id = StringUtils.subStringToInteger(path, "datasource-", ".");
             Object result = getJSONDataSourceStat(id);
@@ -78,6 +82,7 @@ public class StatServlet extends HttpServlet {
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONSqlStat());
             return;
         }
+        
         if (path.startsWith("/sql-")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
             Object result = getJSONSqlStat(id);
@@ -87,6 +92,11 @@ public class StatServlet extends HttpServlet {
 
         // find file in resources path
         returnResourceFile(path, response);
+    }
+
+    private void resetAllStat() {
+        JdbcStatManager.getInstance().reset();
+        DruidDataSourceStatManager.getInstance().reset();
     }
 
     private List<String> getJSONDrivers() {
@@ -99,7 +109,7 @@ public class StatServlet extends HttpServlet {
     }
 
     private void returnJSONBasicStat(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Map<String, Object> json = new HashMap<String, Object>();
+        Map<String, Object> json = new LinkedHashMap<String, Object>();
         json.put("Version", VERSION.getVersionNumber());
         json.put("Drivers", getJSONDrivers());
 
@@ -143,9 +153,9 @@ public class StatServlet extends HttpServlet {
         if (identity == null) {
             return null;
         }
-        for (DruidDataSource ds : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            if (System.identityHashCode(ds) == identity) {
-                return ds;
+        for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            if (System.identityHashCode(datasource) == identity) {
+                return datasource;
             }
         }
         return null;
@@ -162,19 +172,23 @@ public class StatServlet extends HttpServlet {
     }
 
     private Map<String, Object> toJSONSqlStat(JdbcSqlStat sqlStat) {
-        Map<String, Object> json = new HashMap<String, Object>();
+        Map<String, Object> json = new LinkedHashMap<String, Object>();
+
         json.put("SQL", sqlStat.getSql());
         json.put("File", sqlStat.getFile());
         json.put("Name", sqlStat.getName());
+
         json.put("ExecuteCount", sqlStat.getExecuteCount());
         json.put("ExecuteMillisTotal", sqlStat.getExecuteMillisTotal());
         json.put("ExecuteMillisMax", sqlStat.getExecuteMillisMax());
+
         json.put("InTxnCount", sqlStat.getInTransactionCount());
         json.put("ErrorCount", sqlStat.getErrorCount());
         json.put("UpdateCount", sqlStat.getUpdateCount());
         json.put("FetchRowCount", sqlStat.getFetchRowCount());
         json.put("RunningCount", sqlStat.getRunningCount());
         json.put("ConcurrentMax", sqlStat.getConcurrentMax());
+
         json.put("ExecHistogram", sqlStat.getHistogram().toArray());
         json.put("FetchRowHistogram", sqlStat.getFetchRowCountHistogram().toArray());
         json.put("UpdateCountHistogram", sqlStat.getUpdateCountHistogram().toArray());
@@ -185,24 +199,30 @@ public class StatServlet extends HttpServlet {
 
     private Map<String, Object> toJSONDataSource(DruidDataSource dataSource) {
 
-        Map<String, Object> json = new HashMap<String, Object>();
+        Map<String, Object> json = new LinkedHashMap<String, Object>();
         json.put("Identity", System.identityHashCode(dataSource));
         json.put("Name", dataSource.getName());
-        json.put("URL", dataSource.getUrl());
         json.put("DbType", dataSource.getDbType());
-        json.put("UserName", dataSource.getUsername());
         json.put("DriverClassName", dataSource.getDriverClassName());
+
+        json.put("URL", dataSource.getUrl());
+        json.put("UserName", dataSource.getUsername());
+
         json.put("InitialSize", dataSource.getInitialSize());
         json.put("MinIdle", dataSource.getMinIdle());
         json.put("MaxActive", dataSource.getMaxActive());
+
         json.put("TestOnBorrow", dataSource.isTestOnBorrow());
         json.put("TestWhileIdle", dataSource.isTestWhileIdle());
+
         json.put("LogicConnectCount", dataSource.getConnectCount());
         json.put("LogicCloseCount", dataSource.getCloseCount());
         json.put("LogicConnectErrorCount", dataSource.getConnectErrorCount());
+
         json.put("PhysicalConnectCount", dataSource.getCreateCount());
         json.put("PhysicalCloseCount", dataSource.getDestroyCount());
         json.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
+
         json.put("PSCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
         json.put("PSCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
         json.put("PSCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
@@ -213,7 +233,7 @@ public class StatServlet extends HttpServlet {
                                   Object content) throws IOException {
         PrintWriter out = response.getWriter();
 
-        Map<String, Object> json = new HashMap<String, Object>();
+        Map<String, Object> json = new LinkedHashMap<String, Object>();
         json.put("ResultCode", resultCode);
         json.put("Content", content);
 

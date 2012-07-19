@@ -28,11 +28,10 @@ public class StringUtils {
     public static String subString(String src, String start, String to) {
         int indexFrom = src.indexOf(start);
         int indexTo = src.indexOf(to);
-        if (indexFrom < 0 || indexTo < 0 || indexFrom < indexTo) {
+        if (indexFrom < 0 || indexTo < 0 || indexFrom > indexTo) {
             return null;
         }
         indexFrom += start.length();
-        indexTo += to.length();
         return src.substring(indexFrom, indexTo);
 
     }
