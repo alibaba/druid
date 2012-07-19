@@ -136,28 +136,17 @@ public class DruidLoaderUtils {
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            LOG.error("load class error", e);
+            
         }
 
-        if (clazz == null) {
-            loadClass2(className);
-        }
-
-        return clazz;
-    }
-
-    public static Class<?> loadClass2(String className) {
-        if (className == null) {
-            return null;
+        if (clazz != null) {
+            return clazz;
         }
 
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            // skip
+            return null;
         }
-
-        return null;
     }
-
 }

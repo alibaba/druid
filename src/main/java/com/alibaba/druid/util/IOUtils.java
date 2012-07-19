@@ -16,6 +16,21 @@ public class IOUtils {
         InputStreamReader reader = new InputStreamReader(in);
         return read(reader);
     }
+    
+    public static String readFromResource(String resource) throws IOException {
+        InputStream in = null;
+        try {
+            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+            if (in == null) {
+                return null;
+            }
+
+            String text = IOUtils.read(in);
+            return text;
+        } finally {
+            JdbcUtils.close(in);
+        }
+    }
 
     public static String read(Reader reader) {
         try {

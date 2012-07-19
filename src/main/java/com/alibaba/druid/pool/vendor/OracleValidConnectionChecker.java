@@ -49,7 +49,11 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
     public OracleValidConnectionChecker(){
         try {
             clazz = DruidLoaderUtils.loadClass("oracle.jdbc.driver.OracleConnection");
-            ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
+            if (clazz != null) {
+            	ping = clazz.getMethod("pingDatabase", new Class[] { Integer.TYPE });
+            } else {
+            	ping = null;
+            }
         } catch (Exception e) {
             throw new RuntimeException("Unable to resolve pingDatabase method:", e);
         }
@@ -79,7 +83,7 @@ public class OracleValidConnectionChecker implements ValidConnectionChecker, Ser
             }
 
             // unwrap
-            if (clazz.isAssignableFrom(conn.getClass())) {
+            if (clazz != null && clazz.isAssignableFrom(conn.getClass())) {
                 Integer status = (Integer) ping.invoke(conn, params);
 
                 // Error

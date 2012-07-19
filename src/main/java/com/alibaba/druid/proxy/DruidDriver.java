@@ -37,7 +37,6 @@ import javax.management.ObjectName;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
-import com.alibaba.druid.proxy.config.DruidFilterConfigLoader;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
@@ -61,7 +60,6 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
 
     public final static String                                      DEFAULT_PREFIX           = "jdbc:wrap-jdbc:";
-    public final static String                                      CONFIG_PREFIX            = "druid.config";
     public final static String                                      DRIVER_PREFIX            = "driver=";
     public final static String                                      PASSWORD_CALLBACK_PREFIX = "passwordCallback=";
     public final static String                                      NAME_PREFIX              = "name=";
@@ -196,13 +194,6 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
 
         List<AbstractDruidFilterConfig> druidFilterConfigList = new ArrayList<AbstractDruidFilterConfig>();
-
-        if (info != null) {
-            String configFile = info.getProperty(CONFIG_PREFIX);
-            if (configFile != null) {
-                DruidFilterConfigLoader.loadConfig(configFile.trim(), druidFilterConfigList);
-            }
-        }
 
         if (restUrl.startsWith(DRIVER_PREFIX)) {
             int pos = restUrl.indexOf(':', DRIVER_PREFIX.length());

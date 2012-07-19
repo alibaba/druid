@@ -112,13 +112,9 @@ public class DruidLoaderUtilsTest extends TestCase {
 
     public void twest_loadClass() throws Exception {
         Assert.assertEquals(null, DruidLoaderUtils.loadClass(null));
-        Assert.assertEquals(null, DruidLoaderUtils.loadClass2(null));
         Assert.assertEquals(null, DruidLoaderUtils.loadClass("xxx"));
-        Assert.assertEquals(null, DruidLoaderUtils.loadClass2("xxx"));
         Assert.assertEquals(PublicJdbcFilterAdapter.class,
                             DruidLoaderUtils.loadClass(PublicJdbcFilterAdapter.class.getName()));
-        Assert.assertEquals(PublicJdbcFilterAdapter.class,
-                            DruidLoaderUtils.loadClass2(PublicJdbcFilterAdapter.class.getName()));
         Assert.assertNull(DruidLoaderUtils.loadClass(null));
         Assert.assertNull(DruidLoaderUtils.loadClass(""));
     }
