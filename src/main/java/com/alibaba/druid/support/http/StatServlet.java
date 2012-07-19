@@ -38,22 +38,46 @@ public class StatServlet extends HttpServlet {
     private final static int  RESULT_CODE_ERROR   = -1;
 
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String requestPath = req.getPathInfo();
-
-        if (requestPath.startsWith("/json/basic")) {
+    	String contextPath = req.getContextPath();
+    	String servletPath = req.getServletPath();
+    	String requestURI = req.getRequestURI();
+    	
+    	if (contextPath == null) { // root context
+    		contextPath = "";
+    	}
+    	
+    	String path = requestURI.substring(contextPath.length() + servletPath.length());
+    	
+    	if (path.length() == 0 || path.equals("index.html")) {
+    		// TODO home page
+    	} else if (path.equals("datasource")) {
+    		// TODO datasource list page
+    	} else if (path.equals("datasource.json")) {
+    		// TODO datasource list json
+    	} else if (path.startsWith("datasource-")) {
+    		// TODO datasource single
+    	} else if (path.equals("sql")) {
+    		// TODO sql page
+    	} else if (path.equals("sql.json")) {
+    		// TODO sql json
+    	} else if (path.startsWith("sql-")) {
+    		
+    	}
+    	
+        if (path.startsWith("/json/basic")) {
             returnJSON_BasicStat(req, resp);
             return;
         }
-        if (requestPath.startsWith("/json/datasource")) {
+        if (path.startsWith("/json/datasource")) {
             returnJSON_DataSourceStat(req, resp);
             return;
         }
-        if (requestPath.startsWith("/json/sql")) {
+        if (path.startsWith("/json/sql")) {
             returnJSON_DataSourceSqlStat(req, resp);
             return;
         }
         // find file in jar resources path
-        returnResourceFile(requestPath, resp);
+        returnResourceFile(path, resp);
     }
 
     private List<String> getJSONDrivers() {
