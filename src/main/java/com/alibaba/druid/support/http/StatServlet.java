@@ -22,6 +22,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 
 /**
@@ -37,47 +38,55 @@ public class StatServlet extends HttpServlet {
     private final static int  RESULT_CODE_SUCCESS = 1;
     private final static int  RESULT_CODE_ERROR   = -1;
 
-    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	String contextPath = req.getContextPath();
-    	String servletPath = req.getServletPath();
-    	String requestURI = req.getRequestURI();
-    	
-    	if (contextPath == null) { // root context
-    		contextPath = "";
-    	}
-    	
-    	String path = requestURI.substring(contextPath.length() + servletPath.length());
-    	
-    	if (path.length() == 0 || path.equals("index.html")) {
-    		// TODO home page
-    	} else if (path.equals("datasource")) {
-    		// TODO datasource list page
-    	} else if (path.equals("datasource.json")) {
-    		// TODO datasource list json
-    	} else if (path.startsWith("datasource-")) {
-    		// TODO datasource single
-    	} else if (path.equals("sql")) {
-    		// TODO sql page
-    	} else if (path.equals("sql.json")) {
-    		// TODO sql json
-    	} else if (path.startsWith("sql-")) {
-    		
-    	}
-    	
-        if (path.startsWith("/json/basic")) {
-            returnJSON_BasicStat(req, resp);
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String contextPath = request.getContextPath();
+        String servletPath = request.getServletPath();
+        String requestURI = request.getRequestURI();
+
+        if (contextPath == null) { // root context
+            contextPath = "";
+        }
+
+        String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+        if (path.length() == 0) {
+            returnResourceFile("/index.html", response);
             return;
         }
-        if (path.startsWith("/json/datasource")) {
-            returnJSON_DataSourceStat(req, resp);
+
+        if (path.equals("/basic.json")) {
+            returnJSONBasicStat(request, response);
             return;
         }
-        if (path.startsWith("/json/sql")) {
-            returnJSON_DataSourceSqlStat(req, resp);
+
+        if (path.equals("/datasource.html")) {
+            returnResourceFile(path, response);
             return;
         }
-        // find file in jar resources path
-        returnResourceFile(path, resp);
+        if (path.equals("/datasource.json")) {
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONDataSourceStatList());
+            return;
+        }
+        if (path.startsWith("/datasource-")) {
+            Integer id = StringUtils.subStringToInteger(path, "datasource-", ".");
+            Object result = getJSONDataSourceStat(id);
+            returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+            return;
+        }
+
+        if (path.equals("/sql.json")) {
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONSqlStat());
+            return;
+        }
+        if (path.startsWith("/sql-")) {
+            Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
+            Object result = getJSONSqlStat(id);
+            returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+            return;
+        }
+
+        // find file in resources path
+        returnResourceFile(path, response);
     }
 
     private List<String> getJSONDrivers() {
@@ -89,64 +98,45 @@ public class StatServlet extends HttpServlet {
         return drivers;
     }
 
-    private void returnJSON_BasicStat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void returnJSONBasicStat(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> json = new HashMap<String, Object>();
         json.put("Version", VERSION.getVersionNumber());
         json.put("Drivers", getJSONDrivers());
-        json.put("DataSources", getJSONDataSources());
 
-        returnJSONResult(req, resp, RESULT_CODE_SUCCESS, json);
-
-    }
-
-    private void returnJSON_DataSourceStat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Integer identity = null;
-        try {
-            identity = Integer.parseInt(req.getParameter("identity"));
-        } catch (Exception e) {
-        }
-        Map<String, Object> json = getJSONDataSourceStat(identity);
-        if (identity == null) {
-            returnJSONResult(req, resp, RESULT_CODE_ERROR, null);
-        } else {
-            returnJSONResult(req, resp, RESULT_CODE_SUCCESS, json);
-        }
+        returnJSONResult(request, response, RESULT_CODE_SUCCESS, json);
 
     }
 
-    private void returnJSON_DataSourceSqlStat(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Integer identity = null;
-        try {
-            identity = Integer.parseInt(req.getParameter("identity"));
-        } catch (Exception e) {
-        }
-        List<Object> sqlStatList = getJSONDataSourceSqlStat(identity);
-        if (identity == null || sqlStatList == null) {
-            returnJSONResult(req, resp, RESULT_CODE_ERROR, null);
-        } else {
-            returnJSONResult(req, resp, RESULT_CODE_SUCCESS, sqlStatList);
-        }
-
-    }
-
-    private List<Object> getJSONDataSources() {
-        List<Object> drivers = new ArrayList<Object>();
+    private List<Object> getJSONDataSourceStatList() {
+        List<Object> datasourceList = new ArrayList<Object>();
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            drivers.add(getJSONDataSource(dataSource));
+            datasourceList.add(toJSONDataSource(dataSource));
         }
-        return drivers;
+        return datasourceList;
     }
 
     private Map<String, Object> getJSONDataSourceStat(Integer id) {
         if (id == null) {
             return null;
         }
-        DruidDataSource ds = getDruidDataSourceById(id);
-        if (ds == null) {
+        DruidDataSource datasource = getDruidDataSourceById(id);
+        return datasource == null ? null : toJSONDataSource(datasource);
+    }
+
+    private Map<String, Object> getJSONSqlStat(Integer id) {
+        if (id == null) {
             return null;
         }
+        JdbcSqlStat sqlStat = getSqlStatById(id);
+        return sqlStat == null ? null : toJSONSqlStat(sqlStat);
+    }
 
-        return getJSONDataSource(ds);
+    private JdbcSqlStat getSqlStatById(Integer id) {
+        for (DruidDataSource ds : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            JdbcSqlStat sqlStat = ds.getDataSourceStat().getSqlStat(id);
+            if (sqlStat != null) return sqlStat;
+        }
+        return null;
     }
 
     private DruidDataSource getDruidDataSourceById(Integer identity) {
@@ -161,40 +151,39 @@ public class StatServlet extends HttpServlet {
         return null;
     }
 
-    private List<Object> getJSONDataSourceSqlStat(Integer id) {
-        if (id == null) {
-            return null;
-        }
-        DruidDataSource ds = getDruidDataSourceById(id);
-        if (ds == null) {
-            return null;
-        }
+    private List<Object> getJSONSqlStat() {
         List<Object> array = new ArrayList<Object>();
-        for (JdbcSqlStat sqlStat : ds.getDataSourceStat().getSqlStatMap().values()) {
-            Map<String, Object> json = new HashMap<String, Object>();
-            json.put("SQL", sqlStat.getSql());
-            json.put("File", sqlStat.getFile());
-            json.put("Name", sqlStat.getName());
-            json.put("ExecuteCount", sqlStat.getExecuteCount());
-            json.put("ExecuteMillisTotal", sqlStat.getExecuteMillisTotal());
-            json.put("ExecuteMillisMax", sqlStat.getExecuteMillisMax());
-            json.put("InTxnCount", sqlStat.getInTransactionCount());
-            json.put("ErrorCount", sqlStat.getErrorCount());
-            json.put("UpdateCount", sqlStat.getUpdateCount());
-            json.put("FetchRowCount", sqlStat.getFetchRowCount());
-            json.put("RunningCount", sqlStat.getRunningCount());
-            json.put("ConcurrentMax", sqlStat.getConcurrentMax());
-            json.put("ExecHistogram", sqlStat.getHistogram().toArray());
-            json.put("FetchRowHistogram", sqlStat.getFetchRowCountHistogram().toArray());
-            json.put("UpdateCountHistogram", sqlStat.getUpdateCountHistogram().toArray());
-            json.put("ExecAndRsHoldHistogram", sqlStat.getExecuteAndResultHoldTimeHistogram().toArray());
-
-            array.add(json);
+        for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
+                array.add(toJSONSqlStat(sqlStat));
+            }
         }
         return array;
     }
 
-    private Map<String, Object> getJSONDataSource(DruidDataSource dataSource) {
+    private Map<String, Object> toJSONSqlStat(JdbcSqlStat sqlStat) {
+        Map<String, Object> json = new HashMap<String, Object>();
+        json.put("SQL", sqlStat.getSql());
+        json.put("File", sqlStat.getFile());
+        json.put("Name", sqlStat.getName());
+        json.put("ExecuteCount", sqlStat.getExecuteCount());
+        json.put("ExecuteMillisTotal", sqlStat.getExecuteMillisTotal());
+        json.put("ExecuteMillisMax", sqlStat.getExecuteMillisMax());
+        json.put("InTxnCount", sqlStat.getInTransactionCount());
+        json.put("ErrorCount", sqlStat.getErrorCount());
+        json.put("UpdateCount", sqlStat.getUpdateCount());
+        json.put("FetchRowCount", sqlStat.getFetchRowCount());
+        json.put("RunningCount", sqlStat.getRunningCount());
+        json.put("ConcurrentMax", sqlStat.getConcurrentMax());
+        json.put("ExecHistogram", sqlStat.getHistogram().toArray());
+        json.put("FetchRowHistogram", sqlStat.getFetchRowCountHistogram().toArray());
+        json.put("UpdateCountHistogram", sqlStat.getUpdateCountHistogram().toArray());
+        json.put("ExecAndRsHoldHistogram", sqlStat.getExecuteAndResultHoldTimeHistogram().toArray());
+
+        return json;
+    }
+
+    private Map<String, Object> toJSONDataSource(DruidDataSource dataSource) {
 
         Map<String, Object> json = new HashMap<String, Object>();
         json.put("Identity", System.identityHashCode(dataSource));
@@ -220,9 +209,9 @@ public class StatServlet extends HttpServlet {
         return json;
     }
 
-    private void returnJSONResult(HttpServletRequest req, HttpServletResponse resp, int resultCode, Object content)
-                                                                                                                   throws IOException {
-        PrintWriter out = resp.getWriter();
+    private void returnJSONResult(HttpServletRequest request, HttpServletResponse response, int resultCode,
+                                  Object content) throws IOException {
+        PrintWriter out = response.getWriter();
 
         Map<String, Object> json = new HashMap<String, Object>();
         json.put("ResultCode", resultCode);

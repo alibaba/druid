@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<title>Druid SqlStat List</title>
+		<link href="style.css" type="text/css" rel="stylesheet"/>
+		<script src="js.js" type="text/javascript"></script>
+		<script >
+            function init(){
+				ajaxRequestForDataSourceSqlStatInfo();
+            	var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",2000);
+            }
+        </script>
+    </head>
+	<body onload="init()">
+		</br>
+		<div id="menu" >
+			<a href="index.html">Index</a> | <a href="datasource.html">DataSourceStatList</a> | <a href="sql.html">SqlStatList</a>
+		</div>
+		</br>
+		<div id="main">
+            <h2>SqlStat List</h2>
+            <table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
+				<thead>
+                    <th class="td_lable">SQL</th>
+                    <th class="td_lable">File</th>
+                    <th class="td_lable">Name</th>
+                    <th class="td_lable" width="50">Execute Count</th>
+                    <th class="td_lable" width="50">Execute Millis Total</th>
+                    <th class="td_lable" width="50">Execute Millis Max</th>
+                    <th class="td_lable" width="50">InTxn Count</th>
+                    <th class="td_lable" width="50">Error Count</th>
+                    <th class="td_lable" width="50">Effected Row Count</th>
+                    <th class="td_lable" width="50">Fetch Row Count</th>
+                    <th class="td_lable" width="50">Running Count</th>
+                    <th class="td_lable" width="80">Concurrent Max</th>
+                    <th class="td_lable" width="370">Histogram</th>
+                </thead> 
+             </table>
+        </div>
+	</body>
+</html>

@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    	<title>Druid Stat Index</title>
+    	<title>Druid DataSource Stat List</title>
 		<link href="style.css" type="text/css" rel="stylesheet"/>
 		<script src="js.js" type="text/javascript"></script>
 		<script >
             function init(){
-            	ajaxRequestForBasicInfo();
+            	ajaxRequestForDataSourceInfo();
+            	var time2=setInterval("ajaxRequestForDataSourceInfo();",2000);
             }
         </script>
     </head>
@@ -17,25 +18,8 @@
 		</div>
 		</br>
 		<div id="main">
-            <h2>Stat Index</h2>
-            <table cellspacing="1" cellpadding="5">
-				<tr >
-					<td valign="top" width="100" class="td_lable">
-						Version
-                    </td>
-					<td id="DruidVersion" width="95%">
-						
-                    </td>
-                </tr>
-				<tr >
-					<td valign="top" class="td_lable">
-						drivers
-                    </td>
-					<td id="DruidDrivers">
-						
-                    </td>
-                </tr>
-            </table>
+            <div id="dataSourceStatList">
+			</div>
         </div>
 	</body>
 </html>
