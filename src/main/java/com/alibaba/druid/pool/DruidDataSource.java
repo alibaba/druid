@@ -359,7 +359,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = connectionFactory.createConnection();
-                    conn.setAutoCommit(true);
+                    if (isDefaultAutoCommit() != conn.getAutoCommit()) {
+                        conn.setAutoCommit(isDefaultAutoCommit());
+                    }
                     connections[poolingCount++] = new ConnectionHolder(this, conn);
                 }
             } catch (SQLException ex) {
