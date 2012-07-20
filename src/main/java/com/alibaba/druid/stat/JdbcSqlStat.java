@@ -234,8 +234,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             this.updateCount.addAndGet(delta);
         }
         
-        this.updateCountHistogram.recode(delta);
-        this.fetchRowCountHistogram.recode(0);
+        this.updateCountHistogram.record(delta);
+        this.fetchRowCountHistogram.record(0);
         
     }
 
@@ -287,7 +287,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public void addFetchRowCount(long delta) {
         this.fetchRowCount.addAndGet(delta);
-        this.fetchRowCountHistogram.recode(delta);
+        this.fetchRowCountHistogram.record(delta);
         
     }
 
@@ -348,7 +348,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     
     public void addExecuteTime(StatementExecuteType executeType, long nanoSpan) {
     	if (StatementExecuteType.ExecuteQuery != executeType) {
-    		executeAndResultHoldTimeHistogram.recode((nanoSpan)/1000/1000);
+    		executeAndResultHoldTimeHistogram.record((nanoSpan)/1000/1000);
     	}
     	addExecuteTime(nanoSpan);
     }
@@ -373,7 +373,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         long millis = nanoSpan / (1000 * 1000);
-        histogram.recode(millis);
+        histogram.record(millis);
     }
 
     public long getExecuteMillisTotal() {
@@ -640,7 +640,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void addResultSetHoldTimeNano(long statementExecuteNano, long resultHoldTimeNano) {
     	resultSetHoldTimeNano.addAndGet(resultHoldTimeNano);    	
     	executeAndResultSetHoldTime.addAndGet(statementExecuteNano+resultHoldTimeNano);
-    	executeAndResultHoldTimeHistogram.recode((statementExecuteNano+resultHoldTimeNano)/1000/1000);
-    	updateCountHistogram.recode(0);
+    	executeAndResultHoldTimeHistogram.record((statementExecuteNano+resultHoldTimeNano)/1000/1000);
+    	updateCountHistogram.record(0);
     }
 }

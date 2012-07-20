@@ -723,7 +723,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             transactionInfo.setEndTimeMillis();
 
             long transactionMillis = transactionInfo.getEndTimeMillis() - transactionInfo.getStartTimeMillis();
-            dataSource.getTransactionHistogram().recode(transactionMillis);
+            dataSource.getTransactionHistogram().record(transactionMillis);
 
             dataSource.logTransaction(transactionInfo);
 

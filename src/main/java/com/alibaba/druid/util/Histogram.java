@@ -49,7 +49,7 @@ public class Histogram {
         }
     }
 
-    public void recode(long millis) {
+    public void record(long millis) {
         int index = rangeCounters.length - 1;
         for (int i = 0; i < ranges.length; ++i) {
             if (millis < ranges[i]) {

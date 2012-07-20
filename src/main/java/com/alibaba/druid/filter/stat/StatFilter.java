@@ -774,7 +774,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         long nanos = System.nanoTime() - conn.getConnectedTimeNano();
         
         long millis = nanos / (1000L * 1000L);
-        dataSourceStat.getConnectionHoldHistogram().recode(millis);
+        dataSourceStat.getConnectionHoldHistogram().record(millis);
     }
 
     public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,

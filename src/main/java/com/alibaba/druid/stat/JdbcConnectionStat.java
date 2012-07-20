@@ -227,7 +227,7 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
         }
 
         long aliveMillis = aliveNano / (1000 * 1000);
-        histogram.recode(aliveMillis);
+        histogram.record(aliveMillis);
     }
 
     public Throwable getErrorLast() {

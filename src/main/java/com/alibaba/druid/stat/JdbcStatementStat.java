@@ -79,7 +79,7 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
         nanoTotal.addAndGet(nanoSpan);
 
         long millis = nanoSpan / (1000 * 1000);
-        histogram.recode(millis);
+        histogram.record(millis);
     }
 
     public void beforeExecute() {
