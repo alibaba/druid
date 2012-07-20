@@ -59,7 +59,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
-import com.alibaba.druid.util.DruidLoaderUtils;
+import com.alibaba.druid.util.DruidFilterUtils;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -485,7 +485,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
-        Class<?> clazz = DruidLoaderUtils.loadClass(validConnectionCheckerClass);
+        Class<?> clazz = DruidFilterUtils.loadClass(validConnectionCheckerClass);
         ValidConnectionChecker validConnectionChecker = null;
         if (clazz != null) {
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
@@ -713,7 +713,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPasswordCallbackClassName(String passwordCallbackClassName) throws Exception {
-        Class<?> clazz = DruidLoaderUtils.loadClass(passwordCallbackClassName);
+        Class<?> clazz = DruidFilterUtils.loadClass(passwordCallbackClassName);
         if (clazz != null) {
             this.passwordCallback = (PasswordCallback) clazz.newInstance();
         } else {
@@ -1012,7 +1012,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
-        Class<?> clazz = DruidLoaderUtils.loadClass(exceptionSorter);
+        Class<?> clazz = DruidFilterUtils.loadClass(exceptionSorter);
         if (clazz == null) {
         	LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
@@ -1050,7 +1050,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         String[] filterArray = filters.split("\\,");
 
         for (String item : filterArray) {
-            DruidLoaderUtils.loadFilter(this.filters, item);
+            DruidFilterUtils.loadFilter(this.filters, item);
         }
     }
 

@@ -22,8 +22,6 @@ import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -36,14 +34,13 @@ import javax.management.ObjectName;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidLoaderUtils;
+import com.alibaba.druid.util.DruidFilterUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -66,7 +63,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     public final static String                                      JMX_PREFIX               = "jmx=";
     public final static String                                      FILTERS_PREFIX           = "filters=";
 
-    private final AtomicLong                                        connectCount           = new AtomicLong(0);
+    private final AtomicLong                                        connectCount             = new AtomicLong(0);
 
     private String                                                  acceptPrefix             = DEFAULT_PREFIX;
 
@@ -86,7 +83,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
             try {
                 MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-                
+
                 ObjectName objectName = new ObjectName(MBEAN_NAME);
                 if (!mbeanServer.isRegistered(objectName)) {
                     mbeanServer.registerMBean(instance, objectName);
@@ -158,12 +155,12 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             Driver rawDriver = createDriver(config.getRawDriverClassName());
 
             DataSourceProxyImpl newDataSource = new DataSourceProxyImpl(rawDriver, config);
-            
+
             {
                 String property = System.getProperty("druid.filters");
                 if (property != null && property.length() > 0) {
                     for (String filterItem : property.split(",")) {
-                        DruidLoaderUtils.loadFilter(config.getFilters(), filterItem);
+                        DruidFilterUtils.loadFilter(config.getFilters(), filterItem);
                     }
                 }
             }
@@ -176,7 +173,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 }
             }
 
-            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource); 
+            DataSourceProxy oldDataSource = proxyDataSources.putIfAbsent(url, newDataSource);
             if (oldDataSource == null) {
                 if (config.isJmxOption()) {
                     JMXUtils.register("com.alibaba.druid:type=JdbcStat", JdbcStatManager.getInstance());
@@ -193,8 +190,6 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
         DataSourceProxyConfig config = new DataSourceProxyConfig();
 
-        List<AbstractDruidFilterConfig> druidFilterConfigList = new ArrayList<AbstractDruidFilterConfig>();
-
         if (restUrl.startsWith(DRIVER_PREFIX)) {
             int pos = restUrl.indexOf(':', DRIVER_PREFIX.length());
             String driverText = restUrl.substring(DRIVER_PREFIX.length(), pos);
@@ -208,13 +203,9 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             int pos = restUrl.indexOf(':', FILTERS_PREFIX.length());
             String filtersText = restUrl.substring(FILTERS_PREFIX.length(), pos);
             for (String filterItem : filtersText.split(",")) {
-                DruidLoaderUtils.loadFilter(config.getFilters(), filterItem);
+                DruidFilterUtils.loadFilter(config.getFilters(), filterItem);
             }
             restUrl = restUrl.substring(pos + 1);
-        }
-        // 如果url中并无定义filter 采用配置
-        if (config.getFilters().size() <= 0) {
-            DruidLoaderUtils.loadFilter(config.getFilters(), druidFilterConfigList);
         }
 
         if (restUrl.startsWith(NAME_PREFIX)) {
@@ -244,7 +235,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     }
 
     public Driver createDriver(String className) throws SQLException {
-        Class<?> rawDriverClass = DruidLoaderUtils.loadClass(className);
+        Class<?> rawDriverClass = DruidFilterUtils.loadClass(className);
 
         if (rawDriverClass == null) {
             throw new SQLException("jdbc-driver's class not found. '" + className + "'");
@@ -309,7 +300,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     public void resetStat() {
         connectCount.set(0);
     }
-    
+
     @Override
     public String getDruidVersion() {
         return VERSION.getVersionNumber();
