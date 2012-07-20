@@ -1,7 +1,5 @@
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.hdriver.impl.hbql.parser.HBQLExprParser;
-import com.alibaba.druid.hdriver.impl.hbql.parser.HBQLStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleExprParser;
@@ -31,10 +29,6 @@ public class SQLParserUtils {
             return new SQLServerStatementParser(sql);
         }
 
-        if (JdbcUtils.HBASE.equals(dbType)) {
-            return new HBQLStatementParser(sql);
-        }
-
         return new SQLStatementParser(sql);
     }
 
@@ -53,10 +47,6 @@ public class SQLParserUtils {
 
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerExprParser(sql);
-        }
-
-        if (JdbcUtils.HBASE.equals(dbType)) {
-            return new HBQLExprParser(sql);
         }
 
         return new SQLExprParser(sql);
