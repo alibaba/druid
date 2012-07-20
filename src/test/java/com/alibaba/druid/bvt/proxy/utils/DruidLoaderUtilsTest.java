@@ -25,7 +25,8 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.bvt.proxy.DruidDriverTest.PublicJdbcFilterAdapter;
 import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.util.DruidFilterUtils;
+import com.alibaba.druid.filter.FilterManager;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * druidLoader util 测试
@@ -39,42 +40,42 @@ public class DruidLoaderUtilsTest extends TestCase {
         List<Filter> filters = new ArrayList<Filter>();
         // log4j
         String filterItem = "log4j";
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         Filter filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.logging.Log4jFilter", filterConfig.getClass().getName());
         // stat
         filterItem = "stat";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // default
         filterItem = "default";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // counter
         filterItem = "stat";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.stat.StatFilter", filterConfig.getClass().getName());
         // commonLogging
         filterItem = "commonLogging";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.logging.CommonsLogFilter", filterConfig.getClass().getName());
         // encoding
         filterItem = "encoding";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterConfig = filters.get(0);
         Assert.assertNotNull(filterConfig);
         Assert.assertEquals("com.alibaba.druid.filter.encoding.EncodingConvertFilter",
@@ -82,9 +83,9 @@ public class DruidLoaderUtilsTest extends TestCase {
         // 判定重复
         filterItem = "stat";
         filters.clear();
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         filterItem = "default";
-        DruidFilterUtils.loadFilter(filters, filterItem);
+        FilterManager.loadFilter(filters, filterItem);
         for (Iterator<Filter> iterator = filters.iterator(); iterator.hasNext();) {
             Filter filter = (Filter) iterator.next();
             System.out.println(filter.getClass().getName());
@@ -93,12 +94,12 @@ public class DruidLoaderUtilsTest extends TestCase {
     }
 
     public void twest_loadClass() throws Exception {
-        Assert.assertEquals(null, DruidFilterUtils.loadClass(null));
-        Assert.assertEquals(null, DruidFilterUtils.loadClass("xxx"));
+        Assert.assertEquals(null, JdbcUtils.loadDriverClass(null));
+        Assert.assertEquals(null, JdbcUtils.loadDriverClass("xxx"));
         Assert.assertEquals(PublicJdbcFilterAdapter.class,
-                            DruidFilterUtils.loadClass(PublicJdbcFilterAdapter.class.getName()));
-        Assert.assertNull(DruidFilterUtils.loadClass(null));
-        Assert.assertNull(DruidFilterUtils.loadClass(""));
+                            JdbcUtils.loadDriverClass(PublicJdbcFilterAdapter.class.getName()));
+        Assert.assertNull(JdbcUtils.loadDriverClass(null));
+        Assert.assertNull(JdbcUtils.loadDriverClass(""));
     }
 
 }

@@ -375,7 +375,7 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
-            return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+            return "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
             return "com.sybase.jdbc2.jdbc.SybDriver";
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
@@ -608,6 +608,30 @@ public final class JdbcUtils {
     private static void setParameters(PreparedStatement stmt, List<Object> parameters) throws SQLException {
         for (int i = 0, size = parameters.size(); i < size; ++i) {
             stmt.setObject(i + 1, parameters.get(i));
+        }
+    }
+    
+    public static Class<?> loadDriverClass(String className) {
+        Class<?> clazz = null;
+
+        if (className == null) {
+            return null;
+        }
+
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+
+        }
+
+        if (clazz != null) {
+            return clazz;
+        }
+
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return null;
         }
     }
 }

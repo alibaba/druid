@@ -34,13 +34,13 @@ import javax.management.ObjectName;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.DruidFilterUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -160,7 +160,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
                 String property = System.getProperty("druid.filters");
                 if (property != null && property.length() > 0) {
                     for (String filterItem : property.split(",")) {
-                        DruidFilterUtils.loadFilter(config.getFilters(), filterItem);
+                        FilterManager.loadFilter(config.getFilters(), filterItem);
                     }
                 }
             }
@@ -203,7 +203,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
             int pos = restUrl.indexOf(':', FILTERS_PREFIX.length());
             String filtersText = restUrl.substring(FILTERS_PREFIX.length(), pos);
             for (String filterItem : filtersText.split(",")) {
-                DruidFilterUtils.loadFilter(config.getFilters(), filterItem);
+                FilterManager.loadFilter(config.getFilters(), filterItem);
             }
             restUrl = restUrl.substring(pos + 1);
         }
@@ -235,7 +235,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     }
 
     public Driver createDriver(String className) throws SQLException {
-        Class<?> rawDriverClass = DruidFilterUtils.loadClass(className);
+        Class<?> rawDriverClass = JdbcUtils.loadDriverClass(className);
 
         if (rawDriverClass == null) {
             throw new SQLException("jdbc-driver's class not found. '" + className + "'");

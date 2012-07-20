@@ -18,7 +18,9 @@ package com.alibaba.druid.filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,5 +79,69 @@ public class FilterManager {
 
             filterProperties.putAll(property);
         }
+    }
+
+    public static void loadFilter(List<Filter> filters, String filterName) throws SQLException {
+        if (filterName.length() == 0) {
+            return;
+        }
+
+        String filterClassNames = getFilter(filterName);
+
+        if (filterClassNames != null) {
+            for (String filterClassName : filterClassNames.split(",")) {
+                if (existsFilter(filters, filterClassName)) {
+                    continue;
+                }
+
+                Class<?> filterClass = JdbcUtils.loadDriverClass(filterClassName);
+
+                if (filterClass == null) {
+                    LOG.error("load filter error, filter not found : " + filterClassName);
+                    continue;
+                }
+
+                Filter filter;
+
+                try {
+                    filter = (Filter) filterClass.newInstance();
+                } catch (InstantiationException e) {
+                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+                } catch (IllegalAccessException e) {
+                    throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+                }
+
+                filters.add(filter);
+            }
+
+            return;
+        }
+
+        if (existsFilter(filters, filterName)) {
+            return;
+        }
+
+        Class<?> filterClass = JdbcUtils.loadDriverClass(filterName);
+        if (filterClass == null) {
+            LOG.error("load filter error, filter not found : " + filterName);
+            return;
+        }
+
+        try {
+            Filter filter = (Filter) filterClass.newInstance();
+            filters.add(filter);
+        } catch (Exception e) {
+            throw new SQLException("load managed jdbc driver event listener error. " + filterName, e);
+        }
+    }
+
+    private static boolean existsFilter(List<Filter> filterList, String filterClassName) {
+        for (Filter filter : filterList) {
+            String itemFilterClassName = filter.getClass().getName();
+            if (itemFilterClassName.equalsIgnoreCase(filterClassName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

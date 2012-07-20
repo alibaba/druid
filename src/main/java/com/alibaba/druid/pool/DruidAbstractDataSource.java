@@ -49,6 +49,7 @@ import javax.sql.DataSource;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
+import com.alibaba.druid.filter.FilterManager;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource.ActiveConnectionTraceInfo;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
@@ -59,7 +60,6 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
-import com.alibaba.druid.util.DruidFilterUtils;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -485,7 +485,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setValidConnectionCheckerClassName(String validConnectionCheckerClass) throws Exception {
-        Class<?> clazz = DruidFilterUtils.loadClass(validConnectionCheckerClass);
+        Class<?> clazz = JdbcUtils.loadDriverClass(validConnectionCheckerClass);
         ValidConnectionChecker validConnectionChecker = null;
         if (clazz != null) {
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
@@ -713,7 +713,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPasswordCallbackClassName(String passwordCallbackClassName) throws Exception {
-        Class<?> clazz = DruidFilterUtils.loadClass(passwordCallbackClassName);
+        Class<?> clazz = JdbcUtils.loadDriverClass(passwordCallbackClassName);
         if (clazz != null) {
             this.passwordCallback = (PasswordCallback) clazz.newInstance();
         } else {
@@ -1012,7 +1012,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
-        Class<?> clazz = DruidFilterUtils.loadClass(exceptionSorter);
+        Class<?> clazz = JdbcUtils.loadDriverClass(exceptionSorter);
         if (clazz == null) {
         	LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
@@ -1050,7 +1050,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         String[] filterArray = filters.split("\\,");
 
         for (String item : filterArray) {
-            DruidFilterUtils.loadFilter(this.filters, item);
+            FilterManager.loadFilter(this.filters, item);
         }
     }
 

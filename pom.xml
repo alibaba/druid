@@ -290,6 +290,18 @@
 			<version>10.2.0.2</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>3.0.1301.101</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>4.0.2206.100</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.nutz</groupId>
