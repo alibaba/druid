@@ -27,8 +27,8 @@ public abstract class StatementBase implements Statement {
     protected boolean  closed = false;
     private boolean    poolable;
 
-    private ResultSet  generatedKeys;
-    private ResultSet  resultSet;
+    protected ResultSet  generatedKeys;
+    protected ResultSet  resultSet;
 
     public StatementBase(Connection connection){
         super();

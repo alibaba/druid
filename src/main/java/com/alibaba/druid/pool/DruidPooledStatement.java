@@ -284,6 +284,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
         try {
             ResultSet rs = stmt.getResultSet();
+            if (rs == null) {
+                return null;
+            }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);

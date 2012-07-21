@@ -77,4 +77,14 @@ public class MockPreparedStatement extends PreparedStatementBase implements Prep
         return false;
     }
 
+    @Override
+    public ResultSet getResultSet() throws SQLException {
+        checkOpen();
+        
+        if (resultSet == null) {
+            resultSet = this.getConnection().getDriver().createResultSet(this);
+        }
+
+        return resultSet;
+    }
 }
