@@ -1,5 +1,3 @@
-
-
 var xmlHttpForBasicInfo;
 var xmlHttpForDataSourceInfo;
 var xmlHttpForDataSourceSqlStatInfo;
@@ -113,26 +111,26 @@ function ajaxResponseForDataSourceInfo() {
 						var listHtml = '';
 						var datasourceId = datasource.Identity;
 						listHtml += '<div id="dataSourceStat' + datasourceId + '">';
-						listHtml += '<h2>Basic Info For <span id="DS-Info-Title' + datasourceId + '"></span><a href="datasource-'+datasourceId+'.json" target="_blank">[View JSON API]</a></h2>';
+						listHtml += '<h2>Basic Info For <span id="DS-Info-Title' + datasourceId + '"></span><a href="datasource-' + datasourceId + '.json" target="_blank">[View JSON API]</a></h2>';
 						listHtml += '<table cellpadding="5" cellspacing="1" width="99%">';
-						listHtml += '<tr><td class="td_lable" width="230">UserName</td><td id="DS-Info-UserName' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">LogicConnectCount</td><td id="DS-Info-LogicConnectCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">LogicCloseCount</td><td id="DS-Info-LogicCloseCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">LogicConnectErrorCount</td><td id="DS-Info-LogicConnectErrorCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td></tr>';
-						listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td></tr>';
+						listHtml += '<tr><td class="td_lable" width="230">UserName</td><td id="DS-Info-UserName' + datasourceId + '">&nbsp;</td><td>用户名称</td></tr>';
+						listHtml += '<tr><td class="td_lable">URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td><td>数据源的JdbcURL</td></tr>';
+						listHtml += '<tr><td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td><td>数据库类型</td></tr>';
+						listHtml += '<tr><td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td><td>Jdbc驱动的名称</td></tr>';
+						listHtml += '<tr><td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td><td>借出连接时是否做测试</td></tr>';
+						listHtml += '<tr><td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td><td>归还连接时是否做测试</td></tr>';
+						listHtml += '<tr><td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td><td>初始连接池大小</td></tr>';
+						listHtml += '<tr><td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td><td>连接池最小连接数</td></tr>';
+						listHtml += '<tr><td class="td_lable">MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td><td>连接池最大连接数</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicConnectCount</td><td id="DS-Info-LogicConnectCount' + datasourceId + '">&nbsp;</td><td>申请连接的次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicCloseCount</td><td id="DS-Info-LogicCloseCount' + datasourceId + '">&nbsp;</td><td>关闭连接的次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">LogicConnectErrorCount</td><td id="DS-Info-LogicConnectErrorCount' + datasourceId + '">&nbsp;</td><td>连接错误数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount' + datasourceId + '">&nbsp;</td><td>创建物理连接次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount' + datasourceId + '">&nbsp;</td><td>物理连接关闭次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td><td>建立物理连接错误数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement缓存次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement缓存命中次数</td></tr>';
+						listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement缓存未命中次数</td></tr>';
 						listHtml += '</table>';
 						listHtml += '</div>';
 
@@ -143,6 +141,11 @@ function ajaxResponseForDataSourceInfo() {
 			}
 		}
 	}
+}
+function subSqlString(sql, len) {
+	if (sql.length <= len)
+		return sql;
+	return sql.substr(0, len) + '...';
 }
 function ajaxResponseForDataSourceSqlStatInfo() {
 	if (xmlHttpForDataSourceSqlStatInfo.readyState == 4) {
@@ -157,7 +160,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 				for ( var i = 0; i < sqlStatList.length; i++) {
 					var sqlStat = sqlStatList[i];
 					var newRow = sqlStatTable.insertRow(-1);
-					newRow.insertCell(-1).innerHTML = sqlStat.SQL;
+					newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
 					if (sqlStat.File)
 						newRow.insertCell(-1).innerHTML = sqlStat.File;
 					else

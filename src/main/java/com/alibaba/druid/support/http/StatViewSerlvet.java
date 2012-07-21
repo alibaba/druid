@@ -1,7 +1,6 @@
 package com.alibaba.druid.support.http;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -18,31 +17,49 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
-import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class StatServlet extends HttpServlet {
+public class StatViewSerlvet extends HttpServlet {
 
     /**
      * 
      */
-    private static final long serialVersionUID    = 1L;
+    private static final long   serialVersionUID            = 1L;
 
-    private final static int  RESULT_CODE_SUCCESS = 1;
-    private final static int  RESULT_CODE_ERROR   = -1;
+    private final static int    RESULT_CODE_SUCCESS         = 1;
+    private final static int    RESULT_CODE_ERROR           = -1;
+
+    private final static String RESOURCE_PATH               = "support/http/resources";
+    private final static String TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
+
+    public String               templatePage;
+
+    public void init() throws ServletException {
+        try {
+            templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
+        } catch (IOException e) {
+            throw new ServletException("error read templatePage:" + TEMPLATE_PAGE_RESOURCE_PATH, e);
+        }
+    }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String contextPath = request.getContextPath();
         String servletPath = request.getServletPath();
         String requestURI = request.getRequestURI();
+
+        response.setCharacterEncoding("utf-8");
 
         if (contextPath == null) { // root context
             contextPath = "";
@@ -59,7 +76,7 @@ public class StatServlet extends HttpServlet {
             returnJSONBasicStat(request, response);
             return;
         }
-        
+
         if (path.equals("/reset-all.json")) {
             resetAllStat();
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, null);
@@ -70,7 +87,7 @@ public class StatServlet extends HttpServlet {
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONDataSourceStatList());
             return;
         }
-        
+
         if (path.startsWith("/datasource-")) {
             Integer id = StringUtils.subStringToInteger(path, "datasource-", ".");
             Object result = getJSONDataSourceStat(id);
@@ -82,16 +99,86 @@ public class StatServlet extends HttpServlet {
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONSqlStat());
             return;
         }
-        
+
         if (path.startsWith("/sql-")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
-            Object result = getJSONSqlStat(id);
-            returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+            if (path.endsWith(".json")) {
+                Object result = getJSONSqlStat(id);
+                returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+                return;
+            }
+
+            if (path.endsWith(".html")) {
+                JdbcSqlStat sqlStat = getSqlStatById(id);
+                returnViewSqlStat(sqlStat, response);
+                return;
+            }
             return;
         }
 
         // find file in resources path
         returnResourceFile(path, response);
+    }
+
+    private void returnViewSqlStat(JdbcSqlStat sqlStat, HttpServletResponse response) throws IOException {
+        if (sqlStat == null) return;
+
+        StringBuilder content = new StringBuilder();
+
+        content.append("<h2>FULL SQL</br></h2> <h4>" + sqlStat.getSql() + "</h4>");
+        content.append("<h2>Format View:</h2>");
+        content.append("<textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;'>");
+        content.append(SQLUtils.format(sqlStat.getSql(), sqlStat.getDbType()));
+        content.append("</textarea><br>");
+        content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
+        content.append("<br>");
+
+        SQLStatementParser parser = new SQLStatementParser(sqlStat.getSql());
+        List<SQLStatement> statementList = parser.parseStatementList();
+        if (!statementList.isEmpty()) {
+            content.append("<h2>Parse View:</h2>");
+
+            SQLStatement statemen = statementList.get(0);
+            SchemaStatVisitor visitor = new SchemaStatVisitor();
+            statemen.accept(visitor);
+            content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
+            content.append("<tr>");
+            content.append("<td class='td_lable' width='130'>Tables</td>");
+            content.append("<td>" + visitor.getTables() + "</td>");
+            content.append("</tr>");
+
+            content.append("<tr>");
+            content.append("<td class='td_lable'>Fields</td>");
+            content.append("<td>" + visitor.getColumns() + "</td>");
+            content.append("</tr>");
+
+            content.append("<tr>");
+            content.append("<td class='td_lable'>Coditions</td>");
+            content.append("<td>" + visitor.getConditions() + "</td>");
+            content.append("</tr>");
+
+            content.append("<tr>");
+            content.append("<td class='td_lable'>Relationships</td>");
+            content.append("<td>" + visitor.getRelationships() + "</td>");
+            content.append("</tr>");
+            content.append("</table>");
+
+            content.append("<br>");
+            content.append("<p>API:</p>");
+            content.append("<p>");
+            content.append("SQLStatementParser parser = new SQLStatementParser(sqlStat.getSql());</br>");
+            content.append("List<SQLStatement> statementList = parser.parseStatementList();</br>");
+            content.append("SQLStatement statemen = statementList.get(0);</br>");
+            content.append("SchemaStatVisitor visitor = new SchemaStatVisitor();</br>");
+            content.append("SchemaStatVisitor visitor = new SchemaStatVisitor();</br>");
+            content.append("statemen.accept(visitor);</br>");
+            content.append("visitor.getTables() / visitor.getColumns() / visitor.getConditions() / visitor.getRelationships()</br>");
+            content.append("</p>");
+            content.append("<br>");
+        }
+
+        response.getWriter().print(mergeTemplatePage("Druid Sql View", content.toString()));
+
     }
 
     private void resetAllStat() {
@@ -174,6 +261,7 @@ public class StatServlet extends HttpServlet {
     private Map<String, Object> toJSONSqlStat(JdbcSqlStat sqlStat) {
         Map<String, Object> json = new LinkedHashMap<String, Object>();
 
+        json.put("ID", sqlStat.getId());
         json.put("SQL", sqlStat.getSql());
         json.put("File", sqlStat.getFile());
         json.put("Name", sqlStat.getName());
@@ -241,19 +329,11 @@ public class StatServlet extends HttpServlet {
     }
 
     private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
-        InputStream in = null;
-        try {
-            in = Thread.currentThread().getContextClassLoader().getResourceAsStream("support/http/resources" + fileName);
-            if (in == null) {
-                return;
-            }
+        String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
+        response.getWriter().write(text);
+    }
 
-            String text = IOUtils.read(in);
-            response.getWriter().write(text);
-        } catch (IOException e) {
-            throw new ServletException("error when response static file: " + fileName, e);
-        } finally {
-            JdbcUtils.close(in);
-        }
+    private String mergeTemplatePage(String title, String content) {
+        return templatePage.replaceAll("\\{title\\}", title).replaceAll("\\{content\\}", content);
     }
 }

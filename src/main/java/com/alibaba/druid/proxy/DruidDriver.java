@@ -1,17 +1,10 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 1999-2011 Alibaba Group Holding Ltd. Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.proxy;
 
@@ -55,6 +48,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     private final static ConcurrentMap<String, DataSourceProxyImpl> proxyDataSources         = new ConcurrentHashMap<String, DataSourceProxyImpl>();
     private final static AtomicInteger                              dataSourceIdSeed         = new AtomicInteger(0);
+    private final static AtomicInteger                              sqlStatIdSeed            = new AtomicInteger(0);
 
     public final static String                                      DEFAULT_PREFIX           = "jdbc:wrap-jdbc:";
     public final static String                                      DRIVER_PREFIX            = "driver=";
@@ -100,7 +94,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
         return false;
     }
 
-    public DruidDriver(){
+    public DruidDriver() {
 
     }
 
@@ -110,6 +104,10 @@ public class DruidDriver implements Driver, DruidDriverMBean {
 
     public static int createDataSourceId() {
         return dataSourceIdSeed.incrementAndGet();
+    }
+
+    public static int createSqlStatId() {
+        return sqlStatIdSeed.incrementAndGet();
     }
 
     @Override

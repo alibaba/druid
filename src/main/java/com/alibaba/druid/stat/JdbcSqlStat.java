@@ -1,17 +1,10 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 1999-2011 Alibaba Group Holding Ltd. Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.alibaba.druid.stat;
 
@@ -27,6 +20,7 @@ import javax.management.openmbean.CompositeType;
 import javax.management.openmbean.OpenType;
 import javax.management.openmbean.SimpleType;
 
+import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
@@ -42,63 +36,57 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private String           dataSource;
     private long             executeLastStartTime;
 
-    private final AtomicLong executeBatchSizeTotal = new AtomicLong();
-    private final AtomicLong executeBatchSizeMax   = new AtomicLong();
+    private final AtomicLong executeBatchSizeTotal             = new AtomicLong();
+    private final AtomicLong executeBatchSizeMax               = new AtomicLong();
 
-    private final AtomicLong executeSuccessCount   = new AtomicLong();
-    private final AtomicLong executeSpanNanoTotal  = new AtomicLong();
-    private final AtomicLong executeSpanNanoMax    = new AtomicLong();
-    private final AtomicLong runningCount          = new AtomicLong(0L);
-    private final AtomicLong concurrentMax         = new AtomicLong();
-    private final AtomicLong resultSetHoldTimeNano = new AtomicLong();
-    private final  AtomicLong executeAndResultSetHoldTime = new AtomicLong();
-    
+    private final AtomicLong executeSuccessCount               = new AtomicLong();
+    private final AtomicLong executeSpanNanoTotal              = new AtomicLong();
+    private final AtomicLong executeSpanNanoMax                = new AtomicLong();
+    private final AtomicLong runningCount                      = new AtomicLong(0L);
+    private final AtomicLong concurrentMax                     = new AtomicLong();
+    private final AtomicLong resultSetHoldTimeNano             = new AtomicLong();
+    private final AtomicLong executeAndResultSetHoldTime       = new AtomicLong();
+
     private String           name;
     private String           file;
     private String           dbType;
 
     private long             executeNanoSpanMaxOccurTime;
 
-    private final AtomicLong executeErrorCount     = new AtomicLong();
+    private final AtomicLong executeErrorCount                 = new AtomicLong();
     private Throwable        executeErrorLast;
     private long             executeErrorLastTime;
 
-    private final AtomicLong updateCount           = new AtomicLong();
-    private final AtomicLong fetchRowCount         = new AtomicLong();
+    private final AtomicLong updateCount                       = new AtomicLong();
+    private final AtomicLong fetchRowCount                     = new AtomicLong();
 
-    private final AtomicLong inTransactionCount    = new AtomicLong();
+    private final AtomicLong inTransactionCount                = new AtomicLong();
 
-    
     private String           lastSlowParameters;
 
-    private final Histogram  histogram             = new Histogram(new long[] { //
-                                                                                //
+    private final Histogram  histogram                         = new Histogram(new long[] { //
+                                                                                            //
             1, 10, 100, 1000, 10 * 1000, //
             100 * 1000, 1000 * 1000
-                                                                   //
-                                                                   });
-    
-    private final Histogram  executeAndResultHoldTimeHistogram             = new Histogram(new long[] { //
-            //
-    		1, 10, 100, 1000, 10 * 1000, //
-    		100 * 1000, 1000 * 1000
-//
-    });
+                                                                               //
+                                                                               });
 
-    
-    private final Histogram  fetchRowCountHistogram             = new Histogram(new long[] { //
-            1, 10, 100, 1000, 10 * 1000
-    });
+    private final Histogram  executeAndResultHoldTimeHistogram = new Histogram(new long[] { //
+                                                                               //
+            1, 10, 100, 1000, 10 * 1000, //
+            100 * 1000, 1000 * 1000
+                                                                               //
+                                                                               });
 
-    
-    private final Histogram  updateCountHistogram             = new Histogram(new long[] { //
-            1, 10, 100, 1000, 10 * 1000
-    });
-    
-    
-    
-    public JdbcSqlStat(String sql){
+    private final Histogram  fetchRowCountHistogram            = new Histogram(new long[] { //
+                                                                               1, 10, 100, 1000, 10 * 1000 });
+
+    private final Histogram  updateCountHistogram              = new Histogram(new long[] { //
+                                                                               1, 10, 100, 1000, 10 * 1000 });
+
+    public JdbcSqlStat(String sql) {
         this.sql = sql;
+        this.id = DruidDriver.createSqlStatId();
     }
 
     public String getLastSlowParameters() {
@@ -164,7 +152,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         context.setFile(val);
     }
-    
+
     public final static void setContextSql(String val) {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context == null) {
@@ -233,10 +221,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         if (delta > 0) {
             this.updateCount.addAndGet(delta);
         }
-        
+
         this.updateCountHistogram.record(delta);
         this.fetchRowCountHistogram.record(0);
-        
+
     }
 
     public long getUpdateCount() {
@@ -288,7 +276,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void addFetchRowCount(long delta) {
         this.fetchRowCount.addAndGet(delta);
         this.fetchRowCountHistogram.record(delta);
-        
+
     }
 
     public void addExecuteBatchCount(long batchSize) {
@@ -333,7 +321,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             }
         }
     }
-    
+
     public void decrementRunningCount() {
         runningCount.decrementAndGet();
     }
@@ -345,12 +333,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteSuccessCount() {
         return executeSuccessCount.get();
     }
-    
+
     public void addExecuteTime(StatementExecuteType executeType, long nanoSpan) {
-    	if (StatementExecuteType.ExecuteQuery != executeType) {
-    		executeAndResultHoldTimeHistogram.record((nanoSpan)/1000/1000);
-    	}
-    	addExecuteTime(nanoSpan);
+        if (StatementExecuteType.ExecuteQuery != executeType) {
+            executeAndResultHoldTimeHistogram.record((nanoSpan) / 1000 / 1000);
+        }
+        addExecuteTime(nanoSpan);
     }
 
     public void addExecuteTime(long nanoSpan) {
@@ -454,12 +442,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 new ArrayType<Long>(SimpleType.LONG, true), //
-                
-                // 30 - 
-                
+
+                // 30 -
+
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 new ArrayType<Long>(SimpleType.LONG, true), //
-                
+
         };
 
         String[] indexNames = {
@@ -500,17 +488,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 - 29
                 "Histogram", //
-                "LastSlowParameters",
-                "ResultSetHoldTime",
-                "ExecuteAndResultSetHoldTime",
-                "FetchRowCountHistogram",
-                
+                "LastSlowParameters", "ResultSetHoldTime", "ExecuteAndResultSetHoldTime", "FetchRowCountHistogram",
+
                 // 30
-                "EffectedRowCountHistogram",
-                "ExecuteAndResultHoldTimeHistogram"
-                
-                
-                
+                "EffectedRowCountHistogram", "ExecuteAndResultHoldTimeHistogram"
+
         //
         };
         String[] indexDescriptions = indexNames;
@@ -575,15 +557,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 27
         map.put("ExecuteAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 28
         map.put("FetchRowCountHistogram", this.getFetchRowCountHistogram().toArray()); // 29
-        
-        
+
         map.put("EffectedRowCountHistogram", this.getUpdateCountHistogram().toArray()); // 30
         map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogram().toArray()); // 30
-       
 
         return map;
     }
-    
+
     public Histogram getHistogram() {
         return this.histogram;
     }
@@ -606,25 +586,23 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getResultSetHoldTimeMilis() {
         return getResultSetHoldTimeNano() / (1000 * 1000);
     }
-    
+
     public long getExecuteAndResultSetHoldTimeMilis() {
         return getExecuteAndResultSetHoldTimeNano() / (1000 * 1000);
     }
-    
-    
+
     public Histogram getFetchRowCountHistogram() {
         return this.fetchRowCountHistogram;
     }
-    
+
     public Histogram getUpdateCountHistogram() {
         return this.updateCountHistogram;
     }
-    
+
     public Histogram getExecuteAndResultHoldTimeHistogram() {
         return this.executeAndResultHoldTimeHistogram;
     }
-    
-    
+
     public long getResultSetHoldTimeNano() {
         return resultSetHoldTimeNano.get();
     }
@@ -632,15 +610,15 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getExecuteAndResultSetHoldTimeNano() {
         return executeAndResultSetHoldTime.get();
     }
-    
+
     public void addResultSetHoldTimeNano(long nano) {
         resultSetHoldTimeNano.addAndGet(nano);
     }
 
     public void addResultSetHoldTimeNano(long statementExecuteNano, long resultHoldTimeNano) {
-    	resultSetHoldTimeNano.addAndGet(resultHoldTimeNano);    	
-    	executeAndResultSetHoldTime.addAndGet(statementExecuteNano+resultHoldTimeNano);
-    	executeAndResultHoldTimeHistogram.record((statementExecuteNano+resultHoldTimeNano)/1000/1000);
-    	updateCountHistogram.record(0);
+        resultSetHoldTimeNano.addAndGet(resultHoldTimeNano);
+        executeAndResultSetHoldTime.addAndGet(statementExecuteNano + resultHoldTimeNano);
+        executeAndResultHoldTimeHistogram.record((statementExecuteNano + resultHoldTimeNano) / 1000 / 1000);
+        updateCountHistogram.record(0);
     }
 }
