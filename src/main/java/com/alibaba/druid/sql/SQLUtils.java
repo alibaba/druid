@@ -150,6 +150,11 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
+        
+
+        if (JdbcUtils.H2.equals(dbType)) {
+            return new MySqlOutputVisitor(out);
+        }
 
         return new SQLASTOutputVisitor(out);
     }
