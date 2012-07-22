@@ -149,7 +149,6 @@ public class StatViewServlet extends HttpServlet {
             content.append("<td class='td_lable'>Fields</td>");
             content.append("<td>" + visitor.getColumns() + "</td>");
             content.append("</tr>");
-
             content.append("<tr>");
             content.append("<td class='td_lable'>Coditions</td>");
             content.append("<td>" + visitor.getConditions() + "</td>");
@@ -159,18 +158,22 @@ public class StatViewServlet extends HttpServlet {
             content.append("<td class='td_lable'>Relationships</td>");
             content.append("<td>" + visitor.getRelationships() + "</td>");
             content.append("</tr>");
+            
+            content.append("<tr>");
+            content.append("<td class='td_lable'>OrderByColumns</td>");
+            content.append("<td>" + visitor.getOrderByColumns() + "</td>");
+            content.append("</tr>");
+
             content.append("</table>");
 
             content.append("<br>");
             content.append("<p>API:</p>");
             content.append("<p>");
-            content.append("SQLStatementParser parser = new SQLStatementParser(sqlStat.getSql());</br>");
-            content.append("List<SQLStatement> statementList = parser.parseStatementList();</br>");
+            content.append("List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType())</br>");
             content.append("SQLStatement statemen = statementList.get(0);</br>");
-            content.append("SchemaStatVisitor visitor = new SchemaStatVisitor();</br>");
-            content.append("SchemaStatVisitor visitor = new SchemaStatVisitor();</br>");
+            content.append("SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());</br>");
             content.append("statemen.accept(visitor);</br>");
-            content.append("visitor.getTables() / visitor.getColumns() / visitor.getConditions() / visitor.getRelationships()</br>");
+            content.append("visitor.getTables() / visitor.getColumns() / visitor.getOrderByColumns() / visitor.getConditions() / visitor.getRelationships()</br>");
             content.append("</p>");
             content.append("<br>");
         }
@@ -293,6 +296,19 @@ public class StatViewServlet extends HttpServlet {
 
         json.put("URL", dataSource.getUrl());
         json.put("UserName", dataSource.getUsername());
+        json.put("FilterClassNames", dataSource.getFilterClassNames());
+
+        json.put("WaitThreadCount", dataSource.getWaitThreadCount());
+        json.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
+        json.put("NotEmptyWaitMillis", dataSource.getNotEmptyWaitMillis());
+
+        json.put("PoolingCount", dataSource.getPoolingCount());
+        json.put("PoolingPeak", dataSource.getPoolingPeak());
+        json.put("PoolingPeakTime", dataSource.getPoolingPeakTime());
+
+        json.put("ActiveCount", dataSource.getActiveCount());
+        json.put("ActivePeak", dataSource.getActivePeak());
+        json.put("ActivePeakTime", dataSource.getActivePeakTime());
 
         json.put("InitialSize", dataSource.getInitialSize());
         json.put("MinIdle", dataSource.getMinIdle());
@@ -312,6 +328,9 @@ public class StatViewServlet extends HttpServlet {
         json.put("PSCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
         json.put("PSCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
         json.put("PSCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
+
+        json.put("StartTransactionCount", dataSource.getStartTransactionCount());
+        json.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
         return json;
     }
 
