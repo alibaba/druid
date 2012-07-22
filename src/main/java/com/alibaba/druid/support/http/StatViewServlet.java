@@ -158,7 +158,7 @@ public class StatViewServlet extends HttpServlet {
             content.append("<td class='td_lable'>Relationships</td>");
             content.append("<td>" + visitor.getRelationships() + "</td>");
             content.append("</tr>");
-            
+
             content.append("<tr>");
             content.append("<td class='td_lable'>OrderByColumns</td>");
             content.append("<td>" + visitor.getOrderByColumns() + "</td>");
@@ -304,11 +304,13 @@ public class StatViewServlet extends HttpServlet {
 
         json.put("PoolingCount", dataSource.getPoolingCount());
         json.put("PoolingPeak", dataSource.getPoolingPeak());
-        json.put("PoolingPeakTime", dataSource.getPoolingPeakTime());
+        json.put("PoolingPeakTime",
+                 dataSource.getPoolingPeakTime() == null ? null : dataSource.getPoolingPeakTime().toString());
 
         json.put("ActiveCount", dataSource.getActiveCount());
         json.put("ActivePeak", dataSource.getActivePeak());
-        json.put("ActivePeakTime", dataSource.getActivePeakTime());
+        json.put("ActivePeakTime",
+                 dataSource.getActivePeakTime() == null ? null : dataSource.getActivePeakTime().toString());
 
         json.put("InitialSize", dataSource.getInitialSize());
         json.put("MinIdle", dataSource.getMinIdle());

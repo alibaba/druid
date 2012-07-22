@@ -74,7 +74,7 @@ function ajaxResponseForBasicInfo() {
 }
 function changeInnerHtml(id, divHtml) {
 	var divObj = document.getElementById(id);
-	if(!divHtml)
+	if(divHtml==undefined)
 		divHtml='';
 	if (divObj) {
 		divObj.innerHTML = divHtml;
@@ -141,7 +141,7 @@ function ajaxResponseForDataSourceInfo() {
 						listHtml += '<tr><td class="td_lable">URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td><td>数据源的JdbcURL</td></tr>';
 						listHtml += '<tr><td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td><td>数据库类型</td></tr>';
 						listHtml += '<tr><td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td><td>Jdbc驱动的名称</td></tr>';
-						listHtml += '<tr><td class="td_lable">FilterClassNames</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td><td>启用的filter的名称</td></tr>';
+						listHtml += '<tr><td class="td_lable">FilterClassNames</td><td id="DS-Info-FilterClassNames' + datasourceId + '">&nbsp;</td><td>启用的filter的名称</td></tr>';
 						
 						listHtml += '<tr><td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td><td>借出连接时是否做测试</td></tr>';
 						listHtml += '<tr><td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td><td>归还连接时是否做测试</td></tr>';
