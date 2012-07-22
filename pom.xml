@@ -323,19 +323,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp-benchmark</artifactId>
-			<version>0.7.1-rc2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp-test-commons</artifactId>
-			<version>0.7.1-rc2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>proxool</groupId>
 			<artifactId>proxool</artifactId>
 			<version>0.9.1</version>
