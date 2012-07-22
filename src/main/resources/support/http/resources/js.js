@@ -243,8 +243,6 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		newRow.insertCell(-1).innerHTML = sqlStat.FetchRowCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
-		var hi = newRow.insertCell(-1);
-		var hiHtml = '';
 		// hiHtml += '<a href="#' + sqlStat.Histogram + '">ExecHistogram</a> |';
 		// hiHtml += '<a href="#' + sqlStat.FetchRowCountHistogram +
 		// '">FetchRow</a> | ';
@@ -252,10 +250,9 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		// '">UpdateCount</a> | ';
 		// hiHtml += '<a href="#' + sqlStat.ExecuteAndResultHoldTimeHistogram +
 		// '">ExecAndRsHold</a>';
-		hiHtml += 'ExecHistogram: [' + sqlStat.Histogram + '] ,';
-		hiHtml += 'FetchRow: [' + sqlStat.FetchRowCountHistogram + '] <br />';
-		hiHtml += 'UpdateCount: [' + sqlStat.EffectedRowCountHistogram + '] ,';
-		hiHtml += 'ExecAndRsHold: [' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
-		hi.innerHTML = hiHtml;
+		newRow.insertCell(-1).innerHTML = '[' + sqlStat.Histogram + ']';
+		newRow.insertCell(-1).innerHTML = '[' + sqlStat.FetchRowCountHistogram + ']';
+		newRow.insertCell(-1).innerHTML = '[' + sqlStat.EffectedRowCountHistogram + ']';
+		newRow.insertCell(-1).innerHTML = '[' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
 	}
 }
