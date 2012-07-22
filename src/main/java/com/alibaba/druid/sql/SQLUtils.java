@@ -24,19 +24,20 @@ import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUtils {
+
     public static String toSQLString(SQLObject sqlObject, String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
-        
+
         if (JdbcUtils.ORACLE.equals(dbType)) {
             return toOracleString(sqlObject);
         }
-        
+
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return toPGString(sqlObject);
         }
-        
+
         return toSQLServerString(sqlObject);
     }
 
@@ -95,7 +96,7 @@ public class SQLUtils {
     public static String formatPGSql(String sql) {
         return format(sql, JdbcUtils.POSTGRESQL);
     }
-    
+
     public static SQLExpr toSQLExpr(String sql, String dbType) {
         SQLExprParser parser = SQLParserUtils.createExprParser(sql, dbType);
         SQLExpr expr = parser.expr();
@@ -106,7 +107,7 @@ public class SQLUtils {
 
         return expr;
     }
-    
+
     public static List<SQLStatement> toStatementList(String sql, String dbType) {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, dbType);
         return parser.parseStatementList();
@@ -150,7 +151,6 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
-        
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlOutputVisitor(out);
@@ -158,34 +158,33 @@ public class SQLUtils {
 
         return new SQLASTOutputVisitor(out);
     }
-    
-    public static SchemaStatVisitor createSchemaStatVisitor(Appendable out, List<SQLStatement> statementList,
-    		String dbType) {
-    	if (JdbcUtils.ORACLE.equals(dbType)) {
-    		if (statementList.size() == 1) {
-    			return new OracleSchemaStatVisitor();
-    		} else {
-    			return new OracleSchemaStatVisitor();
-    		}
-    	}
-    	
-    	if (JdbcUtils.MYSQL.equals(dbType)) {
-    		return new MySqlSchemaStatVisitor();
-    	}
-    	
-    	if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-    		return new PGSchemaStatVisitor();
-    	}
-    	
-    	if (JdbcUtils.SQL_SERVER.equals(dbType)) {
-    		return new SQLServerSchemaStatVisitor();
-    	}
-    	
+
+    public static SchemaStatVisitor createSchemaStatVisitor(List<SQLStatement> statementList, String dbType) {
+        if (JdbcUtils.ORACLE.equals(dbType)) {
+            if (statementList.size() == 1) {
+                return new OracleSchemaStatVisitor();
+            } else {
+                return new OracleSchemaStatVisitor();
+            }
+        }
+
+        if (JdbcUtils.MYSQL.equals(dbType)) {
+            return new MySqlSchemaStatVisitor();
+        }
+
+        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            return new PGSchemaStatVisitor();
+        }
+
+        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerSchemaStatVisitor();
+        }
+
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlSchemaStatVisitor();
         }
-    	
-    	return new SchemaStatVisitor();
+
+        return new SchemaStatVisitor();
     }
 
     public static List<SQLStatement> parseStatements(String sql, String dbType) {
