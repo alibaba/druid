@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.JMException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -83,26 +84,26 @@ public class StatViewServlet extends HttpServlet {
         }
 
         if (path.equals("/datasource.json")) {
-            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONDataSourceStatList());
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getDataSourceStatList());
             return;
         }
 
         if (path.startsWith("/datasource-")) {
             Integer id = StringUtils.subStringToInteger(path, "datasource-", ".");
-            Object result = getJSONDataSourceStat(id);
+            Object result = getDataSourceStatData(id);
             returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
             return;
         }
 
         if (path.equals("/sql.json")) {
-            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getJSONSqlStat());
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getSqlStatDataList());
             return;
         }
 
         if (path.startsWith("/sql-")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
             if (path.endsWith(".json")) {
-                Object result = getJSONSqlStat(id);
+                Object result = getSqlStatData(id);
                 returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
                 return;
             }
@@ -124,13 +125,13 @@ public class StatViewServlet extends HttpServlet {
 
         StringBuilder content = new StringBuilder();
 
-        content.append("<h2>FULL SQL</br></h2> <h4>" + sqlStat.getSql() + "</h4>");
+        content.append("<h2>FULL SQL</h2> <h4>" + sqlStat.getSql() + "</h4>");
         content.append("<h2>Format View:</h2>");
         content.append("<textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;'>");
         content.append(SQLUtils.format(sqlStat.getSql(), sqlStat.getDbType()));
-        content.append("</textarea><br>");
+        content.append("</textarea><br />");
         content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
-        content.append("<br>");
+        content.append("<br />");
 
         List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType());
         if (!statementList.isEmpty()) {
@@ -166,16 +167,16 @@ public class StatViewServlet extends HttpServlet {
 
             content.append("</table>");
 
-            content.append("<br>");
+            content.append("<br />");
             content.append("<p>API:</p>");
             content.append("<p>");
-            content.append("List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType())</br>");
+            content.append("List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType())<br />");
             content.append("SQLStatement statemen = statementList.get(0);</br>");
-            content.append("SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());</br>");
-            content.append("statemen.accept(visitor);</br>");
-            content.append("visitor.getTables() / visitor.getColumns() / visitor.getOrderByColumns() / visitor.getConditions() / visitor.getRelationships()</br>");
+            content.append("SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());<br />");
+            content.append("statemen.accept(visitor);<br />");
+            content.append("visitor.getTables() / visitor.getColumns() / visitor.getOrderByColumns() / visitor.getConditions() / visitor.getRelationships()<br />");
             content.append("</p>");
-            content.append("<br>");
+            content.append("<br />");
         }
 
         response.getWriter().print(mergeTemplatePage("Druid Sql View", content.toString()));
@@ -187,7 +188,7 @@ public class StatViewServlet extends HttpServlet {
         DruidDataSourceStatManager.getInstance().reset();
     }
 
-    private List<String> getJSONDrivers() {
+    private List<String> getDriversData() {
         List<String> drivers = new ArrayList<String>();
         for (Enumeration<Driver> e = DriverManager.getDrivers(); e.hasMoreElements();) {
             Driver driver = e.nextElement();
@@ -197,36 +198,36 @@ public class StatViewServlet extends HttpServlet {
     }
 
     private void returnJSONBasicStat(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Map<String, Object> json = new LinkedHashMap<String, Object>();
-        json.put("Version", VERSION.getVersionNumber());
-        json.put("Drivers", getJSONDrivers());
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Version", VERSION.getVersionNumber());
+        dataMap.put("Drivers", getDriversData());
 
-        returnJSONResult(request, response, RESULT_CODE_SUCCESS, json);
+        returnJSONResult(request, response, RESULT_CODE_SUCCESS, dataMap);
 
     }
 
-    private List<Object> getJSONDataSourceStatList() {
+    private List<Object> getDataSourceStatList() {
         List<Object> datasourceList = new ArrayList<Object>();
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            datasourceList.add(toJSONDataSource(dataSource));
+            datasourceList.add(dataSourceToMapData(dataSource));
         }
         return datasourceList;
     }
 
-    private Map<String, Object> getJSONDataSourceStat(Integer id) {
+    private Map<String, Object> getDataSourceStatData(Integer id) {
         if (id == null) {
             return null;
         }
         DruidDataSource datasource = getDruidDataSourceById(id);
-        return datasource == null ? null : toJSONDataSource(datasource);
+        return datasource == null ? null : dataSourceToMapData(datasource);
     }
 
-    private Map<String, Object> getJSONSqlStat(Integer id) {
+    private Map<String, Object> getSqlStatData(Integer id) {
         if (id == null) {
             return null;
         }
         JdbcSqlStat sqlStat = getSqlStatById(id);
-        return sqlStat == null ? null : toJSONSqlStat(sqlStat);
+        return sqlStat == null ? null : getSqlStatData(sqlStat);
     }
 
     private JdbcSqlStat getSqlStatById(Integer id) {
@@ -249,102 +250,83 @@ public class StatViewServlet extends HttpServlet {
         return null;
     }
 
-    private List<Object> getJSONSqlStat() {
+    private Map<String, Object> getSqlStatData(JdbcSqlStat sqlStat) {
+        try {
+            return sqlStat.getData();
+        } catch (JMException e) {
+        }
+        return null;
+    }
+
+    private List<Object> getSqlStatDataList() {
         List<Object> array = new ArrayList<Object>();
         for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
-                array.add(toJSONSqlStat(sqlStat));
+                array.add(getSqlStatData(sqlStat));
             }
         }
         return array;
     }
 
-    private Map<String, Object> toJSONSqlStat(JdbcSqlStat sqlStat) {
-        Map<String, Object> json = new LinkedHashMap<String, Object>();
+    private Map<String, Object> dataSourceToMapData(DruidDataSource dataSource) {
 
-        json.put("ID", sqlStat.getId());
-        json.put("SQL", sqlStat.getSql());
-        json.put("File", sqlStat.getFile());
-        json.put("Name", sqlStat.getName());
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("Identity", System.identityHashCode(dataSource));
+        dataMap.put("Name", dataSource.getName());
+        dataMap.put("DbType", dataSource.getDbType());
+        dataMap.put("DriverClassName", dataSource.getDriverClassName());
 
-        json.put("ExecuteCount", sqlStat.getExecuteCount());
-        json.put("ExecuteMillisTotal", sqlStat.getExecuteMillisTotal());
-        json.put("ExecuteMillisMax", sqlStat.getExecuteMillisMax());
+        dataMap.put("URL", dataSource.getUrl());
+        dataMap.put("UserName", dataSource.getUsername());
+        dataMap.put("FilterClassNames", dataSource.getFilterClassNames());
 
-        json.put("InTxnCount", sqlStat.getInTransactionCount());
-        json.put("ErrorCount", sqlStat.getErrorCount());
-        json.put("UpdateCount", sqlStat.getUpdateCount());
-        json.put("FetchRowCount", sqlStat.getFetchRowCount());
-        json.put("RunningCount", sqlStat.getRunningCount());
-        json.put("ConcurrentMax", sqlStat.getConcurrentMax());
+        dataMap.put("WaitThreadCount", dataSource.getWaitThreadCount());
+        dataMap.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
+        dataMap.put("NotEmptyWaitMillis", dataSource.getNotEmptyWaitMillis());
 
-        json.put("ExecHistogram", sqlStat.getHistogram().toArray());
-        json.put("FetchRowHistogram", sqlStat.getFetchRowCountHistogram().toArray());
-        json.put("UpdateCountHistogram", sqlStat.getUpdateCountHistogram().toArray());
-        json.put("ExecAndRsHoldHistogram", sqlStat.getExecuteAndResultHoldTimeHistogram().toArray());
+        dataMap.put("PoolingCount", dataSource.getPoolingCount());
+        dataMap.put("PoolingPeak", dataSource.getPoolingPeak());
+        dataMap.put("PoolingPeakTime",
+                    dataSource.getPoolingPeakTime() == null ? null : dataSource.getPoolingPeakTime().toString());
 
-        return json;
-    }
+        dataMap.put("ActiveCount", dataSource.getActiveCount());
+        dataMap.put("ActivePeak", dataSource.getActivePeak());
+        dataMap.put("ActivePeakTime",
+                    dataSource.getActivePeakTime() == null ? null : dataSource.getActivePeakTime().toString());
 
-    private Map<String, Object> toJSONDataSource(DruidDataSource dataSource) {
+        dataMap.put("InitialSize", dataSource.getInitialSize());
+        dataMap.put("MinIdle", dataSource.getMinIdle());
+        dataMap.put("MaxActive", dataSource.getMaxActive());
 
-        Map<String, Object> json = new LinkedHashMap<String, Object>();
-        json.put("Identity", System.identityHashCode(dataSource));
-        json.put("Name", dataSource.getName());
-        json.put("DbType", dataSource.getDbType());
-        json.put("DriverClassName", dataSource.getDriverClassName());
+        dataMap.put("TestOnBorrow", dataSource.isTestOnBorrow());
+        dataMap.put("TestWhileIdle", dataSource.isTestWhileIdle());
 
-        json.put("URL", dataSource.getUrl());
-        json.put("UserName", dataSource.getUsername());
-        json.put("FilterClassNames", dataSource.getFilterClassNames());
+        dataMap.put("LogicConnectCount", dataSource.getConnectCount());
+        dataMap.put("LogicCloseCount", dataSource.getCloseCount());
+        dataMap.put("LogicConnectErrorCount", dataSource.getConnectErrorCount());
 
-        json.put("WaitThreadCount", dataSource.getWaitThreadCount());
-        json.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
-        json.put("NotEmptyWaitMillis", dataSource.getNotEmptyWaitMillis());
+        dataMap.put("PhysicalConnectCount", dataSource.getCreateCount());
+        dataMap.put("PhysicalCloseCount", dataSource.getDestroyCount());
+        dataMap.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
 
-        json.put("PoolingCount", dataSource.getPoolingCount());
-        json.put("PoolingPeak", dataSource.getPoolingPeak());
-        json.put("PoolingPeakTime",
-                 dataSource.getPoolingPeakTime() == null ? null : dataSource.getPoolingPeakTime().toString());
+        dataMap.put("PSCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
+        dataMap.put("PSCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
+        dataMap.put("PSCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
 
-        json.put("ActiveCount", dataSource.getActiveCount());
-        json.put("ActivePeak", dataSource.getActivePeak());
-        json.put("ActivePeakTime",
-                 dataSource.getActivePeakTime() == null ? null : dataSource.getActivePeakTime().toString());
-
-        json.put("InitialSize", dataSource.getInitialSize());
-        json.put("MinIdle", dataSource.getMinIdle());
-        json.put("MaxActive", dataSource.getMaxActive());
-
-        json.put("TestOnBorrow", dataSource.isTestOnBorrow());
-        json.put("TestWhileIdle", dataSource.isTestWhileIdle());
-
-        json.put("LogicConnectCount", dataSource.getConnectCount());
-        json.put("LogicCloseCount", dataSource.getCloseCount());
-        json.put("LogicConnectErrorCount", dataSource.getConnectErrorCount());
-
-        json.put("PhysicalConnectCount", dataSource.getCreateCount());
-        json.put("PhysicalCloseCount", dataSource.getDestroyCount());
-        json.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
-
-        json.put("PSCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
-        json.put("PSCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
-        json.put("PSCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
-
-        json.put("StartTransactionCount", dataSource.getStartTransactionCount());
-        json.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
-        return json;
+        dataMap.put("StartTransactionCount", dataSource.getStartTransactionCount());
+        dataMap.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
+        return dataMap;
     }
 
     private void returnJSONResult(HttpServletRequest request, HttpServletResponse response, int resultCode,
                                   Object content) throws IOException {
         PrintWriter out = response.getWriter();
 
-        Map<String, Object> json = new LinkedHashMap<String, Object>();
-        json.put("ResultCode", resultCode);
-        json.put("Content", content);
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        dataMap.put("ResultCode", resultCode);
+        dataMap.put("Content", content);
 
-        out.print(JSON.toJSONString(json));
+        out.print(JSON.toJSONString(dataMap));
     }
 
     private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
