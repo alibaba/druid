@@ -181,6 +181,10 @@ public class SQLUtils {
     		return new SQLServerSchemaStatVisitor();
     	}
     	
+        if (JdbcUtils.H2.equals(dbType)) {
+            return new MySqlSchemaStatVisitor();
+        }
+    	
     	return new SchemaStatVisitor();
     }
 
