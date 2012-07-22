@@ -133,8 +133,7 @@ public class StatViewServlet extends HttpServlet {
         content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
         content.append("<br>");
 
-        SQLStatementParser parser = new SQLStatementParser(sqlStat.getSql());
-        List<SQLStatement> statementList = parser.parseStatementList();
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType());
         if (!statementList.isEmpty()) {
             content.append("<h2>Parse View:</h2>");
 
