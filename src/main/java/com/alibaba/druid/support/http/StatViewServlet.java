@@ -19,7 +19,6 @@ import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
@@ -138,7 +137,7 @@ public class StatViewServlet extends HttpServlet {
             content.append("<h2>Parse View:</h2>");
 
             SQLStatement statemen = statementList.get(0);
-            SchemaStatVisitor visitor = new SchemaStatVisitor();
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());
             statemen.accept(visitor);
             content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
             content.append("<tr>");
