@@ -106,7 +106,7 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-WaitThreadCount" + datasource.Identity, datasource.WaitThreadCount);
 
 	changeInnerHtml("DS-Info-StartTransactionCount" + datasource.Identity, datasource.StartTransactionCount);
-	changeInnerHtml("DS-Info-TransactionHistogramValues" + datasource.Identity, datasource.TransactionHistogramValues);
+	changeInnerHtml("DS-Info-TransactionHistogramValues" + datasource.Identity, '[' + datasource.TransactionHistogramValues + ']');
 
 	changeInnerHtml("DS-Info-PoolingCount" + datasource.Identity, datasource.PoolingCount);
 	changeInnerHtml("DS-Info-PoolingPeak" + datasource.Identity, datasource.PoolingPeak);
@@ -245,10 +245,17 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
 		var hi = newRow.insertCell(-1);
 		var hiHtml = '';
-		hiHtml += '<a href="#' + sqlStat.Histogram + '">ExecHistogram</a> |';
-		hiHtml += '<a href="#' + sqlStat.FetchRowCountHistogram + '">FetchRow</a> | ';
-		hiHtml += '<a href="#' + sqlStat.EffectedRowCountHistogram + '">UpdateCount</a> | ';
-		hiHtml += '<a href="#' + sqlStat.ExecuteAndResultHoldTimeHistogram + '">ExecAndRsHold</a>';
+		// hiHtml += '<a href="#' + sqlStat.Histogram + '">ExecHistogram</a> |';
+		// hiHtml += '<a href="#' + sqlStat.FetchRowCountHistogram +
+		// '">FetchRow</a> | ';
+		// hiHtml += '<a href="#' + sqlStat.EffectedRowCountHistogram +
+		// '">UpdateCount</a> | ';
+		// hiHtml += '<a href="#' + sqlStat.ExecuteAndResultHoldTimeHistogram +
+		// '">ExecAndRsHold</a>';
+		hiHtml += 'ExecHistogram: [' + sqlStat.Histogram + '] ,';
+		hiHtml += 'FetchRow: [' + sqlStat.FetchRowCountHistogram + '] <br />';
+		hiHtml += 'UpdateCount: [' + sqlStat.EffectedRowCountHistogram + '] ,';
+		hiHtml += 'ExecAndRsHold: [' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
 		hi.innerHTML = hiHtml;
 	}
 }
