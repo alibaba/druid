@@ -31,7 +31,7 @@ import com.alibaba.fastjson.JSON;
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class StatViewSerlvet extends HttpServlet {
+public class StatViewServlet extends HttpServlet {
 
     /**
      * 
