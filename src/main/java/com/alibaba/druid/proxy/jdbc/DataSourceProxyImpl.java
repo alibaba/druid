@@ -68,7 +68,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
         this.rawDriver = rawDriver;
         this.config = config;
         this.dbType = JdbcUtils.getDbType(config.getRawUrl(), config.getRawDriverClassName());
-        this.dataSourceStat = new JdbcDataSourceStat(config.getName(), config.getUrl());
+        this.dataSourceStat = new JdbcDataSourceStat(config.getName(), config.getUrl(), dbType);
     }
 
     public String getDbType() {

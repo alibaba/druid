@@ -38,6 +38,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final String                                        name;
     private final String                                        url;
+    private String                                              dbType;
 
     private final JdbcConnectionStat                            connectionStat          = new JdbcConnectionStat();
     private final JdbcResultSetStat                             resultSetStat           = new JdbcResultSetStat();
@@ -63,8 +64,13 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
     public JdbcDataSourceStat(String name, String url){
+        this(name, url, null);
+    }
+    
+    public JdbcDataSourceStat(String name, String url, String dbType){
         this.name = name;
         this.url = url;
+        this.dbType = dbType;
     }
 
     public void reset() {
@@ -211,6 +217,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             JdbcSqlStat sqlStat = sqlStatMap.get(sql);
             if (sqlStat == null) {
                 sqlStat = new JdbcSqlStat(sql);
+                sqlStat.setDbType(this.dbType);
                 sqlStatMap.put(sql, sqlStat);
             }
 

@@ -336,7 +336,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.exceptionSorter = new MockExceptionSorter();
             }
 
-            dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl);
+            dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
 
             {
                 String property = System.getProperty("druid.filters");
