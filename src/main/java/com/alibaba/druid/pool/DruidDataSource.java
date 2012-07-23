@@ -98,6 +98,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ConnectionHolder[]      connections;
     private int                     poolingCount            = 0;
     private int                     activeCount             = 0;
+    private int                     discardCount            = 0;
     private int                     notEmptyWaitThreadCount = 0;
     private int                     notEmptyWaitThreadPeak  = 0;
 
@@ -132,6 +133,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.resetStatEnable = resetStatEnable;
     }
 
+    public int getDiscardCount() {
+        return discardCount;
+    }
+
     public void restart() {
         lock.lock();
         try {
@@ -153,6 +158,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             connectCount = 0;
             closeCount = 0;
+            discardCount = 0;
             connectErrorCount = 0;
             recycleCount = 0;
             createConnectionCount = 0;
@@ -410,7 +416,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return getConnectionDirect(maxWaitMillis);
         }
     }
-    
+
     @Override
     public PooledConnection getPooledConnection() throws SQLException {
         return getConnection(maxWait);
@@ -499,14 +505,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private void discardConnection(Connection realConnection) throws SQLException {
         JdbcUtils.close(realConnection);
 
-        try {
-            lock.lockInterruptibly();
-        } catch (InterruptedException e) {
-            throw new SQLException("interrupt", e);
-        }
-
+        lock.lock();
         try {
             activeCount--;
+            discardCount++;
         } finally {
             lock.unlock();
         }
@@ -1420,6 +1422,5 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         return x;
     }
-
 
 }

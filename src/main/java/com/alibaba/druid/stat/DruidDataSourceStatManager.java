@@ -223,6 +223,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         map.put("LastErrorTime", dataSource.getLastErrorTime());
         map.put("LastCreateErrorTime", dataSource.getLastCreateErrorTime());
         map.put("CreateErrorCount", dataSource.getCreateErrorCount());
+        map.put("DiscardCount", dataSource.getDiscardCount());
 
         return new CompositeDataSupport(rowType, map);
     }
@@ -295,6 +296,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 // 40 -
                 SimpleType.DATE, //
                 SimpleType.DATE, //
+                SimpleType.LONG, //
                 SimpleType.LONG //
         //
         };
@@ -359,7 +361,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 // 40 -
                 , "LastErrorTime", //
                 "LastCreateErrorTime", //
-                "CreateErrorCount" //
+                "CreateErrorCount", //
+                "DiscardCount", //
         //
         };
 
