@@ -331,6 +331,11 @@ public class StatViewServlet extends HttpServlet {
 
     private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
+        if (fileName.endsWith(".css")) {
+            response.setContentType("text/css;charset=utf-8");
+        } else if (fileName.endsWith(".js")) {
+            response.setContentType("text/javascript;charset=utf-8");
+        }
         response.getWriter().write(text);
     }
 

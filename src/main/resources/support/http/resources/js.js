@@ -226,14 +226,14 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
-		if (sqlStat.File)
-			newRow.insertCell(-1).innerHTML = sqlStat.File;
-		else
-			newRow.insertCell(-1).innerHTML = '';
-		if (sqlStat.Name)
-			newRow.insertCell(-1).innerHTML = sqlStat.Name;
-		else
-			newRow.insertCell(-1).innerHTML = '';
+//		if (sqlStat.File)
+//			newRow.insertCell(-1).innerHTML = sqlStat.File;
+//		else
+//			newRow.insertCell(-1).innerHTML = '';
+//		if (sqlStat.Name)
+//			newRow.insertCell(-1).innerHTML = sqlStat.Name;
+//		else
+//			newRow.insertCell(-1).innerHTML = '';
 		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.TotalTime;
 		newRow.insertCell(-1).innerHTML = sqlStat.MaxTimespan;
