@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 
 import javax.management.ObjectName;
@@ -80,7 +81,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     // stats
     private long                    connectCount            = 0L;
     private long                    closeCount              = 0L;
-    private long                    connectErrorCount       = 0L;
+    private final AtomicLong              connectErrorCount       = new AtomicLong();
     private long                    recycleCount            = 0L;
     private long                    createConnectionCount   = 0L;
     private long                    destroyCount            = 0L;
@@ -159,7 +160,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connectCount = 0;
             closeCount = 0;
             discardCount = 0;
-            connectErrorCount = 0;
             recycleCount = 0;
             createConnectionCount = 0;
             destroyCount = 0;
@@ -180,6 +180,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
+        connectErrorCount.set(0);
         errorCount.set(0);
         commitCount.set(0);
         rollbackCount.set(0);
@@ -431,12 +432,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final int maxWaitThreadCount = getMaxWaitThreadCount();
         if (maxWaitThreadCount > 0) {
             if (notEmptyWaitThreadCount > maxWaitThreadCount) {
-                lock.lock();
-                try {
-                    connectErrorCount++;
-                } finally {
-                    lock.unlock();
-                }
+                connectErrorCount.incrementAndGet();
                 throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
                                        + lock.getQueueLength());
             }
@@ -520,12 +516,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
+            connectErrorCount.incrementAndGet();
             throw new SQLException("interrupt", e);
         }
 
         try {
             if (!enable) {
-                connectErrorCount++;
+                connectErrorCount.incrementAndGet();
                 throw new DataSourceDisableException();
             }
 
@@ -552,10 +549,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             poolalbeConnection = new DruidPooledConnection(holder);
         } catch (InterruptedException e) {
-            connectErrorCount++;
+            connectErrorCount.incrementAndGet();
             throw new SQLException(e.getMessage(), e);
         } catch (SQLException e) {
-            connectErrorCount++;
+            connectErrorCount.incrementAndGet();
             throw e;
         } finally {
             lock.unlock();
@@ -787,7 +784,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 notEmptyWaitCount++;
 
                 if (!enable) {
-                    connectErrorCount++;
+                    connectErrorCount.incrementAndGet();
                     throw new DataSourceDisableException();
                 }
             }
@@ -829,7 +826,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     notEmptyWaitNanos += (startEstimate - estimate);
 
                     if (!enable) {
-                        connectErrorCount++;
+                        connectErrorCount.incrementAndGet();
                         throw new DataSourceDisableException();
                     }
                 } catch (InterruptedException ie) {
@@ -883,7 +880,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public long getConnectErrorCount() {
-        return connectErrorCount;
+        return connectErrorCount.get();
     }
 
     @Override
