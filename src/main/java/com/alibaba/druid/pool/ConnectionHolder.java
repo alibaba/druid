@@ -66,16 +66,20 @@ public final class ConnectionHolder {
         this.connecttimeMillis = System.currentTimeMillis();
         this.lastActiveTimeMillis = connecttimeMillis;
 
-        this.defaultReadOnly = conn.isReadOnly();
-        this.defaultHoldability = conn.getHoldability();
-        this.defaultTransactionIsolation = conn.getTransactionIsolation();
-        this.defaultAutoCommit = conn.getAutoCommit();
-
-        this.underlyingAutoCommit = defaultAutoCommit;
-        this.underlyingHoldability = defaultHoldability;
-        this.underlyingTransactionIsolation = defaultTransactionIsolation;
-        this.underlyingTransactionIsolation = defaultTransactionIsolation;
-
+        this.underlyingAutoCommit = conn.getAutoCommit();
+        this.underlyingHoldability =  conn.getHoldability();
+        this.underlyingReadOnly = conn.isReadOnly();
+        try {
+            this.underlyingTransactionIsolation = conn.getTransactionIsolation();
+        } catch (SQLException e) {
+            if ("com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName()));
+        }
+        
+        this.defaultHoldability = underlyingHoldability;
+        this.defaultTransactionIsolation = underlyingTransactionIsolation;
+        this.defaultAutoCommit = underlyingAutoCommit;
+        this.defaultReadOnly = underlyingReadOnly;
+   
         statementPool = null;
     }
 
