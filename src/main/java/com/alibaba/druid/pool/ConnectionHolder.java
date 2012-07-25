@@ -79,8 +79,6 @@ public final class ConnectionHolder {
         this.defaultTransactionIsolation = underlyingTransactionIsolation;
         this.defaultAutoCommit = underlyingAutoCommit;
         this.defaultReadOnly = underlyingReadOnly;
-   
-        statementPool = null;
     }
 
     public int getModCount() {
