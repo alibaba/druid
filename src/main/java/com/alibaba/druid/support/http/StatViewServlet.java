@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
-import com.alibaba.druid.util.SortUtils;
+import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 
@@ -283,7 +284,9 @@ public class StatViewServlet extends HttpServlet {
         }
 
         // orderby
-        SortUtils.sortMapList(orderBy, array, DEFAULT_ORDER_TYPE.equals(orderType));
+        if (orderBy != null && orderBy.trim().length() != 0) {
+            Collections.sort(array, new MapComparator<String, Object>(orderBy, DEFAULT_ORDER_TYPE.equals(orderType)));
+        }
 
         // page
         int fromIndex = (page - 1) * perPageCount;
