@@ -25,6 +25,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.SortUtils;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 
@@ -41,8 +42,13 @@ public class StatViewServlet extends HttpServlet {
     private final static int    RESULT_CODE_SUCCESS         = 1;
     private final static int    RESULT_CODE_ERROR           = -1;
 
+    private final static int    DEFAULT_PAGE                = 1;
+    private final static int    DEFAULT_PER_PAGE_COUNT      = Integer.MAX_VALUE;
+
     private final static String RESOURCE_PATH               = "support/http/resources";
     private final static String TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
+
+    private static final String DEFAULT_ORDER_TYPE          = "asc";
 
     public String               templatePage;
 
@@ -96,7 +102,7 @@ public class StatViewServlet extends HttpServlet {
         }
 
         if (path.equals("/sql.json")) {
-            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getSqlStatDataList());
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, getSqlStatDataList(request));
             return;
         }
 
@@ -258,14 +264,33 @@ public class StatViewServlet extends HttpServlet {
         return null;
     }
 
-    private List<Object> getSqlStatDataList() {
-        List<Object> array = new ArrayList<Object>();
+    private List<Map<String, Object>> getSqlStatDataList(HttpServletRequest request) {
+        String orderBy = request.getParameter("orderBy");
+        String orderType = request.getParameter("orderType");
+        Integer page = StringUtils.stringToInteger(request.getParameter("page"));
+        Integer perPageCount = StringUtils.stringToInteger(request.getParameter("perPageCount"));
+
+        if (!"desc".equals(orderType)) orderType = DEFAULT_ORDER_TYPE;
+
+        if (page == null) page = DEFAULT_PAGE;
+        if (perPageCount == null) perPageCount = DEFAULT_PER_PAGE_COUNT;
+
+        List<Map<String, Object>> array = new ArrayList<Map<String, Object>>();
         for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
                 array.add(getSqlStatData(sqlStat));
             }
         }
-        return array;
+
+        // orderby
+        SortUtils.sortMapList(orderBy, array, DEFAULT_ORDER_TYPE.equals(orderType));
+
+        // page
+        int fromIndex = (page - 1) * perPageCount;
+        int toIndex = page * perPageCount;
+        if (toIndex > array.size()) toIndex = array.size();
+
+        return array.subList(fromIndex, toIndex);
     }
 
     private Map<String, Object> dataSourceToMapData(DruidDataSource dataSource) {

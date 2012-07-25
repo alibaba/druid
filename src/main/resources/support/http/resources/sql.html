@@ -22,16 +22,16 @@
             <h2>SqlStat List<a href="sql.json" target="_blank">[View JSON API]</a></h2>
             <table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
 				<thead>
-                    <th class="td_lable">SQL</th>
-                    <th class="td_lable" width="50">Execute Count</th>
-                    <th class="td_lable" width="50">Execute Millis Total</th>
-                    <th class="td_lable" width="50">Execute Millis Max</th>
-                    <th class="td_lable" width="50">InTxn Count</th>
-                    <th class="td_lable" width="50">Error Count</th>
-                    <th class="td_lable" width="50">Effected Row Count</th>
-                    <th class="td_lable" width="50">Fetch Row Count</th>
-                    <th class="td_lable" width="50">Running Count</th>
-                    <th class="td_lable" width="80">Concurrent Max</th>
+                    <th class="td_lable" ><a href="#" onclick="setOrderBy('SQL');return false;">SQL</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('ExecuteCount');return false;">Execute Count</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('TotalTime');return false;">Execute Millis Total</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('MaxTimespan');return false;">Execute Millis Max</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('InTransactionCount');return false;">InTxn Count</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('ErrorCount');return false;">Error Count</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('EffectedRowCount');return false;">Effected Row Count</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('FetchRowCount');return false;">Fetch Row Count</a></th>
+                    <th class="td_lable"  width="50"><a href="return false;" onclick="setOrderBy('RunningCount');return false;">Running Count</a></th>
+                    <th class="td_lable"  width="80"><a href="return false;" onclick="setOrderBy('ConcurrentMax');return false;">Concurrent Max</a></th>
                     <th class="td_lable" width="100">ExecHistogram</th>
                     <th class="td_lable" width="100">FetchRow</th>
                     <th class="td_lable" width="100">UpdateCount</th>
