@@ -3,6 +3,44 @@ var xmlHttpForDataSourceInfo;
 var xmlHttpForDataSourceSqlStatInfo;
 var xmlHttpForReset;
 
+var sqlViewOrderBy = 'ID';
+var sqlViewOrderType = 'asc';
+
+// only one page for now
+var sqlViewPage = 1;
+var sqlViewPerPageCount = 1000000;
+
+function setOrderBy(orderBy) {
+	if (sqlViewOrderBy != orderBy) {
+		sqlViewOrderBy = orderBy;
+		sqlViewOrderType = 'desc'
+		return;
+	}
+
+	if (sqlViewOrderType == 'asc')
+		sqlViewOrderType = 'desc'
+	else
+		sqlViewOrderType = 'asc'
+}
+
+function getSqlViewJsonUrl() {
+	var result = 'sql.json?';
+
+	if (sqlViewOrderBy != undefined)
+		result += 'orderBy=' + sqlViewOrderBy + '&';
+
+	if (sqlViewOrderType != undefined)
+		result += 'orderType=' + sqlViewOrderType + '&';
+
+	if (sqlViewPage != undefined)
+		result += 'page=' + sqlViewPage + '&';
+
+	if (sqlViewPerPageCount != undefined)
+		result += 'perPageCount=' + sqlViewPerPageCount + '&';
+
+	return result;
+}
+
 function ajaxRequestForReset() {
 	if (window.XMLHttpRequest)
 		xmlHttpForReset = new XMLHttpRequest();
@@ -28,7 +66,7 @@ function ajaxRequestForDataSourceSqlStatInfo() {
 	else if (window.ActiveXObject)
 		xmlHttpForDataSourceSqlStatInfo = new ActiveXObject("Microsoft.XMLHTTP");
 	xmlHttpForDataSourceSqlStatInfo.onreadystatechange = ajaxResponseForDataSourceSqlStatInfo;
-	xmlHttpForDataSourceSqlStatInfo.open("GET", 'sql.json', true);
+	xmlHttpForDataSourceSqlStatInfo.open("GET", getSqlViewJsonUrl(), true);
 	xmlHttpForDataSourceSqlStatInfo.send(null);
 }
 function ajaxRequestForDataSourceInfo() {
@@ -226,14 +264,14 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
-//		if (sqlStat.File)
-//			newRow.insertCell(-1).innerHTML = sqlStat.File;
-//		else
-//			newRow.insertCell(-1).innerHTML = '';
-//		if (sqlStat.Name)
-//			newRow.insertCell(-1).innerHTML = sqlStat.Name;
-//		else
-//			newRow.insertCell(-1).innerHTML = '';
+		// if (sqlStat.File)
+		// newRow.insertCell(-1).innerHTML = sqlStat.File;
+		// else
+		// newRow.insertCell(-1).innerHTML = '';
+		// if (sqlStat.Name)
+		// newRow.insertCell(-1).innerHTML = sqlStat.Name;
+		// else
+		// newRow.insertCell(-1).innerHTML = '';
 		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.TotalTime;
 		newRow.insertCell(-1).innerHTML = sqlStat.MaxTimespan;

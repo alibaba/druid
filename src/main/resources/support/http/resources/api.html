@@ -6,7 +6,7 @@
 		<script src="js.js" type="text/javascript" charset="utf8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
     </head>
-	<body onload="init()">
+	<body>
 		<br />
 		<div id="menu" >
 			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
@@ -49,7 +49,11 @@
 						<a href="sql.json" target="_blank">sql.json</a>
 					</td>
                     <td>
-						SqlStat info List.
+						<p>SqlStat info List.</p>
+						<p>orderBy=[ID|ExecuteCount|...|](every property without histogram in sqlstat object)</p>
+						<p>orderType=[asc|desc] default is desc</p>
+						<p>page=page count start with 1</p>
+						<p>perPageCount=item count in one page,default is IN</p>
 					</td>
                 </tr>
 				<tr>
