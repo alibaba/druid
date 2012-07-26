@@ -318,7 +318,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public void endVisit(OracleUpdateStatement x) {
-        clearAliasMap();
     }
 
     public boolean visit(OracleDeleteStatement x) {
@@ -326,7 +325,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     public void endVisit(OracleDeleteStatement x) {
-        clearAliasMap();
     }
 
     public boolean visit(OracleSelectQueryBlock x) {
@@ -1035,7 +1033,6 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleMergeStatement x) {
-        clearAliasMap();
     }
 
     @Override

@@ -723,7 +723,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public void endVisit(SQLSelectStatement x) {
-        clearAliasMap();
     }
 
     public boolean visit(SQLSubqueryTableSource x) {
@@ -897,11 +896,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public void endVisit(SQLDeleteStatement x) {
-        clearAliasMap();
+        
     }
 
     public void endVisit(SQLUpdateStatement x) {
-        clearAliasMap();
     }
 
     public boolean visit(SQLCreateTableStatement x) {

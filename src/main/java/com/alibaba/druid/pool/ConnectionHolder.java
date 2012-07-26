@@ -39,7 +39,7 @@ public final class ConnectionHolder {
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
     private final List<StatementEventListener>  statementEventListeners  = new CopyOnWriteArrayList<StatementEventListener>();
     private final long                          connecttimeMillis;
-    private long                                lastActiveTimeMillis;
+    private transient long                      lastActiveTimeMillis;
     private long                                useCount                 = 0;
 
     private PreparedStatementPool               statementPool;
@@ -67,14 +67,15 @@ public final class ConnectionHolder {
         this.lastActiveTimeMillis = connecttimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
-        this.underlyingHoldability =  conn.getHoldability();
+        this.underlyingHoldability = conn.getHoldability();
         this.underlyingReadOnly = conn.isReadOnly();
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
-            if ("com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName()));
+            if ("com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName()))
+            ;
         }
-        
+
         this.defaultHoldability = underlyingHoldability;
         this.defaultTransactionIsolation = underlyingTransactionIsolation;
         this.defaultAutoCommit = underlyingAutoCommit;

@@ -39,7 +39,7 @@ public class TestActiveTrace extends TestCase {
             conn.close();
             // Assert.assertEquals(1, dataSource.getPoolingCount());
             dataSource.shrink();
-            Assert.assertEquals(0, dataSource.getPoolingCount());
+            Assert.assertEquals("createCount : " + dataSource.getCreateCount(), 0, dataSource.getPoolingCount());
             Assert.assertEquals(0, dataSource.getActiveConnections().size());
         }
     }

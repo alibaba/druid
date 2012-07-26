@@ -337,7 +337,26 @@ public class TableStat {
         }
 
         public String toString() {
-            return this.column.toString() + " " + this.operator;
+            StringBuffer buf = new StringBuffer();
+            buf.append(this.column.toString());
+            buf.append(' ');
+            buf.append(this.operator);
+
+            if (values.size() == 1) {
+                buf.append(' ');
+                buf.append(String.valueOf(this.values.get(0)));
+            } else if (values.size() > 0) {
+                buf.append(" (");
+                for (int i = 0; i < values.size(); ++i) {
+                    if (i != 0) {
+                        buf.append(", ");
+                    }
+                    buf.append(String.valueOf(values.get(i)));
+                }
+                buf.append(")");
+            }
+
+            return buf.toString();
         }
     }
 
