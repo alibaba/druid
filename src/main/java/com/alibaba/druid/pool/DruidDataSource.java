@@ -81,7 +81,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     // stats
     private long                    connectCount            = 0L;
     private long                    closeCount              = 0L;
-    private final AtomicLong              connectErrorCount       = new AtomicLong();
+    private final AtomicLong        connectErrorCount       = new AtomicLong();
     private long                    recycleCount            = 0L;
     private long                    createConnectionCount   = 0L;
     private long                    destroyCount            = 0L;
@@ -99,7 +99,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private ConnectionHolder[]      connections;
     private int                     poolingCount            = 0;
     private int                     activeCount             = 0;
-    private int                     discardCount            = 0;
+    private long                    discardCount            = 0;
     private int                     notEmptyWaitThreadCount = 0;
     private int                     notEmptyWaitThreadPeak  = 0;
 
@@ -134,7 +134,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.resetStatEnable = resetStatEnable;
     }
 
-    public int getDiscardCount() {
+    public long getDiscardCount() {
         return discardCount;
     }
 
@@ -393,6 +393,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (connectError != null && poolingCount == 0) {
                 throw connectError;
             }
+        } catch (SQLException e) {
+            LOG.error("dataSource init error", e);
+            throw e;
         } catch (InterruptedException e) {
             throw new SQLException(e.getMessage(), e);
         } finally {

@@ -71,5 +71,5 @@ public interface DruidDataSourceMBean extends DruidAbstractDataSourceMBean {
 
     void clearStatementCache() throws SQLException;
     
-    int getDiscardCount();
+    long getDiscardCount();
 }
