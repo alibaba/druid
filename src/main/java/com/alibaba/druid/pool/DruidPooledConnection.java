@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.lang.ref.WeakReference;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -65,7 +64,6 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private boolean               diable          = false;
     private boolean               closed          = false;
     private final Thread          ownerThread;
-    private WeakReference<Thread> closedThreadRef = null;
 
     private long                  connectedTimeNano;
 
@@ -181,8 +179,6 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             return;
         }
         
-        closedThreadRef = new WeakReference<Thread>(Thread.currentThread());
-
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
             listener.connectionClosed(new ConnectionEvent(this));
         }
