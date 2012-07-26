@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.pool;
 
+import java.lang.ref.WeakReference;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -54,18 +55,19 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidPooledConnection implements javax.sql.PooledConnection, Connection {
 
-    private final static Log   LOG         = LogFactory.getLog(DruidPooledConnection.class);
+    private final static Log      LOG             = LogFactory.getLog(DruidPooledConnection.class);
 
-    protected Connection       conn;
-    protected ConnectionHolder holder;
-    protected TransactionInfo  transactionInfo;
-    private final boolean      dupCloseLogEnable;
-    private boolean            traceEnable = false;
-    private boolean            diable      = false;
-    private boolean            closed      = false;
-    private final Thread       ownerThread;
+    protected Connection          conn;
+    protected ConnectionHolder    holder;
+    protected TransactionInfo     transactionInfo;
+    private final boolean         dupCloseLogEnable;
+    private boolean               traceEnable     = false;
+    private boolean               diable          = false;
+    private boolean               closed          = false;
+    private final Thread          ownerThread;
+    private WeakReference<Thread> closedThreadRef = null;
 
-    private long               connectedTimeNano;
+    private long                  connectedTimeNano;
 
     public DruidPooledConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -178,6 +180,8 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             LOG.error("dup close");
             return;
         }
+        
+        closedThreadRef = new WeakReference<Thread>(Thread.currentThread());
 
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
             listener.connectionClosed(new ConnectionEvent(this));

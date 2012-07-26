@@ -54,6 +54,22 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     public static DruidDataSourceStatManager getInstance() {
         return instance;
     }
+    
+    public static void cear() {
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+        for (Map.Entry<DruidDataSource, ObjectName> entry : dataSources.entrySet()) {
+            ObjectName objectName = entry.getValue();
+            if (objectName == null) {
+                continue;
+            }
+            try {
+                mbeanServer.unregisterMBean(objectName);
+            } catch (JMException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+        dataSources.clear();
+    }
 
     public synchronized static ObjectName add(DruidDataSource dataSource, String name) {
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();

@@ -34,7 +34,7 @@ import com.alibaba.druid.util.JMXUtils;
 public class Case2 extends TestCase {
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
     }
 
     protected void tearDown() throws Exception {

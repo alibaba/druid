@@ -18,7 +18,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class SpringMybatisFilterTest extends TestCase {
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
     }
 
     protected void tearDown() throws Exception {

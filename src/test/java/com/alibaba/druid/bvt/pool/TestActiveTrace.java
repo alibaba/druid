@@ -14,7 +14,7 @@ public class TestActiveTrace extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
 
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
@@ -41,10 +41,6 @@ public class TestActiveTrace extends TestCase {
             dataSource.shrink();
             Assert.assertEquals(0, dataSource.getPoolingCount());
             Assert.assertEquals(0, dataSource.getActiveConnections().size());
-
-            if (i % 5000 == 0) {
-                System.out.println(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
-            }
         }
     }
 }

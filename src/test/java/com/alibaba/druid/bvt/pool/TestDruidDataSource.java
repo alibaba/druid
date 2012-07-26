@@ -27,7 +27,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class TestDruidDataSource extends TestCase {
 
     protected void tearDown() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
     }
 
     protected void setUp() throws Exception {

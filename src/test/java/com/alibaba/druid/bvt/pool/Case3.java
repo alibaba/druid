@@ -41,7 +41,7 @@ public class Case3 extends TestCase {
     // dataSource.close();
     // }
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
     }
 
     protected void tearDown() throws Exception {

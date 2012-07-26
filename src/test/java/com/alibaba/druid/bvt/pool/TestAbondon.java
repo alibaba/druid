@@ -13,7 +13,7 @@ public class TestAbondon extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
 
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);

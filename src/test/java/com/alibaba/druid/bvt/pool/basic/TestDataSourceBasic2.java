@@ -13,7 +13,7 @@ import com.alibaba.druid.stat.DruidDataSourceStatManager;
 public class TestDataSourceBasic2 extends TestCase {
 
     public void test_0() throws Exception {
-        Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
+        DruidDataSourceStatManager.cear();
 
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
