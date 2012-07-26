@@ -24,7 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlReplicateStatement extends MySqlStatementImpl {
+public class MySqlReplaceStatement extends MySqlStatementImpl {
 
     private static final long      serialVersionUID = 1L;
 

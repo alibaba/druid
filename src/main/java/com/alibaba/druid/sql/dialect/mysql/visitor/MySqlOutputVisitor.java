@@ -74,7 +74,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSQLColumnDefinition;
@@ -900,12 +900,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     @Override
-    public void endVisit(MySqlReplicateStatement x) {
+    public void endVisit(MySqlReplaceStatement x) {
 
     }
 
     @Override
-    public boolean visit(MySqlReplicateStatement x) {
+    public boolean visit(MySqlReplaceStatement x) {
         print("REPLACE ");
 
         if (x.isLowPriority()) {

@@ -68,7 +68,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement.LockType;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplicateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlResetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRollbackStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
@@ -482,7 +482,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (identifierEquals("REPLACE")) {
-            MySqlReplicateStatement stmt = parseReplicate();
+            MySqlReplaceStatement stmt = parseReplicate();
             statementList.add(stmt);
             return true;
         }
@@ -1436,8 +1436,8 @@ public class MySqlStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public MySqlReplicateStatement parseReplicate() throws ParserException {
-        MySqlReplicateStatement stmt = new MySqlReplicateStatement();
+    public MySqlReplaceStatement parseReplicate() throws ParserException {
+        MySqlReplaceStatement stmt = new MySqlReplaceStatement();
 
         acceptIdentifier("REPLACE");
 
