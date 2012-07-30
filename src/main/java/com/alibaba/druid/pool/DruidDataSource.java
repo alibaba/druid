@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -1384,6 +1385,51 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         return buf.toString();
+    }
+
+    public List<Map<String, Object>> getPoolingConnectionInfo() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        lock.lock();
+        try {
+            for (int i = 0; i < poolingCount; ++i) {
+                ConnectionHolder connHolder = connections[i];
+                Connection conn = connHolder.getConnection();
+
+                Map<String, Object> map = new LinkedHashMap<String, Object>();
+                map.put("id", System.identityHashCode(conn));
+                map.put("useCount", connHolder.getUseCount());
+                if (connHolder.getLastActiveTimeMillis() > 0) {
+                    map.put("lastActiveTime", new Date(connHolder.getLastActiveTimeMillis()));
+                }
+                map.put("connectTime", new Date(connHolder.getTimeMillis()));
+                map.put("holdability", connHolder.getUnderlyingHoldability());
+                map.put("transactionIsolation", connHolder.getUnderlyingTransactionIsolation());
+                map.put("autoCommit", connHolder.isUnderlyingAutoCommit());
+                map.put("readoOnly", connHolder.isUnderlyingReadOnly());
+
+                if (connHolder.isPoolPreparedStatements()) {
+                    List<Map<String, Object>> stmtCache = new ArrayList<Map<String, Object>>();
+                    PreparedStatementPool stmtPool = connHolder.getStatementPool();
+                    for (PreparedStatementHolder stmtHolder : stmtPool.getMap().values()) {
+                        Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
+                        
+                        stmtInfo.put("sql", stmtHolder.getKey().getSql());
+                        stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPretch());
+                        stmtInfo.put("rowPrefetch", stmtHolder.getRowPrefetch());
+                        stmtInfo.put("hitCount", stmtHolder.getHitCount());
+                        
+                        stmtCache.add(stmtInfo);
+                    }
+                    
+                    map.put("pscache", stmtCache);
+                }
+
+                list.add(map);
+            }
+        } finally {
+            lock.unlock();
+        }
+        return list;
     }
 
     public void logTransaction(TransactionInfo info) {
