@@ -1,14 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    	<title>Druid Stat Index</title>
-		<link href="style.css" type="text/css" rel="stylesheet"/>
+    	<title>Druid ActiveConnection StackTrace</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href="style.css" type="text/css" rel="stylesheet"/>
 		<script src="common.js" type="text/javascript" charset="utf8"></script>
-		<script src="basicStat.js" type="text/javascript"></script>
+		<script src="activeConnectionStackTrace.js" type="text/javascript" charset="utf8"></script>
 		<script >
             function init(){
-            	ajaxRequestForBasicInfo();
+            	ajaxRequestForActiveConnectionStackTrace({datasourceId});
+            	var time2=setInterval("ajaxRequestForActiveConnectionStackTrace({datasourceId});",2000);
             }
         </script>
     </head>
@@ -19,25 +20,11 @@
 		</div>
 		<br />
 		<div id="main">
-            <h2>Stat Index<a href="basic.json" target="_blank">[View JSON API]</a></h2>
-            <table cellspacing="1" cellpadding="5">
-				<tr >
-					<td valign="top" width="100" class="td_lable">
-						Version
-                    </td>
-					<td id="DruidVersion" width="95%">
-						
-                    </td>
-                </tr>
-				<tr >
-					<td valign="top" class="td_lable">
-						drivers
-                    </td>
-					<td id="DruidDrivers">
-						
-                    </td>
-                </tr>
-            </table>
+			<h2>ActiveConnection StackTrace <a href="activeConnectionStackTrace-{datasourceId}.json" target="_blank">[View JSON API]</a></h2>
+            <div id="activeConnectionStackTraceDiv">
+				<table id="activeConnectionStackTraceTable" cellpadding="5" cellspacing="1" width="99%">
+                </table>
+			</div>
         </div>
 		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
 	</body>

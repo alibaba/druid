@@ -102,6 +102,16 @@ public class StatViewServlet extends HttpServlet {
             return;
         }
 
+        if (path.startsWith("/activeConnectionStackTrace-")) {
+            Integer id = StringUtils.subStringToInteger(path, "activeConnectionStackTrace-", ".");
+            DruidDataSource datasource = getDruidDataSourceById(id);
+
+            if (path.endsWith(".json")) returnJSONActiveConnectionStackTrace(datasource, request, response);
+            if (path.endsWith(".html")) returnViewActiveConnectionStackTrace(datasource, request, response);
+
+            return;
+        }
+
         if (path.equals("/sql.json")) {
             returnJSONResult(request, response, RESULT_CODE_SUCCESS, getSqlStatDataList(request));
             return;
@@ -125,6 +135,30 @@ public class StatViewServlet extends HttpServlet {
 
         // find file in resources path
         returnResourceFile(path, response);
+    }
+
+    private void returnJSONActiveConnectionStackTrace(DruidDataSource datasource, HttpServletRequest request,
+                                                      HttpServletResponse response) throws IOException {
+        if (datasource.isRemoveAbandoned()) {
+            List<String> result = datasource.getActiveConnectionStackTrace();
+            returnJSONResult(request, response, RESULT_CODE_SUCCESS, result);
+        } else {
+            returnJSONResult(request, response, RESULT_CODE_ERROR, "require set removeAbandoned=true");
+        }
+    }
+
+    private void returnViewActiveConnectionStackTrace(DruidDataSource datasource, HttpServletRequest request,
+                                                      HttpServletResponse response) throws IOException {
+        if (datasource == null) return;
+
+        if (!datasource.isRemoveAbandoned()) {
+            response.getWriter().print(mergeTemplatePage("ERROR", "require set removeAbandoned=true"));
+            return;
+        }
+
+        String text = IOUtils.readFromResource(RESOURCE_PATH + "/activeConnectionStackTrace.html");
+        text = text.replaceAll("\\{datasourceId\\}", String.valueOf(System.identityHashCode(datasource)));
+        response.getWriter().print(text);
     }
 
     private void returnViewSqlStat(JdbcSqlStat sqlStat, HttpServletResponse response) throws IOException {
@@ -343,6 +377,9 @@ public class StatViewServlet extends HttpServlet {
 
         dataMap.put("StartTransactionCount", dataSource.getStartTransactionCount());
         dataMap.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
+
+        dataMap.put("RemoveAbandoned", dataSource.isRemoveAbandoned());
+
         return dataMap;
     }
 

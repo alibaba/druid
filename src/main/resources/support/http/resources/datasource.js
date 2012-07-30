@@ -1,129 +1,10 @@
-var xmlHttpForBasicInfo;
 var xmlHttpForDataSourceInfo;
-var xmlHttpForDataSourceSqlStatInfo;
-var xmlHttpForReset;
 
-var sqlViewOrderBy = 'ID';
-var sqlViewOrderType = 'asc';
-
-// only one page for now
-var sqlViewPage = 1;
-var sqlViewPerPageCount = 1000000;
-
-function setOrderBy(orderBy) {
-	if (sqlViewOrderBy != orderBy) {
-		sqlViewOrderBy = orderBy;
-		sqlViewOrderType = 'desc'
-		return;
-	}
-
-	if (sqlViewOrderType == 'asc')
-		sqlViewOrderType = 'desc'
-	else
-		sqlViewOrderType = 'asc'
-}
-
-function getSqlViewJsonUrl() {
-	var result = 'sql.json?';
-
-	if (sqlViewOrderBy != undefined)
-		result += 'orderBy=' + sqlViewOrderBy + '&';
-
-	if (sqlViewOrderType != undefined)
-		result += 'orderType=' + sqlViewOrderType + '&';
-
-	if (sqlViewPage != undefined)
-		result += 'page=' + sqlViewPage + '&';
-
-	if (sqlViewPerPageCount != undefined)
-		result += 'perPageCount=' + sqlViewPerPageCount + '&';
-
-	return result;
-}
-
-function ajaxRequestForReset() {
-	if (window.XMLHttpRequest)
-		xmlHttpForReset = new XMLHttpRequest();
-	else if (window.ActiveXObject)
-		xmlHttpForReset = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlHttpForReset.onreadystatechange = ajaxResponseForReset;
-	xmlHttpForReset.open("GET", 'reset-all.json', true);
-	xmlHttpForReset.send(null);
-	return false;
-}
-function ajaxRequestForBasicInfo() {
-	if (window.XMLHttpRequest)
-		xmlHttpForBasicInfo = new XMLHttpRequest();
-	else if (window.ActiveXObject)
-		xmlHttpForBasicInfo = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlHttpForBasicInfo.onreadystatechange = ajaxResponseForBasicInfo;
-	xmlHttpForBasicInfo.open("GET", 'basic.json', true);
-	xmlHttpForBasicInfo.send(null);
-}
-function ajaxRequestForDataSourceSqlStatInfo() {
-	if (window.XMLHttpRequest)
-		xmlHttpForDataSourceSqlStatInfo = new XMLHttpRequest();
-	else if (window.ActiveXObject)
-		xmlHttpForDataSourceSqlStatInfo = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlHttpForDataSourceSqlStatInfo.onreadystatechange = ajaxResponseForDataSourceSqlStatInfo;
-	xmlHttpForDataSourceSqlStatInfo.open("GET", getSqlViewJsonUrl(), true);
-	xmlHttpForDataSourceSqlStatInfo.send(null);
-}
 function ajaxRequestForDataSourceInfo() {
-	if (window.XMLHttpRequest)
-		xmlHttpForDataSourceInfo = new XMLHttpRequest();
-	else if (window.ActiveXObject)
-		xmlHttpForDataSourceInfo = new ActiveXObject("Microsoft.XMLHTTP");
-	xmlHttpForDataSourceInfo.onreadystatechange = ajaxResponseForDataSourceInfo;
-	xmlHttpForDataSourceInfo.open("GET", 'datasource.json', true);
-	xmlHttpForDataSourceInfo.send(null);
+	xmlHttpForDataSourceInfo =  getRequestObject();
+	sendRequest(xmlHttpForDataSourceInfo,'datasource.json',ajaxResponseForDataSourceInfo)
 }
-function ajaxResponseForReset() {
-	var html = '';
-	if (xmlHttpForReset.readyState != 4) {
-		return;
-	}
-	if (xmlHttpForReset.status != 200) {
-		return;
-	}
-	var jsonResp = eval("(" + xmlHttpForReset.responseText + ")");
-	if (jsonResp.ResultCode == 1) {
-		alert("already reset all stat");
-	}
 
-}
-function ajaxResponseForBasicInfo() {
-	if (xmlHttpForBasicInfo.readyState != 4) {
-		return;
-	}
-	if (xmlHttpForBasicInfo.status != 200) {
-		return;
-	}
-	var jsonResp = eval("(" + xmlHttpForBasicInfo.responseText + ")");
-	if (jsonResp.ResultCode != 1) {
-		return;
-	}
-
-	document.getElementById("DruidVersion").innerHTML = jsonResp.Content.Version;
-
-	var driversList = jsonResp.Content.Drivers;
-	if (driversList) {
-		var driverHtml = '';
-		for ( var i = 0; i < driversList.length; i++) {
-			var driver = driversList[i];
-			driverHtml += driver + ' , ';
-		}
-		document.getElementById("DruidDrivers").innerHTML = driverHtml;
-	}
-}
-function changeInnerHtml(id, divHtml) {
-	var divObj = document.getElementById(id);
-	if (divHtml == undefined)
-		divHtml = '';
-	if (divObj) {
-		divObj.innerHTML = divHtml;
-	}
-}
 function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-Title" + datasource.Identity, datasource.Name);
 	changeInnerHtml("DS-Info-UserName" + datasource.Identity, datasource.UserName);
@@ -165,6 +46,13 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-PSCacheAccessCount" + datasource.Identity, datasource.PSCacheAccessCount);
 	changeInnerHtml("DS-Info-PSCacheHitCount" + datasource.Identity, datasource.PSCacheHitCount);
 	changeInnerHtml("DS-Info-PSCacheMissCount" + datasource.Identity, datasource.PSCacheMissCount);
+	changeInnerHtml("DS-Info-PSCacheMissCount" + datasource.Identity, datasource.PSCacheMissCount);
+
+	if (datasource.RemoveAbandoned == true)
+		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, '<a href="activeConnectionStackTrace-' + datasource.Identity + '.html">View</a>');
+	else
+		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, "require set removeAbandoned=true");
+
 }
 function generateDataSourceDiv(datasource) {
 	var listHtml = '';
@@ -212,23 +100,17 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement access count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement hit count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement miss count</td></tr>';
+	listHtml += '<tr><td class="td_lable">ActiveConnection StackTrace</td><td id="DS-Info-ActiveConnectionStackTrace' + datasourceId + '">&nbsp;</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
+			+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
 	listHtml += '</table>';
 	listHtml += '</div>';
 
 	document.getElementById("dataSourceStatList").innerHTML += listHtml;
 }
 function ajaxResponseForDataSourceInfo() {
-	if (xmlHttpForDataSourceInfo.readyState != 4) {
-		return;
-	}
-	if (xmlHttpForDataSourceInfo.status != 200) {
-		return;
-	}
-	var jsonResp = eval("(" + xmlHttpForDataSourceInfo.responseText + ")");
-	if (jsonResp.ResultCode != 1) {
-		return;
-	}
-	var datasourceList = jsonResp.Content;
+	var datasourceList = getJSONResponseContent(xmlHttpForDataSourceInfo);
+	if(datasourceList==null) return;
+	
 	for ( var i = 0; i < datasourceList.length; i++) {
 		var datasource = datasourceList[i];
 		if (document.getElementById("dataSourceStat" + datasource.Identity)) {
@@ -237,60 +119,5 @@ function ajaxResponseForDataSourceInfo() {
 		}
 		generateDataSourceDiv(datasource);
 		fillDataSourceInfo(datasource);
-	}
-}
-function subSqlString(sql, len) {
-	if (sql.length <= len)
-		return sql;
-	return sql.substr(0, len) + '...';
-}
-function ajaxResponseForDataSourceSqlStatInfo() {
-	if (xmlHttpForDataSourceSqlStatInfo.readyState != 4) {
-		return;
-	}
-	if (xmlHttpForDataSourceSqlStatInfo.status != 200) {
-		return;
-	}
-	var jsonResp = eval("(" + xmlHttpForDataSourceSqlStatInfo.responseText + ")");
-	if (jsonResp.ResultCode != 1) {
-		return;
-	}
-	var sqlStatList = jsonResp.Content;
-	var sqlStatTable = document.getElementById("SqlStatTable");
-	while (sqlStatTable.rows.length > 1) {
-		sqlStatTable.deleteRow(1);
-	}
-	for ( var i = 0; i < sqlStatList.length; i++) {
-		var sqlStat = sqlStatList[i];
-		var newRow = sqlStatTable.insertRow(-1);
-		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
-		// if (sqlStat.File)
-		// newRow.insertCell(-1).innerHTML = sqlStat.File;
-		// else
-		// newRow.insertCell(-1).innerHTML = '';
-		// if (sqlStat.Name)
-		// newRow.insertCell(-1).innerHTML = sqlStat.Name;
-		// else
-		// newRow.insertCell(-1).innerHTML = '';
-		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.TotalTime;
-		newRow.insertCell(-1).innerHTML = sqlStat.MaxTimespan;
-		newRow.insertCell(-1).innerHTML = sqlStat.InTransactionCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ErrorCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.EffectedRowCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.FetchRowCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
-		// hiHtml += '<a href="#' + sqlStat.Histogram + '">ExecHistogram</a> |';
-		// hiHtml += '<a href="#' + sqlStat.FetchRowCountHistogram +
-		// '">FetchRow</a> | ';
-		// hiHtml += '<a href="#' + sqlStat.EffectedRowCountHistogram +
-		// '">UpdateCount</a> | ';
-		// hiHtml += '<a href="#' + sqlStat.ExecuteAndResultHoldTimeHistogram +
-		// '">ExecAndRsHold</a>';
-		newRow.insertCell(-1).innerHTML = '[' + sqlStat.Histogram + ']';
-		newRow.insertCell(-1).innerHTML = '[' + sqlStat.FetchRowCountHistogram + ']';
-		newRow.insertCell(-1).innerHTML = '[' + sqlStat.EffectedRowCountHistogram + ']';
-		newRow.insertCell(-1).innerHTML = '[' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
 	}
 }

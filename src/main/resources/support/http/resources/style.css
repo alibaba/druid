@@ -8,10 +8,19 @@ body{
 	height:50px;
 }
 
- #menu a{
+#menu a{
     color: #0082FF;
     font: 18px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
- }
+}
+#footer {
+	height: 50px;
+    border-top: 1px solid #A8C7CE;
+    margin-top: 20px;
+    width: 99%;
+    text-align: center;
+    line-height: 26px;
+    padding-top: 15px;
+}
 tr{
 	background-color:white;
 }
