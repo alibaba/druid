@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<title>Druid SqlStat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/connectionInfo.js" type="text/javascript" charset="utf8"></script>
+		<script >
+            function init(){
+            	ajaxRequestForConnectionInfo({datasourceId});
+            	var time3=setInterval("ajaxRequestForConnectionInfo({datasourceId});",1000);
+            }
+        </script>
+    </head>
+	<body onload="init()">
+		<br />
+		<div id="menu" >
+			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
+		</div>
+		<br />
+		<div id="main">
+            <h2>Pooling Connection Info List for Datasource {datasourceId}<a href="connectionInfo-{datasourceId}.json" target="_blank">[View JSON API]</a></h2>
+            <table cellspacing="1" cellpadding="5" id="connectionInfoTable" width="99%">
+				<thead>
+					<tr>
+						<th class="td_lable" width="50">ID</th>
+						<th class="td_lable" width="50">Use Count</th>
+						<th class="td_lable" width="150">Last ActiveTime</th>
+						<th class="td_lable" width="150">ConnectTime</th>
+						<th class="td_lable" width="50">Holdability</th>
+						<th class="td_lable" width="50">Transaction Isolation</th>
+						<th class="td_lable" width="50">AutoCommit</th>
+						<th class="td_lable" width="50">ReadoOnly</th>
+						<th class="td_lable">
+							Pscache<br />
+							<table cellspacing="1" cellpadding="5" width="100%">
+								<tr>
+								<th class="td_lable">sql</th>
+								<th class="td_lable" width="50">default Row Pretch</th>
+								<th class="td_lable" width="50">row Prefetch</th>
+								<th class="td_lable" width="50">hit Count</th>
+								</tr>
+							</table>
+						</th>
+                    </tr>
+                </thead> 
+             </table>
+        </div>
+		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+	</body>
+</html>

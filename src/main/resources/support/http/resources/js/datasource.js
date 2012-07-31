@@ -1,8 +1,8 @@
 var xmlHttpForDataSourceInfo;
 
 function ajaxRequestForDataSourceInfo() {
-	xmlHttpForDataSourceInfo =  getRequestObject();
-	sendRequest(xmlHttpForDataSourceInfo,'datasource.json',ajaxResponseForDataSourceInfo)
+	xmlHttpForDataSourceInfo = getRequestObject();
+	sendRequest(xmlHttpForDataSourceInfo, 'datasource.json', ajaxResponseForDataSourceInfo)
 }
 
 function fillDataSourceInfo(datasource) {
@@ -100,8 +100,13 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement access count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement hit count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement miss count</td></tr>';
+
 	listHtml += '<tr><td class="td_lable">ActiveConnection StackTrace</td><td id="DS-Info-ActiveConnectionStackTrace' + datasourceId + '">&nbsp;</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
 			+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
+
+	listHtml += '<tr><td class="td_lable">PollingConnection Info</td><td id="DS-Info-PollingConnectionInfo' + datasourceId + '"><a href="connectionInfo-' + datasourceId
+			+ '.html">View</a></td><td>Info for polling connection. <a href="connectionInfo-' + datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
+
 	listHtml += '</table>';
 	listHtml += '</div>';
 
@@ -109,8 +114,9 @@ function generateDataSourceDiv(datasource) {
 }
 function ajaxResponseForDataSourceInfo() {
 	var datasourceList = getJSONResponseContent(xmlHttpForDataSourceInfo);
-	if(datasourceList==null) return;
-	
+	if (datasourceList == null)
+		return;
+
 	for ( var i = 0; i < datasourceList.length; i++) {
 		var datasource = datasourceList[i];
 		if (document.getElementById("dataSourceStat" + datasource.Identity)) {

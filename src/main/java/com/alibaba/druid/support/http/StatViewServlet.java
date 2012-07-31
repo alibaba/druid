@@ -102,6 +102,22 @@ public class StatViewServlet extends HttpServlet {
             return;
         }
 
+        if (path.startsWith("/connectionInfo-")) {
+            Integer id = StringUtils.subStringToInteger(path, "connectionInfo-", ".");
+            DruidDataSource datasource = getDruidDataSourceById(id);
+
+            if (path.endsWith(".json")) {
+                if (datasource == null) returnJSONResult(request, response, RESULT_CODE_ERROR, null);
+                else returnJSONResult(request, response, RESULT_CODE_SUCCESS, datasource.getPoolingConnectionInfo());
+                return;
+            }
+
+            if (path.endsWith(".html")) {
+                returnViewConnectionInfo(datasource, request, response);
+                return;
+            }
+        }
+
         if (path.startsWith("/activeConnectionStackTrace-")) {
             Integer id = StringUtils.subStringToInteger(path, "activeConnectionStackTrace-", ".");
             DruidDataSource datasource = getDruidDataSourceById(id);
@@ -119,6 +135,7 @@ public class StatViewServlet extends HttpServlet {
 
         if (path.startsWith("/sql-")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
+
             if (path.endsWith(".json")) {
                 Object result = getSqlStatData(id);
                 returnJSONResult(request, response, result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
@@ -157,6 +174,15 @@ public class StatViewServlet extends HttpServlet {
         }
 
         String text = IOUtils.readFromResource(RESOURCE_PATH + "/activeConnectionStackTrace.html");
+        text = text.replaceAll("\\{datasourceId\\}", String.valueOf(System.identityHashCode(datasource)));
+        response.getWriter().print(text);
+    }
+
+    private void returnViewConnectionInfo(DruidDataSource datasource, HttpServletRequest request,
+                                          HttpServletResponse response) throws IOException {
+        if (datasource == null) return;
+
+        String text = IOUtils.readFromResource(RESOURCE_PATH + "/connectionInfo.html");
         text = text.replaceAll("\\{datasourceId\\}", String.valueOf(System.identityHashCode(datasource)));
         response.getWriter().print(text);
     }
