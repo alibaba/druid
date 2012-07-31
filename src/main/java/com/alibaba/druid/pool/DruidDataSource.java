@@ -806,7 +806,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
-        long estimate = unit.toNanos(timeout);
+        final long nanos = unit.toNanos(timeout);
+        long estimate = nanos;
 
         for (int i = 0;; ++i) {
             if (poolingCount == 0) {
@@ -849,7 +850,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (createError != null) {
                         throw new GetConnectionTimeoutException(createError);
                     } else {
-                        throw new GetConnectionTimeoutException("loopWaitCount " + i);
+                        throw new GetConnectionTimeoutException("loopWaitCount " + i + ", wait millis " + (nanos - estimate)/(1000 * 1000));
                     }
                 }
             }
