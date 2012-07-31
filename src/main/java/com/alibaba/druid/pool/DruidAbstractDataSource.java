@@ -204,7 +204,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                                                                                                                                                           10 * 1000,
                                                                                                                                                           100 * 1000);
 
-    private boolean                                                                             dupCloseLogEnable                         = true;
+    private boolean                                                                             dupCloseLogEnable                         = false;
 
     private ObjectName                                                                          objectName;
 
