@@ -174,8 +174,10 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         }
 
         ConnectionHolder holder = this.holder;
-        if (holder == null && dupCloseLogEnable) {
-            LOG.error("dup close");
+        if (holder == null) {
+            if (dupCloseLogEnable) {
+                LOG.error("dup close");
+            }
             return;
         }
         
