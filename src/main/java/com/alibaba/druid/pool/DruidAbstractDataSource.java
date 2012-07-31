@@ -69,7 +69,8 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author ljw<ljw2083@alibaba-inc.com>
  */
 public abstract class DruidAbstractDataSource extends WrapperAdapter implements DruidAbstractDataSourceMBean, DataSource, DataSourceProxy, Serializable {
-	private final static Log        LOG                     = LogFactory.getLog(DruidAbstractDataSource.class);
+
+    private final static Log                                                                    LOG                                       = LogFactory.getLog(DruidAbstractDataSource.class);
 
     private static final long                                                                   serialVersionUID                          = 1L;
 
@@ -177,7 +178,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected long                                                                              id;
 
-    protected Date                                                                              createdTime;
+    protected final Date                                                                        createdTime                               = new Date();
+    protected Date                                                                              initedTime;
 
     protected int                                                                               connectionErrorRetryAttempts              = 30;
 
@@ -218,7 +220,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                                                           useOracleImplicitCache                    = true;
 
-    protected final ReentrantLock                                                               lock                                      = new ReentrantLock(true);
+    protected final ReentrantLock                                                               lock                                      = new ReentrantLock(
+                                                                                                                                                              true);
 
     protected int                                                                               modCount                                  = 0;
 
@@ -491,7 +494,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validConnectionChecker = (ValidConnectionChecker) clazz.newInstance();
             this.validConnectionChecker = validConnectionChecker;
         } else {
-        	LOG.error("load validConnectionCheckerClass error : " + validConnectionCheckerClass);
+            LOG.error("load validConnectionCheckerClass error : " + validConnectionCheckerClass);
         }
     }
 
@@ -717,7 +720,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (clazz != null) {
             this.passwordCallback = (PasswordCallback) clazz.newInstance();
         } else {
-        	LOG.error("load passwordCallback error : " + passwordCallbackClassName);
+            LOG.error("load passwordCallback error : " + passwordCallbackClassName);
             this.passwordCallback = null;
         }
     }
@@ -1014,9 +1017,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         Class<?> clazz = JdbcUtils.loadDriverClass(exceptionSorter);
         if (clazz == null) {
-        	LOG.error("load exceptionSorter error : " + exceptionSorter);
+            LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
-        	this.exceptionSorter = (ExceptionSorter) clazz.newInstance();
+            this.exceptionSorter = (ExceptionSorter) clazz.newInstance();
         }
     }
 
@@ -1280,7 +1283,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 } else {
                     conn = dataSource.getDriver().connect(url, info);
                 }
-                
+
                 if (conn == null) {
                     throw new SQLException("connect error, url " + url);
                 }

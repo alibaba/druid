@@ -387,7 +387,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             initedLatch.await();
 
-            createdTime = new Date();
+            initedTime = new Date();
             ObjectName objectName = DruidDataSourceStatManager.add(this, this.name);
             this.setObjectName(objectName);
 
