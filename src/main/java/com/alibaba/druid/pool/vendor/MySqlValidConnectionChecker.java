@@ -1,6 +1,7 @@
 package com.alibaba.druid.pool.vendor;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -62,6 +63,14 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
                 try {
                     ping.invoke(conn);
                     return true;
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    if (cause instanceof SQLException) {
+                        return false;
+                    }
+                    
+                    LOG.warn("Unexpected error in ping", e);
+                    return false;
                 } catch (Exception e) {
                     LOG.warn("Unexpected error in ping", e);
                     return false;
