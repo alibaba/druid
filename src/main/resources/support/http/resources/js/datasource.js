@@ -61,18 +61,18 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<h2>Basic Info For <span id="DS-Info-Title' + datasourceId + '"></span><a href="datasource-' + datasourceId + '.json" target="_blank">[View JSON API]</a></h2>';
 	listHtml += '<table cellpadding="5" cellspacing="1" width="99%">';
 
-	listHtml += '<tr><td class="td_lable" width="230">UserName</td><td id="DS-Info-UserName' + datasourceId + '">&nbsp;</td><td>Specify the username used when creating a new connection.</td></tr>';
-	listHtml += '<tr><td class="td_lable">URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td><td>The JDBC driver connection URL</td></tr>';
-	listHtml += '<tr><td class="td_lable">DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td><td>database type</td></tr>';
-	listHtml += '<tr><td class="td_lable">DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td><td>The fully qualifed name of the JDBC driver class</td></tr>';
-	listHtml += '<tr><td class="td_lable">FilterClassNames</td><td id="DS-Info-FilterClassNames' + datasourceId + '">&nbsp;</td><td>All the fully qualifed name of the filter classes</td></tr>';
+	listHtml += '<tr><td class="td_lable" width="230">* UserName</td><td id="DS-Info-UserName' + datasourceId + '">&nbsp;</td><td>Specify the username used when creating a new connection.</td></tr>';
+	listHtml += '<tr><td class="td_lable">* URL</td><td id="DS-Info-URL' + datasourceId + '">&nbsp;</td><td>The JDBC driver connection URL</td></tr>';
+	listHtml += '<tr><td class="td_lable">* DbType</td><td id="DS-Info-DbType' + datasourceId + '">&nbsp;</td><td>database type</td></tr>';
+	listHtml += '<tr><td class="td_lable">* DriverClassName</td><td id="DS-Info-DriverClassName' + datasourceId + '">&nbsp;</td><td>The fully qualifed name of the JDBC driver class</td></tr>';
+	listHtml += '<tr><td class="td_lable">* FilterClassNames</td><td id="DS-Info-FilterClassNames' + datasourceId + '">&nbsp;</td><td>All the fully qualifed name of the filter classes</td></tr>';
 
-	listHtml += '<tr><td class="td_lable">TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td><td>Test or not when borrow a connection</td></tr>';
-	listHtml += '<tr><td class="td_lable">TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td><td>Test or not when a connection is idle for a while</td></tr>';
+	listHtml += '<tr><td class="td_lable">* TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td><td>Test or not when borrow a connection</td></tr>';
+	listHtml += '<tr><td class="td_lable">* TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td><td>Test or not when a connection is idle for a while</td></tr>';
 
-	listHtml += '<tr><td class="td_lable">InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td><td>The size of datasource connections to create when initial a datasource</td></tr>';
-	listHtml += '<tr><td class="td_lable">MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td><td>The minimum number of connections a pool should hold. </td></tr>';
-	listHtml += '<tr><td class="td_lable">MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td><td>The maximum number of connections for a pool</td></tr>';
+	listHtml += '<tr><td class="td_lable">* InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td><td>The size of datasource connections to create when initial a datasource</td></tr>';
+	listHtml += '<tr><td class="td_lable">* MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td><td>The minimum number of connections a pool should hold. </td></tr>';
+	listHtml += '<tr><td class="td_lable">* MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td><td>The maximum number of connections for a pool</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitCount</td><td id="DS-Info-NotEmptyWaitCount' + datasourceId + '">&nbsp;</td><td>Total times for wait to get a connection</td></tr>';
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitMillis</td><td id="DS-Info-NotEmptyWaitMillis' + datasourceId + '">&nbsp;</td><td>Total millins for wait to get a connection</td></tr>';
