@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,12 +30,18 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
+import com.alibaba.druid.Constants;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.Histogram;
+import com.alibaba.druid.util.LRUCache;
 
 public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
+
+    private final static Log                                    LOG                     = LogFactory.getLog(JdbcDataSourceStat.class);
 
     private final String                                        name;
     private final String                                        url;
@@ -47,10 +54,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private int                                                 maxSize                 = 1000 * 1;
 
     private ReentrantReadWriteLock                              lock                    = new ReentrantReadWriteLock();
-    private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap              = new LinkedHashMap<String, JdbcSqlStat>(
-                                                                                                                                 maxSize,
-                                                                                                                                 0.75f,
-                                                                                                                                 false);
+    private final LinkedHashMap<String, JdbcSqlStat>            sqlStatMap;
 
     private final Histogram                                     connectionHoldHistogram = new Histogram(new long[] { //
                                                                                                         //
@@ -66,11 +70,33 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
     }
-    
+
     public JdbcDataSourceStat(String name, String url, String dbType){
+        this(name, url, dbType, null);
+    }
+
+    public JdbcDataSourceStat(String name, String url, String dbType, Properties connectProperties){
         this.name = name;
         this.url = url;
         this.dbType = dbType;
+
+        if (connectProperties != null) {
+            Object arg = connectProperties.get(Constants.DRUID_STAT_SQL_MAX_SIZE);
+
+            if (arg == null) {
+                arg = System.getProperty(Constants.DRUID_STAT_SQL_MAX_SIZE);
+            }
+
+            if (arg != null) {
+                try {
+                    maxSize = Integer.parseInt(arg.toString());
+                } catch (NumberFormatException ex) {
+                    LOG.error("maxSize parse error", ex);
+                }
+            }
+        }
+
+        sqlStatMap = new LRUCache<String, JdbcSqlStat>(maxSize, 16, 0.75f, false);
     }
 
     public void reset() {
