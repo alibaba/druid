@@ -25,7 +25,7 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-WaitThreadCount" + datasource.Identity, datasource.WaitThreadCount);
 
 	changeInnerHtml("DS-Info-StartTransactionCount" + datasource.Identity, datasource.StartTransactionCount);
-	changeInnerHtml("DS-Info-TransactionHistogramValues" + datasource.Identity, '[' + datasource.TransactionHistogramValues + ']');
+	changeInnerHtml("DS-Info-TransactionHistogram" + datasource.Identity, '[' + datasource.TransactionHistogram + ']');
 
 	changeInnerHtml("DS-Info-PoolingCount" + datasource.Identity, datasource.PoolingCount);
 	changeInnerHtml("DS-Info-PoolingPeak" + datasource.Identity, datasource.PoolingPeak);
@@ -47,7 +47,7 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-PSCacheHitCount" + datasource.Identity, datasource.PSCacheHitCount);
 	changeInnerHtml("DS-Info-PSCacheMissCount" + datasource.Identity, datasource.PSCacheMissCount);
 
-	changeInnerHtml("DS-Info-ConnectionHoldHistogram" + datasource.Identity, '[' + datasource.ConnectionHoldHistogram + ']');
+	changeInnerHtml("DS-Info-ConnectionHoldTimeHistogram" + datasource.Identity, '[' + datasource.ConnectionHoldTimeHistogram + ']');
 	
 	if (datasource.RemoveAbandoned == true)
 		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, '<a href="activeConnectionStackTrace-' + datasource.Identity + '.html">View</a>');
@@ -80,7 +80,7 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">WaitThreadCount</td><td id="DS-Info-WaitThreadCount' + datasourceId + '">&nbsp;</td><td>The current waiting thread count</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">StartTransactionCount</td><td id="DS-Info-StartTransactionCount' + datasourceId + '">&nbsp;</td><td>The count of start transaction</td></tr>';
-	listHtml += '<tr><td class="td_lable">TransactionHistogramValues</td><td id="DS-Info-TransactionHistogramValues' + datasourceId + '">&nbsp;</td><td>The histogram values of start transaction</td></tr>';
+	listHtml += '<tr><td class="td_lable">TransactionHistogram</td><td id="DS-Info-TransactionHistogram' + datasourceId + '">&nbsp;</td><td>The histogram values of transaction time, [0-10 ms, 10-100 ms, 100-1 s, 1-10 s, 10-100 s, >100 s]</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">PoolingCount</td><td id="DS-Info-PoolingCount' + datasourceId + '">&nbsp;</td><td>The current usefull connection count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PoolingPeak</td><td id="DS-Info-PoolingPeak' + datasourceId + '">&nbsp;</td><td>The usefull connection peak count</td></tr>';
@@ -102,7 +102,7 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement hit count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement miss count</td></tr>';
 	
-	listHtml += '<tr><td class="td_lable">ConnectionHoldHistogram</td><td id="DS-Info-ConnectionHoldHistogram' + datasourceId + '">&nbsp;</td><td>The histogram values of connectionHold</td></tr>';
+	listHtml += '<tr><td class="td_lable">ConnectionHoldTimeHistogram</td><td id="DS-Info-ConnectionHoldTimeHistogram' + datasourceId + '">&nbsp;</td><td>The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">ActiveConnection StackTrace</td><td id="DS-Info-ActiveConnectionStackTrace' + datasourceId + '">&nbsp;</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
 			+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';

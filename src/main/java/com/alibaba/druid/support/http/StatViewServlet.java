@@ -402,9 +402,9 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("PSCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
 
         dataMap.put("StartTransactionCount", dataSource.getStartTransactionCount());
-        dataMap.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
+        dataMap.put("TransactionHistogram", dataSource.getTransactionHistogramValues());
 
-        dataMap.put("ConnectionHoldHistogram", dataSource.getDataSourceStat().getConnectionHoldHistogram().toArray());
+        dataMap.put("ConnectionHoldTimeHistogram", dataSource.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", dataSource.isRemoveAbandoned());
 
         return dataMap;
