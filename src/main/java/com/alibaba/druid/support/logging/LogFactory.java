@@ -45,7 +45,7 @@ public class LogFactory {
     public static synchronized void selectLog4JLogging() {
         try {
             Resources.classForName("org.apache.log4j.Logger");
-            Class implClass = Resources.classForName("com.ibatis.common.logging.log4j.Log4jImpl");
+            Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Log4jImpl");
             logConstructor = implClass.getConstructor(new Class[] { Class.class });
         } catch (Throwable t) {
         }
@@ -61,7 +61,7 @@ public class LogFactory {
     public static synchronized void selectJavaLogging() {
         try {
             Resources.classForName("java.util.logging.Logger");
-            Class implClass = Resources.classForName("com.ibatis.common.logging.jdk14.Jdk14LoggingImpl");
+            Class implClass = Resources.classForName("com.alibaba.druid.support.logging.Jdk14LoggingImpl");
             logConstructor = implClass.getConstructor(new Class[] { Class.class });
         } catch (Throwable t) {
         }
