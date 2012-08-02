@@ -177,6 +177,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
         oracleSetRowPrefetch();
 
+        conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery();
 
@@ -186,6 +187,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             return poolableResultSet;
         } catch (Throwable t) {
             throw checkException(t);
+        } finally {
+            conn.afterExecute();
         }
     }
 
@@ -196,10 +199,13 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         incrementExecuteCount();
         transactionRecord(sql);
 
+        conn.beforeExecute();
         try {
             return stmt.executeUpdate();
         } catch (Throwable t) {
             throw checkException(t);
+        } finally {
+            conn.afterExecute();
         }
     }
 
@@ -433,10 +439,13 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
         // oracleSetRowPrefetch();
 
+        conn.beforeExecute();
         try {
             return stmt.execute();
         } catch (Throwable t) {
             throw checkException(t);
+        } finally {
+            conn.afterExecute();
         }
     }
 
@@ -494,10 +503,13 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         incrementExecuteCount();
         transactionRecord(sql);
 
+        conn.beforeExecute();
         try {
             return super.executeBatch();
         } catch (Throwable t) {
             throw checkException(t);
+        } finally {
+            conn.afterExecute();
         }
     }
 

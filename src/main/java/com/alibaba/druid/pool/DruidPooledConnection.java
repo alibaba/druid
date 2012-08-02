@@ -54,18 +54,19 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidPooledConnection implements javax.sql.PooledConnection, Connection {
 
-    private final static Log      LOG             = LogFactory.getLog(DruidPooledConnection.class);
+    private final static Log   LOG         = LogFactory.getLog(DruidPooledConnection.class);
 
-    protected Connection          conn;
-    protected ConnectionHolder    holder;
-    protected TransactionInfo     transactionInfo;
-    private final boolean         dupCloseLogEnable;
-    private boolean               traceEnable     = false;
-    private boolean               diable          = false;
-    private boolean               closed          = false;
-    private final Thread          ownerThread;
+    protected Connection       conn;
+    protected ConnectionHolder holder;
+    protected TransactionInfo  transactionInfo;
+    private final boolean      dupCloseLogEnable;
+    private boolean            traceEnable = false;
+    private boolean            diable      = false;
+    private boolean            closed      = false;
+    private final Thread       ownerThread;
 
-    private long                  connectedTimeNano;
+    private long               connectedTimeNano;
+    private volatile boolean   running     = false;
 
     public DruidPooledConnection(ConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -180,7 +181,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
             return;
         }
-        
+
         for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
             listener.connectionClosed(new ConnectionEvent(this));
         }
@@ -1003,4 +1004,17 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     public int getNetworkTimeout() throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
+
+    final void beforeExecute() {
+        running = true;
+    }
+
+    final void afterExecute() {
+        running = false;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
 }
