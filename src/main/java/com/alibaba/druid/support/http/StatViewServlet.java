@@ -404,6 +404,7 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("StartTransactionCount", dataSource.getStartTransactionCount());
         dataMap.put("TransactionHistogramValues", dataSource.getTransactionHistogramValues());
 
+        dataMap.put("ConnectionHoldHistogram", dataSource.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", dataSource.isRemoveAbandoned());
 
         return dataMap;

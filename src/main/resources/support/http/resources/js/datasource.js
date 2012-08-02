@@ -46,8 +46,9 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-PSCacheAccessCount" + datasource.Identity, datasource.PSCacheAccessCount);
 	changeInnerHtml("DS-Info-PSCacheHitCount" + datasource.Identity, datasource.PSCacheHitCount);
 	changeInnerHtml("DS-Info-PSCacheMissCount" + datasource.Identity, datasource.PSCacheMissCount);
-	changeInnerHtml("DS-Info-PSCacheMissCount" + datasource.Identity, datasource.PSCacheMissCount);
 
+	changeInnerHtml("DS-Info-ConnectionHoldHistogram" + datasource.Identity, '[' + datasource.ConnectionHoldHistogram + ']');
+	
 	if (datasource.RemoveAbandoned == true)
 		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, '<a href="activeConnectionStackTrace-' + datasource.Identity + '.html">View</a>');
 	else
@@ -100,6 +101,8 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement access count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement hit count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheMissCount</td><td id="DS-Info-PSCacheMissCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement miss count</td></tr>';
+	
+	listHtml += '<tr><td class="td_lable">ConnectionHoldHistogram</td><td id="DS-Info-ConnectionHoldHistogram' + datasourceId + '">&nbsp;</td><td>The histogram values of connectionHold</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">ActiveConnection StackTrace</td><td id="DS-Info-ActiveConnectionStackTrace' + datasourceId + '">&nbsp;</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
 			+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
