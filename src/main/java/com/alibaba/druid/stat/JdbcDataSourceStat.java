@@ -63,8 +63,6 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
                                                                                                         //
                                                                                                         });
 
-    // private final ConcurrentMap<String, JdbcSqlStat> sqlStatMap = new ConcurrentHashMap<String, JdbcSqlStat>();
-
     private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
     public JdbcDataSourceStat(String name, String url){
@@ -124,7 +122,6 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
         for (JdbcConnectionStat.Entry connectionStat : connections.values()) {
             connectionStat.reset();
         }
-        // connections.clear();
     }
 
     public Histogram getConnectionHoldHistogram() {
