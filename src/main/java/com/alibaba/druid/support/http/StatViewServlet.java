@@ -74,7 +74,7 @@ public class StatViewServlet extends HttpServlet {
 
         String path = requestURI.substring(contextPath.length() + servletPath.length());
 
-        if (path.length() == 0) {
+        if (path.length() == 0 || "/".equals(path)) {
             returnResourceFile("/index.html", response);
             return;
         }
@@ -385,7 +385,7 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("InitialSize", dataSource.getInitialSize());
         dataMap.put("MinIdle", dataSource.getMinIdle());
         dataMap.put("MaxActive", dataSource.getMaxActive());
-        
+
         dataMap.put("QueryTimeout", dataSource.getQueryTimeout());
         dataMap.put("TransactionQueryTimeout", dataSource.getTransactionQueryTimeout());
         dataMap.put("LoginTimeout", dataSource.getLoginTimeout());
@@ -395,7 +395,7 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("TestOnBorrow", dataSource.isTestOnBorrow());
         dataMap.put("TestOnReturn", dataSource.isTestOnReturn());
         dataMap.put("TestWhileIdle", dataSource.isTestWhileIdle());
-        
+
         dataMap.put("DefaultAutoCommit", dataSource.isDefaultAutoCommit());
         dataMap.put("DefaultReadOnly", dataSource.isDefaultAutoCommit());
         dataMap.put("DefaultTransactionIsolation", dataSource.getDefaultTransactionIsolation());
@@ -407,7 +407,7 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("PhysicalConnectCount", dataSource.getCreateCount());
         dataMap.put("PhysicalCloseCount", dataSource.getDestroyCount());
         dataMap.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
-        
+
         dataMap.put("ExecuteCount", dataSource.getExecuteCount());
         dataMap.put("ErrorCount", dataSource.getErrorCount());
         dataMap.put("CommitCount", dataSource.getCommitCount());
