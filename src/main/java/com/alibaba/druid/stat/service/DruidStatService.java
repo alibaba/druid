@@ -2,7 +2,9 @@ package com.alibaba.druid.stat.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -68,27 +70,24 @@ public class DruidStatService {
 
             Collection<JdbcSqlStat> sqlStats = dataSource.getDataSourceStat().getSqlStatMap().values();
 
-            List<SqlInfo> sqlStatInfoList = new ArrayList<SqlInfo>(sqlStats.size());
+            Map<String, SqlInfo> sqlStatInfoMap = new HashMap<String, SqlInfo>(sqlStats.size());
             for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {
-                SqlInfo sqlStatInfo = new SqlInfo();
 
                 if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
                     continue;
                 }
-
-                sqlStatInfo.setSql(sqlStat.getSql());
-                sqlStatInfo.setExecuteCount((int) sqlStat.getExecuteCount());
-                sqlStatInfo.setRunningCount((int) sqlStat.getRunningCount());
-                sqlStatInfo.setConcurrentMax((int) sqlStat.getConcurrentMax());
-                sqlStatInfo.setErrorCount((int) sqlStat.getErrorCount());
-                sqlStatInfo.setInTransactionCount((int) sqlStat.getInTransactionCount());
-                sqlStatInfo.setFetchRowCount(sqlStat.getFetchRowCount());
-                sqlStatInfo.setUpdateCount(sqlStat.getUpdateCount());
-
-                sqlStatInfoList.add(sqlStatInfo);
+                
+                SqlInfo sqlStatInfo = DruidStatServiceUtils.createSqlInfo(sqlStat);
+                
+                SqlInfo oldsqlStatInfo = sqlStatInfoMap.get(sqlStatInfo.getSql());
+                if (oldsqlStatInfo != null) {
+                    oldsqlStatInfo.merge(sqlStatInfo);
+                } else {
+                    sqlStatInfoMap.put(sqlStatInfo.getSql(), sqlStatInfo);
+                }
             }
 
-            dataSourceStat.setSqlList(sqlStatInfoList);
+            dataSourceStat.setSqlList(new ArrayList<SqlInfo>(sqlStatInfoMap.values()));
 
             dataSourceStatList.add(dataSourceStat);
         }
