@@ -51,19 +51,31 @@ public class DruidStatService {
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             DataSourceInfo dataSourceStat = new DataSourceInfo();
 
+            dataSourceStat.setId(dataSource.getID());
             dataSourceStat.setUrl(dataSource.getUrl());
             dataSourceStat.setDbType(dataSource.getDbType());
 
+            dataSourceStat.setActiveCount(dataSource.getActiveCount());
+            dataSourceStat.setActivePeak(dataSource.getActivePeak());
+            dataSourceStat.setCloseCount((int) dataSource.getCloseCount());
+            dataSourceStat.setConnectCount((int) dataSource.getConnectCount());
+            dataSourceStat.setConnectErrorCount((int) dataSource.getConnectErrorCount());
+            dataSourceStat.setCreateCount((int) dataSource.getCreateCount());
+            dataSourceStat.setCreateErrorCount((int) dataSource.getCreateErrorCount());
+            dataSourceStat.setDestoryCount((int) dataSource.getDestroyCount());
+            dataSourceStat.setExecuteCount((int) dataSource.getExecuteCount());
+            dataSourceStat.setPoolingCount(dataSource.getPoolingCount());
+
             Collection<JdbcSqlStat> sqlStats = dataSource.getDataSourceStat().getSqlStatMap().values();
-            
+
             List<SqlInfo> sqlStatInfoList = new ArrayList<SqlInfo>(sqlStats.size());
             for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {
                 SqlInfo sqlStatInfo = new SqlInfo();
-                
+
                 if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
                     continue;
                 }
-                
+
                 sqlStatInfo.setSql(sqlStat.getSql());
                 sqlStatInfo.setExecuteCount((int) sqlStat.getExecuteCount());
                 sqlStatInfo.setRunningCount((int) sqlStat.getRunningCount());
@@ -72,12 +84,12 @@ public class DruidStatService {
                 sqlStatInfo.setInTransactionCount((int) sqlStat.getInTransactionCount());
                 sqlStatInfo.setFetchRowCount(sqlStat.getFetchRowCount());
                 sqlStatInfo.setUpdateCount(sqlStat.getUpdateCount());
-                
+
                 sqlStatInfoList.add(sqlStatInfo);
             }
-            
+
             dataSourceStat.setSqlList(sqlStatInfoList);
-            
+
             dataSourceStatList.add(dataSourceStat);
         }
 
