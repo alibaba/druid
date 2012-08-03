@@ -6,7 +6,7 @@ public class SqlInfo {
     private int    executeCount;
     private int    runningCount;
     private int    concurrentMax;
-    private int    executeErrorCount;
+    private int    errorCount;
     private int    inTransactionCount;
 
     private long   fetchRowCount;
@@ -48,12 +48,12 @@ public class SqlInfo {
         this.concurrentMax = concurrentMax;
     }
 
-    public int getExecuteErrorCount() {
-        return executeErrorCount;
+    public int getErrorCount() {
+        return errorCount;
     }
 
-    public void setExecuteErrorCount(int executeErrorCount) {
-        this.executeErrorCount = executeErrorCount;
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
     }
 
     public int getInTransactionCount() {

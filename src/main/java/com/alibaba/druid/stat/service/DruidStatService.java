@@ -54,18 +54,31 @@ public class DruidStatService {
             dataSourceStat.setUrl(dataSource.getUrl());
             dataSourceStat.setDbType(dataSource.getDbType());
 
-            dataSourceStatList.add(dataSourceStat);
-            
             Collection<JdbcSqlStat> sqlStats = dataSource.getDataSourceStat().getSqlStatMap().values();
             
             List<SqlInfo> sqlStatInfoList = new ArrayList<SqlInfo>(sqlStats.size());
             for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {
                 SqlInfo sqlStatInfo = new SqlInfo();
                 
+                if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
+                    continue;
+                }
+                
                 sqlStatInfo.setSql(sqlStat.getSql());
+                sqlStatInfo.setExecuteCount((int) sqlStat.getExecuteCount());
+                sqlStatInfo.setRunningCount((int) sqlStat.getRunningCount());
+                sqlStatInfo.setConcurrentMax((int) sqlStat.getConcurrentMax());
+                sqlStatInfo.setErrorCount((int) sqlStat.getErrorCount());
+                sqlStatInfo.setInTransactionCount((int) sqlStat.getInTransactionCount());
+                sqlStatInfo.setFetchRowCount(sqlStat.getFetchRowCount());
+                sqlStatInfo.setUpdateCount(sqlStat.getUpdateCount());
                 
                 sqlStatInfoList.add(sqlStatInfo);
             }
+            
+            dataSourceStat.setSqlList(sqlStatInfoList);
+            
+            dataSourceStatList.add(dataSourceStat);
         }
 
         store.saveDataSource(timeMillis, dataSourceStatList);
