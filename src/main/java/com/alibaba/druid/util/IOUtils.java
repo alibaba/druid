@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 
 public class IOUtils {
@@ -13,7 +14,12 @@ public class IOUtils {
     public final static int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     public static String read(InputStream in) {
-        InputStreamReader reader = new InputStreamReader(in);
+        InputStreamReader reader;
+        try {
+            reader = new InputStreamReader(in, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
         return read(reader);
     }
     
