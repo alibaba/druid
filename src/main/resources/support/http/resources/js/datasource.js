@@ -24,6 +24,10 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-QueryTimeout" + datasource.Identity, datasource.QueryTimeout);
 	changeInnerHtml("DS-Info-ValidConnectionCheckerClassName" + datasource.Identity, datasource.ValidConnectionCheckerClassName);
 	changeInnerHtml("DS-Info-ExceptionSorterClassName" + datasource.Identity, datasource.ExceptionSorterClassName);
+	
+	changeInnerHtml("DS-Info-DefaultAutoCommit" + datasource.Identity, datasource.DefaultAutoCommit);
+	changeInnerHtml("DS-Info-DefaultReadOnly" + datasource.Identity, datasource.DefaultReadOnly);
+	changeInnerHtml("DS-Info-DefaultTransactionIsolation" + datasource.Identity, datasource.DefaultTransactionIsolation);
 
 	changeInnerHtml("DS-Info-NotEmptyWaitCount" + datasource.Identity, datasource.NotEmptyWaitCount);
 	changeInnerHtml("DS-Info-NotEmptyWaitMillis" + datasource.Identity, datasource.NotEmptyWaitMillis);
@@ -84,6 +88,10 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">* QueryTimeout</td><td id="DS-Info-QueryTimeout' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">* ValidConnectionCheckerClassName</td><td id="DS-Info-ValidConnectionCheckerClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">* ExceptionSorterClassName</td><td id="DS-Info-ExceptionSorterClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	
+	listHtml += '<tr><td class="td_lable">* DefaultAutoCommit</td><td id="DS-Info-DefaultAutoCommit' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* DefaultReadOnly</td><td id="DS-Info-DefaultReadOnly' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* DefaultTransactionIsolation</td><td id="DS-Info-DefaultTransactionIsolation' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitCount</td><td id="DS-Info-NotEmptyWaitCount' + datasourceId + '">&nbsp;</td><td>Total times for wait to get a connection</td></tr>';
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitMillis</td><td id="DS-Info-NotEmptyWaitMillis' + datasourceId + '">&nbsp;</td><td>Total millins for wait to get a connection</td></tr>';
