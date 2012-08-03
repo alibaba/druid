@@ -13,6 +13,7 @@ import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -147,6 +148,8 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         } else if (x instanceof SQLDeleteStatement) {
 
         } else if (x instanceof SQLUpdateStatement) {
+        } else if (x instanceof SQLCallStatement) {
+            
         } else if (x instanceof SQLTruncateStatement) {
             if (!config.isTruncateAllow()) {
                 violations.add(new IllegalSQLObjectViolation(toSQL(x)));

@@ -11,6 +11,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             noneBaseStatementAllow     = false;
 
+    private boolean             callAllow                  = true;
     private boolean             selelctAllow               = true;
     private boolean             selectIntoAllow            = true;
     private boolean             selectIntoOutfileAllow     = false;
@@ -319,4 +320,13 @@ public class WallConfig implements WallConfigMBean {
         name = WallVisitorUtils.form(name);
         return this.permitFunctions.contains(name);
     }
+
+    public boolean isCallAllow() {
+        return callAllow;
+    }
+
+    public void setCallAllow(boolean callAllow) {
+        this.callAllow = callAllow;
+    }
+
 }

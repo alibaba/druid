@@ -12,6 +12,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -167,6 +168,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         } else if (x instanceof SQLUpdateStatement) {
         } else if (x instanceof OracleMultiInsertStatement) {
         } else if (x instanceof OracleMergeStatement) {
+        } else if (x instanceof SQLCallStatement) {
         } else if (x instanceof SQLTruncateStatement) {
             if (!config.isTruncateAllow()) {
                 violations.add(new IllegalSQLObjectViolation(toSQL(x)));
