@@ -55,6 +55,7 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-PhysicalConnectErrorCount" + datasource.Identity, datasource.PhysicalConnectErrorCount);
 	
 	changeInnerHtml("DS-Info-ExecuteCount" + datasource.Identity, datasource.ExecuteCount);
+	changeInnerHtml("DS-Info-ErrorCount" + datasource.Identity, datasource.ErrorCount);
 	changeInnerHtml("DS-Info-CommitCount" + datasource.Identity, datasource.CommitCount);
 	changeInnerHtml("DS-Info-RollbackCount" + datasource.Identity, datasource.RollbackCount);
 
@@ -125,6 +126,7 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td><td>Total physical connect error times</td></tr>';
 	
 	listHtml += '<tr><td class="td_lable">ExecuteCount</td><td id="DS-Info-ExecuteCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">ErrorCount</td><td id="DS-Info-ErrorCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">CommitCount</td><td id="DS-Info-CommitCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">RollbackCount</td><td id="DS-Info-RollbackCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 

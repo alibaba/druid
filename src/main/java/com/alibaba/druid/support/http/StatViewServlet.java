@@ -409,6 +409,7 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
         
         dataMap.put("ExecuteCount", dataSource.getExecuteCount());
+        dataMap.put("ErrorCount", dataSource.getErrorCount());
         dataMap.put("CommitCount", dataSource.getCommitCount());
         dataMap.put("RollbackCount", dataSource.getRollbackCount());
 
