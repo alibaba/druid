@@ -387,6 +387,8 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("MaxActive", dataSource.getMaxActive());
         
         dataMap.put("QueryTimeout", dataSource.getQueryTimeout());
+        dataMap.put("TransactionQueryTimeout", dataSource.getTransactionQueryTimeout());
+        dataMap.put("LoginTimeout", dataSource.getLoginTimeout());
         dataMap.put("ValidConnectionCheckerClassName", dataSource.getValidConnectionCheckerClassName());
         dataMap.put("ExceptionSorterClassName", dataSource.getExceptionSorterClassName());
 
@@ -405,6 +407,10 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("PhysicalConnectCount", dataSource.getCreateCount());
         dataMap.put("PhysicalCloseCount", dataSource.getDestroyCount());
         dataMap.put("PhysicalConnectErrorCount", dataSource.getCreateErrorCount());
+        
+        dataMap.put("ExecuteCount", dataSource.getExecuteCount());
+        dataMap.put("CommitCount", dataSource.getCommitCount());
+        dataMap.put("RollbackCount", dataSource.getRollbackCount());
 
         dataMap.put("PSCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
         dataMap.put("PSCacheHitCount", dataSource.getCachedPreparedStatementHitCount());

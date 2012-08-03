@@ -22,6 +22,8 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-MaxActive" + datasource.Identity, datasource.MaxActive);
 	
 	changeInnerHtml("DS-Info-QueryTimeout" + datasource.Identity, datasource.QueryTimeout);
+	changeInnerHtml("DS-Info-TransactionQueryTimeout" + datasource.Identity, datasource.TransactionQueryTimeout);
+	changeInnerHtml("DS-Info-LoginTimeout" + datasource.Identity, datasource.LoginTimeout);
 	changeInnerHtml("DS-Info-ValidConnectionCheckerClassName" + datasource.Identity, datasource.ValidConnectionCheckerClassName);
 	changeInnerHtml("DS-Info-ExceptionSorterClassName" + datasource.Identity, datasource.ExceptionSorterClassName);
 	
@@ -51,6 +53,10 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-PhysicalConnectCount" + datasource.Identity, datasource.PhysicalConnectCount);
 	changeInnerHtml("DS-Info-PhysicalCloseCount" + datasource.Identity, datasource.PhysicalCloseCount);
 	changeInnerHtml("DS-Info-PhysicalConnectErrorCount" + datasource.Identity, datasource.PhysicalConnectErrorCount);
+	
+	changeInnerHtml("DS-Info-ExecuteCount" + datasource.Identity, datasource.ExecuteCount);
+	changeInnerHtml("DS-Info-CommitCount" + datasource.Identity, datasource.CommitCount);
+	changeInnerHtml("DS-Info-RollbackCount" + datasource.Identity, datasource.RollbackCount);
 
 	changeInnerHtml("DS-Info-PSCacheAccessCount" + datasource.Identity, datasource.PSCacheAccessCount);
 	changeInnerHtml("DS-Info-PSCacheHitCount" + datasource.Identity, datasource.PSCacheHitCount);
@@ -86,6 +92,8 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">* MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td><td>The maximum number of connections for a pool</td></tr>';
 	
 	listHtml += '<tr><td class="td_lable">* QueryTimeout</td><td id="DS-Info-QueryTimeout' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* TransactionQueryTimeout</td><td id="DS-Info-TransactionQueryTimeout' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* LoginTimeout</td><td id="DS-Info-LoginTimeout' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">* ValidConnectionCheckerClassName</td><td id="DS-Info-ValidConnectionCheckerClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	listHtml += '<tr><td class="td_lable">* ExceptionSorterClassName</td><td id="DS-Info-ExceptionSorterClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 	
@@ -115,6 +123,10 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">PhysicalConnectCount</td><td id="DS-Info-PhysicalConnectCount' + datasourceId + '">&nbsp;</td><td>Create physical connnection count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PhysicalCloseCount</td><td id="DS-Info-PhysicalCloseCount' + datasourceId + '">&nbsp;</td><td>Close physical connnection count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PhysicalConnectErrorCount</td><td id="DS-Info-PhysicalConnectErrorCount' + datasourceId + '">&nbsp;</td><td>Total physical connect error times</td></tr>';
+	
+	listHtml += '<tr><td class="td_lable">ExecuteCount</td><td id="DS-Info-ExecuteCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">CommitCount</td><td id="DS-Info-CommitCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">RollbackCount</td><td id="DS-Info-RollbackCount' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 
 	listHtml += '<tr><td class="td_lable">PSCacheAccessCount</td><td id="DS-Info-PSCacheAccessCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement access count</td></tr>';
 	listHtml += '<tr><td class="td_lable">PSCacheHitCount</td><td id="DS-Info-PSCacheHitCount' + datasourceId + '">&nbsp;</td><td>PerpareStatement hit count</td></tr>';
