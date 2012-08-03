@@ -44,6 +44,9 @@ function getRequestObject(){
 
 
 function ajaxRequestForReset() {
+	if(!confirm("Are you sure to reset all stat? It'll clear all stat data !")){
+		return;
+	}
 	xmlHttpForReset =  getRequestObject();
 	sendRequest(xmlHttpForReset,'reset-all.json',ajaxResponseForReset)
 }
