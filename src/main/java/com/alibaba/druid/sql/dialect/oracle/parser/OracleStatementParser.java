@@ -198,7 +198,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 continue;
             }
 
-            if (identifierEquals("CALL")) {
+            if (lexer.token() == Token.LBRACE || identifierEquals("CALL")) {
                 statementList.add(this.parseCall());
                 continue;
             }
