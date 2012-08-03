@@ -993,6 +993,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public ExceptionSorter getExceptionSorter() {
         return exceptionSorter;
     }
+    
+    public String getExceptionSorterClassName() {
+        if (exceptionSorter == null) {
+            return null;
+        }
+        
+        return exceptionSorter.getClass().getName();
+    }
 
     public void setExceptionSorter(ExceptionSorter exceptionSoter) {
         this.exceptionSorter = exceptionSoter;

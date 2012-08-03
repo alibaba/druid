@@ -385,9 +385,18 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("InitialSize", dataSource.getInitialSize());
         dataMap.put("MinIdle", dataSource.getMinIdle());
         dataMap.put("MaxActive", dataSource.getMaxActive());
+        
+        dataMap.put("QueryTimeout", dataSource.getQueryTimeout());
+        dataMap.put("ValidConnectionCheckerClassName", dataSource.getValidConnectionCheckerClassName());
+        dataMap.put("ExceptionSorterClassName", dataSource.getExceptionSorterClassName());
 
         dataMap.put("TestOnBorrow", dataSource.isTestOnBorrow());
+        dataMap.put("TestOnReturn", dataSource.isTestOnReturn());
         dataMap.put("TestWhileIdle", dataSource.isTestWhileIdle());
+        
+        dataMap.put("DefaultAutoCommit", dataSource.isDefaultAutoCommit());
+        dataMap.put("DefaultReadOnly", dataSource.isDefaultAutoCommit());
+        dataMap.put("DefaultTransactionIsolation", dataSource.getDefaultTransactionIsolation());
 
         dataMap.put("LogicConnectCount", dataSource.getConnectCount());
         dataMap.put("LogicCloseCount", dataSource.getCloseCount());
@@ -404,7 +413,8 @@ public class StatViewServlet extends HttpServlet {
         dataMap.put("StartTransactionCount", dataSource.getStartTransactionCount());
         dataMap.put("TransactionHistogram", dataSource.getTransactionHistogramValues());
 
-        dataMap.put("ConnectionHoldTimeHistogram", dataSource.getDataSourceStat().getConnectionHoldHistogram().toArray());
+        dataMap.put("ConnectionHoldTimeHistogram",
+                    dataSource.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", dataSource.isRemoveAbandoned());
 
         return dataMap;

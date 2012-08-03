@@ -15,10 +15,15 @@ function fillDataSourceInfo(datasource) {
 
 	changeInnerHtml("DS-Info-TestOnBorrow" + datasource.Identity, datasource.TestOnBorrow);
 	changeInnerHtml("DS-Info-TestWhileIdle" + datasource.Identity, datasource.TestWhileIdle);
+	changeInnerHtml("DS-Info-TestOnReturn" + datasource.Identity, datasource.TestOnReturn);
 
 	changeInnerHtml("DS-Info-InitialSize" + datasource.Identity, datasource.InitialSize);
 	changeInnerHtml("DS-Info-MinIdle" + datasource.Identity, datasource.MinIdle);
 	changeInnerHtml("DS-Info-MaxActive" + datasource.Identity, datasource.MaxActive);
+	
+	changeInnerHtml("DS-Info-QueryTimeout" + datasource.Identity, datasource.QueryTimeout);
+	changeInnerHtml("DS-Info-ValidConnectionCheckerClassName" + datasource.Identity, datasource.ValidConnectionCheckerClassName);
+	changeInnerHtml("DS-Info-ExceptionSorterClassName" + datasource.Identity, datasource.ExceptionSorterClassName);
 
 	changeInnerHtml("DS-Info-NotEmptyWaitCount" + datasource.Identity, datasource.NotEmptyWaitCount);
 	changeInnerHtml("DS-Info-NotEmptyWaitMillis" + datasource.Identity, datasource.NotEmptyWaitMillis);
@@ -69,11 +74,16 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">* FilterClassNames</td><td id="DS-Info-FilterClassNames' + datasourceId + '">&nbsp;</td><td>All the fully qualifed name of the filter classes</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">* TestOnBorrow</td><td id="DS-Info-TestOnBorrow' + datasourceId + '">&nbsp;</td><td>Test or not when borrow a connection</td></tr>';
+	listHtml += '<tr><td class="td_lable">* TestOnReturn</td><td id="DS-Info-TestOnReturn' + datasourceId + '">&nbsp;</td><td>Test or not when return a connection</td></tr>';
 	listHtml += '<tr><td class="td_lable">* TestWhileIdle</td><td id="DS-Info-TestWhileIdle' + datasourceId + '">&nbsp;</td><td>Test or not when a connection is idle for a while</td></tr>';
 
 	listHtml += '<tr><td class="td_lable">* InitialSize</td><td id="DS-Info-InitialSize' + datasourceId + '">&nbsp;</td><td>The size of datasource connections to create when initial a datasource</td></tr>';
 	listHtml += '<tr><td class="td_lable">* MinIdle</td><td id="DS-Info-MinIdle' + datasourceId + '">&nbsp;</td><td>The minimum number of connections a pool should hold. </td></tr>';
 	listHtml += '<tr><td class="td_lable">* MaxActive</td><td id="DS-Info-MaxActive' + datasourceId + '">&nbsp;</td><td>The maximum number of connections for a pool</td></tr>';
+	
+	listHtml += '<tr><td class="td_lable">* QueryTimeout</td><td id="DS-Info-QueryTimeout' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* ValidConnectionCheckerClassName</td><td id="DS-Info-ValidConnectionCheckerClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
+	listHtml += '<tr><td class="td_lable">* ExceptionSorterClassName</td><td id="DS-Info-ExceptionSorterClassName' + datasourceId + '">&nbsp;</td><td> </td></tr>';
 
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitCount</td><td id="DS-Info-NotEmptyWaitCount' + datasourceId + '">&nbsp;</td><td>Total times for wait to get a connection</td></tr>';
 	listHtml += '<tr><td class="td_lable">NotEmptyWaitMillis</td><td id="DS-Info-NotEmptyWaitMillis' + datasourceId + '">&nbsp;</td><td>Total millins for wait to get a connection</td></tr>';

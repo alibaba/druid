@@ -154,4 +154,6 @@ public interface DruidAbstractDataSourceMBean {
     int getDriverMajorVersion();
     
     int getDriverMinorVersion();
+    
+    String getExceptionSorterClassName();
 }
