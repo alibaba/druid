@@ -27,6 +27,14 @@ public class DruidStatService {
 
     private DruidStatStore           store;
 
+    public int getCollectPeriodSeconds() {
+        return collectPeriodSeconds;
+    }
+
+    public void setCollectPeriodSeconds(int collectPeriodSeconds) {
+        this.collectPeriodSeconds = collectPeriodSeconds;
+    }
+
     public synchronized void start() {
         if (store != null) {
             store = new DruidStatMemoryStore();
@@ -47,11 +55,11 @@ public class DruidStatService {
     }
 
     public void collect() {
-        final long timeMillis = System.currentTimeMillis();
-
         List<DataSourceInfo> dataSourceStatList = new ArrayList<DataSourceInfo>();
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             DataSourceInfo dataSourceStat = new DataSourceInfo();
+
+            dataSourceStat.setCollectTimeMillis(System.currentTimeMillis());
 
             dataSourceStat.setId(dataSource.getID());
             dataSourceStat.setUrl(dataSource.getUrl());
@@ -67,6 +75,8 @@ public class DruidStatService {
             dataSourceStat.setDestoryCount((int) dataSource.getDestroyCount());
             dataSourceStat.setExecuteCount((int) dataSource.getExecuteCount());
             dataSourceStat.setPoolingCount(dataSource.getPoolingCount());
+            dataSourceStat.setConnectionHoldHistogram(dataSource.getDataSourceStat().getConnectionHistogramValues());
+            dataSourceStat.setTransactionHistogram(dataSource.getTransactionHistogramValues());
 
             Collection<JdbcSqlStat> sqlStats = dataSource.getDataSourceStat().getSqlStatMap().values();
 
@@ -76,9 +86,9 @@ public class DruidStatService {
                 if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
                     continue;
                 }
-                
+
                 SqlInfo sqlStatInfo = DruidStatServiceUtils.createSqlInfo(sqlStat);
-                
+
                 SqlInfo oldsqlStatInfo = sqlStatInfoMap.get(sqlStatInfo.getSql());
                 if (oldsqlStatInfo != null) {
                     oldsqlStatInfo.merge(sqlStatInfo);
@@ -92,7 +102,7 @@ public class DruidStatService {
             dataSourceStatList.add(dataSourceStat);
         }
 
-        store.saveDataSource(timeMillis, dataSourceStatList);
+        store.saveDataSource(dataSourceStatList);
     }
 
     private final class CollectTask implements Runnable {

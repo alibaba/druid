@@ -24,6 +24,12 @@ public class DataSourceInfo {
     private int           closeCount;
     private int           destoryCount;
 
+    private long          collectTimeMillis;
+
+    private int[]         transactionHistogram;
+
+    private int[]         connectionHoldHistogram;
+
     private List<SqlInfo> sqlList;
 
     public String getDbType() {
@@ -56,6 +62,36 @@ public class DataSourceInfo {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public int[] getTransactionHistogram() {
+        return transactionHistogram;
+    }
+
+    public void setTransactionHistogram(long[] values) {
+        this.transactionHistogram = new int[values.length];
+        for (int i = 0; i < values.length; ++i) {
+            transactionHistogram[i] = (int) values[i];
+        }
+    }
+
+    public void setTransactionHistogram(int[] values) {
+        this.transactionHistogram = values;
+    }
+
+    public int[] getConnectionHoldHistogram() {
+        return connectionHoldHistogram;
+    }
+
+    public void setConnectionHoldHistogram(int[] values) {
+        this.connectionHoldHistogram = values;
+    }
+
+    public void setConnectionHoldHistogram(long[] values) {
+        this.connectionHoldHistogram = new int[values.length];
+        for (int i = 0; i < values.length; ++i) {
+            connectionHoldHistogram[i] = (int) values[i];
+        }
     }
 
     public int getActiveCount() {
@@ -136,6 +172,14 @@ public class DataSourceInfo {
 
     public void setDestoryCount(int destoryCount) {
         this.destoryCount = destoryCount;
+    }
+
+    public long getCollectTimeMillis() {
+        return collectTimeMillis;
+    }
+
+    public void setCollectTimeMillis(long collectTimeMillis) {
+        this.collectTimeMillis = collectTimeMillis;
     }
 
 }

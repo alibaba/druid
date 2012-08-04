@@ -6,5 +6,5 @@ import com.alibaba.druid.stat.service.dto.DataSourceInfo;
 
 public interface DruidStatStore {
 
-    void saveDataSource(long timeMillis, List<DataSourceInfo> dataSourceList);
+    void saveDataSource(List<DataSourceInfo> dataSourceList);
 }
