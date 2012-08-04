@@ -339,6 +339,10 @@ public class StatViewServlet extends HttpServlet {
         List<Map<String, Object>> array = new ArrayList<Map<String, Object>>();
         for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
+                if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
+                    continue;
+                }
+                
                 array.add(getSqlStatData(sqlStat));
             }
         }

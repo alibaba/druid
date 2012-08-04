@@ -301,7 +301,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         for (DataSourceProxyImpl dataSource : DruidDriver.getProxyDataSources().values()) {
             Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
-                if (entry.getValue().getExecuteCount() == 0) {
+                if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
                     continue;
                 }
                 
@@ -314,7 +314,7 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
         for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
             Map<String, JdbcSqlStat> statMap = dataSource.getDataSourceStat().getSqlStatMap();
             for (Map.Entry<String, JdbcSqlStat> entry : statMap.entrySet()) {
-                if (entry.getValue().getExecuteCount() == 0) {
+                if (entry.getValue().getExecuteCount() == 0 && entry.getValue().getRunningCount() == 0) {
                     continue;
                 }
                 

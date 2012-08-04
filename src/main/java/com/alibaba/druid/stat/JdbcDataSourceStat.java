@@ -109,7 +109,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
             while (iter.hasNext()) {
                 Map.Entry<String, JdbcSqlStat> entry = iter.next();
                 JdbcSqlStat stat = entry.getValue();
-                if (stat.getExecuteCount() == 0) {
+                if (stat.getExecuteCount() == 0 && stat.getRunningCount() == 0) {
                     iter.remove();
                 } else {
                     stat.reset();
