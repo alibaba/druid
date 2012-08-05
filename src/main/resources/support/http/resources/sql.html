@@ -4,16 +4,58 @@
     	<title>Druid SqlStat</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+		<script src="js/jquery/1.7.2/jquery.min.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/sql.js" type="text/javascript" charset="utf8"></script>
-		<script >
-            function init(){
-				ajaxRequestForDataSourceSqlStatInfo();
-            	var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",2000);
-            }
+		<script type="text/javascript">
+		jQuery(document).ready(function() {
+			ajaxRequestForDataSourceSqlStat();
+		});
+		
+		jQuery(function() {
+			setInterval(ajaxRequestForDataSourceSqlStat, 2000);
+		});
+		
+		function ajaxRequestForDataSourceSqlStat() {
+			jQuery.ajax({
+				type : 'get',
+				datatype : 'json',
+				cache : false,
+				url : getSqlViewJsonUrl(),
+				success : function(data, textStatus, jqXHR) {
+					jQuery("#SqlStatTable tbody tr").remove();
+					jQuery.each(data.Content, function(i, sqlStat) {
+						jQuery('#SqlStatTable > tbody:last')
+							.append('<tr><td><a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a></td>'
+								+'<td>'+sqlStat.ExecuteCount+'</td>'
+								+'<td>'+sqlStat.TotalTime+'</td>'
+							 	+'<td>'+sqlStat.MaxTimespan+'</td>'
+								+'<td>'+sqlStat.InTransactionCount+'</td>'
+								+'<td>'+sqlStat.ErrorCount+'</td>'
+								+'<td>'+sqlStat.EffectedRowCount+'</td>'
+								+'<td>'+sqlStat.FetchRowCount+'</td>'
+								+'<td>'+sqlStat.RunningCount+'</td>'
+								+'<td>'+sqlStat.ConcurrentMax+'</td>'
+								+'<td>[' + sqlStat.Histogram + ']</td>'
+								+'<td>[' + sqlStat.FetchRowCountHistogram + ']</td>'
+								+'<td>[' + sqlStat.EffectedRowCountHistogram + ']</td>'
+								+'<td>[' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']</td></tr>');
+					});
+				},
+				beforeSend : function() {
+					//do nothing.
+				},
+				complete : function() {
+					//do nothing
+				},
+				error : function() {
+					//do nothing
+				}
+			});
+		};
         </script>
     </head>
-	<body onload="init()">
+	<body>
 		<br />
 		<div id="menu" >
 			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
@@ -71,11 +113,12 @@
 	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[7]');">-</a> ]
 	                    </th>
                     </tr>
-                </thead> 
+                </thead>
+                <tbody></tbody>
              </table>
         </div>
 		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
-		<script >
+		<script type="text/javascript">
             setOrderBy('SQL');
         </script>
 	</body>
