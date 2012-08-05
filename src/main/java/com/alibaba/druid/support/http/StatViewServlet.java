@@ -434,7 +434,7 @@ public class StatViewServlet extends HttpServlet {
     private void returnJSONResult(HttpServletRequest request, HttpServletResponse response, int resultCode,
                                   Object content) throws IOException {
         PrintWriter out = response.getWriter();
-        response.setContentType("text/json;charset=utf-8"); // set json context type
+        response.setContentType("application/json;charset=utf-8"); // set json context type
 
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("ResultCode", resultCode);
