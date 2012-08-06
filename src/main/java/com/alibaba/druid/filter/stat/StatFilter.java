@@ -60,7 +60,8 @@ import com.alibaba.druid.support.logging.LogFactory;
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private final static Log          LOG                        = LogFactory.getLog(StatFilter.class);
-
+    public final static String        ATTR_NAME_CONNECTION_STAT  = "stat.conn";
+    public final static String        ATTR_NAME_STATEMENT_STAT   = "stat.stmt";
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
     public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
@@ -561,9 +562,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         chain.resultSet_close(resultSet);
     }
-
-    public final static String ATTR_NAME_CONNECTION_STAT = "stat.conn";
-    public final static String ATTR_NAME_STATEMENT_STAT  = "stat.stmt";
 
     public JdbcConnectionStat.Entry getConnectionInfo(ConnectionProxy connection) {
         JdbcConnectionStat.Entry counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
