@@ -41,48 +41,27 @@ public class StatFilterResultSetMultiCloseTest extends TestCase {
 
         Assert.assertNull(sqlStat);
 
-        {
-            Connection conn = dataSource.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            rs.close();
+        Connection conn = dataSource.getConnection();
 
-            sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
-            Assert.assertNotNull(sqlStat);
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        rs.close();
 
-            Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
-            Assert.assertEquals("first failed", 1,
-                                histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
+        Assert.assertNotNull(sqlStat);
 
-            rs.close();
+        Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
+        Assert.assertEquals("first failed", 1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
 
-            Assert.assertEquals("second failed", 1,
-                                histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        rs.close();
 
-            stmt.close();
+        Assert.assertEquals("second failed", 1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
 
-            conn.close();
+        stmt.close();
 
-            Assert.assertEquals(1, histogram.getValue(1));
-        }
+        conn.close();
 
-        JdbcStatManager.getInstance().reset();
-
-        Assert.assertFalse(sqlStat.isRemoved());
-
-        JdbcStatManager.getInstance().reset();
-        Assert.assertTrue(sqlStat.isRemoved());
-
-        {
-            Connection conn = dataSource.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            rs.next();
-            rs.close();
-            conn.close();
-        }
-
-        Assert.assertNotSame(sqlStat, dataSource.getDataSourceStat().getSqlStat(sql));
+        Assert.assertEquals(1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
     }
 }
