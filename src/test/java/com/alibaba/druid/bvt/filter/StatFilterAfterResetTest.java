@@ -82,5 +82,15 @@ public class StatFilterAfterResetTest extends TestCase {
         }
 
         Assert.assertNotSame(sqlStat, dataSource.getDataSourceStat().getSqlStat(sql));
+        
+        {
+            Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
+            Assert.assertEquals(0, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        }
+        
+        sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
+        
+        Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
+        Assert.assertEquals(1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
     }
 }
