@@ -64,6 +64,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private String           lastSlowParameters;
 
+    private boolean          removed                           = false;
+
     private final Histogram  histogram                         = new Histogram(new long[] { //
                                                                                             //
             1, 10, 100, 1000, 10 * 1000, //
@@ -84,7 +86,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private final Histogram  updateCountHistogram              = new Histogram(new long[] { //
                                                                                1, 10, 100, 1000, 10 * 1000 });
 
-    public JdbcSqlStat(String sql) {
+    public JdbcSqlStat(String sql){
         this.sql = sql;
         this.id = DruidDriver.createSqlStatId();
     }
@@ -621,4 +623,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         executeAndResultHoldTimeHistogram.record((statementExecuteNano + resultHoldTimeNano) / 1000 / 1000);
         updateCountHistogram.record(0);
     }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
+    }
+
 }

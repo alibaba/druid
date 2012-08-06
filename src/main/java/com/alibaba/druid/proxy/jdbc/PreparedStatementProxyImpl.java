@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
+import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -464,5 +465,14 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         }
 
         return super.unwrap(iface);
+    }
+    
+    public JdbcSqlStat getSqlStat() {
+        if (sqlStat.isRemoved()) {
+            JdbcSqlStat sqlStat = this.getConnectionProxy().getDirectDataSource().getDataSourceStat().getSqlStat(sql);
+            sqlStat.setDbType(this.sqlStat.getDbType());
+            this.sqlStat = sqlStat;
+        }
+        return sqlStat;
     }
 }
