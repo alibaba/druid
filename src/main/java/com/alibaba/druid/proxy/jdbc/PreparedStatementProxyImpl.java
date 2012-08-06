@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
-import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
