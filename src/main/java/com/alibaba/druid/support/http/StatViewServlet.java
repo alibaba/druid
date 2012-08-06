@@ -22,9 +22,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
@@ -50,6 +49,8 @@ public class StatViewServlet extends HttpServlet {
     private final static String TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
 
     private static final String DEFAULT_ORDER_TYPE          = "asc";
+    
+    private static DruidStatManagerFacade druidStatManager=DruidStatManagerFacade.getInstance();
 
     public String               templatePage;
 
@@ -251,8 +252,7 @@ public class StatViewServlet extends HttpServlet {
     }
 
     private void resetAllStat() {
-        JdbcStatManager.getInstance().reset();
-        DruidDataSourceStatManager.getInstance().reset();
+        druidStatManager.resetAll();
     }
 
     private List<String> getDriversData() {
@@ -275,7 +275,7 @@ public class StatViewServlet extends HttpServlet {
 
     private List<Object> getDataSourceStatList() {
         List<Object> datasourceList = new ArrayList<Object>();
-        for (DruidDataSource dataSource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DruidDataSource dataSource : druidStatManager.getDruidDataSourceInstances()) {
             datasourceList.add(dataSourceToMapData(dataSource));
         }
         return datasourceList;
@@ -298,7 +298,7 @@ public class StatViewServlet extends HttpServlet {
     }
 
     private JdbcSqlStat getSqlStatById(Integer id) {
-        for (DruidDataSource ds : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DruidDataSource ds : druidStatManager.getDruidDataSourceInstances()) {
             JdbcSqlStat sqlStat = ds.getDataSourceStat().getSqlStat(id);
             if (sqlStat != null) return sqlStat;
         }
@@ -309,7 +309,7 @@ public class StatViewServlet extends HttpServlet {
         if (identity == null) {
             return null;
         }
-        for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DruidDataSource datasource : druidStatManager.getDruidDataSourceInstances()) {
             if (System.identityHashCode(datasource) == identity) {
                 return datasource;
             }
@@ -337,12 +337,12 @@ public class StatViewServlet extends HttpServlet {
         if (perPageCount == null) perPageCount = DEFAULT_PER_PAGE_COUNT;
 
         List<Map<String, Object>> array = new ArrayList<Map<String, Object>>();
-        for (DruidDataSource datasource : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+        for (DruidDataSource datasource : druidStatManager.getDruidDataSourceInstances()) {
             for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
                 if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
                     continue;
                 }
-                
+
                 array.add(getSqlStatData(sqlStat));
             }
         }
