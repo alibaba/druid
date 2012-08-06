@@ -55,6 +55,8 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     private TransactionInfo       transcationInfo;
 
+    private int                   closeCount;
+
     public ConnectionProxyImpl(DataSourceProxy dataSource, Connection connection, Properties properties, long id){
         super(connection, id);
         this.dataSource = dataSource;
@@ -95,12 +97,13 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void close() throws SQLException {
         createChain().connection_close(this);
+        closeCount++;
     }
 
     @Override
     public void commit() throws SQLException {
         createChain().connection_commit(this);
-        
+
         if (transcationInfo != null) {
             transcationInfo.setEndTimeMillis();
         }
@@ -275,7 +278,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void rollback() throws SQLException {
         createChain().connection_rollback(this);
-        
+
         if (transcationInfo != null) {
             transcationInfo.setEndTimeMillis();
         }
@@ -284,7 +287,7 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         createChain().connection_rollback(this, savepoint);
-        
+
         if (transcationInfo != null) {
             transcationInfo.setEndTimeMillis();
         }
@@ -382,5 +385,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
     @Override
     public TransactionInfo getTransactionInfo() {
         return transcationInfo;
+    }
+
+    @Override
+    public int getCloseCount() {
+        return closeCount;
     }
 }

@@ -50,7 +50,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     private Date                  connectedTime    = null;
 
-    private boolean               closed           = false;
+    private int                   closeCount       = 0;
 
     private TransactionInfo       transcationInfo;
 
@@ -167,21 +167,22 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
 
     @Override
     public void close() throws SQLException {
-        if (closed) {
+        if (closeCount > 0) {
+            closeCount++;
             return;
         }
 
         if (conn != null) {
             conn.close();
         }
-        this.closed = true;
+        this.closeCount++;
 
         multiDataSource.afterConnectionClosed(this);
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        return closed;
+        return closeCount > 0;
     }
 
     @Override
@@ -661,6 +662,11 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     @Override
     public TransactionInfo getTransactionInfo() {
         return null;
+    }
+
+    @Override
+    public int getCloseCount() {
+        return closeCount;
     }
 
 }

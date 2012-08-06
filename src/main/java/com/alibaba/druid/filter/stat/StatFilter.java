@@ -227,17 +227,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void connection_close(FilterChain chain, ConnectionProxy connection) throws SQLException {
-        long nowNano = System.nanoTime();
+        if (connection.getCloseCount() == 0) {
+            long nowNano = System.nanoTime();
 
-        dataSourceStat.getConnectionStat().incrementConnectionCloseCount();
+            dataSourceStat.getConnectionStat().incrementConnectionCloseCount();
 
-        JdbcConnectionStat.Entry connectionInfo = getConnectionInfo(connection);
+            JdbcConnectionStat.Entry connectionInfo = getConnectionInfo(connection);
 
-        long aliveNanoSpan = nowNano - connectionInfo.getEstablishNano();
+            long aliveNanoSpan = nowNano - connectionInfo.getEstablishNano();
 
-        JdbcConnectionStat.Entry existsConnection = dataSourceStat.getConnections().remove(connection.getId());
-        if (existsConnection != null) {
-            dataSourceStat.getConnectionStat().afterClose(aliveNanoSpan);
+            JdbcConnectionStat.Entry existsConnection = dataSourceStat.getConnections().remove(connection.getId());
+            if (existsConnection != null) {
+                dataSourceStat.getConnectionStat().afterClose(aliveNanoSpan);
+            }
         }
 
         chain.connection_close(connection);
