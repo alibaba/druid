@@ -55,6 +55,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     protected int                fetchRowCount = 0;
     protected long               constructNano;
     protected final JdbcSqlStat  sqlStat;
+    private int                  closeCount    = 0;
 
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
@@ -134,6 +135,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public void close() throws SQLException {
         createChain().resultSet_close(this);
+        closeCount++;
     }
 
     @Override
@@ -1071,4 +1073,9 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
 
         return super.unwrap(iface);
     }
+
+    public int getCloseCount() {
+        return closeCount;
+    }
+
 }

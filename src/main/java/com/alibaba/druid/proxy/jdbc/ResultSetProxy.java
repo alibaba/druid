@@ -41,4 +41,6 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     void setConstructNano(long constructNano);
 
     void setConstructNano();
+    
+    int getCloseCount();
 }

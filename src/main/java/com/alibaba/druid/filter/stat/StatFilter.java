@@ -63,6 +63,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
     public final static String        ATTR_TRANSACTION           = "stat.tx";
+    public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
 
     protected JdbcDataSourceStat      dataSourceStat;
 
@@ -551,7 +552,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         String sql = resultSet.getSql();
         if (sql != null) {
             JdbcSqlStat sqlStat = resultSet.getSqlStat();
-            if (sqlStat != null) {
+            if (sqlStat != null && resultSet.getCloseCount() == 0) {
                 sqlStat.addFetchRowCount(fetchCount);
                 long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
                 sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanoSpan);
@@ -772,7 +773,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         chain.dataSource_recycle(conn);
 
         long nanos = System.nanoTime() - conn.getConnectedTimeNano();
-        
+
         long millis = nanos / (1000L * 1000L);
         dataSourceStat.getConnectionHoldHistogram().record(millis);
     }
@@ -784,7 +785,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (conn != null) {
             conn.setConnectedTimeNano(System.nanoTime());
         }
-        
+
         return conn;
     }
 
