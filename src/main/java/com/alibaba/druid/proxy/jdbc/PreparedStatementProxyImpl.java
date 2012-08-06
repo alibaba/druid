@@ -469,7 +469,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     public JdbcSqlStat getSqlStat() {
         if (sqlStat != null && sqlStat.isRemoved()) {
-            JdbcSqlStat sqlStat = this.getConnectionProxy().getDirectDataSource().getDataSourceStat().getSqlStat(sql);
+            JdbcSqlStat sqlStat = this.getConnectionProxy().getDirectDataSource().getDataSourceStat().createSqlStat(sql);
             sqlStat.setDbType(this.sqlStat.getDbType());
             this.sqlStat = sqlStat;
         }
