@@ -1,20 +1,22 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class ConfigErrorTest extends TestCase {
+public class ConfigErrorTest3 extends TestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setTestOnBorrow(true);
+        dataSource.setUrl("jdbc:mysql:xxx");
+        dataSource.setTestOnBorrow(false);
+        dataSource.setTestOnReturn(false);
+        dataSource.setTestWhileIdle(false);
+        dataSource.setInitialSize(0);
+        dataSource.setPoolPreparedStatements(true);
     }
 
     protected void tearDown() throws Exception {
@@ -24,10 +26,7 @@ public class ConfigErrorTest extends TestCase {
     public void test_connect() throws Exception {
         DruidDataSource.LOG.resetStat();
         Assert.assertEquals(0, DruidDataSource.LOG.getErrorCount());
-        
-        Connection conn = dataSource.getConnection();
-        conn.close();
-        
+        dataSource.init();
         Assert.assertEquals(1, DruidDataSource.LOG.getErrorCount());
     }
 }

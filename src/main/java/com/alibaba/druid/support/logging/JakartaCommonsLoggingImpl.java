@@ -7,6 +7,8 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
 
     private Log log;
 
+    private int errorCount;
+
     public JakartaCommonsLoggingImpl(Class<?> clazz){
         log = LogFactory.getLog(clazz);
     }
@@ -17,10 +19,12 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
 
     public void error(String s, Throwable e) {
         log.error(s, e);
+        errorCount++;
     }
 
     public void error(String s) {
         log.error(s);
+        errorCount++;
     }
 
     public void debug(String s) {
@@ -38,6 +42,16 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
     @Override
     public void warn(String s, Throwable e) {
         log.warn(s, e);
+    }
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+
+    @Override
+    public void resetStat() {
+        errorCount = 0;
     }
 
 }

@@ -72,7 +72,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
+    public final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
@@ -288,7 +288,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
                     this.driverClass = config.getRawDriverClassName();
                     
-                    LOG.error("error url : " + jdbcUrl + ", it should be : " + config.getRawUrl());
+                    LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
                     
                     this.jdbcUrl = config.getRawUrl();
                     if (this.name == null) {

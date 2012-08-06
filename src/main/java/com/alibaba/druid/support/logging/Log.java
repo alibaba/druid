@@ -16,4 +16,7 @@ public interface Log {
 
     void warn(String s, Throwable e);
 
+    int getErrorCount();
+    
+    void resetStat();
 }

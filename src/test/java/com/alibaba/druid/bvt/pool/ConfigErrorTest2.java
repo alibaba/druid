@@ -7,14 +7,16 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-public class ConfigErrorTest extends TestCase {
+public class ConfigErrorTest2 extends TestCase {
 
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
         dataSource = new DruidDataSource();
-        dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setTestOnBorrow(true);
+        dataSource.setUrl("jdbc:wrap-jdbc:jdbc:mock:xxx");
+        dataSource.setTestOnBorrow(false);
+        dataSource.setTestOnReturn(false);
+        dataSource.setTestWhileIdle(false);
     }
 
     protected void tearDown() throws Exception {
@@ -24,7 +26,7 @@ public class ConfigErrorTest extends TestCase {
     public void test_connect() throws Exception {
         DruidDataSource.LOG.resetStat();
         Assert.assertEquals(0, DruidDataSource.LOG.getErrorCount());
-        
+
         Connection conn = dataSource.getConnection();
         conn.close();
         
