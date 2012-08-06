@@ -341,7 +341,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         final int batchSize = statement.getBatchSqlList().size();
         JdbcSqlStat sqlStat = statement.getSqlStat();
-        if (sqlStat == null) {
+        if (sqlStat == null || sqlStat.isRemoved()) {
             sqlStat = createSqlStat(statement, sql);
             statement.setSqlStat(sqlStat);
         }
@@ -380,7 +380,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         // //////////SQL
 
         JdbcSqlStat sqlStat = statement.getSqlStat();
-        if (sqlStat == null) {
+        if (sqlStat == null || sqlStat.isRemoved()) {
             sqlStat = createSqlStat(statement, sql);
             statement.setSqlStat(sqlStat);
         }
