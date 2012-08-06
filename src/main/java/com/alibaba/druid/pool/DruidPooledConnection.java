@@ -1011,9 +1011,14 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     final void afterExecute() {
         running = false;
+        
+        final ConnectionHolder holder = this.holder;
+        if (holder != null && holder.getDataSource().isRemoveAbandoned()) {
+            holder.setLastActiveTimeMillis(System.currentTimeMillis());
+        }
     }
 
-    public boolean isRunning() {
+    boolean isRunning() {
         return running;
     }
 
