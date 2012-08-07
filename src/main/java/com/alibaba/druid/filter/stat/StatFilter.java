@@ -312,7 +312,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     protected void statementExecuteUpdateAfter(StatementProxy statement, String sql, int updateCount) {
-        internalAfterStatementExecute(statement, updateCount);
+        internalAfterStatementExecute(statement, false, updateCount);
     }
 
     @Override
@@ -322,7 +322,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
-        internalAfterStatementExecute(statement);
+        internalAfterStatementExecute(statement, true);
     }
 
     @Override
@@ -331,8 +331,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
-    protected void statementExecuteAfter(StatementProxy statement, String sql, boolean result) {
-        internalAfterStatementExecute(statement);
+    protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
+        internalAfterStatementExecute(statement, firstResult);
     }
 
     @Override
@@ -341,7 +341,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         final int batchSize = statement.getBatchSqlList().size();
         JdbcSqlStat sqlStat = statement.getSqlStat();
-        if (sqlStat == null) {
+        if (sqlStat == null || sqlStat.isRemoved()) {
             sqlStat = createSqlStat(statement, sql);
             statement.setSqlStat(sqlStat);
         }
@@ -356,7 +356,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     protected void statementExecuteBatchAfter(StatementProxy statement, int[] result) {
-        internalAfterStatementExecute(statement, result);
+        internalAfterStatementExecute(statement, false, result);
 
     }
 
@@ -380,7 +380,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         // //////////SQL
 
         JdbcSqlStat sqlStat = statement.getSqlStat();
-        if (sqlStat == null) {
+        if (sqlStat == null || sqlStat.isRemoved()) {
             sqlStat = createSqlStat(statement, sql);
             statement.setSqlStat(sqlStat);
         }
@@ -406,7 +406,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
-    private final void internalAfterStatementExecute(StatementProxy statement, int... updateCountArray) {
+    private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult, int... updateCountArray) {
 
         final JdbcStatementStat.Entry entry = getStatementInfo(statement);
 
@@ -426,7 +426,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             }
 
             sqlStat.decrementRunningCount();
-            sqlStat.addExecuteTime(statement.getLastExecuteType(), nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
             if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
                 try {
@@ -525,7 +525,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (sqlStat != null) {
             sqlStat.error(error);
-            sqlStat.addExecuteTime(statement.getLastExecuteType(), nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
         }
 

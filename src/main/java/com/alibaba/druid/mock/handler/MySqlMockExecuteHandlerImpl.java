@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
-import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.mock.MockStatementBase;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
@@ -35,7 +35,7 @@ import com.alibaba.druid.util.jdbc.ResultSetMetaDataBase.ColumnMetaData;
 public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
 
     @Override
-    public ResultSet executeQuery(MockStatement statement, String sql) throws SQLException {
+    public ResultSet executeQuery(MockStatementBase statement, String sql) throws SQLException {
         SQLStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> stmtList = parser.parseStatementList(); //
 
@@ -67,7 +67,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         throw new SQLException("TODO");
     }
 
-    public ResultSet executeQuery(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
+    public ResultSet executeQuery(MockStatementBase statement, SQLSelectQueryBlock query) throws SQLException {
         SQLTableSource from = query.getFrom();
 
         if (from instanceof SQLExprTableSource) {
@@ -87,7 +87,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         }
     }
 
-    public ResultSet showStatus(MockStatement statement) throws SQLException {
+    public ResultSet showStatus(MockStatementBase statement) throws SQLException {
         MockResultSet rs = new MockResultSet(statement);
         MockResultSetMetaData metaData = rs.getMockMetaData();
 
@@ -102,7 +102,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
         return rs;
     }
 
-    public ResultSet executeQueryFromDual(MockStatement statement, SQLSelectQueryBlock query) throws SQLException {
+    public ResultSet executeQueryFromDual(MockStatementBase statement, SQLSelectQueryBlock query) throws SQLException {
         MockResultSet rs = new MockResultSet(statement);
         MockResultSetMetaData metaData = rs.getMockMetaData();
 

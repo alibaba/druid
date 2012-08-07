@@ -21,6 +21,8 @@ import java.sql.Types;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -298,7 +300,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         super.connection_commit(chain, connection);
 
         if (connectionCommitAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("connect commited. id " + connection.getId());
+            connectionLog("connect committed. id " + connection.getId());
         }
     }
     
@@ -306,7 +308,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
                                                                                                            throws SQLException {
         
-        connectionLog("connect setAutoComment " + autoCommit + ". id " + connection.getId());
+        connectionLog("connect setAutoCommit " + autoCommit + ". id " + connection.getId());
         chain.connection_setAutoCommit(connection, autoCommit);
     }
 
@@ -577,6 +579,35 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                 statementLog(buf.toString());
             }
         }
+    }
+    
+    @Override
+    public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection conn) throws SQLException {
+        long connectionId = -1;
+        
+        if (conn.getConnectionHolder() != null) {
+            ConnectionProxy connection = (ConnectionProxy) conn.getConnectionHolder().getConnection();
+            connectionId = connection.getId();
+        }
+        
+        chain.dataSource_recycle(conn);
+        
+        if (connectionCloseAfterLogEnable && isConnectionLogEnabled()) {
+            connectionLog("{conn-" + connectionId + "} pool-recycle");
+        }
+    }
+
+    @Override
+    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+        DruidPooledConnection conn = chain.dataSource_connect(dataSource, maxWaitMillis);
+        
+        ConnectionProxy connection = (ConnectionProxy) conn.getConnectionHolder().getConnection();
+        
+        if (connectionConnectAfterLogEnable && isConnectionLogEnabled()) {
+            connectionLog("{conn-" + connection.getId() + "} pool-connect");
+        }
+        
+        return conn;
     }
 
 }

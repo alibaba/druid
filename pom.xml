@@ -170,6 +170,50 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>default-profile</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<file>
+					<exists>${java.home}/../lib/jconsole.jar</exists>
+				</file>
+			</activation>
+			<properties>
+				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
+			</properties>
+
+			<dependencies>
+				<dependency>
+					<groupId>com.alibaba</groupId>
+					<artifactId>jconsole</artifactId>
+					<version>1.6.0</version>
+					<scope>system</scope>
+					<systemPath>${jconsolejar}</systemPath>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>mac-profile</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<file>
+					<exists>${java.home}/../Classes/jconsole.jar</exists>
+				</file>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.alibaba</groupId>
+					<artifactId>jconsole</artifactId>
+					<version>1.6.0</version>
+					<scope>system</scope>
+					<systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

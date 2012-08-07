@@ -235,12 +235,12 @@ public class MockDriver implements Driver, MockDriverMBean {
         return true;
     }
 
-    protected ResultSet executeQuery(MockStatement stmt, String sql) throws SQLException {
+    public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
         if (logExecuteQueryEnable && LOG.isDebugEnabled()) {
             LOG.debug("executeQuery " + sql);
         }
 
-        MockConnection conn = stmt.getMockConnection();
+        MockConnection conn = stmt.getConnection();
 
         long idleTimeMillis = System.currentTimeMillis() - conn.getLastActiveTimeMillis();
         if (idleTimeMillis >= this.idleTimeCount) {

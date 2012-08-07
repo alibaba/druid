@@ -2,6 +2,8 @@ package com.alibaba.druid.support.logging;
 
 public class NoLoggingImpl implements Log {
 
+    private int errorCount;
+
     public NoLoggingImpl(Class<?> clazz){
     }
 
@@ -10,9 +12,11 @@ public class NoLoggingImpl implements Log {
     }
 
     public void error(String s, Throwable e) {
+        errorCount++;
     }
 
     public void error(String s) {
+        errorCount++;
     }
 
     public void debug(String s) {
@@ -29,4 +33,12 @@ public class NoLoggingImpl implements Log {
 
     }
 
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    @Override
+    public void resetStat() {
+        errorCount = 0;
+    }
 }

@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.alibaba.druid.proxy.jdbc.JdbcParameter.TYPE;
-import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -94,6 +93,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public ResultSet executeQuery() throws SQLException {
+        firstResultSet = true;
         updateCount = null;
         lastExecuteType = StatementExecuteType.ExecuteQuery;
         return createChain().preparedStatement_executeQuery(this);
@@ -101,6 +101,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public int executeUpdate() throws SQLException {
+        firstResultSet = false;
         lastExecuteType = StatementExecuteType.ExecuteUpdate;
         updateCount = createChain().preparedStatement_executeUpdate(this);
         return updateCount;
@@ -465,14 +466,5 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
         }
 
         return super.unwrap(iface);
-    }
-
-    public JdbcSqlStat getSqlStat() {
-        if (sqlStat != null && sqlStat.isRemoved()) {
-            JdbcSqlStat sqlStat = this.getConnectionProxy().getDirectDataSource().getDataSourceStat().createSqlStat(sql);
-            sqlStat.setDbType(this.sqlStat.getDbType());
-            this.sqlStat = sqlStat;
-        }
-        return sqlStat;
     }
 }

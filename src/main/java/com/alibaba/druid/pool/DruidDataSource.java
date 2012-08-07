@@ -72,7 +72,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
+    public final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
@@ -274,6 +274,26 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.driverClass != null) {
                 this.driverClass = driverClass.trim();
             }
+            
+            if (isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle()) {
+                if (this.getValidationQuery() == null || this.getValidationQuery().length() == 0) {
+                    String errorMessage = "";
+                    
+                    if (isTestOnBorrow()) {
+                        errorMessage += "testOnBorrow is true, ";
+                    }
+                    
+                    if (isTestOnReturn()) {
+                        errorMessage += "testOnReturn is true, ";
+                    }
+                    
+                    if (isTestWhileIdle()) {
+                        errorMessage += "testWhileIdle is true, ";
+                    }
+                    
+                    LOG.error(errorMessage + "validationQuery not set");
+                }
+            }
 
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
@@ -281,6 +301,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
                     DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
                     this.driverClass = config.getRawDriverClassName();
+                    
+                    LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
+                    
                     this.jdbcUrl = config.getRawUrl();
                     if (this.name == null) {
                         this.name = config.getName();
@@ -342,6 +365,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
+            }
+            
+            if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+                if (this.isPoolPreparedStatements()) {
+                    LOG.error("mysql should not use 'PoolPreparedStatements'");
+                }
             }
 
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
