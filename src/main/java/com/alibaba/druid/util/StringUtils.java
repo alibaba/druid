@@ -1,5 +1,10 @@
 package com.alibaba.druid.util;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
@@ -21,13 +26,13 @@ public class StringUtils {
      * Example: subString("abcd","a","c")="b"
      * 
      * @param src
-     * @param start
-     * @param to
+     * @param start null while start from index=0
+     * @param to null while to index=src.length
      * @return
      */
     public static String subString(String src, String start, String to) {
-        int indexFrom = src.indexOf(start);
-        int indexTo = src.indexOf(to);
+        int indexFrom = start == null ? 0 : src.indexOf(start);
+        int indexTo = to == null ? src.length() : src.indexOf(to);
         if (indexFrom < 0 || indexTo < 0 || indexFrom > indexTo) {
             return null;
         }
@@ -66,4 +71,27 @@ public class StringUtils {
         }
     }
 
+    public static Map<String, String> getParameters(String url) {
+        if (url == null || (url = url.trim()).length() == 0) return null;
+
+        String parametersStr = subString(url, "?", null);
+        if (parametersStr == null || parametersStr.length() == 0) return null;
+
+        String[] parametersArray = parametersStr.split("&");
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+
+        for (String parameterStr : parametersArray) {
+            int index = parameterStr.indexOf("=");
+            if (index <= 0) continue;
+
+            String name = parameterStr.substring(0, index);
+            String value = parameterStr.substring(index + 1);
+            parameters.put(name, value);
+        }
+        return parameters;
+    }
+
+    public static void main(String args[]) {
+        System.out.println(JSON.toJSONString(getParameters("test?t=1&f=").get("t")));
+    }
 }
