@@ -21,7 +21,7 @@ import java.sql.SQLException;
 
 import com.alibaba.druid.util.jdbc.PreparedStatementBase;
 
-public class MockPreparedStatement extends PreparedStatementBase implements PreparedStatement {
+public class MockPreparedStatement extends PreparedStatementBase implements MockStatementBase, PreparedStatement {
 
     private final String sql;
 

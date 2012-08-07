@@ -26,10 +26,11 @@ public class MultiDataSourcePreparedStatement extends PreparedStatementProxyImpl
         FilterChain chain = createChain();
         
         if (chain.getFilterSize() == 0) {
-            return this.statement.execute();
+            firstResultSet = this.statement.execute();
+        } else {
+            firstResultSet = chain.preparedStatement_execute(this);    
         }
         
-        firstResultSet = chain.preparedStatement_execute(this);
         return firstResultSet;
     }
 

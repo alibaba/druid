@@ -22,7 +22,7 @@ import java.sql.Statement;
 
 import com.alibaba.druid.util.jdbc.StatementBase;
 
-public class MockStatement extends StatementBase implements Statement {
+public class MockStatement extends StatementBase implements MockStatementBase, Statement {
 
     public final static String ERROR_SQL = "THROW ERROR";
 
@@ -46,7 +46,7 @@ public class MockStatement extends StatementBase implements Statement {
         }
     }
 
-    public MockConnection getMockConnection() {
+    public MockConnection getConnection() {
         return mockConnection;
     }
 

@@ -277,7 +277,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             
             if (isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle()) {
                 if (this.getValidationQuery() == null || this.getValidationQuery().length() == 0) {
-                    LOG.error("validationQuery not set");
+                    String errorMessage = "";
+                    
+                    if (isTestOnBorrow()) {
+                        errorMessage += "testOnBorrow is true, ";
+                    }
+                    
+                    if (isTestOnReturn()) {
+                        errorMessage += "testOnReturn is true, ";
+                    }
+                    
+                    if (isTestWhileIdle()) {
+                        errorMessage += "testWhileIdle is true, ";
+                    }
+                    
+                    LOG.error(errorMessage + "validationQuery not set");
                 }
             }
 

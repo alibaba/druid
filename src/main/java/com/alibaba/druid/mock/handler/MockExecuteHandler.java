@@ -3,9 +3,9 @@ package com.alibaba.druid.mock.handler;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.alibaba.druid.mock.MockStatement;
+import com.alibaba.druid.mock.MockStatementBase;
 
 public interface MockExecuteHandler {
 
-    ResultSet executeQuery(MockStatement statement, String sql) throws SQLException;
+    ResultSet executeQuery(MockStatementBase statement, String sql) throws SQLException;
 }
