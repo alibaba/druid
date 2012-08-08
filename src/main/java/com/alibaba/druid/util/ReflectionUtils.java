@@ -33,8 +33,9 @@ public class ReflectionUtils {
             return null;
         }
     }
-    public static Object callPublicMethod(Object obj, String methodName) {
-        
+
+    public static Object callObjectMethod(Object obj, String methodName) {
+
         try {
             Method m = obj.getClass().getMethod(methodName);
             return m.invoke(obj);
@@ -45,11 +46,11 @@ public class ReflectionUtils {
 
     public void getTest() {
         System.out.println("dd");
-//        return "test";
+        // return "test";
     }
 
     public static void main(String args[]) {
-//        System.out.println(callStaticMethod(new ReflectionUtils(), "getTest"));
+        System.out.println(callObjectMethod(new ReflectionUtils(), "getTest"));
 
     }
 }

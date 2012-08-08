@@ -17,6 +17,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.ReflectionUtils;
 
 /**
+ * 监控相关的对外数据暴露
+ * 
+ * <pre>
+ * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类型
+ * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想到
+ * </pre>
+ * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
 public class DruidStatManagerFacade {
@@ -27,9 +34,10 @@ public class DruidStatManagerFacade {
 
     protected final ReentrantLock               lock     = new ReentrantLock(true);
 
-    private DruidDataSourceStatManager          druidDataSourceStatManager;
-    private JdbcStatManager                     jdbcStatManager;
+    private Object                              druidDataSourceStatManager;
+    private Object                              jdbcStatManager;
 
+    // TODO shoud be Object
     private Set<DruidDataSource>                datasourceInstances;
 
     private DruidStatManagerFacade() {
@@ -72,19 +80,19 @@ public class DruidStatManagerFacade {
 
     }
 
-    public Set<DruidDataSource> getDruidDataSourceInstances() {
+    private Set<DruidDataSource> getDruidDataSourceInstances() {
         init();
         return datasourceInstances;
     }
 
     public void resetDataSourceStat() {
         init();
-        druidDataSourceStatManager.reset();
+        ReflectionUtils.callObjectMethod(druidDataSourceStatManager, "reset");
     }
 
     public void resetSqlStat() {
         init();
-        jdbcStatManager.reset();
+        ReflectionUtils.callObjectMethod(jdbcStatManager, "reset");
     }
 
     public void resetAll() {
@@ -93,8 +101,7 @@ public class DruidStatManagerFacade {
         resetDataSourceStat();
     }
 
-    public JdbcSqlStat getSqlStatById(Integer id) {
-        init();
+    private JdbcSqlStat getSqlStatById(Integer id) {
 
         for (DruidDataSource ds : getDruidDataSourceInstances()) {
             JdbcSqlStat sqlStat = ds.getDataSourceStat().getSqlStat(id);
@@ -104,6 +111,7 @@ public class DruidStatManagerFacade {
     }
 
     public Map<String, Object> getDataSourceStatData(Integer id) {
+        init();
         if (id == null) {
             return null;
         }
@@ -111,8 +119,7 @@ public class DruidStatManagerFacade {
         return datasource == null ? null : dataSourceToMapData(datasource);
     }
 
-    public DruidDataSource getDruidDataSourceById(Integer identity) {
-        init();
+    private DruidDataSource getDruidDataSourceById(Integer identity) {
 
         if (identity == null) {
             return null;
@@ -127,6 +134,7 @@ public class DruidStatManagerFacade {
     }
 
     public List<Map<String, Object>> getSqlStatDataList() {
+        init();
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         for (DruidDataSource datasource : getDruidDataSourceInstances()) {
             for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
@@ -141,6 +149,7 @@ public class DruidStatManagerFacade {
     }
 
     public Map<String, Object> getSqlStatData(Integer id) {
+        init();
         if (id == null) {
             return null;
         }
@@ -148,7 +157,7 @@ public class DruidStatManagerFacade {
         return sqlStat == null ? null : getSqlStatData(sqlStat);
     }
 
-    public Map<String, Object> getSqlStatData(JdbcSqlStat sqlStat) {
+    private Map<String, Object> getSqlStatData(JdbcSqlStat sqlStat) {
         try {
             return sqlStat.getData();
         } catch (JMException e) {
@@ -157,6 +166,7 @@ public class DruidStatManagerFacade {
     }
 
     public List<Object> getDataSourceStatList() {
+        init();
         List<Object> datasourceList = new ArrayList<Object>();
         for (DruidDataSource dataSource : getDruidDataSourceInstances()) {
             datasourceList.add(dataSourceToMapData(dataSource));
@@ -165,6 +175,7 @@ public class DruidStatManagerFacade {
     }
 
     public Map<String, Object> returnJSONBasicStat() {
+        init();
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("Version", VERSION.getVersionNumber());
         dataMap.put("Drivers", getDriversData());
@@ -181,12 +192,14 @@ public class DruidStatManagerFacade {
     }
 
     public List<Map<String, Object>> getPoolingConnectionInfoByDataSourceId(Integer id) {
+        init();
         DruidDataSource datasource = getDruidDataSourceById(id);
         if (datasource == null) return null;
         return datasource.getPoolingConnectionInfo();
     }
 
     public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
+        init();
         DruidDataSource datasource = getDruidDataSourceById(id);
         if (datasource == null || !datasource.isRemoveAbandoned()) return null;
 
