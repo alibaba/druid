@@ -126,6 +126,20 @@ public class DruidStatManagerFacade {
         return null;
     }
 
+    public List<Map<String, Object>> getSqlStatDataList() {
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        for (DruidDataSource datasource : getDruidDataSourceInstances()) {
+            for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
+                if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
+                    continue;
+                }
+
+                result.add(getSqlStatData(sqlStat));
+            }
+        }
+        return result;
+    }
+
     public Map<String, Object> getSqlStatData(Integer id) {
         if (id == null) {
             return null;

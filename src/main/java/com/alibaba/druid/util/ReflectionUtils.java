@@ -33,13 +33,23 @@ public class ReflectionUtils {
             return null;
         }
     }
+    public static Object callPublicMethod(Object obj, String methodName) {
+        
+        try {
+            Method m = obj.getClass().getMethod(methodName);
+            return m.invoke(obj);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-    public static String getTest() {
-        return "test";
+    public void getTest() {
+        System.out.println("dd");
+//        return "test";
     }
 
     public static void main(String args[]) {
-        System.out.println(callStaticMethod(ReflectionUtils.class, "getTest"));
+//        System.out.println(callStaticMethod(new ReflectionUtils(), "getTest"));
 
     }
 }

@@ -1,19 +1,18 @@
 package com.alibaba.druid.support;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
-import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 
 /**
+ * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
+ * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
 public class JSONDruidStatService {
@@ -96,16 +95,7 @@ public class JSONDruidStatService {
         if (page == null) page = DEFAULT_PAGE;
         if (perPageCount == null) perPageCount = DEFAULT_PER_PAGE_COUNT;
 
-        List<Map<String, Object>> array = new ArrayList<Map<String, Object>>();
-        for (DruidDataSource datasource : druidStatManager.getDruidDataSourceInstances()) {
-            for (JdbcSqlStat sqlStat : datasource.getDataSourceStat().getSqlStatMap().values()) {
-                if (sqlStat.getExecuteCount() == 0 && sqlStat.getRunningCount() == 0) {
-                    continue;
-                }
-
-                array.add(druidStatManager.getSqlStatData(sqlStat));
-            }
-        }
+        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
 
         // orderby
         if (orderBy != null && orderBy.trim().length() != 0) {
