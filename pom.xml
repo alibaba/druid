@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.7-SNAPSHOT</version>
+	<version>0.2.6-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -316,9 +316,10 @@
 			<version>11.2.0.3</version> <scope>provided</scope> </dependency> -->
 
 		<dependency>
-		  <groupId>com.oracle</groupId>
-		  <artifactId>ojdbc14</artifactId>
-		  <version>10.2.0.2.0</version>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc14</artifactId>
+			<version>10.2.0.2</version>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
