@@ -3,12 +3,16 @@ package com.alibaba.druid.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.fastjson.JSON;
 
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
 public class StringUtils {
+
+    private final static Log LOG = LogFactory.getLog(StringUtils.class);
 
     /**
      * Example: subString("12345","1","4")=23
@@ -52,6 +56,7 @@ public class StringUtils {
         try {
             return Integer.parseInt(in);
         } catch (NumberFormatException e) {
+            LOG.warn("stringToInteger fail,string=" + in, e);
             return null;
         }
     }
@@ -67,6 +72,7 @@ public class StringUtils {
         try {
             return Long.parseLong(in);
         } catch (NumberFormatException e) {
+            LOG.warn("stringToLong fail,string=" + in, e);
             return null;
         }
     }

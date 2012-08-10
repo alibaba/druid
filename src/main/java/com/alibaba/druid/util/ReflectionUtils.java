@@ -1,6 +1,5 @@
 package com.alibaba.druid.util;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,13 +19,13 @@ public class ReflectionUtils {
         try {
             result = HttpServletRequest.class.getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            LOG.warn(e.getMessage(), e);
+            if (LOG.isDebugEnabled()) LOG.debug("can'r find class in web container classLoader ", e);
         }
         if (result == null) {
             try {
                 result = Thread.currentThread().getContextClassLoader().loadClass(className);
             } catch (ClassNotFoundException e) {
-                LOG.warn(e.getMessage(), e);
+                LOG.error("can'r find class in current thread context classLoader ", e);
             }
         }
         return result;
@@ -38,33 +37,19 @@ public class ReflectionUtils {
             Method m = classObject.getMethod(methodName);
             return m.invoke(classObject);
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            LOG.warn("callStaticMethod fail:class=" + classObject.getName() + " method=" + methodName, e);
+            return null;
         }
-        return null;
     }
 
-    public static Object callObjectMethod(Object obj, String methodName) {
+    public static Object callObjectMethod(Object obj, String methodName, Object... methodParams) {
         try {
-            Constructor<?> ctor = ((Class<?>) obj).getConstructor();
-            Object instance = ctor.newInstance();
-            Method m = ((Class<?>) obj).getMethod(methodName); // 获取方法
-            return m.invoke(instance);
+            Method m = obj.getClass().getMethod(methodName);
+            return m.invoke(obj, methodParams);
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
         }
-        return null;
-    }
-
-    public static Object callObjectMethod(Object obj, String methodName, Object methodParam) {
-        try {
-            Constructor<?> ctor = ((Class<?>) obj).getConstructor();
-            Object instance = ctor.newInstance();
-            Method m = ((Class<?>) obj).getMethod(methodName, methodParam.getClass()); // 获取方法
-            return m.invoke(instance);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return null;
     }
 
     public void getTest() {
