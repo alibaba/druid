@@ -1,6 +1,8 @@
 package com.alibaba.druid.support.http;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ public class StatViewServlet extends HttpServlet {
     private static JSONDruidStatService   jsonDruidStatService        = JSONDruidStatService.getInstance();
 
     public String                         templatePage;
+    private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
 
     public void init() throws ServletException {
         try {
@@ -121,9 +124,26 @@ public class StatViewServlet extends HttpServlet {
         content.append("</textarea><br />");
         content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
         content.append("<br />");
-
-        List<SQLStatement> statementList = SQLUtils.parseStatements((String) sqlStat.get("SQL"),
-                                                                    (String) sqlStat.get("DbType"));
+        
+		if (sqlStat.get("LastSlowParameters") != null
+				&& sqlStat.get("LastSlowParameters").toString().trim().length() > 0) {
+			content.append("<h2>LastSlow SQL View:</h2>");
+			content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
+			content.append("<tr>");
+			content.append("<td class='td_lable' width='130'>MaxTimespanOccurTime</td>");
+			content.append("<td>" + format.format(sqlStat.get("MaxTimespanOccurTime")) + "</td>");
+			content.append("</tr>");
+			content.append("<tr>");
+			content.append("<td class='td_lable' width='130'>LastSlowParameters</td>");
+			content.append("<td>" + sqlStat.get("LastSlowParameters") + "</td>");
+			content.append("</tr>");
+			content.append("</table>");
+			content.append("<br />");
+		}
+		
+		List<SQLStatement> statementList = SQLUtils.parseStatements((String) sqlStat.get("SQL"),
+				(String) sqlStat.get("DbType"));
+		
         if (!statementList.isEmpty()) {
             content.append("<h2>Parse View:</h2>");
 
