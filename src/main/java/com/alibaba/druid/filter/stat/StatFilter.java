@@ -81,6 +81,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     // 3 seconds is slow sql
     protected long                    slowSqlMillis              = 3 * 1000;
 
+    protected boolean                 logSlowSql                 = false;
+
     private String                    dbType;
 
     private boolean                   mergeSql                   = false;
@@ -180,6 +182,15 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 } catch (Exception e) {
                     LOG.error("property 'druid.stat.slowSqlMillis' format error");
                 }
+            }
+        }
+        
+        {
+            String property = properties.getProperty("druid.stat.logSlowSql");
+            if ("true".equals(property)) {
+                this.logSlowSql = true;
+            } else if ("false".equals(property)) {
+                this.logSlowSql = false;
             }
         }
     }
@@ -507,6 +518,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
                 buf.append(']');
                 sqlStat.setLastSlowParameters(buf.toString());
+                
+                if (logSlowSql) {
+                    LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n" + buf.toString());
+                }
             }
         }
     }
