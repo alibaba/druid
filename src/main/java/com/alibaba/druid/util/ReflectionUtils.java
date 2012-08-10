@@ -20,7 +20,7 @@ public class ReflectionUtils {
         try {
             result = HttpServletRequest.class.getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            LOG.warn(e.getMessage(), e);
+            if (LOG.isDebugEnabled()) LOG.debug(e.getMessage(), e);
         }
         if (result == null) {
             try {
@@ -33,7 +33,6 @@ public class ReflectionUtils {
     }
 
     public static Object callStaticMethod(Class<?> classObject, String methodName) {
-
         try {
             Method m = classObject.getMethod(methodName);
             return m.invoke(classObject);
