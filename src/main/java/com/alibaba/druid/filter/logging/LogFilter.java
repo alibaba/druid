@@ -392,6 +392,24 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                          + "} update executed. effort " + updateCount + ". " + sql);
         }
     }
+    
+    @Override
+    public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
+        chain.resultSet_close(resultSet);
+        
+        StringBuffer buf = new StringBuffer();
+        buf.append("{conn-");
+        buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
+        buf.append(", ");
+        buf.append(stmtId(resultSet));
+        buf.append(", rs-");
+        buf.append(resultSet.getId());
+        buf.append("} closed");
+        
+        if (isResultSetCloseAfterLogEnabled()) {
+            resultSetLog(buf.toString());
+        }
+    }
 
     @Override
     public boolean resultSet_next(FilterChain chain, ResultSetProxy resultSet) throws SQLException {

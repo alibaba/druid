@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleSQLObjectImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 
@@ -72,17 +71,5 @@ public class OracleSelectForUpdate extends OracleSQLObjectImpl {
 
     public List<SQLExpr> getOf() {
         return this.of;
-    }
-
-    public static class SkipLock {
-    }
-
-    public static abstract class Type extends SQLObjectImpl {
-
-        private static final long serialVersionUID = 1L;
-
-        public Type(){
-
-        }
     }
 }

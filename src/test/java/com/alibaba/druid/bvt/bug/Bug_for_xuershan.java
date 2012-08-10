@@ -19,7 +19,7 @@ public class Bug_for_xuershan extends TestCase {
 
     protected void setUp() throws Exception {
         driver = new MockDriver() {
-            protected ResultSet createResultSet(MockPreparedStatement stmt) {
+            public ResultSet createResultSet(MockPreparedStatement stmt) {
                 return null;
             }
         };

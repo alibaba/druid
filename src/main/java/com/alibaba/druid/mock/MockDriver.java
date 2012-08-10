@@ -270,7 +270,7 @@ public class MockDriver implements Driver, MockDriverMBean {
         }
     }
 
-    protected ResultSet createResultSet(MockPreparedStatement stmt) {
+    public ResultSet createResultSet(MockPreparedStatement stmt) {
         MockResultSet rs = new MockResultSet(stmt);
 
         String sql = stmt.getSql();
