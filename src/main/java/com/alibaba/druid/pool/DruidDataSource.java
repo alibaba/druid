@@ -72,7 +72,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    public final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
+    private final static Log         LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
@@ -117,6 +117,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private String                  initStackTrace;
 
     private boolean                 closed                  = false;
+    private long                    closeTimeMillis         = -1L;
 
     private JdbcDataSourceStat      dataSourceStat;
 
@@ -274,23 +275,23 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (this.driverClass != null) {
                 this.driverClass = driverClass.trim();
             }
-            
+
             if (isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle()) {
                 if (this.getValidationQuery() == null || this.getValidationQuery().length() == 0) {
                     String errorMessage = "";
-                    
+
                     if (isTestOnBorrow()) {
                         errorMessage += "testOnBorrow is true, ";
                     }
-                    
+
                     if (isTestOnReturn()) {
                         errorMessage += "testOnReturn is true, ";
                     }
-                    
+
                     if (isTestWhileIdle()) {
                         errorMessage += "testWhileIdle is true, ";
                     }
-                    
+
                     LOG.error(errorMessage + "validationQuery not set");
                 }
             }
@@ -301,9 +302,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
                     DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
                     this.driverClass = config.getRawDriverClassName();
-                    
+
                     LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
-                    
+
                     this.jdbcUrl = config.getRawUrl();
                     if (this.name == null) {
                         this.name = config.getName();
@@ -366,7 +367,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
                 this.exceptionSorter = new MockExceptionSorter();
             }
-            
+
             if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
                 if (this.isPoolPreparedStatements()) {
                     LOG.error("mysql should not use 'PoolPreparedStatements'");
@@ -554,6 +555,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         try {
+            if (closed) {
+                connectErrorCount.incrementAndGet();
+                throw new DataSourceClosedException("dataSource already closed at " + new Date(closeTimeMillis));
+            }
+
             if (!enable) {
                 connectErrorCount.incrementAndGet();
                 throw new DataSourceDisableException();
@@ -775,6 +781,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             notEmptySignalCount++;
 
             this.closed = true;
+            this.closeTimeMillis = System.currentTimeMillis();
 
             for (Filter filter : filters) {
                 filter.destory();
@@ -782,6 +789,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
+
+        LOG.warn("dataSource " + this.getID() + " closed");
     }
 
     void incrementCreateCount() {
@@ -879,7 +888,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (createError != null) {
                         throw new GetConnectionTimeoutException(createError);
                     } else {
-                        throw new GetConnectionTimeoutException("loopWaitCount " + i + ", wait millis " + (nanos - estimate)/(1000 * 1000));
+                        throw new GetConnectionTimeoutException("loopWaitCount " + i + ", wait millis "
+                                                                + (nanos - estimate) / (1000 * 1000));
                     }
                 }
             }
@@ -1105,11 +1115,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         for (; iter.hasNext();) {
             Map.Entry<DruidPooledConnection, ActiveConnectionTraceInfo> entry = iter.next();
             DruidPooledConnection pooledConnection = entry.getKey();
-            
+
             if (pooledConnection.isRunning()) {
                 continue;
             }
-            
+
             ActiveConnectionTraceInfo activeInfo = entry.getValue();
             long timeMillis = currentMillis - activeInfo.getConnectTime();
 
@@ -1447,15 +1457,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     PreparedStatementPool stmtPool = connHolder.getStatementPool();
                     for (PreparedStatementHolder stmtHolder : stmtPool.getMap().values()) {
                         Map<String, Object> stmtInfo = new LinkedHashMap<String, Object>();
-                        
+
                         stmtInfo.put("sql", stmtHolder.getKey().getSql());
                         stmtInfo.put("defaultRowPretch", stmtHolder.getDefaultRowPretch());
                         stmtInfo.put("rowPrefetch", stmtHolder.getRowPrefetch());
                         stmtInfo.put("hitCount", stmtHolder.getHitCount());
-                        
+
                         stmtCache.add(stmtInfo);
                     }
-                    
+
                     map.put("pscache", stmtCache);
                 }
 

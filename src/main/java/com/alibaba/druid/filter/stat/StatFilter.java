@@ -96,6 +96,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.dbType = dbType;
     }
 
+    public long getSlowSqlMillis() {
+        return slowSqlMillis;
+    }
+
     public boolean isConnectionStackTraceEnable() {
         return connectionStackTraceEnable;
     }
@@ -406,7 +410,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
-    private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult, int... updateCountArray) {
+    private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
+                                                     int... updateCountArray) {
 
         final JdbcStatementStat.Entry entry = getStatementInfo(statement);
 

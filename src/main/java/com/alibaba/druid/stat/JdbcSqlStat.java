@@ -490,10 +490,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 - 29
                 "Histogram", //
-                "LastSlowParameters", "ResultSetHoldTime", "ExecuteAndResultSetHoldTime", "FetchRowCountHistogram",
+                "LastSlowParameters", // 
+                "ResultSetHoldTime", // 
+                "ExecuteAndResultSetHoldTime", // 
+                "FetchRowCountHistogram", //
 
                 // 30
-                "EffectedRowCountHistogram", "ExecuteAndResultHoldTimeHistogram"
+                "EffectedRowCountHistogram", // 
+                "ExecuteAndResultHoldTimeHistogram"
 
         //
         };
