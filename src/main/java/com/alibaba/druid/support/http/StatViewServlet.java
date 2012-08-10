@@ -130,7 +130,7 @@ public class StatViewServlet extends HttpServlet {
 			content.append("<h2>LastSlow SQL View:</h2>");
 			content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
 			content.append("<tr>");
-			content.append("<td class='td_lable' width='130'>MaxTimespanOccurTime</td>");
+			content.append("<td class='td_lable' width='130'>SlowestSqlOccurTime</td>");
 			content.append("<td>" + format.format(sqlStat.get("MaxTimespanOccurTime")) + "</td>");
 			content.append("</tr>");
 			content.append("<tr>");
