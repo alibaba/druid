@@ -3,42 +3,54 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
 public class DruidDataSourceStatStrategyContext {
-	private DruidDataSourceStatStrategy druidDataSourceStatStrategy;
 
-	public DruidDataSourceStatStrategyContext(DruidDataSourceStatStrategy druidDataSourceStatStrategy) {
-		this.druidDataSourceStatStrategy = druidDataSourceStatStrategy;
-	}
+    private DruidDataSourceStatStrategy druidDataSourceStatStrategy;
 
-	public Map<String, Object> getSqlStatData(Integer id) {
-		return druidDataSourceStatStrategy.getSqlStatData(id);
-	}
+    public DruidDataSourceStatStrategyContext(DruidDataSourceStatStrategy druidDataSourceStatStrategy){
+        this.druidDataSourceStatStrategy = druidDataSourceStatStrategy;
+    }
 
-	public List<Map<String, Object>> getSqlStatDataList() {
-		return druidDataSourceStatStrategy.getSqlStatDataList();
-	}
+    public Map<String, Object> getSqlStatData(Integer id) {
+        return druidDataSourceStatStrategy.getSqlStatData(id);
+    }
 
-	public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
-		return druidDataSourceStatStrategy.getActiveConnectionStackTraceByDataSourceId(id);
-	}
+    public List<Map<String, Object>> getSqlStatDataList() {
+        return druidDataSourceStatStrategy.getSqlStatDataList();
+    }
 
-	public Map<String, Object> returnJSONBasicStat() {
-		return druidDataSourceStatStrategy.returnJSONBasicStat();
-	}
+    public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
+        return druidDataSourceStatStrategy.getActiveConnectionStackTraceByDataSourceId(id);
+    }
 
-	public List<Object> getDataSourceStatList() {
-		return druidDataSourceStatStrategy.getDataSourceStatList();
-	}
+    public Map<String, Object> returnJSONBasicStat() {
+        return druidDataSourceStatStrategy.returnJSONBasicStat();
+    }
 
-	public Map<String, Object> getDataSourceStatData(Integer id) {
-		return druidDataSourceStatStrategy.getDataSourceStatData(id);
-	}
+    public List<Object> getDataSourceStatList() {
+        return druidDataSourceStatStrategy.getDataSourceStatList();
+    }
 
-	public List<Map<String, Object>> getPoolingConnectionInfoByDataSourceId(Integer id) {
-		return druidDataSourceStatStrategy.getPoolingConnectionInfoByDataSourceId(id);
-	}
+    public Map<String, Object> getDataSourceStatData(Integer id) {
+        return druidDataSourceStatStrategy.getDataSourceStatData(id);
+    }
 
-	public void resetAll() {
-		druidDataSourceStatStrategy.resetAll();
-	}
+    public List<Map<String, Object>> getPoolingConnectionInfoByDataSourceId(Integer id) {
+        return druidDataSourceStatStrategy.getPoolingConnectionInfoByDataSourceId(id);
+    }
+
+    public void resetAll() {
+        druidDataSourceStatStrategy.resetAll();
+    }
+
+    public DruidDataSource getDruidDataSourceById(Integer id) {
+        return druidDataSourceStatStrategy.getDruidDataSourceById(id);
+    }
+
+    public JdbcSqlStat getSqlStatById(Integer id) {
+        return druidDataSourceStatStrategy.getSqlStatById(id);
+    }
+
 }

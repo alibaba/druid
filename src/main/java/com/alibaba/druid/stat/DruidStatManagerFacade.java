@@ -3,6 +3,8 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
 /**
  * 监控相关的对外数据暴露
  * 
@@ -15,53 +17,61 @@ import java.util.Map;
  */
 public class DruidStatManagerFacade {
 
-	private final static DruidStatManagerFacade instance = new DruidStatManagerFacade();
+    private final static DruidStatManagerFacade       instance = new DruidStatManagerFacade();
 
-	private static DruidDataSourceStatStrategyContext ctx = null; 
+    private static DruidDataSourceStatStrategyContext ctx      = null;
 
-	private static DruidDataSourceStatStrategy strategy = null;
+    private static DruidDataSourceStatStrategy        strategy = null;
 
-	static {
-		strategy = new DruidDataSourceStatJNDIStatStrategy();
-		ctx = new DruidDataSourceStatStrategyContext(strategy);
-	}
+    static {
+        strategy = new DruidDataSourceStatJNDIStatStrategy();
+        ctx = new DruidDataSourceStatStrategyContext(strategy);
+    }
 
-	private DruidStatManagerFacade() {
-	}
+    private DruidStatManagerFacade(){
+    }
 
-	public static DruidStatManagerFacade getInstance() {
-		return instance;
-	}
+    public static DruidStatManagerFacade getInstance() {
+        return instance;
+    }
 
-	public Map<String, Object> getSqlStatData(Integer id) {
-		return ctx.getSqlStatData(id);
-	}
+    public Map<String, Object> getSqlStatData(Integer id) {
+        return ctx.getSqlStatData(id);
+    }
 
-	public List<Map<String, Object>> getSqlStatDataList() {
-		return ctx.getSqlStatDataList();
-	}
+    public List<Map<String, Object>> getSqlStatDataList() {
+        return ctx.getSqlStatDataList();
+    }
 
-	public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
-		return ctx.getActiveConnectionStackTraceByDataSourceId(id);
-	}
+    public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
+        return ctx.getActiveConnectionStackTraceByDataSourceId(id);
+    }
 
-	public Map<String, Object> returnJSONBasicStat() {
-		return ctx.returnJSONBasicStat();
-	}
+    public Map<String, Object> returnJSONBasicStat() {
+        return ctx.returnJSONBasicStat();
+    }
 
-	public List<Object> getDataSourceStatList() {
-		return ctx.getDataSourceStatList();
-	}
+    public List<Object> getDataSourceStatList() {
+        return ctx.getDataSourceStatList();
+    }
 
-	public Map<String, Object> getDataSourceStatData(Integer id) {
-		return ctx.getDataSourceStatData(id);
-	}
+    public Map<String, Object> getDataSourceStatData(Integer id) {
+        return ctx.getDataSourceStatData(id);
+    }
 
-	public List<Map<String, Object>> getPoolingConnectionInfoByDataSourceId(Integer id) {
-		return ctx.getPoolingConnectionInfoByDataSourceId(id);
-	}
+    public List<Map<String, Object>> getPoolingConnectionInfoByDataSourceId(Integer id) {
+        return ctx.getPoolingConnectionInfoByDataSourceId(id);
+    }
 
-	public void resetAll() {
-		ctx.resetAll();
-	}
+    public void resetAll() {
+        ctx.resetAll();
+    }
+
+    public DruidDataSource getDruidDataSourceById(Integer id) {
+        return ctx.getDruidDataSourceById(id);
+    }
+
+    public JdbcSqlStat getSqlStatById(Integer id) {
+        return ctx.getSqlStatById(id);
+    }
 }
