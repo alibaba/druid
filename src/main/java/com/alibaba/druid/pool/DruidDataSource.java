@@ -72,7 +72,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    public final static Log         LOG                     = LogFactory.getLog(DruidDataSource.class);
+    private final static Log         LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
