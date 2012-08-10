@@ -94,6 +94,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 	for ( var i = 0; i < sqlStatList.length; i++) {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
+		newRow.insertCell(-1).innerHTML = i+1;
 		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
 		// if (sqlStat.File)
 		// newRow.insertCell(-1).innerHTML = sqlStat.File;
@@ -105,7 +106,12 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		// newRow.insertCell(-1).innerHTML = '';
 		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.TotalTime;
-		newRow.insertCell(-1).innerHTML = sqlStat.MaxTimespan;
+		//显示执行的时间比配置的均值时间慢的SQL链接
+		var lastSlowHtml = sqlStat.MaxTimespan;
+		if(sqlStat.LastSlowParameters!=null&&sqlStat.LastSlowParameters.length>0){
+			lastSlowHtml ='<a target="_blank" style="color:red" href="sql-' + sqlStat.ID + '.html">'+sqlStat.MaxTimespan+'</a>';
+		}
+		newRow.insertCell(-1).innerHTML = lastSlowHtml;
 		newRow.insertCell(-1).innerHTML = sqlStat.InTransactionCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.ErrorCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.EffectedRowCount;
@@ -120,8 +126,8 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		// hiHtml += '<a href="#' + sqlStat.ExecuteAndResultHoldTimeHistogram +
 		// '">ExecAndRsHold</a>';
 		newRow.insertCell(-1).innerHTML = '[' + sqlStat.Histogram + ']';
+		newRow.insertCell(-1).innerHTML = '[' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
 		newRow.insertCell(-1).innerHTML = '[' + sqlStat.FetchRowCountHistogram + ']';
 		newRow.insertCell(-1).innerHTML = '[' + sqlStat.EffectedRowCountHistogram + ']';
-		newRow.insertCell(-1).innerHTML = '[' + sqlStat.ExecuteAndResultHoldTimeHistogram + ']';
 	}
 }
