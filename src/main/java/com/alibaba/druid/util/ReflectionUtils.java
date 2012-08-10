@@ -19,7 +19,7 @@ public class ReflectionUtils {
         try {
             result = HttpServletRequest.class.getClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
-            LOG.debug("can'r find class in web container classLoader ", e);
+            if (LOG.isDebugEnabled()) LOG.debug("can'r find class in web container classLoader ", e);
         }
         if (result == null) {
             try {
