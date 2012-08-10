@@ -33,7 +33,6 @@ import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
-import com.alibaba.druid.proxy.jdbc.ResultSetProxyImpl;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.IOUtils;
 
@@ -223,12 +222,6 @@ public class EncodingConvertFilter extends FilterAdapter {
             Reader reader = (Reader) object;
             String text = IOUtils.read(reader);
             return new StringReader(decode(stmt.getConnectionProxy(), text));
-        }
-
-        if (object instanceof ResultSet) {
-            long resultSetId = stmt.getConnectionProxy().getDirectDataSource().createResultSetId();
-            ResultSet resultSet = (ResultSet) object;
-            return new ResultSetProxyImpl(stmt, resultSet, resultSetId, stmt.getLastExecuteSql());
         }
 
         return object;

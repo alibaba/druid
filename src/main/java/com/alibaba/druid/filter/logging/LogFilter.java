@@ -291,7 +291,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         super.connection_rollback(chain, connection);
 
         if (connectionRollbackAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("connect rollback. id " + connection.getId());
+            connectionLog("{conn " + connection.getId() + "} rollback");
         }
     }
 
@@ -300,7 +300,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         super.connection_commit(chain, connection);
 
         if (connectionCommitAfterLogEnable && isConnectionLogEnabled()) {
-            connectionLog("connect committed. id " + connection.getId());
+            connectionLog("{conn-" + connection.getId() + "} commited");
         }
     }
     
@@ -308,7 +308,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
                                                                                                            throws SQLException {
         
-        connectionLog("connect setAutoCommit " + autoCommit + ". id " + connection.getId());
+        connectionLog("{conn-" + connection.getId() + "} setAutoCommit " + autoCommit);
         chain.connection_setAutoCommit(connection, autoCommit);
     }
 
@@ -463,6 +463,55 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         }
 
         return moreRows;
+    }
+    
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
+                                                                                                                      throws SQLException {
+        Object obj = chain.callableStatement_getObject(statement, parameterIndex);
+        
+        if (obj instanceof ResultSetProxy) {
+            resultSetOpenAfter((ResultSetProxy) obj);
+        }
+        
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex,
+                                              java.util.Map<String, Class<?>> map) throws SQLException {
+        Object obj =  chain.callableStatement_getObject(statement, parameterIndex, map);
+        
+        if (obj instanceof ResultSetProxy) {
+            resultSetOpenAfter((ResultSetProxy) obj);
+        }
+        
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
+                                                                                                                        throws SQLException {
+        Object obj =  chain.callableStatement_getObject(statement, parameterName);
+        
+        if (obj instanceof ResultSetProxy) {
+            resultSetOpenAfter((ResultSetProxy) obj);
+        }
+        
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement,
+                                              String parameterName, java.util.Map<String, Class<?>> map)
+                                                                                                        throws SQLException {
+        Object obj =  chain.callableStatement_getObject(statement, parameterName, map);
+        
+        if (obj instanceof ResultSetProxy) {
+            resultSetOpenAfter((ResultSetProxy) obj);
+        }
+        
+        return obj;
     }
 
     @Override
