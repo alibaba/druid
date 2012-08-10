@@ -4,24 +4,23 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
+import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.support.JSONDruidStatService;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.StringUtils;
 
 /**
- * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
- * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
 public class StatViewServlet extends HttpServlet {
@@ -77,19 +76,22 @@ public class StatViewServlet extends HttpServlet {
 
         if (path.startsWith("/connectionInfo-") && path.endsWith(".html")) {
             Integer id = StringUtils.subStringToInteger(path, "connectionInfo-", ".");
-            returnViewConnectionInfo(id, request, response);
+            DruidDataSource datasource = druidStatManager.getDruidDataSourceById(id);
+            returnViewConnectionInfo(datasource, request, response);
             return;
         }
 
         if (path.startsWith("/activeConnectionStackTrace-") && path.endsWith(".html")) {
             Integer id = StringUtils.subStringToInteger(path, "activeConnectionStackTrace-", ".");
-            returnViewActiveConnectionStackTrace(id, request, response);
+            DruidDataSource datasource = druidStatManager.getDruidDataSourceById(id);
+            returnViewActiveConnectionStackTrace(datasource, request, response);
             return;
         }
 
         if (path.startsWith("/sql-") && path.endsWith(".html")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
-            returnViewSqlStat(druidStatManager.getSqlStatData(id), response);
+            JdbcSqlStat sqlStat = druidStatManager.getSqlStatById(id);
+            returnViewSqlStat(sqlStat, response);
             return;
         }
 
@@ -97,61 +99,63 @@ public class StatViewServlet extends HttpServlet {
         returnResourceFile(path, response);
     }
 
-    private void returnViewActiveConnectionStackTrace(Integer id, HttpServletRequest request,
+    private void returnViewActiveConnectionStackTrace(DruidDataSource datasource, HttpServletRequest request,
                                                       HttpServletResponse response) throws IOException {
+        if (datasource == null) return;
+
+        if (!datasource.isRemoveAbandoned()) {
+            response.getWriter().print(mergeTemplatePage("ERROR", "require set removeAbandoned=true"));
+            return;
+        }
 
         String text = IOUtils.readFromResource(RESOURCE_PATH + "/activeConnectionStackTrace.html");
-        text = text.replaceAll("\\{datasourceId\\}", id.toString());
+        text = text.replaceAll("\\{datasourceId\\}", String.valueOf(System.identityHashCode(datasource)));
         response.getWriter().print(text);
     }
 
-    private void returnViewConnectionInfo(Integer id, HttpServletRequest request, HttpServletResponse response)
-                                                                                                               throws IOException {
+    private void returnViewConnectionInfo(DruidDataSource datasource, HttpServletRequest request,
+                                          HttpServletResponse response) throws IOException {
+        if (datasource == null) return;
+
         String text = IOUtils.readFromResource(RESOURCE_PATH + "/connectionInfo.html");
-        text = text.replaceAll("\\{datasourceId\\}", id.toString());
+        text = text.replaceAll("\\{datasourceId\\}", String.valueOf(System.identityHashCode(datasource)));
         response.getWriter().print(text);
     }
 
-    private void returnViewSqlStat(Map<String, Object> sqlStat, HttpServletResponse response) throws IOException {
+    private void returnViewSqlStat(JdbcSqlStat sqlStat, HttpServletResponse response) throws IOException {
         if (sqlStat == null) return;
 
         StringBuilder content = new StringBuilder();
 
-        content.append("<h2>FULL SQL</h2> <h4>" + sqlStat.get("SQL") + "</h4>");
+        content.append("<h2>FULL SQL</h2> <h4>" + sqlStat.getSql() + "</h4>");
         content.append("<h2>Format View:</h2>");
         content.append("<textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;'>");
-        content.append(SQLUtils.format((String) sqlStat.get("SQL"), (String) sqlStat.get("DbType")));
+        content.append(SQLUtils.format(sqlStat.getSql(), sqlStat.getDbType()));
         content.append("</textarea><br />");
         content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
         content.append("<br />");
-<<<<<<< HEAD
-
-        List<SQLStatement> statementList = SQLUtils.parseStatements((String) sqlStat.get("SQL"),
-                                                                    (String) sqlStat.get("DbType"));
-=======
         
-		if (sqlStat.getLastSlowParameters() != null && sqlStat.getLastSlowParameters().trim().length() > 0) {
-			content.append("<h2>LastSlow SQL View:</h2>");
-			content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
-			content.append("<tr>");
-			content.append("<td class='td_lable' width='130'>MaxTimespanOccurTime</td>");
-			content.append("<td>" + format.format(sqlStat.getExecuteNanoSpanMaxOccurTime()) + "</td>");
-			content.append("</tr>");
-			content.append("<tr>");
-			content.append("<td class='td_lable' width='130'>LastSlowParameters</td>");
-			content.append("<td>" + sqlStat.getLastSlowParameters() + "</td>");
-			content.append("</tr>");
-			content.append("</table>");
-			content.append("<br />");
-		}
+        if (sqlStat.getLastSlowParameters() != null && sqlStat.getLastSlowParameters().trim().length() > 0) {
+            content.append("<h2>LastSlow SQL View:</h2>");
+            content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
+            content.append("<tr>");
+            content.append("<td class='td_lable' width='130'>MaxTimespanOccurTime</td>");
+            content.append("<td>" + format.format(sqlStat.getExecuteNanoSpanMaxOccurTime()) + "</td>");
+            content.append("</tr>");
+            content.append("<tr>");
+            content.append("<td class='td_lable' width='130'>LastSlowParameters</td>");
+            content.append("<td>" + sqlStat.getLastSlowParameters() + "</td>");
+            content.append("</tr>");
+            content.append("</table>");
+            content.append("<br />");
+        }
         
         List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType());
->>>>>>> e5365eae94e50a7b51cd1d1ab2ed0cd029738eb4
         if (!statementList.isEmpty()) {
             content.append("<h2>Parse View:</h2>");
 
             SQLStatement statemen = statementList.get(0);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, (String) sqlStat.get("DbType"));
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());
             statemen.accept(visitor);
             content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
             content.append("<tr>");
@@ -210,3 +214,4 @@ public class StatViewServlet extends HttpServlet {
         return templatePage.replaceAll("\\{title\\}", title).replaceAll("\\{content\\}", content);
     }
 }
+

@@ -1,11 +1,13 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.logging.Log;
 
 public class ConfigErrorTest extends TestCase {
 
@@ -22,12 +24,17 @@ public class ConfigErrorTest extends TestCase {
     }
 
     public void test_connect() throws Exception {
-        DruidDataSource.LOG.resetStat();
-        Assert.assertEquals(0, DruidDataSource.LOG.getErrorCount());
+        Field field = DruidDataSource.class.getDeclaredField("LOG");
+        field.setAccessible(true);
+        Log LOG = (Log) field.get(null);
+        
+        LOG.resetStat();
+        
+        Assert.assertEquals(0, LOG.getErrorCount());
         
         Connection conn = dataSource.getConnection();
         conn.close();
         
-        Assert.assertEquals(1, DruidDataSource.LOG.getErrorCount());
+        Assert.assertEquals(1, LOG.getErrorCount());
     }
 }

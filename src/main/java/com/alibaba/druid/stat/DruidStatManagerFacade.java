@@ -17,7 +17,7 @@ public class DruidStatManagerFacade {
 
 	private final static DruidStatManagerFacade instance = new DruidStatManagerFacade();
 
-	private static DruidDataSourceStatStrategyContext ctx = null;
+	private static DruidDataSourceStatStrategyContext ctx = null; 
 
 	private static DruidDataSourceStatStrategy strategy = null;
 
