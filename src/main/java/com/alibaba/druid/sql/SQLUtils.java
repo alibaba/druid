@@ -16,14 +16,18 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUtils {
+    private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
@@ -118,16 +122,22 @@ public class SQLUtils {
     }
 
     public static String format(String sql, String dbType) {
-        List<SQLStatement> statementList = toStatementList(sql, dbType);
+        try {
+            List<SQLStatement> statementList = toStatementList(sql, dbType);
 
-        StringBuilder out = new StringBuilder();
-        SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
+            StringBuilder out = new StringBuilder();
+            SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
 
-        for (SQLStatement stmt : statementList) {
-            stmt.accept(visitor);
+            for (SQLStatement stmt : statementList) {
+                stmt.accept(visitor);
+            }
+
+            return out.toString();
+        } catch (SQLParseException ex) {
+            LOG.warn("format error", ex);
+            
+            return sql;
         }
-
-        return out.toString();
     }
 
     public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList,
