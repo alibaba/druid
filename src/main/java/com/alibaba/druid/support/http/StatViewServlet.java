@@ -144,7 +144,6 @@ public class StatViewServlet extends HttpServlet {
 		List<SQLStatement> statementList = SQLUtils.parseStatements((String) sqlStat.get("SQL"),
 				(String) sqlStat.get("DbType"));
 		
-
         if (!statementList.isEmpty()) {
             content.append("<h2>Parse View:</h2>");
 
