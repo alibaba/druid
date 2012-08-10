@@ -3,21 +3,12 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ReflectionUtils;
 
 public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatStrategy{
-	private final static Log LOG = LogFactory.getLog(DruidDataSourceStatJNDIStatStrategy.class);
 
 	private Object getStrategyB() {
-		try {
-			Class<?> clazz = ReflectionUtils.getClassFromWebContainerOrCurrentClassLoader("com.alibaba.druid.stat.DruidDataSourceStatDefaultStrategy");
-			return clazz.newInstance();
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
-			return null;
-		}
+		return ReflectionUtils.getClassFromWebContainerOrCurrentClassLoader("com.alibaba.druid.stat.DruidDataSourceStatDefaultStrategy");
 	}
 
 	@SuppressWarnings("unchecked")
