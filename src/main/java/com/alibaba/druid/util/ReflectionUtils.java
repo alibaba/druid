@@ -42,10 +42,20 @@ public class ReflectionUtils {
         }
     }
 
-    public static Object callObjectMethod(Object obj, String methodName, Object... methodParams) {
+    public static Object callObjectMethod(Object obj, String methodName) {
         try {
             Method m = obj.getClass().getMethod(methodName);
-            return m.invoke(obj, methodParams);
+            return m.invoke(obj);
+        } catch (Exception e) {
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
+        }
+    }
+    
+    public static Object callObjectMethod(Object obj, String methodName, Integer id) {
+        try {
+            Method m = obj.getClass().getMethod(methodName, Integer.class);
+            return m.invoke(obj, id);
         } catch (Exception e) {
             LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
             return null;
