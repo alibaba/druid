@@ -7,7 +7,7 @@ import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 
 
-public class SlowSqlMillisTest extends TestCase {
+public class SlowSqlMillisTest2 extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
@@ -16,12 +16,18 @@ public class SlowSqlMillisTest extends TestCase {
         dataSource.setTestOnBorrow(false);
         dataSource.setTestOnReturn(false);
         dataSource.setTestWhileIdle(false);
-        dataSource.setConnectionProperties("druid.stat.slowSqlMillis=500");
+        System.setProperty("druid.stat.slowSqlMillis", "500");
         dataSource.setFilters("stat");
+        
+        {
+            StatFilter filter = (StatFilter) dataSource.getProxyFilters().get(0);
+            Assert.assertEquals(3000, filter.getSlowSqlMillis());
+        }
         dataSource.init();
     }
 
     protected void tearDown() throws Exception {
+        System.clearProperty("druid.stat.slowSqlMillis");
         dataSource.close();
     }
 
