@@ -37,7 +37,7 @@ public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatS
             if (clazzFromWebContainer != null) {
                 Object clazzFromWebContainerInstance = clazzFromWebContainer.newInstance();
                 if (!strategyList.contains(clazzFromWebContainerInstance)) {
-                    if (clazzFromCurClassLoader != null && clazzFromWebContainerInstance != clazzFromCurClassLoader) {
+                    if (clazzFromCurClassLoader != null && clazzFromWebContainer != clazzFromCurClassLoader) {
                         strategyList.add(clazzFromWebContainerInstance);
                     }
                 }
