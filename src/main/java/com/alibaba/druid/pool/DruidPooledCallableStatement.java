@@ -24,6 +24,7 @@ import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.NClob;
 import java.sql.Ref;
+import java.sql.ResultSet;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -196,10 +197,24 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     @Override
     public Object getObject(int parameterIndex) throws SQLException {
         try {
-            return stmt.getObject(parameterIndex);
+            Object obj = stmt.getObject(parameterIndex);
+            return wrapObject(obj);
         } catch (Throwable t) {
             throw checkException(t);
         }
+    }
+
+    private Object wrapObject(Object obj) {
+        if (obj instanceof ResultSet) {
+            ResultSet rs = (ResultSet) obj;
+            
+            DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
+            resultSetTrace.add(poolableResultSet);
+            
+            obj = poolableResultSet;
+        }
+        
+        return obj;
     }
 
     @Override
@@ -214,7 +229,8 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     @Override
     public Object getObject(int parameterIndex, java.util.Map<String, Class<?>> map) throws SQLException {
         try {
-            return stmt.getObject(parameterIndex, map);
+            Object obj = stmt.getObject(parameterIndex, map);
+            return wrapObject(obj);
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -664,7 +680,8 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     @Override
     public Object getObject(String parameterName) throws SQLException {
         try {
-            return stmt.getObject(parameterName);
+            Object obj = stmt.getObject(parameterName);
+            return wrapObject(obj);
         } catch (Throwable t) {
             throw checkException(t);
         }
@@ -682,7 +699,8 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
     @Override
     public Object getObject(String parameterName, java.util.Map<String, Class<?>> map) throws SQLException {
         try {
-            return stmt.getObject(parameterName, map);
+            Object obj = stmt.getObject(parameterName, map);
+            return wrapObject(obj);
         } catch (Throwable t) {
             throw checkException(t);
         }

@@ -3336,7 +3336,65 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterIndex);
         }
-        return statement.getRawObject().getObject(parameterIndex);
+        
+        Object obj = statement.getRawObject().getObject(parameterIndex);
+        
+        if (obj instanceof ResultSet) {
+            return wrap(statement, (ResultSet) obj);
+        }
+        
+        return obj;
+    }
+    
+    @Override
+    public Object callableStatement_getObject(CallableStatementProxy statement, int parameterIndex,
+                                              java.util.Map<String, Class<?>> map) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().callableStatement_getObject(this, statement, parameterIndex, map);
+        }
+        
+        
+        Object obj = statement.getRawObject().getObject(parameterIndex, map);
+        
+        if (obj instanceof ResultSet) {
+            return wrap(statement, (ResultSet) obj);
+        }
+        
+        return obj;
+    }
+    
+
+    @Override
+    public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName)
+                                                                                                     throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().callableStatement_getObject(this, statement, parameterName);
+        }
+        
+        Object obj = statement.getRawObject().getObject(parameterName);
+        
+        if (obj instanceof ResultSet) {
+            return wrap(statement, (ResultSet) obj);
+        }
+        
+        return obj;
+    }
+    
+
+    @Override
+    public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName,
+                                              java.util.Map<String, Class<?>> map) throws SQLException {
+        if (this.pos < filterSize) {
+            return nextFilter().callableStatement_getObject(this, statement, parameterName, map);
+        }
+        
+        Object obj = statement.getRawObject().getObject(parameterName, map);
+        
+        if (obj instanceof ResultSet) {
+            return wrap(statement, (ResultSet) obj);
+        }
+        
+        return obj;
     }
 
     @Override
@@ -3346,15 +3404,6 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().callableStatement_getBigDecimal(this, statement, parameterIndex);
         }
         return statement.getRawObject().getBigDecimal(parameterIndex);
-    }
-
-    @Override
-    public Object callableStatement_getObject(CallableStatementProxy statement, int parameterIndex,
-                                              java.util.Map<String, Class<?>> map) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().callableStatement_getObject(this, statement, parameterIndex, map);
-        }
-        return statement.getRawObject().getObject(parameterIndex, map);
     }
 
     @Override
@@ -3821,30 +3870,12 @@ public class FilterChainImpl implements FilterChain {
     }
 
     @Override
-    public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName)
-                                                                                                     throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().callableStatement_getObject(this, statement, parameterName);
-        }
-        return statement.getRawObject().getObject(parameterName);
-    }
-
-    @Override
     public BigDecimal callableStatement_getBigDecimal(CallableStatementProxy statement, String parameterName)
                                                                                                              throws SQLException {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getBigDecimal(this, statement, parameterName);
         }
         return statement.getRawObject().getBigDecimal(parameterName);
-    }
-
-    @Override
-    public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName,
-                                              java.util.Map<String, Class<?>> map) throws SQLException {
-        if (this.pos < filterSize) {
-            return nextFilter().callableStatement_getObject(this, statement, parameterName, map);
-        }
-        return statement.getRawObject().getObject(parameterName, map);
     }
 
     @Override

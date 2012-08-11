@@ -26,7 +26,7 @@ public class PGSelectParser extends SQLSelectParser {
     public PGSelectParser(String sql) throws ParserException{
         this(new PGExprParser(sql));
     }
-    
+
     protected SQLExprParser createExprParser() {
         return new PGExprParser(lexer);
     }
@@ -133,8 +133,8 @@ public class PGSelectParser extends SQLSelectParser {
             if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                 lexer.nextToken();
             } else {
-            	//TODO
-                //throw new ParserException("expect 'ROW' or 'ROWS'");
+                // TODO
+                // throw new ParserException("expect 'ROW' or 'ROWS'");
             }
         }
 
@@ -175,22 +175,24 @@ public class PGSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.UPDATE) {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.UPDATE);
+                lexer.nextToken();
             } else if (lexer.token() == Token.SHARE) {
                 forClause.setOption(PGSelectQueryBlock.ForClause.Option.SHARE);
+                lexer.nextToken();
             } else {
                 throw new ParserException("expect 'FIRST' or 'NEXT'");
             }
 
-            accept(Token.OF);
-
-            for (;;) {
-                SQLExpr expr = this.createExprParser().expr();
-                forClause.getOf().add(expr);
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                } else {
-                    break;
+            if (lexer.token() == Token.OF) {
+                for (;;) {
+                    SQLExpr expr = this.createExprParser().expr();
+                    forClause.getOf().add(expr);
+                    if (lexer.token() == Token.COMMA) {
+                        lexer.nextToken();
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
             }
 
@@ -208,31 +210,31 @@ public class PGSelectParser extends SQLSelectParser {
     protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
             String alias = this.as();
-            
+
             if (lexer.token() == Token.LPAREN) {
                 SQLExprTableSource exprTableSource = (SQLExprTableSource) tableSource;
-                
+
                 PGFunctionTableSource functionTableSource = new PGFunctionTableSource(exprTableSource.getExpr());
                 functionTableSource.setAlias(alias);
-                
+
                 lexer.nextToken();
                 parserParameters(functionTableSource.getParameters());
                 accept(Token.RPAREN);
-                
+
                 return super.parseTableSourceRest(functionTableSource);
             }
         }
-        
+
         return super.parseTableSourceRest(tableSource);
     }
-    
+
     private void parserParameters(List<PGParameter> parameters) {
         for (;;) {
             PGParameter parameter = new PGParameter();
 
             parameter.setName(this.exprParser.name());
             parameter.setDataType(this.exprParser.parseDataType());
-            
+
             parameters.add(parameter);
             if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI) {
                 lexer.nextToken();
