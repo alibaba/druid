@@ -39,15 +39,15 @@ import java.util.Map;
 
 public class MockCallableStatement extends MockPreparedStatement implements CallableStatement {
 
-    private final List<Object> parameters = new ArrayList<Object>();
+    private final List<Object> outParameters = new ArrayList<Object>();
     private boolean            wasNull    = false;
 
     public MockCallableStatement(MockConnection conn, String sql){
         super(conn, sql);
     }
 
-    public List<Object> getParameters() {
-        return parameters;
+    public List<Object> getOutParameters() {
+        return outParameters;
     }
 
     @Override
@@ -56,8 +56,8 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
             throw new SQLException();
         }
 
-        if (parameters.size() >= parameterIndex - 1) {
-            parameters.add(null);
+        if (outParameters.size() >= parameterIndex - 1) {
+            outParameters.add(null);
         } else {
             throw new SQLException();
         }
@@ -246,7 +246,7 @@ public class MockCallableStatement extends MockPreparedStatement implements Call
 
     @Override
     public Object getObject(int parameterIndex) throws SQLException {
-        Object obj = parameters.get(parameterIndex - 1);
+        Object obj = outParameters.get(parameterIndex - 1);
 
         wasNull = (obj == null);
 
