@@ -13,19 +13,21 @@ import com.alibaba.druid.support.logging.LogFactory;
 public class ReflectionUtils {
 
     private final static Log LOG = LogFactory.getLog(ReflectionUtils.class);
+    
+    public static Class<?> loadClass(ClassLoader classLoader, String className) {
+        try {
+            return classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
 
     public static Class<?> getClassFromWebContainer(String className) {
-        Class<?> result = null;
-        try {
-            result = HttpServletRequest.class.getClassLoader().loadClass(className);
-        } catch (ClassNotFoundException e) {
-            if (LOG.isDebugEnabled()) LOG.debug("can'r find class in web container classLoader ", e);
-        }
-        return result;
+        return loadClass(HttpServletRequest.class.getClassLoader(), className);
     }
 
     public static Class<?> getClassFromCurrentClassLoader(String className) {
-        Class<?> result = null;
+        Class<?> result = loadClass(Thread.currentThread().getContextClassLoader(), className);
         try {
             result = Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
