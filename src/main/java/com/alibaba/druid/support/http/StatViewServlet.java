@@ -58,11 +58,11 @@ public class StatViewServlet extends HttpServlet {
         if (contextPath == null) { // root context
             contextPath = "";
         }
-
+        String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
 
         if (path.length() == 0 || "/".equals(path)) {
-            returnResourceFile("/index.html", response);
+            returnResourceFile("/index.html", uri, response);
             return;
         }
 
@@ -94,7 +94,7 @@ public class StatViewServlet extends HttpServlet {
         }
 
         // find file in resources path
-        returnResourceFile(path, response);
+        returnResourceFile(path, uri, response);
     }
 
     private void returnViewActiveConnectionStackTrace(Integer id, HttpServletRequest request,
@@ -193,8 +193,12 @@ public class StatViewServlet extends HttpServlet {
 
     }
 
-    private void returnResourceFile(String fileName, HttpServletResponse response) throws ServletException, IOException {
+    private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException, IOException {
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
+        if(text == null) {
+            response.sendRedirect(uri + "/index.html");
+            return;
+        }
         if (fileName.endsWith(".css")) {
             response.setContentType("text/css;charset=utf-8");
         } else if (fileName.endsWith(".js")) {
