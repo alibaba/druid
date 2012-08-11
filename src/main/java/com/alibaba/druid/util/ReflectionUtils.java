@@ -72,11 +72,39 @@ public class ReflectionUtils {
         }
     }
 
-    public static Method getObjectMethod(Object obj, String methodName, Integer id) {
+    public static Method getObjectMethod(Object obj, String methodName, Class<?>... parameterTypes) {
         try {
-            return obj.getClass().getMethod(methodName, Integer.class);
+            return obj.getClass().getMethod(methodName, parameterTypes);
         } catch (Exception e) {
             LOG.warn("getObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
+        }
+    }
+
+    public static Object callObjectMethod(Object obj, String methodName, Class<?>[] parameterTypes, Object[] parameters) {
+        try {
+            Method m = getObjectMethod(obj, methodName, parameterTypes);
+            return m.invoke(obj, parameters);
+        } catch (Exception e) {
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
+        }
+    }
+
+    public static Object callObjectMethod(Object obj, Method m, Object[] parameters) {
+        try {
+            return m.invoke(obj, parameters);
+        } catch (Exception e) {
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + m.getName(), e);
+            return null;
+        }
+    } 
+
+    public static Object callObjectMethod(Object obj, Method m) {
+        try {
+            return m.invoke(obj);
+        } catch (Exception e) {
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + m.getName(), e);
             return null;
         }
     }
@@ -87,6 +115,24 @@ public class ReflectionUtils {
             return m.invoke(obj, id);
         } catch (Exception e) {
             LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
+        }
+    }
+
+    public static Method getObjectMethod(Object obj, String methodName, Integer id) {
+        try {
+            return obj.getClass().getMethod(methodName, Integer.class);
+        } catch (Exception e) {
+            LOG.warn("getObjectMethod fail:class=" + obj.getClass().getName() + " method=" + methodName, e);
+            return null;
+        }
+    }
+
+    public static Object callObjectMethod(Object obj, Method m, Integer id) {
+        try {
+            return m.invoke(obj, id);
+        } catch (Exception e) {
+            LOG.warn("callObjectMethod fail:class=" + obj.getClass().getName() + " method=" + m.getName(), e);
             return null;
         }
     }

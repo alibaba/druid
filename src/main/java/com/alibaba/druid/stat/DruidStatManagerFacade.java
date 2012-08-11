@@ -3,8 +3,6 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 /**
  * 监控相关的对外数据暴露
  * 
@@ -67,11 +65,11 @@ public class DruidStatManagerFacade {
         ctx.resetAll();
     }
 
-    public DruidDataSource getDruidDataSourceById(Integer id) {
+    public Object getDruidDataSourceById(Integer id) {
         return ctx.getDruidDataSourceById(id);
     }
 
-    public JdbcSqlStat getSqlStatById(Integer id) {
+    public Object getSqlStatById(Integer id) {
         return ctx.getSqlStatById(id);
     }
 }

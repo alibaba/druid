@@ -3,8 +3,6 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public interface DruidDataSourceStatStrategy {
 
     public Map<String, Object> getSqlStatData(Integer id);
@@ -23,7 +21,7 @@ public interface DruidDataSourceStatStrategy {
 
     public void resetAll();
 
-    public DruidDataSource getDruidDataSourceById(Integer id);
+    public Object getDruidDataSourceById(Integer id);
 
-    public JdbcSqlStat getSqlStatById(Integer id);
+    public Object getSqlStatById(Integer id);
 }

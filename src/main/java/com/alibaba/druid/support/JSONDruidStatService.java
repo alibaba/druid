@@ -27,8 +27,9 @@ public class JSONDruidStatService {
     private final static int                  DEFAULT_PAGE           = 1;
     private final static int                  DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
     private static final String               DEFAULT_ORDER_TYPE     = "asc";
+    private static final String               DEFAULT_ORDERBY        = "SQL";
 
-    private JSONDruidStatService() {
+    private JSONDruidStatService(){
     }
 
     public static JSONDruidStatService getInstance() {
@@ -85,19 +86,35 @@ public class JSONDruidStatService {
     }
 
     private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
-        String orderBy = parameters.get("orderBy");
-        String orderType = parameters.get("orderType");
-        Integer page = Integer.parseInt(parameters.get("page"));
-        Integer perPageCount = Integer.parseInt(parameters.get("perPageCount"));
+        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
+
+        // when open the stat page before executing some sql
+        if (array == null || array.isEmpty()) return null;
+
+        // when parameters is null
+        String orderBy, orderType = null;
+        Integer page, perPageCount = null;
+        if (parameters == null) {
+            orderBy = DEFAULT_ORDER_TYPE;
+            orderType = DEFAULT_ORDER_TYPE;
+            page = DEFAULT_PAGE;
+            perPageCount = DEFAULT_PER_PAGE_COUNT;
+        } else {
+            orderBy = parameters.get("orderBy");
+            orderType = parameters.get("orderType");
+            page = Integer.parseInt(parameters.get("page"));
+            perPageCount = Integer.parseInt(parameters.get("perPageCount"));
+        }
+
+        // others,such as order
+        orderBy = orderBy == null ? DEFAULT_ORDERBY : orderBy;
+        orderType = orderType == null ? DEFAULT_ORDER_TYPE : orderType;
+        page = page == null ? DEFAULT_PAGE : page;
+        perPageCount = perPageCount == null ? DEFAULT_PER_PAGE_COUNT : perPageCount;
 
         if (!"desc".equals(orderType)) orderType = DEFAULT_ORDER_TYPE;
 
-        if (page == null) page = DEFAULT_PAGE;
-        if (perPageCount == null) perPageCount = DEFAULT_PER_PAGE_COUNT;
-
-        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
-
-        // orderby
+        // orderby the statData array
         if (orderBy != null && orderBy.trim().length() != 0) {
             Collections.sort(array, new MapComparator<String, Object>(orderBy, DEFAULT_ORDER_TYPE.equals(orderType)));
         }

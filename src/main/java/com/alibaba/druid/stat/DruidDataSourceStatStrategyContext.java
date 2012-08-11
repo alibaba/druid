@@ -3,8 +3,6 @@ package com.alibaba.druid.stat;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class DruidDataSourceStatStrategyContext {
 
     private DruidDataSourceStatStrategy druidDataSourceStatStrategy;
@@ -45,11 +43,11 @@ public class DruidDataSourceStatStrategyContext {
         druidDataSourceStatStrategy.resetAll();
     }
 
-    public DruidDataSource getDruidDataSourceById(Integer id) {
+    public Object getDruidDataSourceById(Integer id) {
         return druidDataSourceStatStrategy.getDruidDataSourceById(id);
     }
 
-    public JdbcSqlStat getSqlStatById(Integer id) {
+    public Object getSqlStatById(Integer id) {
         return druidDataSourceStatStrategy.getSqlStatById(id);
     }
 

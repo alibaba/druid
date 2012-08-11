@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ReflectionUtils;
@@ -19,11 +18,6 @@ public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatS
 
     private final static HashMap<Object, HashMap<String, Method>> classMethodHM = new HashMap<Object, HashMap<String, Method>>();
 
-    private final static String[]                                 methodNameArr = new String[] { "getSqlStatData",
-            "getSqlStatDataList", "getActiveConnectionStackTraceByDataSourceId", "returnJSONBasicStat",
-            "getDataSourceStatList", "getDataSourceStatData", "getPoolingConnectionInfoByDataSourceId", "resetAll",
-            "getDruidDataSourceById", "getSqlStatById"                         };
-
     public DruidDataSourceStatJNDIStatStrategy(){
         init();
     }
@@ -34,48 +28,50 @@ public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatS
             String className = "com.alibaba.druid.stat.DruidDataSourceStatDefaultStrategy";
             Class<?> clazzFromWebContainer = ReflectionUtils.getClassFromWebContainer(className);
             Class<?> clazzFromCurClassLoader = ReflectionUtils.getClassFromCurrentClassLoader(className);
-            if (clazzFromWebContainer != null) strategyList.add(clazzFromWebContainer.newInstance());
-            if (clazzFromCurClassLoader != null) strategyList.add(clazzFromCurClassLoader.newInstance());
-
-            // cache the method
-            Object obj = null;
-            for (int i = 0; i < strategyList.size(); i++) {
-                obj = strategyList.get(i);
-                HashMap<String, Method> methodHM = null;
-                String methodName = null;
-                for (int j = 0; j < methodNameArr.length; j++) {
-                    methodHM = new HashMap<String, Method>();
-                    methodName = methodNameArr[j];
-                    methodHM.put(methodName, ReflectionUtils.getObjectMethod(obj, methodName));
+            if (clazzFromCurClassLoader != null) {
+                Object clazzFromCurClassLoaderInstance = clazzFromCurClassLoader.newInstance();
+                if (!strategyList.contains(clazzFromCurClassLoaderInstance)) {
+                    strategyList.add(clazzFromCurClassLoaderInstance);
                 }
-                classMethodHM.put(obj, methodHM);
+            }
+            if (clazzFromWebContainer != null) {
+                Object clazzFromWebContainerInstance = clazzFromWebContainer.newInstance();
+                if (!strategyList.contains(clazzFromWebContainerInstance)) {
+                    if (clazzFromCurClassLoader != null && clazzFromWebContainerInstance != clazzFromCurClassLoader) {
+                        strategyList.add(clazzFromWebContainerInstance);
+                    }
+                }
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Object invoke(String methodName, Integer methodParam) {
+    private Object invoke(String methodName, Integer id) {
         Object result = null;
         try {
             HashMap<String, Method> hm = null;
             Object invokeRes = null;
             Object obj = null;
+            Method method = null;
             for (int i = 0; i < strategyList.size(); i++) {
                 obj = strategyList.get(i);
                 hm = classMethodHM.get(obj);
-                if (hm.containsKey(methodName)) {
-                    if (methodParam == null) {
-                        invokeRes = hm.get(methodName).invoke(obj);
+                if (hm != null) {
+                    if (hm.containsKey(methodName)) {
+                        method = hm.get(methodName);
+                        if (id == null) {
+                            invokeRes = ReflectionUtils.callObjectMethod(obj, method);
+                        } else {
+                            invokeRes = ReflectionUtils.callObjectMethod(obj, method, id);
+                        }
+                        result = invokeMapResHandler(result, invokeRes);
                     } else {
-                        invokeRes = hm.get(methodName).invoke(obj, methodParam);
+                        result = cacheMethodAndRtnInvodeRes(hm, obj, methodName, id);
                     }
-                    if (invokeRes instanceof Map) {
-                        result = invokeMapResHandler(null, (Map<String, Object>) invokeRes);
-                    } else if (invokeRes instanceof List) {
-                        result = invokeListResHandler(null, (List<Map<String, Object>>) invokeRes);
-                    }
+                } else {
+                    hm = new HashMap<String, Method>();
+                    result = cacheMethodAndRtnInvodeRes(hm, obj, methodName, id);
                 }
             }
         } catch (Exception e) {
@@ -84,24 +80,50 @@ public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatS
         return result;
     }
 
-    private Map<String, Object> invokeMapResHandler(Map<String, Object> finalRs, Map<String, Object> invokeRes) {
-        Map<String, Object> res = null;
-        if (finalRs == null) {
-            res = finalRs;
+    private Object cacheMethodAndRtnInvodeRes(HashMap<String, Method> methodHM, Object obj, String methodName,
+                                              Integer id) throws Exception {
+        Method method = null;
+        Object invokeRes = null;
+        if (id == null) {
+            method = ReflectionUtils.getObjectMethod(obj, methodName);
+            invokeRes = ReflectionUtils.callObjectMethod(obj, method);
         } else {
-            finalRs.putAll(invokeRes);
-            res = finalRs;
+            method = ReflectionUtils.getObjectMethod(obj, methodName, id);
+            invokeRes = ReflectionUtils.callObjectMethod(obj, method, id);
         }
-        return res;
+        methodHM.put(methodName, method);
+        classMethodHM.put(obj, methodHM);
+        return invokeRes;
     }
 
-    private List<?> invokeListResHandler(List<Map<String, Object>> finalRs, List<Map<String, Object>> invokeRes) {
-        List<Map<String, Object>> res = null;
+    @SuppressWarnings("unchecked")
+    private Object invokeMapResHandler(Object finalRs, Object invokeRes) {
+        Object res = null;
         if (finalRs == null) {
-            res = finalRs;
+            if (invokeRes instanceof Map) {
+                res = (Map<String, Object>) invokeRes;
+            } else if (invokeRes instanceof List) {
+                res = (List<Map<String, Object>>) invokeRes;
+            } else {
+                res = invokeRes;
+            }
         } else {
-            finalRs.addAll(invokeRes);
-            res = finalRs;
+            if (invokeRes instanceof Map) {
+                Map<String, Object> finalRs_ = (Map<String, Object>) finalRs;
+                Map<String, Object> invokeRes_ = (Map<String, Object>) invokeRes;
+                if (invokeRes != null) finalRs_.putAll(invokeRes_);
+                res = finalRs_;
+            } else if (invokeRes instanceof List) {
+                List<Map<String, Object>> finalRs_ = (List<Map<String, Object>>) finalRs;
+                List<Map<String, Object>> invokeRes_ = (List<Map<String, Object>>) invokeRes;
+                if (invokeRes != null) finalRs_.addAll(invokeRes_);
+                res = finalRs_;
+            } else {
+                final List list = new ArrayList();
+                list.add(finalRs);
+                list.add(invokeRes);
+                res = list;// merge the others class type,but in this
+            }
         }
         return res;
     }
@@ -141,16 +163,16 @@ public class DruidDataSourceStatJNDIStatStrategy implements DruidDataSourceStatS
         return (List<Map<String, Object>>) invoke("getPoolingConnectionInfoByDataSourceId", id);
     }
 
+    public Object getDruidDataSourceById(Integer id) {
+        return invoke("getDruidDataSourceById", id);
+    }
+
+    public Object getSqlStatById(Integer id) {
+        return invoke("getSqlStatById", id);
+    }
+
     public void resetAll() {
         invoke("resetAll", null);
-    }
-
-    public DruidDataSource getDruidDataSourceById(Integer id) {
-        return (DruidDataSource) invoke("getDruidDataSourceById", id);
-    }
-
-    public JdbcSqlStat getSqlStatById(Integer id) {
-        return (JdbcSqlStat) invoke("getSqlStatById", id);
     }
 
 }
