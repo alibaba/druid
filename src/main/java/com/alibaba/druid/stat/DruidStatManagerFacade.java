@@ -22,7 +22,7 @@ public class DruidStatManagerFacade {
     private static DruidDataSourceStatStrategy        strategy = null;
 
     static {
-        strategy = new DruidDataSourceStatJNDIStatStrategy();
+        strategy = new DruidDataSourceStatReflectStatStrategy();
         ctx = new DruidDataSourceStatStrategyContext(strategy);
     }
 
