@@ -16,8 +16,11 @@
 package com.alibaba.druid.stat;
 
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,124 +38,178 @@ import javax.management.openmbean.TabularType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.ConcurrentIdentityHashMap;
 import com.alibaba.druid.util.JMXUtils;
 
+@SuppressWarnings("rawtypes")
 public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBean {
 
-    private final static Log                                                    LOG         = LogFactory.getLog(DruidDataSourceStatManager.class);
+    public final static String                      SYS_PROP_INSTANCES = "druid.dataSources";
 
-    private final static DruidDataSourceStatManager                             instance    = new DruidDataSourceStatManager();
+    private final static Log                        LOG                = LogFactory.getLog(DruidDataSourceStatManager.class);
 
-    private final AtomicLong                                                    resetCount  = new AtomicLong();
+    private final static DruidDataSourceStatManager instance           = new DruidDataSourceStatManager();
+
+    private final AtomicLong                        resetCount         = new AtomicLong();
 
     // global instances
-    private static final ConcurrentIdentityHashMap<DruidDataSource, ObjectName> dataSources = new ConcurrentIdentityHashMap<DruidDataSource, ObjectName>();
+    private static IdentityHashMap                  dataSources;
 
-    private final static String                                                 MBEAN_NAME  = "com.alibaba.druid:type=DruidDataSourceStat";
+    private final static String                     MBEAN_NAME         = "com.alibaba.druid:type=DruidDataSourceStat";
 
     public static DruidDataSourceStatManager getInstance() {
         return instance;
     }
-    
+
     public static void cear() {
-        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-        for (Map.Entry<DruidDataSource, ObjectName> entry : dataSources.entrySet()) {
-            ObjectName objectName = entry.getValue();
-            if (objectName == null) {
-                continue;
+        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+
+        synchronized (dataSources) {
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            for (Object item : dataSources.entrySet()) {
+                Map.Entry entry = (Map.Entry) item;
+                ObjectName objectName = (ObjectName) entry.getValue();
+
+                if (objectName == null) {
+                    continue;
+                }
+
+                try {
+                    mbeanServer.unregisterMBean(objectName);
+                } catch (JMException e) {
+                    LOG.error(e.getMessage(), e);
+                }
             }
-            try {
-                mbeanServer.unregisterMBean(objectName);
-            } catch (JMException e) {
-                LOG.error(e.getMessage(), e);
-            }
+            dataSources.clear();
         }
-        dataSources.clear();
     }
 
-    public synchronized static ObjectName add(DruidDataSource dataSource, String name) {
-        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-        if (dataSources.size() == 0) {
-            try {
+    @SuppressWarnings("unchecked")
+    public static IdentityHashMap<Object, ObjectName> getInstances() {
+        if (dataSources == null) {
+            dataSources = getInstances0();
+        }
 
-                ObjectName objectName = new ObjectName(MBEAN_NAME);
-                if (!mbeanServer.isRegistered(objectName)) {
-                    mbeanServer.registerMBean(instance, objectName);
+        return dataSources;
+    }
+
+    @SuppressWarnings("unchecked")
+    static IdentityHashMap<Object, ObjectName> getInstances0() {
+        Properties properties = System.getProperties();
+        IdentityHashMap<Object, ObjectName> instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
+
+        if (instances == null) {
+            synchronized (properties) {
+                instances = (IdentityHashMap<Object, ObjectName>) properties.get(SYS_PROP_INSTANCES);
+
+                if (instances == null) {
+                    instances = new IdentityHashMap<Object, ObjectName>();
+                    properties.put(SYS_PROP_INSTANCES, instances);
                 }
-            } catch (JMException ex) {
-                LOG.error("register mbean error", ex);
             }
         }
 
-        ObjectName objectName = null;
-        if (name != null) {
-            try {
-                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
-                mbeanServer.registerMBean(dataSource, objectName);
-            } catch (JMException ex) {
-                LOG.error("register mbean error", ex);
-                objectName = null;
-            }
-        }
+        return instances;
+    }
 
-        if (objectName == null) {
-            try {
-                int id = System.identityHashCode(dataSource);
-                objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
-                mbeanServer.registerMBean(dataSource, objectName);
-            } catch (JMException ex) {
-                LOG.error("register mbean error", ex);
-                objectName = null;
-            }
-        }
+    public synchronized static ObjectName add(Object dataSource, String name) {
+        final IdentityHashMap<Object, ObjectName> dataSources = getInstances();
 
-        dataSources.put(dataSource, objectName);
-        return objectName;
+        synchronized (dataSources) {
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+            if (dataSources.size() == 0) {
+                try {
+
+                    ObjectName objectName = new ObjectName(MBEAN_NAME);
+                    if (!mbeanServer.isRegistered(objectName)) {
+                        mbeanServer.registerMBean(instance, objectName);
+                    }
+                } catch (JMException ex) {
+                    LOG.error("register mbean error", ex);
+                }
+            }
+
+            ObjectName objectName = null;
+            if (name != null) {
+                try {
+                    objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + name);
+                    mbeanServer.registerMBean(dataSource, objectName);
+                } catch (JMException ex) {
+                    LOG.error("register mbean error", ex);
+                    objectName = null;
+                }
+            }
+
+            if (objectName == null) {
+                try {
+                    int id = System.identityHashCode(dataSource);
+                    objectName = new ObjectName("com.alibaba.druid:type=DruidDataSource,id=" + id);
+                    mbeanServer.registerMBean(dataSource, objectName);
+                } catch (JMException ex) {
+                    LOG.error("register mbean error", ex);
+                    objectName = null;
+                }
+            }
+
+            dataSources.put(dataSource, objectName);
+            return objectName;
+        }
     }
 
     public synchronized static void remove(DruidDataSource dataSource) {
-        ObjectName objectName = dataSources.remove(dataSource);
+        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
 
-        if (objectName == null) {
-            objectName = dataSource.getObjectName();
-        }
+        synchronized (dataSources) {
+            ObjectName objectName = (ObjectName) dataSources.remove(dataSource);
 
-        if (objectName == null) {
-            LOG.error("unregister mbean failed. url " + dataSource.getUrl());
-            return;
-        }
-
-        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-
-        if (objectName != null) {
-            try {
-                mbeanServer.unregisterMBean(objectName);
-            } catch (JMException ex) {
-                LOG.error("unregister mbean error", ex);
+            if (objectName == null) {
+                objectName = dataSource.getObjectName();
             }
-        }
 
-        if (dataSources.size() == 0) {
-            try {
-                mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
-            } catch (JMException ex) {
-                LOG.error("unregister mbean error", ex);
+            if (objectName == null) {
+                LOG.error("unregister mbean failed. url " + dataSource.getUrl());
+                return;
+            }
+
+            MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+
+            if (objectName != null) {
+                try {
+                    mbeanServer.unregisterMBean(objectName);
+                } catch (JMException ex) {
+                    LOG.error("unregister mbean error", ex);
+                }
+            }
+
+            if (dataSources.size() == 0) {
+                try {
+                    mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
+                } catch (JMException ex) {
+                    LOG.error("unregister mbean error", ex);
+                }
             }
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Set<DruidDataSource> getDruidDataSourceInstances() {
         return dataSources.keySet();
     }
 
     public void reset() {
-        final Set<DruidDataSource> dataSources = getDruidDataSourceInstances();
-        for (DruidDataSource dataSource : dataSources) {
-            dataSource.resetStat();
-        }
+        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
 
-        resetCount.incrementAndGet();
+        synchronized (dataSources) {
+            for (Object item : dataSources.keySet()) {
+                try {
+                    Method method = item.getClass().getMethod("resetStat");
+                    method.invoke(item);
+                } catch (Exception e) {
+                    LOG.error("resetStat error", e);
+                }
+            }
+
+            resetCount.incrementAndGet();
+        }
     }
 
     public long getResetCount() {
