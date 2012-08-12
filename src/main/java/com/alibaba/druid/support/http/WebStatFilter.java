@@ -1,6 +1,9 @@
 package com.alibaba.druid.support.http;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,6 +24,8 @@ import com.alibaba.druid.support.http.stat.WebURIStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidWebUtils;
+import com.alibaba.druid.util.PatternMatcher;
+import com.alibaba.druid.util.ServletPathMatcher;
 
 public class WebStatFilter implements Filter {
 
@@ -28,7 +33,13 @@ public class WebStatFilter implements Filter {
 
     private WebAppStat                   webAppStat                = null;
     private WebStatFilterContextListener statFilterContextListener = new WebStatFilterContextListener();
+    /**
+     * PatternMatcher used in determining which paths to react to for a given request.
+     */
+    protected PatternMatcher             pathMatcher               = new ServletPathMatcher();
 
+    private final String                 EXCLUSIONS                = "exclusions";
+    private Set<String>                  excludesPattern;
     private boolean                      createSession             = false;
 
     @Override
@@ -38,9 +49,13 @@ public class WebStatFilter implements Filter {
 
         final String requestURI = getRequestURI(httpRequest);
 
-        if (isExclusion(requestURI)) {
-            chain.doFilter(request, response);
-            return;
+        if (excludesPattern != null) {
+            for (String pattern : excludesPattern) {
+                if (pathMatcher.matches(pattern, requestURI)) {
+                    chain.doFilter(request, response);
+                    return;
+                }
+            }
         }
 
         long startNano = System.nanoTime();
@@ -133,6 +148,10 @@ public class WebStatFilter implements Filter {
 
     @Override
     public void init(FilterConfig config) throws ServletException {
+        String exclusions = config.getInitParameter(EXCLUSIONS);
+        if (exclusions != null && exclusions.trim().length() != 0) {
+            excludesPattern = new HashSet<String>(Arrays.asList(exclusions.split("\\s*,\\s*")));
+        }
         config.getServletContext().getContextPath();
 
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
