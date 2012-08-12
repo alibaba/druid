@@ -143,6 +143,9 @@ public class WebStatFilter implements Filter {
         
         if (contextPath != null && requestURI.startsWith(contextPath)) {
             requestURI = requestURI.substring(contextPath.length());
+            if(!requestURI.startsWith("/")) {
+                requestURI = "/" + requestURI;
+            }
         }
 
         for (String pattern : excludesPattern) {
