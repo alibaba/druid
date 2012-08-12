@@ -135,6 +135,14 @@ public class WebAppStat {
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
 
+        List<Map<String, Object>> uriStatDataList = getURIStatDataList();
+        
+        data.put("URIList", uriStatDataList);
+
+        return data;
+    }
+
+    public List<Map<String, Object>> getURIStatDataList() {
         List<Map<String, Object>> uriStatDataList = new ArrayList<Map<String, Object>>(this.uriStatMap.size());
         for (WebURIStat uriStat : this.uriStatMap.values()) {
             Map<String, Object> uriStatData = uriStat.getStatData();
@@ -148,10 +156,7 @@ public class WebAppStat {
 
             uriStatDataList.add(uriStatData);
         }
-        
-        data.put("URIList", uriStatDataList);
-
-        return data;
+        return uriStatDataList;
     }
 
 }
