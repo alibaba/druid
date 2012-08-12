@@ -95,7 +95,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = subSqlString(sqlStat.URI, 25);
+		newRow.insertCell(-1).innerHTML = subSqlString(sqlStat.URI, 64);
 		newRow.insertCell(-1).innerHTML = sqlStat.RequestCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;

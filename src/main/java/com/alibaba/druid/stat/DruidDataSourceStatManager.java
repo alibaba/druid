@@ -234,7 +234,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     public CompositeDataSupport getCompositeData(Object dataSource) throws JMException {
         CompositeType rowType = getDruidDataSourceCompositeType();
 
-        Map<String, Object> map = DruidDataSourceUtils.getStatData(dataSource);
+        Map<String, Object> map = DruidDataSourceUtils.getStatDataForMBean(dataSource);
 
         return new CompositeDataSupport(rowType, map);
     }
