@@ -34,4 +34,16 @@ public class WebAppStatUtils {
             return null;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public static List<Map<String, Object>> getSessionStatDataList(Object webStat) {
+        try {
+            Method method = webStat.getClass().getMethod("getSessionStatDataList");
+            Object obj = method.invoke(webStat);
+            return (List<Map<String, Object>>) obj;
+        } catch (Exception e) {
+            LOG.error("getSessionStatDataList error", e);
+            return null;
+        }
+    }
 }

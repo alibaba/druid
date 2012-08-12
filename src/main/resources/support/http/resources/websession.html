@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-    	<title>Druid Web URI Stat</title>
+    	<title>Druid Web Session Stat</title>
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-		<script src="js/weburi.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/websession.js" type="text/javascript" charset="utf8"></script>
 		<script >
             function init(){
 				ajaxRequestForDataSourceSqlStatInfo();
@@ -20,11 +20,11 @@
 		</div>
 		<br />
 		<div id="main">
-            <table cellspacing="1" cellpadding="5" id="WebUriStatTable" width="99%">
+            <table cellspacing="1" cellpadding="5" id="WebSessionStatTable" width="99%">
 				<thead>
 					<tr>
 						<th class="td_lable">N--</th>
-	                    <th class="td_lable"><a id="URI" href="javascript:void(0)" onclick="setOrderBy('URI');">URI</a></th>
+	                    <th class="td_lable"><a id="SESSIONID" href="javascript:void(0)" onclick="setOrderBy('SESSIONID');">SESSIONID</a></th>
 	                    <th class="td_lable" width="50"><a id="RequestCount" href="javascript:void(0)" onclick="setOrderBy('RequestCount');">Request Count</a></th>
 	                    <th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
 	                    <th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>

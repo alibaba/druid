@@ -52,6 +52,19 @@ public class WebAppStatManager {
 
         return allAppUriStatDataList;
     }
+    
+    public List<Map<String, Object>> getSessionStatData() {
+        Set<Object> stats = getWebAppStatSet();
+        
+        List<Map<String, Object>> allAppUriStatDataList = new ArrayList<Map<String, Object>>();
+        
+        for (Object stat : stats) {
+            List<Map<String, Object>> uriStatDataList = WebAppStatUtils.getSessionStatDataList(stat);
+            allAppUriStatDataList.addAll(uriStatDataList);
+        }
+        
+        return allAppUriStatDataList;
+    }
 
     public void addWebAppStatSet(Object webAppStat) {
         getWebAppStatSet().add(webAppStat);
