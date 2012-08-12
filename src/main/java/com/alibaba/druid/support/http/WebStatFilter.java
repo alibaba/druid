@@ -42,6 +42,8 @@ public class WebStatFilter implements Filter {
     private Set<String>                  excludesPattern;
     private boolean                      createSession             = false;
 
+    private String                       contextPath;
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
                                                                                              ServletException {
@@ -49,13 +51,9 @@ public class WebStatFilter implements Filter {
 
         final String requestURI = getRequestURI(httpRequest);
 
-        if (excludesPattern != null) {
-            for (String pattern : excludesPattern) {
-                if (pathMatcher.matches(pattern, requestURI)) {
-                    chain.doFilter(request, response);
-                    return;
-                }
-            }
+        if (isExclusion(requestURI)) {
+            chain.doFilter(request, response);
+            return;
         }
 
         long startNano = System.nanoTime();
@@ -138,7 +136,21 @@ public class WebStatFilter implements Filter {
         return sessionId;
     }
 
-    public boolean isExclusion(String uri) {
+    public boolean isExclusion(String requestURI) {
+        if (excludesPattern == null) {
+            return false;
+        }
+        
+        if (contextPath != null && requestURI.startsWith(contextPath)) {
+            requestURI = requestURI.substring(contextPath.length());
+        }
+
+        for (String pattern : excludesPattern) {
+            if (pathMatcher.matches(pattern, requestURI)) {
+                return true;
+            }
+        }
+        
         return false;
     }
 
@@ -156,7 +168,8 @@ public class WebStatFilter implements Filter {
 
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
-        webAppStat = new WebAppStat();
+        this.contextPath = DruidWebUtils.getContextPath(config.getServletContext());
+        webAppStat = new WebAppStat(contextPath);
 
         WebAppStatManager.getInstance().addWebAppStatSet(webAppStat);
     }
