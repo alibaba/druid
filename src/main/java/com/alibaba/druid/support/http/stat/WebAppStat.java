@@ -139,7 +139,7 @@ public class WebAppStat {
         for (WebURIStat uriStat : this.uriStatMap.values()) {
             Map<String, Object> uriStatData = uriStat.getStatData();
 
-            long runningCount = (Long) uriStatData.get("RunningCount");
+            int runningCount = ((Number) uriStatData.get("RunningCount")).intValue();
             long requestCount = (Long) uriStatData.get("RequestCount");
 
             if (runningCount == 0 && requestCount == 0) {

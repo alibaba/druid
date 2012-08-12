@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.stat.DruidStatManagerFacade;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -81,8 +82,17 @@ public class JSONDruidStatService {
             Object result = druidStatManager.getSqlStatData(id);
             return returnJSONResult(result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
         }
+        
+        if (url.startsWith("/weburi.json")) {
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatDataList(parameters));
+        }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
+    }
+    
+    private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
+        List<Map<String, Object>> array = WebAppStatManager.getInstance().getWebAppStatData();
+        return array;
     }
 
     private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
