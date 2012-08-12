@@ -13,6 +13,10 @@ public class WebAppStatUtils {
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getStatData(Object webStat) {
+        if (webStat.getClass() == WebAppStat.class) {
+            return ((WebAppStat) webStat).getStatData();
+        }
+
         try {
             Method method = webStat.getClass().getMethod("getStatData");
             Object obj = method.invoke(webStat);
@@ -22,9 +26,13 @@ public class WebAppStatUtils {
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getURIStatDataList(Object webStat) {
+        if (webStat.getClass() == WebAppStat.class) {
+            return ((WebAppStat) webStat).getURIStatDataList();
+        }
+        
         try {
             Method method = webStat.getClass().getMethod("getURIStatDataList");
             Object obj = method.invoke(webStat);
@@ -34,9 +42,13 @@ public class WebAppStatUtils {
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getSessionStatDataList(Object webStat) {
+        if (webStat.getClass() == WebAppStat.class) {
+            return ((WebAppStat) webStat).getSessionStatDataList();
+        }
+        
         try {
             Method method = webStat.getClass().getMethod("getSessionStatDataList");
             Object obj = method.invoke(webStat);
