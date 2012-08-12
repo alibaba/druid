@@ -7,13 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class WebURIStat {
 
-    static class RequestStat {
-
-        long jdbcExecuteCount;
-        long jdbcUpdateCount;
-        long jdbcFetchRowCount;
-    }
-
     private final String                         uri;
 
     private final AtomicInteger                  runningCount      = new AtomicInteger();
@@ -33,7 +26,7 @@ public class WebURIStat {
     private final AtomicLong                     jdbcRollbackCount = new AtomicLong();
 
     private final static ThreadLocal<WebURIStat> currentLocal      = new ThreadLocal<WebURIStat>();
-    private static ThreadLocal<RequestStat>      localRequestStat  = new ThreadLocal<RequestStat>();
+    
 
     public WebURIStat(String uri){
         super();
@@ -50,7 +43,6 @@ public class WebURIStat {
 
     public void beforeInvoke(String uri) {
         currentLocal.set(this);
-        localRequestStat.set(new RequestStat());
 
         int running = runningCount.incrementAndGet();
 
@@ -74,10 +66,10 @@ public class WebURIStat {
         runningCount.decrementAndGet();
 
         {
-            RequestStat localStat = localRequestStat.get();
+            WebRequestStat localStat = WebRequestStat.current();
             if (localStat != null) {
                 {
-                    long fetchRowCount = localStat.jdbcFetchRowCount;
+                    long fetchRowCount = localStat.getJdbcFetchRowCount();
 
                     for (;;) {
                         long peak = jdbcFetchRowPeak.get();
@@ -91,7 +83,7 @@ public class WebURIStat {
                     }
                 }
                 {
-                    long executeCount = localStat.jdbcExecuteCount;
+                    long executeCount = localStat.getJdbcExecuteCount();
 
                     for (;;) {
                         long peak = jdbcExecutePeak.get();
@@ -105,7 +97,7 @@ public class WebURIStat {
                     }
                 }
                 {
-                    long updateCount = localStat.jdbcUpdateCount;
+                    long updateCount = localStat.getJdbcUpdateCount();
 
                     for (;;) {
                         long peak = jdbcUpdatePeak.get();
@@ -122,7 +114,6 @@ public class WebURIStat {
         }
 
         currentLocal.set(null);
-        localRequestStat.set(null);
     }
 
     public int getRunningCount() {
@@ -139,11 +130,6 @@ public class WebURIStat {
 
     public void addJdbcFetchRowCount(long delta) {
         this.jdbcFetchRowCount.addAndGet(delta);
-
-        RequestStat localStat = localRequestStat.get();
-        if (localStat != null) {
-            localStat.jdbcFetchRowCount += delta;
-        }
     }
 
     public long getJdbcFetchRowCount() {
@@ -156,11 +142,6 @@ public class WebURIStat {
 
     public void addJdbcUpdateCount(int updateCount) {
         this.jdbcUpdateCount.addAndGet(updateCount);
-
-        RequestStat localStat = localRequestStat.get();
-        if (localStat != null) {
-            localStat.jdbcExecuteCount += updateCount;
-        }
     }
 
     public long getJdbcUpdateCount() {
@@ -173,11 +154,6 @@ public class WebURIStat {
 
     public void incrementJdbcExecuteCount() {
         jdbcExecuteCount.incrementAndGet();
-
-        RequestStat localStat = localRequestStat.get();
-        if (localStat != null) {
-            localStat.jdbcExecuteCount++;
-        }
     }
 
     public long getJdbcExecuteCount() {

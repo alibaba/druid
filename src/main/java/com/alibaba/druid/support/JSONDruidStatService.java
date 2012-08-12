@@ -86,12 +86,21 @@ public class JSONDruidStatService {
         if (url.startsWith("/weburi.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatDataList(parameters));
         }
+        
+        if (url.startsWith("/websession.json")) {
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
+        }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
     }
     
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
+        return array;
+    }
+    
+    private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {
+        List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
         return array;
     }
 
