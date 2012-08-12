@@ -11,8 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.druid.filter.stat.StatFilterContext;
-import com.alibaba.druid.filter.stat.StatFilterContextListener;
+import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
 import com.alibaba.druid.support.http.stat.WebAppStat;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebURIStat;
 
 public class WebStatFilter implements Filter {
@@ -55,18 +56,24 @@ public class WebStatFilter implements Filter {
     @Override
     public void init(FilterConfig config) throws ServletException {
         config.getServletContext().getContextPath();
-        
+
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
         webAppStat = new WebAppStat();
+
+        WebAppStatManager.getInstance().addWebAppStatSet(webAppStat);
     }
 
     @Override
     public void destroy() {
         StatFilterContext.getInstance().removeContextListener(statFilterContextListener);
+
+        if (webAppStat != null) {
+            WebAppStatManager.getInstance().remove(webAppStat);
+        }
     }
 
-    class WebStatFilterContextListener implements StatFilterContextListener {
+    class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
 
         @Override
         public void addUpdateCount(int updateCount) {
@@ -81,6 +88,35 @@ public class WebStatFilter implements Filter {
             WebURIStat stat = WebURIStat.current();
             if (stat != null) {
                 stat.addJdbcFetchRowCount(fetchRowCount);
+            }
+        }
+
+        @Override
+        public void executeBefore(String sql, boolean inTransaction) {
+            WebURIStat stat = WebURIStat.current();
+            if (stat != null) {
+                stat.incrementJdbcExecuteCount();
+            }
+        }
+
+        @Override
+        public void executeAfter(String sql, long nanoSpan, Throwable error) {
+
+        }
+        
+        @Override
+        public void commit() {
+            WebURIStat stat = WebURIStat.current();
+            if (stat != null) {
+                stat.incrementJdbcCommitCount();
+            }
+        }
+
+        @Override
+        public void rollback() {
+            WebURIStat stat = WebURIStat.current();
+            if (stat != null) {
+                stat.incrementJdbcRollbackCount();
             }
         }
     }

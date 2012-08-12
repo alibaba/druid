@@ -5,9 +5,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class StatFilterContext {
 
-    private List<StatFilterContextListener>       listeners = new CopyOnWriteArrayList<StatFilterContextListener>();
+    private List<StatFilterContextListener> listeners = new CopyOnWriteArrayList<StatFilterContextListener>();
 
-    private static final StatFilterContext instance  = new StatFilterContext();
+    private static final StatFilterContext  instance  = new StatFilterContext();
 
     public final static StatFilterContext getInstance() {
         return instance;
@@ -16,7 +16,7 @@ public class StatFilterContext {
     public void addContextListener(StatFilterContextListener listener) {
         this.listeners.add(listener);
     }
-    
+
     public boolean removeContextListener(StatFilterContextListener listener) {
         return listeners.remove(listener);
     }
@@ -25,17 +25,33 @@ public class StatFilterContext {
         return listeners;
     }
 
-    protected void addUpdateCount(int updateCount) {
+    public void addUpdateCount(int updateCount) {
         for (int i = 0; i < listeners.size(); ++i) {
             StatFilterContextListener listener = listeners.get(i);
             listener.addUpdateCount(updateCount);
         }
     }
 
-    protected void addFetchRowCount(int fetchRowCount) {
+    public void addFetchRowCount(int fetchRowCount) {
         for (int i = 0; i < listeners.size(); ++i) {
             StatFilterContextListener listener = listeners.get(i);
             listener.addFetchRowCount(fetchRowCount);
         }
+    }
+
+    public void executeBefore(String sql, boolean inTransaction) {
+
+    }
+
+    public void executeAfter(String sql, long nanoSpan, Throwable error) {
+
+    }
+
+    public void commit() {
+
+    }
+
+    public void rollback() {
+
     }
 }

@@ -1,24 +1,39 @@
 package com.alibaba.druid.support.http.stat;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class WebURIStat {
 
+    static class RequestStat {
+
+        long jdbcExecuteCount;
+        long jdbcUpdateCount;
+        long jdbcFetchRowCount;
+    }
+
     private final String                         uri;
 
     private final AtomicInteger                  runningCount      = new AtomicInteger();
     private final AtomicInteger                  concurrentMax     = new AtomicInteger();
-    private final AtomicLong                     count             = new AtomicLong(0);
+    private final AtomicLong                     requestCount      = new AtomicLong(0);
 
     private final AtomicLong                     jdbcFetchRowCount = new AtomicLong();
-    private final AtomicLong                     jdbcFetchRowPeak  = new AtomicLong();
+    private final AtomicLong                     jdbcFetchRowPeak  = new AtomicLong();              // 单次请求读取行数的峰值
+
     private final AtomicLong                     jdbcUpdateCount   = new AtomicLong();
+    private final AtomicLong                     jdbcUpdatePeak    = new AtomicLong();              // 单次请求更新行数的峰值
+
     private final AtomicLong                     jdbcExecuteCount  = new AtomicLong();
+    private final AtomicLong                     jdbcExecutePeak   = new AtomicLong();              // 单次请求执行SQL次数的峰值
+
     private final AtomicLong                     jdbcCommitCount   = new AtomicLong();
     private final AtomicLong                     jdbcRollbackCount = new AtomicLong();
 
     private final static ThreadLocal<WebURIStat> currentLocal      = new ThreadLocal<WebURIStat>();
+    private static ThreadLocal<RequestStat>      localRequestStat  = new ThreadLocal<RequestStat>();
 
     public WebURIStat(String uri){
         super();
@@ -35,6 +50,7 @@ public class WebURIStat {
 
     public void beforeInvoke(String uri) {
         currentLocal.set(this);
+        localRequestStat.set(new RequestStat());
 
         int running = runningCount.incrementAndGet();
 
@@ -51,17 +67,83 @@ public class WebURIStat {
             }
         }
 
-        count.incrementAndGet();
+        requestCount.incrementAndGet();
     }
 
     public void afterInvoke(long nanoSpan) {
         runningCount.decrementAndGet();
 
+        {
+            RequestStat localStat = localRequestStat.get();
+            if (localStat != null) {
+                {
+                    long fetchRowCount = localStat.jdbcFetchRowCount;
+
+                    for (;;) {
+                        long peak = jdbcFetchRowPeak.get();
+                        if (fetchRowCount <= peak) {
+                            break;
+                        }
+
+                        if (jdbcFetchRowPeak.compareAndSet(peak, fetchRowCount)) {
+                            break;
+                        }
+                    }
+                }
+                {
+                    long executeCount = localStat.jdbcExecuteCount;
+
+                    for (;;) {
+                        long peak = jdbcExecutePeak.get();
+                        if (executeCount <= peak) {
+                            break;
+                        }
+
+                        if (jdbcExecutePeak.compareAndSet(peak, executeCount)) {
+                            break;
+                        }
+                    }
+                }
+                {
+                    long updateCount = localStat.jdbcUpdateCount;
+
+                    for (;;) {
+                        long peak = jdbcUpdatePeak.get();
+                        if (updateCount <= peak) {
+                            break;
+                        }
+
+                        if (jdbcUpdatePeak.compareAndSet(peak, updateCount)) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         currentLocal.set(null);
+        localRequestStat.set(null);
+    }
+
+    public int getRunningCount() {
+        return this.runningCount.get();
+    }
+
+    public long getConcurrentMax() {
+        return concurrentMax.get();
+    }
+
+    public long getRequestCount() {
+        return requestCount.get();
     }
 
     public void addJdbcFetchRowCount(long delta) {
         this.jdbcFetchRowCount.addAndGet(delta);
+
+        RequestStat localStat = localRequestStat.get();
+        if (localStat != null) {
+            localStat.jdbcFetchRowCount += delta;
+        }
     }
 
     public long getJdbcFetchRowCount() {
@@ -74,18 +156,36 @@ public class WebURIStat {
 
     public void addJdbcUpdateCount(int updateCount) {
         this.jdbcUpdateCount.addAndGet(updateCount);
+
+        RequestStat localStat = localRequestStat.get();
+        if (localStat != null) {
+            localStat.jdbcExecuteCount += updateCount;
+        }
     }
 
     public long getJdbcUpdateCount() {
         return jdbcUpdateCount.get();
     }
 
+    public long getJdbcUpdatePeak() {
+        return jdbcUpdatePeak.get();
+    }
+
     public void incrementJdbcExecuteCount() {
         jdbcExecuteCount.incrementAndGet();
+
+        RequestStat localStat = localRequestStat.get();
+        if (localStat != null) {
+            localStat.jdbcExecuteCount++;
+        }
     }
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount.get();
+    }
+
+    public long getJdbcExecutePeak() {
+        return jdbcExecutePeak.get();
     }
 
     public void incrementJdbcCommitCount() {
@@ -102,5 +202,28 @@ public class WebURIStat {
 
     public long getJdbcRollbackCount() {
         return jdbcRollbackCount.get();
+    }
+
+    public Map<String, Object> getStatData() {
+        Map<String, Object> data = new LinkedHashMap<String, Object>();
+
+        data.put("URI", this.getUri());
+        data.put("RunningCount", this.getRunningCount());
+        data.put("ConcurrentMax", this.getConcurrentMax());
+        data.put("RequestCount", this.getRequestCount());
+
+        data.put("JdbcCommitCount", this.getJdbcCommitCount());
+        data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
+
+        data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
+        data.put("JdbcExecutePeak", this.getJdbcExecutePeak());
+
+        data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
+        data.put("JdbcFetchRowPeak", this.getJdbcFetchRowPeak());
+
+        data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
+        data.put("JdbcUpdatePeak", this.getJdbcUpdatePeak());
+
+        return data;
     }
 }

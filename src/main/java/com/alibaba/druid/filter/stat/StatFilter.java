@@ -376,6 +376,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     private final void internalBeforeStatementExecute(StatementProxy statement, String sql) {
+        
+        final long startNano = System.nanoTime();
 
         dataSourceStat.getStatementStat().beforeExecute();
 
@@ -383,7 +385,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         final ConnectionProxy connection = statement.getConnectionProxy();
         final JdbcConnectionStat.Entry connectionCounter = getConnectionInfo(connection);
 
-        statementStat.setLastExecuteStartNano(System.nanoTime());
+        statementStat.setLastExecuteStartNano(startNano);
         statementStat.setLastExecuteSql(sql);
 
         connectionCounter.setLastSql(sql);
@@ -406,19 +408,23 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.setFile(statContext.getFile());
         }
 
+        boolean inTransaction = false;
+        try {
+            inTransaction = !statement.getConnectionProxy().getAutoCommit();
+        } catch (SQLException e) {
+            LOG.error("getAutoCommit error", e);
+        }
+
         if (sqlStat != null) {
             sqlStat.setExecuteLastStartTime(System.currentTimeMillis());
             sqlStat.incrementRunningCount();
 
-            try {
-                boolean inTransaction = !statement.getConnectionProxy().getAutoCommit();
-                if (inTransaction) {
-                    sqlStat.incrementInTransactionCount();
-                }
-            } catch (SQLException e) {
-                LOG.error("getAutoCommit error", e);
+            if (inTransaction) {
+                sqlStat.incrementInTransactionCount();
             }
         }
+
+        StatFilterContext.getInstance().executeBefore(sql, inTransaction);
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
@@ -426,13 +432,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         final JdbcStatementStat.Entry entry = getStatementInfo(statement);
 
-        long nowNano = System.nanoTime();
-
-        long nanoSpan = nowNano - entry.getLastExecuteStartNano();
+        final long nowNano = System.nanoTime();
+        final long nanoSpan = nowNano - entry.getLastExecuteStartNano();
 
         dataSourceStat.getStatementStat().afterExecute(nanoSpan);
 
-        // // SQL
         final JdbcSqlStat sqlStat = statement.getSqlStat();
 
         if (sqlStat != null) {
@@ -456,68 +460,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
-                StringBuilder buf = new StringBuilder();
-                buf.append('[');
-                int index = 0;
-                for (JdbcParameter parameter : statement.getParameters().values()) {
-                    if (index != 0) {
-                        buf.append(',');
-                    }
-                    Object value = parameter.getValue();
-                    if (value == null) {
-                        buf.append("null");
-                    } else if (value instanceof String) {
-                        buf.append('"');
-                        String text = (String) value;
-                        if (text.length() > 100) {
-                            for (int i = 0; i < 97; ++i) {
-                                char ch = text.charAt(i);
-                                if (ch == '\'') {
-                                    buf.append('\\');
-                                    buf.append(ch);
-                                } else {
-                                    buf.append(ch);
-                                }
-                            }
-                            buf.append("...");
-                        } else {
-                            for (int i = 0; i < text.length(); ++i) {
-                                char ch = text.charAt(i);
-                                if (ch == '\'') {
-                                    buf.append('\\');
-                                    buf.append(ch);
-                                } else {
-                                    buf.append(ch);
-                                }
-                            }
-                        }
-                        buf.append('"');
-                    } else if (value instanceof Number) {
-                        buf.append(value.toString());
-                    } else if (value instanceof java.util.Date) {
-                        java.util.Date date = (java.util.Date) value;
-                        buf.append(date.getClass().getSimpleName());
-                        buf.append('(');
-                        buf.append(date.getTime());
-                        buf.append(')');
-                    } else if (value instanceof Boolean) {
-                        buf.append(value.toString());
-                    } else if (value instanceof InputStream) {
-                        buf.append("<InputStream>");
-                    } else if (value instanceof Clob) {
-                        buf.append("<Clob>");
-                    } else if (value instanceof NClob) {
-                        buf.append("<NClob>");
-                    } else if (value instanceof Blob) {
-                        buf.append("<Blob>");
-                    } else {
-                        buf.append('<');
-                        buf.append(value.getClass().getName());
-                        buf.append('>');
-                    }
-                    index++;
-                }
-                buf.append(']');
+                StringBuilder buf = buildSlowParameters(statement);
                 sqlStat.setLastSlowParameters(buf.toString());
 
                 if (logSlowSql) {
@@ -526,8 +469,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
             }
         }
+        
+        String sql = statement.getLastExecuteSql();
+        StatFilterContext.getInstance().executeAfter(sql, nanoSpan, null);
     }
-
+    
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
 
@@ -550,8 +496,74 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
         }
+        
+        StatFilterContext.getInstance().executeAfter(sql, nanoSpan, error);
+    }
 
-        super.statement_executeErrorAfter(statement, sql, error);
+    private StringBuilder buildSlowParameters(StatementProxy statement) {
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        int index = 0;
+        for (JdbcParameter parameter : statement.getParameters().values()) {
+            if (index != 0) {
+                buf.append(',');
+            }
+            Object value = parameter.getValue();
+            if (value == null) {
+                buf.append("null");
+            } else if (value instanceof String) {
+                buf.append('"');
+                String text = (String) value;
+                if (text.length() > 100) {
+                    for (int i = 0; i < 97; ++i) {
+                        char ch = text.charAt(i);
+                        if (ch == '\'') {
+                            buf.append('\\');
+                            buf.append(ch);
+                        } else {
+                            buf.append(ch);
+                        }
+                    }
+                    buf.append("...");
+                } else {
+                    for (int i = 0; i < text.length(); ++i) {
+                        char ch = text.charAt(i);
+                        if (ch == '\'') {
+                            buf.append('\\');
+                            buf.append(ch);
+                        } else {
+                            buf.append(ch);
+                        }
+                    }
+                }
+                buf.append('"');
+            } else if (value instanceof Number) {
+                buf.append(value.toString());
+            } else if (value instanceof java.util.Date) {
+                java.util.Date date = (java.util.Date) value;
+                buf.append(date.getClass().getSimpleName());
+                buf.append('(');
+                buf.append(date.getTime());
+                buf.append(')');
+            } else if (value instanceof Boolean) {
+                buf.append(value.toString());
+            } else if (value instanceof InputStream) {
+                buf.append("<InputStream>");
+            } else if (value instanceof Clob) {
+                buf.append("<Clob>");
+            } else if (value instanceof NClob) {
+                buf.append("<NClob>");
+            } else if (value instanceof Blob) {
+                buf.append("<Blob>");
+            } else {
+                buf.append('<');
+                buf.append(value.getClass().getName());
+                buf.append('>');
+            }
+            index++;
+        }
+        buf.append(']');
+        return buf;
     }
 
     @Override
@@ -571,7 +583,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getResultSetStat().afterClose(nanoSpan);
         dataSourceStat.getResultSetStat().addFetchRowCount(fetchRowCount);
         dataSourceStat.getResultSetStat().incrementCloseCounter();
-        
+
         StatFilterContext.getInstance().addFetchRowCount(fetchRowCount);
 
         String sql = resultSet.getSql();
@@ -839,6 +851,5 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             return features;
         }
     }
-
 
 }
