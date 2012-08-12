@@ -114,7 +114,9 @@ public class WebAppStat {
         WebSessionStat uriStat = sessionStatMap.get(sessionId);
 
         if (uriStat == null) {
-            sessionStatMap.putIfAbsent(sessionId, new WebSessionStat(sessionId));
+            WebSessionStat newStat = new WebSessionStat(sessionId);
+            
+            sessionStatMap.putIfAbsent(sessionId, newStat);
             uriStat = sessionStatMap.get(sessionId);
         }
 

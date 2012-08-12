@@ -9,6 +9,7 @@ public class WebRequestStat {
     private long jdbcExecuteCount;
     private long jdbcUpdateCount;
     private long jdbcFetchRowCount;
+    private long jdbcExecuteNano;
 
     public WebRequestStat(){
 
@@ -58,6 +59,14 @@ public class WebRequestStat {
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount;
+    }
+
+    public long getJdbcExecuteNano() {
+        return jdbcExecuteNano;
+    }
+    
+    public void addJdbcExecuteNano(long nano) {
+        jdbcExecuteNano += nano;
     }
 
     public long getJdbcUpdateCount() {
