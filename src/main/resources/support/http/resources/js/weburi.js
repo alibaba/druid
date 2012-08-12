@@ -99,5 +99,10 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		newRow.insertCell(-1).innerHTML = sqlStat.RequestCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
 		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
+		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteCount;
+		newRow.insertCell(-1).innerHTML = sqlStat.JdbcCommitCount;
+		newRow.insertCell(-1).innerHTML = sqlStat.JdbcRollbackCount;
+		newRow.insertCell(-1).innerHTML = sqlStat.JdbcFetchRowCount;
+		newRow.insertCell(-1).innerHTML = sqlStat.JdbcUpdateCount;
 	}
 }

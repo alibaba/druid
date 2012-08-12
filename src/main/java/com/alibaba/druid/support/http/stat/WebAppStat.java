@@ -98,13 +98,13 @@ public class WebAppStat {
 
     public void afterInvoke(long nanoSpan) {
         runningCount.decrementAndGet();
-
-        currentLocal.set(null);
-
+        
         WebURIStat uriStat = WebURIStat.current();
         if (uriStat != null) {
             uriStat.afterInvoke(nanoSpan);
         }
+
+        currentLocal.set(null);
     }
 
     public int getMaxStatUriCount() {
