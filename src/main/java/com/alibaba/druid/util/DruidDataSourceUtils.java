@@ -81,7 +81,7 @@ public class DruidDataSourceUtils {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes" })
     public static Map getSqlStatMap(Object druidDatasource) {
         try {
             Method method = druidDatasource.getClass().getMethod("getSqlStatMap");
