@@ -40,11 +40,17 @@ public class StatFilterContext {
     }
 
     public void executeBefore(String sql, boolean inTransaction) {
-
+        for (int i = 0; i < listeners.size(); ++i) {
+            StatFilterContextListener listener = listeners.get(i);
+            listener.executeBefore(sql, inTransaction);
+        }
     }
 
     public void executeAfter(String sql, long nanoSpan, Throwable error) {
-
+        for (int i = 0; i < listeners.size(); ++i) {
+            StatFilterContextListener listener = listeners.get(i);
+            listener.executeAfter(sql, nanoSpan, error);
+        }
     }
 
     public void commit() {
