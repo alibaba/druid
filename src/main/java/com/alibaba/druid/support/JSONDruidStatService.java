@@ -92,6 +92,23 @@ public class JSONDruidStatService {
     
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         return array;
     }
 
