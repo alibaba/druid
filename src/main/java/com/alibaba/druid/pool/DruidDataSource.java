@@ -63,6 +63,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
@@ -1517,7 +1518,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return x;
     }
 
-    public Map<String, Object> getStatData() {
+    public Map<String, Object> getStatDataForMBean() {
         try {
             Map<String, Object> map = new HashMap<String, Object>();
 
@@ -1587,5 +1588,84 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } catch (JMException ex) {
             throw new IllegalStateException("getStatData error", ex); 
         }
+    }
+    
+    public Map<String, Object> getStatData() {
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        
+        dataMap.put("Identity", System.identityHashCode(this));
+        dataMap.put("Name", this.getName());
+        dataMap.put("DbType", this.getDbType());
+        dataMap.put("DriverClassName", this.getDriverClassName());
+
+        dataMap.put("URL", this.getUrl());
+        dataMap.put("UserName", this.getUsername());
+        dataMap.put("FilterClassNames", this.getFilterClassNames());
+
+        dataMap.put("WaitThreadCount", this.getWaitThreadCount());
+        dataMap.put("NotEmptyWaitCount", this.getNotEmptyWaitCount());
+        dataMap.put("NotEmptyWaitMillis", this.getNotEmptyWaitMillis());
+
+        dataMap.put("PoolingCount", this.getPoolingCount());
+        dataMap.put("PoolingPeak", this.getPoolingPeak());
+        dataMap.put("PoolingPeakTime",
+                    this.getPoolingPeakTime() == null ? null : this.getPoolingPeakTime().toString());
+
+        dataMap.put("ActiveCount", this.getActiveCount());
+        dataMap.put("ActivePeak", this.getActivePeak());
+        dataMap.put("ActivePeakTime",
+                    this.getActivePeakTime() == null ? null : this.getActivePeakTime().toString());
+
+        dataMap.put("InitialSize", this.getInitialSize());
+        dataMap.put("MinIdle", this.getMinIdle());
+        dataMap.put("MaxActive", this.getMaxActive());
+
+        dataMap.put("QueryTimeout", this.getQueryTimeout());
+        dataMap.put("TransactionQueryTimeout", this.getTransactionQueryTimeout());
+        dataMap.put("LoginTimeout", this.getLoginTimeout());
+        dataMap.put("ValidConnectionCheckerClassName", this.getValidConnectionCheckerClassName());
+        dataMap.put("ExceptionSorterClassName", this.getExceptionSorterClassName());
+
+        dataMap.put("TestOnBorrow", this.isTestOnBorrow());
+        dataMap.put("TestOnReturn", this.isTestOnReturn());
+        dataMap.put("TestWhileIdle", this.isTestWhileIdle());
+
+        dataMap.put("DefaultAutoCommit", this.isDefaultAutoCommit());
+        dataMap.put("DefaultReadOnly", this.isDefaultAutoCommit());
+        dataMap.put("DefaultTransactionIsolation", this.getDefaultTransactionIsolation());
+
+        dataMap.put("LogicConnectCount", this.getConnectCount());
+        dataMap.put("LogicCloseCount", this.getCloseCount());
+        dataMap.put("LogicConnectErrorCount", this.getConnectErrorCount());
+
+        dataMap.put("PhysicalConnectCount", this.getCreateCount());
+        dataMap.put("PhysicalCloseCount", this.getDestroyCount());
+        dataMap.put("PhysicalConnectErrorCount", this.getCreateErrorCount());
+
+        dataMap.put("ExecuteCount", this.getExecuteCount());
+        dataMap.put("ErrorCount", this.getErrorCount());
+        dataMap.put("CommitCount", this.getCommitCount());
+        dataMap.put("RollbackCount", this.getRollbackCount());
+
+        dataMap.put("PSCacheAccessCount", this.getCachedPreparedStatementAccessCount());
+        dataMap.put("PSCacheHitCount", this.getCachedPreparedStatementHitCount());
+        dataMap.put("PSCacheMissCount", this.getCachedPreparedStatementMissCount());
+
+        dataMap.put("StartTransactionCount", this.getStartTransactionCount());
+        dataMap.put("TransactionHistogram", this.getTransactionHistogramValues());
+
+        dataMap.put("ConnectionHoldTimeHistogram",
+                    this.getDataSourceStat().getConnectionHoldHistogram().toArray());
+        dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
+
+        return dataMap;
+    }
+    
+    public JdbcSqlStat getSqlStat(int sqlId) {
+        return this.getDataSourceStat().getSqlStat(sqlId);
+    }
+    
+    public Map<String, JdbcSqlStat> getSqlStatMap() {
+        return this.getDataSourceStat().getSqlStatMap();
     }
 }
