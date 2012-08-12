@@ -1,5 +1,8 @@
 package com.alibaba.druid.support.http.stat;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -22,6 +25,19 @@ public class WebAppStatManager {
         }
 
         return webAppStatSet;
+    }
+
+    public List<Map<String, Object>> getWebAppStatData() {
+        Set<Object> stats = getWebAppStatSet();
+
+        List<Map<String, Object>> statDataList = new ArrayList<Map<String, Object>>(stats.size());
+
+        for (Object stat : stats) {
+            Map<String, Object> statData = WebAppStatUtils.getStatData(stat);
+            statDataList.add(statData);
+        }
+
+        return statDataList;
     }
 
     public void addWebAppStatSet(Object webAppStat) {
