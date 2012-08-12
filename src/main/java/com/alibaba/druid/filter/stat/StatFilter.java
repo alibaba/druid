@@ -184,7 +184,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
             }
         }
-        
+
         {
             String property = properties.getProperty("druid.stat.logSlowSql");
             if ("true".equals(property)) {
@@ -439,6 +439,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.incrementExecuteSuccessCount();
             for (int updateCount : updateCountArray) {
                 sqlStat.addUpdateCount(updateCount);
+                StatFilterContext.getInstance().addUpdateCount(updateCount);
             }
 
             sqlStat.decrementRunningCount();
@@ -518,9 +519,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
                 buf.append(']');
                 sqlStat.setLastSlowParameters(buf.toString());
-                
+
                 if (logSlowSql) {
-                    LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n" + buf.toString());
+                    LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n"
+                              + buf.toString());
                 }
             }
         }
@@ -564,19 +566,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         long nanoSpan = System.nanoTime() - resultSet.getConstructNano();
 
-        int fetchCount = resultSet.getFetchRowCount();
+        int fetchRowCount = resultSet.getFetchRowCount();
 
         dataSourceStat.getResultSetStat().afterClose(nanoSpan);
-
-        dataSourceStat.getResultSetStat().addFetchRowCount(fetchCount);
-
+        dataSourceStat.getResultSetStat().addFetchRowCount(fetchRowCount);
         dataSourceStat.getResultSetStat().incrementCloseCounter();
+        
+        StatFilterContext.getInstance().addFetchRowCount(fetchRowCount);
 
         String sql = resultSet.getSql();
         if (sql != null) {
             JdbcSqlStat sqlStat = resultSet.getSqlStat();
             if (sqlStat != null && resultSet.getCloseCount() == 0) {
-                sqlStat.addFetchRowCount(fetchCount);
+                sqlStat.addFetchRowCount(fetchRowCount);
                 long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
                 sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanoSpan);
             }
@@ -837,4 +839,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             return features;
         }
     }
+
+
 }
