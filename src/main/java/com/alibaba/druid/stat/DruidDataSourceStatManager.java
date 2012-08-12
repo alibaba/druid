@@ -17,7 +17,6 @@ package com.alibaba.druid.stat;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -38,6 +37,7 @@ import javax.management.openmbean.TabularType;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.JMXUtils;
 
 @SuppressWarnings("rawtypes")
@@ -155,18 +155,18 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         }
     }
 
-    public synchronized static void remove(DruidDataSource dataSource) {
+    public synchronized static void remove(Object dataSource) {
         IdentityHashMap<Object, ObjectName> dataSources = getInstances();
 
         synchronized (dataSources) {
             ObjectName objectName = (ObjectName) dataSources.remove(dataSource);
 
             if (objectName == null) {
-                objectName = dataSource.getObjectName();
+                objectName = DruidDataSourceUtils.getObjectName(dataSource);
             }
 
             if (objectName == null) {
-                LOG.error("unregister mbean failed. url " + dataSource.getUrl());
+                LOG.error("unregister mbean failed. url " + DruidDataSourceUtils.getUrl(dataSource));
                 return;
             }
 
@@ -223,80 +223,18 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         TabularType tabularType = new TabularType("DruidDataSourceStat", "DruidDataSourceStat", rowType, indexNames);
         TabularData data = new TabularDataSupport(tabularType);
 
-        final Set<DruidDataSource> dataSources = getDruidDataSourceInstances();
-        for (DruidDataSource dataSource : dataSources) {
+        final Set<Object> dataSources = getInstances().keySet();
+        for (Object dataSource : dataSources) {
             data.put(getCompositeData(dataSource));
         }
 
         return data;
     }
 
-    public CompositeDataSupport getCompositeData(DruidDataSource dataSource) throws JMException {
+    public CompositeDataSupport getCompositeData(Object dataSource) throws JMException {
         CompositeType rowType = getDruidDataSourceCompositeType();
 
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        // 0 - 4
-        map.put("Name", dataSource.getName());
-        map.put("URL", dataSource.getUrl());
-        map.put("CreateCount", dataSource.getCreateCount());
-        map.put("DestroyCount", dataSource.getDestroyCount());
-        map.put("ConnectCount", dataSource.getConnectCount());
-
-        // 5 - 9
-        map.put("CloseCount", dataSource.getCloseCount());
-        map.put("ActiveCount", dataSource.getActivePeak());
-        map.put("PoolingCount", dataSource.getPoolingCount());
-        map.put("LockQueueLength", dataSource.getLockQueueLength());
-        map.put("WaitThreadCount", dataSource.getNotEmptyWaitThreadPeak());
-
-        // 10 - 14
-        map.put("InitialSize", dataSource.getInitialSize());
-        map.put("MaxActive", dataSource.getMaxActive());
-        map.put("MinIdle", dataSource.getMinIdle());
-        map.put("PoolPreparedStatements", dataSource.isPoolPreparedStatements());
-        map.put("TestOnBorrow", dataSource.isTestOnBorrow());
-
-        // 15 - 19
-        map.put("TestOnReturn", dataSource.isTestOnReturn());
-        map.put("MinEvictableIdleTimeMillis", dataSource.getMinEvictableIdleTimeMillis());
-        map.put("ConnectErrorCount", dataSource.getConnectErrorCount());
-        map.put("CreateTimespanMillis", dataSource.getCreateTimespanMillis());
-        map.put("DbType", dataSource.getDbType());
-
-        // 20 - 24
-        map.put("ValidationQuery", dataSource.getValidationQuery());
-        map.put("ValidationQueryTimeout", dataSource.getValidationQueryTimeout());
-        map.put("DriverClassName", dataSource.getDriverClassName());
-        map.put("Username", dataSource.getUsername());
-        map.put("RemoveAbandonedCount", dataSource.getRemoveAbandonedCount());
-
-        // 25 - 29
-        map.put("NotEmptyWaitCount", dataSource.getNotEmptyWaitCount());
-        map.put("NotEmptyWaitNanos", dataSource.getNotEmptyWaitNanos());
-        map.put("ErrorCount", dataSource.getErrorCount());
-        map.put("ReusePreparedStatementCount", dataSource.getCachedPreparedStatementHitCount());
-        map.put("StartTransactionCount", dataSource.getStartTransactionCount());
-
-        // 30 - 34
-        map.put("CommitCount", dataSource.getCommitCount());
-        map.put("RollbackCount", dataSource.getRollbackCount());
-        map.put("LastError", JMXUtils.getErrorCompositeData(dataSource.getLastError()));
-        map.put("LastCreateError", JMXUtils.getErrorCompositeData(dataSource.getLastCreateError()));
-        map.put("PreparedStatementCacheDeleteCount", dataSource.getCachedPreparedStatementDeleteCount());
-
-        // 35 - 39
-        map.put("PreparedStatementCacheAccessCount", dataSource.getCachedPreparedStatementAccessCount());
-        map.put("PreparedStatementCacheMissCount", dataSource.getCachedPreparedStatementMissCount());
-        map.put("PreparedStatementCacheHitCount", dataSource.getCachedPreparedStatementHitCount());
-        map.put("PreparedStatementCacheCurrentCount", dataSource.getCachedPreparedStatementCount());
-        map.put("Version", dataSource.getVersion());
-
-        // 40 -
-        map.put("LastErrorTime", dataSource.getLastErrorTime());
-        map.put("LastCreateErrorTime", dataSource.getLastCreateErrorTime());
-        map.put("CreateErrorCount", dataSource.getCreateErrorCount());
-        map.put("DiscardCount", dataSource.getDiscardCount());
+        Map<String, Object> map = DruidDataSourceUtils.getStatData(dataSource);
 
         return new CompositeDataSupport(rowType, map);
     }

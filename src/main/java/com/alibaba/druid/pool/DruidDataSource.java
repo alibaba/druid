@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 
+import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -64,6 +66,7 @@ import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -72,7 +75,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    private final static Log         LOG                     = LogFactory.getLog(DruidDataSource.class);
+    private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
@@ -1514,4 +1517,75 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return x;
     }
 
+    public Map<String, Object> getStatData() {
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            // 0 - 4
+            map.put("Name", this.getName());
+            map.put("URL", this.getUrl());
+            map.put("CreateCount", this.getCreateCount());
+            map.put("DestroyCount", this.getDestroyCount());
+            map.put("ConnectCount", this.getConnectCount());
+
+            // 5 - 9
+            map.put("CloseCount", this.getCloseCount());
+            map.put("ActiveCount", this.getActivePeak());
+            map.put("PoolingCount", this.getPoolingCount());
+            map.put("LockQueueLength", this.getLockQueueLength());
+            map.put("WaitThreadCount", this.getNotEmptyWaitThreadPeak());
+
+            // 10 - 14
+            map.put("InitialSize", this.getInitialSize());
+            map.put("MaxActive", this.getMaxActive());
+            map.put("MinIdle", this.getMinIdle());
+            map.put("PoolPreparedStatements", this.isPoolPreparedStatements());
+            map.put("TestOnBorrow", this.isTestOnBorrow());
+
+            // 15 - 19
+            map.put("TestOnReturn", this.isTestOnReturn());
+            map.put("MinEvictableIdleTimeMillis", this.getMinEvictableIdleTimeMillis());
+            map.put("ConnectErrorCount", this.getConnectErrorCount());
+            map.put("CreateTimespanMillis", this.getCreateTimespanMillis());
+            map.put("DbType", this.getDbType());
+
+            // 20 - 24
+            map.put("ValidationQuery", this.getValidationQuery());
+            map.put("ValidationQueryTimeout", this.getValidationQueryTimeout());
+            map.put("DriverClassName", this.getDriverClassName());
+            map.put("Username", this.getUsername());
+            map.put("RemoveAbandonedCount", this.getRemoveAbandonedCount());
+
+            // 25 - 29
+            map.put("NotEmptyWaitCount", this.getNotEmptyWaitCount());
+            map.put("NotEmptyWaitNanos", this.getNotEmptyWaitNanos());
+            map.put("ErrorCount", this.getErrorCount());
+            map.put("ReusePreparedStatementCount", this.getCachedPreparedStatementHitCount());
+            map.put("StartTransactionCount", this.getStartTransactionCount());
+
+            // 30 - 34
+            map.put("CommitCount", this.getCommitCount());
+            map.put("RollbackCount", this.getRollbackCount());
+            map.put("LastError", JMXUtils.getErrorCompositeData(this.getLastError()));
+            map.put("LastCreateError", JMXUtils.getErrorCompositeData(this.getLastCreateError()));
+            map.put("PreparedStatementCacheDeleteCount", this.getCachedPreparedStatementDeleteCount());
+
+            // 35 - 39
+            map.put("PreparedStatementCacheAccessCount", this.getCachedPreparedStatementAccessCount());
+            map.put("PreparedStatementCacheMissCount", this.getCachedPreparedStatementMissCount());
+            map.put("PreparedStatementCacheHitCount", this.getCachedPreparedStatementHitCount());
+            map.put("PreparedStatementCacheCurrentCount", this.getCachedPreparedStatementCount());
+            map.put("Version", this.getVersion());
+
+            // 40 -
+            map.put("LastErrorTime", this.getLastErrorTime());
+            map.put("LastCreateErrorTime", this.getLastCreateErrorTime());
+            map.put("CreateErrorCount", this.getCreateErrorCount());
+            map.put("DiscardCount", this.getDiscardCount());
+            
+            return map;
+        } catch (JMException ex) {
+            throw new IllegalStateException("getStatData error", ex); 
+        }
+    }
 }
