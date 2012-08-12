@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 
+import javax.management.JMException;
 import javax.management.ObjectName;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -61,9 +63,11 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -72,7 +76,7 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    private final static Log         LOG                     = LogFactory.getLog(DruidDataSource.class);
+    private final static Log        LOG                     = LogFactory.getLog(DruidDataSource.class);
 
     private static final long       serialVersionUID        = 1L;
 
@@ -418,7 +422,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
 
             initedTime = new Date();
-            ObjectName objectName = DruidDataSourceStatManager.add(this, this.name);
+            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
             this.setObjectName(objectName);
 
             if (connectError != null && poolingCount == 0) {
@@ -774,7 +778,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             poolingCount = 0;
-            DruidDataSourceStatManager.remove(this);
+            DruidDataSourceStatManager.removeDataSource(this);
 
             enable = false;
             notEmpty.signalAll();
@@ -1514,4 +1518,154 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return x;
     }
 
+    public Map<String, Object> getStatDataForMBean() {
+        try {
+            Map<String, Object> map = new HashMap<String, Object>();
+
+            // 0 - 4
+            map.put("Name", this.getName());
+            map.put("URL", this.getUrl());
+            map.put("CreateCount", this.getCreateCount());
+            map.put("DestroyCount", this.getDestroyCount());
+            map.put("ConnectCount", this.getConnectCount());
+
+            // 5 - 9
+            map.put("CloseCount", this.getCloseCount());
+            map.put("ActiveCount", this.getActivePeak());
+            map.put("PoolingCount", this.getPoolingCount());
+            map.put("LockQueueLength", this.getLockQueueLength());
+            map.put("WaitThreadCount", this.getNotEmptyWaitThreadPeak());
+
+            // 10 - 14
+            map.put("InitialSize", this.getInitialSize());
+            map.put("MaxActive", this.getMaxActive());
+            map.put("MinIdle", this.getMinIdle());
+            map.put("PoolPreparedStatements", this.isPoolPreparedStatements());
+            map.put("TestOnBorrow", this.isTestOnBorrow());
+
+            // 15 - 19
+            map.put("TestOnReturn", this.isTestOnReturn());
+            map.put("MinEvictableIdleTimeMillis", this.getMinEvictableIdleTimeMillis());
+            map.put("ConnectErrorCount", this.getConnectErrorCount());
+            map.put("CreateTimespanMillis", this.getCreateTimespanMillis());
+            map.put("DbType", this.getDbType());
+
+            // 20 - 24
+            map.put("ValidationQuery", this.getValidationQuery());
+            map.put("ValidationQueryTimeout", this.getValidationQueryTimeout());
+            map.put("DriverClassName", this.getDriverClassName());
+            map.put("Username", this.getUsername());
+            map.put("RemoveAbandonedCount", this.getRemoveAbandonedCount());
+
+            // 25 - 29
+            map.put("NotEmptyWaitCount", this.getNotEmptyWaitCount());
+            map.put("NotEmptyWaitNanos", this.getNotEmptyWaitNanos());
+            map.put("ErrorCount", this.getErrorCount());
+            map.put("ReusePreparedStatementCount", this.getCachedPreparedStatementHitCount());
+            map.put("StartTransactionCount", this.getStartTransactionCount());
+
+            // 30 - 34
+            map.put("CommitCount", this.getCommitCount());
+            map.put("RollbackCount", this.getRollbackCount());
+            map.put("LastError", JMXUtils.getErrorCompositeData(this.getLastError()));
+            map.put("LastCreateError", JMXUtils.getErrorCompositeData(this.getLastCreateError()));
+            map.put("PreparedStatementCacheDeleteCount", this.getCachedPreparedStatementDeleteCount());
+
+            // 35 - 39
+            map.put("PreparedStatementCacheAccessCount", this.getCachedPreparedStatementAccessCount());
+            map.put("PreparedStatementCacheMissCount", this.getCachedPreparedStatementMissCount());
+            map.put("PreparedStatementCacheHitCount", this.getCachedPreparedStatementHitCount());
+            map.put("PreparedStatementCacheCurrentCount", this.getCachedPreparedStatementCount());
+            map.put("Version", this.getVersion());
+
+            // 40 -
+            map.put("LastErrorTime", this.getLastErrorTime());
+            map.put("LastCreateErrorTime", this.getLastCreateErrorTime());
+            map.put("CreateErrorCount", this.getCreateErrorCount());
+            map.put("DiscardCount", this.getDiscardCount());
+            
+            return map;
+        } catch (JMException ex) {
+            throw new IllegalStateException("getStatData error", ex); 
+        }
+    }
+    
+    public Map<String, Object> getStatData() {
+        Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
+        
+        dataMap.put("Identity", System.identityHashCode(this));
+        dataMap.put("Name", this.getName());
+        dataMap.put("DbType", this.getDbType());
+        dataMap.put("DriverClassName", this.getDriverClassName());
+
+        dataMap.put("URL", this.getUrl());
+        dataMap.put("UserName", this.getUsername());
+        dataMap.put("FilterClassNames", this.getFilterClassNames());
+
+        dataMap.put("WaitThreadCount", this.getWaitThreadCount());
+        dataMap.put("NotEmptyWaitCount", this.getNotEmptyWaitCount());
+        dataMap.put("NotEmptyWaitMillis", this.getNotEmptyWaitMillis());
+
+        dataMap.put("PoolingCount", this.getPoolingCount());
+        dataMap.put("PoolingPeak", this.getPoolingPeak());
+        dataMap.put("PoolingPeakTime",
+                    this.getPoolingPeakTime() == null ? null : this.getPoolingPeakTime().toString());
+
+        dataMap.put("ActiveCount", this.getActiveCount());
+        dataMap.put("ActivePeak", this.getActivePeak());
+        dataMap.put("ActivePeakTime",
+                    this.getActivePeakTime() == null ? null : this.getActivePeakTime().toString());
+
+        dataMap.put("InitialSize", this.getInitialSize());
+        dataMap.put("MinIdle", this.getMinIdle());
+        dataMap.put("MaxActive", this.getMaxActive());
+
+        dataMap.put("QueryTimeout", this.getQueryTimeout());
+        dataMap.put("TransactionQueryTimeout", this.getTransactionQueryTimeout());
+        dataMap.put("LoginTimeout", this.getLoginTimeout());
+        dataMap.put("ValidConnectionCheckerClassName", this.getValidConnectionCheckerClassName());
+        dataMap.put("ExceptionSorterClassName", this.getExceptionSorterClassName());
+
+        dataMap.put("TestOnBorrow", this.isTestOnBorrow());
+        dataMap.put("TestOnReturn", this.isTestOnReturn());
+        dataMap.put("TestWhileIdle", this.isTestWhileIdle());
+
+        dataMap.put("DefaultAutoCommit", this.isDefaultAutoCommit());
+        dataMap.put("DefaultReadOnly", this.isDefaultAutoCommit());
+        dataMap.put("DefaultTransactionIsolation", this.getDefaultTransactionIsolation());
+
+        dataMap.put("LogicConnectCount", this.getConnectCount());
+        dataMap.put("LogicCloseCount", this.getCloseCount());
+        dataMap.put("LogicConnectErrorCount", this.getConnectErrorCount());
+
+        dataMap.put("PhysicalConnectCount", this.getCreateCount());
+        dataMap.put("PhysicalCloseCount", this.getDestroyCount());
+        dataMap.put("PhysicalConnectErrorCount", this.getCreateErrorCount());
+
+        dataMap.put("ExecuteCount", this.getExecuteCount());
+        dataMap.put("ErrorCount", this.getErrorCount());
+        dataMap.put("CommitCount", this.getCommitCount());
+        dataMap.put("RollbackCount", this.getRollbackCount());
+
+        dataMap.put("PSCacheAccessCount", this.getCachedPreparedStatementAccessCount());
+        dataMap.put("PSCacheHitCount", this.getCachedPreparedStatementHitCount());
+        dataMap.put("PSCacheMissCount", this.getCachedPreparedStatementMissCount());
+
+        dataMap.put("StartTransactionCount", this.getStartTransactionCount());
+        dataMap.put("TransactionHistogram", this.getTransactionHistogramValues());
+
+        dataMap.put("ConnectionHoldTimeHistogram",
+                    this.getDataSourceStat().getConnectionHoldHistogram().toArray());
+        dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
+
+        return dataMap;
+    }
+    
+    public JdbcSqlStat getSqlStat(int sqlId) {
+        return this.getDataSourceStat().getSqlStat(sqlId);
+    }
+    
+    public Map<String, JdbcSqlStat> getSqlStatMap() {
+        return this.getDataSourceStat().getSqlStatMap();
+    }
 }
