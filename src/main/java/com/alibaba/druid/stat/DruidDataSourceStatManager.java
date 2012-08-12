@@ -111,12 +111,12 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
         return instances;
     }
 
-    public synchronized static ObjectName add(Object dataSource, String name) {
-        final IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+    public synchronized static ObjectName addDataSource(Object dataSource, String name) {
+        final IdentityHashMap<Object, ObjectName> instances = getInstances();
 
-        synchronized (dataSources) {
+        synchronized (instances) {
             MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
-            if (dataSources.size() == 0) {
+            if (instances.size() == 0) {
                 try {
 
                     ObjectName objectName = new ObjectName(MBEAN_NAME);
@@ -150,16 +150,16 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 }
             }
 
-            dataSources.put(dataSource, objectName);
+            instances.put(dataSource, objectName);
             return objectName;
         }
     }
 
-    public synchronized static void remove(Object dataSource) {
-        IdentityHashMap<Object, ObjectName> dataSources = getInstances();
+    public synchronized static void removeDataSource(Object dataSource) {
+        IdentityHashMap<Object, ObjectName> instances = getInstances();
 
-        synchronized (dataSources) {
-            ObjectName objectName = (ObjectName) dataSources.remove(dataSource);
+        synchronized (instances) {
+            ObjectName objectName = (ObjectName) instances.remove(dataSource);
 
             if (objectName == null) {
                 objectName = DruidDataSourceUtils.getObjectName(dataSource);
@@ -180,7 +180,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 }
             }
 
-            if (dataSources.size() == 0) {
+            if (instances.size() == 0) {
                 try {
                     mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
                 } catch (JMException ex) {

@@ -421,7 +421,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             initedLatch.await();
 
             initedTime = new Date();
-            ObjectName objectName = DruidDataSourceStatManager.add(this, this.name);
+            ObjectName objectName = DruidDataSourceStatManager.addDataSource(this, this.name);
             this.setObjectName(objectName);
 
             if (connectError != null && poolingCount == 0) {
@@ -777,7 +777,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
             poolingCount = 0;
-            DruidDataSourceStatManager.remove(this);
+            DruidDataSourceStatManager.removeDataSource(this);
 
             enable = false;
             notEmpty.signalAll();
