@@ -18,8 +18,13 @@ import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
 import com.alibaba.druid.support.http.stat.WebURIStat;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.DruidWebUtils;
 
 public class WebStatFilter implements Filter {
+
+    private final static Log             LOG                       = LogFactory.getLog(WebStatFilter.class);
 
     private WebAppStat                   webAppStat                = null;
     private WebStatFilterContextListener statFilterContextListener = new WebStatFilterContextListener();
@@ -39,6 +44,7 @@ public class WebStatFilter implements Filter {
         }
 
         long startNano = System.nanoTime();
+        long startMillis = System.currentTimeMillis();
 
         WebRequestStat requestStat = new WebRequestStat(startNano);
         WebRequestStat.set(requestStat);
@@ -48,6 +54,7 @@ public class WebStatFilter implements Filter {
         // 第一次访问时，sessionId为null，如果缺省sessionCreate=false，sessionStat就为null。
         if (sessionStat != null) {
             sessionStat.beforeInvoke();
+            sessionStat.setLastAccessTimeMillis(startMillis);
         }
 
         try {
@@ -64,6 +71,7 @@ public class WebStatFilter implements Filter {
             } else {
                 sessionStat = getSessionStat(httpRequest);
                 if (sessionStat != null) {
+                    sessionStat.setLastAccessTimeMillis(startMillis);
                     sessionStat.reacord(nanoSpan);
                 }
             }
@@ -72,11 +80,33 @@ public class WebStatFilter implements Filter {
         }
     }
 
-    public WebSessionStat getSessionStat(HttpServletRequest httpRequest) {
+    public WebSessionStat getSessionStat(HttpServletRequest request) {
         WebSessionStat sessionStat = null;
-        String sessionId = getSessionId(httpRequest);
+        String sessionId = getSessionId(request);
         if (sessionId != null) {
             sessionStat = webAppStat.getSessionStat(sessionId);
+        }
+
+        if (sessionStat != null) {
+            if (sessionStat.getCreateTimeMillis() == -1L) {
+                HttpSession session = request.getSession(false);
+                if (session != null) {
+                    sessionStat.setCreateTimeMillis(session.getCreationTime());
+                } else {
+                    sessionStat.setCreateTimeMillis(System.currentTimeMillis());
+                }
+            }
+
+            String ip = DruidWebUtils.getRemoteAddr(request);
+
+            int addressCount = sessionStat.getRemoteAddresses().size();
+            if (addressCount < 10) {
+                sessionStat.addRemoteAddress(ip);
+            } else {
+                if (!sessionStat.getRemoteAddress().contains(ip)) {
+                    LOG.error("sessoin ip change too many");
+                }
+            }
         }
 
         return sessionStat;
@@ -174,6 +204,10 @@ public class WebStatFilter implements Filter {
 
         @Override
         public void executeAfter(String sql, long nanoSpan, Throwable error) {
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.addJdbcExecuteNano(nanoSpan);
+            }
         }
 
         @Override

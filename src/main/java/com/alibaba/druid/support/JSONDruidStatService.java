@@ -159,7 +159,7 @@ public class JSONDruidStatService {
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("ResultCode", resultCode);
         dataMap.put("Content", content);
-        return JSON.toJSONString(dataMap);
+        return JSON.toJSONStringWithDateFormat(dataMap, "yyyy-MM-dd hh:mm:ss");
     }
 
 }
