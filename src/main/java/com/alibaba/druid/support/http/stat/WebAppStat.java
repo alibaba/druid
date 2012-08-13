@@ -8,44 +8,56 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.LRUCache;
 
 public class WebAppStat {
 
-    private final static Log                            LOG                            = LogFactory.getLog(WebAppStat.class);
+    private final static Log                        LOG                            = LogFactory.getLog(WebAppStat.class);
 
-    public final static int                             DEFAULT_MAX_STAT_URI_COUNT     = 1000;
-    public final static int                             DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 100;
+    public final static int                         DEFAULT_MAX_STAT_URI_COUNT     = 1000;
+    public final static int                         DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 100;
 
-    private volatile int                                maxStatUriCount                = DEFAULT_MAX_STAT_URI_COUNT;
-    private volatile int                                maxStatSessionCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
+    private volatile int                            maxStatUriCount                = DEFAULT_MAX_STAT_URI_COUNT;
+    private volatile int                            maxStatSessionCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
 
-    private final AtomicInteger                         runningCount                   = new AtomicInteger();
-    private final AtomicInteger                         concurrentMax                  = new AtomicInteger();
-    private final AtomicLong                            requestCount                   = new AtomicLong(0);
+    private final AtomicInteger                     runningCount                   = new AtomicInteger();
+    private final AtomicInteger                     concurrentMax                  = new AtomicInteger();
+    private final AtomicLong                        requestCount                   = new AtomicLong(0);
 
-    private final static ThreadLocal<WebAppStat>        currentLocal                   = new ThreadLocal<WebAppStat>();
+    private final static ThreadLocal<WebAppStat>    currentLocal                   = new ThreadLocal<WebAppStat>();
 
-    private final ConcurrentMap<String, WebURIStat>     uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>();
-    private final ConcurrentMap<String, WebSessionStat> sessionStatMap                 = new ConcurrentHashMap<String, WebSessionStat>();
+    private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>();
+    private final Map<String, WebSessionStat>       sessionStatMap;
 
-    private final AtomicLong                            uriStatMapFullCount            = new AtomicLong();
-    private final AtomicLong                            uriSessionMapFullCount         = new AtomicLong();
+    private final ReadWriteLock                     sessionStatLock                = new ReentrantReadWriteLock();
 
-    private String                                      contextPath;
+    private final AtomicLong                        uriStatMapFullCount            = new AtomicLong();
+    private final AtomicLong                        uriSessionMapFullCount         = new AtomicLong();
+
+    private String                                  contextPath;
 
     public static WebAppStat current() {
         return currentLocal.get();
     }
 
     public WebAppStat(){
-
+        this(null);
     }
 
     public WebAppStat(String contextPath){
+        this(contextPath, DEFAULT_MAX_STAT_SESSION_COUNT);
+    }
+
+    public WebAppStat(String contextPath, int maxStatSessionCount){
         this.contextPath = contextPath;
+        this.maxStatSessionCount = maxStatSessionCount;
+
+        sessionStatMap = new LRUCache<String, WebSessionStat>(maxStatSessionCount);
     }
 
     public String getContextPath() {
@@ -101,26 +113,49 @@ public class WebAppStat {
     }
 
     public WebSessionStat getSessionStat(String sessionId) {
-        if (sessionStatMap.size() >= this.getMaxStatSessionCount()) {
-            long fullCount = uriSessionMapFullCount.getAndIncrement();
+        return getSessionStat(sessionId, false);
+    }
 
-            if (fullCount == 0) {
-                LOG.error("sessionStatMap is full");
+    public WebSessionStat getSessionStat(String sessionId, boolean create) {
+        sessionStatLock.readLock().lock();
+        try {
+            WebSessionStat uriStat = sessionStatMap.get(sessionId);
+
+            if (uriStat != null) {
+                return uriStat;
             }
+        } finally {
+            sessionStatLock.readLock().unlock();
+        }
 
+        if (!create) {
             return null;
         }
 
-        WebSessionStat uriStat = sessionStatMap.get(sessionId);
+        sessionStatLock.writeLock().lock();
+        try {
+            WebSessionStat uriStat = sessionStatMap.get(sessionId);
 
-        if (uriStat == null) {
-            WebSessionStat newStat = new WebSessionStat(sessionId);
-            
-            sessionStatMap.putIfAbsent(sessionId, newStat);
-            uriStat = sessionStatMap.get(sessionId);
+            if (uriStat == null) {
+                if (sessionStatMap.size() >= this.getMaxStatSessionCount()) {
+                    long fullCount = uriSessionMapFullCount.getAndIncrement();
+
+                    if (fullCount == 0) {
+                        LOG.error("sessionStatMap is full");
+                    }
+                }
+
+                WebSessionStat newStat = new WebSessionStat(sessionId);
+
+                sessionStatMap.put(sessionId, newStat);
+
+                return newStat;
+            }
+
+            return uriStat;
+        } finally {
+            sessionStatLock.writeLock().unlock();
         }
-
-        return uriStat;
     }
 
     public void afterInvoke(long nanoSpan) {
@@ -193,19 +228,19 @@ public class WebAppStat {
         }
         return uriStatDataList;
     }
-    
+
     public List<Map<String, Object>> getSessionStatDataList() {
         List<Map<String, Object>> uriStatDataList = new ArrayList<Map<String, Object>>(this.sessionStatMap.size());
         for (WebSessionStat sessionStat : this.sessionStatMap.values()) {
             Map<String, Object> sessionStatData = sessionStat.getStatData();
-            
+
             int runningCount = ((Number) sessionStatData.get("RunningCount")).intValue();
             long requestCount = (Long) sessionStatData.get("RequestCount");
-            
+
             if (runningCount == 0 && requestCount == 0) {
                 continue;
             }
-            
+
             uriStatDataList.add(sessionStatData);
         }
         return uriStatDataList;

@@ -29,18 +29,26 @@ import com.alibaba.druid.util.ServletPathMatcher;
 
 public class WebStatFilter implements Filter {
 
-    private final static Log             LOG                       = LogFactory.getLog(WebStatFilter.class);
+    public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
+    public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
+    public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
 
-    private WebAppStat                   webAppStat                = null;
-    private WebStatFilterContextListener statFilterContextListener = new WebStatFilterContextListener();
+    public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
+
+    private final static Log             LOG                               = LogFactory.getLog(WebStatFilter.class);
+
+    private WebAppStat                   webAppStat                        = null;
+    private WebStatFilterContextListener statFilterContextListener         = new WebStatFilterContextListener();
     /**
      * PatternMatcher used in determining which paths to react to for a given request.
      */
-    protected PatternMatcher             pathMatcher               = new ServletPathMatcher();
+    protected PatternMatcher             pathMatcher                       = new ServletPathMatcher();
 
-    private final String                 EXCLUSIONS                = "exclusions";
     private Set<String>                  excludesPattern;
-    private boolean                      createSession             = false;
+
+    private boolean                      sessionStatEnable                 = true;
+    private int                          sessionStatMaxCount               = DEFAULT_MAX_STAT_SESSION_COUNT;
+    private boolean                      createSession                     = false;
 
     private String                       contextPath;
 
@@ -86,6 +94,7 @@ public class WebStatFilter implements Filter {
                 if (sessionStat != null) {
                     sessionStat.setLastAccessTimeMillis(startMillis);
                     sessionStat.reacord(nanoSpan);
+                    sessionStat.incrementRequestCount();
                 }
             }
 
@@ -94,10 +103,14 @@ public class WebStatFilter implements Filter {
     }
 
     public WebSessionStat getSessionStat(HttpServletRequest request) {
+        if (!isSessionStatEnable()) {
+            return null;
+        }
+
         WebSessionStat sessionStat = null;
         String sessionId = getSessionId(request);
         if (sessionId != null) {
-            sessionStat = webAppStat.getSessionStat(sessionId);
+            sessionStat = webAppStat.getSessionStat(sessionId, true);
         }
 
         if (sessionStat != null) {
@@ -140,10 +153,10 @@ public class WebStatFilter implements Filter {
         if (excludesPattern == null) {
             return false;
         }
-        
+
         if (contextPath != null && requestURI.startsWith(contextPath)) {
             requestURI = requestURI.substring(contextPath.length());
-            if(!requestURI.startsWith("/")) {
+            if (!requestURI.startsWith("/")) {
                 requestURI = "/" + requestURI;
             }
         }
@@ -153,7 +166,7 @@ public class WebStatFilter implements Filter {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -163,16 +176,41 @@ public class WebStatFilter implements Filter {
 
     @Override
     public void init(FilterConfig config) throws ServletException {
-        String exclusions = config.getInitParameter(EXCLUSIONS);
-        if (exclusions != null && exclusions.trim().length() != 0) {
-            excludesPattern = new HashSet<String>(Arrays.asList(exclusions.split("\\s*,\\s*")));
+        {
+            String exclusions = config.getInitParameter(PARAM_NAME_EXCLUSIONS);
+            if (exclusions != null && exclusions.trim().length() != 0) {
+                excludesPattern = new HashSet<String>(Arrays.asList(exclusions.split("\\s*,\\s*")));
+            }
         }
-        config.getServletContext().getContextPath();
+        {
+            String param = config.getInitParameter(PARAM_NAME_SESSION_STAT_ENABLE);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                if ("true".equals(param)) {
+                    this.sessionStatEnable = true;
+                } else if ("false".equals(param)) {
+                    this.sessionStatEnable = false;
+                } else {
+                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_SESSION_STAT_ENABLE + "' config error");
+                }
+            }
+        }
+        {
+            String param = config.getInitParameter(PARAM_NAME_SESSION_STAT_MAX_COUNT);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                try {
+                    this.sessionStatMaxCount = Integer.parseInt(param);
+                } catch (NumberFormatException e) {
+                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_SESSION_STAT_ENABLE + "' config error", e);
+                }
+            }
+        }
 
         StatFilterContext.getInstance().addContextListener(statFilterContextListener);
 
         this.contextPath = DruidWebUtils.getContextPath(config.getServletContext());
-        webAppStat = new WebAppStat(contextPath);
+        webAppStat = new WebAppStat(contextPath, this.sessionStatMaxCount);
 
         WebAppStatManager.getInstance().addWebAppStatSet(webAppStat);
     }
@@ -184,6 +222,30 @@ public class WebStatFilter implements Filter {
         if (webAppStat != null) {
             WebAppStatManager.getInstance().remove(webAppStat);
         }
+    }
+
+    public boolean isSessionStatEnable() {
+        return sessionStatEnable;
+    }
+
+    public void setSessionStatEnable(boolean sessionStatEnable) {
+        this.sessionStatEnable = sessionStatEnable;
+    }
+
+    public WebAppStat getWebAppStat() {
+        return webAppStat;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public int getSessionStatMaxCount() {
+        return sessionStatMaxCount;
+    }
+
+    public WebStatFilterContextListener getStatFilterContextListener() {
+        return statFilterContextListener;
     }
 
     class WebStatFilterContextListener extends StatFilterContextListenerAdapter {
