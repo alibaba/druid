@@ -96,17 +96,15 @@ public class JSONDruidStatService {
     
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
-        return array;
+        return comparatorOrderBy(array, parameters);    
     }
     
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
         return array;
     }
-
-    private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
-        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
-
+    
+    private List<Map<String,Object>> comparatorOrderBy(List<Map<String, Object>> array,Map<String, String> parameters){
         // when open the stat page before executing some sql
         if (array == null || array.isEmpty()) return null;
 
@@ -144,6 +142,11 @@ public class JSONDruidStatService {
         if (toIndex > array.size()) toIndex = array.size();
 
         return array.subList(fromIndex, toIndex);
+    }
+    
+    private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
+        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
+        return comparatorOrderBy(array, parameters);
     }
 
     private String returnJSONActiveConnectionStackTrace(Integer id) {
