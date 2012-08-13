@@ -14,6 +14,12 @@ public class SpringStat {
 
     }
 
+    public void reset() {
+        for (SpringMethodStat stat : methodStats.values()) {
+            stat.reset();
+        }
+    }
+
     public SpringMethodStat getMethodStat(MethodInfo methodInfo, boolean create) {
         SpringMethodStat methodStat = methodStats.get(methodInfo);
         if (methodStat != null) {
@@ -27,7 +33,7 @@ public class SpringStat {
 
         return methodStat;
     }
-    
+
     public List<Map<String, Object>> getMethodStatDataList() {
         List<Map<String, Object>> methodStatDataList = new ArrayList<Map<String, Object>>(this.methodStats.size());
         for (SpringMethodStat methodStat : this.methodStats.values()) {

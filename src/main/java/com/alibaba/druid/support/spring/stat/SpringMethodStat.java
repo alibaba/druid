@@ -28,6 +28,21 @@ public class SpringMethodStat {
     public SpringMethodStat(MethodInfo methodInfo){
         this.methodInfo = methodInfo;
     }
+    
+    public void reset() {
+        concurrentMax.set(0);
+        executeCount.set(0);
+        executeErrorCount.set(0);
+        executeTimeNano.set(0);
+        
+        jdbcFetchRowCount.set(0);
+        jdbcUpdateCount.set(0);
+        jdbcExecuteCount.set(0);
+        jdbcExecuteTimeNano.set(0);
+        
+        jdbcCommitCount.set(0);
+        jdbcRollbackCount.set(0);
+    }
 
     public MethodInfo getMethodInfo() {
         return methodInfo;

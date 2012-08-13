@@ -32,7 +32,7 @@ public class WebAppStatUtils {
         if (webStat.getClass() == WebAppStat.class) {
             return ((WebAppStat) webStat).getURIStatDataList();
         }
-        
+
         try {
             Method method = webStat.getClass().getMethod("getURIStatDataList");
             Object obj = method.invoke(webStat);
@@ -48,7 +48,7 @@ public class WebAppStatUtils {
         if (webStat.getClass() == WebAppStat.class) {
             return ((WebAppStat) webStat).getSessionStatDataList();
         }
-        
+
         try {
             Method method = webStat.getClass().getMethod("getSessionStatDataList");
             Object obj = method.invoke(webStat);
@@ -56,6 +56,19 @@ public class WebAppStatUtils {
         } catch (Exception e) {
             LOG.error("getSessionStatDataList error", e);
             return null;
+        }
+    }
+
+    public static void rset(Object webStat) {
+        if (webStat.getClass() == WebAppStat.class) {
+            ((WebAppStat) webStat).reset();
+        }
+
+        try {
+            Method method = webStat.getClass().getMethod("rset");
+            method.invoke(webStat);
+        } catch (Exception e) {
+            LOG.error("reset error", e);
         }
     }
 }

@@ -45,6 +45,24 @@ public class WebAppStat {
         return currentLocal.get();
     }
 
+    public void reset() {
+        concurrentMax.set(0);
+        requestCount.set(0);
+        requestCount.set(0);
+
+        sessionStatLock.writeLock().lock();
+        try {
+            sessionStatMap.clear();
+        } finally {
+            sessionStatLock.writeLock().unlock();
+        }
+        
+        uriStatMap.clear();
+        
+        uriStatMapFullCount.set(0);
+        uriSessionMapFullCount.set(0);
+    }
+
     public WebAppStat(){
         this(null);
     }

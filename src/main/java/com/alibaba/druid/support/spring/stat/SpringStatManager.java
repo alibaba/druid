@@ -62,4 +62,12 @@ public class SpringStatManager {
 
         return allMethodStatDataList;
     }
+    
+    public void resetStat() {
+        Set<Object> stats = getSpringStatSet();
+
+        for (Object stat : stats) {
+            SpringStatUtils.rset(stat);
+        }
+    }
 }

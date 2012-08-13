@@ -48,6 +48,9 @@ public class JSONDruidStatService {
 
         if (url.equals("/reset-all.json")) {
             druidStatManager.resetAll();
+            SpringStatManager.getInstance().resetStat();
+            WebAppStatManager.getInstance().resetStat();
+            
             return returnJSONResult(RESULT_CODE_SUCCESS, null);
         }
 

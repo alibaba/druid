@@ -26,4 +26,17 @@ public class SpringStatUtils {
             return null;
         }
     }
+
+    public static void rset(Object webStat) {
+        if (webStat.getClass() == SpringStat.class) {
+            ((SpringStat) webStat).reset();
+        }
+
+        try {
+            Method method = webStat.getClass().getMethod("rset");
+            method.invoke(webStat);
+        } catch (Exception e) {
+            LOG.error("reset error", e);
+        }
+    }
 }
