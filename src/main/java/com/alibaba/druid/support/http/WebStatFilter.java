@@ -22,6 +22,7 @@ import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.support.spring.stat.SpringMethodStat;
 import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
@@ -264,49 +265,79 @@ public class WebStatFilter implements Filter {
 
         @Override
         public void addUpdateCount(int updateCount) {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.addJdbcUpdateCount(updateCount);
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.addJdbcUpdateCount(updateCount);
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcUpdateCount(updateCount);
             }
         }
 
         @Override
         public void addFetchRowCount(int fetchRowCount) {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.addJdbcFetchRowCount(fetchRowCount);
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.addJdbcFetchRowCount(fetchRowCount);
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcFetchRowCount(fetchRowCount);
             }
         }
 
         @Override
         public void executeBefore(String sql, boolean inTransaction) {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.incrementJdbcExecuteCount();
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcExecuteCount();
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcExecuteCount();
             }
         }
 
         @Override
-        public void executeAfter(String sql, long nanoSpan, Throwable error) {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.addJdbcExecuteNano(nanoSpan);
+        public void executeAfter(String sql, long nanos, Throwable error) {
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.addJdbcExecuteTimeNano(nanos);
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcExecuteTimeNano(nanos);
             }
         }
 
         @Override
         public void commit() {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.incrementJdbcCommitCount();
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcCommitCount();
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcCommitCount();
             }
         }
 
         @Override
         public void rollback() {
-            WebRequestStat localStat = WebRequestStat.current();
-            if (localStat != null) {
-                localStat.incrementJdbcRollbackCount();
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcRollbackCount();
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcRollbackCount();
             }
         }
     }

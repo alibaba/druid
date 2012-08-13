@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
+import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
@@ -90,8 +91,17 @@ public class JSONDruidStatService {
         if (url.startsWith("/websession.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
         }
+        
+        if (url.startsWith("/spring.json")) {
+            return returnJSONResult(RESULT_CODE_SUCCESS, getSpringStatDataList(parameters));
+        }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
+    }
+    
+    private List<Map<String, Object>> getSpringStatDataList(Map<String, String> parameters) {
+        List<Map<String, Object>> array = SpringStatManager.getInstance().getMethodStatData();
+        return comparatorOrderBy(array, parameters);    
     }
     
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {

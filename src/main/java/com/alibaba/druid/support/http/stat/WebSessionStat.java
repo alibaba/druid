@@ -135,7 +135,7 @@ public class WebSessionStat {
             this.addJdbcUpdateCount(requestStat.getJdbcUpdateCount());
             this.addJdbcCommitCount(requestStat.getJdbcCommitCount());
             this.addJdbcRollbackCount(requestStat.getJdbcRollbackCount());
-            this.addJdbcExecuteTimeNano(requestStat.getJdbcExecuteNano());
+            this.addJdbcExecuteTimeNano(requestStat.getJdbcExecuteTimeNano());
         }
     }
 

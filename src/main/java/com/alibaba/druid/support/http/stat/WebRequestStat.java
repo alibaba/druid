@@ -61,11 +61,11 @@ public class WebRequestStat {
         return jdbcExecuteCount;
     }
 
-    public long getJdbcExecuteNano() {
+    public long getJdbcExecuteTimeNano() {
         return jdbcExecuteNano;
     }
     
-    public void addJdbcExecuteNano(long nano) {
+    public void addJdbcExecuteTimeNano(long nano) {
         jdbcExecuteNano += nano;
     }
 

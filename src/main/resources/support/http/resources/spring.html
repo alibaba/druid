@@ -5,7 +5,7 @@
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-		<script src="js/websession.js" type="text/javascript" charset="utf8"></script>
+		<script src="js/spring.js" type="text/javascript" charset="utf8"></script>
 		<script >
             function init(){
 				ajaxRequestForDataSourceSqlStatInfo();
@@ -20,15 +20,14 @@
 		</div>
 		<br />
 		<div id="main">
-            <table cellspacing="1" cellpadding="5" id="WebSessionStatTable" width="99%">
+            <table cellspacing="1" cellpadding="5" id="SpringStatTable" width="99%">
 				<thead>
 					<tr>
 						<th class="td_lable">N--</th>
-	                    <th class="td_lable"><a id="SESSIONID" href="javascript:void(0)" onclick="setOrderBy('SESSIONID');">SESSIONID</a></th>
-	                    <th class="td_lable" width="50"><a id="CreateTime" href="javascript:void(0)" onclick="setOrderBy('CreateTime');">CreateTime</a></th>
-	                    <th class="td_lable" width="50"><a id="RemoteAddress" href="javascript:void(0)" onclick="setOrderBy('RemoteAddress');">RemoteAddress</a></th>
-	                    <th class="td_lable" width="50"><a id="RequestCount" href="javascript:void(0)" onclick="setOrderBy('RequestCount');">Request Count</a></th>
-	                    <th class="td_lable" width="50"><a id="RequestTimeMillisTotal" href="javascript:void(0)" onclick="setOrderBy('RequestTimeMillisTotal=');" title="RequestTimeMillisTotal">RequestTime</a></th>
+	                    <th class="td_lable"><a id="Class" href="javascript:void(0)" onclick="setOrderBy('Class');">Class</a></th>
+	                    <th class="td_lable"><a id="Method" href="javascript:void(0)" onclick="setOrderBy('Method');">Method</a></th>
+	                    <th class="td_lable" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="setOrderBy('ExecuteCount');">Exec Count</a></th>
+	                    <th class="td_lable" width="50"><a id="th-ExecuteTimeMillis" href="javascript:void(0)" onclick="setOrderBy('ExecuteTimeMillis=');" title="ExecuteTimeMillis">Exec Time</a></th>
 	                    <th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
 	                    <th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
 	                    <th class="td_lable" width="80"><a id="th-JdbcExecuteCount" href="javascript:void(0)" onclick="setOrderBy('JdbcExecuteCount');">Jdbc Exec Count</a></th>
