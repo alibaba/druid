@@ -1,6 +1,7 @@
 package com.alibaba.druid.support.http.stat;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class WebAppStat {
     private final static Log                        LOG                            = LogFactory.getLog(WebAppStat.class);
 
     public final static int                         DEFAULT_MAX_STAT_URI_COUNT     = 1000;
-    public final static int                         DEFAULT_MAX_STAT_SESSION_COUNT = 1000 * 100;
+    public final static int                         DEFAULT_MAX_STAT_SESSION_COUNT = 1000;
 
     private volatile int                            maxStatUriCount                = DEFAULT_MAX_STAT_URI_COUNT;
     private volatile int                            maxStatSessionCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
@@ -32,7 +33,7 @@ public class WebAppStat {
     private final static ThreadLocal<WebAppStat>    currentLocal                   = new ThreadLocal<WebAppStat>();
 
     private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>();
-    private final Map<String, WebSessionStat>       sessionStatMap;
+    private final LRUCache<String, WebSessionStat>  sessionStatMap;
 
     private final ReadWriteLock                     sessionStatLock                = new ReentrantReadWriteLock();
 
@@ -50,15 +51,20 @@ public class WebAppStat {
         requestCount.set(0);
         requestCount.set(0);
 
-        sessionStatLock.writeLock().lock();
+        sessionStatLock.readLock().lock();
         try {
+            Iterator<Map.Entry<String, WebSessionStat>> iter = sessionStatMap.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, WebSessionStat> entry = iter.next();
+                entry.getValue().reset();
+            }
             sessionStatMap.clear();
         } finally {
-            sessionStatLock.writeLock().unlock();
+            sessionStatLock.readLock().unlock();
         }
-        
+
         uriStatMap.clear();
-        
+
         uriStatMapFullCount.set(0);
         uriSessionMapFullCount.set(0);
     }
