@@ -112,6 +112,10 @@ public class WebSessionStat {
             }
         }
 
+        incrementRequestCount();
+    }
+
+    public void incrementRequestCount() {
         requestCount.incrementAndGet();
     }
 
