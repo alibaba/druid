@@ -60,9 +60,18 @@ public class StatViewServlet extends HttpServlet {
         }
         String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
+        
+        if ("".equals(path)) {
+            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/index.html");
+            } else {
+                response.sendRedirect("druid/index.html");
+            }
+            return;
+        }
 
-        if (path.length() == 0 || "/".equals(path)) {
-            returnResourceFile("/index.html", uri, response);
+        if ("/".equals(path)) {
+            response.sendRedirect("index.html");
             return;
         }
 
