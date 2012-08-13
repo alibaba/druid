@@ -36,6 +36,7 @@ public final class PreparedStatementHolder {
     private boolean                    enterOracleImplicitCache = false;
 
     private int                        inUseCount               = 0;
+    private boolean                    pooling                  = false;
 
     public PreparedStatementHolder(PreparedStatementKey key, PreparedStatement stmt){
         this.key = key;
@@ -99,12 +100,21 @@ public final class PreparedStatementHolder {
     public void incrementInUseCount() {
         inUseCount++;
     }
-    
+
     public void decrementInUseCount() {
         inUseCount--;
     }
-    
+
     public int getInUseCount() {
         return inUseCount;
     }
+
+    public boolean isPooling() {
+        return pooling;
+    }
+
+    public void setPooling(boolean pooling) {
+        this.pooling = pooling;
+    }
+
 }

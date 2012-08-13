@@ -57,7 +57,7 @@ public class PreparedStatementPool {
             if (holder.isInUse() && (!dataSource.isSharePreparedStatements())) {
                 return null;
             }
-            
+
             holder.incrementHitCount();
             dataSource.incrementCachedPreparedStatementHitCount();
             if (holder.isEnterOracleImplicitCache()) {
@@ -88,6 +88,7 @@ public class PreparedStatementPool {
 
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null && oldHolder != holder) {
+            oldHolder.setPooling(false);
             dataSource.closePreapredStatement(oldHolder);
         } else {
             if (holder.getHitCount() == 0) {
@@ -95,6 +96,7 @@ public class PreparedStatementPool {
             }
         }
 
+        holder.setPooling(true);
     }
 
     public void clear() throws SQLException {
@@ -109,10 +111,11 @@ public class PreparedStatementPool {
     }
 
     private void closeRemovedStatement(PreparedStatementHolder holder) throws SQLException {
+        holder.setPooling(false);
         if (holder.isInUse()) {
             return;
         }
-        
+
         if (holder.isEnterOracleImplicitCache()) {
             OracleUtils.exitImplicitCacheToClose(holder.getStatement());
         }
@@ -123,6 +126,10 @@ public class PreparedStatementPool {
 
     public Map<PreparedStatementKey, PreparedStatementHolder> getMap() {
         return map;
+    }
+
+    public int size() {
+        return this.map.size();
     }
 
     public class LRUCache extends LinkedHashMap<PreparedStatementKey, PreparedStatementHolder> {
