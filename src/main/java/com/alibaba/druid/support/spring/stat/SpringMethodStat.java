@@ -177,7 +177,7 @@ public class SpringMethodStat {
     public Map<String, Object> getStatData() {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
         
-        data.put("Class", this.getMethodInfo().getInstanceClass().getName());
+        data.put("Class", this.getMethodInfo().getClassName());
         data.put("Method", this.getMethodInfo().getSignature());
 
         data.put("RunningCount", this.getRunningCount());

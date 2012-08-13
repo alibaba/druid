@@ -4,31 +4,38 @@ import java.lang.reflect.Method;
 
 public class MethodInfo {
 
-    private final Class<?> instanceClass;
-    private final Method   method;
-    private final String   signature;
+    private String       className;
+    private String       methodName;
+    private final String signature;
 
     public MethodInfo(Class<?> instanceClass, Method method){
-        super();
-        this.instanceClass = instanceClass;
-        this.method = method;
-        signature = getMethodSignature(this.getMethod());
+        this.className = instanceClass.getName();
+        this.methodName = method.getName();
+        signature = getMethodSignature(method);
     }
 
-    public Class<?> getInstanceClass() {
-        return instanceClass;
+    public String getClassName() {
+        return className;
     }
 
-    public Method getMethod() {
-        return method;
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((instanceClass == null) ? 0 : instanceClass.hashCode());
-        result = prime * result + ((method == null) ? 0 : method.hashCode());
+        result = prime * result + ((className == null) ? 0 : className.hashCode());
+        result = prime * result + ((signature == null) ? 0 : signature.hashCode());
         return result;
     }
 
@@ -47,16 +54,19 @@ public class MethodInfo {
         }
 
         MethodInfo other = (MethodInfo) obj;
-
-        if (instanceClass != other.instanceClass) {
+        if (className == null) {
+            if (other.className != null) {
+                return false;
+            }
+        } else if (!className.equals(other.className)) {
             return false;
         }
-        
-        if (signature == null) {
-            return other.signature == null;
-        }
 
-        if (!signature.equals(other.signature)) {
+        if (signature == null) {
+            if (other.signature != null) {
+                return false;
+            }
+        } else if (!signature.equals(other.signature)) {
             return false;
         }
 
