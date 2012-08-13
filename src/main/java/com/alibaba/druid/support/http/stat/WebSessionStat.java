@@ -15,6 +15,7 @@ public class WebSessionStat {
     private final AtomicInteger runningCount         = new AtomicInteger();
     private final AtomicInteger concurrentMax        = new AtomicInteger();
     private final AtomicLong    requestCount         = new AtomicLong(0);
+    private final AtomicLong    requestErrorCount    = new AtomicLong(0);
 
     private final AtomicLong    jdbcFetchRowCount    = new AtomicLong();
     private final AtomicLong    jdbcUpdateCount      = new AtomicLong();
@@ -119,9 +120,8 @@ public class WebSessionStat {
         requestCount.incrementAndGet();
     }
 
-    public void afterInvoke(long nanoSpan) {
+    public void afterInvoke(Throwable error, long nanoSpan) {
         runningCount.decrementAndGet();
-
         reacord(nanoSpan);
     }
 
@@ -153,6 +153,10 @@ public class WebSessionStat {
 
     public long getRequestCount() {
         return requestCount.get();
+    }
+    
+    public long getRequestErrorCount() {
+        return requestErrorCount.get();
     }
 
     public long getRequestTimeNano() {

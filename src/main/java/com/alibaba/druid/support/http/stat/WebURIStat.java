@@ -9,24 +9,25 @@ public class WebURIStat {
 
     private final String                         uri;
 
-    private final AtomicInteger                  runningCount      = new AtomicInteger();
-    private final AtomicInteger                  concurrentMax     = new AtomicInteger();
-    private final AtomicLong                     requestCount      = new AtomicLong(0);
+    private final AtomicInteger                  runningCount        = new AtomicInteger();
+    private final AtomicInteger                  concurrentMax       = new AtomicInteger();
+    private final AtomicLong                     requestCount        = new AtomicLong(0);
+    private final AtomicLong                     requestTimeNano     = new AtomicLong();
 
-    private final AtomicLong                     jdbcFetchRowCount = new AtomicLong();
-    private final AtomicLong                     jdbcFetchRowPeak  = new AtomicLong();              // 单次请求读取行数的峰值
+    private final AtomicLong                     jdbcFetchRowCount   = new AtomicLong();
+    private final AtomicLong                     jdbcFetchRowPeak    = new AtomicLong();             // 单次请求读取行数的峰值
 
-    private final AtomicLong                     jdbcUpdateCount   = new AtomicLong();
-    private final AtomicLong                     jdbcUpdatePeak    = new AtomicLong();              // 单次请求更新行数的峰值
+    private final AtomicLong                     jdbcUpdateCount     = new AtomicLong();
+    private final AtomicLong                     jdbcUpdatePeak      = new AtomicLong();             // 单次请求更新行数的峰值
 
-    private final AtomicLong                     jdbcExecuteCount  = new AtomicLong();
-    private final AtomicLong                     jdbcExecutePeak   = new AtomicLong();              // 单次请求执行SQL次数的峰值
+    private final AtomicLong                     jdbcExecuteCount    = new AtomicLong();
+    private final AtomicLong                     jdbcExecutePeak     = new AtomicLong();             // 单次请求执行SQL次数的峰值
+    private final AtomicLong                     jdbcExecuteTimeNano = new AtomicLong();
 
-    private final AtomicLong                     jdbcCommitCount   = new AtomicLong();
-    private final AtomicLong                     jdbcRollbackCount = new AtomicLong();
+    private final AtomicLong                     jdbcCommitCount     = new AtomicLong();
+    private final AtomicLong                     jdbcRollbackCount   = new AtomicLong();
 
-    private final static ThreadLocal<WebURIStat> currentLocal      = new ThreadLocal<WebURIStat>();
-    
+    private final static ThreadLocal<WebURIStat> currentLocal        = new ThreadLocal<WebURIStat>();
 
     public WebURIStat(String uri){
         super();
@@ -62,14 +63,16 @@ public class WebURIStat {
         requestCount.incrementAndGet();
     }
 
-    public void afterInvoke(long nanoSpan) {
+    public void afterInvoke(Throwable error, long nanoSpan) {
         runningCount.decrementAndGet();
+        requestTimeNano.addAndGet(nanoSpan);
 
         {
             WebRequestStat localStat = WebRequestStat.current();
             if (localStat != null) {
                 {
                     long fetchRowCount = localStat.getJdbcFetchRowCount();
+                    this.addJdbcFetchRowCount(fetchRowCount);
 
                     for (;;) {
                         long peak = jdbcFetchRowPeak.get();
@@ -84,6 +87,7 @@ public class WebURIStat {
                 }
                 {
                     long executeCount = localStat.getJdbcExecuteCount();
+                    this.addJdbcExecuteCount(executeCount);
 
                     for (;;) {
                         long peak = jdbcExecutePeak.get();
@@ -98,6 +102,7 @@ public class WebURIStat {
                 }
                 {
                     long updateCount = localStat.getJdbcUpdateCount();
+                    this.addJdbcUpdateCount(updateCount);
 
                     for (;;) {
                         long peak = jdbcUpdatePeak.get();
@@ -128,6 +133,14 @@ public class WebURIStat {
         return requestCount.get();
     }
 
+    public long getRequestTimeNano() {
+        return requestTimeNano.get();
+    }
+
+    public long getRequestTimeMillis() {
+        return getRequestTimeNano() / (1000 * 1000);
+    }
+
     public void addJdbcFetchRowCount(long delta) {
         this.jdbcFetchRowCount.addAndGet(delta);
     }
@@ -140,7 +153,7 @@ public class WebURIStat {
         return jdbcFetchRowPeak.get();
     }
 
-    public void addJdbcUpdateCount(int updateCount) {
+    public void addJdbcUpdateCount(long updateCount) {
         this.jdbcUpdateCount.addAndGet(updateCount);
     }
 
@@ -155,6 +168,10 @@ public class WebURIStat {
     public void incrementJdbcExecuteCount() {
         jdbcExecuteCount.incrementAndGet();
     }
+    
+    public void addJdbcExecuteCount(long executeCount) {
+        jdbcExecuteCount.addAndGet(executeCount);
+    }
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount.get();
@@ -162,6 +179,14 @@ public class WebURIStat {
 
     public long getJdbcExecutePeak() {
         return jdbcExecutePeak.get();
+    }
+
+    public long getJdbcExecuteTimeMillis() {
+        return getJdbcExecuteTimeNano() / (1000 * 1000);
+    }
+
+    public long getJdbcExecuteTimeNano() {
+        return jdbcExecuteTimeNano.get();
     }
 
     public void incrementJdbcCommitCount() {
@@ -187,12 +212,14 @@ public class WebURIStat {
         data.put("RunningCount", this.getRunningCount());
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
+        data.put("RequestTimeMillis", this.getRequestTimeMillis());
 
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
 
         data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
         data.put("JdbcExecutePeak", this.getJdbcExecutePeak());
+        data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
 
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcFetchRowPeak", this.getJdbcFetchRowPeak());

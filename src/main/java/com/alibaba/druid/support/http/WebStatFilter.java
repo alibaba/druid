@@ -20,7 +20,6 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
-import com.alibaba.druid.support.http.stat.WebURIStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.DruidWebUtils;
@@ -78,17 +77,30 @@ public class WebStatFilter implements Filter {
             sessionStat.setLastAccessTimeMillis(startMillis);
         }
 
+        Throwable error = null;
         try {
             chain.doFilter(request, response);
+        } catch (IOException e) {
+            error = e;
+            throw e;
+        } catch (ServletException e) {
+            error = e;
+            throw e;
+        } catch (RuntimeException e) {
+            error = e;
+            throw e;
+        } catch (Error e) {
+            error = e;
+            throw e;
         } finally {
             long endNano = System.nanoTime();
             requestStat.setEndNano(endNano);
 
             long nanoSpan = endNano - startNano;
-            webAppStat.afterInvoke(nanoSpan);
+            webAppStat.afterInvoke(error, nanoSpan);
 
             if (sessionStat != null) {
-                sessionStat.afterInvoke(nanoSpan);
+                sessionStat.afterInvoke(error, nanoSpan);
             } else {
                 sessionStat = getSessionStat(httpRequest);
                 if (sessionStat != null) {
@@ -252,50 +264,25 @@ public class WebStatFilter implements Filter {
 
         @Override
         public void addUpdateCount(int updateCount) {
-            {
-                WebURIStat stat = WebURIStat.current();
-                if (stat != null) {
-                    stat.addJdbcUpdateCount(updateCount);
-                }
-            }
-            {
-
-                WebRequestStat localStat = WebRequestStat.current();
-                if (localStat != null) {
-                    localStat.addJdbcUpdateCount(updateCount);
-                }
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.addJdbcUpdateCount(updateCount);
             }
         }
 
         @Override
         public void addFetchRowCount(int fetchRowCount) {
-            {
-                WebURIStat stat = WebURIStat.current();
-                if (stat != null) {
-                    stat.addJdbcFetchRowCount(fetchRowCount);
-                }
-            }
-            {
-                WebRequestStat localStat = WebRequestStat.current();
-                if (localStat != null) {
-                    localStat.addJdbcFetchRowCount(fetchRowCount);
-                }
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.addJdbcFetchRowCount(fetchRowCount);
             }
         }
 
         @Override
         public void executeBefore(String sql, boolean inTransaction) {
-            {
-                WebURIStat stat = WebURIStat.current();
-                if (stat != null) {
-                    stat.incrementJdbcExecuteCount();
-                }
-            }
-            {
-                WebRequestStat localStat = WebRequestStat.current();
-                if (localStat != null) {
-                    localStat.incrementJdbcExecuteCount();
-                }
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.incrementJdbcExecuteCount();
             }
         }
 
@@ -309,30 +296,17 @@ public class WebStatFilter implements Filter {
 
         @Override
         public void commit() {
-            WebURIStat stat = WebURIStat.current();
-            if (stat != null) {
-                stat.incrementJdbcCommitCount();
-            }
-            {
-                WebRequestStat localStat = WebRequestStat.current();
-                if (localStat != null) {
-                    localStat.incrementJdbcCommitCount();
-                }
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.incrementJdbcCommitCount();
             }
         }
 
         @Override
         public void rollback() {
-            WebURIStat stat = WebURIStat.current();
-            if (stat != null) {
-                stat.incrementJdbcRollbackCount();
-            }
-
-            {
-                WebRequestStat localStat = WebRequestStat.current();
-                if (localStat != null) {
-                    localStat.incrementJdbcRollbackCount();
-                }
+            WebRequestStat localStat = WebRequestStat.current();
+            if (localStat != null) {
+                localStat.incrementJdbcRollbackCount();
             }
         }
     }

@@ -158,12 +158,12 @@ public class WebAppStat {
         }
     }
 
-    public void afterInvoke(long nanoSpan) {
+    public void afterInvoke(Throwable error, long nanoSpan) {
         runningCount.decrementAndGet();
 
         WebURIStat uriStat = WebURIStat.current();
         if (uriStat != null) {
-            uriStat.afterInvoke(nanoSpan);
+            uriStat.afterInvoke(error, nanoSpan);
         }
 
         currentLocal.set(null);
