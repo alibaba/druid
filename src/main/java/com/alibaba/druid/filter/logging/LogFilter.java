@@ -303,11 +303,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             connectionLog("{conn-" + connection.getId() + "} commited");
         }
     }
-    
+
     @Override
     public void connection_setAutoCommit(FilterChain chain, ConnectionProxy connection, boolean autoCommit)
                                                                                                            throws SQLException {
-        
+
         connectionLog("{conn-" + connection.getId() + "} setAutoCommit " + autoCommit);
         chain.connection_setAutoCommit(connection, autoCommit);
     }
@@ -392,11 +392,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                          + "} update executed. effort " + updateCount + ". " + sql);
         }
     }
-    
+
     @Override
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
         chain.resultSet_close(resultSet);
-        
+
         StringBuffer buf = new StringBuffer();
         buf.append("{conn-");
         buf.append(resultSet.getStatementProxy().getConnectionProxy().getId());
@@ -405,7 +405,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
         buf.append(", rs-");
         buf.append(resultSet.getId());
         buf.append("} closed");
-        
+
         if (isResultSetCloseAfterLogEnabled()) {
             resultSetLog(buf.toString());
         }
@@ -464,40 +464,40 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
         return moreRows;
     }
-    
+
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
                                                                                                                       throws SQLException {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex);
-        
+
         if (obj instanceof ResultSetProxy) {
             resultSetOpenAfter((ResultSetProxy) obj);
         }
-        
+
         return obj;
     }
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex,
                                               java.util.Map<String, Class<?>> map) throws SQLException {
-        Object obj =  chain.callableStatement_getObject(statement, parameterIndex, map);
-        
+        Object obj = chain.callableStatement_getObject(statement, parameterIndex, map);
+
         if (obj instanceof ResultSetProxy) {
             resultSetOpenAfter((ResultSetProxy) obj);
         }
-        
+
         return obj;
     }
 
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
                                                                                                                         throws SQLException {
-        Object obj =  chain.callableStatement_getObject(statement, parameterName);
-        
+        Object obj = chain.callableStatement_getObject(statement, parameterName);
+
         if (obj instanceof ResultSetProxy) {
             resultSetOpenAfter((ResultSetProxy) obj);
         }
-        
+
         return obj;
     }
 
@@ -505,12 +505,12 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement,
                                               String parameterName, java.util.Map<String, Class<?>> map)
                                                                                                         throws SQLException {
-        Object obj =  chain.callableStatement_getObject(statement, parameterName, map);
-        
+        Object obj = chain.callableStatement_getObject(statement, parameterName, map);
+
         if (obj instanceof ResultSetProxy) {
             resultSetOpenAfter((ResultSetProxy) obj);
         }
-        
+
         return obj;
     }
 
@@ -647,34 +647,44 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             }
         }
     }
-    
+
     @Override
     public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection conn) throws SQLException {
         long connectionId = -1;
-        
+
         if (conn.getConnectionHolder() != null) {
             ConnectionProxy connection = (ConnectionProxy) conn.getConnectionHolder().getConnection();
             connectionId = connection.getId();
         }
-        
+
         chain.dataSource_recycle(conn);
-        
+
         if (connectionCloseAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn-" + connectionId + "} pool-recycle");
         }
     }
 
     @Override
-    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
+                                                          long maxWaitMillis) throws SQLException {
         DruidPooledConnection conn = chain.dataSource_connect(dataSource, maxWaitMillis);
-        
+
         ConnectionProxy connection = (ConnectionProxy) conn.getConnectionHolder().getConnection();
-        
+
         if (connectionConnectAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn-" + connection.getId() + "} pool-connect");
         }
-        
+
         return conn;
     }
 
+    @Override
+    public void preparedStatement_clearParameters(FilterChain chain, PreparedStatementProxy statement)
+                                                                                                      throws SQLException {
+
+        statementLog("{conn-" + statement.getConnectionProxy().getId() + ", pstmt-" + statement.getId()
+                     + "} clearParameters. " + statement.getSql());
+
+        chain.preparedStatement_clearParameters(statement);
+    }
 }

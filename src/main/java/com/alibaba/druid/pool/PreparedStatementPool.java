@@ -102,13 +102,17 @@ public class PreparedStatementPool {
         while (iter.hasNext()) {
             Entry<PreparedStatementKey, PreparedStatementHolder> entry = iter.next();
 
-            closeStatement(entry.getValue());
+            closeRemovedStatement(entry.getValue());
 
             iter.remove();
         }
     }
 
-    private void closeStatement(PreparedStatementHolder holder) throws SQLException {
+    private void closeRemovedStatement(PreparedStatementHolder holder) throws SQLException {
+        if (holder.isInUse()) {
+            return;
+        }
+        
         if (holder.isEnterOracleImplicitCache()) {
             OracleUtils.exitImplicitCacheToClose(holder.getStatement());
         }
@@ -134,7 +138,7 @@ public class PreparedStatementPool {
 
             if (remove) {
                 try {
-                    closeStatement(eldest.getValue());
+                    closeRemovedStatement(eldest.getValue());
                 } catch (SQLException e) {
                     LOG.error("closeStatement error", e);
                 }
