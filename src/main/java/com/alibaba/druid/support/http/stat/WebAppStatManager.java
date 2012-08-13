@@ -97,7 +97,7 @@ public class WebAppStatManager {
         Set<Object> stats = getWebAppStatSet();
 
         for (Object stat : stats) {
-            WebAppStatUtils.rset(stat);
+            WebAppStatUtils.reset(stat);
         }
     }
 

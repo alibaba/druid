@@ -67,7 +67,7 @@ public class SpringStatManager {
         Set<Object> stats = getSpringStatSet();
 
         for (Object stat : stats) {
-            SpringStatUtils.rset(stat);
+            SpringStatUtils.reset(stat);
         }
     }
 }

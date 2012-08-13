@@ -27,13 +27,14 @@ public class SpringStatUtils {
         }
     }
 
-    public static void rset(Object webStat) {
+    public static void reset(Object webStat) {
         if (webStat.getClass() == SpringStat.class) {
             ((SpringStat) webStat).reset();
+            return;
         }
 
         try {
-            Method method = webStat.getClass().getMethod("rset");
+            Method method = webStat.getClass().getMethod("reset");
             method.invoke(webStat);
         } catch (Exception e) {
             LOG.error("reset error", e);
