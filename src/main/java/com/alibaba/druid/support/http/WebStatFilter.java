@@ -132,8 +132,10 @@ public class WebStatFilter implements Filter {
             }
 
             if (uriStat == null) {
-                if (responseWrapper.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
-                    uriStat = webAppStat.getURIStat("error_404", true);
+                int status = responseWrapper.getStatus();
+                if (status == HttpServletResponse.SC_NOT_FOUND) {
+                    String errorUrl = contextPath + "/error_" + status;
+                    uriStat = webAppStat.getURIStat(errorUrl, true);
                 } else {
                     uriStat = webAppStat.getURIStat(requestURI, true);
                 }
