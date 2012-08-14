@@ -9,7 +9,7 @@ public class SpringMethodStat {
 
     private final static ThreadLocal<SpringMethodStat> currentLocal        = new ThreadLocal<SpringMethodStat>();
 
-    private final MethodInfo                           methodInfo;
+    private final SpringMethodInfo                           methodInfo;
 
     private final AtomicInteger                        runningCount        = new AtomicInteger();
     private final AtomicInteger                        concurrentMax       = new AtomicInteger();
@@ -25,7 +25,7 @@ public class SpringMethodStat {
     private final AtomicLong                           jdbcCommitCount     = new AtomicLong();
     private final AtomicLong                           jdbcRollbackCount   = new AtomicLong();
 
-    public SpringMethodStat(MethodInfo methodInfo){
+    public SpringMethodStat(SpringMethodInfo methodInfo){
         this.methodInfo = methodInfo;
     }
     
@@ -44,7 +44,7 @@ public class SpringMethodStat {
         jdbcRollbackCount.set(0);
     }
 
-    public MethodInfo getMethodInfo() {
+    public SpringMethodInfo getMethodInfo() {
         return methodInfo;
     }
 

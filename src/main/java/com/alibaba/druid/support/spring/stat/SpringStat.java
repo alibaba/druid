@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class SpringStat {
 
-    private ConcurrentMap<MethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<MethodInfo, SpringMethodStat>();
+    private ConcurrentMap<SpringMethodInfo, SpringMethodStat> methodStats = new ConcurrentHashMap<SpringMethodInfo, SpringMethodStat>();
 
     public SpringStat(){
 
@@ -20,7 +20,7 @@ public class SpringStat {
         }
     }
 
-    public SpringMethodStat getMethodStat(MethodInfo methodInfo, boolean create) {
+    public SpringMethodStat getMethodStat(SpringMethodInfo methodInfo, boolean create) {
         SpringMethodStat methodStat = methodStats.get(methodInfo);
         if (methodStat != null) {
             return methodStat;

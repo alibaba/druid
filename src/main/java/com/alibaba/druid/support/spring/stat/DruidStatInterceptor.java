@@ -29,7 +29,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
     public Object invoke(MethodInvocation invocation) throws Throwable {
         SpringMethodStat lastMethodStat = SpringMethodStat.current();
 
-        MethodInfo methodInfo = getMethodInfo(invocation);
+        SpringMethodInfo methodInfo = getMethodInfo(invocation);
 
         SpringMethodStat methodStat = springStat.getMethodStat(methodInfo, true);
 
@@ -60,16 +60,16 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
         }
     }
 
-    public MethodInfo getMethodInfo(MethodInvocation invocation) {
+    public SpringMethodInfo getMethodInfo(MethodInvocation invocation) {
         Object thisObject = invocation.getThis();
         Method method = invocation.getMethod();
 
         if (thisObject == null) {
-            return new MethodInfo(method.getDeclaringClass(), method);
+            return new SpringMethodInfo(method.getDeclaringClass(), method);
         }
 
         if (method.getDeclaringClass() == thisObject.getClass()) {
-            return new MethodInfo(method.getDeclaringClass(), method);
+            return new SpringMethodInfo(method.getDeclaringClass(), method);
         }
 
         {
@@ -89,7 +89,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
             if (isCglibProxy || isJavassistProxy) {
                 Class<?> superClazz = clazz.getSuperclass();
 
-                return new MethodInfo(superClazz, method);
+                return new SpringMethodInfo(superClazz, method);
             }
         }
 
@@ -120,9 +120,9 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
         }
 
         if (clazz == null) {
-            return new MethodInfo(method.getDeclaringClass(), method);
+            return new SpringMethodInfo(method.getDeclaringClass(), method);
         }
 
-        return new MethodInfo(clazz, method);
+        return new SpringMethodInfo(clazz, method);
     }
 }
