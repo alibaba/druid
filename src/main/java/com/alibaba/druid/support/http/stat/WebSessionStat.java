@@ -111,7 +111,7 @@ public class WebSessionStat {
         StringBuilder buf = new StringBuilder();
         for (String item : remoteAddresses) {
             if (buf.length() != 0) {
-                buf.append(",");
+                buf.append(";");
             }
             buf.append(item);
         }
@@ -261,6 +261,7 @@ public class WebSessionStat {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
 
         data.put("SESSIONID", this.getSessionId());
+        data.put("Principal", this.getPrincipal());
         data.put("RunningCount", this.getRunningCount());
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());

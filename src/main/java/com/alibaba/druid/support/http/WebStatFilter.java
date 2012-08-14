@@ -37,8 +37,8 @@ public class WebStatFilter implements Filter {
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
     public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
-    public static final String           PARAM_NAME_PRINCIPAL_SESSION_NAME = "princialSessionName";
-    public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "princialCookieName";
+    public static final String           PARAM_NAME_PRINCIPAL_SESSION_NAME = "principalSessionName";
+    public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
 
     public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
 

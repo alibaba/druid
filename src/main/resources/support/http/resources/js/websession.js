@@ -96,6 +96,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
 		newRow.insertCell(-1).innerHTML = sqlStat.SESSIONID;
+		newRow.insertCell(-1).innerHTML = sqlStat.Principal;
 		newRow.insertCell(-1).innerHTML = sqlStat.CreateTime;
 		newRow.insertCell(-1).innerHTML = sqlStat.RemoteAddress;
 		newRow.insertCell(-1).innerHTML = sqlStat.RequestCount;
