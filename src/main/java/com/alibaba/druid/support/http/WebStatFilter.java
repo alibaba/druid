@@ -11,6 +11,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -32,6 +33,8 @@ public class WebStatFilter implements Filter {
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
     public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
+    public static final String           PARAM_NAME_PRINCIPAL_SESSION_NAME = "princialSessionName";
+    public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "princialCookieName";
 
     public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
 
@@ -51,6 +54,9 @@ public class WebStatFilter implements Filter {
     private boolean                      createSession                     = false;
 
     private String                       contextPath;
+
+    private String                       principalSessionName;
+    private String                       principalCookieName;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
@@ -102,12 +108,15 @@ public class WebStatFilter implements Filter {
 
             if (sessionStat != null) {
                 sessionStat.afterInvoke(error, nanoSpan);
+                sessionStat.setPrincipal(getPrincipal(httpRequest));
             } else {
                 sessionStat = getSessionStat(httpRequest);
                 if (sessionStat != null) {
                     sessionStat.setLastAccessTimeMillis(startMillis);
                     sessionStat.reacord(nanoSpan);
                     sessionStat.incrementRequestCount();
+                    
+                    sessionStat.setPrincipal(getPrincipal(httpRequest));
                 }
             }
 
@@ -162,6 +171,33 @@ public class WebStatFilter implements Filter {
         return sessionId;
     }
 
+    public String getPrincipal(HttpServletRequest httpRequest) {
+        if (principalSessionName != null) {
+            HttpSession session = httpRequest.getSession(createSession);
+            if (session == null) {
+                return null;
+            }
+
+            Object sessionValue = session.getAttribute(principalSessionName);
+
+            if (sessionValue == null) {
+                return null;
+            }
+
+            return sessionValue.toString();
+        }
+
+        if (principalCookieName != null) {
+            for (Cookie cookie : httpRequest.getCookies()) {
+                if (principalCookieName.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
     public boolean isExclusion(String requestURI) {
         if (excludesPattern == null) {
             return false;
@@ -187,6 +223,14 @@ public class WebStatFilter implements Filter {
         return request.getRequestURI();
     }
 
+    public String getPrincipalSessionName() {
+        return principalSessionName;
+    }
+
+    public String getPrincipalCookieName() {
+        return principalCookieName;
+    }
+
     @Override
     public void init(FilterConfig config) throws ServletException {
         {
@@ -195,6 +239,27 @@ public class WebStatFilter implements Filter {
                 excludesPattern = new HashSet<String>(Arrays.asList(exclusions.split("\\s*,\\s*")));
             }
         }
+
+        {
+            String param = config.getInitParameter(PARAM_NAME_PRINCIPAL_SESSION_NAME);
+            if (param != null) {
+                param = param.trim();
+                if (param.length() != 0) {
+                    this.principalSessionName = param;
+                }
+            }
+        }
+
+        {
+            String param = config.getInitParameter(PARAM_NAME_PRINCIPAL_COOKIE_NAME);
+            if (param != null) {
+                param = param.trim();
+                if (param.length() != 0) {
+                    this.principalCookieName = param;
+                }
+            }
+        }
+
         {
             String param = config.getInitParameter(PARAM_NAME_SESSION_STAT_ENABLE);
             if (param != null && param.trim().length() != 0) {

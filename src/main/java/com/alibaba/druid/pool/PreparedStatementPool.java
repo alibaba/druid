@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
@@ -89,7 +91,7 @@ public class PreparedStatementPool {
         PreparedStatementHolder oldHolder = map.put(key, holder);
         if (oldHolder != null && oldHolder != holder) {
             oldHolder.setPooling(false);
-            dataSource.closePreapredStatement(oldHolder);
+            closeRemovedStatement(oldHolder);
         } else {
             if (holder.getHitCount() == 0) {
                 dataSource.incrementCachedPreparedStatementCount();
@@ -97,6 +99,22 @@ public class PreparedStatementPool {
         }
 
         holder.setPooling(true);
+        
+        if (LOG.isDebugEnabled()) {
+            String message = null;
+            if (holder.getStatement() instanceof PreparedStatementProxy) {
+                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.getStatement();
+                if (stmtProxy instanceof CallableStatementProxy) {
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId() + "} enter cache";
+                } else {
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId() + "} enter cache";
+                }
+            } else {
+                message = "stmt enter cache";
+            }
+            
+            LOG.debug(message);
+        }
     }
 
     public void clear() throws SQLException {
@@ -110,7 +128,23 @@ public class PreparedStatementPool {
         }
     }
 
-    private void closeRemovedStatement(PreparedStatementHolder holder) throws SQLException {
+    public void closeRemovedStatement(PreparedStatementHolder holder) throws SQLException {
+        if (LOG.isDebugEnabled()) {
+            String message = null;
+            if (holder.getStatement() instanceof PreparedStatementProxy) {
+                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.getStatement();
+                if (stmtProxy instanceof CallableStatementProxy) {
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId() + "} exit cache";
+                } else {
+                    message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", pstmt-" + stmtProxy.getId() + "} exit cache";
+                }
+            } else {
+                message = "stmt exit cache";
+            }
+            
+            LOG.debug(message);
+        }
+        
         holder.setPooling(false);
         if (holder.isInUse()) {
             return;

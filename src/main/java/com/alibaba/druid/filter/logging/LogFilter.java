@@ -683,7 +683,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
                                                                                                       throws SQLException {
 
         statementLog("{conn-" + statement.getConnectionProxy().getId() + ", pstmt-" + statement.getId()
-                     + "} clearParameters. " + statement.getSql());
+                     + "} clearParameters. ");
 
         chain.preparedStatement_clearParameters(statement);
     }
