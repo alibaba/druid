@@ -88,7 +88,7 @@ public class WebAppStat {
         return contextPath;
     }
 
-    public void beforeInvoke(String uri) {
+    public void beforeInvoke() {
         currentLocal.set(this);
 
         int running = runningCount.incrementAndGet();
@@ -107,15 +107,23 @@ public class WebAppStat {
         }
 
         requestCount.incrementAndGet();
-
-        WebURIStat uriStat = getURIStat(uri);
-
-        if (uriStat != null) {
-            uriStat.beforeInvoke(uri);
-        }
+    }
+    
+    public WebURIStat getURIStat(String uri) {
+        return getURIStat(uri, false);
     }
 
-    public WebURIStat getURIStat(String uri) {
+    public WebURIStat getURIStat(String uri, boolean create) {
+        WebURIStat uriStat = uriStatMap.get(uri);
+        
+        if (uriStat != null) {
+            return uriStat;
+        }
+        
+        if (!create) {
+            return null;
+        }
+        
         if (uriStatMap.size() >= this.getMaxStatUriCount()) {
             long fullCount = uriStatMapFullCount.getAndIncrement();
 
@@ -125,8 +133,6 @@ public class WebAppStat {
 
             return null;
         }
-
-        WebURIStat uriStat = uriStatMap.get(uri);
 
         if (uriStat == null) {
             uriStatMap.putIfAbsent(uri, new WebURIStat(uri));

@@ -42,7 +42,7 @@ public class WebURIStat {
         return uri;
     }
 
-    public void beforeInvoke(String uri) {
+    public void beforeInvoke() {
         currentLocal.set(this);
 
         int running = runningCount.incrementAndGet();
@@ -63,9 +63,9 @@ public class WebURIStat {
         requestCount.incrementAndGet();
     }
 
-    public void afterInvoke(Throwable error, long nanoSpan) {
+    public void afterInvoke(Throwable error, long nanos) {
         runningCount.decrementAndGet();
-        requestTimeNano.addAndGet(nanoSpan);
+        requestTimeNano.addAndGet(nanos);
 
         {
             WebRequestStat localStat = WebRequestStat.current();

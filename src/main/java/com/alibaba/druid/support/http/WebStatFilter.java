@@ -1,6 +1,7 @@
 package com.alibaba.druid.support.http;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.druid.filter.stat.StatFilterContext;
@@ -21,6 +24,7 @@ import com.alibaba.druid.support.http.stat.WebAppStat;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.http.stat.WebRequestStat;
 import com.alibaba.druid.support.http.stat.WebSessionStat;
+import com.alibaba.druid.support.http.stat.WebURIStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.spring.stat.SpringMethodStat;
@@ -29,6 +33,8 @@ import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
 
 public class WebStatFilter implements Filter {
+
+    public final static int              STATUS_NOT_FOUND                  = 404;
 
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
@@ -62,6 +68,8 @@ public class WebStatFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
                                                                                              ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        StatHttpServletResponseWrapper responseWrapper = new StatHttpServletResponseWrapper(httpResponse);
 
         final String requestURI = getRequestURI(httpRequest);
 
@@ -76,7 +84,14 @@ public class WebStatFilter implements Filter {
         WebRequestStat requestStat = new WebRequestStat(startNano);
         WebRequestStat.set(requestStat);
         WebSessionStat sessionStat = getSessionStat(httpRequest);
-        webAppStat.beforeInvoke(requestURI);
+        webAppStat.beforeInvoke();
+
+        WebURIStat uriStat = webAppStat.getURIStat(requestURI, false);
+
+        // 第一次访问时，uriStat这里为null，是为了防止404攻击。
+        if (uriStat != null) {
+            uriStat.beforeInvoke();
+        }
 
         // 第一次访问时，sessionId为null，如果缺省sessionCreate=false，sessionStat就为null。
         if (sessionStat != null) {
@@ -86,7 +101,7 @@ public class WebStatFilter implements Filter {
 
         Throwable error = null;
         try {
-            chain.doFilter(request, response);
+            chain.doFilter(request, responseWrapper);
         } catch (IOException e) {
             error = e;
             throw e;
@@ -103,21 +118,35 @@ public class WebStatFilter implements Filter {
             long endNano = System.nanoTime();
             requestStat.setEndNano(endNano);
 
-            long nanoSpan = endNano - startNano;
-            webAppStat.afterInvoke(error, nanoSpan);
+            long nanos = endNano - startNano;
+            webAppStat.afterInvoke(error, nanos);
 
-            if (sessionStat != null) {
-                sessionStat.afterInvoke(error, nanoSpan);
-                sessionStat.setPrincipal(getPrincipal(httpRequest));
-            } else {
+            if (sessionStat == null) {
                 sessionStat = getSessionStat(httpRequest);
                 if (sessionStat != null) {
-                    sessionStat.setLastAccessTimeMillis(startMillis);
-                    sessionStat.reacord(nanoSpan);
-                    sessionStat.incrementRequestCount();
-                    
-                    sessionStat.setPrincipal(getPrincipal(httpRequest));
+                    sessionStat.beforeInvoke(); // 补偿
                 }
+            }
+
+            if (sessionStat != null) {
+                sessionStat.afterInvoke(error, nanos);
+                sessionStat.setPrincipal(getPrincipal(httpRequest));
+            }
+
+            if (uriStat == null) {
+                if (responseWrapper.getStatus() == STATUS_NOT_FOUND) {
+                    uriStat = webAppStat.getURIStat("error_404", true);
+                } else {
+                    uriStat = webAppStat.getURIStat(requestURI, true);
+                }
+
+                if (uriStat != null) {
+                    uriStat.beforeInvoke(); // 补偿调用
+                }
+            }
+
+            if (uriStat != null) {
+                uriStat.afterInvoke(error, nanos);
             }
 
             WebRequestStat.set(null);
@@ -404,6 +433,43 @@ public class WebStatFilter implements Filter {
             if (springMethodStat != null) {
                 springMethodStat.incrementJdbcRollbackCount();
             }
+        }
+    }
+
+    public final static class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {
+
+        private int status;
+
+        public StatHttpServletResponseWrapper(HttpServletResponse response){
+            super(response);
+        }
+
+        public void setStatus(int statusCode) {
+            super.setStatus(statusCode);
+            this.status = statusCode;
+        }
+
+        public void setStatus(int statusCode, String statusMessage) {
+            super.setStatus(statusCode, statusMessage);
+            this.status = statusCode;
+        }
+
+        public void sendError(int statusCode, String statusMessage) throws IOException {
+            super.sendError(statusCode, statusMessage);
+            this.status = statusCode;
+        }
+
+        public void sendError(int statusCode) throws IOException {
+            super.sendError(statusCode);
+            this.status = statusCode;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public PrintWriter getWriter() throws IOException {
+            return super.getWriter();
         }
     }
 }
