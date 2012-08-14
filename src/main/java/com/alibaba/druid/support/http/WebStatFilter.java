@@ -34,8 +34,6 @@ import com.alibaba.druid.util.ServletPathMatcher;
 
 public class WebStatFilter implements Filter {
 
-    public final static int              STATUS_NOT_FOUND                  = 404;
-
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
     public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
@@ -134,7 +132,7 @@ public class WebStatFilter implements Filter {
             }
 
             if (uriStat == null) {
-                if (responseWrapper.getStatus() == STATUS_NOT_FOUND) {
+                if (responseWrapper.getStatus() == HttpServletResponse.SC_NOT_FOUND) {
                     uriStat = webAppStat.getURIStat("error_404", true);
                 } else {
                     uriStat = webAppStat.getURIStat(requestURI, true);
