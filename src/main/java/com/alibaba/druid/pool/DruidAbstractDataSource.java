@@ -1315,14 +1315,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
                 dataSource.validateConnection(conn);
                 dataSource.createError = null;
-
-                // if (dataSource.isOracle() && dataSource.isPoolPreparedStatements()) {
-                // int cacheSize = dataSource.getMaxPoolPreparedStatementPerConnectionSize();
-                // if (cacheSize > 0) {
-                // OracleUtils.setImplicitCachingEnabled(conn, true);
-                // OracleUtils.setStatementCacheSize(conn, cacheSize);
-                // }
-                // }
             } catch (SQLException ex) {
                 dataSource.createErrorCount++;
                 dataSource.createError = ex;
