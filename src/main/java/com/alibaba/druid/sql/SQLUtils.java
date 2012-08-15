@@ -135,7 +135,9 @@ public class SQLUtils {
             return out.toString();
         } catch (SQLParseException ex) {
             LOG.warn("format error", ex);
-            
+            return sql;
+        } catch (ParserException ex) {
+            LOG.warn("format error", ex);
             return sql;
         }
     }

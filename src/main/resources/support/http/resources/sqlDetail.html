@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
+    <script src="js/sqlDetail.js" type="text/javascript" charset="utf8"></script>
+    <script >
+      function init(){
+        ajaxRequestForSqlInfo({sqlId});
+        var time3=setInterval("ajaxRequestForSqlInfo({sqlId});",5000);
+      }
+    </script>
+  </head>
+  <body onload="init();">
+    <br />
+    <div id="menu" >
+      <a href="index.html">Index</a> | 
+      <a href="datasource.html">DataSource</a> | 
+      <a href="sql.html">Sql</a> | 
+      <a href="weburi.html">WebURI</a> | 
+      <a href="websession.html">Web Session</a> | 
+      <a href="spring.html">Spring</a> | 
+      <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | 
+      <a href="api.html">JSON API</a>
+    </div>
+
+    <div id="main">
+      <br/>
+      <h2> FULL SQL</h2>
+      <h4 id="fullSql"></h4>
+      <h2> Format View:</h2>
+      <textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;' id="formattedSql">
+      </textarea>
+      <br/>
+      <br/>
+      <h2> Parse View:</h2>
+      <table cellpadding='5' cellspacing='1' width='99%'>
+        <tr>
+          <td class='td_lable' width='130'> Tables</td>
+          <td id="parsed.table"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> Fields</td>
+          <td id="parsed.fields"></td>
+        </tr>
+        <tr> <td class='td_lable'> Coditions</td>
+          <td id="parsed.conditions"> </td>
+        </tr>
+        <tr>
+          <td class='td_lable'> Relationships</td>
+          <td id="parsed.relationships"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> OrderByColumns</td>
+          <td id="parsed.orderbycolumns"></td>
+        </tr>
+      </table>
+      <br />
+      
+      <h2> LastSlow SQL View:</h2>
+      <table cellpadding='5' cellspacing='1' width='99%'>
+       <tr>
+          <td class='td_lable' width='130'>MaxTimespan</td>
+          <td id="MaxTimespan"></td>
+        </tr>
+        <tr>
+          <td class='td_lable' width='130'>MaxTimespanOccurTime</td>
+          <td id="MaxTimespanOccurTime"></td>
+        </tr>
+         <tr>
+          <td class='td_lable' width='130'>LastSlowParameters</td>
+          <td id="LastSlowParameters"></td>
+        </tr>
+      </table>
+      
+      <div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+    </div>
+  </body>
+</html>
