@@ -1,5 +1,8 @@
 package com.alibaba.druid.support.http;
 
+import com.alibaba.druid.util.IpUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,12 +43,30 @@ public class StatViewServlet extends HttpServlet {
     public String                         templatePage;
     private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
 
+    private String                        permittedIp;
+    private Pattern                       ipCheckPattern;
+
     public void init() throws ServletException {
         try {
             templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
+            
         } catch (IOException e) {
             throw new ServletException("error read templatePage:" + TEMPLATE_PAGE_RESOURCE_PATH, e);
         }
+        permittedIp = getServletConfig().getInitParameter("permittedIp");
+        if (permittedIp != null ) {
+            this.ipCheckPattern = IpUtils.buildIpCheckPattern(permittedIp);
+        }
+    }
+
+    private boolean isPermittedRequest(HttpServletRequest request) {
+        //if nothing is configured, every host can access the stat result(default)
+        if (permittedIp == null || permittedIp.trim().equals("")) {
+            return true;
+        }
+        String remoteIp = request.getRemoteAddr();
+        Matcher matcher =  ipCheckPattern.matcher(remoteIp);
+        return matcher.matches();
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -55,11 +76,19 @@ public class StatViewServlet extends HttpServlet {
 
         response.setCharacterEncoding("utf-8");
 
+        
+
         if (contextPath == null) { // root context
             contextPath = "";
         }
         String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+        if (!isPermittedRequest(request)) {
+            path = "/nopermit.html";
+            returnResourceFile(path, uri, response);
+            return;
+        }
         
         if ("".equals(path)) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
