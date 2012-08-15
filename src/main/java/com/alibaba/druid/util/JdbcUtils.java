@@ -649,7 +649,7 @@ public final class JdbcUtils {
             return null;
         }
     }
-
+    
     public static void insertToTable(DataSource dataSource, String tableName, Map<String, Object> data)
                                                                                                        throws SQLException {
         Connection conn = null;
