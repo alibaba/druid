@@ -30,6 +30,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -509,6 +510,10 @@ public final class JdbcUtils {
             throw new SQLException(e.getMessage(), e);
         }
     }
+    
+    public static int executeUpdate(DataSource dataSource, String sql, Object... parameters) throws SQLException {
+        return executeUpdate(dataSource, sql, Arrays.asList(parameters));
+    }
 
     public static int executeUpdate(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
         Connection conn = null;
@@ -563,6 +568,11 @@ public final class JdbcUtils {
         } finally {
             JdbcUtils.close(stmt);
         }
+    }
+
+    public static List<Map<String, Object>> executeQuery(DataSource dataSource, String sql, Object... parameters)
+                                                                                                                 throws SQLException {
+        return executeQuery(dataSource, sql, Arrays.asList(parameters));
     }
 
     public static List<Map<String, Object>> executeQuery(DataSource dataSource, String sql, List<Object> parameters)
@@ -638,5 +648,48 @@ public final class JdbcUtils {
         } catch (ClassNotFoundException e) {
             return null;
         }
+    }
+
+    public static void insertToTable(DataSource dataSource, String tableName, Map<String, Object> data)
+                                                                                                       throws SQLException {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            insertToTable(conn, tableName, data);
+        } finally {
+            close(conn);
+        }
+    }
+
+    public static void insertToTable(Connection conn, String tableName, Map<String, Object> data) throws SQLException {
+        String sql = makeInsertToTableSql(tableName, data.keySet());
+        List<Object> parameters = new ArrayList<Object>(data.values());
+        execute(conn, sql, parameters);
+    }
+
+    public static String makeInsertToTableSql(String tableName, Collection<String> names) {
+        StringBuilder sql = new StringBuilder() //
+        .append("insert into ") //
+        .append(tableName) //
+        .append("("); //
+
+        int nameCount = 0;
+        for (String name : names) {
+            if (nameCount > 0) {
+                sql.append(",");
+            }
+            sql.append(name);
+            nameCount++;
+        }
+        sql.append(") values (");
+        for (int i = 0; i < nameCount; ++i) {
+            if (i != 0) {
+                sql.append(",");
+            }
+            sql.append("?");
+        }
+        sql.append(")");
+
+        return sql.toString();
     }
 }

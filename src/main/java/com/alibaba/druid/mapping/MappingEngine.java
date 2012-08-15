@@ -275,7 +275,7 @@ public class MappingEngine {
         int updateCount = JdbcUtils.executeUpdate(conn, rawSql, context.getParameters());
         return updateCount;
     }
-    
+
     public void insert(Connection conn, String sql, Object... parameters) throws SQLException {
         insert(conn, sql, Arrays.asList(parameters));
     }
@@ -311,7 +311,7 @@ public class MappingEngine {
             JdbcUtils.close(conn);
         }
     }
-    
+
     public int delete(String sql, Object... parameters) throws SQLException {
         return delete(sql, Arrays.asList(parameters));
     }
@@ -335,7 +335,35 @@ public class MappingEngine {
             JdbcUtils.close(conn);
         }
     }
-    
+
+    public void insertToTable(String tableName, Map<String, Object> map) throws SQLException {
+        StringBuilder sql = new StringBuilder() //
+        .append("insert into ") //
+        .append(tableName) //
+        .append("("); //
+
+        int nameCount = 0;
+        for (String name : map.keySet()) {
+            if (nameCount > 0) {
+                sql.append(",");
+            }
+            sql.append(name);
+            nameCount++;
+        }
+        sql.append(") values (");
+        for (int i = 0; i < nameCount; ++i) {
+            if (i != 0) {
+                sql.append(",");
+            }
+            sql.append("?");
+        }
+        sql.append(")");
+
+        List<Object> parameters = new ArrayList<Object>(map.values());
+
+        insert(sql.toString(), parameters);
+    }
+
     public void insert(String sql, Object... parameters) throws SQLException {
         insert(sql, Arrays.asList(parameters));
     }
