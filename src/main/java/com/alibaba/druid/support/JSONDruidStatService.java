@@ -1,5 +1,11 @@
 package com.alibaba.druid.support;
 
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.sql.SQLUtils;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,9 +88,7 @@ public class JSONDruidStatService {
 
         if (url.startsWith("/sql-") && url.indexOf(".json") > 0) {
             Integer id = StringUtils.subStringToInteger(url, "sql-", ".json");
-
-            Object result = druidStatManager.getSqlStatData(id);
-            return returnJSONResult(result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+            return returnJSONSqlInfo(id);
         }
         
         if (url.startsWith("/weburi.json")) {
@@ -160,6 +164,28 @@ public class JSONDruidStatService {
     private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
         return comparatorOrderBy(array, parameters);
+    }
+
+    private String returnJSONSqlInfo(Integer id) {
+        Map<String,Object> map = druidStatManager.getSqlStatData(id);
+        map.put("formattedSql",SQLUtils.format((String) map.get("SQL"),(String) map.get("DbType")));
+        List<SQLStatement> statementList = SQLUtils.parseStatements((String) map.get("SQL"), (String) map.get("DbType"));
+    
+        if (!statementList.isEmpty()) {
+            SQLStatement statemen = statementList.get(0);
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, (String) map.get("DbType"));
+            statemen.accept(visitor);
+            map.put("parsedTable", visitor.getTables().toString());
+            map.put("parsedFields", visitor.getColumns().toString());
+            map.put("parsedConditions", visitor.getConditions().toString());
+            map.put("parsedRelationships", visitor.getRelationships().toString());
+            map.put("parsedOrderbycolumns", visitor.getOrderByColumns().toString());
+        }
+        
+	    DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
+	    map.put("MaxTimespanOccurTime", format.format(map.get("MaxTimespanOccurTime")));
+
+        return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
     }
 
     private String returnJSONActiveConnectionStackTrace(Integer id) {
