@@ -3,6 +3,7 @@ package com.alibaba.druid.mapping;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,11 +41,11 @@ public class MappingEngine {
 
     public Entity getFirstEntity(MappingContext context) {
         Entity entity = context.getDefaultEntity();
-        
+
         if (entity != null) {
             return entity;
         }
-        
+
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             return entry.getValue();
         }
@@ -95,7 +96,7 @@ public class MappingEngine {
     public SQLASTOutputVisitor createOutputVisitor(Appendable out) {
         return provider.createOutputVisitor(this, out);
     }
-    
+
     public String explain(String sql) {
         return explain(sql);
     }
@@ -116,7 +117,7 @@ public class MappingEngine {
 
         return toSQL(stmt);
     }
-    
+
     public SQLSelectQueryBlock explainToSelectSQLObject(String sql) {
         return explainToSelectSQLObject(sql, new MappingContext());
     }
@@ -147,11 +148,11 @@ public class MappingEngine {
     public void afterResole(MappingVisitor visitor) {
 
     }
-    
+
     public SQLDeleteStatement explainToDeleteSQLObject(String sql, MappingContext context) {
         return provider.explainToDeleteSQLObject(this, sql, context);
     }
-    
+
     public String explainToDeleteSQL(String sql) {
         return explainToDeleteSQL(sql, new MappingContext());
     }
@@ -178,7 +179,7 @@ public class MappingEngine {
     public SQLUpdateStatement explainToUpdateSQLObject(String sql, MappingContext context) {
         return provider.explainToUpdateSQLObject(this, sql, context);
     }
-    
+
     public String explainToUpdateSQL(String sql) {
         return explainToUpdateSQL(sql, new MappingContext());
     }
@@ -197,7 +198,7 @@ public class MappingEngine {
     public SQLInsertStatement explainToInsertSQLObject(String sql, MappingContext context) {
         return provider.explainToInsertSQLObject(this, sql, context);
     }
-    
+
     public String explainToInsertSQL(String sql) {
         return explainToInsertSQL(sql, new MappingContext());
     }
@@ -239,7 +240,7 @@ public class MappingEngine {
 
         return out.toString();
     }
-    
+
     public List<Map<String, Object>> select(Connection conn, String sql, List<Object> parameters) throws SQLException {
         return select(conn, sql, new MappingContext(parameters));
     }
@@ -250,7 +251,7 @@ public class MappingEngine {
         String rawSql = this.toSQL(sqlObject);
         return JdbcUtils.executeQuery(conn, rawSql, context.getParameters());
     }
-    
+
     public int delete(Connection conn, String sql, List<Object> parameters) throws SQLException {
         return delete(conn, sql, new MappingContext(parameters));
     }
@@ -262,7 +263,7 @@ public class MappingEngine {
         int updateCount = JdbcUtils.executeUpdate(conn, rawSql, context.getParameters());
         return updateCount;
     }
-    
+
     public int update(Connection conn, String sql, List<Object> parameters) throws SQLException {
         return update(conn, sql, new MappingContext(parameters));
     }
@@ -275,6 +276,10 @@ public class MappingEngine {
         return updateCount;
     }
     
+    public void insert(Connection conn, String sql, Object... parameters) throws SQLException {
+        insert(conn, sql, Arrays.asList(parameters));
+    }
+
     public void insert(Connection conn, String sql, List<Object> parameters) throws SQLException {
         insert(conn, sql, new MappingContext(parameters));
     }
@@ -293,6 +298,10 @@ public class MappingEngine {
         return this.dataSource.getConnection();
     }
 
+    public List<Map<String, Object>> select(String sql, Object... parameters) throws SQLException {
+        return select(sql, Arrays.asList(parameters));
+    }
+
     public List<Map<String, Object>> select(String sql, List<Object> parameters) throws SQLException {
         Connection conn = null;
         try {
@@ -301,6 +310,10 @@ public class MappingEngine {
         } finally {
             JdbcUtils.close(conn);
         }
+    }
+    
+    public int delete(String sql, Object... parameters) throws SQLException {
+        return delete(sql, Arrays.asList(parameters));
     }
 
     public int delete(String sql, List<Object> parameters) throws SQLException {
@@ -321,6 +334,10 @@ public class MappingEngine {
         } finally {
             JdbcUtils.close(conn);
         }
+    }
+    
+    public void insert(String sql, Object... parameters) throws SQLException {
+        insert(sql, Arrays.asList(parameters));
     }
 
     public void insert(String sql, List<Object> parameters) throws SQLException {

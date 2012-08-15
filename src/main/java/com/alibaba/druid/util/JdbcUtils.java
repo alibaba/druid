@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -497,7 +498,7 @@ public final class JdbcUtils {
         } catch (ClassNotFoundException e) {
             // skip
         }
-        
+
         try {
             return (Driver) Thread.currentThread().getContextClassLoader().loadClass(driverClassName).newInstance();
         } catch (IllegalAccessException e) {
@@ -534,6 +535,10 @@ public final class JdbcUtils {
         }
 
         return updateCount;
+    }
+
+    public static void execute(DataSource dataSource, String sql, Object... parameters) throws SQLException {
+        execute(dataSource, sql, Arrays.asList(parameters));
     }
 
     public static void execute(DataSource dataSource, String sql, List<Object> parameters) throws SQLException {
@@ -610,7 +615,7 @@ public final class JdbcUtils {
             stmt.setObject(i + 1, parameters.get(i));
         }
     }
-    
+
     public static Class<?> loadDriverClass(String className) {
         Class<?> clazz = null;
 
