@@ -1,5 +1,8 @@
 package com.alibaba.druid.support.http;
 
+import com.alibaba.druid.util.IpUtils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,14 +41,32 @@ public class StatViewServlet extends HttpServlet {
     private static JSONDruidStatService   jsonDruidStatService        = JSONDruidStatService.getInstance();
 
     public String                         templatePage;
-    private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
+   
+
+    private String                        permittedIp;
+    private Pattern                       ipCheckPattern;
 
     public void init() throws ServletException {
         try {
             templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
+            
         } catch (IOException e) {
             throw new ServletException("error read templatePage:" + TEMPLATE_PAGE_RESOURCE_PATH, e);
         }
+        permittedIp = getServletConfig().getInitParameter("permittedIp");
+        if (permittedIp != null ) {
+            this.ipCheckPattern = IpUtils.buildIpCheckPattern(permittedIp);
+        }
+    }
+
+    private boolean isPermittedRequest(HttpServletRequest request) {
+        //if nothing is configured, every host can access the stat result(default)
+        if (permittedIp == null || permittedIp.trim().equals("")) {
+            return true;
+        }
+        String remoteIp = request.getRemoteAddr();
+        Matcher matcher =  ipCheckPattern.matcher(remoteIp);
+        return matcher.matches();
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -55,11 +76,19 @@ public class StatViewServlet extends HttpServlet {
 
         response.setCharacterEncoding("utf-8");
 
+        
+
         if (contextPath == null) { // root context
             contextPath = "";
         }
         String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
+
+        if (!isPermittedRequest(request)) {
+            path = "/nopermit.html";
+            returnResourceFile(path, uri, response);
+            return;
+        }
         
         if ("".equals(path)) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
@@ -98,7 +127,7 @@ public class StatViewServlet extends HttpServlet {
 
         if (path.startsWith("/sql-") && path.endsWith(".html")) {
             Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
-            returnViewSqlStat(druidStatManager.getSqlStatData(id), response);
+            returnViewSqlStat(id, request,response);
             return;
         }
 
@@ -121,86 +150,13 @@ public class StatViewServlet extends HttpServlet {
         response.getWriter().print(text);
     }
 
-    private void returnViewSqlStat(Map<String, Object> sqlStat, HttpServletResponse response) throws IOException {
-        if (sqlStat == null) return;
-
-        StringBuilder content = new StringBuilder();
-
-        content.append("<h2>FULL SQL</h2> <h4>" + sqlStat.get("SQL") + "</h4>");
-        content.append("<h2>Format View:</h2>");
-        content.append("<textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;'>");
-        content.append(SQLUtils.format((String) sqlStat.get("SQL"), (String) sqlStat.get("DbType")));
-        content.append("</textarea><br />");
-        content.append("<p>API:com.alibaba.druid.sql.SQLUtils.format(sql,DBType);</p>");
-        content.append("<br />");
-        
-		if (sqlStat.get("LastSlowParameters") != null
-				&& sqlStat.get("LastSlowParameters").toString().trim().length() > 0) {
-			content.append("<h2>LastSlow SQL View:</h2>");
-			content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
-			content.append("<tr>");
-			content.append("<td class='td_lable' width='130'>SlowestSqlOccurTime</td>");
-			content.append("<td>" + format.format(sqlStat.get("MaxTimespanOccurTime")) + "</td>");
-			content.append("</tr>");
-			content.append("<tr>");
-			content.append("<td class='td_lable' width='130'>LastSlowParameters</td>");
-			content.append("<td>" + sqlStat.get("LastSlowParameters") + "</td>");
-			content.append("</tr>");
-			content.append("</table>");
-			content.append("<br />");
-		}
-		
-		List<SQLStatement> statementList = SQLUtils.parseStatements((String) sqlStat.get("SQL"),
-				(String) sqlStat.get("DbType"));
-		
-        if (!statementList.isEmpty()) {
-            content.append("<h2>Parse View:</h2>");
-
-            SQLStatement statemen = statementList.get(0);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, (String) sqlStat.get("DbType"));
-            statemen.accept(visitor);
-            content.append("<table cellpadding='5' cellspacing='1' width='99%'>");
-            content.append("<tr>");
-            content.append("<td class='td_lable' width='130'>Tables</td>");
-            content.append("<td>" + visitor.getTables() + "</td>");
-            content.append("</tr>");
-
-            content.append("<tr>");
-            content.append("<td class='td_lable'>Fields</td>");
-            content.append("<td>" + visitor.getColumns() + "</td>");
-            content.append("</tr>");
-            content.append("<tr>");
-            content.append("<td class='td_lable'>Coditions</td>");
-            content.append("<td>" + visitor.getConditions() + "</td>");
-            content.append("</tr>");
-
-            content.append("<tr>");
-            content.append("<td class='td_lable'>Relationships</td>");
-            content.append("<td>" + visitor.getRelationships() + "</td>");
-            content.append("</tr>");
-
-            content.append("<tr>");
-            content.append("<td class='td_lable'>OrderByColumns</td>");
-            content.append("<td>" + visitor.getOrderByColumns() + "</td>");
-            content.append("</tr>");
-
-            content.append("</table>");
-
-            content.append("<br />");
-            content.append("<p>API:</p>");
-            content.append("<p>");
-            content.append("List<SQLStatement> statementList = SQLUtils.parseStatements(sqlStat.getSql(), sqlStat.getDbType())<br />");
-            content.append("SQLStatement statemen = statementList.get(0);</br>");
-            content.append("SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, sqlStat.getDbType());<br />");
-            content.append("statemen.accept(visitor);<br />");
-            content.append("visitor.getTables() / visitor.getColumns() / visitor.getOrderByColumns() / visitor.getConditions() / visitor.getRelationships()<br />");
-            content.append("</p>");
-            content.append("<br />");
-        }
-
-        response.getWriter().print(mergeTemplatePage("Druid Sql View", content.toString()));
-
+    private void returnViewSqlStat(Integer id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String text = IOUtils.readFromResource(RESOURCE_PATH + "/sqlDetail.html");
+        text = text.replaceAll("\\{sqlId\\}", id.toString());
+        response.getWriter().print(text);
     }
+
+    
 
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException, IOException {
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
@@ -216,7 +172,4 @@ public class StatViewServlet extends HttpServlet {
         response.getWriter().write(text);
     }
 
-    private String mergeTemplatePage(String title, String content) {
-        return templatePage.replaceAll("\\{title\\}", title).replaceAll("\\{content\\}", content);
-    }
 }
