@@ -70,4 +70,28 @@ function getUrlVar(name) {
 		return vars[name];
 }
 
+function $(id) {
+	return document.getElementById(id);
+}
 
+function buildMenu() {
+  var divEle = document.createElement("div"); 
+	divEle.id = "menu"; 
+	divEle.innerHTML = " <a href='index.html'>Index</a> |  " 
+      + "<a href='datasource.html'>DataSource</a> | " 
+      + "<a href='sql.html'>Sql</a> | "
+      + "<a href='weburi.html'>WebURI</a> | "
+      + "<a href='websession.html'>Web Session</a> | "
+      + "<a href='spring.html'>Spring</a> | "
+      + "<a href='#' onclick='ajaxRequestForReset()'>Reset All</a> | "
+      + "<a href='api.html'>JSON API</a> ";
+	document.body.insertBefore(divEle, document.body.firstChild); 
+	document.body.insertBefore(document.createElement("br"), document.body.firstChild); 
+}
+
+function buildFooter() {
+	var divEle = document.createElement("div"); 
+	divEle.id = "footer"; 
+	divEle.innerHTML = " powered by <a href='mailto:sandzhangtoo@gmail.com'>sandzhang</a>" ;
+	document.body.appendChild(divEle);
+}

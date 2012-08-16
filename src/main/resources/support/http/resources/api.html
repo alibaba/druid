@@ -1,90 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    	<title>Druid Stat JSON API</title>
+	<head>
+		<title>Druid Stat JSON API</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-    </head>
-	<body>
-		<br />
-		<div id="menu" >
-			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="weburi.html">WebURI</a> | <a href="websession.html">Web Session</a> | <a href="spring.html">Spring</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
-		</div>
+		<script>
+			function init() {
+				buildMenu();
+				buildFooter();
+			}
+		</script>
+	</head>
+	<body onload="init();">
 		<br />
 		<div id="main">
-            <h2>JSON API</h2>
-            <table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
+			<h2>JSON API</h2>
+			<table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
 				<thead>
-                    <th class="td_lable">Name</th>
-                    <th class="td_lable">Description</th>
-                </thead>
+					<th class="td_lable">Name</th>
+					<th class="td_lable">Description</th>
+				</thead>
 				<tr>
-                    <td>
-						<a href="basic.json" target="_blank">basic.json</a>
-					</td>
-                    <td>
-						basic info.
-					</td>
-                </tr>
+					<td> <a href="basic.json" target="_blank">basic.json</a> </td>
+					<td> basic info.  </td>
+				</tr>
 				<tr>
-                    <td>
-						<a href="datasource.json" target="_blank">datasource.json</a>
-					</td>
-                    <td>
-						DatsSourceStat List
-					</td>
-                </tr>
+					<td> <a href="datasource.json" target="_blank">datasource.json</a> </td>
+					<td> DatsSourceStat List </td>
+				</tr>
 				<tr>
-                    <td>
-						datasource-{id}.json
-					</td>
-                    <td>
+					<td> datasource-{id}.json </td>
+					<td>
 						DatasourceStat for id={id},id is DatsSourceStat.ID<br />
 						Example: druid/datasource-1.json
 					</td>
-                </tr>
+				</tr>
 				<tr>
-                    <td>
-						activeConnectionStackTrace-{datasourceId}.json
-					</td>
-                    <td>
+					<td> activeConnectionStackTrace-{datasourceId}.json </td>
+					<td>
 						StrackTrace for activeConnection in datasource which datasource.id={datasourceId},id is DatsSourceStat.ID<br />
 						Required: set removeAbandoned=true<br />
 						Example: druid/activeConnectionStackTrace-1.json
 					</td>
-                </tr>
+				</tr>
 				<tr>
-                    <td>
+					<td>
 						<a href="sql.json" target="_blank">sql.json</a>
 					</td>
-                    <td>
+					<td>
 						SqlStat info List.<br />
 						orderBy=[ID|ExecuteCount|...|](every property without histogram in sqlstat object)<br />
 						orderType=[asc|desc] default is desc<br />
 						page=page count start with 1<br />
 						perPageCount=item count in one page,default is INTEGER.MAX_VALUE
 					</td>
-                </tr>
+				</tr>
 				<tr>
-                    <td>
-						sql-{id}.json
-					</td>
-                    <td>
+					<td> sql-{id}.json </td>
+					<td>
 						SqlStat for id={id} ,id is SqlStat.ID<br />
 						Example: druid/sql-1.json
 					</td>
-                </tr>
+				</tr>
 				<tr>
-                    <td>
-						<a href="reset-all.json" target="_blank">reset-all.json</a>
-					</td>
-                    <td>
-						Reset all stat
-					</td>
-                </tr>
-             </table>
-        </div>
-		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+					<td> <a href="reset-all.json" target="_blank">reset-all.json</a> </td>
+					<td> Reset all stat </td>
+				</tr>
+			</table>
+		</div>
 	</body>
 </html>

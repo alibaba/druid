@@ -10,22 +10,13 @@
       function init(){
         ajaxRequestForSqlInfo();
         var time3=setInterval("ajaxRequestForSqlInfo();",5000);
+	buildMenu();
+	buildFooter();
       }
     </script>
   </head>
   <body onload="init();">
-    <br />
-    <div id="menu" >
-      <a href="index.html">Index</a> | 
-      <a href="datasource.html">DataSource</a> | 
-      <a href="sql.html">Sql</a> | 
-      <a href="weburi.html">WebURI</a> | 
-      <a href="websession.html">Web Session</a> | 
-      <a href="spring.html">Spring</a> | 
-      <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | 
-      <a href="api.html">JSON API</a>
-    </div>
-
+    <br/>
     <div id="main">
       <br/>
       <h2> FULL SQL</h2>
@@ -74,8 +65,6 @@
           <td id="LastSlowParameters"></td>
         </tr>
       </table>
-      
-      <div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
     </div>
   </body>
 </html>

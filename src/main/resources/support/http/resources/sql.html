@@ -1,84 +1,81 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    	<title>Druid SqlStat</title>
+	<head>
+		<title>Druid SqlStat</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/sql.js" type="text/javascript" charset="utf8"></script>
 		<script >
-            function init(){
+			function init(){
 				ajaxRequestForDataSourceSqlStatInfo();
-            	var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",5000);
-            }
-        </script>
-    </head>
+				var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",5000);
+				buildMenu();
+				buildFooter();
+			}
+		</script>
+	</head>
 	<body onload="init()">
 		<br />
-		<div id="menu" >
-			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="weburi.html">WebURI</a> | <a href="websession.html">Web Session</a> | <a href="spring.html">Spring</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
-		</div>
-		<br />
 		<div id="main">
-            <h2>SqlStat List<a href="sql.json" target="_blank">[View JSON API]</a></h2>
-            <table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
+			<h2>SqlStat List<a href="sql.json" target="_blank">[View JSON API]</a></h2>
+			<table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
 				<thead>
 					<tr>
 						<th class="td_lable">N--</th>
-	                    <th class="td_lable"><a id="th-SQL" href="javascript:void(0)" onclick="setOrderBy('SQL');">SQL</a></th>
-	                    <th class="td_lable" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="setOrderBy('ExecuteCount');">Execute Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-TotalTime" href="javascript:void(0)" onclick="setOrderBy('TotalTime');">Execute Millis Total</a></th>
-	                    <th class="td_lable" width="50"><a id="th-MaxTimespan" href="javascript:void(0)" onclick="setOrderBy('MaxTimespan');">Execute Millis Max</a></th>
-	                    <th class="td_lable" width="50"><a id="th-InTransactionCount" title="Execute in transaction Count" href="javascript:void(0)" onclick="setOrderBy('InTransactionCount');">InTxn Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-ErrorCount" href="javascript:void(0)" onclick="setOrderBy('ErrorCount');">Error Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-EffectedRowCount" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCount');">Effected Row Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-FetchRowCount" href="javascript:void(0)" onclick="setOrderBy('FetchRowCount');">Fetch Row Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
-	                    <th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
-	                    <th id="th-Histogram" class="td_lable" align="left" width="100">ExecHistogram <br />[ 
-	                    	<a id="th-Histogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[0]');">-</a>
-	                    	<a id="th-Histogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[1]');">-</a>
-	                    	<a id="th-Histogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[2]');">-</a>
-	                    	<a id="th-Histogram[3]" title="count of '100ms-1 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[3]');">-</a>
-	                    	<a id="th-Histogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[4]');">-</a>
-	                    	<a id="th-Histogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[5]');">-</a>
-	                    	<a id="th-Histogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[6]');">-</a>
-	                    	<a id="th-Histogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[7]');">-</a> ]
-	                    </th>
-	                    <th id="th-ExecuteAndResultHoldTimeHistogram" class="td_lable" align="left" width="100">ExecAndRsHold <br />[ 
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[0]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[1]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[2]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[3]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[4]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[5]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[6]');">-</a>
-	                    	<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[7]');">-</a> ]
-	                    </th>
-	                    <th id="th-FetchRowCountHistogram" class="td_lable" align="left" width="100">FetchRow <br />[ 
-	                    	<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[0]');">-</a>
-	                    	<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[1]');">-</a>
-	                    	<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[2]');">-</a>
-	                    	<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[3]');">-</a>
-	                    	<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[4]');">-</a>
-	                    	<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[5]');">-</a> ]
-	                    </th>
-	                    <th id="th-EffectedRowCountHistogram" class="td_lable" align="left" width="100">UpdateCount <br />[ 
-	                    	<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[0]');">-</a>
-	                    	<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[1]');">-</a>
-	                    	<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[2]');">-</a>
-	                    	<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[3]');">-</a>
-	                    	<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[4]');">-</a>
-	                    	<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[5]');">-</a> ]
-	                    </th>
-	                    
-                    </tr>
-                </thead> 
-             </table>
-        </div>
-		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+						<th class="td_lable"><a id="th-SQL" href="javascript:void(0)" onclick="setOrderBy('SQL');">SQL</a></th>
+						<th class="td_lable" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="setOrderBy('ExecuteCount');">Execute Count</a></th>
+						<th class="td_lable" width="50"><a id="th-TotalTime" href="javascript:void(0)" onclick="setOrderBy('TotalTime');">Execute Millis Total</a></th>
+						<th class="td_lable" width="50"><a id="th-MaxTimespan" href="javascript:void(0)" onclick="setOrderBy('MaxTimespan');">Execute Millis Max</a></th>
+						<th class="td_lable" width="50"><a id="th-InTransactionCount" title="Execute in transaction Count" href="javascript:void(0)" onclick="setOrderBy('InTransactionCount');">InTxn Count</a></th>
+						<th class="td_lable" width="50"><a id="th-ErrorCount" href="javascript:void(0)" onclick="setOrderBy('ErrorCount');">Error Count</a></th>
+						<th class="td_lable" width="50"><a id="th-EffectedRowCount" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCount');">Effected Row Count</a></th>
+						<th class="td_lable" width="50"><a id="th-FetchRowCount" href="javascript:void(0)" onclick="setOrderBy('FetchRowCount');">Fetch Row Count</a></th>
+						<th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
+						<th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
+						<th id="th-Histogram" class="td_lable" align="left" width="100">ExecHistogram <br />[ 
+							<a id="th-Histogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[0]');">-</a>
+							<a id="th-Histogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[1]');">-</a>
+							<a id="th-Histogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="setOrderBy('Histogram[2]');">-</a>
+							<a id="th-Histogram[3]" title="count of '100ms-1 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[3]');">-</a>
+							<a id="th-Histogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[4]');">-</a>
+							<a id="th-Histogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[5]');">-</a>
+							<a id="th-Histogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[6]');">-</a>
+							<a id="th-Histogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="setOrderBy('Histogram[7]');">-</a> ]
+						</th>
+						<th id="th-ExecuteAndResultHoldTimeHistogram" class="td_lable" align="left" width="100">ExecAndRsHold <br />[ 
+							<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[0]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[1]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[2]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[3]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[4]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[5]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[6]');">-</a>
+							<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="setOrderBy('ExecuteAndResultHoldTimeHistogram[7]');">-</a> ]
+						</th>
+						<th id="th-FetchRowCountHistogram" class="td_lable" align="left" width="100">FetchRow <br />[ 
+							<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[0]');">-</a>
+							<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[1]');">-</a>
+							<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[2]');">-</a>
+							<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[3]');">-</a>
+							<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[4]');">-</a>
+							<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" href="javascript:void(0)" onclick="setOrderBy('FetchRowCountHistogram[5]');">-</a> ]
+						</th>
+						<th id="th-EffectedRowCountHistogram" class="td_lable" align="left" width="100">UpdateCount <br />[ 
+							<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[0]');">-</a>
+							<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[1]');">-</a>
+							<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[2]');">-</a>
+							<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[3]');">-</a>
+							<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[4]');">-</a>
+							<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" href="javascript:void(0)" onclick="setOrderBy('EffectedRowCountHistogram[5]');">-</a> ]
+						</th>
+
+					</tr>
+				</thead> 
+			</table>
+		</div>
 		<script >
-            setOrderBy('SQL');
-        </script>
+			setOrderBy('SQL');
+		</script>
 	</body>
 </html>

@@ -1,45 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    	<title>Druid Web Session Stat</title>
+	<head>
+		<title>Druid Web Session Stat</title>
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/spring.js" type="text/javascript" charset="utf8"></script>
 		<script >
-            function init(){
+			function init(){
 				ajaxRequestForDataSourceSqlStatInfo();
-            	var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",5000);
-            }
-        </script>
-    </head>
+				var time3=setInterval("ajaxRequestForDataSourceSqlStatInfo();",5000);
+				buildMenu();
+				buildFooter();
+			}
+		</script>
+	</head>
 	<body onload="init()">
 		<br />
-		<div id="menu" >
-			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="weburi.html">WebURI</a> | <a href="websession.html">Web Session</a> | <a href="spring.html">Spring</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
-		</div>
-		<br />
 		<div id="main">
-            <table cellspacing="1" cellpadding="5" id="SpringStatTable" width="99%">
+			<table cellspacing="1" cellpadding="5" id="SpringStatTable" width="99%">
 				<thead>
 					<tr>
 						<th class="td_lable">N--</th>
-	                    <th class="td_lable"><a id="Class" href="javascript:void(0)" onclick="setOrderBy('Class');">Class</a></th>
-	                    <th class="td_lable"><a id="Method" href="javascript:void(0)" onclick="setOrderBy('Method');">Method</a></th>
-	                    <th class="td_lable" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="setOrderBy('ExecuteCount');">Exec Count</a></th>
-	                    <th class="td_lable" width="50"><a id="th-ExecuteTimeMillis" href="javascript:void(0)" onclick="setOrderBy('ExecuteTimeMillis=');" title="ExecuteTimeMillis">Exec Time</a></th>
-	                    <th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
-	                    <th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcExecuteCount" href="javascript:void(0)" onclick="setOrderBy('JdbcExecuteCount');">Jdbc Exec Count</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcExecuteTimeMillis" href="javascript:void(0)" onclick="setOrderBy('JdbcExecuteTimeMillis');" title="JdbcExecuteTimeMillis">Jdbc Exec Time</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcCommitCount" href="javascript:void(0)" onclick="setOrderBy('JdbcCommitCount');">Jdbc Commit</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcRollbackCount" href="javascript:void(0)" onclick="setOrderBy('JdbcRollbackCount');">Jdbc Rollback</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcFetchRowCount" href="javascript:void(0)" onclick="setOrderBy('JdbcFetchRowCount');">Jdbc FetchRow</a></th>
-	                    <th class="td_lable" width="80"><a id="th-JdbcUpdateCount" href="javascript:void(0)" onclick="setOrderBy('JdbcUpdateCount');">Jdbc Update</a></th>
-                    </tr>
-                </thead> 
-             </table>
-        </div>
-		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+						<th class="td_lable"><a id="Class" href="javascript:void(0)" onclick="setOrderBy('Class');">Class</a></th>
+						<th class="td_lable"><a id="Method" href="javascript:void(0)" onclick="setOrderBy('Method');">Method</a></th>
+						<th class="td_lable" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="setOrderBy('ExecuteCount');">Exec Count</a></th>
+						<th class="td_lable" width="50"><a id="th-ExecuteTimeMillis" href="javascript:void(0)" onclick="setOrderBy('ExecuteTimeMillis=');" title="ExecuteTimeMillis">Exec Time</a></th>
+						<th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="setOrderBy('RunningCount');">Running Count</a></th>
+						<th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcExecuteCount" href="javascript:void(0)" onclick="setOrderBy('JdbcExecuteCount');">Jdbc Exec Count</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcExecuteTimeMillis" href="javascript:void(0)" onclick="setOrderBy('JdbcExecuteTimeMillis');" title="JdbcExecuteTimeMillis">Jdbc Exec Time</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcCommitCount" href="javascript:void(0)" onclick="setOrderBy('JdbcCommitCount');">Jdbc Commit</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcRollbackCount" href="javascript:void(0)" onclick="setOrderBy('JdbcRollbackCount');">Jdbc Rollback</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcFetchRowCount" href="javascript:void(0)" onclick="setOrderBy('JdbcFetchRowCount');">Jdbc FetchRow</a></th>
+						<th class="td_lable" width="80"><a id="th-JdbcUpdateCount" href="javascript:void(0)" onclick="setOrderBy('JdbcUpdateCount');">Jdbc Update</a></th>
+					</tr>
+				</thead> 
+			</table>
+		</div>
 	</body>
 </html>
