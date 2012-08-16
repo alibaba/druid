@@ -45,35 +45,62 @@ public class MaxActiveChangeTest extends TestCase {
             Assert.assertEquals(3, connect(4));
             Assert.assertEquals(3, dataSource.getPoolingCount());
         }
-        
+
         dataSource.setMaxActive(4);
-        
+
         for (int i = 0; i < 10; ++i) {
             Assert.assertEquals(4, connect(4));
             Assert.assertEquals(4, dataSource.getPoolingCount());
         }
-        
+
         dataSource.shrink();
         Assert.assertEquals(1, dataSource.getPoolingCount());
-        
+
         for (int i = 0; i < 10; ++i) {
             Assert.assertEquals(4, connect(4));
             Assert.assertEquals(4, dataSource.getPoolingCount());
         }
-        
+
         Assert.assertEquals(4, dataSource.getPoolingCount());
         dataSource.setMaxActive(3);
-        
+
         Assert.assertEquals(4, dataSource.getPoolingCount());
-        
+
         dataSource.shrink();
         Assert.assertEquals(1, dataSource.getPoolingCount());
-        
+
         // 确保收缩之后不会再长上去
         for (int i = 0; i < 10; ++i) {
             Assert.assertEquals(3, connect(4));
             Assert.assertEquals(3, dataSource.getPoolingCount());
         }
+
+        dataSource.setMaxActive(2);
+        dataSource.shrink();
+        Assert.assertEquals(1, dataSource.getPoolingCount());
+
+        for (int i = 0; i < 10; ++i) {
+            Assert.assertEquals(2, connect(3));
+            Assert.assertEquals(2, dataSource.getPoolingCount());
+        }
+
+        dataSource.setMaxActive(1);
+        dataSource.shrink();
+        Assert.assertEquals(1, dataSource.getPoolingCount());
+
+        for (int i = 0; i < 10; ++i) {
+            Assert.assertEquals(1, connect(2));
+            Assert.assertEquals(1, dataSource.getPoolingCount());
+        }
+
+        Exception error = null;
+        try {
+            dataSource.setMaxActive(0);
+        } catch (IllegalArgumentException e) {
+            error = e;
+        }
+        Assert.assertNotNull(error);
+        Assert.assertEquals(1, dataSource.getMaxActive());
     }
 
     public int connect(int count) throws Exception {
@@ -91,7 +118,7 @@ public class MaxActiveChangeTest extends TestCase {
         for (int i = 0; i < count; ++i) {
             JdbcUtils.close(connections[i]);
         }
-        
+
         return successCount;
     }
 }
