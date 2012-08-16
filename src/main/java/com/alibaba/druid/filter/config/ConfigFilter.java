@@ -33,6 +33,7 @@ public class ConfigFilter extends FilterAdapter {
     private Cipher             cipher;
     private String             algorithm;
     private String             key;
+    private String             encryptedPassword;
 
     public ConfigFilter(){
         this.setAlgorithm(DEFAULT_ALGORITHM);
@@ -49,6 +50,14 @@ public class ConfigFilter extends FilterAdapter {
         } catch (Exception e) {
             throw new IllegalArgumentException("illegal algorithm", e);
         }
+    }
+
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void setEncryptedPassword(String encryptedPassword) {
+        this.encryptedPassword = encryptedPassword;
     }
 
     public String getKey() {
@@ -81,8 +90,21 @@ public class ConfigFilter extends FilterAdapter {
 
         Properties properties = loadConfig(dataSource);
 
+        if (encryptedPassword != null) {
+            try {
+                byte[] passwordBytes = Base64.base64ToByteArray(encryptedPassword);
+                byte[] decryptedBytes = cipher.doFinal(passwordBytes);
+                String decryptedPassword = new String(decryptedBytes, "ISO-8859-1");
+                dataSource.setPassword(decryptedPassword);
+            } catch (Exception e) {
+                LOG.error("decrypt password error", e);
+            }
+        }
+
         if (properties == null) {
-            LOG.error("load config error, return null");
+            if (encryptedPassword == null) {
+                LOG.error("load config error, return null");
+            }
             return;
         }
 
@@ -92,7 +114,7 @@ public class ConfigFilter extends FilterAdapter {
                 if (password != null && password.length() != 0) {
                     byte[] passwordBytes = Base64.base64ToByteArray(password);
                     byte[] decryptedBytes = cipher.doFinal(passwordBytes);
-                    
+
                     String decryptedPassword = new String(decryptedBytes, "ISO-8859-1");
                     properties.put(DruidDataSourceFactory.PROP_PASSWORD, decryptedPassword);
                 }
@@ -121,7 +143,9 @@ public class ConfigFilter extends FilterAdapter {
         }
 
         if (filePath == null) {
-            LOG.error("load config error, file is null");
+            if (this.encryptedPassword != null) {
+                LOG.error("load config error, file is null");
+            }
             return null;
         }
 
