@@ -22,12 +22,13 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class ConfigFilter extends FilterAdapter {
 
-    public final static String URL_PREFIX           = "druid-configFile=";
-    public final static String SYS_PROP_CONFIG_FILE = "druid.configFile";
-    public final static String SYS_PROP_CONFIG_KEY  = "druid.configKey";
-    public final static String DEFAULT_ALGORITHM    = "RSA";
+    public final static String URL_PREFIX                         = "druid-configFile=";
+    public final static String SYS_PROP_CONFIG_FILE               = "druid.config.file";
+    public final static String SYS_PROP_CONFIG_KEY                = "druid.config.key";
+    public final static String SYS_PROP_CONFIG_ENCRYPTED_PASSWORD = "druid.config.encryptedPassword";
+    public final static String DEFAULT_ALGORITHM                  = "RSA";
 
-    private final static Log   LOG                  = LogFactory.getLog(ConfigFilter.class);
+    private final static Log   LOG                                = LogFactory.getLog(ConfigFilter.class);
 
     private String             file;
 
@@ -39,9 +40,17 @@ public class ConfigFilter extends FilterAdapter {
     public ConfigFilter(){
         this.setAlgorithm(DEFAULT_ALGORITHM);
 
-        String property = System.getProperty(SYS_PROP_CONFIG_KEY);
-        if (property != null && property.length() != 0) {
-            this.setKey(property);
+        {
+            String property = System.getProperty(SYS_PROP_CONFIG_KEY);
+            if (property != null && property.length() != 0) {
+                this.setKey(property);
+            }
+        }
+        {
+            String property = System.getProperty(SYS_PROP_CONFIG_ENCRYPTED_PASSWORD);
+            if (property != null && property.length() != 0) {
+                this.setEncryptedPassword(property);
+            }
         }
     }
 
