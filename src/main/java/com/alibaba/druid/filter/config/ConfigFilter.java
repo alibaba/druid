@@ -22,11 +22,12 @@ import com.alibaba.druid.util.JdbcUtils;
 
 public class ConfigFilter extends FilterAdapter {
 
-    public final static String URL_PREFIX        = "druid-configFile=";
-    public final static String SYS_PROP          = "druid.configFile";
-    public final static String DEFAULT_ALGORITHM = "RSA";
+    public final static String URL_PREFIX           = "druid-configFile=";
+    public final static String SYS_PROP_CONFIG_FILE = "druid.configFile";
+    public final static String SYS_PROP_CONFIG_KEY  = "druid.configKey";
+    public final static String DEFAULT_ALGORITHM    = "RSA";
 
-    private final static Log   LOG               = LogFactory.getLog(ConfigFilter.class);
+    private final static Log   LOG                  = LogFactory.getLog(ConfigFilter.class);
 
     private String             file;
 
@@ -37,6 +38,11 @@ public class ConfigFilter extends FilterAdapter {
 
     public ConfigFilter(){
         this.setAlgorithm(DEFAULT_ALGORITHM);
+
+        String property = System.getProperty(SYS_PROP_CONFIG_KEY);
+        if (property != null && property.length() != 0) {
+            this.setKey(property);
+        }
     }
 
     public String getAlgorithm() {
@@ -139,11 +145,11 @@ public class ConfigFilter extends FilterAdapter {
         }
 
         if (filePath == null) {
-            filePath = System.getProperty(SYS_PROP);
+            filePath = System.getProperty(SYS_PROP_CONFIG_FILE);
         }
 
         if (filePath == null) {
-            if (this.encryptedPassword != null) {
+            if (this.encryptedPassword == null) {
                 LOG.error("load config error, file is null");
             }
             return null;
