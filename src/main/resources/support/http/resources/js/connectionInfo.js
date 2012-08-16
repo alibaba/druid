@@ -72,7 +72,8 @@ function getSqlViewJsonUrl() {
 	return result;
 }
 
-function ajaxRequestForConnectionInfo(datasourceId) {
+function ajaxRequestForConnectionInfo() {
+	var datasourceId = getUrlVar("datasourceId");
 	xmlHttpForConnectionInfo = getRequestObject();
 	sendRequest(xmlHttpForConnectionInfo, 'connectionInfo-' + datasourceId + '.json', ajaxResponseForConnectionInfo)
 }
