@@ -1,31 +1,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-    	<title>Druid ActiveConnection StackTrace</title>
+	<head>
+		<title>Druid ActiveConnection StackTrace</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script src="js/activeConnectionStackTrace.js" type="text/javascript" charset="utf8"></script>
 		<script >
-            function init(){
-            	ajaxRequestForActiveConnectionStackTrace({datasourceId});
-            	var time2=setInterval("ajaxRequestForActiveConnectionStackTrace({datasourceId});",2000);
-            }
-        </script>
-    </head>
+			function init(){
+				ajaxRequestForActiveConnectionStackTrace();
+				var time2=setInterval("ajaxRequestForActiveConnectionStackTrace();",2000);
+				buildMenu();
+				buildFooter();
+			}
+		</script>
+	</head>
 	<body onload="init()">
-		<br />
-		<div id="menu" >
-			<a href="index.html">Index</a> | <a href="datasource.html">DataSource</a> | <a href="sql.html">Sql</a> | <a href="weburi.html">WebURI</a> | <a href="websession.html">Web Session</a> | <a href="spring.html">Spring</a> | <a href="#" onclick="ajaxRequestForReset()">Reset All</a> | <a href="api.html">JSON API</a>
-		</div>
-		<br />
 		<div id="main">
-			<h2>ActiveConnection StackTrace for Datasource {datasourceId} <a href="activeConnectionStackTrace-{datasourceId}.json" target="_blank">[View JSON API]</a></h2>
-            <div id="activeConnectionStackTraceDiv">
+			<h2>ActiveConnection StackTrace for Datasource
+				<a href="activeConnectionStackTrace-{datasourceId}.json" target="_blank">[View JSON API]</a>
+			</h2>
+			<div id="activeConnectionStackTraceDiv">
 				<table id="activeConnectionStackTraceTable" cellpadding="5" cellspacing="1" width="99%">
-                </table>
+				</table>
 			</div>
-        </div>
-		<div id="footer">powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a></div>
+		</div>
 	</body>
 </html>
