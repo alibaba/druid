@@ -257,9 +257,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
-            
+
             this.id = DruidDriver.createDataSourceId();
-            
+
+            loadFilterFromSystemProperty();
+
             for (Filter filter : filters) {
                 filter.init(this);
             }
@@ -284,41 +286,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.driverClass = driverClass.trim();
             }
 
-            if (isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle()) {
-                if (this.getValidationQuery() == null || this.getValidationQuery().length() == 0) {
-                    String errorMessage = "";
-
-                    if (isTestOnBorrow()) {
-                        errorMessage += "testOnBorrow is true, ";
-                    }
-
-                    if (isTestOnReturn()) {
-                        errorMessage += "testOnReturn is true, ";
-                    }
-
-                    if (isTestWhileIdle()) {
-                        errorMessage += "testWhileIdle is true, ";
-                    }
-
-                    LOG.error(errorMessage + "validationQuery not set");
-                }
-            }
+            validationQueryCheck();
 
             if (this.jdbcUrl != null) {
                 this.jdbcUrl = this.jdbcUrl.trim();
-
-                if (jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
-                    DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
-                    this.driverClass = config.getRawDriverClassName();
-
-                    LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
-
-                    this.jdbcUrl = config.getRawUrl();
-                    if (this.name == null) {
-                        this.name = config.getName();
-                    }
-                    this.filters.addAll(config.getFilters());
-                }
+                initFromWrapDriverUrl();
             }
 
             if (this.driver == null) {
@@ -342,54 +314,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if ("oracle".equals(this.dbType)) {
-                isOracle = true;
-
-                if (driver.getMajorVersion() < 10) {
-                    throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
-                                           + driver.getMinorVersion());
-                }
-
-                if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
-                    this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
-                }
+                initOracle();
             }
 
-            String realDriverClassName = driver.getClass().getName();
-            if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
-                this.validConnectionChecker = new MySqlValidConnectionChecker();
-                this.exceptionSorter = new MySqlExceptionSorter();
+            initExceptionSorter();
+            initValidConnectionChecker();
 
-            } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
-                this.validConnectionChecker = new OracleValidConnectionChecker();
-                this.exceptionSorter = new OracleExceptionSorter();
-
-            } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
-                this.validConnectionChecker = new MSSQLValidConnectionChecker();
-
-            } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
-                this.exceptionSorter = new InformixExceptionSorter();
-
-            } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
-                this.exceptionSorter = new SybaseExceptionSorter();
-
-            } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
-                this.exceptionSorter = new MockExceptionSorter();
-            }
-
-            if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+            if (driver.getClass().getName().equals("com.mysql.jdbc.Driver")) {
                 if (this.isPoolPreparedStatements()) {
                     LOG.error("mysql should not use 'PoolPreparedStatements'");
                 }
             }
 
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
-
-            {
-                String property = System.getProperty("druid.filters");
-                if (property != null && property.length() > 0) {
-                    this.setFilters(property);
-                }
-            }
 
             initConnectionFactory();
 
@@ -437,6 +374,117 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             inited = true;
 
             lock.unlock();
+        }
+    }
+
+    private void loadFilterFromSystemProperty() throws SQLException {
+        String property = System.getProperty("druid.filters");
+
+        if (property == null || property.length() == 0) {
+            return;
+        }
+
+        this.setFilters(property);
+    }
+
+    private void initFromWrapDriverUrl() throws SQLException {
+        if (!jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
+            return;
+        }
+
+        DataSourceProxyConfig config = DruidDriver.parseConfig(jdbcUrl, null);
+        this.driverClass = config.getRawDriverClassName();
+
+        LOG.error("error url : '" + jdbcUrl + "', it should be : '" + config.getRawUrl() + "'");
+
+        this.jdbcUrl = config.getRawUrl();
+        if (this.name == null) {
+            this.name = config.getName();
+        }
+
+        // 防止重复
+        for (Filter filter : config.getFilters()) {
+            boolean exists = false;
+            for (Filter initedFilter : this.filters) {
+                if (initedFilter.getClass() == filter.getClass()) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists) {
+                continue;
+            }
+
+            filter.init(this);
+            this.filters.add(filter);
+        }
+    }
+
+    private void validationQueryCheck() {
+        if (!(isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle())) {
+            return;
+        }
+
+        if (this.getValidationQuery() != null && this.getValidationQuery().length() > 0) {
+            return;
+        }
+
+        String errorMessage = "";
+
+        if (isTestOnBorrow()) {
+            errorMessage += "testOnBorrow is true, ";
+        }
+
+        if (isTestOnReturn()) {
+            errorMessage += "testOnReturn is true, ";
+        }
+
+        if (isTestWhileIdle()) {
+            errorMessage += "testWhileIdle is true, ";
+        }
+
+        LOG.error(errorMessage + "validationQuery not set");
+    }
+
+    private void initOracle() throws SQLException {
+        isOracle = true;
+
+        if (driver.getMajorVersion() < 10) {
+            throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
+                                   + driver.getMinorVersion());
+        }
+
+        if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
+            this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
+        }
+    }
+
+    private void initValidConnectionChecker() {
+        String realDriverClassName = driver.getClass().getName();
+        if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+            this.validConnectionChecker = new MySqlValidConnectionChecker();
+        } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
+            this.validConnectionChecker = new OracleValidConnectionChecker();
+        } else if (realDriverClassName.equals("com.microsoft.jdbc.sqlserver.SQLServerDriver")) {
+            this.validConnectionChecker = new MSSQLValidConnectionChecker();
+        }
+    }
+
+    private void initExceptionSorter() {
+        String realDriverClassName = driver.getClass().getName();
+        if (realDriverClassName.equals("com.mysql.jdbc.Driver")) {
+            this.exceptionSorter = new MySqlExceptionSorter();
+        } else if (realDriverClassName.equals("oracle.jdbc.driver.OracleDriver")) {
+            this.exceptionSorter = new OracleExceptionSorter();
+        } else if (realDriverClassName.equals("com.informix.jdbc.IfxDriver")) {
+            this.exceptionSorter = new InformixExceptionSorter();
+
+        } else if (realDriverClassName.equals("com.sybase.jdbc2.jdbc.SybDriver")) {
+            this.exceptionSorter = new SybaseExceptionSorter();
+
+        } else if (realDriverClassName.equals("com.alibaba.druid.mock.MockDriver")) {
+            this.exceptionSorter = new MockExceptionSorter();
         }
     }
 
@@ -771,12 +819,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (int i = 0; i < poolingCount; ++i) {
                 try {
                     ConnectionHolder connHolder = connections[i];
-                    
+
                     for (PreparedStatementHolder stmtHolder : connHolder.getStatementPool().getMap().values()) {
                         connHolder.getStatementPool().closeRemovedStatement(stmtHolder);
                     }
                     connHolder.getStatementPool().getMap().clear();
-                    
+
                     JdbcUtils.close(connHolder.getConnection());
                     connections[i] = null;
                     destroyCount++;
@@ -1590,16 +1638,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             map.put("LastCreateErrorTime", this.getLastCreateErrorTime());
             map.put("CreateErrorCount", this.getCreateErrorCount());
             map.put("DiscardCount", this.getDiscardCount());
-            
+
             return map;
         } catch (JMException ex) {
-            throw new IllegalStateException("getStatData error", ex); 
+            throw new IllegalStateException("getStatData error", ex);
         }
     }
-    
+
     public Map<String, Object> getStatData() {
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
-        
+
         dataMap.put("Identity", System.identityHashCode(this));
         dataMap.put("Name", this.getName());
         dataMap.put("DbType", this.getDbType());
@@ -1615,13 +1663,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         dataMap.put("PoolingCount", this.getPoolingCount());
         dataMap.put("PoolingPeak", this.getPoolingPeak());
-        dataMap.put("PoolingPeakTime",
-                    this.getPoolingPeakTime() == null ? null : this.getPoolingPeakTime().toString());
+        dataMap.put("PoolingPeakTime", this.getPoolingPeakTime() == null ? null : this.getPoolingPeakTime().toString());
 
         dataMap.put("ActiveCount", this.getActiveCount());
         dataMap.put("ActivePeak", this.getActivePeak());
-        dataMap.put("ActivePeakTime",
-                    this.getActivePeakTime() == null ? null : this.getActivePeakTime().toString());
+        dataMap.put("ActivePeakTime", this.getActivePeakTime() == null ? null : this.getActivePeakTime().toString());
 
         dataMap.put("InitialSize", this.getInitialSize());
         dataMap.put("MinIdle", this.getMinIdle());
@@ -1661,17 +1707,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("StartTransactionCount", this.getStartTransactionCount());
         dataMap.put("TransactionHistogram", this.getTransactionHistogramValues());
 
-        dataMap.put("ConnectionHoldTimeHistogram",
-                    this.getDataSourceStat().getConnectionHoldHistogram().toArray());
+        dataMap.put("ConnectionHoldTimeHistogram", this.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
 
         return dataMap;
     }
-    
+
     public JdbcSqlStat getSqlStat(int sqlId) {
         return this.getDataSourceStat().getSqlStat(sqlId);
     }
-    
+
     public Map<String, JdbcSqlStat> getSqlStatMap() {
         return this.getDataSourceStat().getSqlStatMap();
     }

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
@@ -48,6 +49,7 @@ import javax.sql.DataSource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
+import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.pool.DruidDataSource.ActiveConnectionTraceInfo;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -131,7 +133,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected PrintWriter                                                                       logWriter                                 = new PrintWriter(
                                                                                                                                                             System.out);
 
-    protected List<Filter>                                                                      filters                                   = new ArrayList<Filter>();
+    protected List<Filter>                                                                      filters                                   = new CopyOnWriteArrayList<Filter>();
     protected ExceptionSorter                                                                   exceptionSorter                           = null;
 
     protected Driver                                                                            driver;
@@ -921,7 +923,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new UnsupportedOperationException();
         }
 
+        if (jdbcUrl != null) {
+            jdbcUrl = jdbcUrl.trim();
+        }
+
         this.jdbcUrl = jdbcUrl;
+
+        if (jdbcUrl.startsWith(ConfigFilter.URL_PREFIX)) {
+            this.filters.add(new ConfigFilter());
+        }
     }
 
     public String getDriverClassName() {
@@ -957,6 +967,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     protected void initConnectionFactory() throws SQLException {
+        if (connectionFactory != null) {
+            return;
+        }
+
         connectionFactory = createConnectionFactory();
     }
 
@@ -1259,7 +1273,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         @Override
         public Connection createConnection() throws SQLException {
             Connection conn;
-            
+
             PasswordCallback passwordCallback = dataSource.getPasswordCallback();
             if (passwordCallback != null) {
                 char[] chars = passwordCallback.getPassword();
@@ -1272,32 +1286,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             long startNano = System.nanoTime();
 
             try {
-                if (dataSource.getProxyFilters().size() != 0) {
-                    conn = new FilterChainImpl(dataSource).connection_connect(info);
-                } else {
-                    conn = dataSource.getDriver().connect(url, info);
-                }
+                conn = connect();
 
                 if (conn == null) {
                     throw new SQLException("connect error, url " + url);
                 }
 
-                conn.setAutoCommit(dataSource.isDefaultAutoCommit());
-                if (dataSource.getDefaultReadOnly() != null) {
-                    if (conn.isReadOnly() != dataSource.getDefaultReadOnly()) {
-                        conn.setReadOnly(dataSource.getDefaultReadOnly());
-                    }
-                }
-
-                if (dataSource.getDefaultTransactionIsolation() != null) {
-                    if (conn.getTransactionIsolation() != dataSource.getDefaultTransactionIsolation().intValue()) {
-                        conn.setTransactionIsolation(dataSource.getDefaultTransactionIsolation());
-                    }
-                }
-
-                if (dataSource.getDefaultCatalog() != null && dataSource.getDefaultCatalog().length() != 0) {
-                    conn.setCatalog(dataSource.getDefaultCatalog());
-                }
+                initConnection(conn);
 
                 dataSource.validateConnection(conn);
                 dataSource.createError = null;
@@ -1324,6 +1319,35 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             dataSource.incrementCreateCount();
 
             return conn;
+        }
+
+        public Connection connect() throws SQLException {
+            Connection conn;
+            if (dataSource.getProxyFilters().size() != 0) {
+                conn = new FilterChainImpl(dataSource).connection_connect(info);
+            } else {
+                conn = dataSource.getDriver().connect(url, info);
+            }
+            return conn;
+        }
+
+        public void initConnection(Connection conn) throws SQLException {
+            conn.setAutoCommit(dataSource.isDefaultAutoCommit());
+            if (dataSource.getDefaultReadOnly() != null) {
+                if (conn.isReadOnly() != dataSource.getDefaultReadOnly()) {
+                    conn.setReadOnly(dataSource.getDefaultReadOnly());
+                }
+            }
+
+            if (dataSource.getDefaultTransactionIsolation() != null) {
+                if (conn.getTransactionIsolation() != dataSource.getDefaultTransactionIsolation().intValue()) {
+                    conn.setTransactionIsolation(dataSource.getDefaultTransactionIsolation());
+                }
+            }
+
+            if (dataSource.getDefaultCatalog() != null && dataSource.getDefaultCatalog().length() != 0) {
+                conn.setCatalog(dataSource.getDefaultCatalog());
+            }
         }
     }
 
