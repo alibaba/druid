@@ -4,23 +4,15 @@ import com.alibaba.druid.util.IpUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.JSONDruidStatService;
 import com.alibaba.druid.util.IOUtils;
-import com.alibaba.druid.util.StringUtils;
 
 /**
  * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
@@ -112,52 +104,12 @@ public class StatViewServlet extends HttpServlet {
             response.getWriter().print(jsonDruidStatService.service(fullUrl));
             return;
         }
-
-        if (path.startsWith("/connectionInfo-") && path.endsWith(".html")) {
-            Integer id = StringUtils.subStringToInteger(path, "connectionInfo-", ".");
-            returnViewConnectionInfo(id, request, response);
-            return;
-        }
-
-        if (path.startsWith("/activeConnectionStackTrace-") && path.endsWith(".html")) {
-            Integer id = StringUtils.subStringToInteger(path, "activeConnectionStackTrace-", ".");
-            returnViewActiveConnectionStackTrace(id, request, response);
-            return;
-        }
-
-        if (path.startsWith("/sql-") && path.endsWith(".html")) {
-            Integer id = StringUtils.subStringToInteger(path, "sql-", ".");
-            returnViewSqlStat(id, request,response);
-            return;
-        }
-
+        
         // find file in resources path
         returnResourceFile(path, uri, response);
     }
 
-    private void returnViewActiveConnectionStackTrace(Integer id, HttpServletRequest request,
-                                                      HttpServletResponse response) throws IOException {
-
-        String text = IOUtils.readFromResource(RESOURCE_PATH + "/activeConnectionStackTrace.html");
-        text = text.replaceAll("\\{datasourceId\\}", id.toString());
-        response.getWriter().print(text);
-    }
-
-    private void returnViewConnectionInfo(Integer id, HttpServletRequest request, HttpServletResponse response)
-                                                                                                               throws IOException {
-        String text = IOUtils.readFromResource(RESOURCE_PATH + "/connectionInfo.html");
-        text = text.replaceAll("\\{datasourceId\\}", id.toString());
-        response.getWriter().print(text);
-    }
-
-    private void returnViewSqlStat(Integer id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String text = IOUtils.readFromResource(RESOURCE_PATH + "/sqlDetail.html");
-        text = text.replaceAll("\\{sqlId\\}", id.toString());
-        response.getWriter().print(text);
-    }
-
     
-
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException, IOException {
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
         if(text == null) {

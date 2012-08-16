@@ -1,4 +1,5 @@
-function ajaxRequestForActiveConnectionStackTrace(datasourceId) {
+function ajaxRequestForActiveConnectionStackTrace() {
+	var datasourceId = getUrlVar("datasourceId");
 	var xmlHttpForActiveConnectionStackTrace=getRequestObject();
 	sendRequest(xmlHttpForActiveConnectionStackTrace,'activeConnectionStackTrace-' + datasourceId + '.json', function() {
 		ajaxResponseForActiveConnectionStackTrace(xmlHttpForActiveConnectionStackTrace, datasourceId);
