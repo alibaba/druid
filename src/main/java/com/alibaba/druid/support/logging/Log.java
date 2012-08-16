@@ -4,19 +4,23 @@ public interface Log {
 
     boolean isDebugEnabled();
 
-    void error(String s, Throwable e);
+    void error(String msg, Throwable e);
 
-    void error(String s);
+    void error(String msg);
 
-    public void debug(String s);
+    boolean isInfoEnabled();
 
-    public void debug(String s, Throwable e);
+    void info(String msg);
 
-    public void warn(String s);
+    void debug(String msg);
 
-    void warn(String s, Throwable e);
+    void debug(String msg, Throwable e);
+
+    void warn(String msg);
+
+    void warn(String msg, Throwable e);
 
     int getErrorCount();
-    
+
     void resetStat();
 }

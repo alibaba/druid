@@ -148,15 +148,7 @@ public class DataSourceTest3 extends TestCase {
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setMaxActive(1);
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setMaxActive(1);
     }
 
     public void test_error_7() throws Exception {

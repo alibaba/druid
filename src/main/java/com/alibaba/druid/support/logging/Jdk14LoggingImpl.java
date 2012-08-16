@@ -53,4 +53,14 @@ public class Jdk14LoggingImpl implements Log {
     public void resetStat() {
         errorCount = 0;
     }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return log.isLoggable(Level.INFO);
+    }
+
+    @Override
+    public void info(String msg) {
+        log.info(msg);
+    }
 }

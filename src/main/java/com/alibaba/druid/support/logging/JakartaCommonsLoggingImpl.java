@@ -54,4 +54,13 @@ public class JakartaCommonsLoggingImpl implements com.alibaba.druid.support.logg
         errorCount = 0;
     }
 
+    @Override
+    public boolean isInfoEnabled() {
+        return log.isInfoEnabled();
+    }
+
+    @Override
+    public void info(String msg) {
+        log.info(msg);
+    }
 }

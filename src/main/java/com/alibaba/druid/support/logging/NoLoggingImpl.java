@@ -41,4 +41,14 @@ public class NoLoggingImpl implements Log {
     public void resetStat() {
         errorCount = 0;
     }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return false;
+    }
+
+    @Override
+    public void info(String s) {
+        
+    }
 }

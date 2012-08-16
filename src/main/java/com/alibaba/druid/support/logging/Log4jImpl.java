@@ -5,8 +5,8 @@ import org.apache.log4j.Logger;
 public class Log4jImpl implements Log {
 
     private Logger log;
-    
-    private int errorCount;
+
+    private int    errorCount;
 
     public Log4jImpl(Class<?> clazz){
         log = Logger.getLogger(clazz);
@@ -39,7 +39,7 @@ public class Log4jImpl implements Log {
     public void warn(String s, Throwable e) {
         log.warn(s, e);
     }
-    
+
     public int getErrorCount() {
         return errorCount;
     }
@@ -47,5 +47,15 @@ public class Log4jImpl implements Log {
     @Override
     public void resetStat() {
         errorCount = 0;
+    }
+
+    @Override
+    public boolean isInfoEnabled() {
+        return log.isInfoEnabled();
+    }
+
+    @Override
+    public void info(String msg) {
+        log.info(msg);
     }
 }
