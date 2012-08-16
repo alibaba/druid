@@ -171,6 +171,10 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
         return null;
     }
+    
+    public JdbcSqlStat getSqlStat(int id) {
+        return getSqlStat((long) id);
+    }
 
     public JdbcSqlStat getSqlStat(long id) {
         lock.readLock().lock();

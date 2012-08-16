@@ -23,12 +23,7 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import javax.management.JMException;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.TabularData;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
@@ -66,7 +61,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public final static String        ATTR_TRANSACTION           = "stat.tx";
     public final static String        ATTR_RESULTSET_CLOSED      = "stat.rs.closed";
 
-    protected JdbcDataSourceStat      dataSourceStat;
+    // protected JdbcDataSourceStat dataSourceStat;
 
     @Deprecated
     protected final JdbcStatementStat statementStat              = JdbcStatManager.getInstance().getStatementStat();
@@ -110,16 +105,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
     }
 
-    public JdbcDataSourceStat getDataSourceStat() {
-        return this.dataSourceStat;
-    }
-
-    public void reset() {
-        dataSourceStat.reset();
-
-        resetCount.incrementAndGet();
-    }
-
     public long getResetCount() {
         return resetCount.get();
     }
@@ -148,9 +133,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public synchronized void init(DataSourceProxy dataSource) {
-
-        this.dataSourceStat = dataSource.getDataSourceStat();
-
         if (this.dbType == null || this.dbType.trim().length() == 0) {
             this.dbType = dataSource.getDbType();
         }
@@ -195,15 +177,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
     }
 
-    @Override
-    public synchronized void destory() {
-        if (dataSource == null) {
-            return;
-        }
-
-        dataSource = null;
-    }
-
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy connection = null;
         {
@@ -213,6 +186,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             long nanoSpan;
             long nowTime = System.currentTimeMillis();
 
+            JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
             dataSourceStat.getConnectionStat().beforeConnect();
             try {
                 connection = chain.connection_connect(info);
@@ -245,6 +219,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (connection.getCloseCount() == 0) {
             long nowNano = System.nanoTime();
 
+            JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
             dataSourceStat.getConnectionStat().incrementConnectionCloseCount();
 
             JdbcConnectionStat.Entry connectionInfo = getConnectionInfo(connection);
@@ -265,6 +240,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_commit(FilterChain chain, ConnectionProxy connection) throws SQLException {
         chain.connection_commit(connection);
 
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionCommitCount();
     }
 
@@ -272,8 +248,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
         chain.connection_rollback(connection);
 
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
-
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
 
@@ -282,11 +258,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                                                                                                        throws SQLException {
         chain.connection_rollback(connection, savepoint);
 
+        JdbcDataSourceStat dataSourceStat = connection.getDirectDataSource().getDataSourceStat();
         dataSourceStat.getConnectionStat().incrementConnectionRollbackCount();
     }
 
     @Override
     public void statementCreateAfter(StatementProxy statement) {
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().incrementCreateCounter();
 
         super.statementCreateAfter(statement);
@@ -294,6 +272,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void statementPrepareCallAfter(CallableStatementProxy statement) {
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().incrementPrepareCallCount();
 
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
@@ -302,6 +281,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     public void statementPrepareAfter(PreparedStatementProxy statement) {
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().incrementPrepareCounter();
         JdbcSqlStat sqlStat = createSqlStat(statement, statement.getSql());
         statement.setSqlStat(sqlStat);
@@ -311,6 +291,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void statement_close(FilterChain chain, StatementProxy statement) throws SQLException {
         chain.statement_close(statement);
 
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().incrementStatementCloseCounter();
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context != null) {
@@ -376,9 +357,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     private final void internalBeforeStatementExecute(StatementProxy statement, String sql) {
-        
+
         final long startNano = System.nanoTime();
 
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().beforeExecute();
 
         final JdbcStatementStat.Entry statementStat = getStatementInfo(statement);
@@ -435,6 +417,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         final long nowNano = System.nanoTime();
         final long nanoSpan = nowNano - entry.getLastExecuteStartNano();
 
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().afterExecute(nanoSpan);
 
         final JdbcSqlStat sqlStat = statement.getSqlStat();
@@ -469,11 +452,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
             }
         }
-        
+
         String sql = statement.getLastExecuteSql();
         StatFilterContext.getInstance().executeAfter(sql, nanoSpan, null);
     }
-    
+
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
 
@@ -483,6 +466,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         long nanoSpan = System.nanoTime() - counter.getLastExecuteStartNano();
 
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().error(error);
         dataSourceStat.getStatementStat().afterExecute(nanoSpan);
 
@@ -496,7 +480,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanoSpan);
             statement.setLastExecuteTimeNano(nanoSpan);
         }
-        
+
         StatFilterContext.getInstance().executeAfter(sql, nanoSpan, error);
     }
 
@@ -568,6 +552,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     @Override
     protected void resultSetOpenAfter(ResultSetProxy resultSet) {
+        JdbcDataSourceStat dataSourceStat = resultSet.getStatementProxy().getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getResultSetStat().beforeOpen();
 
         resultSet.setConstructNano();
@@ -580,6 +565,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         int fetchRowCount = resultSet.getFetchRowCount();
 
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getResultSetStat().afterClose(nanoSpan);
         dataSourceStat.getResultSetStat().addFetchRowCount(fetchRowCount);
         dataSourceStat.getResultSetStat().incrementCloseCounter();
@@ -623,131 +609,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return counter;
     }
 
-    @Override
-    public long getConnectionActiveCount() {
-        return dataSourceStat.getConnections().size();
-    }
-
-    @Override
-    public long getConnectionCloseCount() {
-        return dataSourceStat.getConnectionStat().getCloseCount();
-    }
-
-    @Override
-    public long getConnectionCommitCount() {
-        return dataSourceStat.getConnectionStat().getCommitCount();
-    }
-
-    @Override
-    public long getConnectionConnectCount() {
-        return dataSourceStat.getConnectionStat().getConnectCount();
-    }
-
-    @Override
-    public long getConnectionConnectMillis() {
-        return dataSourceStat.getConnectionStat().getConnectMillis();
-    }
-
-    @Override
-    public long getConnectionConnectingMax() {
-        return dataSourceStat.getConnectionStat().getConnectingMax();
-    }
-
-    @Override
-    public long getConnectionRollbackCount() {
-        return dataSourceStat.getConnectionStat().getConnectMillis();
-    }
-
-    @Override
-    public long getConnectionConnectAliveMillis() {
-        return dataSourceStat.getConnectionConnectAliveMillis();
-    }
-
-    @Override
-    public long getConnectionConnectErrorCount() {
-        return dataSourceStat.getConnectionStat().getConnectErrorCount();
-    }
-
-    @Override
-    public Date getConnectionConnectLastTime() {
-        return dataSourceStat.getConnectionStat().getConnectLastTime();
-    }
-
-    @Override
-    public long getStatementCloseCount() {
-        return dataSourceStat.getStatementStat().getCloseCount();
-    }
-
-    @Override
-    public long getStatementCreateCount() {
-        return dataSourceStat.getStatementStat().getCreateCount();
-    }
-
-    @Override
-    public long getStatementExecuteMillisTotal() {
-        return dataSourceStat.getStatementStat().getExecuteMillisTotal();
-    }
-
-    @Override
-    public Date getStatementExecuteErrorLastTime() {
-        return dataSourceStat.getStatementStat().getLastErrorTime();
-    }
-
-    @Override
-    public Date getStatementExecuteLastTime() {
-        return dataSourceStat.getStatementStat().getExecuteLastTime();
-    }
-
-    @Override
-    public long getStatementPrepareCallCount() {
-        return dataSourceStat.getStatementStat().getPrepareCallCount();
-    }
-
-    @Override
-    public long getStatementPrepareCount() {
-        return dataSourceStat.getStatementStat().getPrepareCount();
-    }
-
-    @Override
-    public long getStatementExecuteErrorCount() {
-        return dataSourceStat.getStatementStat().getErrorCount();
-    }
-
-    @Override
-    public long getStatementExecuteSuccessCount() {
-        return dataSourceStat.getStatementStat().getExecuteSuccessCount();
-    }
-
-    @Override
-    public long getResultSetHoldMillisTotal() {
-        return dataSourceStat.getResultSetStat().getHoldMillisTotal();
-    }
-
-    @Override
-    public long getResultSetFetchRowCount() {
-        return dataSourceStat.getResultSetStat().getFetchRowCount();
-    }
-
-    @Override
-    public long getResultSetOpenCount() {
-        return dataSourceStat.getResultSetStat().getOpenCount();
-    }
-
-    @Override
-    public long getResultSetCloseCount() {
-        return dataSourceStat.getResultSetStat().getCloseCount();
-    }
-
-    @Override
-    public String getConnectionUrl() {
-        if (dataSource == null) {
-            return null;
-        }
-
-        return dataSource.getUrl();
-    }
-
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
+        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
+
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         String contextSql = context != null ? context.getSql() : null;
         if (contextSql != null && contextSql.length() > 0) {
@@ -756,23 +620,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sql = mergeSql(sql);
             return dataSourceStat.createSqlStat(sql);
         }
-    }
-
-    public JdbcSqlStat getSqlCounter(String sql) {
-
-        sql = mergeSql(sql); // mergeSql
-        return getSqlStat(sql);
-    }
-
-    public JdbcSqlStat getSqlStat(String sql) {
-
-        sql = mergeSql(sql);
-        return dataSourceStat.getSqlStat(sql);
-    }
-
-    @Override
-    public TabularData getSqlList() throws JMException {
-        return dataSourceStat.getSqlList();
     }
 
     public static StatFilter getStatFilter(DataSourceProxy dataSource) {
@@ -785,30 +632,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return null;
     }
 
-    public JdbcSqlStat getSqlStat(long id) {
-        return dataSourceStat.getSqlStat(id);
-    }
-
-    @Override
-    public CompositeData getStatementExecuteLastError() throws JMException {
-        return dataSourceStat.getStatementStat().getLastError();
-    }
-
-    public final ConcurrentMap<Long, JdbcConnectionStat.Entry> getConnections() {
-        return dataSourceStat.getConnections();
-    }
-
-    @Override
-    public TabularData getConnectionList() throws JMException {
-        return dataSourceStat.getConnectionList();
-    }
-
     public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection conn) throws SQLException {
         chain.dataSource_recycle(conn);
 
         long nanos = System.nanoTime() - conn.getConnectedTimeNano();
 
         long millis = nanos / (1000L * 1000L);
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionHoldHistogram().record(millis);
     }
 

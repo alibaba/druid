@@ -15,10 +15,9 @@
  */
 package com.alibaba.druid.pool;
 
-import java.io.ByteArrayInputStream;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
@@ -30,7 +29,6 @@ import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import javax.sql.DataSource;
-
 
 public class DruidDataSourceFactory implements ObjectFactory {
 
@@ -109,15 +107,15 @@ public class DruidDataSourceFactory implements ObjectFactory {
         return createDataSource(properties);
     }
 
-    /**
-     * Creates and configures a {@link BasicDataSource} instance based on the given properties.
-     * 
-     * @param properties the datasource configuration properties
-     * @throws Exception if an error occurs creating the data source
-     */
-    @SuppressWarnings({ "deprecation", "rawtypes" })
+    @SuppressWarnings("rawtypes")
     public static DataSource createDataSource(Map properties) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
+        config(dataSource, properties);
+        return dataSource;
+    }
+
+    @SuppressWarnings({ "deprecation", "rawtypes" })
+    public static void config(DruidDataSource dataSource, Map properties) throws SQLException {
         String value = null;
 
         value = (String) properties.get(PROP_DEFAULTAUTOCOMMIT);
@@ -299,37 +297,12 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         value = (String) properties.get(PROP_CONNECTIONPROPERTIES);
         if (value != null) {
-            Properties p = getProperties(value);
-            Enumeration<?> e = p.propertyNames();
-            while (e.hasMoreElements()) {
-                String propertyName = (String) e.nextElement();
-                dataSource.addConnectionProperty(propertyName, p.getProperty(propertyName));
-            }
+            dataSource.setConnectionProperties(value);
         }
-        
+
         value = (String) properties.get(PROP_INIT);
         if ("true".equals(value)) {
             dataSource.init();
         }
-
-        // Return the configured DataSource instance
-        return dataSource;
-    }
-
-    /**
-     * <p>
-     * Parse properties from the string. Format of the string must be [propertyName=property;]*
-     * <p>
-     * 
-     * @param propText
-     * @return Properties
-     * @throws Exception
-     */
-    static private Properties getProperties(String propText) throws Exception {
-        Properties p = new Properties();
-        if (propText != null) {
-            p.load(new ByteArrayInputStream(propText.replace(';', '\n').getBytes()));
-        }
-        return p;
     }
 }

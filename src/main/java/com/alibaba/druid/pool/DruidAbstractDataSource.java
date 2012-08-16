@@ -17,8 +17,6 @@ package com.alibaba.druid.pool;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -50,7 +48,6 @@ import javax.sql.DataSource;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource.ActiveConnectionTraceInfo;
 import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
@@ -60,6 +57,7 @@ import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.ConcurrentIdentityHashMap;
+import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
@@ -993,12 +991,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public ExceptionSorter getExceptionSorter() {
         return exceptionSorter;
     }
-    
+
     public String getExceptionSorterClassName() {
         if (exceptionSorter == null) {
             return null;
         }
-        
+
         return exceptionSorter.getClass().getName();
     }
 
@@ -1011,7 +1009,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.setExceptionSorter(exceptionSorter);
     }
 
-    public void setExceptionSorter(String exceptionSorter) throws Exception {
+    public void setExceptionSorter(String exceptionSorter) throws SQLException {
         if (exceptionSorter == null) {
             this.exceptionSorter = NullExceptionSorter.getInstance();
             return;
@@ -1027,7 +1025,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (clazz == null) {
             LOG.error("load exceptionSorter error : " + exceptionSorter);
         } else {
-            this.exceptionSorter = (ExceptionSorter) clazz.newInstance();
+            try {
+                this.exceptionSorter = (ExceptionSorter) clazz.newInstance();
+            } catch (Exception ex) {
+                throw new SQLException("create exceptionSorter error", ex);
+            }
         }
     }
 
@@ -1221,39 +1223,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 user = dataSource.getUsername();
             }
 
-            String password;
+            String password = dataSource.getPassword();
             PasswordCallback passwordCallback = dataSource.getPasswordCallback();
-            if (passwordCallback != null) {
-                try {
-                    Method method = passwordCallback.getClass().getMethod("setUrl", String.class);
-                    method.invoke(passwordCallback, url);
-                } catch (NoSuchMethodException ex) {
-                    // skip
-                } catch (IllegalAccessException e) {
-                    throw new SQLException("passwordCallback Error", e);
-                } catch (InvocationTargetException e) {
-                    throw new SQLException("passwordCallback Error", e);
-                }
 
-                try {
-                    Method method = passwordCallback.getClass().getMethod("setProperties", Properties.class);
-                    method.invoke(passwordCallback, properties);
-                } catch (NoSuchMethodException ex) {
-                    // skip
-                } catch (IllegalAccessException e) {
-                    throw new SQLException("passwordCallback Error", e);
-                } catch (InvocationTargetException e) {
-                    throw new SQLException("passwordCallback Error", e);
-                }
+            if (passwordCallback instanceof DruidPasswordCallback) {
+                DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
 
-                char[] chars = passwordCallback.getPassword();
-                if (chars != null) {
-                    password = new String(chars);
-                } else {
-                    password = null;
-                }
-            } else {
-                password = dataSource.getPassword();
+                druidPasswordCallback.setUrl(url);
+                druidPasswordCallback.setProperties(properties);
             }
 
             this.info = new Properties(dataSource.getConnectProperties());
@@ -1282,6 +1259,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         @Override
         public Connection createConnection() throws SQLException {
             Connection conn;
+            
+            PasswordCallback passwordCallback = dataSource.getPasswordCallback();
+            if (passwordCallback != null) {
+                char[] chars = passwordCallback.getPassword();
+                if (chars != null) {
+                    String callbackPassword = new String(chars);
+                    info.put("password", callbackPassword);
+                }
+            }
 
             long startNano = System.nanoTime();
 
@@ -1342,16 +1328,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public CompositeDataSupport getCompositeData() throws JMException {
-        StatFilter statFilter = null;
-        JdbcDataSourceStat stat = null;
-        for (Filter filter : this.getProxyFilters()) {
-            if (filter instanceof StatFilter) {
-                statFilter = (StatFilter) filter;
-            }
-        }
-        if (statFilter != null) {
-            stat = statFilter.getDataSourceStat();
-        }
+        JdbcDataSourceStat stat = this.getDataSourceStat();
 
         Map<String, Object> map = new HashMap<String, Object>();
 

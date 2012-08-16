@@ -33,7 +33,6 @@ import javax.security.auth.callback.PasswordCallback;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterChainImpl;
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.util.IOUtils;
@@ -188,16 +187,7 @@ public class DataSourceProxyImpl implements DataSourceProxy, DataSourceProxyImpl
     }
 
     public CompositeDataSupport getCompositeData() throws JMException {
-        StatFilter statFilter = null;
-        JdbcDataSourceStat stat = null;
-        for (Filter filter : this.getProxyFilters()) {
-            if (filter instanceof StatFilter) {
-                statFilter = (StatFilter) filter;
-            }
-        }
-        if (statFilter != null) {
-            stat = statFilter.getDataSourceStat();
-        }
+        JdbcDataSourceStat stat = this.getDataSourceStat();
 
         Map<String, Object> map = new HashMap<String, Object>();
 

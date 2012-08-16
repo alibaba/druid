@@ -39,7 +39,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void init(DataSourceProxy dataSource) {
-        this.dataSource = dataSource;
 
         if (this.dbType == null || this.dbType.trim().length() == 0) {
             this.dbType = dataSource.getDbType();

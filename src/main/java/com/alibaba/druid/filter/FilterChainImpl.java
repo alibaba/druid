@@ -24,6 +24,7 @@ import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.NClob;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
@@ -93,6 +94,10 @@ public class FilterChainImpl implements FilterChain {
         return new FilterChainImpl(dataSource, pos);
     }
 
+    public DataSourceProxy getDataSource() {
+        return dataSource;
+    }
+
     @Override
     public boolean isWrapperFor(Wrapper wrapper, Class<?> iface) throws SQLException {
         if (this.pos < filterSize) {
@@ -131,7 +136,10 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_connect(this, info);
         }
 
-        Connection nativeConnection = dataSource.getRawDriver().connect(dataSource.getRawJdbcUrl(), info);
+        Driver driver = dataSource.getRawDriver();
+        String url = dataSource.getRawJdbcUrl();
+
+        Connection nativeConnection = driver.connect(url, info);
         return wrap(nativeConnection, info);
     }
 
@@ -248,7 +256,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Statement statement = connection.getRawObject().createStatement(resultSetType, resultSetConcurrency,
-                                                                            resultSetHoldability);
+                                                                        resultSetHoldability);
         return wrap(connection, statement);
     }
 
@@ -409,8 +417,7 @@ public class FilterChainImpl implements FilterChain {
             return nextFilter().connection_prepareCall(this, connection, sql, resultSetType, resultSetConcurrency);
         }
 
-        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType,
-                                                                                resultSetConcurrency);
+        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType, resultSetConcurrency);
         return wrap(connection, statement, sql);
     }
 
@@ -423,9 +430,8 @@ public class FilterChainImpl implements FilterChain {
                                                        resultSetHoldability);
         }
 
-        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType,
-                                                                                resultSetConcurrency,
-                                                                                resultSetHoldability);
+        CallableStatement statement = connection.getRawObject().prepareCall(sql, resultSetType, resultSetConcurrency,
+                                                                            resultSetHoldability);
         return wrap(connection, statement, sql);
     }
 
@@ -460,7 +466,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
-                                                                                     resultSetConcurrency);
+                                                                                 resultSetConcurrency);
         return wrap(connection, statement, sql);
     }
 
@@ -474,8 +480,8 @@ public class FilterChainImpl implements FilterChain {
         }
 
         PreparedStatement statement = connection.getRawObject().prepareStatement(sql, resultSetType,
-                                                                                     resultSetConcurrency,
-                                                                                     resultSetHoldability);
+                                                                                 resultSetConcurrency,
+                                                                                 resultSetHoldability);
         return wrap(connection, statement, sql);
     }
 
@@ -3336,33 +3342,31 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterIndex);
         }
-        
+
         Object obj = statement.getRawObject().getObject(parameterIndex);
-        
+
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         return obj;
     }
-    
+
     @Override
     public Object callableStatement_getObject(CallableStatementProxy statement, int parameterIndex,
                                               java.util.Map<String, Class<?>> map) throws SQLException {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterIndex, map);
         }
-        
-        
+
         Object obj = statement.getRawObject().getObject(parameterIndex, map);
-        
+
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         return obj;
     }
-    
 
     @Override
     public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName)
@@ -3370,16 +3374,15 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterName);
         }
-        
+
         Object obj = statement.getRawObject().getObject(parameterName);
-        
+
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         return obj;
     }
-    
 
     @Override
     public Object callableStatement_getObject(CallableStatementProxy statement, String parameterName,
@@ -3387,13 +3390,13 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().callableStatement_getObject(this, statement, parameterName, map);
         }
-        
+
         Object obj = statement.getRawObject().getObject(parameterName, map);
-        
+
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         return obj;
     }
 
@@ -4429,7 +4432,7 @@ public class FilterChainImpl implements FilterChain {
             nextFilter().dataSource_releaseConnection(this, connection);
             return;
         }
-        
+
         connection.recycle();
     }
 
@@ -4439,7 +4442,7 @@ public class FilterChainImpl implements FilterChain {
             DruidPooledConnection conn = nextFilter().dataSource_getConnection(this, dataSource, maxWaitMillis);
             return conn;
         }
-        
+
         return dataSource.getConnectionDirect(maxWaitMillis);
     }
 

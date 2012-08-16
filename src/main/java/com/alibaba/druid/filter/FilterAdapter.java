@@ -60,15 +60,12 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {
 
-    protected DataSourceProxy dataSource;
-
     @Override
     public void loadConfig(AbstractDruidFilterConfig DruidFilterConfig) {
     }
 
     @Override
     public void init(DataSourceProxy dataSource) {
-        this.dataSource = dataSource;
     }
 
     @Override
@@ -2709,7 +2706,8 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException {
+    public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
+                                                          long maxWaitMillis) throws SQLException {
         return chain.dataSource_connect(dataSource, maxWaitMillis);
     }
 }

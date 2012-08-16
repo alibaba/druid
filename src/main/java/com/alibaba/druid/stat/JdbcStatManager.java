@@ -30,8 +30,6 @@ import javax.management.openmbean.TabularData;
 import javax.management.openmbean.TabularDataSupport;
 import javax.management.openmbean.TabularType;
 
-import com.alibaba.druid.filter.Filter;
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
@@ -336,28 +334,18 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
 
         final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
         for (DataSourceProxyImpl dataSource : dataSources.values()) {
-            for (Filter filter : dataSource.getConfig().getFilters()) {
-                if (filter instanceof StatFilter) {
-                    StatFilter countFilter = (StatFilter) filter;
-
-                    ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = countFilter.getConnections();
-                    for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
-                        data.put(entry.getValue().getCompositeData());
-                    }
-                }
+            JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
+            ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = dataSourceStat.getConnections();
+            for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
+                data.put(entry.getValue().getCompositeData());
             }
         }
 
         for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            for (Filter filter : instance.getProxyFilters()) {
-                if (filter instanceof StatFilter) {
-                    StatFilter countFilter = (StatFilter) filter;
-
-                    ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = countFilter.getConnections();
-                    for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
-                        data.put(entry.getValue().getCompositeData());
-                    }
-                }
+            JdbcDataSourceStat dataSourceStat = instance.getDataSourceStat();
+            ConcurrentMap<Long, JdbcConnectionStat.Entry> connections = dataSourceStat.getConnections();
+            for (Map.Entry<Long, JdbcConnectionStat.Entry> entry : connections.entrySet()) {
+                data.put(entry.getValue().getCompositeData());
             }
         }
 
@@ -374,21 +362,11 @@ public class JdbcStatManager implements JdbcStatManagerMBean {
 
         final ConcurrentMap<String, DataSourceProxyImpl> dataSources = DruidDriver.getProxyDataSources();
         for (DataSourceProxyImpl dataSource : dataSources.values()) {
-            for (Filter filter : dataSource.getConfig().getFilters()) {
-                if (filter instanceof StatFilter) {
-                    StatFilter countFilter = (StatFilter) filter;
-                    countFilter.reset();
-                }
-            }
+            dataSource.getDataSourceStat().reset();
         }
 
         for (DruidDataSource instance : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
-            for (Filter filter : instance.getProxyFilters()) {
-                if (filter instanceof StatFilter) {
-                    StatFilter countFilter = (StatFilter) filter;
-                    countFilter.reset();
-                }
-            }
+            instance.getDataSourceStat().reset();
         }
     }
 

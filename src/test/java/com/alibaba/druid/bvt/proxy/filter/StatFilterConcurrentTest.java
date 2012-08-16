@@ -32,7 +32,7 @@ public class StatFilterConcurrentTest extends TestCase {
 
     public void test_stat() throws Exception {
         concurrent(100);
-        for (JdbcSqlStat sqlStat : statFilter.getDataSourceStat().getSqlStatMap().values()) {
+        for (JdbcSqlStat sqlStat : dataSource.getDataSourceStat().getSqlStatMap().values()) {
             System.out.println(sqlStat.getConcurrentMax());
         }
     }

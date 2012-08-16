@@ -257,8 +257,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             initStackTrace = IOUtils.toString(Thread.currentThread().getStackTrace());
-
+            
             this.id = DruidDriver.createDataSourceId();
+            
+            for (Filter filter : filters) {
+                filter.init(this);
+            }
 
             if (maxActive <= 0) {
                 throw new IllegalArgumentException("illegal maxActive " + maxActive);
@@ -385,10 +389,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (property != null && property.length() > 0) {
                     this.setFilters(property);
                 }
-            }
-
-            for (Filter filter : filters) {
-                filter.init(this);
             }
 
             initConnectionFactory();

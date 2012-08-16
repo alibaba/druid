@@ -69,6 +69,10 @@ public class JdbcConnectionStat implements JdbcConnectionStatMBean {
     private final Histogram     histogram             = new Histogram(TimeUnit.SECONDS, new long[] { //
                                                                       1, 5, 15, 60, 300, 1800 });
 
+    public JdbcConnectionStat(){
+
+    }
+
     public void reset() {
         connectingMax.set(0);
         connectErrorCount.set(0);

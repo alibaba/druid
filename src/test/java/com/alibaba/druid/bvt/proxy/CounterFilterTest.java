@@ -32,6 +32,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
+import com.alibaba.druid.stat.JdbcDataSourceStat;
 
 public class CounterFilterTest extends TestCase {
 
@@ -41,16 +42,19 @@ public class CounterFilterTest extends TestCase {
         DataSourceProxyConfig config = new DataSourceProxyConfig();
         config.setUrl("");
 
+        DataSourceProxyImpl dataSource = new DataSourceProxyImpl(null, config);
+        JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
+        
         StatFilter filter = new StatFilter();
-        filter.init(new DataSourceProxyImpl(null, config));
+        filter.init(dataSource);
 
-        filter.reset();
+        dataSourceStat.reset();
 
-        Assert.assertNull(StatFilter.getStatFilter(new DataSourceProxyImpl(null, config)));
-        Assert.assertNull(filter.getSqlStat(Integer.MAX_VALUE));
-        Assert.assertNull(filter.getConnectionConnectLastTime());
+        Assert.assertNull(StatFilter.getStatFilter(dataSource));
+        Assert.assertNull(dataSourceStat.getSqlStat(Integer.MAX_VALUE));
+        Assert.assertNull(dataSourceStat.getConnectionStat().getConnectLastTime());
 
-        FilterChain chain = new FilterChainImpl(new DataSourceProxyImpl(null, config)) {
+        FilterChain chain = new FilterChainImpl(dataSource) {
 
             public ConnectionProxy connection_connect(Properties info) throws SQLException {
                 throw new SQLException();
@@ -64,8 +68,8 @@ public class CounterFilterTest extends TestCase {
             error = ex;
         }
         Assert.assertNotNull(error);
-        Assert.assertEquals(1, filter.getConnectionConnectErrorCount());
-        Assert.assertNotNull(filter.getConnectionConnectLastTime());
+        Assert.assertEquals(1, dataSourceStat.getConnectionStat().getConnectErrorCount());
+        Assert.assertNotNull(dataSourceStat.getConnectionStat().getConnectLastTime());
     }
 
     public void test_count_filter() throws Exception {
