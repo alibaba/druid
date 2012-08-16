@@ -1,6 +1,7 @@
-function ajaxRequestForSqlInfo(datasourceId) {
+function ajaxRequestForSqlInfo() {
+	var sqlId = getUrlVar("sqlId");
 	xmlHttpForConnectionInfo = getRequestObject();
-	sendRequest(xmlHttpForConnectionInfo, 'sql-' + datasourceId + '.json', ajaxResponseForSqlInfo)
+	sendRequest(xmlHttpForConnectionInfo, 'sql-' + sqlId + '.json', ajaxResponseForSqlInfo)
 }
 
 function ajaxResponseForSqlInfo() {

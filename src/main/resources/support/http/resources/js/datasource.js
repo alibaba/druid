@@ -66,7 +66,7 @@ function fillDataSourceInfo(datasource) {
 	changeInnerHtml("DS-Info-ConnectionHoldTimeHistogram" + datasource.Identity, '[' + datasource.ConnectionHoldTimeHistogram + ']');
 	
 	if (datasource.RemoveAbandoned == true)
-		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, '<a href="activeConnectionStackTrace-' + datasource.Identity + '.html">View</a>');
+		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, '<a href="activeConnectionStackTrace.html?datasourceId=' + datasource.Identity + '">View</a>');
 	else
 		changeInnerHtml("DS-Info-ActiveConnectionStackTrace" + datasource.Identity, "require set removeAbandoned=true");
 
@@ -139,8 +139,8 @@ function generateDataSourceDiv(datasource) {
 	listHtml += '<tr><td class="td_lable">ActiveConnection StackTrace</td><td id="DS-Info-ActiveConnectionStackTrace' + datasourceId + '">&nbsp;</td><td>StackTrace for active Connection. <a href="activeConnectionStackTrace-'
 			+ datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
 
-	listHtml += '<tr><td class="td_lable">PollingConnection Info</td><td id="DS-Info-PollingConnectionInfo' + datasourceId + '"><a href="connectionInfo-' + datasourceId
-			+ '.html">View</a></td><td>Info for polling connection. <a href="connectionInfo-' + datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
+	listHtml += '<tr><td class="td_lable">PollingConnection Info</td><td id="DS-Info-PollingConnectionInfo' + datasourceId + '"><a href="connectionInfo.html?datasourceId=' + datasourceId
+			+ '">View</a></td><td>Info for polling connection. <a href="connectionInfo-' + datasourceId + '.json" target="_blank">[View JSON API]</a></td></tr>';
 
 	listHtml += '</table>';
 	listHtml += '</div>';

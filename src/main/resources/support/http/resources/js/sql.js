@@ -95,7 +95,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-' + sqlStat.ID + '.html">' + subSqlString(sqlStat.SQL, 25) + '</a>';
+		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sqlDetail.html?sqlId=' + sqlStat.ID + '">' + subSqlString(sqlStat.SQL, 25) + '</a>';
 		// if (sqlStat.File)
 		// newRow.insertCell(-1).innerHTML = sqlStat.File;
 		// else
@@ -109,7 +109,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		//显示执行的时间比配置的均值时间慢的SQL链接
 		var lastSlowHtml = sqlStat.MaxTimespan;
 		if(sqlStat.LastSlowParameters!=null&&sqlStat.LastSlowParameters.length>0){
-			lastSlowHtml ='<a target="_blank" style="color:red" href="sql-' + sqlStat.ID + '.html">'+sqlStat.MaxTimespan+'</a>';
+			lastSlowHtml ='<a target="_blank" style="color:red" href="sqlDetail.html?sqlId=' + sqlStat.ID + '">'+sqlStat.MaxTimespan+'</a>';
 		}
 		newRow.insertCell(-1).innerHTML = lastSlowHtml;
 		newRow.insertCell(-1).innerHTML = sqlStat.InTransactionCount;
