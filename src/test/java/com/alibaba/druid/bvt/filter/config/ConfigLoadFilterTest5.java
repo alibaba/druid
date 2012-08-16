@@ -13,7 +13,6 @@ import junit.framework.TestCase;
 public class ConfigLoadFilterTest5 extends TestCase {
 
     private DruidDataSource dataSource;
-    private ConfigFilter    configFilter;
 
     protected void setUp() throws Exception {
         System.setProperty(ConfigFilter.SYS_PROP_CONFIG_KEY,
@@ -21,11 +20,10 @@ public class ConfigLoadFilterTest5 extends TestCase {
 
         System.setProperty(ConfigFilter.SYS_PROP_CONFIG_ENCRYPTED_PASSWORD,
                            "TFxB6eJcgxE1hxOgiwOC/L7zWR/9vnSIfpggI2PTfcvvRhSnCGCPwI9n03fiJiLmRdnDU2/KaVTJYwz8zzkBqg==");
-        configFilter = new ConfigFilter();
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:config-3");
         dataSource.setMaxActive(13);
-        dataSource.getProxyFilters().add(configFilter);
+        dataSource.setFilters("config");
         dataSource.setTestOnBorrow(false);
     }
 
