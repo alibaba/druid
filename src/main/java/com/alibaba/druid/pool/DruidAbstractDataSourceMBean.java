@@ -96,6 +96,8 @@ public interface DruidAbstractDataSourceMBean {
     long getCreateErrorCount();
 
     int getMaxActive();
+    
+    void setMaxActive(int maxActive);
 
     long getTimeBetweenConnectErrorMillis();
 
