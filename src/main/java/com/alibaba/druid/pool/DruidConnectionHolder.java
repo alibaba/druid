@@ -32,7 +32,7 @@ import com.alibaba.druid.util.JdbcUtils;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public final class ConnectionHolder {
+public final class DruidConnectionHolder {
 
     private final DruidAbstractDataSource       dataSource;
     private final Connection                    conn;
@@ -58,7 +58,7 @@ public final class ConnectionHolder {
     private boolean                             underlyingAutoCommit;
     private final int                           modCount;
 
-    public ConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
+    public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
         this.modCount = dataSource.getModCount();
 
         this.dataSource = dataSource;

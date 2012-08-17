@@ -9,7 +9,7 @@ import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import com.alibaba.druid.pool.ConnectionHolder;
+import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -26,7 +26,7 @@ public class XAPoolableConnection extends DruidPooledConnection implements XARes
 
     private Lock                 stateLock = new ReentrantLock();
 
-    public XAPoolableConnection(ConnectionHolder holder, XAConnection xaConnection) throws SQLException{
+    public XAPoolableConnection(DruidConnectionHolder holder, XAConnection xaConnection) throws SQLException{
         super(holder);
 
         this.xaConnection = xaConnection;

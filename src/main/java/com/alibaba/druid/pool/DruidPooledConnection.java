@@ -57,7 +57,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private final static Log   LOG         = LogFactory.getLog(DruidPooledConnection.class);
 
     protected Connection       conn;
-    protected ConnectionHolder holder;
+    protected DruidConnectionHolder holder;
     protected TransactionInfo  transactionInfo;
     private final boolean      dupCloseLogEnable;
     private boolean            traceEnable = false;
@@ -68,7 +68,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private long               connectedTimeNano;
     private volatile boolean   running     = false;
 
-    public DruidPooledConnection(ConnectionHolder holder){
+    public DruidPooledConnection(DruidConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
@@ -96,7 +96,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     }
 
     public SQLException handleException(Throwable t) throws SQLException {
-        final ConnectionHolder holder = this.holder;
+        final DruidConnectionHolder holder = this.holder;
 
         //
         if (holder != null) {
@@ -148,7 +148,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         }
     }
 
-    public ConnectionHolder getConnectionHolder() {
+    public DruidConnectionHolder getConnectionHolder() {
         return holder;
     }
 
@@ -174,7 +174,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             return;
         }
 
-        ConnectionHolder holder = this.holder;
+        DruidConnectionHolder holder = this.holder;
         if (holder == null) {
             if (dupCloseLogEnable) {
                 LOG.error("dup close");
@@ -201,7 +201,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             return;
         }
 
-        ConnectionHolder holder = this.holder;
+        DruidConnectionHolder holder = this.holder;
         if (holder == null && dupCloseLogEnable) {
             LOG.error("dup close");
             return;
@@ -1006,14 +1006,14 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     }
 
     final void beforeExecute() {
-        final ConnectionHolder holder = this.holder;
+        final DruidConnectionHolder holder = this.holder;
         if (holder != null && holder.getDataSource().isRemoveAbandoned()) {
             running = true;
         }
     }
 
     final void afterExecute() {
-        final ConnectionHolder holder = this.holder;
+        final DruidConnectionHolder holder = this.holder;
         if (holder != null && holder.getDataSource().isRemoveAbandoned()) {
             running = false;
             holder.setLastActiveTimeMillis(System.currentTimeMillis());

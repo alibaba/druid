@@ -99,7 +99,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                        poolingPeakTime         = 0;
 
     // store
-    private volatile ConnectionHolder[] connections;
+    private volatile DruidConnectionHolder[] connections;
     private int                         poolingCount            = 0;
     private int                         activeCount             = 0;
     private long                        discardCount            = 0;
@@ -231,7 +231,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             if (this.poolPreparedStatements && (!value)) {
                 for (int i = 0; i < poolingCount; ++i) {
-                    ConnectionHolder connection = connections[i];
+                    DruidConnectionHolder connection = connections[i];
 
                     for (PreparedStatementHolder holder : connection.getStatementPool().getMap().values()) {
                         closePreapredStatement(holder);
@@ -390,7 +390,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
 
-            connections = new ConnectionHolder[maxActive];
+            connections = new DruidConnectionHolder[maxActive];
 
             SQLException connectError = null;
 
@@ -401,7 +401,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (defaultAutoCommit != conn.getAutoCommit()) {
                         conn.setAutoCommit(defaultAutoCommit);
                     }
-                    connections[poolingCount++] = new ConnectionHolder(this, conn);
+                    connections[poolingCount++] = new DruidConnectionHolder(this, conn);
                 }
             } catch (SQLException ex) {
                 LOG.error("init datasource error", ex);
@@ -682,7 +682,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             connectCount++;
 
-            ConnectionHolder holder;
+            DruidConnectionHolder holder;
 
             if (maxWait > 0) {
                 holder = pollLast(maxWait, TimeUnit.MILLISECONDS);
@@ -715,7 +715,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void handleConnectionException(DruidPooledConnection pooledConnection, Throwable t) throws SQLException {
-        final ConnectionHolder holder = pooledConnection.getConnectionHolder();
+        final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         errorCount.incrementAndGet();
         lastError = t;
@@ -750,7 +750,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      */
     protected void recycle(DruidPooledConnection pooledConnection) throws SQLException {
         final Connection conn = pooledConnection.getConnection();
-        final ConnectionHolder holder = pooledConnection.getConnectionHolder();
+        final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         assert holder != null;
 
@@ -852,7 +852,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         lock.lock();
         try {
             for (int i = 0; i < poolingCount; ++i) {
-                ConnectionHolder conn = connections[i];
+                DruidConnectionHolder conn = connections[i];
                 conn.getStatementPool().clear();
             }
         } finally {
@@ -884,7 +884,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             for (int i = 0; i < poolingCount; ++i) {
                 try {
-                    ConnectionHolder connHolder = connections[i];
+                    DruidConnectionHolder connHolder = connections[i];
 
                     for (PreparedStatementHolder stmtHolder : connHolder.getStatementPool().getMap().values()) {
                         connHolder.getStatementPool().closeRemovedStatement(stmtHolder);
@@ -920,7 +920,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    void putLast(ConnectionHolder e) throws SQLException {
+    void putLast(DruidConnectionHolder e) throws SQLException {
         if (!enable) {
             discardConnection(e.getConnection());
             return;
@@ -933,7 +933,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         notEmptySignalCount++;
     }
 
-    ConnectionHolder takeLast() throws InterruptedException, SQLException {
+    DruidConnectionHolder takeLast() throws InterruptedException, SQLException {
         try {
             while (poolingCount == 0) {
                 empty.signal(); // send signal to CreateThread create connection
@@ -960,13 +960,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         poolingCount--;
-        ConnectionHolder last = connections[poolingCount];
+        DruidConnectionHolder last = connections[poolingCount];
         connections[poolingCount] = null;
 
         return last;
     }
 
-    ConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
+    DruidConnectionHolder pollLast(long timeout, TimeUnit unit) throws InterruptedException, SQLException {
         final long nanos = unit.toNanos(timeout);
         long estimate = nanos;
 
@@ -1018,7 +1018,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             poolingCount--;
-            ConnectionHolder last = connections[poolingCount];
+            DruidConnectionHolder last = connections[poolingCount];
             connections[poolingCount] = null;
 
             return last;
@@ -1170,7 +1170,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 lock.lock();
                 try {
-                    connections[poolingCount++] = new ConnectionHolder(DruidDataSource.this, connection);
+                    connections[poolingCount++] = new DruidConnectionHolder(DruidDataSource.this, connection);
 
                     if (poolingCount > poolingPeak) {
                         poolingPeak = poolingCount;
@@ -1361,7 +1361,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public void shrink(boolean checkTime) {
-        final List<ConnectionHolder> evictList = new ArrayList<ConnectionHolder>();
+        final List<DruidConnectionHolder> evictList = new ArrayList<DruidConnectionHolder>();
         try {
             lock.lockInterruptibly();
         } catch (InterruptedException e) {
@@ -1371,7 +1371,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             final int checkCount = poolingCount - minIdle;
             for (int i = 0; i < checkCount; ++i) {
-                ConnectionHolder connection = connections[i];
+                DruidConnectionHolder connection = connections[i];
 
                 if (checkTime) {
                     long idleMillis = System.currentTimeMillis() - connection.getLastActiveTimeMillis();
@@ -1395,7 +1395,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        for (ConnectionHolder item : evictList) {
+        for (DruidConnectionHolder item : evictList) {
             Connection connection = item.getConnection();
             JdbcUtils.close(connection);
             destroyCount.incrementAndGet();
@@ -1498,7 +1498,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         buf.append(",\n\tConnections:[");
         for (int i = 0; i < poolingCount; ++i) {
-            ConnectionHolder conn = connections[i];
+            DruidConnectionHolder conn = connections[i];
             if (conn != null) {
                 if (i != 0) {
                     buf.append(",");
@@ -1514,7 +1514,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (this.isPoolPreparedStatements()) {
             buf.append("\n\n[");
             for (int i = 0; i < poolingCount; ++i) {
-                ConnectionHolder conn = connections[i];
+                DruidConnectionHolder conn = connections[i];
                 if (conn != null) {
                     if (i != 0) {
                         buf.append(",");
@@ -1560,7 +1560,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         lock.lock();
         try {
             for (int i = 0; i < poolingCount; ++i) {
-                ConnectionHolder connHolder = connections[i];
+                DruidConnectionHolder connHolder = connections[i];
                 Connection conn = connHolder.getConnection();
 
                 Map<String, Object> map = new LinkedHashMap<String, Object>();

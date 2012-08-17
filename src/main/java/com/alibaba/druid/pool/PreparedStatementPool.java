@@ -39,7 +39,7 @@ public class PreparedStatementPool {
     private final LRUCache                map;
     private final DruidAbstractDataSource dataSource;
 
-    public PreparedStatementPool(ConnectionHolder holder){
+    public PreparedStatementPool(DruidConnectionHolder holder){
         this.dataSource = holder.getDataSource();
         int initCapacity = holder.getDataSource().getMaxPoolPreparedStatementPerConnectionSize();
         if (initCapacity <= 0) {

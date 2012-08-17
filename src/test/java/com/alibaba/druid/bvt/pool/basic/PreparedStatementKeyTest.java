@@ -6,7 +6,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockPreparedStatement;
-import com.alibaba.druid.pool.ConnectionHolder;
+import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementHolder;
@@ -147,7 +147,7 @@ public class PreparedStatementKeyTest extends TestCase {
         MockConnection conn = new MockConnection();
         PreparedStatementKey k1 = new PreparedStatementKey("x1", "c1", MethodType.M1);
 
-        PreparedStatementPool pool = new PreparedStatementPool(new ConnectionHolder(dataSource, conn));
+        PreparedStatementPool pool = new PreparedStatementPool(new DruidConnectionHolder(dataSource, conn));
         MockPreparedStatement raw = new MockPreparedStatement(null, null);
         pool.put(new PreparedStatementHolder(k1, raw));
 

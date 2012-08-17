@@ -3,7 +3,7 @@ package com.alibaba.druid.bvt.pool;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.ConnectionHolder;
+import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
@@ -29,7 +29,7 @@ public class PSCacheTest3 extends TestCase {
     public void test_pscache() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
 
-        ConnectionHolder holder = conn.getConnectionHolder();
+        DruidConnectionHolder holder = conn.getConnectionHolder();
         PreparedStatementPool stmtPool = holder.getStatementPool();
 
         final String sql_0 = "select 0";
