@@ -46,8 +46,6 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.sql.DataSource;
 
-import org.h2.util.StringUtils;
-
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
@@ -65,6 +63,7 @@ import com.alibaba.druid.util.DruidPasswordCallback;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>

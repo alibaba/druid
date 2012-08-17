@@ -183,4 +183,11 @@ public class StringUtils {
     public static void main(String args[]) {
         System.out.println(JSON.toJSONString(getParameters("test?t=1&f=").get("t")));
     }
+    
+    public static boolean equals(String a, String b) {
+        if (a == null) {
+            return b == null;
+        }
+        return a.equals(b);
+    }
 }
