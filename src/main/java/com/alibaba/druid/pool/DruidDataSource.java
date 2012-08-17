@@ -267,7 +267,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info("maxActive modified : " + this.maxActive + " -> " + maxActive);
+            LOG.info("maxActive changed : " + this.maxActive + " -> " + maxActive);
         }
 
         lock.lock();
@@ -378,8 +378,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             dataSourceStat = new JdbcDataSourceStat(this.name, this.jdbcUrl, this.dbType);
 
-            initConnectionFactory();
-
             connections = new ConnectionHolder[maxActive];
 
             SQLException connectError = null;
@@ -387,7 +385,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             try {
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
-                    Connection conn = connectionFactory.createConnection();
+                    Connection conn = createConnection();
                     if (defaultAutoCommit != conn.getAutoCommit()) {
                         conn.setAutoCommit(defaultAutoCommit);
                     }
@@ -1125,7 +1123,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Connection connection = null;
 
                 try {
-                    connection = connectionFactory.createConnection();
+                    connection = createConnection();
                 } catch (SQLException e) {
                     LOG.error("create connection error", e);
 

@@ -46,6 +46,8 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.sql.DataSource;
 
+import org.h2.util.StringUtils;
+
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.filter.FilterManager;
@@ -110,8 +112,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected volatile PasswordCallback                                                         passwordCallback;
     protected volatile NameCallback                                                             userCallback;
-
-    protected ConnectionFactory                                                                 connectionFactory;
 
     protected volatile int                                                                      initialSize                               = DEFAULT_INITIAL_SIZE;
     protected volatile int                                                                      maxActive                                 = DEFAULT_MAX_ACTIVE_SIZE;
@@ -787,9 +787,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (maxWaitMillis == this.maxWait) {
             return;
         }
-        
+
         if (inited) {
-            LOG.error("maxWait modified : " + this.maxWait + " -> " + maxWaitMillis);
+            LOG.error("maxWait changed : " + this.maxWait + " -> " + maxWaitMillis);
         }
 
         this.maxWait = maxWaitMillis;
@@ -803,13 +803,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         if (value == this.minIdle) {
             return;
         }
-        
+
         if (inited) {
             if (value > this.maxActive) {
-                throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " < " + this.minIdle);
+                throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " < "
+                                                   + this.minIdle);
             }
-            
-            LOG.error("minIdle modified : " + this.minIdle + " -> " + value);
+
+            LOG.error("minIdle changed : " + this.minIdle + " -> " + value);
         }
 
         this.minIdle = value;
@@ -819,10 +820,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return maxIdle;
     }
 
+    @Deprecated
     public void setMaxIdle(int maxIdle) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
+        LOG.error("maxIdle is deprecated");
 
         this.maxIdle = maxIdle;
     }
@@ -832,6 +832,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setInitialSize(int initialSize) {
+        if (this.initialSize == initialSize) {
+            return;
+        }
+
         if (inited) {
             throw new UnsupportedOperationException();
         }
@@ -866,8 +870,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setPassword(String password) {
+        if (StringUtils.equals(this.password, password)) {
+            return;
+        }
+
         if (inited) {
-            throw new UnsupportedOperationException();
+            LOG.info("password changed");
         }
 
         this.password = password;
@@ -968,22 +976,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     @Override
     public int getLoginTimeout() {
         return DriverManager.getLoginTimeout();
-    }
-
-    protected void initConnectionFactory() throws SQLException {
-        if (connectionFactory != null) {
-            return;
-        }
-
-        connectionFactory = createConnectionFactory();
-    }
-
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-    protected ConnectionFactory createConnectionFactory() throws SQLException {
-        return new DruidPoolConnectionFactory(this);
     }
 
     public Driver getDriver() {
@@ -1235,125 +1227,106 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return new FilterChainImpl(this).connection_connect(info);
     }
 
-    public static class DruidPoolConnectionFactory implements ConnectionFactory {
+    public Connection createConnection() throws SQLException {
+        String url = this.getUrl();
+        Properties info;
 
-        private final String                  url;
-        private final Properties              info;
-        private final DruidAbstractDataSource dataSource;
+        Properties properties = getConnectProperties();
+        String user;
+        if (getUserCallback() != null) {
+            user = getUserCallback().getName();
+        } else {
+            user = getUsername();
+        }
 
-        public DruidPoolConnectionFactory(DruidAbstractDataSource dataSource) throws SQLException{
-            this.dataSource = dataSource;
-            this.url = dataSource.getUrl();
+        String password = getPassword();
+        PasswordCallback passwordCallback = getPasswordCallback();
 
-            Properties properties = dataSource.getConnectProperties();
-            String user;
-            if (dataSource.getUserCallback() != null) {
-                user = dataSource.getUserCallback().getName();
-            } else {
-                user = dataSource.getUsername();
-            }
+        if (passwordCallback instanceof DruidPasswordCallback) {
+            DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
 
-            String password = dataSource.getPassword();
-            PasswordCallback passwordCallback = dataSource.getPasswordCallback();
+            druidPasswordCallback.setUrl(url);
+            druidPasswordCallback.setProperties(properties);
+        }
 
-            if (passwordCallback instanceof DruidPasswordCallback) {
-                DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
+        info = new Properties(getConnectProperties());
 
-                druidPasswordCallback.setUrl(url);
-                druidPasswordCallback.setProperties(properties);
-            }
+        if (properties != null) {
+            info.putAll(properties);
+        }
 
-            this.info = new Properties(dataSource.getConnectProperties());
+        if ((!info.contains("user")) && user != null) {
+            info.put("user", user);
+        }
 
-            if (properties != null) {
-                info.putAll(properties);
-            }
+        if ((!info.contains("password")) && password != null) {
+            info.put("password", password);
+        }
 
-            if ((!info.contains("user")) && user != null) {
-                info.put("user", user);
-            }
+        Connection conn;
 
-            if ((!info.contains("password")) && password != null) {
-                info.put("password", password);
+        if (passwordCallback != null) {
+            char[] chars = passwordCallback.getPassword();
+            if (chars != null) {
+                String callbackPassword = new String(chars);
+                info.put("password", callbackPassword);
             }
         }
 
-        public String getUrl() {
-            return url;
+        long startNano = System.nanoTime();
+
+        try {
+            conn = createPhysicalConnection(url, info);
+
+            if (conn == null) {
+                throw new SQLException("connect error, url " + url);
+            }
+
+            initPhysicalConnection(conn);
+
+            validateConnection(conn);
+            createError = null;
+        } catch (SQLException ex) {
+            createErrorCount++;
+            createError = ex;
+            lastCreateError = ex;
+            lastCreateErrorTimeMillis = System.currentTimeMillis();
+            throw ex;
+        } catch (RuntimeException ex) {
+            createErrorCount++;
+            createError = ex;
+            lastCreateError = ex;
+            lastCreateErrorTimeMillis = System.currentTimeMillis();
+            throw ex;
+        } catch (Error ex) {
+            createErrorCount++;
+            throw ex;
+        } finally {
+            long nano = System.nanoTime() - startNano;
+            createTimespan += nano;
         }
 
-        public Properties getInfo() {
-            return info;
+        incrementCreateCount();
+
+        return conn;
+    }
+
+    public void initPhysicalConnection(Connection conn) throws SQLException {
+        conn.setAutoCommit(isDefaultAutoCommit());
+        if (getDefaultReadOnly() != null) {
+            if (conn.isReadOnly() != getDefaultReadOnly()) {
+                conn.setReadOnly(getDefaultReadOnly());
+            }
         }
 
-        @Override
-        public Connection createConnection() throws SQLException {
-            Connection conn;
-
-            PasswordCallback passwordCallback = dataSource.getPasswordCallback();
-            if (passwordCallback != null) {
-                char[] chars = passwordCallback.getPassword();
-                if (chars != null) {
-                    String callbackPassword = new String(chars);
-                    info.put("password", callbackPassword);
-                }
+        if (getDefaultTransactionIsolation() != null) {
+            if (conn.getTransactionIsolation() != getDefaultTransactionIsolation().intValue()) {
+                conn.setTransactionIsolation(getDefaultTransactionIsolation());
             }
-
-            long startNano = System.nanoTime();
-
-            try {
-                conn = dataSource.createPhysicalConnection(url, info);
-
-                if (conn == null) {
-                    throw new SQLException("connect error, url " + url);
-                }
-
-                initConnection(conn);
-
-                dataSource.validateConnection(conn);
-                dataSource.createError = null;
-            } catch (SQLException ex) {
-                dataSource.createErrorCount++;
-                dataSource.createError = ex;
-                dataSource.lastCreateError = ex;
-                dataSource.lastCreateErrorTimeMillis = System.currentTimeMillis();
-                throw ex;
-            } catch (RuntimeException ex) {
-                dataSource.createErrorCount++;
-                dataSource.createError = ex;
-                dataSource.lastCreateError = ex;
-                dataSource.lastCreateErrorTimeMillis = System.currentTimeMillis();
-                throw ex;
-            } catch (Error ex) {
-                dataSource.createErrorCount++;
-                throw ex;
-            } finally {
-                long nano = System.nanoTime() - startNano;
-                dataSource.createTimespan += nano;
-            }
-
-            dataSource.incrementCreateCount();
-
-            return conn;
         }
 
-        public void initConnection(Connection conn) throws SQLException {
-            conn.setAutoCommit(dataSource.isDefaultAutoCommit());
-            if (dataSource.getDefaultReadOnly() != null) {
-                if (conn.isReadOnly() != dataSource.getDefaultReadOnly()) {
-                    conn.setReadOnly(dataSource.getDefaultReadOnly());
-                }
-            }
-
-            if (dataSource.getDefaultTransactionIsolation() != null) {
-                if (conn.getTransactionIsolation() != dataSource.getDefaultTransactionIsolation().intValue()) {
-                    conn.setTransactionIsolation(dataSource.getDefaultTransactionIsolation());
-                }
-            }
-
-            if (dataSource.getDefaultCatalog() != null && dataSource.getDefaultCatalog().length() != 0) {
-                conn.setCatalog(dataSource.getDefaultCatalog());
-            }
+        if (getDefaultCatalog() != null && getDefaultCatalog().length() != 0) {
+            conn.setCatalog(getDefaultCatalog());
         }
     }
 
@@ -1584,7 +1557,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.connectionProperties = this.connectionProperties;
         to.passwordCallback = this.passwordCallback;
         to.userCallback = this.userCallback;
-        to.connectionFactory = this.connectionFactory;
         to.initialSize = this.initialSize;
         to.maxActive = this.maxActive;
         to.minIdle = this.minIdle;

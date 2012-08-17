@@ -93,20 +93,13 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setMinIdle(1);
     }
 
+    @SuppressWarnings("deprecation")
     public void test_error_4() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setMaxIdle(1);
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setMaxIdle(1);
     }
 
     public void test_error_5() throws Exception {
@@ -114,10 +107,12 @@ public class DataSourceTest3 extends TestCase {
 
         conn.close();
 
+        dataSource.setInitialSize(dataSource.getInitialSize());
+
         {
             Exception error = null;
             try {
-                dataSource.setInitialSize(1);
+                dataSource.setInitialSize(10);
             } catch (Exception ex) {
                 error = ex;
             }
@@ -138,15 +133,8 @@ public class DataSourceTest3 extends TestCase {
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setPassword("xx");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setPassword(dataSource.getPassword());
+        dataSource.setPassword("xx");
     }
 
     public void test_error_8() throws Exception {
