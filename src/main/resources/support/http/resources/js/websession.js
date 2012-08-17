@@ -1,21 +1,21 @@
 
 var xmlHttpForDataSourceSqlStatInfo;
 
-var sqlViewOrderBy = '';
-var sqlViewOrderBy_old = '';
-var sqlViewOrderType = 'asc';
+var statViewOrderBy = '';
+var statViewOrderBy_old = '';
+var statViewOrderType = 'asc';
 
 // only one page for now
 var sqlViewPage = 1;
 var sqlViewPerPageCount = 1000000;
 
 function resetSortMark() {
-	var divObj = document.getElementById('th-' + sqlViewOrderBy);
-	var old_divObj = document.getElementById('th-' + sqlViewOrderBy_old);
+	var divObj = document.getElementById('th-' + statViewOrderBy);
+	var old_divObj = document.getElementById('th-' + statViewOrderBy_old);
 	var replaceToStr = '';
 	if (old_divObj) {
 		var html = old_divObj.innerHTML;
-		if (sqlViewOrderBy_old.indexOf('[') > 0)
+		if (statViewOrderBy_old.indexOf('[') > 0)
 			replaceToStr = '-';
 		html = html.replace('↑', replaceToStr);
 		html = html.replace('↓', replaceToStr);
@@ -23,12 +23,12 @@ function resetSortMark() {
 	}
 	if (divObj) {
 		var html = divObj.innerHTML;
-		if (sqlViewOrderBy.indexOf('[') > 0)
+		if (statViewOrderBy.indexOf('[') > 0)
 			html = '';
 
-		if (sqlViewOrderType == 'asc') {
+		if (statViewOrderType == 'asc') {
 			html += '&uarr;';
-		} else if (sqlViewOrderType == 'desc') {
+		} else if (statViewOrderType == 'desc') {
 			html += '&darr;';
 		}
 		divObj.innerHTML = html;
@@ -36,33 +36,33 @@ function resetSortMark() {
 }
 
 function setOrderBy(orderBy) {
-	if (sqlViewOrderBy != orderBy) {
-		sqlViewOrderBy_old = sqlViewOrderBy;
-		sqlViewOrderBy = orderBy;
-		sqlViewOrderType = 'desc';
+	if (statViewOrderBy != orderBy) {
+		statViewOrderBy_old = statViewOrderBy;
+		statViewOrderBy = orderBy;
+		statViewOrderType = 'desc';
 		resetSortMark();
 		return;
 	}
 
-	sqlViewOrderBy_old = sqlViewOrderBy;
+	statViewOrderBy_old = statViewOrderBy;
 
-	if (sqlViewOrderType == 'asc')
-		sqlViewOrderType = 'desc'
+	if (statViewOrderType == 'asc')
+		statViewOrderType = 'desc'
 	else
-		sqlViewOrderType = 'asc';
+		statViewOrderType = 'asc';
 
 	resetSortMark();
 
 }
 
-function getSqlViewJsonUrl() {
+function getAjaxUrl() {
 	var result = 'websession.json?';
 
-	if (sqlViewOrderBy != undefined)
-		result += 'orderBy=' + sqlViewOrderBy + '&';
+	if (statViewOrderBy != undefined)
+		result += 'orderBy=' + statViewOrderBy + '&';
 
-	if (sqlViewOrderType != undefined)
-		result += 'orderType=' + sqlViewOrderType + '&';
+	if (statViewOrderType != undefined)
+		result += 'orderType=' + statViewOrderType + '&';
 
 	if (sqlViewPage != undefined)
 		result += 'page=' + sqlViewPage + '&';
@@ -75,7 +75,7 @@ function getSqlViewJsonUrl() {
 
 function ajaxRequestForDataSourceSqlStatInfo() {
 	xmlHttpForDataSourceSqlStatInfo =  getRequestObject();
-	sendRequest(xmlHttpForDataSourceSqlStatInfo,getSqlViewJsonUrl(),ajaxResponseForDataSourceSqlStatInfo)
+	sendRequest(xmlHttpForDataSourceSqlStatInfo, getAjaxUrl(), handleAjaxResult)
 }
 
 function subSqlString(sql, len) {
@@ -83,31 +83,37 @@ function subSqlString(sql, len) {
 		return sql;
 	return sql.substr(0, len) + '...';
 }
-function ajaxResponseForDataSourceSqlStatInfo() {
-	var sqlStatList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
-	if(sqlStatList==null) return;
+
+function handleAjaxResult() {
+	var statList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
+	if(statList == null) return;
 	
 	var sqlStatTable = document.getElementById("WebSessionStatTable");
 	while (sqlStatTable.rows.length > 1) {
 		sqlStatTable.deleteRow(1);
 	}
-	for ( var i = 0; i < sqlStatList.length; i++) {
-		var sqlStat = sqlStatList[i];
+	
+	for (var i = 0; i < statList.length; i++) {
+		var stat = statList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = sqlStat.SESSIONID;
-		newRow.insertCell(-1).innerHTML = sqlStat.Principal;
-		newRow.insertCell(-1).innerHTML = sqlStat.CreateTime;
-		newRow.insertCell(-1).innerHTML = sqlStat.RemoteAddress;
-		newRow.insertCell(-1).innerHTML = sqlStat.RequestCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.RequestTimeMillisTotal;
-		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteTimeMillis;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcCommitCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcRollbackCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcFetchRowCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcUpdateCount;
+		newRow.insertCell(-1).innerHTML = stat.SESSIONID;
+		if (stat.Principal) {
+			newRow.insertCell(-1).innerHTML = stat.Principal;
+		} else {
+			newRow.insertCell(-1).innerHTML = '';
+		}
+		newRow.insertCell(-1).innerHTML = stat.CreateTime;
+		newRow.insertCell(-1).innerHTML = stat.RemoteAddress;
+		newRow.insertCell(-1).innerHTML = stat.RequestCount;
+		newRow.insertCell(-1).innerHTML = stat.RequestTimeMillisTotal;
+		newRow.insertCell(-1).innerHTML = stat.RunningCount;
+		newRow.insertCell(-1).innerHTML = stat.ConcurrentMax;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteTimeMillis;
+		newRow.insertCell(-1).innerHTML = stat.JdbcCommitCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcRollbackCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcFetchRowCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcUpdateCount;
 	}
 }
