@@ -105,6 +105,7 @@ function handleAjaxResult() {
 			newRow.insertCell(-1).innerHTML = '';
 		}
 		newRow.insertCell(-1).innerHTML = stat.CreateTime;
+		newRow.insertCell(-1).innerHTML = stat.LastAccessTime;
 		newRow.insertCell(-1).innerHTML = stat.RemoteAddress;
 		newRow.insertCell(-1).innerHTML = stat.RequestCount;
 		newRow.insertCell(-1).innerHTML = stat.RequestTimeMillisTotal;
