@@ -76,52 +76,52 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class DruidDataSource extends DruidAbstractDataSource implements DruidDataSourceMBean, ManagedDataSource, Referenceable, Closeable, Cloneable, ConnectionPoolDataSource {
 
-    private final static Log            LOG                     = LogFactory.getLog(DruidDataSource.class);
+    private final static Log                 LOG                     = LogFactory.getLog(DruidDataSource.class);
 
-    private static final long           serialVersionUID        = 1L;
+    private static final long                serialVersionUID        = 1L;
 
-    private final Condition             notEmpty                = lock.newCondition();
-    private final Condition             empty                   = lock.newCondition();
+    private final Condition                  notEmpty                = lock.newCondition();
+    private final Condition                  empty                   = lock.newCondition();
 
     // stats
-    private long                        connectCount            = 0L;
-    private long                        closeCount              = 0L;
-    private final AtomicLong            connectErrorCount       = new AtomicLong();
-    private long                        recycleCount            = 0L;
-    private long                        removeAbandonedCount    = 0L;
-    private long                        notEmptyWaitCount       = 0L;
-    private long                        notEmptySignalCount     = 0L;
-    private long                        notEmptyWaitNanos       = 0L;
+    private long                             connectCount            = 0L;
+    private long                             closeCount              = 0L;
+    private final AtomicLong                 connectErrorCount       = new AtomicLong();
+    private long                             recycleCount            = 0L;
+    private long                             removeAbandonedCount    = 0L;
+    private long                             notEmptyWaitCount       = 0L;
+    private long                             notEmptySignalCount     = 0L;
+    private long                             notEmptyWaitNanos       = 0L;
 
-    private int                         activePeak              = 0;
-    private long                        activePeakTime          = 0;
-    private int                         poolingPeak             = 0;
-    private long                        poolingPeakTime         = 0;
+    private int                              activePeak              = 0;
+    private long                             activePeakTime          = 0;
+    private int                              poolingPeak             = 0;
+    private long                             poolingPeakTime         = 0;
 
     // store
     private volatile DruidConnectionHolder[] connections;
-    private int                         poolingCount            = 0;
-    private int                         activeCount             = 0;
-    private long                        discardCount            = 0;
-    private int                         notEmptyWaitThreadCount = 0;
-    private int                         notEmptyWaitThreadPeak  = 0;
+    private int                              poolingCount            = 0;
+    private int                              activeCount             = 0;
+    private long                             discardCount            = 0;
+    private int                              notEmptyWaitThreadCount = 0;
+    private int                              notEmptyWaitThreadPeak  = 0;
 
     // threads
-    private CreateConnectionThread      createConnectionThread;
-    private DestroyConnectionThread     destoryConnectionThread;
+    private CreateConnectionThread           createConnectionThread;
+    private DestroyConnectionThread          destoryConnectionThread;
 
-    private final CountDownLatch        initedLatch             = new CountDownLatch(2);
+    private final CountDownLatch             initedLatch             = new CountDownLatch(2);
 
-    private boolean                     enable                  = true;
+    private boolean                          enable                  = true;
 
-    private boolean                     resetStatEnable         = true;
+    private boolean                          resetStatEnable         = true;
 
-    private String                      initStackTrace;
+    private String                           initStackTrace;
 
-    private boolean                     closed                  = false;
-    private long                        closeTimeMillis         = -1L;
+    private boolean                          closed                  = false;
+    private long                             closeTimeMillis         = -1L;
 
-    private JdbcDataSourceStat          dataSourceStat;
+    private JdbcDataSourceStat               dataSourceStat;
 
     public DruidDataSource(){
     }
@@ -250,7 +250,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (this.maxActive == maxActive) {
             return;
         }
-        
+
         if (maxActive == 0) {
             throw new IllegalArgumentException("maxActive can't not set zero");
         }
@@ -259,7 +259,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.maxActive = maxActive;
             return;
         }
-        
+
         if (maxActive < this.minIdle) {
             throw new IllegalArgumentException("maxActive less than minIdle, " + maxActive + " < " + this.minIdle);
         }
@@ -283,12 +283,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
-    
+
     public void setConnectProperties(Properties properties) {
         if (properties == null) {
             properties = new Properties();
         }
-        
+
         if (inited) {
             if (!this.connectProperties.equals(properties)) {
                 LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
@@ -433,7 +433,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             inited = true;
             lock.unlock();
-            
+
             if (LOG.isInfoEnabled()) {
                 LOG.info("{dataSource-" + this.getID() + "} inited");
             }
@@ -793,7 +793,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     JdbcUtils.close(conn);
 
                     destroyCount.incrementAndGet();
-                    
+
                     lock.lockInterruptibly();
                     try {
                         activeCount--;
