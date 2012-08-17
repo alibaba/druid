@@ -58,7 +58,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private long             executeErrorLastTime;
 
     private final AtomicLong updateCount                       = new AtomicLong();
+    private final AtomicLong updateCountMax                    = new AtomicLong();
     private final AtomicLong fetchRowCount                     = new AtomicLong();
+    private final AtomicLong fetchRowCountMax                  = new AtomicLong();
 
     private final AtomicLong inTransactionCount                = new AtomicLong();
 
@@ -199,7 +201,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         executeErrorLastTime = 0;
 
         updateCount.set(0);
+        updateCountMax.set(0);
         fetchRowCount.set(0);
+        fetchRowCountMax.set(0);
 
         histogram.reset();
         this.lastSlowParameters = null;
@@ -223,6 +227,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         if (delta > 0) {
             this.updateCount.addAndGet(delta);
         }
+        for (;;) {
+            long max = updateCountMax.get();
+            if (delta <= max) break;
+            if (updateCountMax.compareAndSet(max, delta)) {
+                break;
+            }
+        }
 
         this.updateCountHistogram.record(delta);
     }
@@ -230,11 +241,18 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getUpdateCount() {
         return updateCount.get();
     }
+    public long getUpdateCountMax() {
+        return updateCountMax.get();
+    }
 
     public long getFetchRowCount() {
         return fetchRowCount.get();
     }
 
+    public long getFetchRowCountMax() {
+        return fetchRowCountMax.get();
+    	
+    }
     public long getId() {
         return id;
     }
@@ -275,6 +293,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public void addFetchRowCount(long delta) {
         this.fetchRowCount.addAndGet(delta);
+        for (;;) {
+            long max = fetchRowCountMax.get();
+            if (delta <= max) break;
+            if (fetchRowCountMax.compareAndSet(max, delta)) {
+                break;
+            }
+        }
         this.fetchRowCountHistogram.record(delta);
 
     }
@@ -526,9 +551,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("MaxTimespan", getExecuteMillisMax());
         map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
         map.put("EffectedRowCount", getUpdateCount());
+        map.put("EffectedRowCountMax", getUpdateCountMax());
 
         // 10 - 14
         map.put("FetchRowCount", getFetchRowCount());
+        map.put("FetchRowCountMax", getFetchRowCountMax());
         map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
         map.put("BatchSizeMax", getExecuteBatchSizeMax());
         map.put("BatchSizeTotal", getExecuteBatchSizeTotal());
