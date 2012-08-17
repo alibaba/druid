@@ -1,16 +1,16 @@
 package com.alibaba.druid.support;
 
-import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.sql.SQLUtils;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
@@ -168,6 +168,9 @@ public class JSONDruidStatService {
 
     private String returnJSONSqlInfo(Integer id) {
         Map<String,Object> map = druidStatManager.getSqlStatData(id);
+        if (map == null) {
+	        return returnJSONResult(RESULT_CODE_ERROR , null);
+        }
         map.put("formattedSql",SQLUtils.format((String) map.get("SQL"),(String) map.get("DbType")));
         List<SQLStatement> statementList = SQLUtils.parseStatements((String) map.get("SQL"), (String) map.get("DbType"));
     
@@ -183,8 +186,10 @@ public class JSONDruidStatService {
         }
         
 	    DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
-	    map.put("MaxTimespanOccurTime", format.format(map.get("MaxTimespanOccurTime")));
-
+	    Date maxTimespanOccurTime = (Date)map.get("MaxTimespanOccurTime");
+	    if (maxTimespanOccurTime != null) {
+		    map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
+	    }
         return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
     }
 
