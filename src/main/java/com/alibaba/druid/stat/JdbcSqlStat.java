@@ -473,6 +473,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 new ArrayType<Long>(SimpleType.LONG, true), //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
 
         };
 
@@ -521,7 +523,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 30
                 "EffectedRowCountHistogram", // 
-                "ExecuteAndResultHoldTimeHistogram"
+                "ExecuteAndResultHoldTimeHistogram", //
+                "EffectedRowCountMax", //
+                "FetchRowCountMax" 
 
         //
         };
@@ -551,11 +555,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("MaxTimespan", getExecuteMillisMax());
         map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
         map.put("EffectedRowCount", getUpdateCount());
-        map.put("EffectedRowCountMax", getUpdateCountMax());
-
+      
         // 10 - 14
         map.put("FetchRowCount", getFetchRowCount());
-        map.put("FetchRowCountMax", getFetchRowCountMax());
         map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
         map.put("BatchSizeMax", getExecuteBatchSizeMax());
         map.put("BatchSizeTotal", getExecuteBatchSizeTotal());
@@ -592,6 +594,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         map.put("EffectedRowCountHistogram", this.getUpdateCountHistogram().toArray()); // 30
         map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogram().toArray()); // 30
+        map.put("EffectedRowCountMax", getUpdateCountMax());
+        map.put("FetchRowCountMax", getFetchRowCountMax());
 
         return map;
     }
