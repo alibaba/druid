@@ -81,6 +81,14 @@ public class Histogram {
         return rangeCounters[index].get();
     }
     
+    public long getSum() {
+        long sum = 0;
+        for (int i = 0; i < rangeCounters.length; ++i) {
+            sum += rangeCounters[i].get();
+        }
+        return sum;
+    }
+    
     public String toString() {
     	StringBuilder buf = new StringBuilder();
     	buf.append('[');

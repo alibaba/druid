@@ -335,10 +335,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     }
 
     public void addExecuteTime(StatementExecuteType executeType, boolean firstResultSet, long nanoSpan) {
+        addExecuteTime(nanoSpan);
+        
         if (StatementExecuteType.ExecuteQuery != executeType && !firstResultSet) {
             executeAndResultHoldTimeHistogram.record((nanoSpan) / 1000 / 1000);
         }
-        addExecuteTime(nanoSpan);
     }
 
     public void addExecuteTime(long nanoSpan) {
