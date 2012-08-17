@@ -32,6 +32,7 @@ function resetSortMark() {
 		}
 		divObj.innerHTML = html;
 	}
+	ajaxRequestForConnectionInfo();
 }
 
 function setOrderBy(orderBy) {
