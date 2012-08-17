@@ -181,7 +181,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
 
     public void setMaxPoolSize(int maxPoolSize) {
         dataSource.setMaxActive(maxPoolSize);
-        dataSource.setMaxIdle(maxPoolSize);
     }
 
     public int getMinPoolSize() {
