@@ -32,7 +32,15 @@ import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
 
+/**
+ * 用于配置Web和Druid数据源之间的管理关联监控统计
+ * 
+ * @author wenshao <szujobs@htomail.com>
+ * @author Zhangming Qi <qizhanming@gmail.com>
+ */
 public class WebStatFilter implements Filter {
+
+    private final static Log             LOG                               = LogFactory.getLog(WebStatFilter.class);
 
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
@@ -41,8 +49,6 @@ public class WebStatFilter implements Filter {
     public static final String           PARAM_NAME_PRINCIPAL_COOKIE_NAME  = "principalCookieName";
 
     public final static int              DEFAULT_MAX_STAT_SESSION_COUNT    = 1000 * 100;
-
-    private final static Log             LOG                               = LogFactory.getLog(WebStatFilter.class);
 
     private WebAppStat                   webAppStat                        = null;
     private WebStatFilterContextListener statFilterContextListener         = new WebStatFilterContextListener();
