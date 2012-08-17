@@ -16,7 +16,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class StatFilterExecuteFirstResultSetTest extends TestCase {
+public class StatFilterExecuteTest extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -46,17 +46,16 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
     public void test_stat() throws Exception {
 
         Assert.assertTrue(dataSource.isInited());
-        final String sql = "select 1";
-
+        final String sql = "update x";
+        
         Connection conn = dataSource.getConnection();
 
         PreparedStatement stmt = conn.prepareStatement(sql);
+        
+        Assert.assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogram().getSum());
+        
         boolean firstResult = stmt.execute();
-        Assert.assertTrue(firstResult);
-
-        ResultSet rs = stmt.getResultSet();
-        rs.next();
-        rs.close();
+        Assert.assertFalse(firstResult);
 
         stmt.close();
 
@@ -79,11 +78,11 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
         }
 
         public boolean execute() throws SQLException {
-            return true;
+            return false;
         }
 
-        public ResultSet getResultSet() throws SQLException {
-            return getConnection().getDriver().executeQuery(this, getSql());
+        public int getUpdateCount() throws SQLException {
+            return 100;
         }
     }
 }

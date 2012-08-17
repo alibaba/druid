@@ -116,8 +116,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void setMergeSql(boolean mergeSql) {
         this.mergeSql = mergeSql;
     }
-
+    
+    @Deprecated
     public String mergeSql(String sql) {
+        return this.mergeSql(sql, dbType);
+    }
+
+    public String mergeSql(String sql, String dbType) {
         if (!mergeSql) {
             return sql;
         }
@@ -125,7 +130,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         try {
             sql = ParameterizedOutputVisitorUtils.parameterize(sql, dbType);
         } catch (Exception e) {
-            LOG.error("merge sql error", e);
+            LOG.error("merge sql error, dbType " + dbType + ", sql : \n" + sql, e);
         }
 
         return sql;
@@ -612,14 +617,21 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     public JdbcSqlStat createSqlStat(StatementProxy statement, String sql) {
-        JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
+        DataSourceProxy dataSource = statement.getConnectionProxy().getDirectDataSource();
+        JdbcDataSourceStat dataSourceStat = dataSource.getDataSourceStat();
 
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         String contextSql = context != null ? context.getSql() : null;
         if (contextSql != null && contextSql.length() > 0) {
             return dataSourceStat.createSqlStat(contextSql);
         } else {
-            sql = mergeSql(sql);
+            String dbType = this.dbType;
+            
+            if (dbType == null) {
+                dbType = dataSource.getDbType();
+            }
+            
+            sql = mergeSql(sql, dbType);
             return dataSourceStat.createSqlStat(sql);
         }
     }
