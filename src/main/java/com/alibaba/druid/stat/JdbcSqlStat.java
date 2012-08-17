@@ -225,8 +225,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         this.updateCountHistogram.record(delta);
-        this.fetchRowCountHistogram.record(0);
-
     }
 
     public long getUpdateCount() {
