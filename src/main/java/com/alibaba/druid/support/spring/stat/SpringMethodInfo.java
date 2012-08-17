@@ -41,10 +41,6 @@ public class SpringMethodInfo {
             return false;
         }
 
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
         SpringMethodInfo other = (SpringMethodInfo) obj;
 
         if (!instanceClass.getName().equals(other.instanceClass.getName())) {
