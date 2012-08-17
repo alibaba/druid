@@ -25,6 +25,7 @@ public class TestOraclePrefetch extends TestCase {
         dataSource.setDriver(new OracleMockDriver());
         dataSource.setPoolPreparedStatements(true);
         dataSource.setConnectionProperties("defaultRowPrefetch=50");
+//        dataSource.setFilters("log4j");
     }
 
     protected void tearDown() throws Exception {
@@ -92,6 +93,8 @@ public class TestOraclePrefetch extends TestCase {
 
             conn.close();
         }
+        
+        Assert.assertEquals(1, dataSource.getCachedPreparedStatementCount());
 
     }
 }

@@ -72,8 +72,8 @@ public class PreparedStatementPool {
         return holder;
     }
 
-    public void put(PreparedStatementHolder holder) throws SQLException {
-        PreparedStatement stmt = holder.getStatement();
+    public void put(PreparedStatementHolder stmtHolder) throws SQLException {
+        PreparedStatement stmt = stmtHolder.getStatement();
 
         if (stmt == null) {
             return;
@@ -81,29 +81,34 @@ public class PreparedStatementPool {
 
         if (dataSource.isOracle() && dataSource.isUseOracleImplicitCache()) {
             OracleUtils.enterImplicitCache(stmt);
-            holder.setEnterOracleImplicitCache(true);
+            stmtHolder.setEnterOracleImplicitCache(true);
         } else {
-            holder.setEnterOracleImplicitCache(false);
+            stmtHolder.setEnterOracleImplicitCache(false);
         }
 
-        PreparedStatementKey key = holder.getKey();
+        PreparedStatementKey key = stmtHolder.getKey();
 
-        PreparedStatementHolder oldHolder = map.put(key, holder);
-        if (oldHolder != null && oldHolder != holder) {
-            oldHolder.setPooling(false);
-            closeRemovedStatement(oldHolder);
+        PreparedStatementHolder oldStmtHolder = map.put(key, stmtHolder);
+        
+        if (oldStmtHolder == stmtHolder) {
+            return;
+        }
+        
+        if (oldStmtHolder != null) {
+            oldStmtHolder.setPooling(false);
+            closeRemovedStatement(oldStmtHolder);
         } else {
-            if (holder.getHitCount() == 0) {
+            if (stmtHolder.getHitCount() == 0) {
                 dataSource.incrementCachedPreparedStatementCount();
             }
         }
 
-        holder.setPooling(true);
+        stmtHolder.setPooling(true);
         
         if (LOG.isDebugEnabled()) {
             String message = null;
-            if (holder.getStatement() instanceof PreparedStatementProxy) {
-                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) holder.getStatement();
+            if (stmtHolder.getStatement() instanceof PreparedStatementProxy) {
+                PreparedStatementProxy stmtProxy = (PreparedStatementProxy) stmtHolder.getStatement();
                 if (stmtProxy instanceof CallableStatementProxy) {
                     message = "{conn-" + stmtProxy.getConnectionProxy().getId() + ", cstmt-" + stmtProxy.getId() + "} enter cache";
                 } else {
