@@ -56,7 +56,7 @@ public class SpringMethodInfo {
         }
         
         for (int i = 0; i < method.getParameterTypes().length; ++i) {
-            if (method.getParameterTypes()[i].getName().equals(other.method.getParameterTypes()[i].getName())) {
+            if (!method.getParameterTypes()[i].getName().equals(other.method.getParameterTypes()[i].getName())) {
                 return false;
             }
         }
