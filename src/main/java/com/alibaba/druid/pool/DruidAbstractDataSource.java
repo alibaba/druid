@@ -1221,7 +1221,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public Connection createPhysicalConnection() throws SQLException {
         String url = this.getUrl();
-        Properties connectProperty = getConnectProperties();
+        Properties connectProperties = getConnectProperties();
 
         String user;
         if (getUserCallback() != null) {
@@ -1237,7 +1237,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
 
             druidPasswordCallback.setUrl(url);
-            druidPasswordCallback.setProperties(connectProperty);
+            druidPasswordCallback.setProperties(connectProperties);
 
             char[] chars = passwordCallback.getPassword();
             if (chars != null) {
@@ -1245,11 +1245,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
         }
 
-        Properties physicalConnectProperties;
-        if (connectProperty != null) {
-            physicalConnectProperties = new Properties(connectProperty);
-        } else {
-            physicalConnectProperties = new Properties();
+        Properties physicalConnectProperties = new Properties();
+        if (connectProperties != null) {
+            physicalConnectProperties.putAll(connectProperties);
         }
 
         if (user != null && user.length() != 0) {
