@@ -253,10 +253,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
         
-        if (maxActive < this.minIdle) {
-            throw new IllegalArgumentException("maxActive less than minIdle, " + maxActive + " < " + this.minIdle);
-        }
-        
         if (maxActive == 0) {
             throw new IllegalArgumentException("maxActive can't not set zero");
         }
@@ -264,6 +260,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (!inited) {
             this.maxActive = maxActive;
             return;
+        }
+        
+        if (maxActive < this.minIdle) {
+            throw new IllegalArgumentException("maxActive less than minIdle, " + maxActive + " < " + this.minIdle);
         }
 
         if (LOG.isInfoEnabled()) {

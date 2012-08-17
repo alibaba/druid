@@ -79,36 +79,18 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setPoolPreparedStatements(false);
     }
 
-    public void test_error_2() throws Exception {
+    public void test_change_maxWait() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
-
         conn.close();
-
-        {
-            Exception error = null;
-            try {
-                dataSource.setMaxWait(1);
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setMaxWait(1);
     }
 
-    public void test_error_3() throws Exception {
+    public void test_change_minIdle() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setMinIdle(1);
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setMinIdle(1);
     }
 
     public void test_error_4() throws Exception {

@@ -784,8 +784,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setMaxWait(long maxWaitMillis) {
+        if (maxWaitMillis == this.maxWait) {
+            return;
+        }
+        
         if (inited) {
-            throw new UnsupportedOperationException();
+            LOG.error("maxWait modified : " + this.maxWait + " -> " + maxWaitMillis);
         }
 
         this.maxWait = maxWaitMillis;
@@ -795,12 +799,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         return minIdle;
     }
 
-    public void setMinIdle(int minIdle) {
+    public void setMinIdle(int value) {
+        if (value == this.minIdle) {
+            return;
+        }
+        
         if (inited) {
-            throw new UnsupportedOperationException();
+            if (value > this.maxActive) {
+                throw new IllegalArgumentException("minIdle greater than maxActive, " + maxActive + " < " + this.minIdle);
+            }
+            
+            LOG.error("minIdle modified : " + this.minIdle + " -> " + value);
         }
 
-        this.minIdle = minIdle;
+        this.minIdle = value;
     }
 
     public int getMaxIdle() {
