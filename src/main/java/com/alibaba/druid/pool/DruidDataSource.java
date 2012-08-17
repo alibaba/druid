@@ -88,8 +88,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private long                        closeCount              = 0L;
     private final AtomicLong            connectErrorCount       = new AtomicLong();
     private long                        recycleCount            = 0L;
-    private long                        createConnectionCount   = 0L;
-    private long                        destroyCount            = 0L;
     private long                        removeAbandonedCount    = 0L;
     private long                        notEmptyWaitCount       = 0L;
     private long                        notEmptySignalCount     = 0L;
@@ -167,8 +165,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             closeCount = 0;
             discardCount = 0;
             recycleCount = 0;
-            createConnectionCount = 0;
-            destroyCount = 0;
+            createCount.set(0);
+            destroyCount.set(0);
             removeAbandonedCount = 0;
             notEmptyWaitCount = 0;
             notEmptySignalCount = 0L;
@@ -399,7 +397,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             try {
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
-                    Connection conn = createConnection();
+                    Connection conn = createPhysicalConnection();
                     if (defaultAutoCommit != conn.getAutoCommit()) {
                         conn.setAutoCommit(defaultAutoCommit);
                     }
@@ -794,9 +792,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (!validate) {
                     JdbcUtils.close(conn);
 
+                    destroyCount.incrementAndGet();
+                    
                     lock.lockInterruptibly();
                     try {
-                        destroyCount++;
                         activeCount--;
                         closeCount++;
                     } finally {
@@ -817,7 +816,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     putLast(holder);
                     recycleCount++;
                 } else {
-                    destroyCount++;
                     activeCount--;
                     closeCount++;
                     neadDestory = true;
@@ -827,6 +825,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (neadDestory) {
+                destroyCount.incrementAndGet();
                 JdbcUtils.close(conn);
             }
         } catch (Throwable e) {
@@ -894,7 +893,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     JdbcUtils.close(connHolder.getConnection());
                     connections[i] = null;
-                    destroyCount++;
+                    destroyCount.incrementAndGet();
                 } catch (Exception ex) {
                     LOG.warn("close connection error", ex);
                 }
@@ -919,10 +918,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (LOG.isInfoEnabled()) {
             LOG.info("{dataSource-" + this.getID() + "} closed");
         }
-    }
-
-    void incrementCreateCount() {
-        createConnectionCount++;
     }
 
     void putLast(ConnectionHolder e) throws SQLException {
@@ -1036,11 +1031,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public long getCreateCount() {
-        return createConnectionCount;
+        return createCount.get();
     }
 
     public long getDestroyCount() {
-        return destroyCount;
+        return destroyCount.get();
     }
 
     public long getConnectCount() {
@@ -1144,7 +1139,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 Connection connection = null;
 
                 try {
-                    connection = createConnection();
+                    connection = createPhysicalConnection();
                 } catch (SQLException e) {
                     LOG.error("create connection error", e);
 
@@ -1403,7 +1398,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         for (ConnectionHolder item : evictList) {
             Connection connection = item.getConnection();
             JdbcUtils.close(connection);
-            destroyCount++;
+            destroyCount.incrementAndGet();
         }
     }
 
