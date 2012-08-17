@@ -1,4 +1,4 @@
-package com.alibaba.druid.bvt.pool;
+package com.alibaba.druid.bvt.pool.dynamic;
 
 import java.sql.Connection;
 

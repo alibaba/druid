@@ -33,7 +33,6 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setDriver(driver);
         dataSource.setInitialSize(1);
         dataSource.setMaxActive(2);
-        dataSource.setMaxIdle(2);
         dataSource.setMinIdle(1);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000); // 300 / 10
         dataSource.setTimeBetweenEvictionRunsMillis(180 * 1000); // 180 / 10
@@ -41,7 +40,7 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setTestOnBorrow(true);
         dataSource.setTestOnReturn(true);
         dataSource.setValidationQuery("SELECT 1");
-        dataSource.setFilters("stat,trace");
+        dataSource.setFilters("stat");
 
         JdbcStatContext context = new JdbcStatContext();
         context.setTraceEnable(true);
@@ -137,36 +136,20 @@ public class DataSourceTest3 extends TestCase {
         dataSource.setPassword("xx");
     }
 
-    public void test_error_8() throws Exception {
+    public void test_change_connectProperties() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setConnectProperties(new Properties());
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setConnectProperties(new Properties());
     }
 
-    public void test_error_9() throws Exception {
+    public void test_change_connectProperties_2() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection().unwrap(DruidPooledConnection.class);
 
         conn.close();
 
-        {
-            Exception error = null;
-            try {
-                dataSource.setConnectionProperties("x=12;;");
-            } catch (Exception ex) {
-                error = ex;
-            }
-            Assert.assertNotNull(error);
-        }
+        dataSource.setConnectionProperties("x=12;;");
     }
 
     public void test_getValidConnectionCheckerClassName() throws Exception {

@@ -285,6 +285,20 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
     }
+    
+    public void setConnectProperties(Properties properties) {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        
+        if (inited) {
+            if (!this.connectProperties.equals(properties)) {
+                LOG.info("connectProperties changed : " + this.connectProperties + " -> " + properties);
+            }
+        }
+
+        this.connectProperties = properties;
+    }
 
     public boolean isInited() {
         return this.inited;
@@ -420,8 +434,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             throw new SQLException(e.getMessage(), e);
         } finally {
             inited = true;
-
             lock.unlock();
+            
+            if (LOG.isInfoEnabled()) {
+                LOG.info("{dataSource-" + this.getID() + "} inited");
+            }
         }
     }
 
@@ -742,7 +759,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (pooledConnection.isTraceEnable()) {
             ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
             if (oldInfo == null) {
-                LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+                }
             }
         }
 
@@ -897,7 +916,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             lock.unlock();
         }
 
-        LOG.warn("dataSource " + this.getID() + " closed");
+        if (LOG.isInfoEnabled()) {
+            LOG.info("{dataSource-" + this.getID() + "} closed");
+        }
     }
 
     void incrementCreateCount() {
@@ -1328,11 +1349,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public String getProperties() {
-        if (this.connectionProperties == null) {
+        if (this.connectProperties == null) {
             return null;
         }
 
-        Properties properties = new Properties(this.connectionProperties);
+        Properties properties = new Properties(this.connectProperties);
         if (properties.contains("password")) {
             properties.put("password", "******");
         }

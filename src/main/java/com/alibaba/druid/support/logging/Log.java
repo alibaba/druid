@@ -16,11 +16,17 @@ public interface Log {
 
     void debug(String msg, Throwable e);
 
+    boolean isWarnEnabled();
+
     void warn(String msg);
 
     void warn(String msg, Throwable e);
 
     int getErrorCount();
+
+    int getWarnCount();
+
+    int getInfoCount();
 
     void resetStat();
 }

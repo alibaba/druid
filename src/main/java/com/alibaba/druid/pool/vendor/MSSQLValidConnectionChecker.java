@@ -42,7 +42,9 @@ public class MSSQLValidConnectionChecker implements ValidConnectionChecker, Seri
             stmt.execute(QUERY);
             return true;
         } catch (SQLException e) {
-            LOG.warn("warning: connection validation failed for current managed connection.");
+            if (LOG.isWarnEnabled()) {
+                LOG.warn("warning: connection validation failed for current managed connection.");
+            }
             return false;
         } finally {
             JdbcUtils.close(stmt);

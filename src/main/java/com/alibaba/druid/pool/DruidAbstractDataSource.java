@@ -108,7 +108,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile String                                                                   password;
     protected volatile String                                                                   jdbcUrl;
     protected volatile String                                                                   driverClass;
-    protected volatile Properties                                                               connectionProperties                      = new Properties();
+    protected volatile Properties                                                               connectProperties                      = new Properties();
 
     protected volatile PasswordCallback                                                         passwordCallback;
     protected volatile NameCallback                                                             userCallback;
@@ -511,7 +511,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new UnsupportedOperationException();
         }
 
-        connectionProperties.put(name, value);
+        connectProperties.put(name, value);
     }
 
     public Collection<String> getConnectionInitSqls() {
@@ -882,24 +882,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public Properties getConnectProperties() {
-        return connectionProperties;
+        return connectProperties;
     }
-
-    public void setConnectProperties(Properties connectionProperties) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
-
-        this.connectionProperties = connectionProperties;
-    }
-
+    
+    public abstract void setConnectProperties(Properties properties);
+    
     public void setConnectionProperties(String connectionProperties) {
-        if (inited) {
-            throw new UnsupportedOperationException();
-        }
-
-        if (connectionProperties == null) {
-            this.connectionProperties.clear();
+        if (connectionProperties == null || connectionProperties.trim().length() == 0) {
+            setConnectProperties(null);
             return;
         }
 
@@ -919,7 +909,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
                 }
             }
         }
-        this.connectionProperties = properties;
+        
+        setConnectProperties(properties);
     }
 
     public String getUrl() {
@@ -1554,7 +1545,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         to.password = this.password;
         to.jdbcUrl = this.jdbcUrl;
         to.driverClass = this.driverClass;
-        to.connectionProperties = this.connectionProperties;
+        to.connectProperties = this.connectProperties;
         to.passwordCallback = this.passwordCallback;
         to.userCallback = this.userCallback;
         to.initialSize = this.initialSize;
