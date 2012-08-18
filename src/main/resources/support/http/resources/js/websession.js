@@ -98,7 +98,8 @@ function handleAjaxResult() {
 		var stat = statList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = stat.SESSIONID;
+		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="websession-detail.html?sessionId=' + stat.SESSIONID + '">' + stat.SESSIONID + '</a>';
+		
 		if (stat.Principal) {
 			newRow.insertCell(-1).innerHTML = stat.Principal;
 		} else {

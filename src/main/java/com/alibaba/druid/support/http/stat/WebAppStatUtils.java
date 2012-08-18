@@ -58,6 +58,22 @@ public class WebAppStatUtils {
             return null;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getSessionStatData(Object webStat, String sessionId) {
+        if (webStat.getClass() == WebAppStat.class) {
+            return ((WebAppStat) webStat).getSessionStatData(sessionId);
+        }
+        
+        try {
+            Method method = webStat.getClass().getMethod("getSessionStatData", String.class);
+            Object obj = method.invoke(webStat);
+            return (Map<String, Object>) obj;
+        } catch (Exception e) {
+            LOG.error("getSessionStatData error", e);
+            return null;
+        }
+    }
 
     public static void reset(Object webStat) {
         if (webStat.getClass() == WebAppStat.class) {

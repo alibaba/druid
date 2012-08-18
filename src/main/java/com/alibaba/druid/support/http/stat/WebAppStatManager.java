@@ -65,6 +65,19 @@ public class WebAppStatManager {
 
         return allAppUriStatDataList;
     }
+    
+    public Map<String, Object> getSessionStat(String sessionId) {
+        Set<Object> stats = getWebAppStatSet();
+
+        for (Object stat : stats) {
+            Map<String, Object> statData = WebAppStatUtils.getSessionStatData(stat, sessionId);
+            if (statData != null) {
+                return statData;
+            }
+        }
+        
+        return null;
+    }
 
     public void addWebAppStatSet(Object webAppStat) {
         getWebAppStatSet().add(webAppStat);

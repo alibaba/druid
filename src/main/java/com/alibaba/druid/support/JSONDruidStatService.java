@@ -27,7 +27,7 @@ public class JSONDruidStatService {
 
     private final static JSONDruidStatService instance               = new JSONDruidStatService();
 
-    private static DruidStatManagerFacade     statManagerFacade       = DruidStatManagerFacade.getInstance();
+    private static DruidStatManagerFacade     statManagerFacade      = DruidStatManagerFacade.getInstance();
 
     public final static int                   RESULT_CODE_SUCCESS    = 1;
     public final static int                   RESULT_CODE_ERROR      = -1;
@@ -105,6 +105,11 @@ public class JSONDruidStatService {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
         }
 
+        if (url.startsWith("/websession-") && url.indexOf(".json") > 0) {
+            String id = StringUtils.subString(url, "websession-", ".json");
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionDetail(id));
+        }
+
         if (url.startsWith("/spring.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSpringStatDataList(parameters));
         }
@@ -120,6 +125,10 @@ public class JSONDruidStatService {
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
         return comparatorOrderBy(array, parameters);
+    }
+
+    private Map<String, Object> getWebSessionDetail(String sessionId) {
+        return WebAppStatManager.getInstance().getSessionStat(sessionId);
     }
 
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {

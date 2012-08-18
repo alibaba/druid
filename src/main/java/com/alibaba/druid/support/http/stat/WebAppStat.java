@@ -145,6 +145,16 @@ public class WebAppStat {
     public WebSessionStat getSessionStat(String sessionId) {
         return getSessionStat(sessionId, false);
     }
+    
+    public Map<String, Object> getSessionStatData(String sessionId) {
+        WebSessionStat uriStat = sessionStatMap.get(sessionId);
+        
+        if (uriStat == null) {
+            return null;
+        }
+        
+        return uriStat.getStatData();
+    }
 
     public WebSessionStat getSessionStat(String sessionId, boolean create) {
         sessionStatLock.readLock().lock();
