@@ -17,7 +17,7 @@ public class WebSessionStat {
     private final AtomicLong    requestCount         = new AtomicLong(0);
     private final AtomicLong    requestErrorCount    = new AtomicLong(0);
     private final AtomicLong    requestTimeNano      = new AtomicLong();
-    
+
     private final AtomicLong    jdbcFetchRowCount    = new AtomicLong();
     private final AtomicLong    jdbcUpdateCount      = new AtomicLong();
     private final AtomicLong    jdbcExecuteCount     = new AtomicLong();
@@ -33,26 +33,36 @@ public class WebSessionStat {
 
     private String              principal            = null;
 
+    private String              userAgent;
+
     public WebSessionStat(String sessionId){
         super();
         this.sessionId = sessionId;
     }
-    
+
     public void reset() {
         concurrentMax.set(0);
         requestCount.set(0);
         requestErrorCount.set(0);
         requestTimeNano.set(0);
-        
+
         jdbcFetchRowCount.set(0);
         jdbcUpdateCount.set(0);
         jdbcExecuteCount.set(0);
         jdbcExecuteTimeNano.set(0);
         jdbcCommitCount.set(0);
         jdbcRollbackCount.set(0);
-        
+
         remoteAddresses.clear();
         principal = null;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 
     public String getSessionId() {
@@ -140,6 +150,11 @@ public class WebSessionStat {
         }
 
         incrementRequestCount();
+        
+        WebRequestStat requestStat = WebRequestStat.current();
+        if (requestStat != null) {
+            this.setLastAccessTimeMillis(requestStat.getStartMillis());
+        }
     }
 
     public void incrementRequestCount() {
@@ -278,6 +293,8 @@ public class WebSessionStat {
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
+        
+        data.put("UserAgent", this.getUserAgent());
 
         return data;
     }

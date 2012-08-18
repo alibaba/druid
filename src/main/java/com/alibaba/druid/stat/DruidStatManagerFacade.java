@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.VERSION;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
+import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
 
@@ -50,6 +52,12 @@ public class DruidStatManagerFacade {
     }
 
     public void resetAll() {
+        if (!isResetEnable()) {
+            return;
+        }
+        
+        SpringStatManager.getInstance().resetStat();
+        WebAppStatManager.getInstance().resetStat();
         resetSqlStat();
         resetDataSourceStat();
         resetCount.incrementAndGet();

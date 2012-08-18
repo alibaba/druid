@@ -85,9 +85,14 @@ public class WebStatFilter implements Filter {
         long startNano = System.nanoTime();
         long startMillis = System.currentTimeMillis();
 
-        WebRequestStat requestStat = new WebRequestStat(startNano);
+        WebRequestStat requestStat = new WebRequestStat(startNano, startMillis);
         WebRequestStat.set(requestStat);
+        
         WebSessionStat sessionStat = getSessionStat(httpRequest);
+        if (sessionStat != null) {
+            sessionStat.beforeInvoke();
+        }
+        
         webAppStat.beforeInvoke();
 
         WebURIStat uriStat = webAppStat.getURIStat(requestURI, false);
@@ -100,7 +105,6 @@ public class WebStatFilter implements Filter {
         // 第一次访问时，sessionId为null，如果缺省sessionCreate=false，sessionStat就为null。
         if (sessionStat != null) {
             sessionStat.beforeInvoke();
-            sessionStat.setLastAccessTimeMillis(startMillis);
         }
 
         Throwable error = null;
@@ -171,14 +175,20 @@ public class WebStatFilter implements Filter {
         }
 
         if (sessionStat != null) {
+            long currentMillis = System.currentTimeMillis();
+
             if (sessionStat.getCreateTimeMillis() == -1L) {
                 HttpSession session = request.getSession(false);
+
                 if (session != null) {
                     sessionStat.setCreateTimeMillis(session.getCreationTime());
                 } else {
-                    sessionStat.setCreateTimeMillis(System.currentTimeMillis());
+                    sessionStat.setCreateTimeMillis(currentMillis);
                 }
             }
+
+            String userAgent = request.getHeader("user-agent");
+            sessionStat.setUserAgent(userAgent);
 
             String ip = DruidWebUtils.getRemoteAddr(request);
 

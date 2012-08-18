@@ -38,6 +38,8 @@ public class WebStatFilterTest2 extends TestCase {
 
         // 第一个session请求2次
         {
+            Assert.assertNull(appStat.getSessionStat(session_0.getId()));
+            
             MockHttpServletRequest request = new MockHttpServletRequest();
             MockHttpServletResponse response = new MockHttpServletResponse();
             MockFilterChain chain = new MockFilterChain() {
@@ -51,6 +53,8 @@ public class WebStatFilterTest2 extends TestCase {
 
             Assert.assertEquals(1, appStat.getSessionStatDataList().size());
             Assert.assertEquals(1, appStat.getSessionStat(session_0.getId()).getRequestCount());
+            
+            Assert.assertTrue(appStat.getSessionStat(session_0.getId()).getLastAccessTimeMillis() > 0);
         }
         {
             MockHttpServletRequest request = new MockHttpServletRequest();

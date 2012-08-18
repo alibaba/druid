@@ -62,8 +62,6 @@ public class JSONDruidStatService {
 
         if (url.equals("/reset-all.json")) {
             statManagerFacade.resetAll();
-            SpringStatManager.getInstance().resetStat();
-            WebAppStatManager.getInstance().resetStat();
 
             return returnJSONResult(RESULT_CODE_SUCCESS, null);
         }

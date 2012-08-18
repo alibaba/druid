@@ -108,6 +108,14 @@ public class StatViewServlet extends HttpServlet {
     }
 
     public boolean isPermittedRequest(String remoteAddress) {
+        boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
+        
+        if (ipV6) {
+            if (denyList.size() == 0 && allowList.size() == 0) {
+                return true;
+            }
+        }
+        
         IPAddress ipAddress = new IPAddress(remoteAddress);
 
         for (IPRange range : denyList) {
