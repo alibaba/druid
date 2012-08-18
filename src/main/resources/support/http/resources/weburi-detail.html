@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Druid Web URI Stat</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+    <link href="css/style.css" type="text/css" rel="stylesheet"/>
+    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
+    <script src="js/weburi-detail.js" type="text/javascript" charset="utf8"></script>
+    <script >
+      function init(){
+        ajaxRequestForSqlInfo();
+        var time3=setInterval("ajaxRequestForSqlInfo();",5000);
+		buildMenu();
+		buildFooter();
+      }
+    </script>
+  </head>
+  <body onload="init();">
+    <div id="main">
+      <br/>
+      <h2> Web URI View</h2>
+      <br/>
+      <table cellpadding='5' cellspacing='1' width='99%'>
+        <tr>
+          <td class='td_lable' width='130'> URI</td>
+          <td id="URI"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> RequestCount</td>
+          <td id="RequestCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> RequestTimeMillis</td>
+          <td id="RequestTimeMillis"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> RunningCount</td>
+          <td id="RunningCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> ConcurrentMax</td>
+          <td id="ConcurrentMax"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcExecuteCount</td>
+          <td id="JdbcExecuteCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcExecutePeak</td>
+          <td id="JdbcExecutePeak"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcExecuteTimeMillis</td>
+          <td id="JdbcExecuteTimeMillis"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcCommitCount</td>
+          <td id="JdbcCommitCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcRollbackCount</td>
+          <td id="JdbcRollbackCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcFetchRowCount</td>
+          <td id="JdbcFetchRowCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcFetchRowPeak</td>
+          <td id="JdbcFetchRowPeak"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcUpdateCount</td>
+          <td id="JdbcUpdateCount"></td>
+        </tr>
+        <tr>
+          <td class='td_lable'> JdbcUpdatePeak</td>
+          <td id="JdbcUpdatePeak"></td>
+        </tr>
+      </table>
+      <br />
+    </div>
+  </body>
+</html>
