@@ -41,6 +41,10 @@ public class SQLParserUtils {
             return new OracleExprParser(sql);
         }
 
+        if (JdbcUtils.H2.equals(dbType)) {
+            return new MySqlExprParser(sql);
+        }
+        
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlExprParser(sql);
         }

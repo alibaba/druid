@@ -74,6 +74,10 @@ public class SQLEvalVisitorUtils {
             return new MySqlEvalVisitorImpl();
         }
         
+        if (JdbcUtils.H2.equals(dbType)) {
+            return new MySqlEvalVisitorImpl();
+        }
+        
         if (JdbcUtils.ORACLE.equals(dbType)) {
             return new OracleEvalVisitor();
         }

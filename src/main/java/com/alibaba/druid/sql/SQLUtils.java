@@ -33,6 +33,10 @@ public class SQLUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
+        
+        if (JdbcUtils.H2.equals(dbType)) {
+            return toMySqlString(sqlObject);
+        }
 
         if (JdbcUtils.ORACLE.equals(dbType)) {
             return toOracleString(sqlObject);
