@@ -109,8 +109,8 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		newRow.insertCell(-1).innerHTML = sqlStat.TotalTime;
 		//显示执行的时间比配置的均值时间慢的SQL链接
 		var lastSlowHtml = sqlStat.MaxTimespan;
-		if(sqlStat.LastSlowParameters!=null&&sqlStat.LastSlowParameters.length>0){
-			lastSlowHtml ='<a target="_blank" style="color:red" href="sqlDetail.html?sqlId=' + sqlStat.ID + '">'+sqlStat.MaxTimespan+'</a>';
+		if (sqlStat.LastSlowParameters!=null && sqlStat.LastSlowParameters.length>0) {
+			lastSlowHtml ='<a target="_blank" style="color:red" href="sql-detail.html?sqlId=' + sqlStat.ID + '">'+sqlStat.MaxTimespan+'</a>';
 		}
 		newRow.insertCell(-1).innerHTML = lastSlowHtml;
 		newRow.insertCell(-1).innerHTML = sqlStat.InTransactionCount;

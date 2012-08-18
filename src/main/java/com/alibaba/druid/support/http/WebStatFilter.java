@@ -87,7 +87,7 @@ public class WebStatFilter implements Filter {
 
         WebRequestStat requestStat = new WebRequestStat(startNano, startMillis);
         WebRequestStat.set(requestStat);
-        
+
         WebSessionStat sessionStat = getSessionStat(httpRequest);
         webAppStat.beforeInvoke();
 
@@ -413,6 +413,9 @@ public class WebStatFilter implements Filter {
             WebRequestStat reqStat = WebRequestStat.current();
             if (reqStat != null) {
                 reqStat.addJdbcExecuteTimeNano(nanos);
+                if (error != null) {
+                    reqStat.incrementJdbcExecuteErrorCount();
+                }
             }
 
             SpringMethodStat springMethodStat = SpringMethodStat.current();

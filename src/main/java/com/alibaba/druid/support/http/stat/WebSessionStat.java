@@ -104,7 +104,7 @@ public class WebSessionStat {
     }
 
     public Date getLastAccessTime() {
-        if (lastAccessTimeMillis == -1L) {
+        if (lastAccessTimeMillis < 0L) {
             return null;
         }
 

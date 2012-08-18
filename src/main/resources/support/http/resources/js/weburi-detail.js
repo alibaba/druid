@@ -12,9 +12,11 @@ function ajaxResponseForSqlInfo() {
 	changeInnerHtml("URI", stat.URI);
 	changeInnerHtml("RequestCount", stat.RequestCount);
 	changeInnerHtml("RequestTimeMillis", stat.RequestTimeMillis);
+	changeInnerHtml("LastAccessTime", stat.LastAccessTime);
 	changeInnerHtml("RunningCount", stat.RunningCount);
 	changeInnerHtml("ConcurrentMax", stat.ConcurrentMax);
 	changeInnerHtml("JdbcExecuteCount", stat.JdbcExecuteCount);
+	changeInnerHtml("JdbcExecuteErrorCount", stat.JdbcExecuteErrorCount);
 	changeInnerHtml("JdbcExecutePeak", stat.JdbcExecutePeak);
 	changeInnerHtml("JdbcExecuteTimeMillis", stat.JdbcExecuteTimeMillis);
 	changeInnerHtml("JdbcCommitCount", stat.JdbcCommitCount);

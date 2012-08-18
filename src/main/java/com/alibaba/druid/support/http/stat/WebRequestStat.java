@@ -11,6 +11,7 @@ public class WebRequestStat {
     private long jdbcUpdateCount;
     private long jdbcFetchRowCount;
     private long jdbcExecuteNano;
+    private long jdbcExecuteErrorCount;
 
     public WebRequestStat(){
 
@@ -19,7 +20,7 @@ public class WebRequestStat {
     public WebRequestStat(long startNano){
         this.startNano = startNano;
     }
-    
+
     public WebRequestStat(long startNano, long startMillis){
         this.startNano = startNano;
         this.startMillis = startMillis;
@@ -107,4 +108,11 @@ public class WebRequestStat {
         this.jdbcRollbackCount++;
     }
 
+    public long getJdbcExecuteErrorCount() {
+        return jdbcExecuteErrorCount;
+    }
+
+    public void incrementJdbcExecuteErrorCount() {
+        jdbcExecuteErrorCount++;
+    }
 }

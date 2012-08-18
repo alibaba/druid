@@ -1,5 +1,6 @@
 package com.alibaba.druid.support.http.stat;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,25 +10,30 @@ public class WebURIStat {
 
     private final String                         uri;
 
-    private final AtomicInteger                  runningCount        = new AtomicInteger();
-    private final AtomicInteger                  concurrentMax       = new AtomicInteger();
-    private final AtomicLong                     requestCount        = new AtomicLong(0);
-    private final AtomicLong                     requestTimeNano     = new AtomicLong();
+    private final AtomicInteger                  runningCount          = new AtomicInteger();
+    private final AtomicInteger                  concurrentMax         = new AtomicInteger();
+    private final AtomicLong                     requestCount          = new AtomicLong(0);
+    private final AtomicLong                     requestTimeNano       = new AtomicLong();
 
-    private final AtomicLong                     jdbcFetchRowCount   = new AtomicLong();
-    private final AtomicLong                     jdbcFetchRowPeak    = new AtomicLong();             // 单次请求读取行数的峰值
+    private final AtomicLong                     jdbcFetchRowCount     = new AtomicLong();
+    private final AtomicLong                     jdbcFetchRowPeak      = new AtomicLong();             // 单次请求读取行数的峰值
 
-    private final AtomicLong                     jdbcUpdateCount     = new AtomicLong();
-    private final AtomicLong                     jdbcUpdatePeak      = new AtomicLong();             // 单次请求更新行数的峰值
+    private final AtomicLong                     jdbcUpdateCount       = new AtomicLong();
+    private final AtomicLong                     jdbcUpdatePeak        = new AtomicLong();             // 单次请求更新行数的峰值
 
-    private final AtomicLong                     jdbcExecuteCount    = new AtomicLong();
-    private final AtomicLong                     jdbcExecutePeak     = new AtomicLong();             // 单次请求执行SQL次数的峰值
-    private final AtomicLong                     jdbcExecuteTimeNano = new AtomicLong();
+    private final AtomicLong                     jdbcExecuteCount      = new AtomicLong();
+    private final AtomicLong                     jdbcExecuteErrorCount = new AtomicLong();
+    private final AtomicLong                     jdbcExecutePeak       = new AtomicLong();             // 单次请求执行SQL次数的峰值
+    private final AtomicLong                     jdbcExecuteTimeNano   = new AtomicLong();
 
-    private final AtomicLong                     jdbcCommitCount     = new AtomicLong();
-    private final AtomicLong                     jdbcRollbackCount   = new AtomicLong();
+    private final AtomicLong                     jdbcCommitCount       = new AtomicLong();
+    private final AtomicLong                     jdbcRollbackCount     = new AtomicLong();
 
-    private final static ThreadLocal<WebURIStat> currentLocal        = new ThreadLocal<WebURIStat>();
+    private final AtomicLong                     errorCount            = new AtomicLong();
+
+    private volatile long                        lastAccessTimeMillis  = -1L;
+
+    private final static ThreadLocal<WebURIStat> currentLocal          = new ThreadLocal<WebURIStat>();
 
     public WebURIStat(String uri){
         super();
@@ -61,11 +67,20 @@ public class WebURIStat {
         }
 
         requestCount.incrementAndGet();
+
+        WebRequestStat requestStat = WebRequestStat.current();
+        if (requestStat != null) {
+            this.setLastAccessTimeMillis(requestStat.getStartMillis());
+        }
     }
 
     public void afterInvoke(Throwable error, long nanos) {
         runningCount.decrementAndGet();
         requestTimeNano.addAndGet(nanos);
+
+        if (error != null) {
+            errorCount.incrementAndGet();
+        }
 
         {
             WebRequestStat localStat = WebRequestStat.current();
@@ -113,6 +128,13 @@ public class WebURIStat {
                         if (jdbcUpdatePeak.compareAndSet(peak, updateCount)) {
                             break;
                         }
+                    }
+                }
+
+                {
+                    long jdbcExecuteErrorCount = localStat.getJdbcExecuteErrorCount();
+                    if (jdbcExecuteErrorCount > 0) {
+                        this.jdbcExecuteErrorCount.addAndGet(jdbcExecuteErrorCount);
                     }
                 }
             }
@@ -168,13 +190,17 @@ public class WebURIStat {
     public void incrementJdbcExecuteCount() {
         jdbcExecuteCount.incrementAndGet();
     }
-    
+
     public void addJdbcExecuteCount(long executeCount) {
         jdbcExecuteCount.addAndGet(executeCount);
     }
 
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount.get();
+    }
+
+    public AtomicLong getJdbcExecuteErrorCount() {
+        return jdbcExecuteErrorCount;
     }
 
     public long getJdbcExecutePeak() {
@@ -205,6 +231,26 @@ public class WebURIStat {
         return jdbcRollbackCount.get();
     }
 
+    public void setLastAccessTimeMillis(long lastAccessTimeMillis) {
+        this.lastAccessTimeMillis = lastAccessTimeMillis;
+    }
+
+    public Date getLastAccessTime() {
+        if (lastAccessTimeMillis < 0L) {
+            return null;
+        }
+
+        return new Date(lastAccessTimeMillis);
+    }
+
+    public long getLastAccessTimeMillis() {
+        return lastAccessTimeMillis;
+    }
+
+    public long getErrorCount() {
+        return errorCount.get();
+    }
+
     public Map<String, Object> getStatData() {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
 
@@ -213,11 +259,14 @@ public class WebURIStat {
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
         data.put("RequestTimeMillis", this.getRequestTimeMillis());
+        data.put("ErrorCount", this.getErrorCount());
+        data.put("LastAccessTime", this.getLastAccessTime());
 
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
 
         data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
+        data.put("JdbcExecuteErrorCount", this.getJdbcExecuteErrorCount());
         data.put("JdbcExecutePeak", this.getJdbcExecutePeak());
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
 
