@@ -96,7 +96,7 @@ function ajaxResponseForDataSourceSqlStatInfo() {
 		var sqlStat = sqlStatList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sqlDetail.html?sqlId=' + sqlStat.ID + '">' + subSqlString(sqlStat.SQL, 25) + '</a>';
+		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="sql-detail.html?sqlId=' + sqlStat.ID + '">' + subSqlString(sqlStat.SQL, 25) + '</a>';
 		// if (sqlStat.File)
 		// newRow.insertCell(-1).innerHTML = sqlStat.File;
 		// else
