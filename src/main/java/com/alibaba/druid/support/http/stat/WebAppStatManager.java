@@ -78,6 +78,19 @@ public class WebAppStatManager {
         
         return null;
     }
+    
+    public Map<String, Object> getURIStatData(String uri) {
+        Set<Object> stats = getWebAppStatSet();
+        
+        for (Object stat : stats) {
+            Map<String, Object> statData = WebAppStatUtils.getURIStatData(stat, uri);
+            if (statData != null) {
+                return statData;
+            }
+        }
+        
+        return null;
+    }
 
     public void addWebAppStatSet(Object webAppStat) {
         getWebAppStatSet().add(webAppStat);

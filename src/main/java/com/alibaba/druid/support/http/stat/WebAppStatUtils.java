@@ -74,6 +74,22 @@ public class WebAppStatUtils {
             return null;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getURIStatData(Object webStat, String uri) {
+        if (webStat.getClass() == WebAppStat.class) {
+            return ((WebAppStat) webStat).getURIStatData(uri);
+        }
+        
+        try {
+            Method method = webStat.getClass().getMethod("getURIStatData", String.class);
+            Object obj = method.invoke(webStat);
+            return (Map<String, Object>) obj;
+        } catch (Exception e) {
+            LOG.error("getURIStatData error", e);
+            return null;
+        }
+    }
 
     public static void reset(Object webStat) {
         if (webStat.getClass() == WebAppStat.class) {

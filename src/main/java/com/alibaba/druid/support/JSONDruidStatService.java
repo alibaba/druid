@@ -100,6 +100,11 @@ public class JSONDruidStatService {
         if (url.startsWith("/weburi.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatDataList(parameters));
         }
+        
+        if (url.startsWith("/weburi-") && url.indexOf(".json") > 0) {
+            String uri = StringUtils.subString(url, "weburi-", ".json");
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatData(uri));
+        }
 
         if (url.startsWith("/websession.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
@@ -107,7 +112,7 @@ public class JSONDruidStatService {
 
         if (url.startsWith("/websession-") && url.indexOf(".json") > 0) {
             String id = StringUtils.subString(url, "websession-", ".json");
-            return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionDetail(id));
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatData(id));
         }
 
         if (url.startsWith("/spring.json")) {
@@ -126,8 +131,12 @@ public class JSONDruidStatService {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
         return comparatorOrderBy(array, parameters);
     }
+    
+    private Map<String, Object> getWebURIStatData(String uri) {
+        return WebAppStatManager.getInstance().getURIStatData(uri);
+    }
 
-    private Map<String, Object> getWebSessionDetail(String sessionId) {
+    private Map<String, Object> getWebSessionStatData(String sessionId) {
         return WebAppStatManager.getInstance().getSessionStat(sessionId);
     }
 

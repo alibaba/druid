@@ -147,7 +147,17 @@ public class WebAppStat {
     }
     
     public Map<String, Object> getSessionStatData(String sessionId) {
-        WebSessionStat uriStat = sessionStatMap.get(sessionId);
+        WebSessionStat sessionStat = sessionStatMap.get(sessionId);
+        
+        if (sessionStat == null) {
+            return null;
+        }
+        
+        return sessionStat.getStatData();
+    }
+    
+    public Map<String, Object> getURIStatData(String uri) {
+        WebURIStat uriStat = getURIStat(uri);
         
         if (uriStat == null) {
             return null;

@@ -1,4 +1,3 @@
-
 var xmlHttpForDataSourceSqlStatInfo;
 
 var sqlViewOrderBy = '';
@@ -75,8 +74,9 @@ function getSqlViewJsonUrl() {
 }
 
 function ajaxRequestForDataSourceSqlStatInfo() {
-	xmlHttpForDataSourceSqlStatInfo =  getRequestObject();
-	sendRequest(xmlHttpForDataSourceSqlStatInfo,getSqlViewJsonUrl(),ajaxResponseForDataSourceSqlStatInfo)
+	xmlHttpForDataSourceSqlStatInfo = getRequestObject();
+	sendRequest(xmlHttpForDataSourceSqlStatInfo, getSqlViewJsonUrl(),
+			ajaxResponse)
 }
 
 function subSqlString(sql, len) {
@@ -84,28 +84,32 @@ function subSqlString(sql, len) {
 		return sql;
 	return sql.substr(0, len) + '...';
 }
-function ajaxResponseForDataSourceSqlStatInfo() {
-	var sqlStatList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
-	if(sqlStatList==null) return;
-	
+
+function ajaxResponse() {
+	var statList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
+	if (statList == null)
+		return;
+
 	var sqlStatTable = document.getElementById("WebUriStatTable");
 	while (sqlStatTable.rows.length > 1) {
 		sqlStatTable.deleteRow(1);
 	}
-	for ( var i = 0; i < sqlStatList.length; i++) {
-		var sqlStat = sqlStatList[i];
+
+	for ( var i = 0; i < statList.length; i++) {
+		var stat = statList[i];
 		var newRow = sqlStatTable.insertRow(-1);
-		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = subSqlString(sqlStat.URI, 64);
-		newRow.insertCell(-1).innerHTML = sqlStat.RequestCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.RequestTimeMillis;
-		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteTimeMillis;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcCommitCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcRollbackCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcFetchRowCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcUpdateCount;
+		newRow.insertCell(-1).innerHTML = i + 1;
+		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="weburi-detail.html?uri='
+				+ encodeURI(stat.URI) + '">' + subSqlString(stat.URI, 64) + '</a>';
+		newRow.insertCell(-1).innerHTML = stat.RequestCount;
+		newRow.insertCell(-1).innerHTML = stat.RequestTimeMillis;
+		newRow.insertCell(-1).innerHTML = stat.RunningCount;
+		newRow.insertCell(-1).innerHTML = stat.ConcurrentMax;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteTimeMillis;
+		newRow.insertCell(-1).innerHTML = stat.JdbcCommitCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcRollbackCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcFetchRowCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcUpdateCount;
 	}
 }
