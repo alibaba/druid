@@ -19,6 +19,7 @@ function ajaxResponseForSqlInfo() {
 	changeInnerHtml("RemoteAddress", stat.RemoteAddress);
 	changeInnerHtml("RequestCount", stat.RequestCount);
 	changeInnerHtml("RequestTimeMillisTotal", stat.RequestTimeMillisTotal);
+	changeInnerHtml("RequestInterval", '[' + stat.RequestInterval + ']');
 	changeInnerHtml("RunningCount", stat.RunningCount);
 	changeInnerHtml("ConcurrentMax", stat.ConcurrentMax);
 	changeInnerHtml("JdbcExecuteCount", stat.JdbcExecuteCount);

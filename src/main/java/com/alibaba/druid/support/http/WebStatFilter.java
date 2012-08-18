@@ -89,10 +89,6 @@ public class WebStatFilter implements Filter {
         WebRequestStat.set(requestStat);
         
         WebSessionStat sessionStat = getSessionStat(httpRequest);
-        if (sessionStat != null) {
-            sessionStat.beforeInvoke();
-        }
-        
         webAppStat.beforeInvoke();
 
         WebURIStat uriStat = webAppStat.getURIStat(requestURI, false);

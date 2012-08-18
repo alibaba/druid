@@ -8,32 +8,36 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.alibaba.druid.util.Histogram;
+
 public class WebSessionStat {
 
     private final String        sessionId;
 
-    private final AtomicInteger runningCount         = new AtomicInteger();
-    private final AtomicInteger concurrentMax        = new AtomicInteger();
-    private final AtomicLong    requestCount         = new AtomicLong(0);
-    private final AtomicLong    requestErrorCount    = new AtomicLong(0);
-    private final AtomicLong    requestTimeNano      = new AtomicLong();
+    private final AtomicInteger runningCount             = new AtomicInteger();
+    private final AtomicInteger concurrentMax            = new AtomicInteger();
+    private final AtomicLong    requestCount             = new AtomicLong(0);
+    private final AtomicLong    requestErrorCount        = new AtomicLong(0);
+    private final AtomicLong    requestTimeNano          = new AtomicLong();
 
-    private final AtomicLong    jdbcFetchRowCount    = new AtomicLong();
-    private final AtomicLong    jdbcUpdateCount      = new AtomicLong();
-    private final AtomicLong    jdbcExecuteCount     = new AtomicLong();
-    private final AtomicLong    jdbcExecuteTimeNano  = new AtomicLong();
+    private final AtomicLong    jdbcFetchRowCount        = new AtomicLong();
+    private final AtomicLong    jdbcUpdateCount          = new AtomicLong();
+    private final AtomicLong    jdbcExecuteCount         = new AtomicLong();
+    private final AtomicLong    jdbcExecuteTimeNano      = new AtomicLong();
 
-    private final AtomicLong    jdbcCommitCount      = new AtomicLong();
-    private final AtomicLong    jdbcRollbackCount    = new AtomicLong();
+    private final AtomicLong    jdbcCommitCount          = new AtomicLong();
+    private final AtomicLong    jdbcRollbackCount        = new AtomicLong();
 
-    private long                createTimeMillis     = -1L;
-    private long                lastAccessTimeMillis = -1L;
+    private long                createTimeMillis         = -1L;
+    private volatile long       lastAccessTimeMillis     = -1L;
 
-    private Set<String>         remoteAddresses      = new HashSet<String>();
+    private Set<String>         remoteAddresses          = new HashSet<String>();
 
-    private String              principal            = null;
+    private String     principal                = null;
 
     private String              userAgent;
+
+    private Histogram           requestIntervalHistogram = Histogram.makeHistogram(8);
 
     public WebSessionStat(String sessionId){
         super();
@@ -55,6 +59,8 @@ public class WebSessionStat {
 
         remoteAddresses.clear();
         principal = null;
+
+        requestIntervalHistogram.reset();
     }
 
     public String getUserAgent() {
@@ -130,6 +136,10 @@ public class WebSessionStat {
     }
 
     public void setLastAccessTimeMillis(long lastAccessTimeMillis) {
+        if (this.lastAccessTimeMillis > 0) {
+            long interval = lastAccessTimeMillis - this.lastAccessTimeMillis;
+            requestIntervalHistogram.record(interval);
+        }
         this.lastAccessTimeMillis = lastAccessTimeMillis;
     }
 
@@ -150,7 +160,7 @@ public class WebSessionStat {
         }
 
         incrementRequestCount();
-        
+
         WebRequestStat requestStat = WebRequestStat.current();
         if (requestStat != null) {
             this.setLastAccessTimeMillis(requestStat.getStartMillis());
@@ -161,9 +171,9 @@ public class WebSessionStat {
         requestCount.incrementAndGet();
     }
 
-    public void afterInvoke(Throwable error, long nanoSpan) {
+    public void afterInvoke(Throwable error, long nanos) {
         runningCount.decrementAndGet();
-        reacord(nanoSpan);
+        reacord(nanos);
     }
 
     public void reacord(long nanos) {
@@ -272,6 +282,10 @@ public class WebSessionStat {
         this.jdbcRollbackCount.addAndGet(rollbackCount);
     }
 
+    public long[] getRequestInterval() {
+        return requestIntervalHistogram.toArray();
+    }
+
     public Map<String, Object> getStatData() {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
 
@@ -293,8 +307,9 @@ public class WebSessionStat {
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
-        
+
         data.put("UserAgent", this.getUserAgent());
+        data.put("RequestInterval", this.getRequestInterval());
 
         return data;
     }

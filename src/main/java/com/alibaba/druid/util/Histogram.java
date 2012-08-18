@@ -30,6 +30,16 @@ public class Histogram {
             rangeCounters[i] = new AtomicLong();
         }
     }
+    
+    public static Histogram makeHistogram(int rangeCount) {
+        long[] rangeValues = new long[rangeCount];
+        
+        for (int i = 0; i < rangeValues.length; ++i) {
+            rangeValues[i] = (long) Math.pow(10, i);
+        }
+        
+        return new Histogram(rangeValues);
+    }
 
     public Histogram(TimeUnit timeUnit, long... ranges){
         this.ranges = new long[ranges.length];
