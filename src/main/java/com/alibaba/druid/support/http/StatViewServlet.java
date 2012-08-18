@@ -1,9 +1,8 @@
 package com.alibaba.druid.support.http;
 
-import com.alibaba.druid.util.IpUtils;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.druid.support.JSONDruidStatService;
+import com.alibaba.druid.support.http.util.IPAddress;
+import com.alibaba.druid.support.http.util.IPRange;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 
 /**
@@ -20,43 +23,110 @@ import com.alibaba.druid.util.IOUtils;
  */
 public class StatViewServlet extends HttpServlet {
 
-    /**
-     * 
-     */
-    private static final long             serialVersionUID            = 1L;
+    private final static Log     LOG                         = LogFactory.getLog(StatViewServlet.class);
 
-    private final static String           RESOURCE_PATH               = "support/http/resources";
-    private final static String           TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
+    private static final long    serialVersionUID            = 1L;
 
-    private static JSONDruidStatService   jsonDruidStatService        = JSONDruidStatService.getInstance();
+    public static final String   PARAM_NAME_RESET_ENABLE     = "resetEnable";
+    public static final String   PARAM_NAME_ALLOW            = "allow";
+    public static final String   PARAM_NAME_DENY             = "deny";
 
-    public String                         templatePage;
-   
+    private final static String  RESOURCE_PATH               = "support/http/resources";
+    private final static String  TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
 
-    private String                        permittedIp;
-    private Pattern                       ipCheckPattern;
+    private JSONDruidStatService statService                 = JSONDruidStatService.getInstance();
+
+    public String                templatePage;
+
+    private List<IPRange>        allowList                   = new ArrayList<IPRange>();
+    private List<IPRange>        denyList                    = new ArrayList<IPRange>();
 
     public void init() throws ServletException {
         try {
             templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
-            
+
         } catch (IOException e) {
             throw new ServletException("error read templatePage:" + TEMPLATE_PAGE_RESOURCE_PATH, e);
         }
-        permittedIp = getServletConfig().getInitParameter("permittedIp");
-        if (permittedIp != null ) {
-            this.ipCheckPattern = IpUtils.buildIpCheckPattern(permittedIp);
+
+        try {
+            String param = getInitParameter(PARAM_NAME_RESET_ENABLE);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                boolean resetEnable = Boolean.parseBoolean(param);
+                statService.setResetEnable(resetEnable);
+            }
+        } catch (Exception e) {
+            String msg = "initParameter config error, resetEnable : " + getInitParameter(PARAM_NAME_RESET_ENABLE);
+            LOG.error(msg, e);
+        }
+
+        try {
+            String param = getInitParameter(PARAM_NAME_ALLOW);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                String[] items = param.split(",");
+
+                for (String item : items) {
+                    if (item == null || item.length() == 0) {
+                        continue;
+                    }
+
+                    IPRange ipRange = new IPRange(item);
+                    allowList.add(ipRange);
+                }
+            }
+        } catch (Exception e) {
+            String msg = "initParameter config error, allow : " + getInitParameter(PARAM_NAME_ALLOW);
+            LOG.error(msg, e);
+        }
+
+        try {
+            String param = getInitParameter(PARAM_NAME_DENY);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                String[] items = param.split(",");
+
+                for (String item : items) {
+                    if (item == null || item.length() == 0) {
+                        continue;
+                    }
+
+                    IPRange ipRange = new IPRange(item);
+                    denyList.add(ipRange);
+                }
+            }
+        } catch (Exception e) {
+            String msg = "initParameter config error, deny : " + getInitParameter(PARAM_NAME_DENY);
+            LOG.error(msg, e);
         }
     }
 
-    private boolean isPermittedRequest(HttpServletRequest request) {
-        //if nothing is configured, every host can access the stat result(default)
-        if (permittedIp == null || permittedIp.trim().equals("")) {
-            return true;
+    public boolean isPermittedRequest(HttpServletRequest request) {
+        String remoteAddress = request.getRemoteAddr();
+        return isPermittedRequest(remoteAddress);
+    }
+
+    public boolean isPermittedRequest(String remoteAddress) {
+        IPAddress ipAddress = new IPAddress(remoteAddress);
+
+        for (IPRange range : denyList) {
+            if (range.isIPAddressInRange(ipAddress)) {
+                return false;
+            }
         }
-        String remoteIp = request.getRemoteAddr();
-        Matcher matcher =  ipCheckPattern.matcher(remoteIp);
-        return matcher.matches();
+
+        if (allowList.size() > 0) {
+            for (IPRange range : allowList) {
+                if (range.isIPAddressInRange(ipAddress)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,8 +135,6 @@ public class StatViewServlet extends HttpServlet {
         String requestURI = request.getRequestURI();
 
         response.setCharacterEncoding("utf-8");
-
-        
 
         if (contextPath == null) { // root context
             contextPath = "";
@@ -79,7 +147,7 @@ public class StatViewServlet extends HttpServlet {
             returnResourceFile(path, uri, response);
             return;
         }
-        
+
         if ("".equals(path)) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/druid/index.html");
@@ -99,18 +167,18 @@ public class StatViewServlet extends HttpServlet {
             if (request.getQueryString() != null && request.getQueryString().length() > 0) {
                 fullUrl += "?" + request.getQueryString();
             }
-            response.getWriter().print(jsonDruidStatService.service(fullUrl));
+            response.getWriter().print(statService.service(fullUrl));
             return;
         }
-        
+
         // find file in resources path
         returnResourceFile(path, uri, response);
     }
 
-    
-    private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException, IOException {
+    private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
+                                                                                              IOException {
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
-        if(text == null) {
+        if (text == null) {
             response.sendRedirect(uri + "/index.html");
             return;
         }

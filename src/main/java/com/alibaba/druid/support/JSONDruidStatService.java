@@ -27,7 +27,7 @@ public class JSONDruidStatService {
 
     private final static JSONDruidStatService instance               = new JSONDruidStatService();
 
-    private static DruidStatManagerFacade     druidStatManager       = DruidStatManagerFacade.getInstance();
+    private static DruidStatManagerFacade     statManagerFacade       = DruidStatManagerFacade.getInstance();
 
     public final static int                   RESULT_CODE_SUCCESS    = 1;
     public final static int                   RESULT_CODE_ERROR      = -1;
@@ -44,35 +44,43 @@ public class JSONDruidStatService {
         return instance;
     }
 
+    public boolean isResetEnable() {
+        return statManagerFacade.isResetEnable();
+    }
+
+    public void setResetEnable(boolean value) {
+        statManagerFacade.setResetEnable(value);
+    }
+
     public String service(String url) {
 
         Map<String, String> parameters = StringUtils.getParameters(url);
 
         if (url.equals("/basic.json")) {
-            return returnJSONResult(RESULT_CODE_SUCCESS, druidStatManager.returnJSONBasicStat());
+            return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.returnJSONBasicStat());
         }
 
         if (url.equals("/reset-all.json")) {
-            druidStatManager.resetAll();
+            statManagerFacade.resetAll();
             SpringStatManager.getInstance().resetStat();
             WebAppStatManager.getInstance().resetStat();
-            
+
             return returnJSONResult(RESULT_CODE_SUCCESS, null);
         }
 
         if (url.equals("/datasource.json")) {
-            return returnJSONResult(RESULT_CODE_SUCCESS, druidStatManager.getDataSourceStatList());
+            return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getDataSourceStatList());
         }
 
         if (url.startsWith("/datasource-")) {
             Integer id = StringUtils.subStringToInteger(url, "datasource-", ".");
-            Object result = druidStatManager.getDataSourceStatData(id);
+            Object result = statManagerFacade.getDataSourceStatData(id);
             return returnJSONResult(result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
         }
 
         if (url.startsWith("/connectionInfo-") && url.endsWith(".json")) {
             Integer id = StringUtils.subStringToInteger(url, "connectionInfo-", ".");
-            List<?> connectionInfoList = druidStatManager.getPoolingConnectionInfoByDataSourceId(id);
+            List<?> connectionInfoList = statManagerFacade.getPoolingConnectionInfoByDataSourceId(id);
             return returnJSONResult(connectionInfoList == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS,
                                     connectionInfoList);
         }
@@ -90,38 +98,38 @@ public class JSONDruidStatService {
             Integer id = StringUtils.subStringToInteger(url, "sql-", ".json");
             return returnJSONSqlInfo(id);
         }
-        
+
         if (url.startsWith("/weburi.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/websession.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/spring.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSpringStatDataList(parameters));
         }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
     }
-    
+
     private List<Map<String, Object>> getSpringStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = SpringStatManager.getInstance().getMethodStatData();
-        return comparatorOrderBy(array, parameters);    
+        return comparatorOrderBy(array, parameters);
     }
-    
+
     private List<Map<String, Object>> getWebURIStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
-        return comparatorOrderBy(array, parameters);    
+        return comparatorOrderBy(array, parameters);
     }
-    
+
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
         return array;
     }
-    
-    private List<Map<String,Object>> comparatorOrderBy(List<Map<String, Object>> array,Map<String, String> parameters){
+
+    private List<Map<String, Object>> comparatorOrderBy(List<Map<String, Object>> array, Map<String, String> parameters) {
         // when open the stat page before executing some sql
         if (array == null || array.isEmpty()) return null;
 
@@ -160,20 +168,20 @@ public class JSONDruidStatService {
 
         return array.subList(fromIndex, toIndex);
     }
-    
+
     private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
-        List<Map<String, Object>> array = druidStatManager.getSqlStatDataList();
+        List<Map<String, Object>> array = statManagerFacade.getSqlStatDataList();
         return comparatorOrderBy(array, parameters);
     }
 
     private String returnJSONSqlInfo(Integer id) {
-        Map<String,Object> map = druidStatManager.getSqlStatData(id);
+        Map<String, Object> map = statManagerFacade.getSqlStatData(id);
         if (map == null) {
-	        return returnJSONResult(RESULT_CODE_ERROR , null);
+            return returnJSONResult(RESULT_CODE_ERROR, null);
         }
-        map.put("formattedSql",SQLUtils.format((String) map.get("SQL"),(String) map.get("DbType")));
+        map.put("formattedSql", SQLUtils.format((String) map.get("SQL"), (String) map.get("DbType")));
         List<SQLStatement> statementList = SQLUtils.parseStatements((String) map.get("SQL"), (String) map.get("DbType"));
-    
+
         if (!statementList.isEmpty()) {
             SQLStatement statemen = statementList.get(0);
             SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, (String) map.get("DbType"));
@@ -184,17 +192,17 @@ public class JSONDruidStatService {
             map.put("parsedRelationships", visitor.getRelationships().toString());
             map.put("parsedOrderbycolumns", visitor.getOrderByColumns().toString());
         }
-        
-	    DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
-	    Date maxTimespanOccurTime = (Date)map.get("MaxTimespanOccurTime");
-	    if (maxTimespanOccurTime != null) {
-		    map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
-	    }
+
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss:SSS");
+        Date maxTimespanOccurTime = (Date) map.get("MaxTimespanOccurTime");
+        if (maxTimespanOccurTime != null) {
+            map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
+        }
         return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
     }
 
     private String returnJSONActiveConnectionStackTrace(Integer id) {
-        List<String> result = druidStatManager.getActiveConnectionStackTraceByDataSourceId(id);
+        List<String> result = statManagerFacade.getActiveConnectionStackTraceByDataSourceId(id);
 
         if (result == null) {
             return returnJSONResult(RESULT_CODE_ERROR, "require set removeAbandoned=true");

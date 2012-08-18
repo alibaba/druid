@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.util.DruidDataSourceUtils;
@@ -25,7 +26,9 @@ import com.alibaba.druid.util.JdbcSqlStatUtils;
  */
 public class DruidStatManagerFacade {
 
-    private final static DruidStatManagerFacade instance = new DruidStatManagerFacade();
+    private final static DruidStatManagerFacade instance    = new DruidStatManagerFacade();
+    private boolean                             resetEnable = true;
+    private final AtomicLong                    resetCount  = new AtomicLong();
 
     private DruidStatManagerFacade(){
     }
@@ -49,6 +52,15 @@ public class DruidStatManagerFacade {
     public void resetAll() {
         resetSqlStat();
         resetDataSourceStat();
+        resetCount.incrementAndGet();
+    }
+
+    public boolean isResetEnable() {
+        return resetEnable;
+    }
+
+    public void setResetEnable(boolean resetEnable) {
+        this.resetEnable = resetEnable;
     }
 
     public Object getSqlStatById(Integer id) {
@@ -129,7 +141,13 @@ public class DruidStatManagerFacade {
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("Version", VERSION.getVersionNumber());
         dataMap.put("Drivers", getDriversData());
+        dataMap.put("ResetEnable", isResetEnable());
+        dataMap.put("ResetCount", getResetCount());
         return dataMap;
+    }
+
+    public long getResetCount() {
+        return resetCount.get();
     }
 
     private List<String> getDriversData() {

@@ -20,4 +20,7 @@ function ajaxResponseForBasicInfo() {
 		}
 		document.getElementById("DruidDrivers").innerHTML = driverHtml;
 	}
+
+	document.getElementById("ResetEnable").innerHTML = jsonContent.ResetEnable;
+	document.getElementById("ResetCount").innerHTML = jsonContent.ResetCount;
 }
