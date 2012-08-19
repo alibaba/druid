@@ -152,7 +152,7 @@ public class DruidStatJSONService {
 
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
-        return array;
+        return comparatorOrderBy(array, parameters);
     }
 
     private List<Map<String, Object>> comparatorOrderBy(List<Map<String, Object>> array, Map<String, String> parameters) {
