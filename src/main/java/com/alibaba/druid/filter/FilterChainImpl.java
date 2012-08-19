@@ -972,6 +972,10 @@ public class FilterChainImpl implements FilterChain {
 
         Object obj = resultSet.getResultSetRaw().getObject(columnIndex);
 
+        if (obj instanceof ResultSet) {
+            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+        }
+
         if (obj instanceof Clob) {
             return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
         }
@@ -986,6 +990,10 @@ public class FilterChainImpl implements FilterChain {
         }
 
         Object obj = resultSet.getResultSetRaw().getObject(columnLabel);
+
+        if (obj instanceof ResultSet) {
+            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+        }
 
         if (obj instanceof Clob) {
             return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
@@ -1640,6 +1648,10 @@ public class FilterChainImpl implements FilterChain {
 
         Object obj = resultSet.getResultSetRaw().getObject(columnIndex, map);
 
+        if (obj instanceof ResultSet) {
+            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+        }
+
         if (obj instanceof Clob) {
             return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
         }
@@ -1691,8 +1703,12 @@ public class FilterChainImpl implements FilterChain {
         if (this.pos < filterSize) {
             return nextFilter().resultSet_getObject(this, resultSet, columnLabel, map);
         }
-        
+
         Object obj = resultSet.getResultSetRaw().getObject(columnLabel, map);
+
+        if (obj instanceof ResultSet) {
+            return wrap(resultSet.getStatementProxy(), (ResultSet) obj);
+        }
 
         if (obj instanceof Clob) {
             return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
@@ -3416,7 +3432,7 @@ public class FilterChainImpl implements FilterChain {
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         if (obj instanceof Clob) {
             return wrap(statement.getConnectionProxy(), (Clob) obj);
         }
@@ -3436,7 +3452,7 @@ public class FilterChainImpl implements FilterChain {
         if (obj instanceof ResultSet) {
             return wrap(statement, (ResultSet) obj);
         }
-        
+
         if (obj instanceof Clob) {
             return wrap(statement.getConnectionProxy(), (Clob) obj);
         }
@@ -4458,7 +4474,7 @@ public class FilterChainImpl implements FilterChain {
         if (clob == null) {
             return null;
         }
-        
+
         if (clob instanceof NClob) {
             return wrap(connection, (NClob) clob);
         }
