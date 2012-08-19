@@ -110,10 +110,16 @@ public class StatFilterContext {
     }
 
     public void clob_open() {
-
+        for (int i = 0; i < listeners.size(); ++i) {
+            StatFilterContextListener listener = listeners.get(i);
+            listener.clob_open();
+        }
     }
 
-    public void clobFree() {
-
+    public void clob_free() {
+        for (int i = 0; i < listeners.size(); ++i) {
+            StatFilterContextListener listener = listeners.get(i);
+            listener.clob_free();
+        }
     }
 }

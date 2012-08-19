@@ -25,4 +25,8 @@ public interface StatFilterContextListener {
     void resultSet_open();
     
     void resultSet_close(long nanos);
+    
+    void clob_open();
+    
+    void clob_free();
 }

@@ -822,6 +822,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, ClobProxy clob) {
         dataSourceStat.incrementClobOpenCount();
+
+        StatFilterContext.getInstance().clob_open();
     }
 
     @Override
@@ -830,6 +832,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.incrementClobFreeCount();
+
+        StatFilterContext.getInstance().clob_free();
     }
 
 }
