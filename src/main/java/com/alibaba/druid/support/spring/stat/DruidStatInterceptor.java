@@ -5,24 +5,36 @@ import java.lang.reflect.Method;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.TargetSource;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.alibaba.druid.filter.stat.StatFilterContext;
+import com.alibaba.druid.filter.stat.StatFilterContextListenerAdapter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
-public class DruidStatInterceptor implements MethodInterceptor, InitializingBean {
+public class DruidStatInterceptor implements MethodInterceptor, InitializingBean, DisposableBean {
 
-    private final static Log  LOG        = LogFactory.getLog(DruidStatInterceptor.class);
+    private final static Log            LOG                 = LogFactory.getLog(DruidStatInterceptor.class);
 
-    private static SpringStat springStat = new SpringStat();
-    
-    public DruidStatInterceptor() {
-        
+    private static SpringStat           springStat          = new SpringStat();
+
+    private SpringMethodContextListener statContextlistener = new SpringMethodContextListener();
+
+    public DruidStatInterceptor(){
+
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         SpringStatManager.getInstance().addSpringStat(springStat);
+
+        StatFilterContext.getInstance().addContextListener(statContextlistener);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        StatFilterContext.getInstance().removeContextListener(statContextlistener);
     }
 
     @Override
@@ -55,7 +67,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
             if (methodStat != null) {
                 methodStat.afterInvoke(error, nanos);
             }
-            
+
             SpringMethodStat.setCurrent(lastMethodStat);
         }
     }
@@ -124,5 +136,91 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
         }
 
         return new SpringMethodInfo(clazz, method);
+    }
+
+    class SpringMethodContextListener extends StatFilterContextListenerAdapter {
+
+        @Override
+        public void addUpdateCount(int updateCount) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcUpdateCount(updateCount);
+            }
+        }
+
+        @Override
+        public void addFetchRowCount(int fetchRowCount) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcFetchRowCount(fetchRowCount);
+            }
+        }
+
+        @Override
+        public void executeBefore(String sql, boolean inTransaction) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcExecuteCount();
+            }
+        }
+
+        @Override
+        public void executeAfter(String sql, long nanos, Throwable error) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.addJdbcExecuteTimeNano(nanos);
+                if (error != null) {
+                    springMethodStat.incrementJdbcExecuteErrorCount();
+                }
+            }
+        }
+
+        @Override
+        public void commit() {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcCommitCount();
+            }
+        }
+
+        @Override
+        public void rollback() {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcRollbackCount();
+            }
+        }
+
+        @Override
+        public void pool_connect() {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcPoolConnectionOpenCount();
+            }
+        }
+
+        @Override
+        public void pool_close(long nanos) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcPoolConnectionOpenCount();
+            }
+        }
+
+        @Override
+        public void resultSet_open() {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcResultSetOpenCount();
+            }
+        }
+
+        @Override
+        public void resultSet_close(long nanos) {
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcResultSetCloseCount();
+            }
+        }
     }
 }

@@ -27,7 +27,6 @@ import com.alibaba.druid.support.http.stat.WebSessionStat;
 import com.alibaba.druid.support.http.stat.WebURIStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.support.spring.stat.SpringMethodStat;
 import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
@@ -375,11 +374,6 @@ public class WebStatFilter implements Filter {
             if (reqStat != null) {
                 reqStat.addJdbcUpdateCount(updateCount);
             }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.addJdbcUpdateCount(updateCount);
-            }
         }
 
         @Override
@@ -388,11 +382,6 @@ public class WebStatFilter implements Filter {
             if (reqStat != null) {
                 reqStat.addJdbcFetchRowCount(fetchRowCount);
             }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.addJdbcFetchRowCount(fetchRowCount);
-            }
         }
 
         @Override
@@ -400,11 +389,6 @@ public class WebStatFilter implements Filter {
             WebRequestStat reqStat = WebRequestStat.current();
             if (reqStat != null) {
                 reqStat.incrementJdbcExecuteCount();
-            }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.incrementJdbcExecuteCount();
             }
         }
 
@@ -417,14 +401,6 @@ public class WebStatFilter implements Filter {
                     reqStat.incrementJdbcExecuteErrorCount();
                 }
             }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.addJdbcExecuteTimeNano(nanos);
-                if (error != null) {
-                    springMethodStat.incrementJdbcExecuteErrorCount();
-                }
-            }
         }
 
         @Override
@@ -432,11 +408,6 @@ public class WebStatFilter implements Filter {
             WebRequestStat reqStat = WebRequestStat.current();
             if (reqStat != null) {
                 reqStat.incrementJdbcCommitCount();
-            }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.incrementJdbcCommitCount();
             }
         }
 
@@ -446,11 +417,6 @@ public class WebStatFilter implements Filter {
             if (reqStat != null) {
                 reqStat.incrementJdbcRollbackCount();
             }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.incrementJdbcRollbackCount();
-            }
         }
 
         @Override
@@ -459,11 +425,6 @@ public class WebStatFilter implements Filter {
             if (reqStat != null) {
                 reqStat.incrementJdbcPoolConnectCount();
             }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.incrementJdbcPoolConnectionOpenCount();
-            }
         }
 
         @Override
@@ -471,11 +432,6 @@ public class WebStatFilter implements Filter {
             WebRequestStat reqStat = WebRequestStat.current();
             if (reqStat != null) {
                 reqStat.incrementJdbcPoolCloseCount();
-            }
-
-            SpringMethodStat springMethodStat = SpringMethodStat.current();
-            if (springMethodStat != null) {
-                springMethodStat.incrementJdbcPoolConnectionOpenCount();
             }
         }
 

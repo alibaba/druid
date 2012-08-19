@@ -8,27 +8,30 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class SpringMethodStat {
 
-    private final static ThreadLocal<SpringMethodStat> currentLocal          = new ThreadLocal<SpringMethodStat>();
+    private final static ThreadLocal<SpringMethodStat> currentLocal                 = new ThreadLocal<SpringMethodStat>();
 
     private final SpringMethodInfo                     methodInfo;
 
-    private final AtomicInteger                        runningCount          = new AtomicInteger();
-    private final AtomicInteger                        concurrentMax         = new AtomicInteger();
-    private final AtomicLong                           executeCount          = new AtomicLong(0);
-    private final AtomicLong                           executeErrorCount     = new AtomicLong(0);
-    private final AtomicLong                           executeTimeNano       = new AtomicLong();
+    private final AtomicInteger                        runningCount                 = new AtomicInteger();
+    private final AtomicInteger                        concurrentMax                = new AtomicInteger();
+    private final AtomicLong                           executeCount                 = new AtomicLong(0);
+    private final AtomicLong                           executeErrorCount            = new AtomicLong(0);
+    private final AtomicLong                           executeTimeNano              = new AtomicLong();
 
-    private final AtomicLong                           jdbcFetchRowCount     = new AtomicLong();
-    private final AtomicLong                           jdbcUpdateCount       = new AtomicLong();
-    private final AtomicLong                           jdbcExecuteCount      = new AtomicLong();
-    private final AtomicLong                           jdbcExecuteErrorCount = new AtomicLong();
-    private final AtomicLong                           jdbcExecuteTimeNano   = new AtomicLong();
+    private final AtomicLong                           jdbcFetchRowCount            = new AtomicLong();
+    private final AtomicLong                           jdbcUpdateCount              = new AtomicLong();
+    private final AtomicLong                           jdbcExecuteCount             = new AtomicLong();
+    private final AtomicLong                           jdbcExecuteErrorCount        = new AtomicLong();
+    private final AtomicLong                           jdbcExecuteTimeNano          = new AtomicLong();
 
-    private final AtomicLong                           jdbcCommitCount       = new AtomicLong();
-    private final AtomicLong                           jdbcRollbackCount     = new AtomicLong();
+    private final AtomicLong                           jdbcCommitCount              = new AtomicLong();
+    private final AtomicLong                           jdbcRollbackCount            = new AtomicLong();
 
-    private final AtomicLong                           jdbcPoolConnectionOpenCount      = new AtomicLong();
-    private final AtomicLong                           jdbcPoolConnectionCloseCount        = new AtomicLong();
+    private final AtomicLong                           jdbcPoolConnectionOpenCount  = new AtomicLong();
+    private final AtomicLong                           jdbcPoolConnectionCloseCount = new AtomicLong();
+
+    private final AtomicLong                           jdbcResultSetOpenCount       = new AtomicLong();
+    private final AtomicLong                           jdbcResultSetCloseCount      = new AtomicLong();
 
     private volatile Throwable                         lastError;
     private volatile long                              lastErrorTimeMillis;
@@ -54,6 +57,9 @@ public class SpringMethodStat {
 
         jdbcPoolConnectionOpenCount.set(0);
         jdbcPoolConnectionCloseCount.set(0);
+        
+        jdbcResultSetOpenCount.set(0);
+        jdbcResultSetCloseCount.set(0);
 
         lastError = null;
         lastErrorTimeMillis = 0;
@@ -226,7 +232,7 @@ public class SpringMethodStat {
     public void addJdbcPoolConnectionOpenCount(long delta) {
         jdbcPoolConnectionOpenCount.addAndGet(delta);
     }
-    
+
     public void incrementJdbcPoolConnectionOpenCount() {
         jdbcPoolConnectionOpenCount.incrementAndGet();
     }
@@ -238,9 +244,33 @@ public class SpringMethodStat {
     public void addJdbcPoolConnectionCloseCount(long delta) {
         jdbcPoolConnectionCloseCount.addAndGet(delta);
     }
-    
+
     public void incrementJdbcPoolConnectionCloseCount() {
         jdbcPoolConnectionCloseCount.incrementAndGet();
+    }
+    
+    public long getJdbcResultSetOpenCount() {
+        return jdbcResultSetOpenCount.get();
+    }
+    
+    public void addJdbcResultSetOpenCount(long delta) {
+        jdbcResultSetOpenCount.addAndGet(delta);
+    }
+    
+    public void incrementJdbcResultSetOpenCount() {
+        jdbcResultSetOpenCount.incrementAndGet();
+    }
+
+    public long getJdbcResultSetCloseCount() {
+        return jdbcResultSetCloseCount.get();
+    }
+    
+    public void addJdbcResultSetCloseCount(long delta) {
+        jdbcResultSetCloseCount.addAndGet(delta);
+    }
+    
+    public void incrementJdbcResultSetCloseCount() {
+        jdbcResultSetCloseCount.incrementAndGet();
     }
 
     public Map<String, Object> getStatData() {
@@ -260,7 +290,10 @@ public class SpringMethodStat {
 
         data.put("JdbcPoolConnectionOpenCount", this.getJdbcPoolConnectionOpenCount());
         data.put("JdbcPoolConnectionCloseCount", this.getJdbcPoolConnectionCloseCount());
-
+        
+        data.put("JdbcResultSetOpenCount", this.getJdbcResultSetOpenCount());
+        data.put("JdbcResultSetCloseCount", this.getJdbcResultSetCloseCount());
+        
         data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
         data.put("JdbcExecuteErrorCount", this.getJdbcExecuteErrorCount());
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
