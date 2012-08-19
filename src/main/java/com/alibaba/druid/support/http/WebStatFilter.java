@@ -74,7 +74,7 @@ public class WebStatFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         StatHttpServletResponseWrapper responseWrapper = new StatHttpServletResponseWrapper(httpResponse);
 
-        final String requestURI = getRequestURI(httpRequest);
+        String requestURI = getRequestURI(httpRequest);
 
         if (isExclusion(requestURI)) {
             chain.doFilter(request, response);
@@ -91,6 +91,13 @@ public class WebStatFilter implements Filter {
         webAppStat.beforeInvoke();
 
         WebURIStat uriStat = webAppStat.getURIStat(requestURI, false);
+        
+        if (uriStat == null) {
+            int index = requestURI.indexOf(";jsessionid=");
+            if (index != -1) {
+                requestURI = requestURI.substring(0, index);
+            }
+        }
 
         // 第一次访问时，uriStat这里为null，是为了防止404攻击。
         if (uriStat != null) {
