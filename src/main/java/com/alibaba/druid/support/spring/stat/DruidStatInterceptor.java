@@ -203,7 +203,7 @@ public class DruidStatInterceptor implements MethodInterceptor, InitializingBean
         public void pool_close(long nanos) {
             SpringMethodStat springMethodStat = SpringMethodStat.current();
             if (springMethodStat != null) {
-                springMethodStat.incrementJdbcPoolConnectionOpenCount();
+                springMethodStat.incrementJdbcPoolConnectionCloseCount();
             }
         }
 
