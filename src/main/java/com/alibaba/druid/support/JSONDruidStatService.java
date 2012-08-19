@@ -100,7 +100,7 @@ public class JSONDruidStatService {
         if (url.startsWith("/weburi.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/weburi-") && url.indexOf(".json") > 0) {
             String uri = StringUtils.subString(url, "weburi-", ".json");
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatData(uri));
@@ -118,7 +118,7 @@ public class JSONDruidStatService {
         if (url.startsWith("/spring.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSpringStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/spring-detail.json")) {
             String clazz = parameters.get("class");
             String method = parameters.get("method");
@@ -137,7 +137,7 @@ public class JSONDruidStatService {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getURIStatData();
         return comparatorOrderBy(array, parameters);
     }
-    
+
     private Map<String, Object> getWebURIStatData(String uri) {
         return WebAppStatManager.getInstance().getURIStatData(uri);
     }
@@ -145,7 +145,7 @@ public class JSONDruidStatService {
     private Map<String, Object> getWebSessionStatData(String sessionId) {
         return WebAppStatManager.getInstance().getSessionStat(sessionId);
     }
-    
+
     private Map<String, Object> getSpringMethodStatData(String clazz, String method) {
         return SpringStatManager.getInstance().getMethodStatData(clazz, method);
     }
@@ -202,15 +202,20 @@ public class JSONDruidStatService {
 
     private String returnJSONSqlInfo(Integer id) {
         Map<String, Object> map = statManagerFacade.getSqlStatData(id);
+
         if (map == null) {
             return returnJSONResult(RESULT_CODE_ERROR, null);
         }
-        map.put("formattedSql", SQLUtils.format((String) map.get("SQL"), (String) map.get("DbType")));
-        List<SQLStatement> statementList = SQLUtils.parseStatements((String) map.get("SQL"), (String) map.get("DbType"));
+
+        String dbType = (String) map.get("DbType");
+        String sql = (String) map.get("SQL");
+
+        map.put("formattedSql", SQLUtils.format(sql, dbType));
+        List<SQLStatement> statementList = SQLUtils.parseStatements(sql, dbType);
 
         if (!statementList.isEmpty()) {
             SQLStatement statemen = statementList.get(0);
-            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, (String) map.get("DbType"));
+            SchemaStatVisitor visitor = SQLUtils.createSchemaStatVisitor(statementList, dbType);
             statemen.accept(visitor);
             map.put("parsedTable", visitor.getTables().toString());
             map.put("parsedFields", visitor.getColumns().toString());
@@ -224,6 +229,7 @@ public class JSONDruidStatService {
         if (maxTimespanOccurTime != null) {
             map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
         }
+        
         return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
     }
 

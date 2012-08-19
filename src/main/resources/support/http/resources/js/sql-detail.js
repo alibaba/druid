@@ -21,4 +21,12 @@ function ajaxResponseForSqlInfo() {
 	changeInnerHtml("LastSlowParameters",sqlInfo.LastSlowParameters);
 	changeInnerHtml("MaxTimespan",sqlInfo.MaxTimespan);
 	
+	changeInnerHtml("LastErrorMessage",sqlInfo.LastErrorMessage);
+	changeInnerHtml("LastErrorClass",sqlInfo.LastErrorClass);
+	changeInnerHtml("LastErrorTime",sqlInfo.LastErrorTime);
+	changeInnerHtml("LastErrorStackTrace",sqlInfo.LastErrorStackTrace);
+	
+	changeInnerHtml("BatchSizeMax",sqlInfo.BatchSizeMax);
+	changeInnerHtml("BatchSizeTotal",sqlInfo.BatchSizeTotal);
+	
 }
