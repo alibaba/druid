@@ -13,6 +13,12 @@ public class WebRequestStat {
     private long jdbcExecuteNano;
     private long jdbcExecuteErrorCount;
 
+    private long jdbcPoolConnectCount;
+    private long jdbcPoolCloseCount;
+
+    private long jdbcResultSetOpenCount;
+    private long jdbcResultSetCloseCount;
+
     public WebRequestStat(){
 
     }
@@ -115,4 +121,37 @@ public class WebRequestStat {
     public void incrementJdbcExecuteErrorCount() {
         jdbcExecuteErrorCount++;
     }
+
+    public long getJdbcPoolConnectionOpenCount() {
+        return jdbcPoolConnectCount;
+    }
+
+    public void incrementJdbcPoolConnectCount() {
+        this.jdbcPoolConnectCount++;
+    }
+
+    public long getJdbcPoolConnectionCloseCount() {
+        return jdbcPoolCloseCount;
+    }
+
+    public void incrementJdbcPoolCloseCount() {
+        this.jdbcPoolCloseCount++;
+    }
+
+    public long getJdbcResultSetOpenCount() {
+        return jdbcResultSetOpenCount;
+    }
+
+    public void incrementJdbcResultSetOpenCount() {
+        this.jdbcResultSetOpenCount++;
+    }
+
+    public long getJdbcResultSetCloseCount() {
+        return jdbcResultSetCloseCount;
+    }
+
+    public void incrementJdbcResultSetCloseCount() {
+        this.jdbcResultSetCloseCount++;
+    }
+
 }

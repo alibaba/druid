@@ -13,4 +13,16 @@ public interface StatFilterContextListener {
     void commit();
 
     void rollback();
+    
+    void pool_connect();
+    
+    void pool_close(long nanos);
+    
+    void physical_connection_connect();
+
+    void physical_connection_close(long nanos);
+    
+    void resultSet_open();
+    
+    void resultSet_close(long nanos);
 }

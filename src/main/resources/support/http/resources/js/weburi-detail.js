@@ -25,4 +25,8 @@ function ajaxResponseForSqlInfo() {
 	changeInnerHtml("JdbcFetchRowPeak", stat.JdbcFetchRowPeak);
 	changeInnerHtml("JdbcUpdateCount", stat.JdbcUpdateCount);
 	changeInnerHtml("JdbcUpdatePeak", stat.JdbcUpdatePeak);
+	changeInnerHtml("JdbcPoolConnectionOpenCount", stat.JdbcPoolConnectionOpenCount);
+	changeInnerHtml("JdbcPoolConnectionCloseCount", stat.JdbcPoolConnectionCloseCount);
+	changeInnerHtml("JdbcResultSetOpenCount", stat.JdbcResultSetOpenCount);
+	changeInnerHtml("JdbcResultSetCloseCount", stat.JdbcResultSetCloseCount);
 }

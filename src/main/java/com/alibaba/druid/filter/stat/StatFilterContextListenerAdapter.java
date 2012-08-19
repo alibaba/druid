@@ -32,4 +32,35 @@ public class StatFilterContextListenerAdapter implements StatFilterContextListen
         
     }
 
+    @Override
+    public void pool_connect() {
+        
+    }
+
+    @Override
+    public void pool_close(long nanos) {
+        
+    }
+
+    @Override
+    public void physical_connection_connect() {
+        
+    }
+
+    @Override
+    public void physical_connection_close(long nanos) {
+        
+    }
+
+    @Override
+    public void resultSet_open() {
+        
+    }
+
+    @Override
+    public void resultSet_close(long nanos) {
+        
+    }
+
+    
 }

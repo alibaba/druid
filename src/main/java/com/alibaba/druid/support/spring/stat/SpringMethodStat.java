@@ -1,5 +1,6 @@
 package com.alibaba.druid.support.spring.stat;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +27,12 @@ public class SpringMethodStat {
     private final AtomicLong                           jdbcCommitCount       = new AtomicLong();
     private final AtomicLong                           jdbcRollbackCount     = new AtomicLong();
 
+    private final AtomicLong                           jdbcPoolConnectionOpenCount      = new AtomicLong();
+    private final AtomicLong                           jdbcPoolConnectionCloseCount        = new AtomicLong();
+
+    private volatile Throwable                         lastError;
+    private volatile long                              lastErrorTimeMillis;
+
     public SpringMethodStat(SpringMethodInfo methodInfo){
         this.methodInfo = methodInfo;
     }
@@ -39,10 +46,17 @@ public class SpringMethodStat {
         jdbcFetchRowCount.set(0);
         jdbcUpdateCount.set(0);
         jdbcExecuteCount.set(0);
+        jdbcExecuteErrorCount.set(0);
         jdbcExecuteTimeNano.set(0);
 
         jdbcCommitCount.set(0);
         jdbcRollbackCount.set(0);
+
+        jdbcPoolConnectionOpenCount.set(0);
+        jdbcPoolConnectionCloseCount.set(0);
+
+        lastError = null;
+        lastErrorTimeMillis = 0;
     }
 
     public SpringMethodInfo getMethodInfo() {
@@ -84,7 +98,25 @@ public class SpringMethodStat {
 
         if (error != null) {
             executeErrorCount.incrementAndGet();
+            lastError = error;
+            lastErrorTimeMillis = System.currentTimeMillis();
         }
+    }
+
+    public Throwable getLastError() {
+        return lastError;
+    }
+
+    public Date getLastErrorTime() {
+        if (lastErrorTimeMillis <= 0) {
+            return null;
+        }
+
+        return new Date(lastErrorTimeMillis);
+    }
+
+    public long getLastErrorTimeMillis() {
+        return lastErrorTimeMillis;
     }
 
     public int getRunningCount() {
@@ -138,15 +170,15 @@ public class SpringMethodStat {
     public long getJdbcExecuteCount() {
         return jdbcExecuteCount.get();
     }
-    
+
     public long getJdbcExecuteErrorCount() {
         return jdbcExecuteErrorCount.get();
     }
-    
+
     public void addJdbcExecuteErrorCount(long executeCount) {
         jdbcExecuteErrorCount.addAndGet(executeCount);
     }
-    
+
     public void incrementJdbcExecuteErrorCount() {
         jdbcExecuteErrorCount.incrementAndGet();
     }
@@ -187,6 +219,30 @@ public class SpringMethodStat {
         this.jdbcRollbackCount.addAndGet(rollbackCount);
     }
 
+    public long getJdbcPoolConnectionOpenCount() {
+        return jdbcPoolConnectionOpenCount.get();
+    }
+
+    public void addJdbcPoolConnectionOpenCount(long delta) {
+        jdbcPoolConnectionOpenCount.addAndGet(delta);
+    }
+    
+    public void incrementJdbcPoolConnectionOpenCount() {
+        jdbcPoolConnectionOpenCount.incrementAndGet();
+    }
+
+    public long getJdbcPoolConnectionCloseCount() {
+        return jdbcPoolConnectionCloseCount.get();
+    }
+
+    public void addJdbcPoolConnectionCloseCount(long delta) {
+        jdbcPoolConnectionCloseCount.addAndGet(delta);
+    }
+    
+    public void incrementJdbcPoolConnectionCloseCount() {
+        jdbcPoolConnectionCloseCount.incrementAndGet();
+    }
+
     public Map<String, Object> getStatData() {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
 
@@ -202,11 +258,17 @@ public class SpringMethodStat {
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
 
+        data.put("JdbcPoolConnectionOpenCount", this.getJdbcPoolConnectionOpenCount());
+        data.put("JdbcPoolConnectionCloseCount", this.getJdbcPoolConnectionCloseCount());
+
         data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
         data.put("JdbcExecuteErrorCount", this.getJdbcExecuteErrorCount());
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
         data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
+
+        data.put("LastError", this.getLastError());
+        data.put("LastErrorTime", this.getLastErrorTime());
 
         return data;
     }

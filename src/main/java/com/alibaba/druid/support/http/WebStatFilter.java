@@ -452,6 +452,48 @@ public class WebStatFilter implements Filter {
                 springMethodStat.incrementJdbcRollbackCount();
             }
         }
+
+        @Override
+        public void pool_connect() {
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcPoolConnectCount();
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcPoolConnectionOpenCount();
+            }
+        }
+
+        @Override
+        public void pool_close(long nanos) {
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcPoolCloseCount();
+            }
+
+            SpringMethodStat springMethodStat = SpringMethodStat.current();
+            if (springMethodStat != null) {
+                springMethodStat.incrementJdbcPoolConnectionOpenCount();
+            }
+        }
+
+        @Override
+        public void resultSet_open() {
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcResultSetOpenCount();
+            }
+        }
+
+        @Override
+        public void resultSet_close(long nanos) {
+            WebRequestStat reqStat = WebRequestStat.current();
+            if (reqStat != null) {
+                reqStat.incrementJdbcResultSetCloseCount();
+            }
+        }
     }
 
     public final static class StatHttpServletResponseWrapper extends HttpServletResponseWrapper implements HttpServletResponse {

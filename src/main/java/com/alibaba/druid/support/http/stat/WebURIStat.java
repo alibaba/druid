@@ -10,30 +10,36 @@ public class WebURIStat {
 
     private final String                         uri;
 
-    private final AtomicInteger                  runningCount          = new AtomicInteger();
-    private final AtomicInteger                  concurrentMax         = new AtomicInteger();
-    private final AtomicLong                     requestCount          = new AtomicLong(0);
-    private final AtomicLong                     requestTimeNano       = new AtomicLong();
+    private final AtomicInteger                  runningCount                 = new AtomicInteger();
+    private final AtomicInteger                  concurrentMax                = new AtomicInteger();
+    private final AtomicLong                     requestCount                 = new AtomicLong(0);
+    private final AtomicLong                     requestTimeNano              = new AtomicLong();
 
-    private final AtomicLong                     jdbcFetchRowCount     = new AtomicLong();
-    private final AtomicLong                     jdbcFetchRowPeak      = new AtomicLong();             // 单次请求读取行数的峰值
+    private final AtomicLong                     jdbcFetchRowCount            = new AtomicLong();
+    private final AtomicLong                     jdbcFetchRowPeak             = new AtomicLong();             // 单次请求读取行数的峰值
 
-    private final AtomicLong                     jdbcUpdateCount       = new AtomicLong();
-    private final AtomicLong                     jdbcUpdatePeak        = new AtomicLong();             // 单次请求更新行数的峰值
+    private final AtomicLong                     jdbcUpdateCount              = new AtomicLong();
+    private final AtomicLong                     jdbcUpdatePeak               = new AtomicLong();             // 单次请求更新行数的峰值
 
-    private final AtomicLong                     jdbcExecuteCount      = new AtomicLong();
-    private final AtomicLong                     jdbcExecuteErrorCount = new AtomicLong();
-    private final AtomicLong                     jdbcExecutePeak       = new AtomicLong();             // 单次请求执行SQL次数的峰值
-    private final AtomicLong                     jdbcExecuteTimeNano   = new AtomicLong();
+    private final AtomicLong                     jdbcExecuteCount             = new AtomicLong();
+    private final AtomicLong                     jdbcExecuteErrorCount        = new AtomicLong();
+    private final AtomicLong                     jdbcExecutePeak              = new AtomicLong();             // 单次请求执行SQL次数的峰值
+    private final AtomicLong                     jdbcExecuteTimeNano          = new AtomicLong();
 
-    private final AtomicLong                     jdbcCommitCount       = new AtomicLong();
-    private final AtomicLong                     jdbcRollbackCount     = new AtomicLong();
+    private final AtomicLong                     jdbcCommitCount              = new AtomicLong();
+    private final AtomicLong                     jdbcRollbackCount            = new AtomicLong();
 
-    private final AtomicLong                     errorCount            = new AtomicLong();
+    private final AtomicLong                     jdbcPoolConnectionOpenCount  = new AtomicLong();
+    private final AtomicLong                     jdbcPoolConnectionCloseCount = new AtomicLong();
 
-    private volatile long                        lastAccessTimeMillis  = -1L;
+    private final AtomicLong                     jdbcResultSetOpenCount       = new AtomicLong();
+    private final AtomicLong                     jdbcResultSetCloseCount      = new AtomicLong();
 
-    private final static ThreadLocal<WebURIStat> currentLocal          = new ThreadLocal<WebURIStat>();
+    private final AtomicLong                     errorCount                   = new AtomicLong();
+
+    private volatile long                        lastAccessTimeMillis         = -1L;
+
+    private final static ThreadLocal<WebURIStat> currentLocal                 = new ThreadLocal<WebURIStat>();
 
     public WebURIStat(String uri){
         super();
@@ -131,12 +137,13 @@ public class WebURIStat {
                     }
                 }
 
-                {
-                    long jdbcExecuteErrorCount = localStat.getJdbcExecuteErrorCount();
-                    if (jdbcExecuteErrorCount > 0) {
-                        this.jdbcExecuteErrorCount.addAndGet(jdbcExecuteErrorCount);
-                    }
-                }
+                this.jdbcExecuteErrorCount.addAndGet(localStat.getJdbcExecuteErrorCount());
+                
+                this.addJdbcPoolConnectionOpenCount(localStat.getJdbcPoolConnectionOpenCount());
+                this.addJdbcPoolConnectionCloseCount(localStat.getJdbcPoolConnectionCloseCount());
+                
+                this.addJdbcResultSetOpenCount(localStat.getJdbcResultSetOpenCount());
+                this.addJdbcResultSetCloseCount(localStat.getJdbcResultSetCloseCount());
             }
         }
 
@@ -251,6 +258,46 @@ public class WebURIStat {
         return errorCount.get();
     }
 
+    public long getJdbcPoolConnectionOpenCount() {
+        return jdbcPoolConnectionOpenCount.get();
+    }
+
+    public void addJdbcPoolConnectionOpenCount(long delta) {
+        jdbcPoolConnectionOpenCount.addAndGet(delta);
+    }
+
+    public void incrementJdbcPoolConnectionOpenCount() {
+        jdbcPoolConnectionOpenCount.incrementAndGet();
+    }
+
+    public long getJdbcPoolConnectionCloseCount() {
+        return jdbcPoolConnectionCloseCount.get();
+    }
+
+    public void addJdbcPoolConnectionCloseCount(long delta) {
+        jdbcPoolConnectionCloseCount.addAndGet(delta);
+    }
+
+    public void incrementJdbcPoolConnectionCloseCount() {
+        jdbcPoolConnectionCloseCount.incrementAndGet();
+    }
+
+    public long getJdbcResultSetOpenCount() {
+        return jdbcResultSetOpenCount.get();
+    }
+    
+    public void addJdbcResultSetOpenCount(long delta) {
+        jdbcResultSetOpenCount.addAndGet(delta);
+    }
+
+    public long getJdbcResultSetCloseCount() {
+        return jdbcResultSetCloseCount.get();
+    }
+    
+    public void addJdbcResultSetCloseCount(long delta) {
+        jdbcResultSetCloseCount.addAndGet(delta);
+    }
+
     public Map<String, Object> getStatData() {
         Map<String, Object> data = new LinkedHashMap<String, Object>();
 
@@ -275,6 +322,12 @@ public class WebURIStat {
 
         data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
         data.put("JdbcUpdatePeak", this.getJdbcUpdatePeak());
+
+        data.put("JdbcPoolConnectionOpenCount", this.getJdbcPoolConnectionOpenCount());
+        data.put("JdbcPoolConnectionCloseCount", this.getJdbcPoolConnectionCloseCount());
+        
+        data.put("JdbcResultSetOpenCount", this.getJdbcResultSetOpenCount());
+        data.put("JdbcResultSetCloseCount", this.getJdbcResultSetCloseCount());
 
         return data;
     }

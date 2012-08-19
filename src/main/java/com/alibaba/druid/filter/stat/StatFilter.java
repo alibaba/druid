@@ -116,7 +116,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     public void setMergeSql(boolean mergeSql) {
         this.mergeSql = mergeSql;
     }
-    
+
     @Deprecated
     public String mergeSql(String sql) {
         return this.mergeSql(sql, dbType);
@@ -563,17 +563,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getResultSetStat().beforeOpen();
 
         resultSet.setConstructNano();
+        
+        StatFilterContext.getInstance().resultSet_open();
     }
 
     @Override
     public void resultSet_close(FilterChain chain, ResultSetProxy resultSet) throws SQLException {
 
-        long nanoSpan = System.nanoTime() - resultSet.getConstructNano();
+        long nanos = System.nanoTime() - resultSet.getConstructNano();
 
         int fetchRowCount = resultSet.getFetchRowCount();
 
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
-        dataSourceStat.getResultSetStat().afterClose(nanoSpan);
+        dataSourceStat.getResultSetStat().afterClose(nanos);
         dataSourceStat.getResultSetStat().addFetchRowCount(fetchRowCount);
         dataSourceStat.getResultSetStat().incrementCloseCounter();
 
@@ -585,11 +587,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             if (sqlStat != null && resultSet.getCloseCount() == 0) {
                 sqlStat.addFetchRowCount(fetchRowCount);
                 long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
-                sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanoSpan);
+                sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanos);
             }
         }
 
         chain.resultSet_close(resultSet);
+        
+        StatFilterContext.getInstance().resultSet_close(nanos);
     }
 
     public JdbcConnectionStat.Entry getConnectionInfo(ConnectionProxy connection) {
@@ -626,11 +630,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             return dataSourceStat.createSqlStat(contextSql);
         } else {
             String dbType = this.dbType;
-            
+
             if (dbType == null) {
                 dbType = dataSource.getDbType();
             }
-            
+
             sql = mergeSql(sql, dbType);
             return dataSourceStat.createSqlStat(sql);
         }
@@ -654,6 +658,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         long millis = nanos / (1000L * 1000L);
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionHoldHistogram().record(millis);
+
+        StatFilterContext.getInstance().pool_connection_close(nanos);
     }
 
     public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
@@ -662,6 +668,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (conn != null) {
             conn.setConnectedTimeNano(System.nanoTime());
+            
+            StatFilterContext.getInstance().pool_connection_open();
         }
 
         return conn;
