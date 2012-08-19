@@ -4458,6 +4458,10 @@ public class FilterChainImpl implements FilterChain {
         if (clob == null) {
             return null;
         }
+        
+        if (clob instanceof NClob) {
+            return wrap(connection, (NClob) clob);
+        }
 
         return new ClobProxyImpl(dataSource, connection, clob);
     }
