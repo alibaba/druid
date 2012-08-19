@@ -108,4 +108,12 @@ public class StatFilterContext {
             listener.resultSet_close(nanos);
         }
     }
+
+    public void clob_open() {
+
+    }
+
+    public void clobFree() {
+
+    }
 }

@@ -684,7 +684,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.resultSet_getClob(resultSet, columnIndex);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
         }
 
         return clob;
@@ -695,7 +695,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.resultSet_getClob(resultSet, columnLabel);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
         }
 
         return clob;
@@ -707,7 +707,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.callableStatement_getClob(statement, parameterIndex);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
         }
 
         return clob;
@@ -719,7 +719,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.callableStatement_getClob(statement, parameterName);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
         }
 
         return clob;
@@ -730,7 +730,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnIndex);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -742,7 +742,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnIndex, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -753,7 +753,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnLabel);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -765,19 +765,19 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnLabel, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
     }
-    
+
     @Override
     public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
                                                                                                                       throws SQLException {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -789,7 +789,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -801,7 +801,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterName);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
@@ -814,13 +814,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterName, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
         }
 
         return obj;
     }
 
-    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat) {
+    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, ClobProxy clob) {
         dataSourceStat.incrementClobOpenCount();
     }
 
