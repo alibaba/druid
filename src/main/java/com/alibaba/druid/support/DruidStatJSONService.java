@@ -23,9 +23,9 @@ import com.alibaba.fastjson.JSON;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class JSONDruidStatService {
+public class DruidStatJSONService {
 
-    private final static JSONDruidStatService instance               = new JSONDruidStatService();
+    private final static DruidStatJSONService instance               = new DruidStatJSONService();
 
     private static DruidStatManagerFacade     statManagerFacade      = DruidStatManagerFacade.getInstance();
 
@@ -37,10 +37,10 @@ public class JSONDruidStatService {
     private static final String               DEFAULT_ORDER_TYPE     = "asc";
     private static final String               DEFAULT_ORDERBY        = "SQL";
 
-    private JSONDruidStatService(){
+    private DruidStatJSONService(){
     }
 
-    public static JSONDruidStatService getInstance() {
+    public static DruidStatJSONService getInstance() {
         return instance;
     }
 
