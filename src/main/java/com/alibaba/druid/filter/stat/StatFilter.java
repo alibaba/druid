@@ -31,6 +31,7 @@ import com.alibaba.druid.filter.FilterEventAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
+import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.JdbcParameter;
@@ -563,7 +564,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         dataSourceStat.getResultSetStat().beforeOpen();
 
         resultSet.setConstructNano();
-        
+
         StatFilterContext.getInstance().resultSet_open();
     }
 
@@ -592,7 +593,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         chain.resultSet_close(resultSet);
-        
+
         StatFilterContext.getInstance().resultSet_close(nanos);
     }
 
@@ -650,29 +651,185 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return null;
     }
 
+    @Override
     public void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection conn) throws SQLException {
         chain.dataSource_recycle(conn);
 
         long nanos = System.nanoTime() - conn.getConnectedTimeNano();
 
         long millis = nanos / (1000L * 1000L);
+
         JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
         dataSourceStat.getConnectionHoldHistogram().record(millis);
 
         StatFilterContext.getInstance().pool_connection_close(nanos);
     }
 
+    @Override
     public DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource,
                                                           long maxWaitMillis) throws SQLException {
         DruidPooledConnection conn = chain.dataSource_connect(dataSource, maxWaitMillis);
 
         if (conn != null) {
             conn.setConnectedTimeNano(System.nanoTime());
-            
+
             StatFilterContext.getInstance().pool_connection_open();
         }
 
         return conn;
+    }
+
+    @Override
+    public Clob resultSet_getClob(FilterChain chain, ResultSetProxy resultSet, int columnIndex) throws SQLException {
+        Clob clob = chain.resultSet_getClob(resultSet, columnIndex);
+
+        if (clob != null) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return clob;
+    }
+
+    @Override
+    public Clob resultSet_getClob(FilterChain chain, ResultSetProxy resultSet, String columnLabel) throws SQLException {
+        Clob clob = chain.resultSet_getClob(resultSet, columnLabel);
+
+        if (clob != null) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return clob;
+    }
+
+    @Override
+    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
+                                                                                                                  throws SQLException {
+        Clob clob = chain.callableStatement_getClob(statement, parameterIndex);
+
+        if (clob != null) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return clob;
+    }
+
+    @Override
+    public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, String parameterName)
+                                                                                                                    throws SQLException {
+        Clob clob = chain.callableStatement_getClob(statement, parameterName);
+
+        if (clob != null) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return clob;
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        Object obj = chain.resultSet_getObject(result, columnIndex);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, int columnIndex,
+                                      java.util.Map<String, Class<?>> map) throws SQLException {
+        Object obj = chain.resultSet_getObject(result, columnIndex, map);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        Object obj = chain.resultSet_getObject(result, columnLabel);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object resultSet_getObject(FilterChain chain, ResultSetProxy result, String columnLabel,
+                                      java.util.Map<String, Class<?>> map) throws SQLException {
+        Object obj = chain.resultSet_getObject(result, columnLabel, map);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+    
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
+                                                                                                                      throws SQLException {
+        Object obj = chain.callableStatement_getObject(statement, parameterIndex);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, int parameterIndex,
+                                              java.util.Map<String, Class<?>> map) throws SQLException {
+        Object obj = chain.callableStatement_getObject(statement, parameterIndex, map);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement, String parameterName)
+                                                                                                                        throws SQLException {
+        Object obj = chain.callableStatement_getObject(statement, parameterName);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    @Override
+    public Object callableStatement_getObject(FilterChain chain, CallableStatementProxy statement,
+                                              String parameterName, java.util.Map<String, Class<?>> map)
+                                                                                                        throws SQLException {
+        Object obj = chain.callableStatement_getObject(statement, parameterName, map);
+
+        if (obj instanceof Clob) {
+            clobOpenAfter(chain.getDataSource().getDataSourceStat());
+        }
+
+        return obj;
+    }
+
+    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat) {
+        dataSourceStat.incrementClobOpenCount();
+    }
+
+    @Override
+    public void clob_free(FilterChain chain, ClobProxy wrapper) throws SQLException {
+        chain.clob_free(wrapper);
+
+        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
+        dataSourceStat.incrementClobFreeCount();
     }
 
 }

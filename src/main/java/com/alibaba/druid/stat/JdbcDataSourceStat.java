@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.management.JMException;
@@ -65,6 +66,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
+    private final AtomicLong                                    clobOpenCount           = new AtomicLong();
+    private final AtomicLong                                    clobFreeCount          = new AtomicLong();
+
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
     }
@@ -98,6 +102,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     }
 
     public void reset() {
+        clobOpenCount.set(0);
+        clobFreeCount.set(0);
+
         connectionStat.reset();
         statementStat.reset();
         resultSetStat.reset();
@@ -171,7 +178,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
         return null;
     }
-    
+
     public JdbcSqlStat getSqlStat(int id) {
         return getSqlStat((long) id);
     }
@@ -303,6 +310,22 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     public long[] getConnectionHistogramValues() {
         return connectionStat.getHistorgramValues();
+    }
+
+    public long getClobOpenCount() {
+        return clobOpenCount.get();
+    }
+    
+    public void incrementClobOpenCount() {
+        clobOpenCount.incrementAndGet();
+    }
+
+    public long getClobFreeCount() {
+        return clobFreeCount.get();
+    }
+    
+    public void incrementClobFreeCount() {
+        clobFreeCount.incrementAndGet();
     }
 
 }

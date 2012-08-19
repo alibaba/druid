@@ -96,6 +96,7 @@ public class WebStatFilter implements Filter {
             int index = requestURI.indexOf(";jsessionid=");
             if (index != -1) {
                 requestURI = requestURI.substring(0, index);
+                uriStat = webAppStat.getURIStat(requestURI, false);
             }
         }
 
