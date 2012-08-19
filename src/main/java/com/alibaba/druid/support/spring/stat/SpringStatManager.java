@@ -63,6 +63,19 @@ public class SpringStatManager {
         return allMethodStatDataList;
     }
     
+    public Map<String, Object> getMethodStatData(String clazz, String method) {
+        Set<Object> stats = getSpringStatSet();
+        
+        for (Object stat : stats) {
+            Map<String, Object> statData = SpringStatUtils.getMethodStatData(stat, clazz, method);
+            if (statData != null) {
+                return statData;
+            }
+        }
+        
+        return null;
+    }
+    
     public void resetStat() {
         Set<Object> stats = getSpringStatSet();
 

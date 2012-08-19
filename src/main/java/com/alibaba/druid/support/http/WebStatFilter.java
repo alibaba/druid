@@ -421,6 +421,9 @@ public class WebStatFilter implements Filter {
             SpringMethodStat springMethodStat = SpringMethodStat.current();
             if (springMethodStat != null) {
                 springMethodStat.addJdbcExecuteTimeNano(nanos);
+                if (error != null) {
+                    springMethodStat.incrementJdbcExecuteErrorCount();
+                }
             }
         }
 

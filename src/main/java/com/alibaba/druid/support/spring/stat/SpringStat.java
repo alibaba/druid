@@ -50,4 +50,15 @@ public class SpringStat {
         }
         return methodStatDataList;
     }
+
+    public Map<String, Object> getMethodStatData(String clazz, String method) {
+        for (SpringMethodStat methodStat : this.methodStats.values()) {
+            SpringMethodInfo methodInfo = methodStat.getMethodInfo();
+            if (methodInfo.getClassName().equals(clazz) && methodInfo.getSignature().equals(method)) {
+                return methodStat.getStatData();
+            }
+        }
+        
+        return null;
+    }
 }

@@ -118,6 +118,12 @@ public class JSONDruidStatService {
         if (url.startsWith("/spring.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSpringStatDataList(parameters));
         }
+        
+        if (url.startsWith("/spring-detail.json")) {
+            String clazz = parameters.get("class");
+            String method = parameters.get("method");
+            return returnJSONResult(RESULT_CODE_SUCCESS, getSpringMethodStatData(clazz, method));
+        }
 
         return returnJSONResult(RESULT_CODE_ERROR, "Do not support this request, please contact with administrator.");
     }
@@ -138,6 +144,10 @@ public class JSONDruidStatService {
 
     private Map<String, Object> getWebSessionStatData(String sessionId) {
         return WebAppStatManager.getInstance().getSessionStat(sessionId);
+    }
+    
+    private Map<String, Object> getSpringMethodStatData(String clazz, String method) {
+        return SpringStatManager.getInstance().getMethodStatData(clazz, method);
     }
 
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {

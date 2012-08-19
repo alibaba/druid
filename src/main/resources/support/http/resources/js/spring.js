@@ -85,28 +85,29 @@ function subSqlString(sql, len) {
 	return sql.substr(0, len) + '...';
 }
 function ajaxResponseForDataSourceSqlStatInfo() {
-	var sqlStatList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
-	if(sqlStatList==null) return;
+	var statList = getJSONResponseContent(xmlHttpForDataSourceSqlStatInfo);
+	if(statList==null) return;
 	
 	var sqlStatTable = document.getElementById("SpringStatTable");
 	while (sqlStatTable.rows.length > 1) {
 		sqlStatTable.deleteRow(1);
 	}
-	for ( var i = 0; i < sqlStatList.length; i++) {
-		var sqlStat = sqlStatList[i];
+	for ( var i = 0; i < statList.length; i++) {
+		var stat = statList[i];
 		var newRow = sqlStatTable.insertRow(-1);
 		newRow.insertCell(-1).innerHTML = i+1;
-		newRow.insertCell(-1).innerHTML = sqlStat.Class;
-		newRow.insertCell(-1).innerHTML = sqlStat.Method;
-		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ExecuteTimeMillis;
-		newRow.insertCell(-1).innerHTML = sqlStat.RunningCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.ConcurrentMax;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcExecuteTimeMillis;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcCommitCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcRollbackCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcFetchRowCount;
-		newRow.insertCell(-1).innerHTML = sqlStat.JdbcUpdateCount;
+		newRow.insertCell(-1).innerHTML = stat.Class;
+		newRow.insertCell(-1).innerHTML = '<a target="_blank" href="spring-detail.html?class=' + stat.Class + '&method=' + stat.Method + '">' + stat.Method + '</a>';
+		
+		newRow.insertCell(-1).innerHTML = stat.ExecuteCount;
+		newRow.insertCell(-1).innerHTML = stat.ExecuteTimeMillis;
+		newRow.insertCell(-1).innerHTML = stat.RunningCount;
+		newRow.insertCell(-1).innerHTML = stat.ConcurrentMax;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcExecuteTimeMillis;
+		newRow.insertCell(-1).innerHTML = stat.JdbcCommitCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcRollbackCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcFetchRowCount;
+		newRow.insertCell(-1).innerHTML = stat.JdbcUpdateCount;
 	}
 }

@@ -26,6 +26,22 @@ public class SpringStatUtils {
             return null;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> getMethodStatData(Object methodStat, String clazz, String methodSignature) {
+        if (methodStat.getClass() == SpringStat.class) {
+            return ((SpringStat) methodStat).getMethodStatData(clazz, methodSignature);
+        }
+        
+        try {
+            Method method = methodStat.getClass().getMethod("getMethodStatData", String.class, String.class);
+            Object obj = method.invoke(methodStat, clazz, methodSignature);
+            return (Map<String, Object>) obj;
+        } catch (Exception e) {
+            LOG.error("getMethodStatDataList error", e);
+            return null;
+        }
+    }
 
     public static void reset(Object webStat) {
         if (webStat.getClass() == SpringStat.class) {
