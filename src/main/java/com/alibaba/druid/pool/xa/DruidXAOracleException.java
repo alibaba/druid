@@ -6,9 +6,10 @@ import oracle.jdbc.internal.OracleConnection;
 
 public class DruidXAOracleException extends XAException {
 
-    private int xaError   = 0;
-    private int primary   = 0;
-    private int secondary = 0;
+    private static final long serialVersionUID = 1L;
+    private int               xaError          = 0;
+    private int               primary          = 0;
+    private int               secondary        = 0;
 
     public DruidXAOracleException(){
     }
@@ -38,6 +39,14 @@ public class DruidXAOracleException extends XAException {
 
     public int getXAError() {
         return this.xaError;
+    }
+
+    public int getOracleError() {
+        return this.primary;
+    }
+
+    public int getOracleSQLError() {
+        return this.secondary;
     }
 
     public static int errorConvert(int err) {

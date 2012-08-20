@@ -14,7 +14,6 @@ import javax.transaction.xa.Xid;
 import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.xa.OracleXAException;
 import oracle.jdbc.xa.OracleXAResource;
-import oracle.jdbc.xa.OracleXid;
 
 import com.alibaba.druid.util.OracleUtils;
 
@@ -419,7 +418,7 @@ public class DruidXAOracleResource extends DruidXAResource {
             }
             Statement stmt = null;
             ResultSet rset = null;
-            ArrayList xidCollection = new ArrayList(50);
+            ArrayList<DruidXid> xidCollection = new ArrayList<DruidXid>(50);
             try {
                 stmt = this.connection.createStatement();
                 try {
@@ -431,7 +430,7 @@ public class DruidXAOracleResource extends DruidXAResource {
                 rset = stmt.executeQuery(this.recoverySqlRows);
 
                 while (rset.next()) {
-                    xidCollection.add(new OracleXid(rset.getInt(1), rset.getBytes(2), rset.getBytes(3)));
+                    xidCollection.add(new DruidXid(rset.getInt(1), rset.getBytes(2), rset.getBytes(3)));
                 }
 
             } catch (SQLException sqe) {
