@@ -18,7 +18,7 @@ public class TestActiveTrace extends TestCase {
 
         dataSource = new DruidDataSource();
         dataSource.setRemoveAbandoned(true);
-        dataSource.setRemoveAbandonedTimeoutMillis(10);
+        dataSource.setRemoveAbandonedTimeoutMillis(100);
         dataSource.setLogAbandoned(true);
         dataSource.setTimeBetweenEvictionRunsMillis(10);
         dataSource.setMinEvictableIdleTimeMillis(300 * 1000);

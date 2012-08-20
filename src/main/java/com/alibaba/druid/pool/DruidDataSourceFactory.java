@@ -106,6 +106,11 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         return createDataSource(properties);
     }
+    
+    @SuppressWarnings("rawtypes")
+    public static DataSource createDataSource(Properties properties) throws Exception {
+        return createDataSource((Map) properties);
+    }
 
     @SuppressWarnings("rawtypes")
     public static DataSource createDataSource(Map properties) throws Exception {

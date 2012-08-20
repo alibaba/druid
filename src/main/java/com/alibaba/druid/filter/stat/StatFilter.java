@@ -54,8 +54,12 @@ import com.alibaba.druid.support.logging.LogFactory;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
-
     private final static Log          LOG                        = LogFactory.getLog(StatFilter.class);
+    
+    private static final String       SYS_PROP_LOG_SLOW_SQL      = "druid.stat.logSlowSql";
+    private static final String       SYS_PROP_SLOW_SQL_MILLIS   = "druid.stat.slowSqlMillis";
+    private static final String       SYS_PROP_MERGE_SQL         = "druid.stat.mergeSql";
+    
     public final static String        ATTR_NAME_CONNECTION_STAT  = "stat.conn";
     public final static String        ATTR_NAME_STATEMENT_STAT   = "stat.stmt";
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
@@ -153,7 +157,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         {
-            String property = properties.getProperty("druid.stat.mergeSql");
+            String property = properties.getProperty(SYS_PROP_MERGE_SQL);
             if ("true".equals(property)) {
                 this.mergeSql = true;
             } else if ("false".equals(property)) {
@@ -162,7 +166,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         {
-            String property = properties.getProperty("druid.stat.slowSqlMillis");
+            String property = properties.getProperty(SYS_PROP_SLOW_SQL_MILLIS);
             if (property != null && property.trim().length() > 0) {
                 property = property.trim();
                 try {
@@ -174,7 +178,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         {
-            String property = properties.getProperty("druid.stat.logSlowSql");
+            String property = properties.getProperty(SYS_PROP_LOG_SLOW_SQL);
             if ("true".equals(property)) {
                 this.logSlowSql = true;
             } else if ("false".equals(property)) {

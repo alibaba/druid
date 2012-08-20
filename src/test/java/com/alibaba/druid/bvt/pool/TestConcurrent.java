@@ -183,7 +183,7 @@ public class TestConcurrent extends TestCase {
 
         dataSource.shrink();
         Assert.assertEquals(0, dataSource.getActiveCount());
-        Assert.assertEquals(dataSource.getMinIdle(), dataSource.getPoolingCount());
+        Assert.assertEquals("minIdle != poolingCount", dataSource.getMinIdle(), dataSource.getPoolingCount());
 
         System.out.println(threadCount + "-threads start");
         startLatch.countDown();

@@ -25,7 +25,7 @@ public class TestConnectTimeout extends TestCase {
         dataSource.setFilters("stat");
         dataSource.setMaxOpenPreparedStatements(30);
         dataSource.setMaxActive(4);
-        dataSource.setMaxWait(100);
+        dataSource.setMaxWait(1000);
         dataSource.setMinIdle(0);
         dataSource.setInitialSize(1);
         dataSource.init();
