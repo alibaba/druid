@@ -138,6 +138,7 @@ public class WebURIStat {
                 }
 
                 this.jdbcExecuteErrorCount.addAndGet(localStat.getJdbcExecuteErrorCount());
+                this.jdbcExecuteTimeNano.addAndGet(localStat.getJdbcExecuteTimeNano());
                 
                 this.addJdbcPoolConnectionOpenCount(localStat.getJdbcPoolConnectionOpenCount());
                 this.addJdbcPoolConnectionCloseCount(localStat.getJdbcPoolConnectionCloseCount());
