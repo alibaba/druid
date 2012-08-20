@@ -54,19 +54,19 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public class DruidPooledConnection implements javax.sql.PooledConnection, Connection {
 
-    private final static Log   LOG         = LogFactory.getLog(DruidPooledConnection.class);
+    private final static Log                 LOG         = LogFactory.getLog(DruidPooledConnection.class);
 
-    protected Connection       conn;
-    protected DruidConnectionHolder holder;
-    protected TransactionInfo  transactionInfo;
-    private final boolean      dupCloseLogEnable;
-    private boolean            traceEnable = false;
-    private boolean            diable      = false;
-    private boolean            closed      = false;
-    private final Thread       ownerThread;
+    protected Connection                     conn;
+    protected volatile DruidConnectionHolder holder;
+    protected TransactionInfo                transactionInfo;
+    private final boolean                    dupCloseLogEnable;
+    private boolean                          traceEnable = false;
+    private boolean                          diable      = false;
+    private boolean                          closed      = false;
+    private final Thread                     ownerThread;
 
-    private long               connectedTimeNano;
-    private volatile boolean   running     = false;
+    private long                             connectedTimeNano;
+    private volatile boolean                 running     = false;
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         this.conn = holder.getConnection();
