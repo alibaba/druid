@@ -30,7 +30,7 @@ public class TestConcurrent extends TestCase {
         dataSource.setMaxActive(100);
         dataSource.setMaxIdle(100);
         dataSource.setMinIdle(1);
-        dataSource.setMinEvictableIdleTimeMillis(1 * 100);
+        dataSource.setMinEvictableIdleTimeMillis(10 * 1000);
         dataSource.setTimeBetweenEvictionRunsMillis(1 * 10);
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnBorrow(false);
