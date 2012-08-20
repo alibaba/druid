@@ -11,6 +11,7 @@ import oracle.jdbc.OracleStatement;
 import oracle.jdbc.internal.OraclePreparedStatement;
 import oracle.sql.ROWID;
 
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class OracleUtils {
@@ -29,7 +30,7 @@ public class OracleUtils {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
         oracleStmt.setRowPrefetch(value);
     }
-    
+
     public static void enterImplicitCache(PreparedStatement stmt) throws SQLException {
         oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
         oracleStmt.enterImplicitCache();
@@ -51,6 +52,11 @@ public class OracleUtils {
         }
 
         return stmt.unwrap(OraclePreparedStatement.class);
+    }
+
+    public static short getVersionNumber(DruidPooledConnection conn) throws SQLException {
+        oracle.jdbc.internal.OracleConnection oracleConn = (oracle.jdbc.internal.OracleConnection) unwrap(conn);
+        return oracleConn.getVersionNumber();
     }
 
     public static void setDefaultRowPrefetch(Connection conn, int value) throws SQLException {

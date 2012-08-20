@@ -7,8 +7,8 @@ import javax.sql.XADataSource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-
 public class DruidAXDataSource extends DruidDataSource implements XADataSource {
+
     private static final long serialVersionUID = 1L;
 
     @Override
