@@ -101,6 +101,7 @@ public class TestConcurrent extends TestCase {
                 Assert.assertEquals(j + 1, dataSource.getActiveCount());
             }
 
+            Assert.assertEquals(0, dataSource.getDestroyCount());
             Assert.assertEquals(COUNT, dataSource.getActiveCount());
             Assert.assertEquals(COUNT, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getPoolingCount());
@@ -182,7 +183,7 @@ public class TestConcurrent extends TestCase {
         }
 
         dataSource.shrink();
-        Assert.assertEquals(0, dataSource.getActiveCount());
+        Assert.assertEquals("actveCount != 0", 0, dataSource.getActiveCount());
         Assert.assertEquals("minIdle != poolingCount", dataSource.getMinIdle(), dataSource.getPoolingCount());
 
         System.out.println(threadCount + "-threads start");
