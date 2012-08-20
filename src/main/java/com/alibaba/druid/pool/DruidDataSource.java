@@ -752,7 +752,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final Connection conn = pooledConnection.getConnection();
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
-        assert holder != null;
+        if (holder == null) {
+            LOG.warn("connectionHolder is null");
+            return;
+        }
 
         if (pooledConnection.isTraceEnable()) {
             ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
