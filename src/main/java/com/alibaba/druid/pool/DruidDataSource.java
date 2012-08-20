@@ -510,7 +510,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         LOG.error(errorMessage + "validationQuery not set");
     }
 
-    private void initOracle() throws SQLException {
+    protected void initOracle() throws SQLException {
         isOracle = true;
 
         if (driver.getMajorVersion() < 10) {

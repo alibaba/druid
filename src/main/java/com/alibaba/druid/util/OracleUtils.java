@@ -5,16 +5,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.transaction.xa.XAException;
+
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleResultSet;
 import oracle.jdbc.OracleStatement;
 import oracle.jdbc.internal.OraclePreparedStatement;
+import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class OracleUtils {
+
+    public static OracleXAConnection OracleXAConnection(Connection oracleConnection) throws XAException {
+        return new OracleXAConnection(oracleConnection);
+    }
 
     public static void clearDefines(DruidPooledPreparedStatement stmt) throws SQLException {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
