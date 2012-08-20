@@ -12,8 +12,6 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import oracle.jdbc.internal.OracleConnection;
-import oracle.jdbc.xa.OracleXAException;
-import oracle.jdbc.xa.OracleXAResource;
 
 import com.alibaba.druid.util.OracleUtils;
 
@@ -274,8 +272,8 @@ public class DruidXAOracleResource extends DruidXAResource {
     @Override
     public boolean isSameRM(XAResource xares) throws XAException {
         Connection conn1 = null;
-        if ((xares instanceof OracleXAResource)) {
-            conn1 = ((OracleXAResource) xares).getConnection();
+        if ((xares instanceof DruidXAOracleResource)) {
+            conn1 = ((DruidXAOracleResource) xares).getConnection();
         } else {
             return false;
         }
@@ -316,7 +314,7 @@ public class DruidXAOracleResource extends DruidXAResource {
                     returnVal = doPrepare(xid);
                     if ((returnVal != 0) && (returnVal != 3)) {
 
-                        int x_e = OracleXAException.errorConvert(returnVal);
+                        int x_e = DruidXAOracleException.errorConvert(returnVal);
 
                         if ((x_e != 0) && (x_e != 3)) {
                             XAException ex = DruidXAOracleException.newXAException(getConnectionDuringExceptionHandling(),
@@ -389,6 +387,10 @@ public class DruidXAOracleResource extends DruidXAResource {
 
     protected OracleConnection getConnectionDuringExceptionHandling() {
         return (OracleConnection) this.connection;
+    }
+
+    public Connection getConnection() {
+        return this.connection;
     }
 
     @Override
