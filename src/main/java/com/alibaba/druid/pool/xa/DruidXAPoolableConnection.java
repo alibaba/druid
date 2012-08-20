@@ -14,9 +14,9 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
-public class XAPoolableConnection extends DruidPooledConnection implements XAResource {
+public class DruidXAPoolableConnection extends DruidPooledConnection implements XAResource {
 
-    private final static Log     LOG       = LogFactory.getLog(XAPoolableConnection.class);
+    private final static Log     LOG       = LogFactory.getLog(DruidXAPoolableConnection.class);
 
     protected final XAConnection xaConnection;
 
@@ -26,7 +26,7 @@ public class XAPoolableConnection extends DruidPooledConnection implements XARes
 
     private Lock                 stateLock = new ReentrantLock();
 
-    public XAPoolableConnection(DruidConnectionHolder holder, XAConnection xaConnection) throws SQLException{
+    public DruidXAPoolableConnection(DruidConnectionHolder holder, XAConnection xaConnection) throws SQLException{
         super(holder);
 
         this.xaConnection = xaConnection;
