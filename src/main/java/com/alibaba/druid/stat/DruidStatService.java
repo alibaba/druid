@@ -22,9 +22,9 @@ import com.alibaba.druid.util.StringUtils;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class DruidStatJSONService implements DruidStatJSONServiceMBean {
+public class DruidStatService implements DruidStatServiceMBean {
 
-    private final static DruidStatJSONService instance               = new DruidStatJSONService();
+    private final static DruidStatService instance               = new DruidStatService();
 
     private static DruidStatManagerFacade     statManagerFacade      = DruidStatManagerFacade.getInstance();
 
@@ -36,10 +36,10 @@ public class DruidStatJSONService implements DruidStatJSONServiceMBean {
     private static final String               DEFAULT_ORDER_TYPE     = "asc";
     private static final String               DEFAULT_ORDERBY        = "SQL";
 
-    private DruidStatJSONService(){
+    private DruidStatService(){
     }
 
-    public static DruidStatJSONService getInstance() {
+    public static DruidStatService getInstance() {
         return instance;
     }
 
@@ -93,7 +93,7 @@ public class DruidStatJSONService implements DruidStatJSONServiceMBean {
 
         if (url.startsWith("/sql-") && url.indexOf(".json") > 0) {
             Integer id = StringUtils.subStringToInteger(url, "sql-", ".json");
-            return returnJSONSqlInfo(id);
+            return getSqlStat(id);
         }
 
         if (url.startsWith("/weburi.json")) {
@@ -199,7 +199,7 @@ public class DruidStatJSONService implements DruidStatJSONServiceMBean {
         return comparatorOrderBy(array, parameters);
     }
 
-    private String returnJSONSqlInfo(Integer id) {
+    private String getSqlStat(Integer id) {
         Map<String, Object> map = statManagerFacade.getSqlStatData(id);
 
         if (map == null) {

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.druid.stat.DruidStatJSONService;
+import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
@@ -34,7 +34,7 @@ public class StatViewServlet extends HttpServlet {
     private final static String  RESOURCE_PATH               = "support/http/resources";
     private final static String  TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
 
-    private DruidStatJSONService statService                 = DruidStatJSONService.getInstance();
+    private DruidStatService statService                 = DruidStatService.getInstance();
 
     public String                templatePage;
 

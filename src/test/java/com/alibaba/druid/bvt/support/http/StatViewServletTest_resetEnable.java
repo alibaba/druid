@@ -5,32 +5,32 @@ import junit.framework.TestCase;
 
 import org.springframework.mock.web.MockServletConfig;
 
-import com.alibaba.druid.stat.DruidStatJSONService;
+import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.StatViewServlet;
 
 public class StatViewServletTest_resetEnable extends TestCase {
 
     protected void setUp() throws Exception {
-        DruidStatJSONService.getInstance().setResetEnable(true);
+        DruidStatService.getInstance().setResetEnable(true);
     }
 
     protected void tearDown() throws Exception {
-        DruidStatJSONService.getInstance().setResetEnable(true);
+        DruidStatService.getInstance().setResetEnable(true);
     }
 
     public void test_resetEnable_none() throws Exception {
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
 
         MockServletConfig servletConfig = new MockServletConfig();
 
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
     public void test_resetEnable_true() throws Exception {
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
 
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_RESET_ENABLE, "true");
@@ -38,11 +38,11 @@ public class StatViewServletTest_resetEnable extends TestCase {
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
     public void test_resetEnable_empty() throws Exception {
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
 
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_RESET_ENABLE, "");
@@ -50,11 +50,11 @@ public class StatViewServletTest_resetEnable extends TestCase {
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
     }
 
     public void test_resetEnable_false() throws Exception {
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
 
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_RESET_ENABLE, "false");
@@ -62,11 +62,11 @@ public class StatViewServletTest_resetEnable extends TestCase {
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertFalse(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertFalse(DruidStatService.getInstance().isResetEnable());
     }
 
     public void test_resetEnable_error() throws Exception {
-        Assert.assertTrue(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertTrue(DruidStatService.getInstance().isResetEnable());
 
         MockServletConfig servletConfig = new MockServletConfig();
         servletConfig.addInitParameter(StatViewServlet.PARAM_NAME_RESET_ENABLE, "xxx");
@@ -74,6 +74,6 @@ public class StatViewServletTest_resetEnable extends TestCase {
         StatViewServlet servlet = new StatViewServlet();
         servlet.init(servletConfig);
 
-        Assert.assertFalse(DruidStatJSONService.getInstance().isResetEnable());
+        Assert.assertFalse(DruidStatService.getInstance().isResetEnable());
     }
 }

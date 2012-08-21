@@ -1,6 +1,6 @@
 package com.alibaba.druid.stat;
 
 
-public interface DruidStatJSONServiceMBean {
+public interface DruidStatServiceMBean {
     String service(String url);
 }
