@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 import org.springframework.mock.web.MockServletConfig;
 
-import com.alibaba.druid.support.DruidStatJSONService;
+import com.alibaba.druid.stat.DruidStatJSONService;
 import com.alibaba.druid.support.http.StatViewServlet;
 
 public class StatViewServletTest_resetEnable extends TestCase {

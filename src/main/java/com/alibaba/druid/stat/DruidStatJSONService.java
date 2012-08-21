@@ -1,4 +1,4 @@
-package com.alibaba.druid.support;
+package com.alibaba.druid.stat;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,6 @@ import java.util.Map;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
-import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
@@ -23,7 +22,7 @@ import com.alibaba.druid.util.StringUtils;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class DruidStatJSONService {
+public class DruidStatJSONService implements DruidStatJSONServiceMBean {
 
     private final static DruidStatJSONService instance               = new DruidStatJSONService();
 
@@ -229,7 +228,7 @@ public class DruidStatJSONService {
         if (maxTimespanOccurTime != null) {
             map.put("MaxTimespanOccurTime", format.format(maxTimespanOccurTime));
         }
-        
+
         return returnJSONResult(map == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, map);
     }
 

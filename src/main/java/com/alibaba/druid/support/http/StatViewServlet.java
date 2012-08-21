@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.druid.support.DruidStatJSONService;
+import com.alibaba.druid.stat.DruidStatJSONService;
 import com.alibaba.druid.support.http.util.IPAddress;
 import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
