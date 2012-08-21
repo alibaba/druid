@@ -141,6 +141,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 } catch (JMException ex) {
                     LOG.error("register mbean error", ex);
                 }
+                
+                DruidStatService.registerMBean();
             }
 
             ObjectName objectName = null;
@@ -201,6 +203,8 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
                 } catch (JMException ex) {
                     LOG.error("unregister mbean error", ex);
                 }
+                
+                DruidStatService.unregisterMBean();
             }
         }
     }

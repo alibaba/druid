@@ -1,5 +1,6 @@
 package com.alibaba.druid.stat;
 
+import java.lang.management.ManagementFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -8,11 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.JMException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
@@ -24,17 +31,21 @@ import com.alibaba.druid.util.StringUtils;
  */
 public class DruidStatService implements DruidStatServiceMBean {
 
+    private final static Log              LOG                    = LogFactory.getLog(DruidStatService.class);
+
+    public final static String            MBEAN_NAME             = "com.alibaba.druid:type=DruidStatService";
+
     private final static DruidStatService instance               = new DruidStatService();
 
-    private static DruidStatManagerFacade     statManagerFacade      = DruidStatManagerFacade.getInstance();
+    private static DruidStatManagerFacade statManagerFacade      = DruidStatManagerFacade.getInstance();
 
-    public final static int                   RESULT_CODE_SUCCESS    = 1;
-    public final static int                   RESULT_CODE_ERROR      = -1;
+    public final static int               RESULT_CODE_SUCCESS    = 1;
+    public final static int               RESULT_CODE_ERROR      = -1;
 
-    private final static int                  DEFAULT_PAGE           = 1;
-    private final static int                  DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
-    private static final String               DEFAULT_ORDER_TYPE     = "asc";
-    private static final String               DEFAULT_ORDERBY        = "SQL";
+    private final static int              DEFAULT_PAGE           = 1;
+    private final static int              DEFAULT_PER_PAGE_COUNT = Integer.MAX_VALUE;
+    private static final String           DEFAULT_ORDER_TYPE     = "asc";
+    private static final String           DEFAULT_ORDERBY        = "SQL";
 
     private DruidStatService(){
     }
@@ -246,6 +257,29 @@ public class DruidStatService implements DruidStatServiceMBean {
         dataMap.put("ResultCode", resultCode);
         dataMap.put("Content", content);
         return JSONUtils.toJSONString(dataMap);
+    }
+
+    public static void registerMBean() {
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+        try {
+
+            ObjectName objectName = new ObjectName(MBEAN_NAME);
+            if (!mbeanServer.isRegistered(objectName)) {
+                mbeanServer.registerMBean(instance, objectName);
+            }
+        } catch (JMException ex) {
+            LOG.error("register mbean error", ex);
+        }
+    }
+
+    public static void unregisterMBean() {
+        MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+
+        try {
+            mbeanServer.unregisterMBean(new ObjectName(MBEAN_NAME));
+        } catch (JMException ex) {
+            LOG.error("unregister mbean error", ex);
+        }
     }
 
 }
