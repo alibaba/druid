@@ -5,15 +5,14 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.druid.pool.ha.DataSourceHolder;
 import com.alibaba.druid.pool.ha.config.ConfigLoader;
 import com.alibaba.druid.pool.ha.config.URLConnectionConfigLoader;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class CobarConfigLoader extends URLConnectionConfigLoader implements ConfigLoader {
 
@@ -63,26 +62,27 @@ public class CobarConfigLoader extends URLConnectionConfigLoader implements Conf
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected void handleResponseMessage() throws SQLException {
         String responseMessage = this.getResponseMessage();
         
-        JSONObject json = JSON.parseObject(responseMessage);
-        String errorMessage = json.getString("error");
+        Map<String, Object> json = (Map<String, Object>) JSONUtils.parse(responseMessage);
+        String errorMessage = (String) json.get("error");
         if (errorMessage != null) {
             throw new SQLException("load config error, message : " + errorMessage);
         }
 
-        JSONArray array = json.getJSONArray("cobarList");
+        List array = (List) json.get("cobarList");
 
         Set<String> keys = new HashSet<String>();
         for (int i = 0; i < array.size(); ++i) {
-            JSONObject item = array.getJSONObject(i);
+            Map<String, Object> item = (Map<String, Object>) array.get(i);
 
-            String ip = item.getString("ip");
-            int port = item.getIntValue("port");
-            String schema = item.getString("schema");
-            int weight = item.getIntValue("weight");
+            String ip = (String) item.get("ip");
+            int port = (Integer) item.get("port");
+            String schema = (String) item.get("schema");
+            int weight = (Integer) item.get("weight");
 
             String key = ip + ":" + port + "/" + schema;
             keys.add(key);

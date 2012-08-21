@@ -2,10 +2,9 @@ package com.alibaba.druid.pool.ha.config;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class HAConfigLoader extends URLConnectionConfigLoader {
 
@@ -15,8 +14,9 @@ public class HAConfigLoader extends URLConnectionConfigLoader {
 
     @Override
     protected void handleResponseMessage() throws SQLException {
-        JSONObject json = JSON.parseObject(this.getResponseMessage());
-        json.get("serverList");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) JSONUtils.parse(this.getResponseMessage());
+        map.get("serverList");
     }
 
 }

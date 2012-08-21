@@ -294,14 +294,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- for HADataSource -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.1.19</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.fastjson.JSON;
 
 /**
  * @author sandzhang<sandzhangtoo@gmail.com>
@@ -180,10 +179,6 @@ public class StringUtils {
         return (String[]) collection.toArray(new String[collection.size()]);
     }
 
-    public static void main(String args[]) {
-        System.out.println(JSON.toJSONString(getParameters("test?t=1&f=").get("t")));
-    }
-    
     public static boolean equals(String a, String b) {
         if (a == null) {
             return b == null;
