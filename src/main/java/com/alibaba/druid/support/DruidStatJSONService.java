@@ -246,7 +246,7 @@ public class DruidStatJSONService {
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
         dataMap.put("ResultCode", resultCode);
         dataMap.put("Content", content);
-        return JSON.toJSONStringWithDateFormat(dataMap, "yyyy-MM-dd hh:mm:ss");
+        return JSON.toJSONStringWithDateFormat(dataMap, "yyyy-MM-dd HH:mm:ss");
     }
 
 }
