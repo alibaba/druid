@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import junit.framework.Assert;
 import oracle.jdbc.OracleStatement;
@@ -17,7 +15,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestMigrate extends OracleTest {
 
@@ -340,7 +338,7 @@ public class TestMigrate extends OracleTest {
         }
 
         public String toString() {
-            return JSON.toJSONString(this);
+            return JSONUtils.toJSONString(this);
         }
     }
 }

@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
+
 import com.alibaba.druid.util.IOUtils;
 
 public class JSONWriter {
@@ -21,16 +24,6 @@ public class JSONWriter {
     public void writeObject(Object o) {
         if (o == null) {
             write("null");
-            return;
-        }
-
-        if (o instanceof Map) {
-            writeMap((Map) o);
-            return;
-        }
-
-        if (o instanceof Collection) {
-            writeArray((Collection) o);
             return;
         }
 
@@ -51,6 +44,11 @@ public class JSONWriter {
 
         if (o instanceof Date) {
             writeDate((Date) o);
+            return;
+        }
+
+        if (o instanceof Collection) {
+            writeArray((Collection) o);
             return;
         }
 
@@ -82,6 +80,21 @@ public class JSONWriter {
                 write(array[i]);
             }
             write(']');
+            return;
+        }
+
+        if (o instanceof TabularData) {
+            writeTabularData((TabularData) o);
+            return;
+        }
+        
+        if (o instanceof CompositeData) {
+            writeCompositeData((CompositeData) o);
+            return;
+        }
+        
+        if (o instanceof Map) {
+            writeMap((Map) o);
             return;
         }
 
@@ -167,6 +180,50 @@ public class JSONWriter {
             }
         }
         write('"');
+    }
+
+    public void writeTabularData(TabularData tabularData) {
+        if (tabularData == null) {
+            write("null");
+            return;
+        }
+
+        int entryIndex = 0;
+        write('[');
+
+        for (Object item : tabularData.values()) {
+            if (entryIndex != 0) {
+                write(',');
+            }
+            CompositeData row = (CompositeData) item;
+            writeCompositeData(row);
+
+            entryIndex++;
+        }
+        write(']');
+    }
+
+    public void writeCompositeData(CompositeData compositeData) {
+        if (compositeData == null) {
+            write("null");
+            return;
+        }
+
+        int entryIndex = 0;
+        write('{');
+
+        for (Object key : compositeData.getCompositeType().keySet()) {
+            if (entryIndex != 0) {
+                write(',');
+            }
+            writeString((String) key);
+            write(':');
+            Object value = compositeData.get((String) key);
+            writeObject(value);
+            entryIndex++;
+        }
+
+        write('}');
     }
 
     public void writeMap(Map<String, Object> map) {

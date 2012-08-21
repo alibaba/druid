@@ -17,7 +17,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestTransform extends OracleTest {
 
@@ -440,7 +440,7 @@ public class TestTransform extends OracleTest {
         }
 
         public String toString() {
-            return JSON.toJSONString(this);
+            return JSONUtils.toJSONString(this);
         }
     }
 }

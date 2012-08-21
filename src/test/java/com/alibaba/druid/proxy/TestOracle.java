@@ -4,15 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.TreeMap;
 
 import javax.management.openmbean.TabularData;
 
 import junit.framework.TestCase;
 
 import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class TestOracle extends TestCase {
 
@@ -38,8 +36,8 @@ public class TestOracle extends TestCase {
 
         TabularData dataSourcesList = JdbcStatManager.getInstance().getDataSourceList();
         for (Object item : dataSourcesList.values()) {
-            String text = JSON.toJSONString(item, SerializerFeature.UseISO8601DateFormat);
-            System.out.println(JSON.toJSONString(JSON.parseObject(text, TreeMap.class), true));
+            String text = JSONUtils.toJSONString(item);
+            System.out.println(text);
         }
 
     }

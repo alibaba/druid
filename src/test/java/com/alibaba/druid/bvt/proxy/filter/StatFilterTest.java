@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class StatFilterTest extends TestCase {
 
@@ -52,6 +52,6 @@ public class StatFilterTest extends TestCase {
         }
         Assert.assertEquals(true, count > 0);
 
-        System.out.println(JSON.toJSONString(sqlList));
+        System.out.println(JSONUtils.toJSONString(sqlList));
     }
 }

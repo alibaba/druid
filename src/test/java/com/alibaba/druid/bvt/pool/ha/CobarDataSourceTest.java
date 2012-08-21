@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
@@ -15,19 +17,18 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.cobar.CobarConfigLoader;
 import com.alibaba.druid.pool.ha.cobar.CobarDataSource;
 import com.alibaba.druid.pool.ha.cobar.CobarFailureDetecter;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class CobarDataSourceTest extends TestCase {
 
     public void test_cobarDataSource() throws Exception {
         String url = "jdbc:cobar://127.0.0.1:8080/druid";
 
-        final JSONObject config = new JSONObject();
+        final HashMap<String, Object> config = new HashMap<String, Object>();
 
-        JSONArray cobarList = new JSONArray();
+        ArrayList<Object> cobarList = new ArrayList<Object>();
 
-        JSONObject cobarA = new JSONObject();
+        HashMap<String, Object> cobarA = new HashMap<String, Object>();
         cobarA.put("ip", "mock");
         cobarA.put("port", 80);
         cobarA.put("schema", "cobarA");
@@ -35,7 +36,7 @@ public class CobarDataSourceTest extends TestCase {
 
         cobarList.add(cobarA);
 
-        JSONObject cobarB = new JSONObject();
+        HashMap<String, Object> cobarB = new HashMap<String, Object>();
         cobarB.put("ip", "mock");
         cobarB.put("port", 81);
         cobarB.put("schema", "cobarB");
@@ -62,7 +63,7 @@ public class CobarDataSourceTest extends TestCase {
         CobarConfigLoader configLoader = new CobarConfigLoader(dataSource) {
 
             public void load() throws SQLException {
-                responseMessage = config.toJSONString();
+                responseMessage = JSONUtils.toJSONString(config);
 
                 handleResponseMessage();
             }

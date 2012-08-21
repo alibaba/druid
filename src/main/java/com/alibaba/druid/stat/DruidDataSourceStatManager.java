@@ -207,6 +207,7 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
 
     @SuppressWarnings("unchecked")
     public static Set<DruidDataSource> getDruidDataSourceInstances() {
+        getInstances();
         return dataSources.keySet();
     }
 
