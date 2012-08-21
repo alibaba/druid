@@ -37,6 +37,11 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public abstract class LogFilter extends FilterEventAdapter implements LogFilterMBean {
 
+    protected String          dataSourceLoggerName                 = "druid.sql.DataSource";
+    protected String          connectionLoggerName                 = "druid.sql.Connection";
+    protected String          statementLoggerName                  = "druid.sql.Statement";
+    protected String          resultSetLoggerName                  = "druid.sql.ResultSet";
+
     private boolean           connectionConnectBeforeLogEnable     = true;
     private boolean           connectionConnectAfterLogEnable      = true;
     private boolean           connectionCommitAfterLogEnable       = true;

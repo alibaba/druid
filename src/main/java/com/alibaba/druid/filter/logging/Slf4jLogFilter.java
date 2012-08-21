@@ -5,15 +5,10 @@ import org.slf4j.LoggerFactory;
 
 public class Slf4jLogFilter extends LogFilter {
 
-    private String dataSourceLoggerName = "druid.sql.DataSource";
-    private String connectionLoggerName = "druid.sql.Connection";
-    private String statementLoggerName  = "druid.sql.Statement";
-    private String resultSetLoggerName  = "druid.sql.ResultSet";
-
-    private Logger dataSourceLogger     = LoggerFactory.getLogger(dataSourceLoggerName);
-    private Logger connectionLogger     = LoggerFactory.getLogger(connectionLoggerName);
-    private Logger statementLogger      = LoggerFactory.getLogger(statementLoggerName);
-    private Logger resultSetLogger      = LoggerFactory.getLogger(resultSetLoggerName);
+    private Logger dataSourceLogger = LoggerFactory.getLogger(dataSourceLoggerName);
+    private Logger connectionLogger = LoggerFactory.getLogger(connectionLoggerName);
+    private Logger statementLogger  = LoggerFactory.getLogger(statementLoggerName);
+    private Logger resultSetLogger  = LoggerFactory.getLogger(resultSetLoggerName);
 
     @Override
     public String getDataSourceLoggerName() {

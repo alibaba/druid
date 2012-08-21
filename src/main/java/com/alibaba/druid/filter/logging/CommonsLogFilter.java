@@ -24,11 +24,6 @@ import org.apache.commons.logging.impl.Log4JLogger;
  */
 public class CommonsLogFilter extends LogFilter {
 
-    private String dataSourceLoggerName = "druid.sql.DataSource";
-    private String connectionLoggerName = "druid.sql.Connection";
-    private String statementLoggerName  = "druid.sql.Statement";
-    private String resultSetLoggerName  = "druid.sql.ResultSet";
-
     private Log    dataSourceLogger     = LogFactory.getLog(dataSourceLoggerName);
     private Log    connectionLogger     = LogFactory.getLog(connectionLoggerName);
     private Log    statementLogger      = LogFactory.getLog(statementLoggerName);
