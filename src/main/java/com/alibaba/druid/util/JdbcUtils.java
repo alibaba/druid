@@ -47,6 +47,8 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public final class JdbcUtils {
 
+    public static final String      JTDS             = "jtds";
+
     public static final String      MOCK             = "mock";
 
     public static final String      HSQL             = "hsql";
@@ -443,7 +445,7 @@ public final class JdbcUtils {
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {
             return SYBASE;
         } else if (rawUrl.startsWith("jdbc:jtds:")) {
-            return "jtds";
+            return JTDS;
         } else if (rawUrl.startsWith("jdbc:fake:") || rawUrl.startsWith("jdbc:mock:")) {
             return MOCK;
         } else if (rawUrl.startsWith("jdbc:postgresql:")) {
@@ -510,7 +512,7 @@ public final class JdbcUtils {
             throw new SQLException(e.getMessage(), e);
         }
     }
-    
+
     public static int executeUpdate(DataSource dataSource, String sql, Object... parameters) throws SQLException {
         return executeUpdate(dataSource, sql, Arrays.asList(parameters));
     }
@@ -649,7 +651,7 @@ public final class JdbcUtils {
             return null;
         }
     }
-    
+
     public static void insertToTable(DataSource dataSource, String tableName, Map<String, Object> data)
                                                                                                        throws SQLException {
         Connection conn = null;

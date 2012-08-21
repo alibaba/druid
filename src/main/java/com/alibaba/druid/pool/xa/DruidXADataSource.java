@@ -65,6 +65,10 @@ public class DruidXADataSource extends DruidDataSource implements XADataSource {
         if (JdbcUtils.H2.equals(dbType)) {
             return H2Utils.createXAConnection(h2Factory, physicalConn);
         }
+        
+        if (JdbcUtils.JTDS.equals(dbType)) {
+            return new JtdsXAConnection(physicalConn);
+        }
 
         throw new SQLException("xa not support dbType : " + this.dbType);
     }
