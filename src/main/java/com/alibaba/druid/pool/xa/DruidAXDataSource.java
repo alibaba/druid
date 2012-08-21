@@ -28,24 +28,23 @@ public class DruidAXDataSource extends DruidDataSource implements XADataSource {
 
         Connection physicalConn = conn.unwrap(Connection.class);
 
+        XAConnection rawXAConnection;
         if (JdbcUtils.ORACLE.equals(dbType)) {
             try {
-                return OracleUtils.OracleXAConnection(physicalConn);
+                rawXAConnection = OracleUtils.OracleXAConnection(physicalConn);
             } catch (XAException xae) {
                 LOG.error("create xaConnection error", xae);
                 return null;
             }
+        } else if (JdbcUtils.MYSQL.equals(dbType)) {
+            rawXAConnection = MySqlUtils.createXAConnection(physicalConn);
+        } else if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            rawXAConnection = PGUtils.createXAConnection(physicalConn);
+        } else {
+            throw new SQLException("xa not support dbType : " + this.dbType);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return MySqlUtils.createXAConnection(physicalConn);
-        }
-
-        if (JdbcUtils.POSTGRESQL.equals(dbType)) {
-            return PGUtils.createXAConnection(physicalConn);
-        }
-
-        throw new SQLException("xa not support dbType : " + this.dbType);
+        return new DruidPooledXAConnection(conn, rawXAConnection);
     }
 
     @Override
