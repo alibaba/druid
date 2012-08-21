@@ -4,6 +4,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
 import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.support.json.JSONUtils;
 
 public class DruidSQLPanel extends DruidPanel {
 
@@ -13,7 +14,8 @@ public class DruidSQLPanel extends DruidPanel {
         ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
         String url = "/sql.json";
         String result = (String) conn.invoke(name, "service", new String[] { url }, new String[] { String.class.getName() });
+        Object o = JSONUtils.parse(result);
 
-        System.out.println("doInBackground");
+        System.out.println(o);
     }
 }
