@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.XAConnection;
 import javax.transaction.xa.XAException;
 
 import oracle.jdbc.OracleConnection;
@@ -19,7 +20,7 @@ import com.alibaba.druid.pool.DruidPooledPreparedStatement;
 
 public class OracleUtils {
 
-    public static OracleXAConnection OracleXAConnection(Connection oracleConnection) throws XAException {
+    public static XAConnection OracleXAConnection(Connection oracleConnection) throws XAException {
         return new OracleXAConnection(oracleConnection);
     }
 

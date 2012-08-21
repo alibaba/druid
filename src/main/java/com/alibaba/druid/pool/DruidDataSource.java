@@ -375,9 +375,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, driverClass.getClass().getName());
             }
 
-            if ("oracle".equals(this.dbType)) {
-                initOracle();
-            }
+            initCheck();
 
             initExceptionSorter();
             initValidConnectionChecker();
@@ -510,16 +508,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         LOG.error(errorMessage + "validationQuery not set");
     }
 
-    protected void initOracle() throws SQLException {
-        isOracle = true;
+    protected void initCheck() throws SQLException {
+        if (JdbcUtils.ORACLE.equals(this.dbType)) {
+            isOracle = true;
 
-        if (driver.getMajorVersion() < 10) {
-            throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
-                                   + driver.getMinorVersion());
-        }
+            if (driver.getMajorVersion() < 10) {
+                throw new SQLException("not support oracle driver " + driver.getMajorVersion() + "."
+                                       + driver.getMinorVersion());
+            }
 
-        if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
-            this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
+            if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
+                this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
+            }
         }
     }
 
