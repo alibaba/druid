@@ -28,7 +28,7 @@ public class H2Utils {
 
         try {
             if (constructor == null) {
-                constructor = JdbcXAConnection.class.getConstructor(JdbcDataSourceFactory.class, int.class,
+                constructor = JdbcXAConnection.class.getDeclaredConstructor(JdbcDataSourceFactory.class, int.class,
                                                                     JdbcConnection.class);
                 constructor.setAccessible(true);
             }
@@ -43,7 +43,7 @@ public class H2Utils {
 
     public static int getNextId(int type) throws Exception {
         if (method == null) {
-            method = TraceObject.class.getMethod("getNextId", int.class);
+            method = TraceObject.class.getDeclaredMethod("getNextId", int.class);
             method.setAccessible(true);
         }
 
