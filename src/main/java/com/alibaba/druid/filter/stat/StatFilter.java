@@ -54,12 +54,13 @@ import com.alibaba.druid.support.logging.LogFactory;
  * @author wenshao<szujobs@hotmail.com>
  */
 public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
+
     private final static Log          LOG                        = LogFactory.getLog(StatFilter.class);
-    
+
     private static final String       SYS_PROP_LOG_SLOW_SQL      = "druid.stat.logSlowSql";
     private static final String       SYS_PROP_SLOW_SQL_MILLIS   = "druid.stat.slowSqlMillis";
     private static final String       SYS_PROP_MERGE_SQL         = "druid.stat.mergeSql";
-    
+
     public final static String        ATTR_NAME_CONNECTION_STAT  = "stat.conn";
     public final static String        ATTR_NAME_STATEMENT_STAT   = "stat.stmt";
     public final static String        ATTR_UPDATE_COUNT          = "stat.updteCount";
@@ -688,7 +689,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.resultSet_getClob(resultSet, columnIndex);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), resultSet, (ClobProxy) clob);
         }
 
         return clob;
@@ -699,7 +700,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.resultSet_getClob(resultSet, columnLabel);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), resultSet, (ClobProxy) clob);
         }
 
         return clob;
@@ -711,7 +712,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.callableStatement_getClob(statement, parameterIndex);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) clob);
         }
 
         return clob;
@@ -723,7 +724,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Clob clob = chain.callableStatement_getClob(statement, parameterName);
 
         if (clob != null) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) clob);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) clob);
         }
 
         return clob;
@@ -734,7 +735,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnIndex);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
         }
 
         return obj;
@@ -746,7 +747,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnIndex, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
         }
 
         return obj;
@@ -757,7 +758,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnLabel);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
         }
 
         return obj;
@@ -769,7 +770,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.resultSet_getObject(result, columnLabel, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
         }
 
         return obj;
@@ -781,7 +782,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
         }
 
         return obj;
@@ -793,7 +794,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterIndex, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
         }
 
         return obj;
@@ -805,7 +806,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterName);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
         }
 
         return obj;
@@ -818,26 +819,26 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         Object obj = chain.callableStatement_getObject(statement, parameterName, map);
 
         if (obj instanceof Clob) {
-            clobOpenAfter(chain.getDataSource().getDataSourceStat(), (ClobProxy) obj);
+            clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
         }
 
         return obj;
     }
 
-    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, ClobProxy clob) {
+    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, ResultSetProxy rs, ClobProxy clob) {
+        clobOpenAfter(dataSourceStat, rs.getStatementProxy(), clob);
+    }
+
+    private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, StatementProxy stmt, ClobProxy clob) {
         dataSourceStat.incrementClobOpenCount();
+        
+        if (stmt != null) {
+            JdbcSqlStat sqlStat = stmt.getSqlStat();
+            if (sqlStat != null) {
+                sqlStat.incrementClobOpenCount();
+            }
+        }
 
         StatFilterContext.getInstance().clob_open();
     }
-
-    @Override
-    public void clob_free(FilterChain chain, ClobProxy wrapper) throws SQLException {
-        chain.clob_free(wrapper);
-
-        JdbcDataSourceStat dataSourceStat = chain.getDataSource().getDataSourceStat();
-        dataSourceStat.incrementClobFreeCount();
-
-        StatFilterContext.getInstance().clob_free();
-    }
-
 }

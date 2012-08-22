@@ -67,7 +67,6 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     private final ConcurrentMap<Long, JdbcConnectionStat.Entry> connections             = new ConcurrentHashMap<Long, JdbcConnectionStat.Entry>();
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
-    private final AtomicLong                                    clobFreeCount          = new AtomicLong();
 
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
@@ -103,7 +102,6 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     public void reset() {
         clobOpenCount.set(0);
-        clobFreeCount.set(0);
 
         connectionStat.reset();
         statementStat.reset();
@@ -315,17 +313,9 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     public long getClobOpenCount() {
         return clobOpenCount.get();
     }
-    
+
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
-    }
-
-    public long getClobFreeCount() {
-        return clobFreeCount.get();
-    }
-    
-    public void incrementClobFreeCount() {
-        clobFreeCount.incrementAndGet();
     }
 
 }

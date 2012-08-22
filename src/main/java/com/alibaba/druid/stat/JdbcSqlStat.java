@@ -215,7 +215,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         fetchRowCountHistogram.reset();
         updateCountHistogram.reset();
         executeAndResultHoldTimeHistogram.reset();
-        
+
         clobOpenCount.set(0);
     }
 
@@ -257,11 +257,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getFetchRowCountMax() {
         return fetchRowCountMax.get();
     }
-    
+
     public long getClobOpenCount() {
         return clobOpenCount.get();
     }
-    
+
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
     }
@@ -488,6 +488,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
+                SimpleType.LONG, //
 
         };
 
@@ -534,11 +535,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "ExecuteAndResultSetHoldTime", //
                 "FetchRowCountHistogram", //
 
-                // 30
+                // 30 - 34
                 "EffectedRowCountHistogram", //
                 "ExecuteAndResultHoldTimeHistogram", //
                 "EffectedRowCountMax", //
-                "FetchRowCountMax"
+                "FetchRowCountMax", //
+                "ClobOpenCount",
 
         //
         };
@@ -606,9 +608,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("FetchRowCountHistogram", this.getFetchRowCountHistogram().toArray()); // 29
 
         map.put("EffectedRowCountHistogram", this.getUpdateCountHistogram().toArray()); // 30
-        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogram().toArray()); // 30
-        map.put("EffectedRowCountMax", getUpdateCountMax());
-        map.put("FetchRowCountMax", getFetchRowCountMax());
+        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogram().toArray()); // 31
+        map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
+        map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
+        map.put("ClobOpenCount", getClobOpenCount()); // 34
 
         return map;
     }
