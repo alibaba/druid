@@ -64,6 +64,11 @@ public class JSONParser {
             nextToken();
             return false;
         }
+        
+        if (token == Token.NULL) {
+            nextToken();
+            return null;
+        }
 
         throw new IllegalArgumentException("illegal token : " + token);
     }
@@ -186,6 +191,13 @@ public class JSONParser {
                     scanDigit();
                     return;
                 }
+                
+                if (text.startsWith("null", index)) {
+                    token = Token.NULL;
+                    index += 3;
+                    nextChar();
+                    return;
+                }
 
                 if (text.startsWith("true", index)) {
                     token = Token.TRUE;
@@ -305,6 +317,7 @@ public class JSONParser {
         BOOLEAN, //
         TRUE, //
         FALSE, //
+        NULL, //
         EOF, //
 
         LBRACE("{"), //
