@@ -36,6 +36,10 @@ public class ClobProxyImpl implements ClobProxy {
     protected final DataSourceProxy dataSource;
 
     public ClobProxyImpl(DataSourceProxy dataSource, ConnectionProxy connection, Clob clob){
+        if (clob == null) {
+            throw new IllegalArgumentException("clob is null");
+        }
+        
         this.dataSource = dataSource;
         this.connection = connection;
         this.clob = clob;

@@ -20,10 +20,26 @@ public class JSONWriter {
         this.out = new StringBuilder();
     }
 
+    public void writeArrayStart() {
+        write('[');
+    }
+
+    public void writeComma() {
+        write(',');
+    }
+
+    public void writeArrayEnd() {
+        write(']');
+    }
+    
+    public void writeNull() {
+        write("null");
+    }
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void writeObject(Object o) {
         if (o == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -87,12 +103,12 @@ public class JSONWriter {
             writeTabularData((TabularData) o);
             return;
         }
-        
+
         if (o instanceof CompositeData) {
             writeCompositeData((CompositeData) o);
             return;
         }
-        
+
         if (o instanceof Map) {
             writeMap((Map) o);
             return;
@@ -103,7 +119,7 @@ public class JSONWriter {
 
     public void writeDate(Date date) {
         if (date == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -112,7 +128,7 @@ public class JSONWriter {
 
     public void writeError(Throwable error) {
         if (error == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -127,7 +143,7 @@ public class JSONWriter {
 
     public void writeArray(Object[] array) {
         if (array == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -145,7 +161,7 @@ public class JSONWriter {
 
     public void writeArray(Collection<Object> list) {
         if (list == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -184,7 +200,7 @@ public class JSONWriter {
 
     public void writeTabularData(TabularData tabularData) {
         if (tabularData == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -205,7 +221,7 @@ public class JSONWriter {
 
     public void writeCompositeData(CompositeData compositeData) {
         if (compositeData == null) {
-            write("null");
+            writeNull();
             return;
         }
 
@@ -228,7 +244,7 @@ public class JSONWriter {
 
     public void writeMap(Map<String, Object> map) {
         if (map == null) {
-            write("null");
+            writeNull();
             return;
         }
 

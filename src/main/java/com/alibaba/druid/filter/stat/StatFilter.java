@@ -47,6 +47,7 @@ import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatContext;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.stat.JdbcStatementStat;
+import com.alibaba.druid.support.json.JSONWriter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -456,12 +457,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
             long millis = nanoSpan / (1000 * 1000);
             if (millis >= slowSqlMillis) {
-                StringBuilder buf = buildSlowParameters(statement);
-                sqlStat.setLastSlowParameters(buf.toString());
+                String slowParameters = buildSlowParameters(statement);
+                sqlStat.setLastSlowParameters(slowParameters);
 
                 if (logSlowSql) {
                     LOG.error("slow sql " + millis + " millis. \n" + statement.getLastExecuteSql() + "\n"
-                              + buf.toString());
+                              + slowParameters);
                 }
             }
         }
@@ -497,70 +498,48 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         StatFilterContext.getInstance().executeAfter(sql, nanoSpan, error);
     }
 
-    private StringBuilder buildSlowParameters(StatementProxy statement) {
-        StringBuilder buf = new StringBuilder();
-        buf.append('[');
+    private String buildSlowParameters(StatementProxy statement) {
+        JSONWriter out = new JSONWriter();
+
+        out.writeArrayStart();
         int index = 0;
         for (JdbcParameter parameter : statement.getParameters().values()) {
             if (index != 0) {
-                buf.append(',');
+                out.writeComma();
             }
+            
             Object value = parameter.getValue();
             if (value == null) {
-                buf.append("null");
+                out.writeNull();
             } else if (value instanceof String) {
-                buf.append('"');
                 String text = (String) value;
                 if (text.length() > 100) {
-                    for (int i = 0; i < 97; ++i) {
-                        char ch = text.charAt(i);
-                        if (ch == '\'') {
-                            buf.append('\\');
-                            buf.append(ch);
-                        } else {
-                            buf.append(ch);
-                        }
-                    }
-                    buf.append("...");
+                    out.writeString(text.substring(0, 97) + "...");
                 } else {
-                    for (int i = 0; i < text.length(); ++i) {
-                        char ch = text.charAt(i);
-                        if (ch == '\'') {
-                            buf.append('\\');
-                            buf.append(ch);
-                        } else {
-                            buf.append(ch);
-                        }
-                    }
+                    out.writeString(text);
                 }
-                buf.append('"');
             } else if (value instanceof Number) {
-                buf.append(value.toString());
+                out.writeObject(value);
             } else if (value instanceof java.util.Date) {
-                java.util.Date date = (java.util.Date) value;
-                buf.append(date.getClass().getSimpleName());
-                buf.append('(');
-                buf.append(date.getTime());
-                buf.append(')');
+                out.writeObject(value);
             } else if (value instanceof Boolean) {
-                buf.append(value.toString());
+                out.writeObject(value);
             } else if (value instanceof InputStream) {
-                buf.append("<InputStream>");
+                out.writeString("<InputStream>");
             } else if (value instanceof Clob) {
-                buf.append("<Clob>");
+                out.writeString("<Clob>");
             } else if (value instanceof NClob) {
-                buf.append("<NClob>");
+                out.writeString("<NClob>");
             } else if (value instanceof Blob) {
-                buf.append("<Blob>");
+                out.writeString("<Blob>");
             } else {
-                buf.append('<');
-                buf.append(value.getClass().getName());
-                buf.append('>');
+                out.writeString('<' + value.getClass().getName() + '>');
             }
             index++;
         }
-        buf.append(']');
-        return buf;
+        out.writeArrayEnd();
+
+        return out.toString();
     }
 
     @Override
@@ -831,7 +810,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, StatementProxy stmt, ClobProxy clob) {
         dataSourceStat.incrementClobOpenCount();
-        
+
         if (stmt != null) {
             JdbcSqlStat sqlStat = stmt.getSqlStat();
             if (sqlStat != null) {
