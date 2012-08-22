@@ -83,8 +83,9 @@ function buildMenu() {
       + "<a href='weburi.html'>WebURI</a> | "
       + "<a href='websession.html'>Web Session</a> | "
       + "<a href='spring.html'>Spring</a> | "
-      + "<a href='#' onclick='ajaxRequestForReset()'>Reset All</a> | "
-      + "<a href='api.html'>JSON API</a> ";
+      + "<a href='api.html'>JSON API</a> "
+      + "<a href='#' style='display:block;margin-right:20px;float:right' onclick='ajaxRequestForReset()'>Reset All</a> ";
+
 	document.body.insertBefore(divEle, document.body.firstChild); 
 	document.body.insertBefore(document.createElement("br"), document.body.firstChild); 
 }
