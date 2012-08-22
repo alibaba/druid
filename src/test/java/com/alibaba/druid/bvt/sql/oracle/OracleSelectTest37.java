@@ -23,7 +23,7 @@ public class OracleSelectTest37 extends OracleTest {
         "select resource_value,count(resource_value) nums,http_method "
                 + "from ( "
                 + "       select * from audit_url_log "
-                + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') >= ? and to_char(begin_time,'yyyy-MM-dd') <= ? ) "
+                + "       where project_id = ? and to_char(begin_time,'yyyy-MM-dd') > = ? and to_char(begin_time,'yyyy-MM-dd') < = ? ) "
                 + "       group by resource_value,http_method having count(resource_value) > = ?"; //
 
         OracleStatementParser parser = new OracleStatementParser(sql);

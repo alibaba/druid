@@ -930,9 +930,16 @@ public class SQLExprParser extends SQLParser {
         SQLExpr rightExp;
 
         if (lexer.token() == Token.LT) {
+            SQLBinaryOperator op = SQLBinaryOperator.LessThan;
+            
             lexer.nextToken();
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+                op = SQLBinaryOperator.LessThanOrEqual;
+            }
+            
             rightExp = bitOr();
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThan, rightExp);
+            expr = new SQLBinaryOpExpr(expr, op, rightExp);
             // expr = relationalRest(expr);
         } else if (lexer.token() == Token.LTEQ) {
             lexer.nextToken();
