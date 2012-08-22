@@ -677,7 +677,7 @@ public class SQLExprParser extends SQLParser {
 
     protected SQLAggregateExpr parseAggregateExpr(String methodName) throws ParserException {
         methodName = methodName.toUpperCase();
-        
+
         SQLAggregateExpr aggregateExpr;
         if (lexer.token() == Token.ALL) {
             aggregateExpr = new SQLAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
@@ -945,16 +945,20 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             rightExp = bitOr();
 
-            // rightExp = relationalRest(rightExp);
-
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.LessThanOrEqualOrGreaterThan, rightExp);
         } else if (lexer.token() == Token.GT) {
+            SQLBinaryOperator op = SQLBinaryOperator.GreaterThan;
+
             lexer.nextToken();
+
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+                op = SQLBinaryOperator.GreaterThanOrEqual;
+            }
+
             rightExp = bitOr();
 
-            // rightExp = relationalRest(rightExp);
-
-            expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.GreaterThan, rightExp);
+            expr = new SQLBinaryOpExpr(expr, op, rightExp);
         } else if (lexer.token() == Token.GTEQ) {
             lexer.nextToken();
             rightExp = bitOr();
@@ -1083,7 +1087,7 @@ public class SQLExprParser extends SQLParser {
 
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
-        
+
         if ("character".equalsIgnoreCase(typeName) && "varying".equalsIgnoreCase(lexer.stringVal())) {
             typeName += ' ' + lexer.stringVal();
             lexer.nextToken();
@@ -1154,7 +1158,8 @@ public class SQLExprParser extends SQLParser {
         if (lexer.token() == token) {
             lexer.nextToken();
         } else {
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " " + lexer.stringVal());
+            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+                                        + lexer.stringVal());
         }
     }
 
@@ -1179,7 +1184,7 @@ public class SQLExprParser extends SQLParser {
             column.getConstaints().add(new NotNullConstraint());
             return parseColumnRest(column);
         }
-        
+
         if (lexer.token() == Token.NULL) {
             lexer.nextToken();
             column.setDefaultExpr(new SQLNullExpr());
@@ -1211,14 +1216,13 @@ public class SQLExprParser extends SQLParser {
 
         return item;
     }
-    
+
     public List<SQLCommentHint> parseHints() {
         List<SQLCommentHint> hints = new ArrayList<SQLCommentHint>();
         parseHints(hints);
         return hints;
     }
-    
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void parseHints(List hints) {
         if (lexer.token() == Token.HINT) {
