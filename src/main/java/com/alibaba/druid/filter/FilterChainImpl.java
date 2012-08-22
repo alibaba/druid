@@ -977,7 +977,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
+            return wrap(resultSet.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
@@ -996,7 +996,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
+            return wrap(resultSet.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
@@ -1653,7 +1653,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
+            return wrap(resultSet.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
@@ -1683,7 +1683,7 @@ public class FilterChainImpl implements FilterChain {
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnIndex);
 
-        return wrap(resultSet.getStatementProxy().getConnectionProxy(), clob);
+        return wrap(resultSet.getStatementProxy(), clob);
     }
 
     @Override
@@ -1711,7 +1711,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(resultSet.getStatementProxy().getConnectionProxy(), (Clob) obj);
+            return wrap(resultSet.getStatementProxy(), (Clob) obj);
         }
 
         return obj;
@@ -1741,7 +1741,7 @@ public class FilterChainImpl implements FilterChain {
 
         Clob clob = resultSet.getResultSetRaw().getClob(columnLabel);
 
-        return wrap(resultSet.getStatementProxy().getConnectionProxy(), clob);
+        return wrap(resultSet.getStatementProxy(), clob);
     }
 
     @Override
@@ -3394,7 +3394,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(statement.getConnectionProxy(), (Clob) obj);
+            return wrap(statement, (Clob) obj);
         }
 
         return obj;
@@ -3414,7 +3414,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(statement.getConnectionProxy(), (Clob) obj);
+            return wrap(statement, (Clob) obj);
         }
 
         return obj;
@@ -3434,7 +3434,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(statement.getConnectionProxy(), (Clob) obj);
+            return wrap(statement, (Clob) obj);
         }
 
         return obj;
@@ -3454,7 +3454,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         if (obj instanceof Clob) {
-            return wrap(statement.getConnectionProxy(), (Clob) obj);
+            return wrap(statement, (Clob) obj);
         }
 
         return obj;
@@ -3493,7 +3493,7 @@ public class FilterChainImpl implements FilterChain {
 
         Clob clob = statement.getRawObject().getClob(parameterIndex);
 
-        return wrap(statement.getConnectionProxy(), clob);
+        return wrap(statement, clob);
     }
 
     @Override
@@ -3965,7 +3965,7 @@ public class FilterChainImpl implements FilterChain {
 
         Clob clob = statement.getRawObject().getClob(parameterName);
 
-        return wrap(statement.getConnectionProxy(), clob);
+        return wrap(statement, clob);
     }
 
     @Override
@@ -4469,25 +4469,45 @@ public class FilterChainImpl implements FilterChain {
         return new ResultSetProxyImpl(statement, resultSet, dataSource.createResultSetId(),
                                       statement.getLastExecuteSql());
     }
-
-    public ClobProxy wrap(ConnectionProxy connection, Clob clob) {
+    
+    public ClobProxy wrap(ConnectionProxy conn, Clob clob) {
         if (clob == null) {
             return null;
         }
 
         if (clob instanceof NClob) {
-            return wrap(connection, (NClob) clob);
+            return wrap(conn, (NClob) clob);
         }
-
-        return new ClobProxyImpl(dataSource, connection, clob);
+        
+        return new ClobProxyImpl(dataSource, conn, clob);
+    }
+    
+    public NClobProxy wrap(ConnectionProxy conn, NClob clob) {
+        if (clob == null) {
+            return null;
+        }
+        
+        return new NClobProxyImpl(dataSource, conn, clob);
     }
 
-    public NClobProxy wrap(ConnectionProxy connection, NClob nclob) {
+    public ClobProxy wrap(StatementProxy stmt, Clob clob) {
+        if (clob == null) {
+            return null;
+        }
+
+        if (clob instanceof NClob) {
+            return wrap(stmt, (NClob) clob);
+        }
+
+        return new ClobProxyImpl(dataSource, stmt.getConnectionProxy(), clob);
+    }
+
+    public NClobProxy wrap(StatementProxy stmt, NClob nclob) {
         if (nclob == null) {
             return null;
         }
 
-        return new NClobProxyImpl(dataSource, connection, nclob);
+        return new NClobProxyImpl(dataSource, stmt.getConnectionProxy(), nclob);
     }
 
     @Override

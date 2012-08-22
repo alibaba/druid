@@ -68,6 +68,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private boolean          removed                           = false;
 
+    private final AtomicLong clobOpenCount                     = new AtomicLong();
+
     private final Histogram  histogram                         = new Histogram(new long[] { //
                                                                                             //
             1, 10, 100, 1000, 10 * 1000, //
@@ -213,6 +215,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         fetchRowCountHistogram.reset();
         updateCountHistogram.reset();
         executeAndResultHoldTimeHistogram.reset();
+        
+        clobOpenCount.set(0);
     }
 
     public long getConcurrentMax() {
@@ -241,6 +245,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public long getUpdateCount() {
         return updateCount.get();
     }
+
     public long getUpdateCountMax() {
         return updateCountMax.get();
     }
@@ -251,8 +256,16 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public long getFetchRowCountMax() {
         return fetchRowCountMax.get();
-    	
     }
+    
+    public long getClobOpenCount() {
+        return clobOpenCount.get();
+    }
+    
+    public void incrementClobOpenCount() {
+        clobOpenCount.incrementAndGet();
+    }
+
     public long getId() {
         return id;
     }
@@ -361,7 +374,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public void addExecuteTime(StatementExecuteType executeType, boolean firstResultSet, long nanoSpan) {
         addExecuteTime(nanoSpan);
-        
+
         if (StatementExecuteType.ExecuteQuery != executeType && !firstResultSet) {
             executeAndResultHoldTimeHistogram.record((nanoSpan) / 1000 / 1000);
         }
@@ -516,16 +529,16 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
                 // 25 - 29
                 "Histogram", //
-                "LastSlowParameters", // 
-                "ResultSetHoldTime", // 
-                "ExecuteAndResultSetHoldTime", // 
+                "LastSlowParameters", //
+                "ResultSetHoldTime", //
+                "ExecuteAndResultSetHoldTime", //
                 "FetchRowCountHistogram", //
 
                 // 30
-                "EffectedRowCountHistogram", // 
+                "EffectedRowCountHistogram", //
                 "ExecuteAndResultHoldTimeHistogram", //
                 "EffectedRowCountMax", //
-                "FetchRowCountMax" 
+                "FetchRowCountMax"
 
         //
         };
@@ -555,7 +568,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("MaxTimespan", getExecuteMillisMax());
         map.put("LastError", JMXUtils.getErrorCompositeData(this.getExecuteErrorLast()));
         map.put("EffectedRowCount", getUpdateCount());
-      
+
         // 10 - 14
         map.put("FetchRowCount", getFetchRowCount());
         map.put("MaxTimespanOccurTime", getExecuteNanoSpanMaxOccurTime());
