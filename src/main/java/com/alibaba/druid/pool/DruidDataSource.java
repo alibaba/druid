@@ -1074,7 +1074,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public int getPoolingPeak() {
-        return poolingPeak;
+        lock.lock();
+        try {
+            return poolingPeak;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public Date getPoolingPeakTime() {
