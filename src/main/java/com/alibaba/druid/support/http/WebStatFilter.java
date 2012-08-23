@@ -91,7 +91,7 @@ public class WebStatFilter implements Filter {
         webAppStat.beforeInvoke();
 
         WebURIStat uriStat = webAppStat.getURIStat(requestURI, false);
-        
+
         if (uriStat == null) {
             int index = requestURI.indexOf(";jsessionid=");
             if (index != -1) {
@@ -180,6 +180,8 @@ public class WebStatFilter implements Filter {
         if (sessionStat != null) {
             long currentMillis = System.currentTimeMillis();
 
+            String userAgent = request.getHeader("user-agent");
+
             if (sessionStat.getCreateTimeMillis() == -1L) {
                 HttpSession session = request.getSession(false);
 
@@ -188,9 +190,10 @@ public class WebStatFilter implements Filter {
                 } else {
                     sessionStat.setCreateTimeMillis(currentMillis);
                 }
+
+                webAppStat.computeUserAgent(userAgent);
             }
 
-            String userAgent = request.getHeader("user-agent");
             sessionStat.setUserAgent(userAgent);
 
             String ip = DruidWebUtils.getRemoteAddr(request);

@@ -15,6 +15,7 @@ import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.JdbcSqlStatUtils;
+import com.alibaba.druid.util.StringUtils;
 
 /**
  * 监控相关的对外数据暴露
@@ -41,6 +42,17 @@ public class DruidStatManagerFacade {
 
     private Set<Object> getDruidDataSourceInstances() {
         return DruidDataSourceStatManager.getInstances().keySet();
+    }
+    
+    public Object getDruidDataSourceByName(String name) {
+        for (Object o : this.getDruidDataSourceInstances()) {
+            String itemName = DruidDataSourceUtils.getName(o);
+            if (StringUtils.equals(name, itemName)) {
+                return o;
+            }
+        }
+        
+        return null;
     }
 
     public void resetDataSourceStat() {
@@ -137,8 +149,8 @@ public class DruidStatManagerFacade {
         return JdbcSqlStatUtils.getData(sqlStat);
     }
 
-    public List<Object> getDataSourceStatList() {
-        List<Object> datasourceList = new ArrayList<Object>();
+    public List<Map<String, Object>> getDataSourceStatDataList() {
+        List<Map<String, Object>> datasourceList = new ArrayList<Map<String, Object>>();
         for (Object dataSource : getDruidDataSourceInstances()) {
             datasourceList.add(dataSourceToMapData(dataSource));
         }

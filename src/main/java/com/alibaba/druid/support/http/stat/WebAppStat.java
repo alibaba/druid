@@ -40,6 +40,63 @@ public class WebAppStat {
     private final AtomicLong                        uriStatMapFullCount            = new AtomicLong();
     private final AtomicLong                        uriSessionMapFullCount         = new AtomicLong();
 
+    private final AtomicLong                        osMacOSXCount                  = new AtomicLong(0);
+    private final AtomicLong                        osWindowsCount                 = new AtomicLong(0);
+    private final AtomicLong                        osLinuxCount                   = new AtomicLong(0);
+    private final AtomicLong                        osSymbianCount                 = new AtomicLong(0);
+    private final AtomicLong                        osFreeBSDCount                 = new AtomicLong(0);
+    private final AtomicLong                        osOpenBSDCount                 = new AtomicLong(0);
+    private final AtomicLong                        osAndroidCount                 = new AtomicLong(0);
+
+    private final AtomicLong                        osWindows98Count                    = new AtomicLong();
+    private final AtomicLong                        osWindowsXPCount                    = new AtomicLong();
+    private final AtomicLong                        osWindows2000Count                  = new AtomicLong();
+    private final AtomicLong                        osWindowsVistaCount                 = new AtomicLong();
+    private final AtomicLong                        osWindows7Count                     = new AtomicLong();
+
+    private final AtomicLong                        osAndroid15Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid16Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid20Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid21Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid22Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid23Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid30Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid31Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid32Count               = new AtomicLong(0);
+    private final AtomicLong                        osAndroid40Count               = new AtomicLong(0);
+
+    private final AtomicLong                        osLinuxUbuntuCount             = new AtomicLong(0);
+
+    private final AtomicLong                        browserIECount                 = new AtomicLong(0);
+    private final AtomicLong                        browserFirefoxCount            = new AtomicLong(0);
+    private final AtomicLong                        browserChromeCount             = new AtomicLong(0);
+    private final AtomicLong                        browserSafariCount             = new AtomicLong(0);
+    private final AtomicLong                        browserOperaCount              = new AtomicLong(0);
+
+    private final AtomicLong                        browserIE5Count                = new AtomicLong(0);
+    private final AtomicLong                        browserIE6Count                = new AtomicLong(0);
+    private final AtomicLong                        browserIE7Count                = new AtomicLong(0);
+    private final AtomicLong                        browserIE8Count                = new AtomicLong(0);
+    private final AtomicLong                        browserIE9Count                = new AtomicLong(0);
+    private final AtomicLong                        browserIE10Count               = new AtomicLong(0);
+
+    private final AtomicLong                        browser360SECount              = new AtomicLong(0);
+
+    private final AtomicLong                        deviceAndroidCount             = new AtomicLong(0);
+    private final AtomicLong                        deviceIpadCount                = new AtomicLong(0);
+    private final AtomicLong                        deviceIphoneCount              = new AtomicLong(0);
+    private final AtomicLong                        deviceWindowsPhoneCount        = new AtomicLong(0);
+
+    private final AtomicLong                        botCount                       = new AtomicLong();
+    private final AtomicLong                        botBaiduCount                  = new AtomicLong();
+    private final AtomicLong                        botYoudaoCount                 = new AtomicLong();
+    private final AtomicLong                        botGoogleCount                 = new AtomicLong();
+    private final AtomicLong                        botMsnCount                    = new AtomicLong();
+    private final AtomicLong                        botBingCount                   = new AtomicLong();
+    private final AtomicLong                        botSosoCount                   = new AtomicLong();
+    private final AtomicLong                        botSogouCount                  = new AtomicLong();
+    private final AtomicLong                        botYahooCount                  = new AtomicLong();
+
     private String                                  contextPath;
 
     public static WebAppStat current() {
@@ -67,6 +124,52 @@ public class WebAppStat {
 
         uriStatMapFullCount.set(0);
         uriSessionMapFullCount.set(0);
+
+        osMacOSXCount.set(0);
+        osWindowsCount.set(0);
+        osLinuxCount.set(0);
+        osSymbianCount.set(0);
+        osOpenBSDCount.set(0);
+        osFreeBSDCount.set(0);
+        osAndroidCount.set(0);
+
+        osWindows98Count.set(0);
+        osWindowsXPCount.set(0);
+        osWindows2000Count.set(0);
+        osWindowsVistaCount.set(0);
+        osWindows7Count.set(0);
+
+        osLinuxUbuntuCount.set(0);
+
+        osAndroid15Count.set(0);
+        osAndroid16Count.set(0);
+        osAndroid20Count.set(0);
+        osAndroid21Count.set(0);
+        osAndroid22Count.set(0);
+        osAndroid23Count.set(0);
+        osAndroid30Count.set(0);
+        osAndroid31Count.set(0);
+        osAndroid32Count.set(0);
+        osAndroid40Count.set(0);
+
+        browserIE6Count.set(0);
+        browserIE7Count.set(0);
+        browserIE8Count.set(0);
+        browserIE9Count.set(0);
+        browserIE10Count.set(0);
+
+        browserIECount.set(0);
+        browserFirefoxCount.set(0);
+        browserChromeCount.set(0);
+        browserSafariCount.set(0);
+        browserOperaCount.set(0);
+
+        browser360SECount.set(0);
+
+        deviceAndroidCount.set(0);
+        deviceIpadCount.set(0);
+        deviceIphoneCount.set(0);
+        deviceWindowsPhoneCount.set(0);
     }
 
     public WebAppStat(){
@@ -108,22 +211,22 @@ public class WebAppStat {
 
         requestCount.incrementAndGet();
     }
-    
+
     public WebURIStat getURIStat(String uri) {
         return getURIStat(uri, false);
     }
 
     public WebURIStat getURIStat(String uri, boolean create) {
         WebURIStat uriStat = uriStatMap.get(uri);
-        
+
         if (uriStat != null) {
             return uriStat;
         }
-        
+
         if (!create) {
             return null;
         }
-        
+
         if (uriStatMap.size() >= this.getMaxStatUriCount()) {
             long fullCount = uriStatMapFullCount.getAndIncrement();
 
@@ -145,24 +248,24 @@ public class WebAppStat {
     public WebSessionStat getSessionStat(String sessionId) {
         return getSessionStat(sessionId, false);
     }
-    
+
     public Map<String, Object> getSessionStatData(String sessionId) {
         WebSessionStat sessionStat = sessionStatMap.get(sessionId);
-        
+
         if (sessionStat == null) {
             return null;
         }
-        
+
         return sessionStat.getStatData();
     }
-    
+
     public Map<String, Object> getURIStatData(String uri) {
         WebURIStat uriStat = getURIStat(uri);
-        
+
         if (uriStat == null) {
             return null;
         }
-        
+
         return uriStat.getStatData();
     }
 
@@ -288,6 +391,564 @@ public class WebAppStat {
             uriStatDataList.add(sessionStatData);
         }
         return uriStatDataList;
+    }
+
+    public void computeUserAgent(String userAgent) {
+        if (userAgent == null || userAgent.length() == 0) {
+            return;
+        }
+
+        // Mozilla/5.0 (compatible;
+        final int MOZILLA_COMPATIBLE_OFFSET = 25;
+
+        boolean is360SE = userAgent.endsWith("360SE)");
+
+        if (is360SE) {
+            browser360SECount.incrementAndGet();
+        }
+
+        boolean isIE = userAgent.startsWith("MSIE", MOZILLA_COMPATIBLE_OFFSET);
+        int ie_prefix_index = 30; // "Mozilla/5.0 (compatible; MSIE ".length();
+
+        boolean isGoogleToolbar = false;
+
+        if (!isIE) {
+            isGoogleToolbar = userAgent.startsWith("GoogleToolbar", MOZILLA_COMPATIBLE_OFFSET);
+            if (isGoogleToolbar) {
+                // MSIE
+                int tmp = userAgent.indexOf("IE ");
+                if (tmp != -1) {
+                    isIE = true;
+                    ie_prefix_index = tmp + 3;
+                }
+            }
+        }
+
+        if (isIE) {
+
+            browserIECount.incrementAndGet();
+
+            char v1 = ' ', v2 = ' ';
+            if (userAgent.length() > ie_prefix_index + 1) {
+                v1 = userAgent.charAt(ie_prefix_index);
+                v2 = userAgent.charAt(ie_prefix_index + 1);
+            } else if (userAgent.length() > ie_prefix_index) {
+                v1 = userAgent.charAt(ie_prefix_index);
+            }
+
+            switch (v1) {
+                case '5':
+                    browserIE5Count.incrementAndGet();
+                    break;
+                case '6':
+                    browserIE6Count.incrementAndGet();
+                    break;
+                case '7':
+                    browserIE7Count.incrementAndGet();
+                    break;
+                case '8':
+                    browserIE8Count.incrementAndGet();
+                    break;
+                case '9':
+                    browserIE9Count.incrementAndGet();
+                    break;
+                case '1':
+                    if (v2 == '0') {
+                        browserIE10Count.incrementAndGet();
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            osWindowsCount.incrementAndGet();
+
+            computeUserAgentIEWindowsVersion(userAgent);
+
+            if (userAgent.indexOf("Windows Phone") != -1) {
+                deviceWindowsPhoneCount.incrementAndGet();
+            }
+
+            return;
+        }
+
+        boolean isWindows = false;
+        boolean isMac = false;
+        boolean isIpad = false;
+        boolean isIPhone = false;
+        boolean isLinux = false;
+        boolean isX11 = false;
+        boolean isBSD = false;
+
+        if (userAgent.startsWith("Windows", 13)) {
+            isWindows = true;
+        } else if (userAgent.startsWith("Macintosh", 13)) {
+            isMac = true;
+        } else if (userAgent.startsWith("iPad", 13)) {
+            isIpad = true;
+            isMac = true;
+        } else if (userAgent.startsWith("iPhone", 13)) {
+            isIPhone = true;
+            isMac = true;
+        } else if (userAgent.startsWith("Linux", 13)) {
+            isLinux = true;
+        } else if (userAgent.startsWith("X11", 13)) {
+            isX11 = true;
+        }
+
+        boolean isAndroid = false;
+
+        if (isWindows) {
+            isWindows = true;
+
+            osWindowsCount.incrementAndGet();
+
+            if (userAgent.indexOf("Windows Phone") != -1) {
+                deviceWindowsPhoneCount.incrementAndGet();
+            }
+        } else if (isMac) {
+            isMac = true;
+            osMacOSXCount.incrementAndGet();
+            if (isIpad && userAgent.indexOf("iPad") != -1) {
+                deviceIpadCount.incrementAndGet();
+            } else if (isIPhone || userAgent.indexOf("iPhone") != -1) {
+                deviceIphoneCount.incrementAndGet();
+            }
+        } else if (isLinux) {
+            osLinuxCount.incrementAndGet();
+
+            isAndroid = computeUserAgentAndroid(userAgent);
+        } else if (userAgent.indexOf("Symbian") != -1) {
+            osSymbianCount.incrementAndGet();
+        } else if (userAgent.indexOf("Ubuntu") != -1) {
+            osLinuxCount.incrementAndGet();
+            osLinuxUbuntuCount.incrementAndGet();
+            isLinux = true;
+        }
+
+        if (isX11) {
+            if (userAgent.indexOf("OpenBSD") != -1) {
+                osOpenBSDCount.incrementAndGet();
+                isBSD = true;
+            } else if (userAgent.indexOf("FreeBSD") != -1) {
+                osFreeBSDCount.incrementAndGet();
+                isBSD = true;
+            } else if (isLinux == false && userAgent.indexOf("Linux") != -1) {
+                osLinuxCount.incrementAndGet();
+                isLinux = true;
+            }
+        }
+
+        boolean isOpera = userAgent.startsWith("Opera");
+
+        if (isOpera) {
+            if (userAgent.indexOf("Windows") != -1) {
+                osWindowsCount.incrementAndGet();
+            } else if (userAgent.indexOf("Linux") != -1) {
+                osWindowsCount.incrementAndGet();
+            } else if (userAgent.indexOf("Macintosh") != -1) {
+                osMacOSXCount.incrementAndGet();
+            }
+            browserOperaCount.incrementAndGet();
+            return;
+        }
+
+        if (isWindows) {
+            computeUserAgentFirefoxWindowsVersion(userAgent);
+        }
+
+        if (isWindows || isMac || isLinux || isBSD) {
+            if (userAgent.indexOf("Chrome") != -1) {
+                browserChromeCount.incrementAndGet();
+                return;
+            }
+
+            if ((!isAndroid) && userAgent.indexOf("Safari") != -1) {
+                browserSafariCount.incrementAndGet();
+                return;
+            }
+
+            if (userAgent.indexOf("Firefox") != -1) {
+                browserFirefoxCount.incrementAndGet();
+                return;
+            }
+        }
+
+        if (userAgent.startsWith("User-Agent: ")) {
+            String rest = userAgent.substring("User-Agent: ".length());
+            computeUserAgent(rest);
+        }
+
+        boolean isJava = userAgent.startsWith("Java");
+
+        if (isJava) {
+            botCount.incrementAndGet();
+        }
+
+        if (userAgent.startsWith("msnbot")) {
+            botCount.incrementAndGet();
+            botMsnCount.incrementAndGet();
+        } else if (userAgent.startsWith("Sosospider+")) {
+            botCount.incrementAndGet();
+            botSosoCount.incrementAndGet();
+        } else if (userAgent.startsWith("Sogou")) {
+            botCount.incrementAndGet();
+            botSogouCount.incrementAndGet();
+        } else if (userAgent.startsWith("HuaweiSymantecSpider")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Yeti/")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("mahonie")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("findlinks")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Updownerbot")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("DoCoMo/")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Crawl")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("SkimBot")) {
+            botCount.incrementAndGet();
+
+        } else if (userAgent.startsWith("YoudaoBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botYoudaoCount.incrementAndGet();
+        } else if (userAgent.startsWith("bingbot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botBingCount.incrementAndGet();
+        } else if (userAgent.startsWith("Googlebot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botGoogleCount.incrementAndGet();
+        } else if (userAgent.startsWith("Baiduspider", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botBaiduCount.incrementAndGet();
+        } else if (userAgent.startsWith("MJ12bot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botBaiduCount.incrementAndGet();
+        } else if (userAgent.startsWith("Mail.RU/", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Yahoo!", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+            botYahooCount.incrementAndGet();
+        } else if (userAgent.startsWith("KaloogaBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("YandexBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Ezooms/", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("Exabot/", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("AhrefsBot/", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("YodaoBot/", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("BeetleBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("archive.org_bot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("aiHitBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+        } else if (userAgent.startsWith("EventGuruBot", MOZILLA_COMPATIBLE_OFFSET)) {
+            botCount.incrementAndGet();
+
+        } else if (userAgent.equals("Mozilla/5.0 ()")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.equals("\"Mozilla/5.0")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.equals("Mozilla")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.equals("-")) {
+            botCount.incrementAndGet();
+        } else if (userAgent.indexOf("Spider") != -1 || userAgent.indexOf("spider") != -1) {
+            botCount.incrementAndGet();
+        } else if (userAgent.indexOf("crawl") != -1 || userAgent.indexOf("Crawl") != -1) {
+            botCount.incrementAndGet();
+        } else if (userAgent.indexOf("Bot") != -1 || userAgent.indexOf("bot") != -1) {
+            botCount.incrementAndGet();
+        }
+
+        // Mozilla/5.0 ()
+        // Mozilla/5.0 (compatible; Mail.RU/2.0)
+        // Mozilla/5.0 (compatible; bingbot/2.0;
+        // YoudaoBot
+
+    }
+
+    private void computeUserAgentFirefoxWindowsVersion(String userAgent) {
+        if (userAgent.startsWith("Windows NT 5.1", 13)) {
+            osWindowsXPCount.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 5.1", 25)) {
+            osWindowsXPCount.incrementAndGet();
+
+        } else if (userAgent.startsWith("Windows NT 6.0", 13)) {
+            osWindowsVistaCount.incrementAndGet();
+
+        } else if (userAgent.startsWith("Windows NT 6.1", 13)) {
+            osWindows7Count.incrementAndGet();
+
+        } else if (userAgent.startsWith("Windows NT 5.0", 13)) {
+            osWindows2000Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 5.0", 25)) {
+            osWindows2000Count.incrementAndGet();
+
+        } else {
+            System.out.print("");
+        }
+    }
+
+    private void computeUserAgentIEWindowsVersion(String userAgent) {
+        if (userAgent.startsWith("Windows NT 5.1", 35)) {
+            osWindowsXPCount.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 5.0", 35)) {
+            osWindows2000Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 5.0", 36)) {
+            osWindows2000Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 6.0", 35)) {
+            osWindowsVistaCount.incrementAndGet();
+        } else if (userAgent.startsWith("Windows NT 6.1", 35)) {
+            osWindows7Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows 98", 36)) {
+            osWindows98Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows 98", 35)) {
+            osWindows98Count.incrementAndGet();
+        } else if (userAgent.startsWith("Windows XP", 35)) {
+            osWindowsXPCount.incrementAndGet();
+        } else if (userAgent.startsWith("Windows XP", 34)) {
+            osWindowsXPCount.incrementAndGet();
+        } else {
+            System.out.print("");
+        }
+    }
+
+    private boolean computeUserAgentAndroid(String userAgent) {
+        boolean isAndroid = userAgent.startsWith("Android", 23);
+        if (isAndroid) {
+            osAndroidCount.incrementAndGet();
+
+            deviceAndroidCount.incrementAndGet();
+
+            int toffset = 31;
+            if (userAgent.startsWith("1.5", toffset)) {
+                osAndroid15Count.incrementAndGet();
+            } else if (userAgent.startsWith("1.6", toffset)) {
+                osAndroid16Count.incrementAndGet();
+            } else if (userAgent.startsWith("2.0", toffset)) {
+                osAndroid20Count.incrementAndGet();
+            } else if (userAgent.startsWith("2.1", toffset)) {
+                osAndroid21Count.incrementAndGet();
+            } else if (userAgent.startsWith("2.2", toffset)) {
+                osAndroid22Count.incrementAndGet();
+            } else if (userAgent.startsWith("2.3.3", toffset)) {
+                osAndroid23Count.incrementAndGet();
+            } else if (userAgent.startsWith("2.3.4", toffset)) {
+                osAndroid23Count.incrementAndGet();
+            } else if (userAgent.startsWith("3.0", toffset)) {
+                osAndroid30Count.incrementAndGet();
+            } else if (userAgent.startsWith("3.1", toffset)) {
+                osAndroid31Count.incrementAndGet();
+            } else if (userAgent.startsWith("3.2", toffset)) {
+                osAndroid32Count.incrementAndGet();
+            } else if (userAgent.startsWith("4.0", toffset)) {
+                osAndroid40Count.incrementAndGet();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public long getOsMacOSXCount() {
+        return osMacOSXCount.get();
+    }
+
+    public long getOsWindowsCount() {
+        return osWindowsCount.get();
+    }
+
+    public long getOsLinuxCount() {
+        return osLinuxCount.get();
+    }
+
+    public long getOsSymbianCount() {
+        return osSymbianCount.get();
+    }
+
+    public long getOsFreeBSDCount() {
+        return osFreeBSDCount.get();
+    }
+
+    public long getOsOpenBSDCount() {
+        return osOpenBSDCount.get();
+    }
+
+    public long getOsAndroidCount() {
+        return osAndroidCount.get();
+    }
+
+    public long getOsWindows98Count() {
+        return osWindows98Count.get();
+    }
+
+    public long getOsWindowsXPCount() {
+        return osWindowsXPCount.get();
+    }
+
+    public long getOsWindows2000Count() {
+        return osWindows2000Count.get();
+    }
+
+    public long getOsWindowsVistaCount() {
+        return osWindowsVistaCount.get();
+    }
+
+    public long getOsWindows7Count() {
+        return osWindows7Count.get();
+    }
+
+    public long getOsAndroid15Count() {
+        return osAndroid15Count.get();
+    }
+
+    public long getOsAndroid16Count() {
+        return osAndroid16Count.get();
+    }
+
+    public long getOsAndroid20Count() {
+        return osAndroid20Count.get();
+    }
+
+    public long getOsAndroid21Count() {
+        return osAndroid21Count.get();
+    }
+
+    public long getOsAndroid22Count() {
+        return osAndroid22Count.get();
+    }
+
+    public long getOsAndroid23Count() {
+        return osAndroid23Count.get();
+    }
+
+    public long getOsAndroid30Count() {
+        return osAndroid30Count.get();
+    }
+
+    public long getOsAndroid31Count() {
+        return osAndroid31Count.get();
+    }
+
+    public long getOsAndroid32Count() {
+        return osAndroid32Count.get();
+    }
+
+    public long getOsAndroid40Count() {
+        return osAndroid40Count.get();
+    }
+
+    public long getOsLinuxUbuntuCount() {
+        return osLinuxUbuntuCount.get();
+    }
+
+    public long getBrowserIECount() {
+        return browserIECount.get();
+    }
+
+    public long getBrowserFirefoxCount() {
+        return browserFirefoxCount.get();
+    }
+
+    public long getBrowserChromeCount() {
+        return browserChromeCount.get();
+    }
+
+    public long getBrowserSafariCount() {
+        return browserSafariCount.get();
+    }
+
+    public long getBrowserOperaCount() {
+        return browserOperaCount.get();
+    }
+
+    public long getBrowserIE5Count() {
+        return browserIE5Count.get();
+    }
+
+    public long getBrowserIE6Count() {
+        return browserIE6Count.get();
+    }
+
+    public long getBrowserIE7Count() {
+        return browserIE7Count.get();
+    }
+
+    public long getBrowserIE8Count() {
+        return browserIE8Count.get();
+    }
+
+    public long getBrowserIE9Count() {
+        return browserIE9Count.get();
+    }
+
+    public long getBrowserIE10Count() {
+        return browserIE10Count.get();
+    }
+
+    public long getBrowser360SECount() {
+        return browser360SECount.get();
+    }
+
+    public long getDeviceAndroidCount() {
+        return deviceAndroidCount.get();
+    }
+
+    public long getDeviceIpadCount() {
+        return deviceIpadCount.get();
+    }
+
+    public long getDeviceIphoneCount() {
+        return deviceIphoneCount.get();
+    }
+
+    public long getDeviceWindowsPhoneCount() {
+        return deviceWindowsPhoneCount.get();
+    }
+
+    public long getBotCount() {
+        return botCount.get();
+    }
+
+    public long getBotBaiduCount() {
+        return botBaiduCount.get();
+    }
+
+    public long getBotYoudaoCount() {
+        return botYoudaoCount.get();
+    }
+
+    public long getBotGoogleCount() {
+        return botGoogleCount.get();
+    }
+
+    public long getBotMsnCount() {
+        return botMsnCount.get();
+    }
+
+    public long getBotBingCount() {
+        return botBingCount.get();
+    }
+
+    public long getBotSosoCount() {
+        return botSosoCount.get();
+    }
+
+    public long getBotSogouCount() {
+        return botSogouCount.get();
+    }
+
+    public long getBotYahooCount() {
+        return botYahooCount.get();
     }
 
 }

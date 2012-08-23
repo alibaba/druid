@@ -77,7 +77,7 @@ public class DruidStatService implements DruidStatServiceMBean {
         }
 
         if (url.equals("/datasource.json")) {
-            return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getDataSourceStatList());
+            return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getDataSourceStatDataList());
         }
 
         if (url.startsWith("/datasource-")) {

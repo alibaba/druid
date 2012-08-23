@@ -28,6 +28,21 @@ public class DruidDataSourceUtils {
             return null;
         }
     }
+    
+    public static String getName(Object druidDatasource) {
+        if (druidDatasource.getClass() == DruidDataSource.class) {
+            return ((DruidDataSource) druidDatasource).getName();
+        }
+        
+        try {
+            Method method = druidDatasource.getClass().getMethod("getName");
+            Object obj = method.invoke(druidDatasource);
+            return (String) obj;
+        } catch (Exception e) {
+            LOG.error("getUrl error", e);
+            return null;
+        }
+    }
 
     public static ObjectName getObjectName(Object druidDatasource) {
         if (druidDatasource.getClass() == DruidDataSource.class) {
