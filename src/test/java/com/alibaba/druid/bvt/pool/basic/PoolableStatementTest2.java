@@ -829,7 +829,7 @@ public class PoolableStatementTest2 extends TestCase {
 
     public void test_executeQuery() throws Exception {
         Connection conn = dataSource.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
+        PreparedStatement stmt = conn.prepareStatement("SELECT 1");
 
         stmt.executeQuery();
         ((DruidPooledStatement) stmt).getStatement().close();
@@ -850,7 +850,7 @@ public class PoolableStatementTest2 extends TestCase {
 
     public void test_executeUpdate_4() throws Exception {
         Connection conn = dataSource.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELELCT 1");
+        PreparedStatement stmt = conn.prepareStatement("SELECT 1");
 
         stmt.executeQuery();
         ((DruidPooledStatement) stmt).getStatement().close();
