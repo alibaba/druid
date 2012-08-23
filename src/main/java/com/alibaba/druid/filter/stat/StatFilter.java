@@ -526,10 +526,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 out.writeObject(value);
             } else if (value instanceof InputStream) {
                 out.writeString("<InputStream>");
-            } else if (value instanceof Clob) {
-                out.writeString("<Clob>");
             } else if (value instanceof NClob) {
                 out.writeString("<NClob>");
+            } else if (value instanceof Clob) {
+                out.writeString("<Clob>");
             } else if (value instanceof Blob) {
                 out.writeString("<Blob>");
             } else {

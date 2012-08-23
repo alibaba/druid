@@ -45,7 +45,7 @@ public class MockPreparedStatement extends PreparedStatementBase implements Mock
         MockConnection conn = getConnection();
 
         if (conn != null && conn.getDriver() != null) {
-            return getConnection().getDriver().createResultSet(this);
+            return conn.getDriver().executeQuery(this, sql);
         }
 
         if (conn != null) {

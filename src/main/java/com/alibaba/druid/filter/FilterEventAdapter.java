@@ -460,7 +460,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
         try {
             statementExecuteQueryBefore(statement, statement.getSql());
 
-            ResultSetProxy resultSet = super.preparedStatement_executeQuery(chain, statement);
+            ResultSetProxy resultSet = chain.preparedStatement_executeQuery(statement);
 
             statementExecuteQueryAfter(statement, statement.getSql(), resultSet);
 

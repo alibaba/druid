@@ -6,6 +6,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
+import org.apache.derby.iapi.types.SQLVarchar;
+
+import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
 import com.alibaba.druid.mock.MockStatementBase;
@@ -19,6 +22,7 @@ import com.alibaba.druid.sql.ast.expr.SQLNCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -138,9 +142,17 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
                 } else {
                     throw new SQLException("TODO");
                 }
-
+            } else if (expr instanceof SQLVariantRefExpr) {
+                SQLVariantRefExpr varExpr = (SQLVariantRefExpr) expr;
+                int varIndex = varExpr.getIndex();
+                if (statement instanceof MockPreparedStatement) {
+                    MockPreparedStatement mockPstmt = (MockPreparedStatement) statement;
+                    row[i] = mockPstmt.getParameters().get(varIndex);
+                } else {
+                    row[i] = null;
+                }
             } else {
-                throw new SQLException("TODO");
+                row[i] = null;
             }
 
             metaData.getColumns().add(column);
