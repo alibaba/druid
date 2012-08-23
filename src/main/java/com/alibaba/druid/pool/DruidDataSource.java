@@ -401,6 +401,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     connections[poolingCount++] = new DruidConnectionHolder(this, conn);
                 }
+                
+                if (poolingCount > 0) {
+                    poolingPeak = poolingCount;
+                    poolingPeakTime = System.currentTimeMillis();
+                }
             } catch (SQLException ex) {
                 LOG.error("init datasource error", ex);
                 connectError = ex;
@@ -931,6 +936,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         e.setLastActiveTimeMillis(System.currentTimeMillis());
         connections[poolingCount++] = e;
+        
+        if (poolingCount > poolingPeak) {
+            poolingPeak = poolingCount;
+            poolingPeakTime = System.currentTimeMillis();
+        }
 
         notEmpty.signal();
         notEmptySignalCount++;
