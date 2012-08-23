@@ -759,95 +759,95 @@ public class WebAppStat {
         return false;
     }
 
-    public long getOsMacOSXCount() {
+    public long getOSMacOSXCount() {
         return osMacOSXCount.get();
     }
 
-    public long getOsWindowsCount() {
+    public long getOSWindowsCount() {
         return osWindowsCount.get();
     }
 
-    public long getOsLinuxCount() {
+    public long getOSLinuxCount() {
         return osLinuxCount.get();
     }
 
-    public long getOsSymbianCount() {
+    public long getOSSymbianCount() {
         return osSymbianCount.get();
     }
 
-    public long getOsFreeBSDCount() {
+    public long getOSFreeBSDCount() {
         return osFreeBSDCount.get();
     }
 
-    public long getOsOpenBSDCount() {
+    public long getOSOpenBSDCount() {
         return osOpenBSDCount.get();
     }
 
-    public long getOsAndroidCount() {
+    public long getOSAndroidCount() {
         return osAndroidCount.get();
     }
 
-    public long getOsWindows98Count() {
+    public long getOSWindows98Count() {
         return osWindows98Count.get();
     }
 
-    public long getOsWindowsXPCount() {
+    public long getOSWindowsXPCount() {
         return osWindowsXPCount.get();
     }
 
-    public long getOsWindows2000Count() {
+    public long getOSWindows2000Count() {
         return osWindows2000Count.get();
     }
 
-    public long getOsWindowsVistaCount() {
+    public long getOSWindowsVistaCount() {
         return osWindowsVistaCount.get();
     }
 
-    public long getOsWindows7Count() {
+    public long getOSWindows7Count() {
         return osWindows7Count.get();
     }
 
-    public long getOsAndroid15Count() {
+    public long getOSAndroid15Count() {
         return osAndroid15Count.get();
     }
 
-    public long getOsAndroid16Count() {
+    public long getOSAndroid16Count() {
         return osAndroid16Count.get();
     }
 
-    public long getOsAndroid20Count() {
+    public long getOSAndroid20Count() {
         return osAndroid20Count.get();
     }
 
-    public long getOsAndroid21Count() {
+    public long getOSAndroid21Count() {
         return osAndroid21Count.get();
     }
 
-    public long getOsAndroid22Count() {
+    public long getOSAndroid22Count() {
         return osAndroid22Count.get();
     }
 
-    public long getOsAndroid23Count() {
+    public long getOSAndroid23Count() {
         return osAndroid23Count.get();
     }
 
-    public long getOsAndroid30Count() {
+    public long getOSAndroid30Count() {
         return osAndroid30Count.get();
     }
 
-    public long getOsAndroid31Count() {
+    public long getOSAndroid31Count() {
         return osAndroid31Count.get();
     }
 
-    public long getOsAndroid32Count() {
+    public long getOSAndroid32Count() {
         return osAndroid32Count.get();
     }
 
-    public long getOsAndroid40Count() {
+    public long getOSAndroid40Count() {
         return osAndroid40Count.get();
     }
 
-    public long getOsLinuxUbuntuCount() {
+    public long getOSLinuxUbuntuCount() {
         return osLinuxUbuntuCount.get();
     }
 
