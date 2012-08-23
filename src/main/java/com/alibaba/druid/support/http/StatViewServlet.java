@@ -16,6 +16,7 @@ import com.alibaba.druid.support.http.util.IPRange;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.StringUtils;
 
 /**
  * 注意：避免直接调用Druid相关对象例如DruidDataSource等，相关调用要到DruidStatManagerFacade里用反射实现
@@ -24,41 +25,35 @@ import com.alibaba.druid.util.IOUtils;
  */
 public class StatViewServlet extends HttpServlet {
 
-    private final static Log     LOG                         = LogFactory.getLog(StatViewServlet.class);
+    private final static Log    LOG                         = LogFactory.getLog(StatViewServlet.class);
 
-    private static final long    serialVersionUID            = 1L;
+    private static final long   serialVersionUID            = 1L;
 
-    public static final String   PARAM_NAME_RESET_ENABLE     = "resetEnable";
-    public static final String   PARAM_NAME_ALLOW            = "allow";
-    public static final String   PARAM_NAME_DENY             = "deny";
-    
-    public static final String   PARAM_NAME_USERNAME     	 = "login_username";
-    public static final String   PARAM_NAME_PASSWORD         = "login_password";
-    public static final String 	 SESSION_USER_KEY 			 = "druid-user";
+    public static final String  PARAM_NAME_RESET_ENABLE     = "resetEnable";
+    public static final String  PARAM_NAME_ALLOW            = "allow";
+    public static final String  PARAM_NAME_DENY             = "deny";
 
-    private final static String  RESOURCE_PATH               = "support/http/resources";
-    private final static String  TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
+    public static final String  PARAM_NAME_USERNAME         = "loginUsername";
+    public static final String  PARAM_NAME_PASSWORD         = "loginPassword";
 
-    private DruidStatService statService                 	 = DruidStatService.getInstance();
+    public static final String  SESSION_USER_KEY            = "druid-user";
 
-    public String                templatePage;
+    private final static String RESOURCE_PATH               = "support/http/resources";
+    private final static String TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
 
-    private List<IPRange>        allowList                   = new ArrayList<IPRange>();
-    private List<IPRange>        denyList                    = new ArrayList<IPRange>();
-    
-    private String username 								 = "admin";
-    private String password 								 = "admin";
+    private DruidStatService    statService                 = DruidStatService.getInstance();
+
+    public String               templatePage;
+
+    private List<IPRange>       allowList                   = new ArrayList<IPRange>();
+    private List<IPRange>       denyList                    = new ArrayList<IPRange>();
+
+    private String              username                    = null;
+    private String              password                    = null;
 
     public void init() throws ServletException {
-		String _username = getInitParameter(PARAM_NAME_USERNAME);
-		String _password = getInitParameter(PARAM_NAME_PASSWORD);
-		
-		if (_username != null && _username.trim().length() != 0 &&
-				_password != null && _password.trim().length() != 0) {
-			username = _username;
-			password = _password;
-		}
-    	
+        initAuthEnv();
+
         try {
             templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
 
@@ -119,6 +114,22 @@ public class StatViewServlet extends HttpServlet {
         }
     }
 
+    private void initAuthEnv() {
+        String paramUserName = getInitParameter(PARAM_NAME_USERNAME);
+        if (!StringUtils.isEmpty(paramUserName)) {
+            this.username = paramUserName;
+        }
+
+        String paramPassword = getInitParameter(PARAM_NAME_PASSWORD);
+        if (!StringUtils.isEmpty(paramPassword)) {
+            this.password = paramPassword;
+        }
+    }
+
+    public boolean isRequireAuth() {
+        return this.username != null;
+    }
+
     public boolean isPermittedRequest(HttpServletRequest request) {
         String remoteAddress = request.getRemoteAddr();
         return isPermittedRequest(remoteAddress);
@@ -126,13 +137,13 @@ public class StatViewServlet extends HttpServlet {
 
     public boolean isPermittedRequest(String remoteAddress) {
         boolean ipV6 = remoteAddress != null && remoteAddress.indexOf(':') != -1;
-        
+
         if (ipV6) {
             if (denyList.size() == 0 && allowList.size() == 0) {
                 return true;
             }
         }
-        
+
         IPAddress ipAddress = new IPAddress(remoteAddress);
 
         for (IPRange range : denyList) {
@@ -155,11 +166,11 @@ public class StatViewServlet extends HttpServlet {
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	HttpSession session = request.getSession();
-    	String contextPath = request.getContextPath();
-    	String servletPath = request.getServletPath();
+        HttpSession session = request.getSession();
+        String contextPath = request.getContextPath();
+        String servletPath = request.getServletPath();
         String requestURI = request.getRequestURI();
-        
+
         response.setCharacterEncoding("utf-8");
 
         if (contextPath == null) { // root context
@@ -167,23 +178,23 @@ public class StatViewServlet extends HttpServlet {
         }
         String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
-        
+
         if (!isPermittedRequest(request)) {
             path = "/nopermit.html";
             returnResourceFile(path, uri, response);
             return;
         }
-    	
+
         if ("/submitLogin".equals(path)) {
-        	String _username = request.getParameter(PARAM_NAME_USERNAME);
-        	String _password = request.getParameter(PARAM_NAME_PASSWORD);
-        	if(username.equals(_username) && password.equals(_password)) {
-        		request.getSession().setAttribute(SESSION_USER_KEY, username);
-        		response.getWriter().print("success");
-        	} else
-        		response.getWriter().print("error");
-        } else if (session.getAttribute(SESSION_USER_KEY) == null && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js"))) {
-        	if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+            String _username = request.getParameter(PARAM_NAME_USERNAME);
+            String _password = request.getParameter(PARAM_NAME_PASSWORD);
+            if (username.equals(_username) && password.equals(_password)) {
+                request.getSession().setAttribute(SESSION_USER_KEY, username);
+                response.getWriter().print("success");
+            } else response.getWriter().print("error");
+        } else if (session.getAttribute(SESSION_USER_KEY) == null
+                   && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js"))) {
+            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/login.html");
             } else {
                 response.sendRedirect("login.html");
@@ -215,7 +226,7 @@ public class StatViewServlet extends HttpServlet {
 
             // find file in resources path
             returnResourceFile(path, uri, response);
-        }	
+        }
     }
 
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
