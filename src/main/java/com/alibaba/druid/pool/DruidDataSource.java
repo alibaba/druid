@@ -1776,6 +1776,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         dataMap.put("ConnectionHoldTimeHistogram", this.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
+        dataMap.put("ClobOpenCount", this.getDataSourceStat().getClobOpenCount());
 
         return dataMap;
     }

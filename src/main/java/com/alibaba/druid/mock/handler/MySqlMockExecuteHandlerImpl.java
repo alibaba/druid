@@ -6,8 +6,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
-import org.apache.derby.iapi.types.SQLVarchar;
-
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockResultSetMetaData;
