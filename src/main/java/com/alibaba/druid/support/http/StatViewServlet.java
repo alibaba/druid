@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.http.util.IPAddress;
@@ -30,18 +31,34 @@ public class StatViewServlet extends HttpServlet {
     public static final String   PARAM_NAME_RESET_ENABLE     = "resetEnable";
     public static final String   PARAM_NAME_ALLOW            = "allow";
     public static final String   PARAM_NAME_DENY             = "deny";
+    
+    public static final String   PARAM_NAME_USERNAME     	 = "login_username";
+    public static final String   PARAM_NAME_PASSWORD         = "login_password";
+    public static final String 	 SESSION_USER_KEY 			 = "druid-user";
 
     private final static String  RESOURCE_PATH               = "support/http/resources";
     private final static String  TEMPLATE_PAGE_RESOURCE_PATH = RESOURCE_PATH + "/template.html";
 
-    private DruidStatService statService                 = DruidStatService.getInstance();
+    private DruidStatService statService                 	 = DruidStatService.getInstance();
 
     public String                templatePage;
 
     private List<IPRange>        allowList                   = new ArrayList<IPRange>();
     private List<IPRange>        denyList                    = new ArrayList<IPRange>();
+    
+    private String username 								 = "admin";
+    private String password 								 = "admin";
 
     public void init() throws ServletException {
+		String _username = getInitParameter(PARAM_NAME_USERNAME);
+		String _password = getInitParameter(PARAM_NAME_PASSWORD);
+		
+		if (_username != null && _username.trim().length() != 0 &&
+				_password != null && _password.trim().length() != 0) {
+			username = _username;
+			password = _password;
+		}
+    	
         try {
             templatePage = IOUtils.readFromResource(TEMPLATE_PAGE_RESOURCE_PATH);
 
@@ -138,10 +155,11 @@ public class StatViewServlet extends HttpServlet {
     }
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String contextPath = request.getContextPath();
-        String servletPath = request.getServletPath();
+    	HttpSession session = request.getSession();
+    	String contextPath = request.getContextPath();
+    	String servletPath = request.getServletPath();
         String requestURI = request.getRequestURI();
-
+        
         response.setCharacterEncoding("utf-8");
 
         if (contextPath == null) { // root context
@@ -149,38 +167,55 @@ public class StatViewServlet extends HttpServlet {
         }
         String uri = contextPath + servletPath;
         String path = requestURI.substring(contextPath.length() + servletPath.length());
-
+        
         if (!isPermittedRequest(request)) {
             path = "/nopermit.html";
             returnResourceFile(path, uri, response);
             return;
         }
-
-        if ("".equals(path)) {
-            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/druid/index.html");
+    	
+        if ("/submitLogin".equals(path)) {
+        	String _username = request.getParameter(PARAM_NAME_USERNAME);
+        	String _password = request.getParameter(PARAM_NAME_PASSWORD);
+        	if(username.equals(_username) && password.equals(_password)) {
+        		request.getSession().setAttribute(SESSION_USER_KEY, username);
+        		response.getWriter().print("success");
+        	} else
+        		response.getWriter().print("error");
+        } else if (session.getAttribute(SESSION_USER_KEY) == null && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js"))) {
+        	if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/login.html");
             } else {
-                response.sendRedirect("druid/index.html");
+                response.sendRedirect("login.html");
             }
-            return;
-        }
+        } else {
 
-        if ("/".equals(path)) {
-            response.sendRedirect("index.html");
-            return;
-        }
-
-        if (path.indexOf(".json") >= 0) {
-            String fullUrl = path;
-            if (request.getQueryString() != null && request.getQueryString().length() > 0) {
-                fullUrl += "?" + request.getQueryString();
+            if ("".equals(path)) {
+                if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                    response.sendRedirect("/druid/index.html");
+                } else {
+                    response.sendRedirect("druid/index.html");
+                }
+                return;
             }
-            response.getWriter().print(statService.service(fullUrl));
-            return;
-        }
 
-        // find file in resources path
-        returnResourceFile(path, uri, response);
+            if ("/".equals(path)) {
+                response.sendRedirect("index.html");
+                return;
+            }
+
+            if (path.indexOf(".json") >= 0) {
+                String fullUrl = path;
+                if (request.getQueryString() != null && request.getQueryString().length() > 0) {
+                    fullUrl += "?" + request.getQueryString();
+                }
+                response.getWriter().print(statService.service(fullUrl));
+                return;
+            }
+
+            // find file in resources path
+            returnResourceFile(path, uri, response);
+        }	
     }
 
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
