@@ -191,42 +191,47 @@ public class StatViewServlet extends HttpServlet {
             if (username.equals(_username) && password.equals(_password)) {
                 request.getSession().setAttribute(SESSION_USER_KEY, username);
                 response.getWriter().print("success");
-            } else response.getWriter().print("error");
-        } else if (session.getAttribute(SESSION_USER_KEY) == null
-                   && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js"))) {
+            } else {
+                response.getWriter().print("error");
+            }
+            return;
+        }
+
+        if (isRequireAuth() && session.getAttribute(SESSION_USER_KEY) == null
+            && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js"))) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/login.html");
             } else {
                 response.sendRedirect("login.html");
             }
-        } else {
-
-            if ("".equals(path)) {
-                if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
-                    response.sendRedirect("/druid/index.html");
-                } else {
-                    response.sendRedirect("druid/index.html");
-                }
-                return;
-            }
-
-            if ("/".equals(path)) {
-                response.sendRedirect("index.html");
-                return;
-            }
-
-            if (path.indexOf(".json") >= 0) {
-                String fullUrl = path;
-                if (request.getQueryString() != null && request.getQueryString().length() > 0) {
-                    fullUrl += "?" + request.getQueryString();
-                }
-                response.getWriter().print(statService.service(fullUrl));
-                return;
-            }
-
-            // find file in resources path
-            returnResourceFile(path, uri, response);
+            return;
         }
+
+        if ("".equals(path)) {
+            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/index.html");
+            } else {
+                response.sendRedirect("druid/index.html");
+            }
+            return;
+        }
+
+        if ("/".equals(path)) {
+            response.sendRedirect("index.html");
+            return;
+        }
+
+        if (path.indexOf(".json") >= 0) {
+            String fullUrl = path;
+            if (request.getQueryString() != null && request.getQueryString().length() > 0) {
+                fullUrl += "?" + request.getQueryString();
+            }
+            response.getWriter().print(statService.service(fullUrl));
+            return;
+        }
+
+        // find file in resources path
+        returnResourceFile(path, uri, response);
     }
 
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
