@@ -77,7 +77,7 @@ public class MockResultSet extends ResultSetBase implements ResultSet {
             throw new SQLException();
         }
 
-        if (rowIndex > 0) {
+        if (rowIndex >= 0) {
             rowIndex--;
             return true;
         }

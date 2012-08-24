@@ -145,10 +145,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public void restart() {
         lock.lock();
         try {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("{dataSource-" + this.getID() + "} restart");
+            }
+            
             this.close();
             this.resetStat();
             this.inited = false;
             this.enable = true;
+            this.closed = false;
         } finally {
             lock.unlock();
         }

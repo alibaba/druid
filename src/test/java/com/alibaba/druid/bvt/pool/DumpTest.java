@@ -123,4 +123,7 @@ public class DumpTest extends TestCase {
         Assert.assertNotNull(dataSource.getSqlStat((int) sqlStat.getId()));
     }
 
+    public void test_getReference() throws Exception {
+        dataSource.getReference();
+    }
 }
