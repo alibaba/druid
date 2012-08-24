@@ -34,7 +34,7 @@ public class OracleInsertTest8 extends OracleTest {
                      + " MEMBER_DEPT_CN, LINK_EMAIL, STATUS, AV_PROVIDER, AV_ORIGIN)"
                      + " values (1000236058, sysdate, sysdate, 1300904670, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½5''TW'"
                      + ", 'Yunnan', 'sadf', '4r7V', 'fdgtg', 'M', 'ï¿½ï¿½ï¿½ï¿½ï¿½info_name4', 'Fnameinfo_name4'"
-                     + ", '33', '4444', '6666', 'ï¿½ï¿½ï¿½fgsgsdfg', 'fggtgth', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?, null, 'zeus'" + ")";
+                     + ", '33', '4444', '6666', 'ï¿½ï¿½ï¿½fgsgsdfg', 'fggtgth', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', null, 'zeus'" + ")";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
