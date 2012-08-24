@@ -526,8 +526,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
             }
         } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true and validationQuery shoud not be null");
+            if (!this.isTestWhileIdle()) {
+                if (LOG.isWarnEnabled()) LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
             }
         }
     }
