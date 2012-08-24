@@ -24,6 +24,7 @@ public class DruidStat {
 
     private static final String LOCAL_CONNECTOR_ADDRESS_PROP = "com.sun.management.jmxremote.localConnectorAddress";
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
             printHelp();
