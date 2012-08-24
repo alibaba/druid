@@ -1,44 +1,41 @@
 $.namespace("druid.common");
 druid.common = function () {  
+	var statViewOrderBy = '';
+	var statViewOrderBy_old = '';
+	var statViewOrderType = 'asc';
+
+	// only one page for now
+	var sqlViewPage = 1;
+	var sqlViewPerPageCount = 1000000;
+	
 	return  {
 		init : function() {
-			this.buildHead();
-			this.buildMenu();
 			this.buildFooter();
 		},
 		
-		buildHead : function() {
+		buildHead : function(index) {
 			var html = '<div class="navbar navbar-fixed-top">'+
-				       '	<div class="navbar-inner">'+
-				       ' 		<div class="container-fluid">'+
-				       '   			<a class="brand" href="#">Druid Monitor</a>'+
-				       '   			<div class="pull-right">'+
-				       '   				<a href="javascript:druid.common.ajaxRequestForReset()" class="btn">Reset All</a>'+
-				       '   			</div>'+
-				       ' 		</div>'+
-				       '		</div>'+
-				       '</div>';
+						'	<div class="navbar-inner">'+
+						'		<div class="container">'+
+						'			<a href="#" class="brand">Druid Monitor</a>'+
+						'			<div class="nav-collapse">'+
+				      	'				<ul class="nav">'+
+				      	'					<li><a href="index.html">Index</a></li>'+
+				      	'					<li><a href="datasource.html">DataSource</a></li>'+
+				      	'					<li><a href="sql.html">Sql</a></li>'+
+				      	'					<li><a href="weburi.html">WebURI</a></li>'+
+				      	'					<li><a href="websession.html">Web Session</a></li>'+
+				      	'					<li><a href="spring.html">Spring</a></li>'+
+				      	'					<li><a href="api.html">JSON API</a></li>'+
+				      	'				</ul>'+
+				      	'			</div>'+
+				      	'		</div>'+
+				      	'	</div>'+
+						'</div>'; 
 			$(document.body).prepend(html);
+			$(".navbar .nav li").eq(index).addClass("active");
 		},
 		
-		buildMenu : function() {
-			var html = '<div class="span2">'+
-				      	'		<div class="well sidebar-nav">'+
-						'	<ul class="nav nav-list">'+
-				  		'		<li class="nav-header"><h3>Menu</h3></li>'+
-				  		'		<li id="configId"><a href="index.html">Index</a></li>'+
-				  		'		<li id="userAddId"><a href="datasource.html">DataSource</a></li>'+
-				  		'		<li id="userAddId"><a href="sql.html">Sql</a></li>'+
-				  		'		<li id="userAddId"><a href="weburi.html">WebURI</a></li>'+
-				  		'		<li id="userAddId"><a href="websession.html">Web Session</a></li>'+
-				  		'		<li id="userAddId"><a href="spring.html">Spring</a></li>'+
-				  		'		<li id="userAddId"><a href="api.html">JSON API</a></li>'+
-						'	</ul>'+
-						'	</div>'+
-					'</div>';
-			$(".row-fluid").prepend(html);
-		},
-
 		buildFooter : function() {
 			var html = '<footer class="footer">'+
 					  '    		<div class="container">'+
@@ -63,6 +60,83 @@ druid.common = function () {
 				},
 				dataType: "json"
 			});
+		},
+		
+		getAjaxUrl : function(uri) {
+			var result = uri;
+
+			if (statViewOrderBy != undefined)
+				result += 'orderBy=' + statViewOrderBy + '&';
+
+			if (statViewOrderType != undefined)
+				result += 'orderType=' + statViewOrderType + '&';
+
+			if (sqlViewPage != undefined)
+				result += 'page=' + sqlViewPage + '&';
+
+			if (sqlViewPerPageCount != undefined)
+				result += 'perPageCount=' + sqlViewPerPageCount + '&';
+
+			return result;
+		},
+		
+		resetSortMark : function() {
+			var divObj = document.getElementById('th-' + statViewOrderBy);
+			var old_divObj = document.getElementById('th-' + statViewOrderBy_old);
+			var replaceToStr = '';
+			if (old_divObj) {
+				var html = old_divObj.innerHTML;
+				if (statViewOrderBy_old.indexOf('[') > 0)
+					replaceToStr = '-';
+				html = html.replace('¡ü', replaceToStr);
+				html = html.replace('¡ý', replaceToStr);
+				old_divObj.innerHTML = html
+			}
+			if (divObj) {
+				var html = divObj.innerHTML;
+				if (statViewOrderBy.indexOf('[') > 0)
+					html = '';
+
+				if (statViewOrderType == 'asc') {
+					html += '&uarr;';
+				} else if (statViewOrderType == 'desc') {
+					html += '&darr;';
+				}
+				divObj.innerHTML = html;
+			}
+			this.ajaxRequestForBasicInfo();
+		},
+
+		setOrderBy : function(orderBy) {
+			if (statViewOrderBy != orderBy) {
+				statViewOrderBy_old = statViewOrderBy;
+				statViewOrderBy = orderBy;
+				statViewOrderType = 'desc';
+				druid.common.resetSortMark();
+				return;
+			}
+
+			statViewOrderBy_old = statViewOrderBy;
+
+			if (statViewOrderType == 'asc')
+				statViewOrderType = 'desc'
+			else
+				statViewOrderType = 'asc';
+
+			druid.common.resetSortMark();
+		},
+		
+		ajaxuri : "",
+		handleAjaxResult : null,
+		ajaxRequestForBasicInfo : function() {
+			$.ajax({
+				type: 'POST',
+				url: druid.common.getAjaxUrl(druid.common.ajaxuri),
+				success: function(data) {
+					druid.common.handleAjaxResult(data);
+				},
+				dataType: "json"
+			});
 		}
 	}
 }();
@@ -70,11 +144,3 @@ druid.common = function () {
 $(document).ready(function() {
 	druid.common.init();
 });
-
-function getUrlVar(name) {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-		return vars[name];
-}

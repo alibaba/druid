@@ -2,6 +2,7 @@ $.namespace("druid.index");
 druid.index = function () {  
 	return  {
 		init : function() {
+			druid.common.buildHead(0);
 			this.ajaxRequestForBasicInfo();
 		},
 		
@@ -9,7 +10,6 @@ druid.index = function () {
 			$.ajax({
 				type: 'POST',
 				url: "basic.json",
-				data: $("#loginForm").serialize(),
 				success: function(data) {
 					$("#DruidVersion").text(data.Content.Version)
 					var driversList = data.Content.Drivers;
@@ -23,7 +23,6 @@ druid.index = function () {
 					}
 					$("#ResetEnable").text(data.Content.ResetEnable)
 					$("#ResetCount").text(data.Content.ResetCount)
-					console.info(data.Content);
 				},
 				dataType: "json"
 			});

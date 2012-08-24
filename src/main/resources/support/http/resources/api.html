@@ -3,85 +3,77 @@
 	<head>
 		<title>Druid Stat JSON API</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
 		<script>
 			function init() {
-				buildMenu();
-				buildFooter();
+				druid.common.buildHead(6);
 			}
 		</script>
 	</head>
 	<body onload="init();">
-		<br />
-		<div id="main">
-			<h2>JSON API</h2>
-			<table cellspacing="1" cellpadding="5" id="SqlStatTable" width="99%">
-				<thead>
-				<tr>
-					<th class="td_lable">Name</th>
-					<th class="td_lable">Description</th>
-				</tr>
-				</thead>
-				<tr>
-					<td> <a href="basic.json" target="_blank">basic.json</a> </td>
-					<td> basic info.  </td>
-				</tr>
-				<tr>
-					<td> <a href="datasource.json" target="_blank">datasource.json</a> </td>
-					<td> DatsSourceStat List </td>
-				</tr>
-				<tr>
-					<td> datasource-{id}.json </td>
-					<td>
-						DatasourceStat for id={id},id is DatsSourceStat.ID<br />
-						Example: druid/datasource-1.json
-					</td>
-				</tr>
-				<tr>
-					<td> activeConnectionStackTrace-{datasourceId}.json </td>
-					<td>
-						StrackTrace for activeConnection in datasource which datasource.id={datasourceId},id is DatsSourceStat.ID<br />
+		<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          			<div class="hero-unit" style="padding: 10px;">
+          				<h3>
+          					JSON API
+          				</h3>
+						<table class="table table-bordered table-striped responsive-utilities">
+							<thead>
+								<tr>
+									<th width="250px">Name</th>
+									<th>Description</th>
+								</tr>
+							</thead>
+							<tr>
+								<td><a href="basic.json" target="_blank">basic.json</a></td>
+								<td>basic info.</td>
+							</tr>
+							<tr>
+								<td><a href="datasource.json" target="_blank">datasource.json</a></td>
+								<td>DatsSourceStat List</td>
+							</tr>
+							<tr>
+								<td>datasource-{id}.json</td>
+								<td>DatasourceStat for id={id},id is DatsSourceStat.ID<br />
+						Example: druid/datasource-1.json</td>
+							</tr>
+							<tr>
+								<td>activeConnectionStackTrace-{datasourceId}.json</td>
+								<td>StrackTrace for activeConnection in datasource which datasource.id={datasourceId},id is DatsSourceStat.ID<br />
 						Required: set removeAbandoned=true<br />
-						Example: druid/activeConnectionStackTrace-1.json
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<a href="sql.json" target="_blank">sql.json</a>
-					</td>
-					<td>
-						SqlStat info List.<br />
-						orderBy=[ID|ExecuteCount|...|](every property without histogram in sqlstat object)<br />
-						orderType=[asc|desc] default is desc<br />
-						page=page count start with 1<br />
-						perPageCount=item count in one page,default is INTEGER.MAX_VALUE
-					</td>
-				</tr>
-				<tr>
-					<td> sql-{id}.json </td>
-					<td>
-						SqlStat for id={id} ,id is SqlStat.ID<br />
-						Example: druid/sql-1.json
-					</td>
-				</tr>
-				<tr>
-					<td><a href="weburi.json" target="_blank">weburi.json</a></td>
-					<td>
-						
-					</td>
-				</tr>
-				<tr>
-					<td><a href="websession.json" target="_blank">websession.json</a></td>
-					<td>
-						
-					</td>
-				</tr>
-				<tr>
-					<td> <a href="reset-all.json" target="_blank">reset-all.json</a> </td>
-					<td> Reset all stat </td>
-				</tr>
-			</table>
-		</div>
+						Example: druid/activeConnectionStackTrace-1.json</td>
+							</tr>
+							<tr>
+								<td><a href="sql.json" target="_blank">sql.json</a></td>
+								<td>SqlStat for id={id} ,id is SqlStat.ID<br />
+						Example: druid/sql-1.json</td>
+							</tr>
+							<tr>
+								<td><a href="basic.json" target="_blank">basic.json</a></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td><a href="weburi.json" target="_blank">weburi.json</a></td>
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td><a href="websession.json" target="_blank">websession.json</a></td>
+								<td>
+								</td>
+							</tr>
+							<tr>
+								<td> <a href="reset-all.json" target="_blank">reset-all.json</a> </td>
+								<td> Reset all stat </td>
+							</tr>
+						</table>
+          			</div>
+        		</div>
+      		</div> 
+    	</div>
 	</body>
 </html>
