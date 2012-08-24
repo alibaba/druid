@@ -1,5 +1,7 @@
 package com.alibaba.druid.bvt.pool;
 
+import java.sql.Connection;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -10,7 +12,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  * 
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSourceTest5 extends TestCase {
+public class DruidDataSourceTest_getPoolingPeakTime extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -18,8 +20,6 @@ public class DruidDataSourceTest5 extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-        dataSource.setFilters("stat");
-        dataSource.setInitialSize(100);
 
     }
 
@@ -28,12 +28,11 @@ public class DruidDataSourceTest5 extends TestCase {
     }
 
     public void test_error() throws Exception {
-        Exception error = null;
-        try {
-            dataSource.init();
-        } catch (IllegalArgumentException e) {
-            error = e;
-        }
-        Assert.assertNotNull(error);
+        Assert.assertNull(dataSource.getPoolingPeakTime());
+        
+        Connection conn = dataSource.getConnection();
+        conn.close();
+        
+        Assert.assertNotNull(dataSource.getPoolingPeakTime());
     }
 }

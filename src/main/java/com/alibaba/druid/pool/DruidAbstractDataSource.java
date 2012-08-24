@@ -1297,7 +1297,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void initPhysicalConnection(Connection conn) throws SQLException {
-        conn.setAutoCommit(isDefaultAutoCommit());
+        if (conn.getAutoCommit() != defaultAutoCommit) {
+            conn.setAutoCommit(defaultAutoCommit);    
+        }
+        
         if (getDefaultReadOnly() != null) {
             if (conn.isReadOnly() != getDefaultReadOnly()) {
                 conn.setReadOnly(getDefaultReadOnly());

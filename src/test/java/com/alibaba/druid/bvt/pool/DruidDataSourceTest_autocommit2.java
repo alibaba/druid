@@ -18,7 +18,7 @@ import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
  * 
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSourceTest6 extends TestCase {
+public class DruidDataSourceTest_autocommit2 extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -26,11 +26,12 @@ public class DruidDataSourceTest6 extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-        dataSource.setDefaultAutoCommit(true);
+        dataSource.setDefaultAutoCommit(false);
+        dataSource.setInitialSize(1);
         dataSource.getProxyFilters().add(new FilterAdapter() {
             public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
                 ConnectionProxy conn = chain.connection_connect(info);
-                conn.setAutoCommit(false);
+                conn.setAutoCommit(true);
                 return conn;
             }
         });
@@ -44,7 +45,7 @@ public class DruidDataSourceTest6 extends TestCase {
     public void test_autoCommit() throws Exception {
         Connection conn = dataSource.getConnection();
         
-        Assert.assertTrue(conn.getAutoCommit());
+        Assert.assertFalse(conn.getAutoCommit());
         
         conn.close();
     }
