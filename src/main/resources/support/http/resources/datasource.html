@@ -3,25 +3,25 @@
 	<head>
 		<title>Druid DataSourceStat</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-		<script src="js/datasource.js" type="text/javascript" charset="utf8"></script>
-		<script >
-			function init(){
-				ajaxRequestForDataSourceInfo();
-				var time2=setInterval("ajaxRequestForDataSourceInfo();",5000);
-				buildMenu();
-				buildFooter();
-			}
-		</script>
+		<script src="js/datasource.js" type="text/javascript"></script>
 	</head>
-	<body onload="init()">
-		<br />
-		<div id="main">
-			<h2>DataSourceStat List<a href="datasource.json" target="_blank">[View JSON API]</a></h2>
-			<div id="dataSourceStatList">
-			</div>
-			<p><b>(*) property for user to setup</b></p>
-		</div>
+	<body>
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          			<div class="hero-unit" style="padding: 10px;">
+          				<h3>
+          					DataSourceStat List
+          					<a href="datasource.json" target="_blank">View JSON API</a>
+          				</h3>
+          				<div class="alert alert-error clearfix" style="margin-bottom: 5px;width: 195px; padding: 2px 15px 2px 10px;">(*) property for user to setup</div>
+          			</div>
+        		</div>
+      		</div> 
+    	</div>
 	</body>
 </html>

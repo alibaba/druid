@@ -1,84 +1,56 @@
 
 body{
-    font-family: 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
-	font-weight:normal;
 	font-size:12px;
 	padding-top: 60px;
 	padding-bottom: 40px;
 }
-#menu {
-	height:50px;
-}
 
-#menu a{
-    color: #0082FF;
-    font: 18px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
-}
-#footer {
-	height: 50px;
-    border-top: 1px solid #A8C7CE;
-    margin-top: 20px;
-    width: 99%;
-    text-align: center;
-    line-height: 26px;
-    padding-top: 15px;
-}
-tr{
-	background-color:white;
-}
-th{
-	background-color:#D3EAEF;
-}
-#main h2 {
-    border: 0 dashed red;
-    color: #0082FF;
-    font: 24px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
-    margin: 0 0 10px;
-}
-#main h2 a{
-    font-size: 13px;
-	color: black;
-}
-#main h3 {
-    border: 0 dashed red;
-    color: #0082FF;
-    margin: 0 0 10px;
-}
-table{
-	background-color:#A8C7CE;
-	line-height:18px;
-}
-
-.td_lable{
-	background-color:#D3EAEF;
-	font-weight:bolder;
- }
- 
- li{
-	line-height:18px;
- }
-
-.bar rect {
-  fill: steelblue;
-  shape-rendering: crispEdges;
-}
-
-.bar text {
-  fill: #fff;
-}
-
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.sidebar-nav {
-	padding: 9px 0;
-}
 .footer {
     background-color: #F5F5F5;
     border-top: 1px solid #E5E5E5;
     margin-top: 10px;
     padding: 20px 0;
+}
+
+.td_lable {
+	font-weight: bold;
+	width: 220px;
+}
+
+.navbar .brand {
+	color: #555555;
+}
+.navbar .nav > li > a {
+    color: #555555;
+    float: none;
+    padding: 10px 15px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+.navbar .nav,
+.navbar .nav > li {
+	font-size: 14px;
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+    *zoom:1; /* hasLayout ie7 trigger */
+    vertical-align: top;
+}
+
+.navbar-inner {
+    text-align:center;
+    background-color: #FAFAFA;
+    background-image: -moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
+}
+.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
+    background-color: #E5E5E5;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
+    color: #555555;
+    text-decoration: none;
+}
+
+.navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
+    background-color: transparent;
+    color: #333333;
+    text-decoration: none;
 }
