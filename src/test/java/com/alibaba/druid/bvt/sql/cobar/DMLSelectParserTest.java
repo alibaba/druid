@@ -245,12 +245,12 @@ public class DMLSelectParserTest extends TestCase {
     }
     
     public void test_select_18() throws Exception {
-        String sql = "SELect t1.id , t2.* from t1, test.t2 where test.t1.id='�?'‘文' and t1.id=test.t2.id";
+        String sql = "SELect t1.id , t2.* from t1, test.t2 where test.t1.id='中''‘文' and t1.id=test.t2.id";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("SELECT t1.id, t2.*\nFROM t1, test.t2\nWHERE test.t1.id = '�?'‘文'\n\tAND t1.id = test.t2.id", output);
+        Assert.assertEquals("SELECT t1.id, t2.*\nFROM t1, test.t2\nWHERE test.t1.id = '中''‘文'\n\tAND t1.id = test.t2.id", output);
     }
     
     public void test_select_19() throws Exception {

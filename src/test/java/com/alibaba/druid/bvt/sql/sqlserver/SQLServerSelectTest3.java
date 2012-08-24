@@ -25,9 +25,9 @@ import com.alibaba.druid.sql.test.TestUtils;
 public class SQLServerSelectTest3 extends TestCase {
 
     public void test_isEmpty() throws Exception {
-        String sql = "SELECT name + â€?â€?+ master.sys.fn_varbintohexstr(password_hash) from master.sys.sql_logins";
+        String sql = "SELECT name + â€˜-â€™ + master.sys.fn_varbintohexstr(password_hash) from master.sys.sql_logins";
 
-        String expect = "SELECT name + â€?- â€?+ master.sys.fn_varbintohexstr(password_hash)\n" + //
+        String expect = "SELECT name + â€˜ - â€™ + master.sys.fn_varbintohexstr(password_hash)\n" + //
                         "FROM master.sys.sql_logins";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
