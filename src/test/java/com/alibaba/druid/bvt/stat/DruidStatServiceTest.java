@@ -47,23 +47,31 @@ public class DruidStatServiceTest extends TestCase {
         JdbcUtils.close(dataSource);
     }
 
+    @SuppressWarnings("unchecked")
     public void test_statService() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
-        
+
         PreparedStatement stmt = conn.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
         rs.next();
         rs.close();
         stmt.close();
-        
+
         conn.close();
-        
+
         String result = DruidStatService.getInstance().service("/sql.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        
+
         List<Map<String, Object>> sqlList = (List<Map<String, Object>>) resultMap.get("Content");
-        
+
         Assert.assertEquals(1, sqlList.size());
+
+        Map<String, Object> sqlStat = sqlList.get(0);
+
+        Assert.assertEquals(0, sqlStat.get("RunningCount"));
+        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
+        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
+        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
     }
 }
