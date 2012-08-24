@@ -27,8 +27,5 @@ public interface WrapperProxy extends Wrapper {
 
     Object getRawObject();
 
-    /**
-     * @return
-     */
     Map<String, Object> getAttributes();
 }
