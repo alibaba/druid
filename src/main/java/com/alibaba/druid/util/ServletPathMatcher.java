@@ -19,7 +19,7 @@ public class ServletPathMatcher implements PatternMatcher {
 
     /**
      * <p>
-     * three type: endsWithMatch(eg. /xxx*=/xxx/xyz), startsWithMatch(eg. *.xxx=abc.xxx), equals(eg. /xxx=/xxx)ã€?
+     * three type: endsWithMatch(eg. /xxx*=/xxx/xyz), startsWithMatch(eg. *.xxx=abc.xxx), equals(eg. /xxx=/xxx).
      * </p>
      * <b>Notice</b>: *xxx* will match *xxxyyyy. endsWithMatch first.
      */

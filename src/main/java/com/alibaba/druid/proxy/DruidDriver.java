@@ -144,7 +144,7 @@ public class DruidDriver implements Driver, DruidDriverMBean {
     }
 
     /**
-     * 参数定义�?com.alibaba.druid.log.LogFilter=filter com.alibaba.druid.log.LogFilter.p1=prop-value
+     * 参数定义： com.alibaba.druid.log.LogFilter=filter com.alibaba.druid.log.LogFilter.p1=prop-value
      * com.alibaba.druid.log.LogFilter.p2=prop-value
      * 
      * @param url

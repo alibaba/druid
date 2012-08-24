@@ -394,7 +394,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             long current = executeSpanNanoMax.get();
             if (current < nanoSpan) {
                 if (executeSpanNanoMax.compareAndSet(current, nanoSpan)) {
-                    // 可能不准确，但是绝大多数情况下都会正确，性能换取�?���?
+                	// 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
                     executeNanoSpanMaxOccurTime = System.currentTimeMillis();
 
                     break;

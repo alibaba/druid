@@ -33,9 +33,12 @@ import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
 
 /**
- * 监控相关的对外数据暴�? * 
+ * 监控相关的对外数据暴露
+ * 
  * <pre>
- * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调�?返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类�? * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想�? * </pre>
+ * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类型
+ * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想到
+ * </pre>
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
