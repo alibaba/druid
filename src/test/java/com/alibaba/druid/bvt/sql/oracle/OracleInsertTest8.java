@@ -1,3 +1,18 @@
+/*
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
@@ -19,7 +34,7 @@ public class OracleInsertTest8 extends OracleTest {
                      + " MEMBER_DEPT_CN, LINK_EMAIL, STATUS, AV_PROVIDER, AV_ORIGIN)"
                      + " values (1000236058, sysdate, sysdate, 1300904670, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½5''TW'"
                      + ", 'Yunnan', 'sadf', '4r7V', 'fdgtg', 'M', 'ï¿½ï¿½ï¿½ï¿½ï¿½info_name4', 'Fnameinfo_name4'"
-                     + ", '33', '4444', '6666', 'ï¿½ï¿½ï¿½fgsgsdfg', 'fggtgth', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', null, 'zeus'" + ")";
+                     + ", '33', '4444', '6666', 'ï¿½ï¿½ï¿½fgsgsdfg', 'fggtgth', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿?, null, 'zeus'" + ")";
 
         OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();

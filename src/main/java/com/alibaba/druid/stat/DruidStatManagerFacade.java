@@ -1,3 +1,18 @@
+/*
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.alibaba.druid.stat;
 
 import java.sql.Driver;
@@ -18,12 +33,9 @@ import com.alibaba.druid.util.JdbcSqlStatUtils;
 import com.alibaba.druid.util.StringUtils;
 
 /**
- * 监控相关的对外数据暴露
- * 
+ * 监控相关的对外数据暴�? * 
  * <pre>
- * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调用,返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类型
- * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想到
- * </pre>
+ * 1. 为了支持jndi数据源本类内部调用druid相关对象均需要反射调�?返回值也应该是Object,List<Object>,Map<String,Object>等无关于druid的类�? * 2. 对外暴露的public方法都应该先调用init()，应该有更好的方式，暂时没想�? * </pre>
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */

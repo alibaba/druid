@@ -1,3 +1,18 @@
+/*
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
@@ -56,7 +71,7 @@ public class TestConcurrent extends TestCase {
     }
 
     public void test_0() throws Exception {
-        // 第一次建立连接
+        // 第一次建立连�?
         {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(0, dataSource.getPoolingCount());
@@ -90,7 +105,7 @@ public class TestConcurrent extends TestCase {
             Assert.assertEquals(true, dataSource.isEnable());
         }
 
-        // 使用单个线程模拟并发打开10个连接
+        // 使用单个线程模拟并发打开10个连�?
         for (int i = 0; i < 1000 * 1; ++i) {
             final int COUNT = 10;
             Connection[] connections = new Connection[COUNT];
@@ -115,12 +130,12 @@ public class TestConcurrent extends TestCase {
             Assert.assertEquals(COUNT, dataSource.getPoolingCount());
         }
 
-        // 2个并发
+        // 2个并�?
         for (int i = 0; i < 3; ++i) {
             concurrent(2);
         }
 
-        // 5个并发
+        // 5个并�?
         for (int i = 0; i < 3; ++i) {
             concurrent(5);
         }
@@ -147,7 +162,7 @@ public class TestConcurrent extends TestCase {
     }
 
     /**
-     * 并发执行10000次
+     * 并发执行10000�?
      * 
      * @param threadCount
      * @throws InterruptedException
