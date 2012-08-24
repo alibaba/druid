@@ -218,8 +218,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             return;
         }
 
+        this.poolPreparedStatements = value;
+
         if (!inited) {
-            this.poolPreparedStatements = value;
             return;
         }
 
@@ -227,22 +228,22 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             LOG.info("set poolPreparedStatements " + this.poolPreparedStatements + " -> " + value);
         }
 
-        lock.lock();
-        try {
-            if (this.poolPreparedStatements && (!value)) {
+        if (!value) {
+            lock.lock();
+            try {
+
                 for (int i = 0; i < poolingCount; ++i) {
                     DruidConnectionHolder connection = connections[i];
 
                     for (PreparedStatementHolder holder : connection.getStatementPool().getMap().values()) {
                         closePreapredStatement(holder);
-                        decrementCachedPreparedStatementCount();
                     }
 
                     connection.getStatementPool().getMap().clear();
                 }
+            } finally {
+                lock.unlock();
             }
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -1801,6 +1802,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public JdbcSqlStat getSqlStat(int sqlId) {
+        return this.getDataSourceStat().getSqlStat(sqlId);
+    }
+
+    public JdbcSqlStat getSqlStat(long sqlId) {
         return this.getDataSourceStat().getSqlStat(sqlId);
     }
 
