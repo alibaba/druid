@@ -190,7 +190,7 @@
 						<java>SLASHSTAR_STYLE</java>
 					</mapping>
 					<includes>
-						<include>src/**/*.java</include>
+						<include>src/main/java/**/*.java</include>
 					</includes>
 					<encoding>UTF-8</encoding>
 				</configuration>
