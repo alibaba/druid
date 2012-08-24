@@ -159,8 +159,6 @@ public class PreparedStatementPool {
             OracleUtils.exitImplicitCacheToClose(holder.getStatement());
         }
         dataSource.closePreapredStatement(holder);
-        dataSource.decrementCachedPreparedStatementCount();
-        dataSource.incrementCachedPreparedStatementDeleteCount();
     }
 
     public Map<PreparedStatementKey, PreparedStatementHolder> getMap() {

@@ -1515,6 +1515,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
         closedPreparedStatementCount.incrementAndGet();
+        decrementCachedPreparedStatementCount();
+        incrementCachedPreparedStatementDeleteCount();
 
         JdbcUtils.close(stmtHolder.getStatement());
     }
