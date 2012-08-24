@@ -58,8 +58,7 @@ public class TestIdle3_Concurrent_MaxActive extends TestCase {
     }
 
     public void test_idle2() throws Exception {
-
-        // 第一次创建连接
+        // first connect
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
