@@ -3,6 +3,8 @@ body{
     font-family: 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
 	font-weight:normal;
 	font-size:12px;
+	padding-top: 60px;
+	padding-bottom: 40px;
 }
 #menu {
 	height:50px;
@@ -52,11 +54,6 @@ table{
 	font-weight:bolder;
  }
  
- a{
-    color: #0082FF;
-    font: 13px 'Microsoft YaHei','Microsoft JhengHei',STHeiti,Georgia,'Times New Roman',Times,serif;
- }
- 
  li{
 	line-height:18px;
  }
@@ -74,4 +71,14 @@ table{
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+
+.sidebar-nav {
+	padding: 9px 0;
+}
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 10px;
+    padding: 20px 0;
 }
