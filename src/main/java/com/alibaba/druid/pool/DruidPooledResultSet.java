@@ -93,6 +93,10 @@ public final class DruidPooledResultSet extends PoolableWrapper implements Resul
             throw checkException(t);
         }
     }
+    
+    public int getFetchRowCount() {
+        return fetchRowCount;
+    }
 
     @Override
     public boolean wasNull() throws SQLException {
