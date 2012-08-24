@@ -401,7 +401,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     connections[poolingCount++] = new DruidConnectionHolder(this, conn);
                 }
-                
+
                 if (poolingCount > 0) {
                     poolingPeak = poolingCount;
                     poolingPeakTime = System.currentTimeMillis();
@@ -526,7 +526,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
             }
         } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
-            LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true and validationQuery shoud not be null");
+            if (LOG.isWarnEnabled()) {
+                LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true and validationQuery shoud not be null");
+            }
         }
     }
 
@@ -938,7 +940,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         e.setLastActiveTimeMillis(System.currentTimeMillis());
         connections[poolingCount++] = e;
-        
+
         if (poolingCount > poolingPeak) {
             poolingPeak = poolingCount;
             poolingPeakTime = System.currentTimeMillis();
