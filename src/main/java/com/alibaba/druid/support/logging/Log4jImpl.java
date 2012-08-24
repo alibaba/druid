@@ -37,10 +37,12 @@ public class Log4jImpl implements Log {
     }
 
     public void error(String s, Throwable e) {
+        errorCount++;
         log.log(callerFQCN, Level.ERROR, s, e);
     }
 
     public void error(String s) {
+        errorCount++;
         log.log(callerFQCN, Level.ERROR, s, null);
     }
 
