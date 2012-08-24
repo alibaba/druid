@@ -22,11 +22,6 @@ import com.alibaba.druid.wall.WallUtils;
 
 import junit.framework.TestCase;
 
-/**
- * 这个场景测试访问MySql系统�?
- * 
- * @author admin
- */
 public class MySqlWallPermitTableTest extends TestCase {
 
     public void test_default() throws Exception {

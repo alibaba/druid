@@ -23,7 +23,7 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
- * 这个场景，检�?
+ * 这个场景，检测
  * @author wenshao
  *
  */

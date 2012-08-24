@@ -55,9 +55,9 @@ public class SQLServerWallTest extends TestCase {
     
     public void test_stuff() throws Exception {
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT @@version"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT 1 â€?comment"));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT 1 â€” comment"));
         Assert.assertFalse(WallUtils.isValidateSqlServer("SELECT /*comment*/1"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("WAITFOR DELAY â€?:0:5â€?"));
-        Assert.assertFalse(WallUtils.isValidateSqlServer("BULK INSERT mydata FROM â€˜c:boot.iniâ€?"));                  
+        Assert.assertFalse(WallUtils.isValidateSqlServer("WAITFOR DELAY â€™0:0:5â€² "));
+        Assert.assertFalse(WallUtils.isValidateSqlServer("BULK INSERT mydata FROM â€˜c:boot.iniâ€™;"));                  
     }    
 }

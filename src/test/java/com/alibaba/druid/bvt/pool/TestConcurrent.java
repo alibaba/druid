@@ -71,7 +71,7 @@ public class TestConcurrent extends TestCase {
     }
 
     public void test_0() throws Exception {
-        // 第一次建立连�?
+        // 第一次建立连接
         {
             Assert.assertEquals(0, dataSource.getActiveCount());
             Assert.assertEquals(0, dataSource.getPoolingCount());
@@ -105,7 +105,7 @@ public class TestConcurrent extends TestCase {
             Assert.assertEquals(true, dataSource.isEnable());
         }
 
-        // 使用单个线程模拟并发打开10个连�?
+        // 使用单个线程模拟并发打开10个连接
         for (int i = 0; i < 1000 * 1; ++i) {
             final int COUNT = 10;
             Connection[] connections = new Connection[COUNT];
@@ -130,12 +130,12 @@ public class TestConcurrent extends TestCase {
             Assert.assertEquals(COUNT, dataSource.getPoolingCount());
         }
 
-        // 2个并�?
+        // 2个并发
         for (int i = 0; i < 3; ++i) {
             concurrent(2);
         }
 
-        // 5个并�?
+        // 5个并发
         for (int i = 0; i < 3; ++i) {
             concurrent(5);
         }
@@ -162,7 +162,7 @@ public class TestConcurrent extends TestCase {
     }
 
     /**
-     * 并发执行10000�?
+     * 并发执行10000次
      * 
      * @param threadCount
      * @throws InterruptedException

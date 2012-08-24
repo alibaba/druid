@@ -21,11 +21,7 @@ import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
-/**
- * 测试单行注释的场�?
- * @author admin
- *
- */
+
 public class WallLineCommentTest extends TestCase {
     private String sql = "select f1 from t -- ";
     

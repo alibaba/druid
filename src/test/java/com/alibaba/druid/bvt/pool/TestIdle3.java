@@ -61,7 +61,7 @@ public class TestIdle3 extends TestCase {
                                                                  new ObjectName(
                                                                                 "com.alibaba:type=DataSource,name=oracle"));
 
-        // 第一次创建连�?
+        // 第一次创建连接
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
@@ -80,7 +80,7 @@ public class TestIdle3 extends TestCase {
         }
 
         {
-            // 并发创建14�?
+            // 并发创建14个
             int count = 14;
             Connection[] connections = new Connection[count];
             for (int i = 0; i < count; ++i) {
