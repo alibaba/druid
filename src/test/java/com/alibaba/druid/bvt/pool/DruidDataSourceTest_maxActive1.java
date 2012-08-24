@@ -6,11 +6,11 @@ import junit.framework.TestCase;
 import com.alibaba.druid.pool.DruidDataSource;
 
 /**
- * 这个场景测试maxActive < 0
+ * 这个场景测试initialSize > maxActive
  * 
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidDataSourceTest4 extends TestCase {
+public class DruidDataSourceTest_maxActive1 extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -19,7 +19,8 @@ public class DruidDataSourceTest4 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
         dataSource.setFilters("stat");
-        dataSource.setMaxActive(-1);
+        dataSource.setInitialSize(3);
+        dataSource.setMaxActive(1);
 
     }
 

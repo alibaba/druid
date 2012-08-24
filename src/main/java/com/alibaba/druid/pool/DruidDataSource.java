@@ -347,7 +347,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (getInitialSize() > maxActive) {
-                throw new IllegalArgumentException("illegal initialSize");
+                throw new IllegalArgumentException("illegal initialSize " + this.initialSize + ", maxActieve " + maxActive);
             }
 
             if (this.driverClass != null) {
@@ -402,9 +402,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = createPhysicalConnection();
-                    if (defaultAutoCommit != conn.getAutoCommit()) {
-                        conn.setAutoCommit(defaultAutoCommit);
-                    }
                     connections[poolingCount++] = new DruidConnectionHolder(this, conn);
                 }
 
