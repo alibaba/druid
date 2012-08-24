@@ -179,7 +179,7 @@
 				<artifactId>maven-license-plugin</artifactId>
 				<version>1.10.b1</version>
 				<configuration>
-					<header>${basedir}/doc/header.txt</header>
+					<header>${basedir}/doc/license.txt</header>
 					<failIfMissing>true</failIfMissing>
 					<aggregate>true</aggregate>
 					<strictCheck>true</strictCheck>
