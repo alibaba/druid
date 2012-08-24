@@ -230,6 +230,7 @@
 				</file>
 			</activation>
 			<properties>
+				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
 				<jconsolejar>${java.home}/../lib/jconsole.jar</jconsolejar>
 			</properties>
 
@@ -241,6 +242,13 @@
 					<scope>system</scope>
 					<systemPath>${jconsolejar}</systemPath>
 					<optional>true</optional>
+				</dependency>
+				<dependency>
+					<groupId>com.alibaba</groupId>
+					<artifactId>tools</artifactId>
+					<version>1.6.0</version>
+					<scope>system</scope>
+					<systemPath>${toolsjar}</systemPath>
 				</dependency>
 			</dependencies>
 		</profile>
