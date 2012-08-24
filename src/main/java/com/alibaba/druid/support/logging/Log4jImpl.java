@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 
 public class Log4jImpl implements Log {
 
+    private static final String callerFQCN = Log4jImpl.class.getName();
+    
     private Logger log;
 
     private int    errorCount;
@@ -35,32 +37,31 @@ public class Log4jImpl implements Log {
     }
 
     public void error(String s, Throwable e) {
-        log.error(s, e);
+        log.log(callerFQCN, Level.ERROR, s, e);
     }
 
     public void error(String s) {
-        log.error(s);
+        log.log(callerFQCN, Level.ERROR, s, null);
     }
 
     public void debug(String s) {
-        log.debug(s);
+        log.log(callerFQCN, Level.DEBUG, s, null);
     }
 
     public void debug(String s, Throwable e) {
-        log.debug(s, e);
+        log.log(callerFQCN, Level.DEBUG, s, e);
     }
 
     public void warn(String s) {
-        log.warn(s);
+        log.log(callerFQCN, Level.WARN, s, null);
         warnCount++;
     }
 
     public void warn(String s, Throwable e) {
-        log.warn(s, e);
+        log.log(callerFQCN, Level.WARN, s, e);
         warnCount++;
     }
 
-    @Override
     public int getWarnCount() {
         return warnCount;
     }
@@ -69,32 +70,30 @@ public class Log4jImpl implements Log {
         return errorCount;
     }
 
-    @Override
     public void resetStat() {
         errorCount = 0;
         warnCount = 0;
         infoCount = 0;
     }
 
-    @Override
     public boolean isInfoEnabled() {
         return log.isInfoEnabled();
     }
 
-    @Override
     public void info(String msg) {
         infoCount++;
-        log.info(msg);
+        log.log(callerFQCN, Level.INFO, msg, null);
     }
 
-    @Override
     public boolean isWarnEnabled() {
         return log.isEnabledFor(Level.WARN);
     }
 
-    @Override
     public int getInfoCount() {
         return infoCount;
     }
 
+    public String toString() {
+        return log.toString();
+    }
 }
