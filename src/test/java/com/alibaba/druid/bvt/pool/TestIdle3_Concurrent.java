@@ -57,7 +57,7 @@ public class TestIdle3_Concurrent extends TestCase {
         // ManagementFactory.getPlatformMBeanServer().registerMBean(dataSource, new
         // ObjectName("com.alibaba:type=DataSource"));
 
-        // 第一次创建连�?
+        // 第一次创建连接
         {
             Assert.assertEquals(0, dataSource.getCreateCount());
             Assert.assertEquals(0, dataSource.getActiveCount());
@@ -76,7 +76,7 @@ public class TestIdle3_Concurrent extends TestCase {
         }
 
         {
-            // 并发创建14�?
+            // 并发创建14个
             concurrent(driver, dataSource, 30);
         }
 
