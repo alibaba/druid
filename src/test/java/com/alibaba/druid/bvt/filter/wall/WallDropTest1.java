@@ -22,11 +22,7 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
-/**
- * 这个场景，检�?
- * @author wenshao
- *
- */
+
 public class WallDropTest1 extends TestCase {
     private String sql = "DROP TABLE T1";
     

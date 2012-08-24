@@ -127,8 +127,8 @@ public class DruidDataSourceUIManager extends JFrame {
     public DruidDataSourceUIManager(){
         this.setLayout(new BorderLayout());
 
-        Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具�?
-        Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺�?
+        Toolkit kit = Toolkit.getDefaultToolkit(); // 定义工具包
+        Dimension screenSize = kit.getScreenSize(); // 获取屏幕的尺寸
         int screenWidth = screenSize.width / 2; // 获取屏幕的宽
         int screenHeight = screenSize.height / 2; // 获取屏幕的高
         int height = this.getHeight();
