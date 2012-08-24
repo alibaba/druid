@@ -61,7 +61,7 @@ public class TestRemoveAbandoned extends TestCase {
         Assert.assertEquals(1, dataSource.getActiveCount());
         Assert.assertEquals(0, dataSource.getPoolingCount());
 
-        // 超时之后，连接自动关�?
+        // 超时之后，连接自动关闭
         Thread.sleep(100);
         Assert.assertTrue(conn.isClosed());
 

@@ -64,7 +64,7 @@ public class DruidTest {
         ds.setUsername(username);
         ds.setPassword(pswd);
         ds.setUrl(connectURI);
-        ds.setInitialSize(initialSize); // 初始的连接数�?
+        ds.setInitialSize(initialSize); // 初始的连接数；
         ds.setMaxActive(maxActive);
         ds.setMaxIdle(maxIdle);
         ds.setMinIdle(minIdle);

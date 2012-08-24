@@ -22,11 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
-/**
- * 这个场景，检�?
- * @author wenshao
- *
- */
 public class WallInsertTest2 extends TestCase {
     private String sql = "INSERT INTO T (F1, F2) VALUES (1, 2)";
     
