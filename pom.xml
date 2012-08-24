@@ -170,7 +170,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- http://code.google.com/p/maven-license-plugin/wiki/HowTo -->
 			<plugin>
 				<!-- Working with multi-module projects -->
@@ -190,8 +190,9 @@
 						<java>SLASHSTAR_STYLE</java>
 					</mapping>
 					<includes>
-                    <include>src/**/*.java</include>
-                </includes>
+						<include>src/**/*.java</include>
+					</includes>
+					<encoding>UTF-8</encoding>
 				</configuration>
 				<executions>
 					<execution>
@@ -205,7 +206,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mc-release</id>
