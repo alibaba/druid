@@ -60,6 +60,19 @@ public class DumpTest extends TestCase {
     }
 
     public void testToString() throws Exception {
+        {
+            String sql = "select ?";
+            Connection conn = dataSource.getConnection();
+
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, "xxx");
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            rs.close();
+
+            conn.close();
+        }
+        
         String sql = "select ?, ?";
         Connection conn = dataSource.getConnection();
 

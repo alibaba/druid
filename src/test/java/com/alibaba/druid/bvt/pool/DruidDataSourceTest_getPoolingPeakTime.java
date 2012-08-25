@@ -29,6 +29,7 @@ public class DruidDataSourceTest_getPoolingPeakTime extends TestCase {
 
     public void test_error() throws Exception {
         Assert.assertNull(dataSource.getPoolingPeakTime());
+        Assert.assertNull(dataSource.getActivePeakTime());
         
         Connection conn = dataSource.getConnection();
         conn.close();
