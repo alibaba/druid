@@ -15,13 +15,40 @@
  */
 package com.alibaba.druid;
 
+import java.io.IOException;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.jar.Manifest;
+
 public final class VERSION {
 
-    public final static int MajorVersion    = 0;
-    public final static int MinorVersion    = 2;
-    public final static int RevisionVersion = 6;
-    
     public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+        return getManifestInfo("Implementation-Version");
+    }
+
+    public static String getBuildTime() {
+        return getManifestInfo("Implementation-Build");
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static String getManifestInfo(String key) {
+        try {
+            URL res = VERSION.class.getResource(VERSION.class.getSimpleName() + ".class");
+            JarURLConnection conn = (JarURLConnection) res.openConnection();
+            Manifest manifest = conn.getManifest();
+            Iterator entries = manifest.getMainAttributes().entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry) entries.next();
+                String manifestKey = entry.getKey().toString();
+                if (key.equals(manifestKey)) {
+                    return (String) entry.getValue();
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            return "n/a";
+        }
     }
 }
