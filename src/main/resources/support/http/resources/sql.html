@@ -7,7 +7,6 @@
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-		<script src="js/sql.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
 		<div class="container-fluid">
@@ -17,7 +16,7 @@
           				<h3>
           					SQL Stat
           				</h3>
-						<table class="table table-bordered table-striped responsive-utilities">
+						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
 							<thead>
 								<tr>
 									<th class="td_lable">N--</th>
@@ -69,10 +68,70 @@
 									</th>
 								</tr>
 							</thead> 
+							<tbody></tbody>
 						</table>
           			</div>
         		</div>
       		</div> 
     	</div>
+    	<script type="text/javascript">
+	    	$.namespace("druid.weburi");
+	    	druid.weburi = function () {  
+	    		return  {
+	    			init : function() {
+	    				druid.common.buildHead(2);
+	    				druid.common.ajaxuri = 'sql.json?';
+	    				druid.common.handleAjaxResult = druid.weburi.handleAjaxResult;
+	    				druid.common.setOrderBy("SQL");
+	    				druid.common.ajaxRequestForBasicInfo();
+	    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+	    			},
+	    			
+	    			handleAjaxResult : function(data) {
+	    				var sqlStatList = data.Content;
+	    				if(sqlStatList==null) return;
+	    				
+	    				var sqlStatTable = document.getElementById("dataTable");
+	    				while (sqlStatTable.rows.length > 1) {
+	    					sqlStatTable.deleteRow(1);
+	    				}
+	    				
+	    				var html = "";
+	    				for ( var i = 0; i < sqlStatList.length; i++) {
+	    					var stat = sqlStatList[i];
+	    					var newRow = sqlStatTable.insertRow(-1);
+	    					html += "<tr>";
+	    					html += "<td>" + (i + 1) + "</td>";
+	    					html += "<td>" + '<a target="_blank" href="sql-detail.html?sqlId=' + stat.ID + '">' + druid.common.subSqlString(stat.SQL, 25) + '</a>' + "</td>";
+	    					html += "<td>" + stat.ExecuteCount + "</td>";
+	    					html += "<td>" + stat.TotalTime + "</td>";
+	    					
+	    					var lastSlowHtml = stat.MaxTimespan;
+	    					if (stat.LastSlowParameters!=null && stat.LastSlowParameters.length>0) {
+	    						lastSlowHtml ='<a target="_blank" style="color:red" href="sql-detail.html?sqlId=' + stat.ID + '">'+stat.MaxTimespan+'</a>';
+	    					}
+	    					html += "<td>" + lastSlowHtml + "</td>";
+	    					html += "<td>" + stat.InTransactionCount + "</td>";
+	    					html += "<td>" + stat.ErrorCount + "</td>";
+	    					html += "<td>" + stat.EffectedRowCount + "</td>";
+	    					html += "<td>" + stat.FetchRowCount + "</td>";
+	    					html += "<td>" + stat.RunningCount + "</td>";
+	    					html += "<td>" + stat.ConcurrentMax + "</td>";
+	    					html += "<td>" + '[' + stat.Histogram + ']' + "</td>";
+	    					html += "<td>" + '[' + stat.ExecuteAndResultHoldTimeHistogram + ']' + "</td>";
+	    					html += "<td>" + '[' + stat.FetchRowCountHistogram + ']' + "</td>";
+	    					html += "<td>" + '[' + stat.EffectedRowCountHistogram + ']' + "</td>";
+	    					html += "</tr>";
+	    				}
+	    				$("#dataTable tbody").html(html);
+	    				druid.common.stripes();
+	    			}
+	    		}
+	    	}();
+	
+	    	$(document).ready(function() {
+	    		druid.weburi.init();
+	    	});
+    	</script>
 	</body>
 </html>

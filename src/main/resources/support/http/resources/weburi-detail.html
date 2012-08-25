@@ -1,108 +1,158 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>Druid Web URI Stat</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-    <link href="css/style.css" type="text/css" rel="stylesheet"/>
-    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
-    <script src="js/weburi-detail.js" type="text/javascript" charset="utf8"></script>
-    <script >
-      function init(){
-        ajaxRequestForSqlInfo();
-        var time3=setInterval("ajaxRequestForSqlInfo();",5000);
-		buildMenu();
-		buildFooter();
-      }
-    </script>
-  </head>
-  <body onload="init();">
-    <div id="main">
-      <br/>
-      <h2> Web URI View</h2>
-      <br/>
-      <table cellpadding='5' cellspacing='1' width='99%'>
-        <tr>
-          <td class='td_lable' width='130'> URI</td>
-          <td id="URI"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> RequestCount</td>
-          <td id="RequestCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> RequestTimeMillis</td>
-          <td id="RequestTimeMillis"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> LastAccessTime</td>
-          <td id="LastAccessTime"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> RunningCount</td>
-          <td id="RunningCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> ConcurrentMax</td>
-          <td id="ConcurrentMax"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcExecuteCount</td>
-          <td id="JdbcExecuteCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcExecuteErrorCount</td>
-          <td id="JdbcExecuteErrorCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcExecutePeak</td>
-          <td id="JdbcExecutePeak"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcExecuteTimeMillis</td>
-          <td id="JdbcExecuteTimeMillis"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcCommitCount</td>
-          <td id="JdbcCommitCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcRollbackCount</td>
-          <td id="JdbcRollbackCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcFetchRowCount</td>
-          <td id="JdbcFetchRowCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcFetchRowPeak</td>
-          <td id="JdbcFetchRowPeak"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcUpdateCount</td>
-          <td id="JdbcUpdateCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcUpdatePeak</td>
-          <td id="JdbcUpdatePeak"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcPoolConnectionOpenCount</td>
-          <td id="JdbcPoolConnectionOpenCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcPoolConnectionCloseCount</td>
-          <td id="JdbcPoolConnectionCloseCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcResultSetOpenCount</td>
-          <td id="JdbcResultSetOpenCount"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> JdbcResultSetCloseCount</td>
-          <td id="JdbcResultSetCloseCount"></td>
-        </tr>
-      </table>
-      <br />
-    </div>
-  </body>
+	<head>
+		<title>Druid Web URI Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          			<div class="hero-unit" style="padding: 10px;">
+          				<h3>
+          					Web URI View
+          				</h3>
+						<table id="dataTable" class="table table-bordered" style="background-color: #fff">
+							<tr>
+				          		<td class='td_lable' width='130'> URI</td>
+				          		<td id="URI"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> RequestCount</td>
+				          		<td id="RequestCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> RequestTimeMillis</td>
+				          		<td id="RequestTimeMillis"></td>
+				       	 	</tr>
+				        	<tr>
+				          		<td class='td_lable'> LastAccessTime</td>
+				          		<td id="LastAccessTime"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> RunningCount</td>
+				          		<td id="RunningCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> ConcurrentMax</td>
+				          		<td id="ConcurrentMax"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcExecuteCount</td>
+				          		<td id="JdbcExecuteCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcExecuteErrorCount</td>
+				          		<td id="JdbcExecuteErrorCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcExecutePeak</td>
+				          		<td id="JdbcExecutePeak"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcExecuteTimeMillis</td>
+				          		<td id="JdbcExecuteTimeMillis"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcCommitCount</td>
+				          		<td id="JdbcCommitCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcRollbackCount</td>
+				          		<td id="JdbcRollbackCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcFetchRowCount</td>
+				          		<td id="JdbcFetchRowCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcFetchRowPeak</td>
+				          		<td id="JdbcFetchRowPeak"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcUpdateCount</td>
+				          		<td id="JdbcUpdateCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcUpdatePeak</td>
+				          		<td id="JdbcUpdatePeak"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcPoolConnectionOpenCount</td>
+				          		<td id="JdbcPoolConnectionOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcPoolConnectionCloseCount</td>
+				          		<td id="JdbcPoolConnectionCloseCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcResultSetOpenCount</td>
+				          		<td id="JdbcResultSetOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> JdbcResultSetCloseCount</td>
+				          		<td id="JdbcResultSetCloseCount"></td>
+				        	</tr>
+				      	</table>
+				      	<div class="container">
+				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
+				      	</div>
+          			</div>
+        		</div>
+      		</div> 
+    	</div>
+    	<script type="text/javascript">
+    	$.namespace("druid.weburi");
+    	druid.weburi = function () {  
+    		var uri = druid.common.getUrlVar("uri");
+    		return  {
+    			init : function() {
+    				druid.common.buildHead(3);
+    				this.ajaxRequestForBasicInfo();
+    			},
+    			
+    			ajaxRequestForBasicInfo : function() {
+    				$.ajax({
+    					type: 'POST',
+    					url: 'weburi-' + encodeURI(uri) + '.json',
+    					success: function(data) {
+    						if (data.Content == null)
+    							return;
+    						$("#URI").text(data.Content.URI)
+    						$("#RequestCount").text(data.Content.RequestCount)
+    						$("#RequestTimeMillis").text(data.Content.RequestTimeMillis)
+    						$("#LastAccessTime").text(data.Content.LastAccessTime)
+    						$("#RunningCount").text(data.Content.RunningCount)
+    						$("#ConcurrentMax").text(data.Content.ConcurrentMax)
+    						$("#JdbcExecuteCount").text(data.Content.JdbcExecuteCount)
+    						$("#JdbcExecuteErrorCount").text(data.Content.JdbcExecuteErrorCount)
+    						$("#JdbcExecutePeak").text(data.Content.JdbcExecutePeak)
+    						$("#JdbcExecuteTimeMillis").text(data.Content.JdbcExecuteTimeMillis)
+    						$("#JdbcCommitCount").text(data.Content.JdbcCommitCount)
+    						$("#JdbcRollbackCount").text(data.Content.JdbcRollbackCount)
+    						$("#JdbcFetchRowCount").text(data.Content.JdbcFetchRowCount)
+    						$("#JdbcFetchRowPeak").text(data.Content.JdbcFetchRowPeak)
+    						$("#JdbcUpdateCount").text(data.Content.JdbcUpdateCount)
+    						$("#JdbcUpdatePeak").text(data.Content.JdbcUpdatePeak)
+    						$("#JdbcPoolConnectionOpenCount").text(data.Content.JdbcPoolConnectionOpenCount)
+    						$("#JdbcPoolConnectionCloseCount").text(data.Content.JdbcPoolConnectionCloseCount)
+    						$("#JdbcResultSetOpenCount").text(data.Content.JdbcResultSetOpenCount)
+    						$("#JdbcResultSetCloseCount").text(data.Content.JdbcResultSetCloseCount)
+    					},
+    					dataType: "json"
+    				});
+    			}
+    		}
+    	}();
+
+    	$(document).ready(function() {
+    		druid.weburi.init();
+    	});
+    	</script>
+	</body>
 </html>
+
