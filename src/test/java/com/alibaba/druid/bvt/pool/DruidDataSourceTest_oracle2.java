@@ -35,10 +35,16 @@ public class DruidDataSourceTest_oracle2 extends TestCase {
         dataSource.close();
     }
 
-    public void test_error() throws Exception {
+    public void test_oracle() throws Exception {
         Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
         dataSource.init();
         Assert.assertTrue(dataSource.isOracle());
+        Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        
+        dataSource.setUseOracleImplicitCache(false);
+        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+
+        dataSource.setUseOracleImplicitCache(true);
         Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
     }
 }
