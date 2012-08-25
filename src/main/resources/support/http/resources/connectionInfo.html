@@ -15,26 +15,26 @@
           				<h3>
           					Pooling Connection Info List for Datasource-<span id="datasourceId"></span>
           				</h3>
-						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
+						<table id="dataTable" class="table table-bordered table-striped">
 							<thead>
 								<tr>
-									<th class="td_lable" width="50">ID</th>
-									<th class="td_lable" width="50">Use Count</th>
-									<th class="td_lable" width="150">Last ActiveTime</th>
-									<th class="td_lable" width="150">ConnectTime</th>
-									<th class="td_lable" width="50">Holdability</th>
-									<th class="td_lable" width="50">Transaction Isolation</th>
-									<th class="td_lable" width="50">AutoCommit</th>
-									<th class="td_lable" width="50">ReadoOnly</th>
-									<th class="td_lable">
+									<th width="50">ID</th>
+									<th width="50">UseCount</th>
+									<th width="150">LastActiveTime</th>
+									<th width="150">ConnectTime</th>
+									<th width="50">Holdability</th>
+									<th width="50" title="Transaction Isolation">TranIsolation</th>
+									<th width="50">AutoCommit</th>
+									<th width="50">ReadoOnly</th>
+									<th>
 										Pscache<br />
-										<table cellspacing="1" cellpadding="5" width="100%">
-											<tr>
-												<th class="td_lable">sql</th>
-												<th class="td_lable" width="50">default Row Pretch</th>
-												<th class="td_lable" width="50">row Prefetch</th>
-												<th class="td_lable" width="50">hit Count</th>
-											</tr>
+										<table>
+											<thead><tr>
+												<th>sql</th>
+												<th width="50">defaultRowPretch</th>
+												<th width="50">rowPrefetch</th>
+												<th width="50">hitCount</th>
+											</tr></thead>
 										</table>
 									</th>
 								</tr>
