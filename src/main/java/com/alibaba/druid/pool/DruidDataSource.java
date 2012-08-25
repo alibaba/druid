@@ -32,6 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 import javax.management.JMException;
 import javax.management.ObjectName;
@@ -148,7 +149,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (LOG.isInfoEnabled()) {
                 LOG.info("{dataSource-" + this.getID() + "} restart");
             }
-            
+
             this.close();
             this.resetStat();
             this.inited = false;
@@ -347,7 +348,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             if (getInitialSize() > maxActive) {
-                throw new IllegalArgumentException("illegal initialSize " + this.initialSize + ", maxActieve " + maxActive);
+                throw new IllegalArgumentException("illegal initialSize " + this.initialSize + ", maxActieve "
+                                                   + maxActive);
             }
 
             if (this.driverClass != null) {
@@ -590,15 +592,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public DruidPooledConnection getConnectionDirect(long maxWaitMillis) throws SQLException {
-        final int maxWaitThreadCount = getMaxWaitThreadCount();
-        if (maxWaitThreadCount > 0) {
-            if (notEmptyWaitThreadCount > maxWaitThreadCount) {
-                connectErrorCount.incrementAndGet();
-                throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
-                                       + lock.getQueueLength());
-            }
-        }
-
         for (;;) {
             DruidPooledConnection poolalbeConnection = getConnectionInternal(maxWaitMillis);
 
@@ -690,6 +683,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (!enable) {
                 connectErrorCount.incrementAndGet();
                 throw new DataSourceDisableException();
+            }
+
+            final int maxWaitThreadCount = getMaxWaitThreadCount();
+            if (maxWaitThreadCount > 0) {
+                if (notEmptyWaitThreadCount >= maxWaitThreadCount) {
+                    connectErrorCount.incrementAndGet();
+                    throw new SQLException("maxWaitThreadCount " + maxWaitThreadCount + ", current wait Thread count "
+                                           + lock.getQueueLength());
+                }
             }
 
             connectCount++;
@@ -1441,7 +1443,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public int getNotEmptyWaitThreadCount() {
-        return notEmptyWaitThreadCount;
+        lock.lock();
+        try {
+            return notEmptyWaitThreadCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public int getNotEmptyWaitThreadPeak() {
@@ -1813,5 +1820,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public Map<String, JdbcSqlStat> getSqlStatMap() {
         return this.getDataSourceStat().getSqlStatMap();
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 }

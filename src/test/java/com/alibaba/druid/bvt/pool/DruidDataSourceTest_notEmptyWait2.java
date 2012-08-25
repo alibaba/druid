@@ -3,18 +3,14 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
-/**
- * 这个场景测试maxActive < 0
- * 
- * @author wenshao<szujobs@hotmail.com>
- */
-public class DruidDataSourceTest_notEmptyWait extends TestCase {
+public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -22,28 +18,23 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-        dataSource.setFilters("stat");
         dataSource.setMaxActive(1);
+
+        dataSource.setMaxWaitThreadCount(10);
     }
 
     protected void tearDown() throws Exception {
         dataSource.close();
     }
 
-    public void test_error() throws Exception {
+    public void test_maxWaitThread() throws Exception {
         {
             Connection conn = dataSource.getConnection();
             conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount());
-        }
-
-        {
-            Connection conn = dataSource.getConnection();
-            conn.close();
-            Assert.assertEquals(1, dataSource.getNotEmptyWaitCount()); // notEmptyWaitCount没有增长
         }
 
         Connection conn = dataSource.getConnection();
+        final AtomicLong errorCount = new AtomicLong();
 
         final int THREAD_COUNT = 10;
         final CountDownLatch startLatch = new CountDownLatch(THREAD_COUNT);
@@ -59,7 +50,8 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
                         Thread.sleep(1);
                         conn.close();
                     } catch (Exception e) {
-                        //e.printStackTrace();
+                        // e.printStackTrace();
+                        errorCount.incrementAndGet();
                     } finally {
                         endLatch.countDown();
                     }
@@ -69,15 +61,32 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
         }
 
         startLatch.await(100, TimeUnit.MILLISECONDS);
-
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+        
+        final CountDownLatch errorThreadEndLatch = new CountDownLatch(THREAD_COUNT);
+        final AtomicLong maxWaitErrorCount = new AtomicLong();
+        Thread errorThread = new Thread() {
+            public void run() {
+                try {
+                    Connection conn = dataSource.getConnection();
+                    Thread.sleep(1);
+                    conn.close();
+                } catch (Exception e) {
+                    maxWaitErrorCount.incrementAndGet();
+                } finally {
+                    errorThreadEndLatch.countDown();
+                }
+            }
+        };
+        errorThread.start();
+        
+        errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
+        
+        Assert.assertEquals(1, maxWaitErrorCount.get());
 
         conn.close();
 
         endLatch.await(100, TimeUnit.MILLISECONDS);
-        
-        Assert.assertEquals(0, dataSource.getNotEmptyWaitThreadCount());
-        Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
+        Assert.assertEquals(0, errorCount.get());
+
     }
 }
