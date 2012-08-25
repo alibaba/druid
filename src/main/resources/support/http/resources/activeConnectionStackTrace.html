@@ -34,7 +34,7 @@ druid.activeConnectionStackTrace = function () {
 				url: 'activeConnectionStackTrace-' + datasourceId + '.json',
 				success: function(data) {
 					var conntionStackTraceList = data.Content;
-					if (conntionStackTraceList == null)
+					/* if (conntionStackTraceList == null)
 						return;
 
 					var activeConnectionStackTraceTable = document.getElementById("activeConnectionStackTraceTable");
@@ -45,7 +45,7 @@ druid.activeConnectionStackTrace = function () {
 						var conntionStackTrace = conntionStackTraceList[i];
 						var newRow = activeConnectionStackTraceTable.insertRow(-1);
 						newRow.insertCell(-1).innerHTML = conntionStackTrace;
-					}
+					} */
 				},
 				dataType: "json"
 			});

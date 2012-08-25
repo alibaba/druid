@@ -18,52 +18,52 @@
 						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
 							<thead>
 								<tr>
-									<th class="yellow header">N--</th>
-									<th class="yellow header"><a id="th-SQL" href="javascript:void(0)" onclick="druid.common.setOrderBy('SQL');">SQL</a></th>
-									<th class="yellow header" width="50"><a id="th-ExecuteCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteCount');">Execute Count</a></th>
-									<th class="yellow header" width="50"><a id="th-TotalTime" href="javascript:void(0)" onclick="druid.common.setOrderBy('TotalTime');">Execute Millis Total</a></th>
-									<th class="yellow header" width="50"><a id="th-MaxTimespan" href="javascript:void(0)" onclick="druid.common.setOrderBy('MaxTimespan');">Execute Millis Max</a></th>
-									<th class="yellow header" width="50"><a id="th-InTransactionCount" title="Execute in transaction Count" href="druid.common.javascript:void(0)" onclick="setOrderBy('InTransactionCount');">InTxn Count</a></th>
-									<th class="yellow header" width="50"><a id="th-ErrorCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('ErrorCount');">Error Count</a></th>
-									<th class="yellow header" width="50"><a id="th-EffectedRowCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCount');">Effected Row Count</a></th>
-									<th class="yellow header" width="50"><a id="th-FetchRowCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCount');">Fetch Row Count</a></th>
-									<th class="yellow header" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('RunningCount');">Running Count</a></th>
-									<th class="yellow header" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="druid.common.setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
-									<th id="th-Histogram" class="yellow header" align="left" width="100">ExecHistogram <br />[ 
-										<a id="th-Histogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[0]');">-</a>
-										<a id="th-Histogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[1]');">-</a>
-										<a id="th-Histogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[2]');">-</a>
-										<a id="th-Histogram[3]" title="count of '100ms-1 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[3]');">-</a>
-										<a id="th-Histogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[4]');">-</a>
-										<a id="th-Histogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[5]');">-</a>
-										<a id="th-Histogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[6]');">-</a>
-										<a id="th-Histogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('Histogram[7]');">-</a> ]
+									<th>N</th>
+									<th><a id="th-SQL" href="javascript:void(0);">SQL</a></th>
+									<th width="50"><a id="th-ExecuteCount" href="javascript:void(0);">ExecCount</a></th>
+									<th width="50" title="Execute Millis Total"><a id="th-TotalTime" href="javascript:void(0);">ExecTotal</a></th>
+									<th width="50" title="Execute Millis Max"><a id="th-MaxTimespan" href="javascript:void(0);">ExecMax</a></th>
+									<th width="50" title="Execute in transaction Count"><a id="th-InTransactionCount" href="javascript:void(0);">InTxnCount</a></th>
+									<th width="50"><a id="th-ErrorCount" href="javascript:void(0);">ErrorCount</a></th>
+									<th width="50"><a id="th-EffectedRowCount" href="javascript:void(0);">EffectedRowCount</a></th>
+									<th width="50" title="Fetch Row Count"><a id="th-FetchRowCount" href="javascript:void(0);">FetchCount</a></th>
+									<th width="50"><a id="th-RunningCount" href="javascript:void(0);">RunningCount</a></th>
+									<th width="80" title="Concurrent Max"><a id="th-ConcurrentMax" href="javascript:void(0);">Concurrent</a></th>
+									<th id="th-Histogram" align="left" width="100">ExecHistogram <br />[ 
+										<a id="th-Histogram[0]" title="count of '0-1 ms'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[1]" title="count of '1-10 ms'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[2]" title="count of '10-100 ms'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[3]" title="count of '100ms-1 s'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[4]" title="count of '1-10 s'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[5]" title="count of '10-100 s'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[6]" title="count of '100-1000 s'" href="javascript:void(0);">-</a>
+										<a id="th-Histogram[7]" title="count of '> 1000 s'" href="javascript:void(0);">-</a> ]
 									</th>
-									<th id="th-ExecuteAndResultHoldTimeHistogram" class="yellow header" align="left" width="100">ExecAndRsHold <br />[ 
-										<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[0]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[1]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[2]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[3]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[4]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[5]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[6]');">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0)" onclick="druid.common.setOrderBy('ExecuteAndResultHoldTimeHistogram[7]');">-</a> ]
+									<th id="th-ExecuteAndResultHoldTimeHistogram" align="left" width="100">ExecAndRsHold <br />[ 
+										<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" href="javascript:void(0);">-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0);">-</a> ]
 									</th>
-									<th id="th-FetchRowCountHistogram" class="yellow header" align="left" width="100">FetchRow <br />[ 
-										<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[0]');">-</a>
-										<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[1]');">-</a>
-										<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[2]');">-</a>
-										<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[3]');">-</a>
-										<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[4]');">-</a>
-										<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" href="javascript:void(0)" onclick="druid.common.setOrderBy('FetchRowCountHistogram[5]');">-</a> ]
+									<th id="th-FetchRowCountHistogram" align="left" width="100">FetchRow <br />[ 
+										<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" href="javascript:void(0);">-</a>
+										<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" href="javascript:void(0);">-</a>
+										<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" href="javascript:void(0);">-</a>
+										<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" href="javascript:void(0);">-</a>
+										<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" href="javascript:void(0);">-</a>
+										<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" href="javascript:void(0);">-</a> ]
 									</th>
-									<th id="th-EffectedRowCountHistogram" class="yellow header" align="left" width="100">UpdateCount <br />[ 
-										<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[0]');">-</a>
-										<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[1]');">-</a>
-										<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[2]');">-</a>
-										<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[3]');">-</a>
-										<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[4]');">-</a>
-										<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" href="javascript:void(0)" onclick="druid.common.setOrderBy('EffectedRowCountHistogram[5]');">-</a> ]
+									<th id="th-EffectedRowCountHistogram" align="left" width="100">UpdateCount <br />[ 
+										<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" href="javascript:void(0);">-</a>
+										<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" href="javascript:void(0);">-</a>
+										<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" href="javascript:void(0);">-</a>
+										<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" href="javascript:void(0);">-</a>
+										<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" href="javascript:void(0);">-</a>
+										<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" href="javascript:void(0);">-</a> ]
 									</th>
 								</tr>
 							</thead> 
@@ -77,6 +77,9 @@
 	    	druid.sql = function () {  
 	    		return  {
 	    			init : function() {
+	    				$("#dataTable th a").click(function(obj) {
+	    					druid.common.setOrderBy(obj.target.id.substring(3))
+	    				})
 	    				druid.common.buildHead(2);
 	    				druid.common.ajaxuri = 'sql.json?';
 	    				druid.common.handleAjaxResult = druid.sql.handleAjaxResult;
