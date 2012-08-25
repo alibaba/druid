@@ -444,13 +444,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     private void createAndStartDestroyThread() {
-        DestroyConnectionThread thread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
-        thread.start();
+        destoryConnectionThread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
+        destoryConnectionThread.start();
     }
 
     protected void createAndStartCreatorThread() {
-        CreateConnectionThread thread = new CreateConnectionThread("Druid-ConnectionPool-Create");
-        thread.start();
+        createConnectionThread = new CreateConnectionThread("Druid-ConnectionPool-Create");
+        createConnectionThread.start();
     }
 
     private void loadFilterFromSystemProperty() throws SQLException {
@@ -815,7 +815,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
-            boolean neadDestory = false;
             lock.lockInterruptibly();
             try {
                 activeCount--;
@@ -825,11 +824,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 recycleCount++;
             } finally {
                 lock.unlock();
-            }
-
-            if (neadDestory) {
-                destroyCount.incrementAndGet();
-                JdbcUtils.close(physicalConnection);
             }
         } catch (Throwable e) {
             JdbcUtils.close(physicalConnection);
@@ -894,7 +888,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                     connHolder.getStatementPool().getMap().clear();
 
-                    JdbcUtils.close(connHolder.getConnection());
+                    Connection physicalConnection = connHolder.getConnection();
+                    physicalConnection.close();
                     connections[i] = null;
                     destroyCount.incrementAndGet();
                 } catch (Exception ex) {
@@ -1348,12 +1343,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public String getProperties() {
-        if (this.connectProperties == null) {
-            return null;
-        }
-
-        Properties properties = new Properties(this.connectProperties);
-        if (properties.contains("password")) {
+        Properties properties = new Properties();
+        properties.putAll(connectProperties);
+        if (properties.containsKey("password")) {
             properties.put("password", "******");
         }
         return properties.toString();
@@ -1538,7 +1530,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                         int entryIndex = 0;
                         try {
                             for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                                if (entryIndex++ != 0) {
+                                if (entryIndex != 0) {
                                     buf.append(",");
                                 }
                                 buf.append("\n\t\t{hitCount:");
@@ -1547,6 +1539,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                 buf.append(entry.getKey().getSql());
                                 buf.append("\"");
                                 buf.append("\t}");
+                                
+                                entryIndex++;
                             }
                         } catch (ConcurrentModificationException e) {
                             // skip ..

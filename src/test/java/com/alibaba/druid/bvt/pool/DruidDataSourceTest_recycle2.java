@@ -2,10 +2,13 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.junit.Assert;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
@@ -43,7 +46,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
 
         Statement stmt = conn.createStatement();
         stmt.execute("select 1");
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
 
@@ -60,7 +63,7 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
 
         Statement stmt = conn.createStatement();
         stmt.execute("select 1");
-        
+
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(1, dataSource.getActiveCount());
 
@@ -74,5 +77,55 @@ public class DruidDataSourceTest_recycle2 extends TestCase {
 
         Assert.assertEquals(0, dataSource.getPoolingCount());
         Assert.assertEquals(0, dataSource.getActiveCount());
+    }
+
+    public void test_recycle_error_interrupt() throws Exception {
+        final AtomicReference<Exception> errorRef = new AtomicReference<Exception>();
+
+        final CountDownLatch closeBeforeLatch = new CountDownLatch(1);
+        final CountDownLatch lockLatch = new CountDownLatch(1);
+        final CountDownLatch endLatch = new CountDownLatch(1);
+
+        Thread thread = new Thread() {
+
+            public void run() {
+                try {
+                    DruidPooledConnection conn = dataSource.getConnection();
+                    conn.setAutoCommit(false);
+                    conn.setReadOnly(false);
+
+                    Statement stmt = conn.createStatement();
+                    stmt.execute("select 1");
+
+                    Assert.assertEquals(0, dataSource.getPoolingCount());
+                    Assert.assertEquals(1, dataSource.getActiveCount());
+
+                    closeBeforeLatch.countDown();
+                    lockLatch.await();
+
+                    conn.close();
+                } catch (Exception e) {
+                    errorRef.set(e);
+                } finally {
+                    endLatch.countDown();
+                }
+            }
+        };
+        thread.start();
+
+        Assert.assertTrue(closeBeforeLatch.await(1, TimeUnit.SECONDS));
+
+        dataSource.getLock().lock();
+        lockLatch.countDown();
+        
+        Thread.sleep(10);
+
+        thread.interrupt();
+
+        Assert.assertTrue(endLatch.await(1, TimeUnit.MINUTES));
+
+        Exception error = errorRef.get();
+        Assert.assertNotNull(error);
+        Assert.assertTrue(error.getCause() instanceof InterruptedException);
     }
 }
