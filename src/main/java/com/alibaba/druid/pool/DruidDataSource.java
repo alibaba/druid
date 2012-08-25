@@ -637,9 +637,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (isRemoveAbandoned()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection,
-                                      new ActiveConnectionTraceInfo(poolalbeConnection, System.currentTimeMillis(),
-                                                                    stackTrace));
+                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(System.currentTimeMillis(),
+                                                                                        stackTrace));
                 poolalbeConnection.setTraceEnable(true);
             }
 
@@ -768,13 +767,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * 回收连接
      */
     protected void recycle(DruidPooledConnection pooledConnection) throws SQLException {
-        final Connection conn = pooledConnection.getConnection();
         final DruidConnectionHolder holder = pooledConnection.getConnectionHolder();
 
         if (holder == null) {
             LOG.warn("connectionHolder is null");
             return;
         }
+
+        final Connection physicalConnection = holder.getConnection();
 
         if (pooledConnection.isTraceEnable()) {
             ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
@@ -786,18 +786,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         try {
-            // 第一步，检查连接是否关闭
-            if (conn == null) {
-                lock.lockInterruptibly();
-                try {
-                    activeCount--;
-                    closeCount++;
-                } finally {
-                    lock.unlock();
-                }
-                return;
-            }
-
             final boolean isAutoCommit = holder.isUnderlyingAutoCommit();
             final boolean isReadOnly = holder.isUnderlyingReadOnly();
 
@@ -810,9 +798,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             holder.reset();
 
             if (isTestOnReturn()) {
-                boolean validate = testConnectionInternal(conn);
+                boolean validate = testConnectionInternal(physicalConnection);
                 if (!validate) {
-                    JdbcUtils.close(conn);
+                    JdbcUtils.close(physicalConnection);
 
                     destroyCount.incrementAndGet();
 
@@ -830,28 +818,21 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             boolean neadDestory = false;
             lock.lockInterruptibly();
             try {
-                if (holder.getModCount() == this.modCount) {
-                    activeCount--;
-                    closeCount++;
+                activeCount--;
+                closeCount++;
 
-                    // 第六步，加入队列中(putLast)
-                    putLast(holder);
-                    recycleCount++;
-                } else {
-                    activeCount--;
-                    closeCount++;
-                    neadDestory = true;
-                }
+                putLast(holder);
+                recycleCount++;
             } finally {
                 lock.unlock();
             }
 
             if (neadDestory) {
                 destroyCount.incrementAndGet();
-                JdbcUtils.close(conn);
+                JdbcUtils.close(physicalConnection);
             }
         } catch (Throwable e) {
-            JdbcUtils.close(conn);
+            JdbcUtils.close(physicalConnection);
 
             try {
                 lock.lockInterruptibly();
@@ -974,11 +955,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     notEmptyWaitThreadCount--;
                 }
                 notEmptyWaitCount++;
-
-                if (!enable) {
-                    connectErrorCount.incrementAndGet();
-                    throw new DataSourceDisableException();
-                }
             }
         } catch (InterruptedException ie) {
             notEmpty.signal(); // propagate to non-interrupted thread
@@ -1017,11 +993,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                                               // creator
                     notEmptyWaitCount++;
                     notEmptyWaitNanos += (startEstimate - estimate);
-
-                    if (!enable) {
-                        connectErrorCount.incrementAndGet();
-                        throw new DataSourceDisableException();
-                    }
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
                     notEmptySignalCount++;
@@ -1310,10 +1281,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         return removeCount;
     }
 
-    public DataSourceProxyConfig getConfig() {
-        return null;
-    }
-
     /** Instance key */
     protected String instanceKey = null;
 
@@ -1327,20 +1294,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     static class ActiveConnectionTraceInfo {
 
-        private final DruidPooledConnection connection;
-        private final long                  connectTime;
-        private final StackTraceElement[]   stackTrace;
+        private final long                connectTime;
+        private final StackTraceElement[] stackTrace;
 
-        public ActiveConnectionTraceInfo(DruidPooledConnection connection, long connectTime,
-                                         StackTraceElement[] stackTrace){
+        public ActiveConnectionTraceInfo(long connectTime, StackTraceElement[] stackTrace){
             super();
-            this.connection = connection;
             this.connectTime = connectTime;
             this.stackTrace = stackTrace;
-        }
-
-        public DruidPooledConnection getConnection() {
-            return connection;
         }
 
         public long getConnectTime() {
