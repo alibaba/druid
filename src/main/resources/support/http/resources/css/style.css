@@ -4,6 +4,41 @@ body{
 	padding-top: 60px;
 	padding-bottom: 40px;
 }
+table .header {
+    cursor: pointer;
+}
+table .header:after {
+    border-color: #000000 transparent;
+    border-style: solid;
+    border-width: 0 4px 4px;
+    content: "";
+    float: right;
+    margin-top: 7px;
+    visibility: hidden;
+}
+table .headerSortUp, table .headerSortDown {
+    background-color: rgba(141, 192, 219, 0.25);
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+}
+table .headerSortDown:after, table .headerSortDown:hover:after {
+    opacity: 0.6;
+    visibility: visible;
+}
+table .headerSortUp:after {
+    border-color: #000000 transparent -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 4px 4px medium;
+    box-shadow: none;
+    opacity: 0.6;
+    visibility: visible;
+}
+table .yellow {
+    border-bottom-color: #FFC40D;
+    color: #FFC40D;
+}
+table .yellow {
+    background-color: #FFF6D9;
+}
 
 .footer {
     background-color: #F5F5F5;
