@@ -955,6 +955,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     notEmptyWaitThreadCount--;
                 }
                 notEmptyWaitCount++;
+                
+                if (!enable) {
+                    connectErrorCount.incrementAndGet();
+                    throw new DataSourceDisableException();
+                }
             }
         } catch (InterruptedException ie) {
             notEmpty.signal(); // propagate to non-interrupted thread
@@ -993,6 +998,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                                                               // creator
                     notEmptyWaitCount++;
                     notEmptyWaitNanos += (startEstimate - estimate);
+                    
+                    if (!enable) {
+                        connectErrorCount.incrementAndGet();
+                        throw new DataSourceDisableException();
+                    }
                 } catch (InterruptedException ie) {
                     notEmpty.signal(); // propagate to non-interrupted thread
                     notEmptySignalCount++;
