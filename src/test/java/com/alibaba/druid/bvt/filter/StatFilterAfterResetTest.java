@@ -66,18 +66,18 @@ public class StatFilterAfterResetTest extends TestCase {
 
             Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
             Assert.assertEquals("first failed", 1,
-                                histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+                                histogram.getSum());
 
             rs.close();
 
             Assert.assertEquals("second failed", 1,
-                                histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+                                histogram.getSum());
 
             stmt.close();
 
             conn.close();
 
-            Assert.assertEquals(1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+            Assert.assertEquals(1, histogram.getSum());
         }
 
         JdbcStatManager.getInstance().reset();
