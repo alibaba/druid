@@ -115,11 +115,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         return holder.getDataSource().isOracle();
     }
 
-    void closePoolableStatement(DruidPooledPreparedStatement stmt) throws SQLException {
-        if (this.holder == null) {
-            return;
-        }
-
+    public void closePoolableStatement(DruidPooledPreparedStatement stmt) throws SQLException {
         PreparedStatement rawStatement = stmt.getRawPreparedStatement();
 
         try {
