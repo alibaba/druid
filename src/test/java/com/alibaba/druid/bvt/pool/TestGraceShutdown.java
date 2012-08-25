@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -91,6 +92,6 @@ public class TestGraceShutdown extends TestCase {
             }
         }.start();
 
-        endLatch.await();
+        Assert.assertTrue(endLatch.await(60, TimeUnit.SECONDS));
     }
 }
