@@ -1,105 +1,156 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-    <link href="css/style.css" type="text/css" rel="stylesheet"/>
-    <script src="js/common.js" type="text/javascript" charset="utf8"></script>
-    <script src="js/sql-detail.js" type="text/javascript" charset="utf8"></script>
-    <script >
-      function init(){
-        ajaxRequestForSqlInfo();
-        var time3=setInterval("ajaxRequestForSqlInfo();",5000);
-        buildMenu();
-        buildFooter();
-      }
-    </script>
-  </head>
-  <body onload="init();">
-    <br/>
-    <div id="main">
-      <br/>
-      <h2> FULL SQL</h2>
-      <h4 id="fullSql"></h4>
-      <h2> Format View:</h2>
-      <textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;' id="formattedSql">
-      </textarea>
-      <br/>
-      <br/>
-      <h2> Parse View:</h2>
-      <table cellpadding='5' cellspacing='1' width='99%'>
-        <tr>
-          <td class='td_lable' width='130'> Tables</td>
-          <td id="parsed.table"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> Fields</td>
-          <td id="parsed.fields"></td>
-        </tr>
-        <tr> <td class='td_lable'> Coditions</td>
-          <td id="parsed.conditions"> </td>
-        </tr>
-        <tr>
-          <td class='td_lable'> Relationships</td>
-          <td id="parsed.relationships"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'> OrderByColumns</td>
-          <td id="parsed.orderbycolumns"></td>
-        </tr>
-      </table>
-      <br />
-      
-      <h2> LastSlow View:</h2>
-      <table cellpadding='5' cellspacing='1' width='99%'>
-       <tr>
-          <td class='td_lable' width='130'>MaxTimespan</td>
-          <td id="MaxTimespan"></td>
-        </tr>
-        <tr>
-          <td class='td_lable' width='130'>MaxTimespanOccurTime</td>
-          <td id="MaxTimespanOccurTime"></td>
-        </tr>
-         <tr>
-          <td class='td_lable' width='130'>LastSlowParameters</td>
-          <td id="LastSlowParameters"></td>
-        </tr>
-      </table>
-      <br/>
-      
-      <h2> Last Error View:</h2>
-      <table cellpadding='5' cellspacing='1' width='99%'>
-       <tr>
-          <td class='td_lable' width='130'>LastErrorMessage</td>
-          <td id="LastErrorMessage"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'>LastErrorClass</td>
-          <td id="LastErrorClass"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'>LastErrorTime</td>
-          <td id="LastErrorTime"></td>
-        </tr>
-         <tr>
-          <td class='td_lable'>LastErrorStackTrace</td>
-          <td id="LastErrorStackTrace"></td>
-        </tr>
-      </table>
-      <br/>
-      
-      <h2>Batch View:</h2>
-      <table cellpadding='5' cellspacing='1' width='99%'>
-       <tr>
-          <td class='td_lable' width='130'>BatchSizeMax</td>
-          <td id="BatchSizeMax"></td>
-        </tr>
-        <tr>
-          <td class='td_lable'>BatchSizeTotal</td>
-          <td id="BatchSizeTotal"></td>
-        </tr>
-      </table>
-      
-    </div>
-  </body>
+	<head>
+		<title>Druid SQL Stat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          			<div class="hero-unit" style="padding: 10px;">
+          				<h3>
+          					FULL SQL
+          				</h3>
+						<h5 id="fullSql"></h5>
+						<h2> Format View:</h2>
+					   	<textarea style='width:99%;height:120px;;border:1px #A8C7CE solid;line-height:20px;font-size:12px;' id="formattedSql">
+					  	</textarea>
+					  	<br/>
+				      	<br/>
+				      	<h3> Parse View:</h3>
+				      	<table class="table table-bordered" style="background-color: #fff">
+				        	<tr>
+				          		<td class='td_lable' width='130'> Tables</td>
+				          		<td id="parsedtable"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> Fields</td>
+				          		<td id="parsedfields"></td>
+				        	</tr>
+				        	<tr> 
+				        		<td class='td_lable'> Coditions</td>
+				          		<td id="parsedconditions"> </td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'> Relationships</td>
+				          		<td id="parsedrelationships"></td>
+				       		</tr>
+				        	<tr>
+				          		<td class='td_lable'> OrderByColumns</td>
+				          		<td id="parsedorderbycolumns"></td>
+				        	</tr>
+				      	</table>
+				      	<br />
+				      
+				      	<h3> LastSlow View:</h3>
+				      	<table class="table table-bordered" style="background-color: #fff">
+				       		<tr>
+				          		<td class='td_lable' width='130'>MaxTimespan</td>
+				          		<td id="MaxTimespan"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable' width='130'>MaxTimespanOccurTime</td>
+				          		<td id="MaxTimespanOccurTime"></td>
+				        	</tr>
+				         	<tr>
+				          		<td class='td_lable' width='130'>LastSlowParameters</td>
+				          		<td id="LastSlowParameters"></td>
+				        	</tr>
+				      	</table>
+				      	<br/>
+				      
+				      	<h3> Last Error View:</h3>
+				      	<table class="table table-bordered" style="background-color: #fff">
+				       		<tr>
+				          		<td class='td_lable' width='130'>LastErrorMessage</td>
+				          		<td id="LastErrorMessage"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>LastErrorClass</td>
+				          		<td id="LastErrorClass"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>LastErrorTime</td>
+				          		<td id="LastErrorTime"></td>
+				        	</tr>
+				         	<tr>
+				          		<td class='td_lable'>LastErrorStackTrace</td>
+				          		<td id="LastErrorStackTrace"></td>
+				        	</tr>
+				      	</table>
+				      	<br/>
+				      
+				      	<h3>Batch View:</h3>
+				      	<table class="table table-bordered" style="background-color: #fff">
+				       		<tr>
+				          		<td class='td_lable' width='130'>BatchSizeMax</td>
+				          		<td id="BatchSizeMax"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>BatchSizeTotal</td>
+				          		<td id="BatchSizeTotal"></td>
+				        	</tr>
+				      	</table>
+				      	<div class="container">
+				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
+				      	</div>
+          			</div>
+        		</div>
+      		</div> 
+    	</div>
+    	<script type="text/javascript">
+    	$.namespace("druid.sqlDetail");
+    	druid.sqlDetail = function () {  
+    		var sqlId = druid.common.getUrlVar("sqlId");
+    		return  {
+    			init : function() {
+    				druid.common.buildHead(2);
+    				this.ajaxRequestForBasicInfo();
+    			},
+    			
+    			ajaxRequestForBasicInfo : function() {
+    				$.ajax({
+    					type: 'POST',
+    					url: 'sql-' + sqlId + '.json',
+    					success: function(data) {
+    						var sqlInfo = data.Content;
+    						if (sqlInfo == null)
+    							return;
+
+    						$("#fullSql").text(sqlInfo.SQL)
+    						$("#formattedSql").text(sqlInfo.formattedSql)
+    						$("#parsedtable").text(sqlInfo.parsedTable)
+    						$("#parsedfields").text(sqlInfo.parsedFields)
+    						$("#parsedconditions").text(sqlInfo.parsedConditions)
+    						$("#parsedrelationships").text(sqlInfo.parsedRelationships)
+    						$("#parsedorderbycolumns").text(sqlInfo.parsedOrderbycolumns)
+    						
+    						$("#MaxTimespanOccurTime").text(sqlInfo.MaxTimespanOccurTime)
+    						$("#LastSlowParameters").text(sqlInfo.LastSlowParameters)
+    						$("#MaxTimespan").text(sqlInfo.MaxTimespan)
+    						
+    						$("#LastErrorMessage").text(sqlInfo.LastErrorMessage)
+    						$("#LastErrorClass").text(sqlInfo.LastErrorClass)
+    						$("#LastErrorTime").text(sqlInfo.LastErrorTime)
+    						$("#LastErrorStackTrace").text(sqlInfo.LastErrorStackTrace)
+    						
+    						$("#BatchSizeMax").text(sqlInfo.BatchSizeMax)
+    						$("#BatchSizeTotal").text(sqlInfo.BatchSizeTotal)
+    					},
+    					dataType: "json"
+    				});
+    			}
+    		}
+    	}();
+
+    	$(document).ready(function() {
+    		druid.sqlDetail.init();
+    	});
+    	</script>
+	</body>
 </html>

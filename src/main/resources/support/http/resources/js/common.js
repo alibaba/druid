@@ -28,6 +28,7 @@ druid.common = function () {
 				      	'					<li><a href="spring.html">Spring</a></li>'+
 				      	'					<li><a href="api.html">JSON API</a></li>'+
 				      	'				</ul>'+
+				      	'				<a class="btn btn-primary" href="javascript:druid.common.ajaxRequestForReset();">Reset All</a>'+
 				      	'			</div>'+
 				      	'		</div>'+
 				      	'	</div>'+
@@ -88,8 +89,8 @@ druid.common = function () {
 				var html = old_divObj.innerHTML;
 				if (statViewOrderBy_old.indexOf('[') > 0)
 					replaceToStr = '-';
-				html = html.replace('¡ü', replaceToStr);
-				html = html.replace('¡ý', replaceToStr);
+				html = html.replace('â†‘', replaceToStr);
+				html = html.replace('â†“', replaceToStr);
 				old_divObj.innerHTML = html
 			}
 			if (divObj) {
@@ -137,7 +138,30 @@ druid.common = function () {
 				},
 				dataType: "json"
 			});
-		}
+		},
+		
+		subSqlString : function(sql, len) {
+			if (sql.length <= len)
+				return sql;
+			return sql.substr(0, len) + '...';
+		},
+		
+		stripes : function() {
+            $("#dataTable tbody tr").each(function () {
+                $(this).removeClass("striped");
+            });
+            $("#dataTable tbody tr:even").each(function () {
+                $(this).addClass("striped");
+            });
+        },
+        
+        getUrlVar : function(name) {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
+            });
+        		return vars[name];
+        }
 	}
 }();
 

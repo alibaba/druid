@@ -7,7 +7,6 @@
 		<link href="css/style.css" type="text/css" rel="stylesheet"/>
     	<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
-		<script src="js/spring.js" type="text/javascript" charset="utf8"></script>
 	</head>
 	<body>
 		<div class="container-fluid">
@@ -17,7 +16,7 @@
           				<h3>
           					Spring Stat
           				</h3>
-						<table class="table table-bordered table-striped responsive-utilities">
+						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
 							<thead>
 								<tr>
 									<th class="td_lable">N--</th>
@@ -35,10 +34,62 @@
 									<th class="td_lable" width="80"><a id="th-JdbcUpdateCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcUpdateCount');">Jdbc Update</a></th>
 								</tr>
 							</thead> 
+							<tbody></tbody>
 						</table>
           			</div>
         		</div>
       		</div> 
     	</div>
+    	<script type="text/javascript">
+	    	$.namespace("druid.spring");
+	    	druid.spring = function () {  
+	    		return  {
+	    			init : function() {
+	    				druid.common.buildHead(5);
+	    				druid.common.ajaxuri = 'spring.json?';
+	    				druid.common.handleAjaxResult = druid.spring.handleAjaxResult;
+	    				druid.common.ajaxRequestForBasicInfo();
+	    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+	    			},
+	    			
+	    			handleAjaxResult : function(data) {
+	    				var statList = data.Content;
+	    				if(statList==null) return;
+	    				
+	    				var sqlStatTable = document.getElementById("dataTable");
+	    				while (sqlStatTable.rows.length > 1) {
+	    					sqlStatTable.deleteRow(1);
+	    				}
+	    				
+	    				var html = "";
+	    				for ( var i = 0; i < statList.length; i++) {
+	    					var stat = statList[i];
+	    					var newRow = sqlStatTable.insertRow(-1);
+	    					html += "<tr>";
+	    					html += "<td>" + (i + 1) + "</td>";
+	    					html += "<td>" + stat.Class + "</td>";
+	    					html += "<td>" + '<a target="_blank" href="spring-detail.html?class=' + stat.Class + '&method=' + stat.Method + '">' + stat.Method + '</a>' + "</td>";
+	    					html += "<td>" + stat.ExecuteCount + "</td>";
+	    					html += "<td>" + stat.ExecuteTimeMillis + "</td>";
+	    					html += "<td>" + stat.RunningCount + "</td>";
+	    					html += "<td>" + stat.ConcurrentMax + "</td>";
+	    					html += "<td>" + stat.JdbcExecuteCount + "</td>";
+	    					html += "<td>" + stat.JdbcExecuteTimeMillis + "</td>";
+	    					html += "<td>" + stat.JdbcCommitCount + "</td>";
+	    					html += "<td>" + stat.JdbcRollbackCount + "</td>";
+	    					html += "<td>" + stat.JdbcFetchRowCount + "</td>";
+	    					html += "<td>" + stat.JdbcUpdateCount + "</td>";
+	    					html += "</tr>";
+	    				}
+	    				$("#dataTable tbody").html(html);
+	    				druid.common.stripes();
+	    			}
+	    		}
+	    	}();
+	
+	    	$(document).ready(function() {
+	    		druid.spring.init();
+	    	});
+		</script>
 	</body>
 </html>

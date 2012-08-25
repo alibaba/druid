@@ -15,6 +15,7 @@ body{
 .td_lable {
 	font-weight: bold;
 	width: 220px;
+	background-color: #D3EAEF;
 }
 
 .navbar .brand {
@@ -39,8 +40,14 @@ body{
 
 .navbar-inner {
     text-align:center;
-    background-color: #FAFAFA;
-    background-image: -moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
+    background-color:#FAFAFA;
+    background-image:-moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
+    background-image:-ms-linear-gradient(top,#FFFFFF,#F2F2F2);
+    background-image:-webkit-gradient(linear,0 0,0 100%,from(#FFFFFF),to(#F2F2F2));
+    background-image:-webkit-linear-gradient(top,#FFFFFF,#F2F2F2);
+    background-image:-o-linear-gradient(top,#FFFFFF,#F2F2F2);
+    background-image:linear-gradient(top,#FFFFFF,#F2F2F2);
+    filter:progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#F2F2F2',GradientType=0)
 }
 .navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
     background-color: #E5E5E5;
@@ -53,4 +60,8 @@ body{
     background-color: transparent;
     color: #333333;
     text-decoration: none;
+}
+
+.striped {
+	background-color: #fff;
 }
