@@ -84,26 +84,34 @@ druid.common = function () {
 		resetSortMark : function() {
 			var divObj = document.getElementById('th-' + statViewOrderBy);
 			var old_divObj = document.getElementById('th-' + statViewOrderBy_old);
-			var replaceToStr = '';
 			if (old_divObj) {
 				var html = old_divObj.innerHTML;
-				if (statViewOrderBy_old.indexOf('[') > 0)
-					replaceToStr = '-';
-				html = html.replace('↑', replaceToStr);
-				html = html.replace('↓', replaceToStr);
-				old_divObj.innerHTML = html
-			}
-			if (divObj) {
-				var html = divObj.innerHTML;
-				if (statViewOrderBy.indexOf('[') > 0)
-					html = '';
-
-				if (statViewOrderType == 'asc') {
-					html += '&uarr;';
-				} else if (statViewOrderType == 'desc') {
-					html += '&darr;';
+				if (statViewOrderBy_old.indexOf('[') > 0) {
+					html = html.replace('↑', '-');
+					html = html.replace('↓', '-');
+					old_divObj.innerHTML = html
+				} else {
+					$(old_divObj).parent().removeClass("headerSortDown").removeClass("headerSortUp")
 				}
-				divObj.innerHTML = html;
+			}
+			
+			if (divObj) {
+				console.info(divObj)
+				if (statViewOrderBy.indexOf('[') > 0) {
+					html = '';
+					if (statViewOrderType == 'asc') {
+						html += '&uarr;';
+					} else if (statViewOrderType == 'desc') {
+						html += '&darr;';
+					}
+					divObj.innerHTML = html;
+				} else {
+					if (statViewOrderType == 'asc') {
+						$(divObj).parent().addClass("headerSortDown")
+					} else if (statViewOrderType == 'desc') {
+						$(divObj).parent().addClass("headerSortUp")
+					}
+				}
 			}
 			this.ajaxRequestForBasicInfo();
 		},
