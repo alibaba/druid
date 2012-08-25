@@ -106,8 +106,8 @@
       		</div> 
     	</div>
     	<script type="text/javascript">
-    	$.namespace("druid.weburi");
-    	druid.weburi = function () {  
+    	$.namespace("druid.weburidetail");
+    	druid.weburidetail = function () {  
     		var uri = druid.common.getUrlVar("uri");
     		return  {
     			init : function() {
@@ -150,7 +150,7 @@
     	}();
 
     	$(document).ready(function() {
-    		druid.weburi.init();
+    		druid.weburidetail.init();
     	});
     	</script>
 	</body>

@@ -89,8 +89,8 @@
       		</div> 
     	</div>
     	<script type="text/javascript">
-    	$.namespace("druid.index");
-    	druid.index = function () {  
+    	$.namespace("druid.websessiondetail");
+    	druid.websessiondetail = function () {  
     		var sessionId = druid.common.getUrlVar("sessionId");
     		return  {
     			init : function() {
@@ -144,7 +144,7 @@
     	}();
 
     	$(document).ready(function() {
-    		druid.index.init();
+    		druid.websessiondetail.init();
     	});
 
     	</script>
