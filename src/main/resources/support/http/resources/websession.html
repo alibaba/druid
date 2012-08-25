@@ -12,34 +12,32 @@
 		<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
-          			<div class="hero-unit" style="padding: 10px;">
           				<h3>
           					Web Session Stat
           				</h3>
 						<table id="dataTable" class="table table-bordered table-striped responsive-utilities">
 							<thead>
 								<tr>
-									<th class="td_lable">N--</th>
-									<th class="td_lable"><a id="SESSIONID" href="javascript:void(0)" onclick="druid.common.setOrderBy('SESSIONID');">SESSIONID</a></th>
-									<th class="td_lable" width="50"><a id="th-Principal" href="javascript:void(0)" onclick="druid.common.setOrderBy('Principal');">Principal</a></th>
-									<th class="td_lable" width="100"><a id="th-CreateTime" href="javascript:void(0)" onclick="druid.common.setOrderBy('CreateTime');">Create Time</a></th>
-									<th class="td_lable" width="100"><a id="th-LastAccessTime" href="javascript:void(0)" onclick="druid.common.setOrderBy('LastAccessTime');">Last Access</a></th>
-									<th class="td_lable" width="50"><a id="th-RemoteAddress" href="javascript:void(0)" onclick="druid.common.setOrderBy('RemoteAddress');">RemoteAddress</a></th>
-									<th class="td_lable" width="50"><a id="th-RequestCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('RequestCount');">Request Count</a></th>
-									<th class="td_lable" width="50"><a id="th-RequestTimeMillisTotal" href="javascript:void(0)" onclick="druid.common.setOrderBy('RequestTimeMillisTotal=');" title="RequestTimeMillisTotal">RequestTime</a></th>
-									<th class="td_lable" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('RunningCount');">Running Count</a></th>
-									<th class="td_lable" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="druid.common.setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcExecuteCount" href="javascript:void(0)" onclick="druid.common.druid.websession.setOrderBy('JdbcExecuteCount');">Jdbc Exec Count</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcExecuteTimeMillis" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcExecuteTimeMillis');" title="JdbcExecuteTimeMillis">Jdbc Exec Time</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcCommitCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcCommitCount');">Jdbc Commit</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcRollbackCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcRollbackCount');">Jdbc Rollback</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcFetchRowCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcFetchRowCount');">Jdbc FetchRow</a></th>
-									<th class="td_lable" width="80"><a id="th-JdbcUpdateCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcUpdateCount');">Jdbc Update</a></th>
+									<th class="yellow header">N--</th>
+									<th class="yellow header"><a id="th-SESSIONID" href="javascript:void(0)" onclick="druid.common.setOrderBy('SESSIONID');">SESSIONID</a></th>
+									<th class="yellow header" width="50"><a id="th-Principal" href="javascript:void(0)" onclick="druid.common.setOrderBy('Principal');">Principal</a></th>
+									<th class="yellow header" width="100"><a id="th-CreateTime" href="javascript:void(0)" onclick="druid.common.setOrderBy('CreateTime');">Create Time</a></th>
+									<th class="yellow header" width="100"><a id="th-LastAccessTime" href="javascript:void(0)" onclick="druid.common.setOrderBy('LastAccessTime');">Last Access</a></th>
+									<th class="yellow header" width="50"><a id="th-RemoteAddress" href="javascript:void(0)" onclick="druid.common.setOrderBy('RemoteAddress');">RemoteAddress</a></th>
+									<th class="yellow header" width="50"><a id="th-RequestCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('RequestCount');">Request Count</a></th>
+									<th class="yellow header" width="50"><a id="th-RequestTimeMillisTotal" href="javascript:void(0)" onclick="druid.common.setOrderBy('RequestTimeMillisTotal=');" title="RequestTimeMillisTotal">RequestTime</a></th>
+									<th class="yellow header" width="50"><a id="th-RunningCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('RunningCount');">Running Count</a></th>
+									<th class="yellow header" width="80"><a id="th-ConcurrentMax" href="javascript:void(0)" onclick="druid.common.setOrderBy('ConcurrentMax');">Concurrent Max</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcExecuteCount" href="javascript:void(0)" onclick="druid.common.druid.websession.setOrderBy('JdbcExecuteCount');">Jdbc Exec Count</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcExecuteTimeMillis" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcExecuteTimeMillis');" title="JdbcExecuteTimeMillis">Jdbc Exec Time</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcCommitCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcCommitCount');">Jdbc Commit</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcRollbackCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcRollbackCount');">Jdbc Rollback</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcFetchRowCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcFetchRowCount');">Jdbc FetchRow</a></th>
+									<th class="yellow header" width="80"><a id="th-JdbcUpdateCount" href="javascript:void(0)" onclick="druid.common.setOrderBy('JdbcUpdateCount');">Jdbc Update</a></th>
 								</tr>
 							</thead>
 							<tbody></tbody>
 						</table>
-          			</div>
         		</div>
       		</div> 
     	</div>
