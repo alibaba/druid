@@ -13,13 +13,11 @@
     	<div class="container-fluid">
       		<div class="row-fluid">
         		<div class="span12">
-          			<div class="hero-unit" style="padding: 10px;">
           				<h3>
           					DataSourceStat List
           					<a href="datasource.json" target="_blank">View JSON API</a>
           				</h3>
           				<div class="alert alert-error clearfix" style="margin-bottom: 5px;width: 195px; padding: 2px 15px 2px 10px;">(*) property for user to setup</div>
-          			</div>
         		</div>
       		</div> 
     	</div>
@@ -67,7 +65,7 @@
 								tab += '</ul>';
 								content += '</div>';
 								
-								$(".hero-unit h3").after(tab + content);
+								$(".span12 h3").after(tab + content);
 								
 								$('#datasourceTab a').click(function (e) {
 						            e.preventDefault();
