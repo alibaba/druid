@@ -82,6 +82,7 @@ public class DruidDataSourceTest_notEmptyWait2 extends TestCase {
         errorThreadEndLatch.await(100, TimeUnit.MILLISECONDS);
         
         Assert.assertEquals(1, maxWaitErrorCount.get());
+        Assert.assertTrue(dataSource.getNotEmptySignalCount() > 0);
 
         conn.close();
 

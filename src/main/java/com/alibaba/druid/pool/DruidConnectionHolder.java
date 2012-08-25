@@ -56,10 +56,8 @@ public final class DruidConnectionHolder {
     private int                                 underlyingHoldability;
     private int                                 underlyingTransactionIsolation;
     private boolean                             underlyingAutoCommit;
-    private final int                           modCount;
 
     public DruidConnectionHolder(DruidAbstractDataSource dataSource, Connection conn) throws SQLException{
-        this.modCount = dataSource.getModCount();
 
         this.dataSource = dataSource;
         this.conn = conn;
@@ -80,10 +78,6 @@ public final class DruidConnectionHolder {
         this.defaultTransactionIsolation = underlyingTransactionIsolation;
         this.defaultAutoCommit = underlyingAutoCommit;
         this.defaultReadOnly = underlyingReadOnly;
-    }
-
-    public int getModCount() {
-        return modCount;
     }
 
     public boolean isUnderlyingReadOnly() {
