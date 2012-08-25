@@ -416,13 +416,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 connectError = ex;
             }
 
-            createConnectionThread = new CreateConnectionThread("Druid-ConnectionPool-Create");
-            createConnectionThread.setDaemon(true);
-            destoryConnectionThread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
-            destoryConnectionThread.setDaemon(true);
-
-            createConnectionThread.start();
-            destoryConnectionThread.start();
+            createAndStartCreatorThread();
+            createAndStartDestroyThread();
 
             initedLatch.await();
 
@@ -446,6 +441,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 LOG.info("{dataSource-" + this.getID() + "} inited");
             }
         }
+    }
+
+    private void createAndStartDestroyThread() {
+        DestroyConnectionThread thread = new DestroyConnectionThread("Druid-ConnectionPool-Destory");
+        thread.start();
+    }
+
+    protected void createAndStartCreatorThread() {
+        CreateConnectionThread thread = new CreateConnectionThread("Druid-ConnectionPool-Create");
+        thread.start();
     }
 
     private void loadFilterFromSystemProperty() throws SQLException {
@@ -1129,6 +1134,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         public CreateConnectionThread(String name){
             super(name);
+            this.setDaemon(true);
         }
 
         public void run() {
@@ -1222,6 +1228,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         public DestroyConnectionThread(String name){
             super(name);
+            this.setDaemon(true);
         }
 
         public void run() {
