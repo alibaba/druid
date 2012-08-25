@@ -218,17 +218,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected final ReentrantLock                lock                                      = new ReentrantLock(true);
 
-    protected int                                modCount                                  = 0;
-
     protected AtomicLong                         createCount                               = new AtomicLong();
     protected AtomicLong                         destroyCount                              = new AtomicLong();
 
     public boolean isOracle() {
         return isOracle;
-    }
-
-    protected int getModCount() {
-        return modCount;
     }
 
     public void setOracle(boolean isOracle) {
@@ -1298,9 +1292,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public void initPhysicalConnection(Connection conn) throws SQLException {
         if (conn.getAutoCommit() != defaultAutoCommit) {
-            conn.setAutoCommit(defaultAutoCommit);    
+            conn.setAutoCommit(defaultAutoCommit);
         }
-        
+
         if (getDefaultReadOnly() != null) {
             if (conn.isReadOnly() != getDefaultReadOnly()) {
                 conn.setReadOnly(getDefaultReadOnly());

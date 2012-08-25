@@ -61,7 +61,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     protected TransactionInfo                transactionInfo;
     private final boolean                    dupCloseLogEnable;
     private boolean                          traceEnable = false;
-    private boolean                          diable      = false;
+    private boolean                          disable      = false;
     private boolean                          closed      = false;
     private final Thread                     ownerThread;
 
@@ -157,20 +157,20 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         return conn;
     }
 
-    void disable() {
+    public void disable() {
         this.traceEnable = false;
         this.holder = null;
         this.transactionInfo = null;
-        this.diable = true;
+        this.disable = true;
     }
 
-    public boolean isDiable() {
-        return diable;
+    public boolean isDisable() {
+        return disable;
     }
 
     @Override
     public void close() throws SQLException {
-        if (this.diable) {
+        if (this.disable) {
             return;
         }
 
@@ -194,16 +194,20 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         } else {
             recycle();
         }
+        
+        this.disable = true;
     }
 
     public void recycle() throws SQLException {
-        if (this.diable) {
+        if (this.disable) {
             return;
         }
 
         DruidConnectionHolder holder = this.holder;
-        if (holder == null && dupCloseLogEnable) {
-            LOG.error("dup close");
+        if (holder == null) {
+            if (dupCloseLogEnable) {
+                LOG.error("dup close");
+            }
             return;
         }
 
@@ -972,7 +976,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     }
 
     public void checkState() throws SQLException {
-        if (holder == null || closed || diable) {
+        if (holder == null || closed || disable) {
             throw new SQLException("connection is closed");
         }
     }
