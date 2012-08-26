@@ -206,6 +206,8 @@ public class JSONWriter {
                 write("\\r");
             } else if (c == '\\') {
                 write("\\\\");
+            } else if (c == '\t') {
+                write("\\t");
             } else {
                 write(c);
             }
