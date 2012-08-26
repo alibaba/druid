@@ -78,13 +78,14 @@ public class DruidSQLPanel extends DruidPanel {
 		{
     		add("SQL");
     		add("ExecuteCount");
-    		add("MaxTimespan");
+    		add("TotalTime");
     		add("InTransactionCount");
     		add("ErrorCount");
     		add("EffectedRowCount"); 
     		add("FetchRowCount");
     		add("RunningCount");
     		add("ConcurrentMax");
+    		add("Histogram");
     		add("EffectedRowCountHistogram");
     		add("ExecuteAndResultHoldTimeHistogram");
     		add("FetchRowCountHistogram");
