@@ -95,6 +95,10 @@ public class DruidStatService implements DruidStatServiceMBean {
             return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getDataSourceStatDataList());
         }
 
+        if (url.equals("/activeConnectionStackTrace.json")) {
+            return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.getActiveConnStackTraceList());
+        }
+
         if (url.startsWith("/datasource-")) {
             Integer id = StringUtils.subStringToInteger(url, "datasource-", ".");
             Object result = statManagerFacade.getDataSourceStatData(id);

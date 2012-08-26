@@ -39,83 +39,57 @@ public class DruidStat {
 
     private static final String LOCAL_CONNECTOR_ADDRESS_PROP = "com.sun.management.jmxremote.localConnectorAddress";
 
-    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            printHelp();
+        Option opt = null;
+
+        if (Option.isPrintHelp(args)) {
+            Option.printHelp();
             return;
         }
-        
-        String option = args[0];
-        String url;
 
-        if (option.equals("-sql")) {
-            url = "/sql.json";
-        } else {
-            printHelp();
+        try {
+            opt = Option.parseOptions(args);
+        } catch (OptionParseException e) {
+            System.out.println(e.getMessage());
+            Option.printHelp();
             return;
         }
-        
-        String arg = args[1];
-        int vmid = Integer.parseInt(arg);
 
-        String address = loadManagementAgentAndGetAddress(vmid);
+        printDruidStat(opt);
+    }
+
+    @SuppressWarnings("all")
+    public static void printDruidStat(Option option) throws Exception {
+
+        String address = loadManagementAgentAndGetAddress(option.getVmid());
         JMXServiceURL jmxUrl = new JMXServiceURL(address);
         JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl);
         MBeanServerConnection jmxConn = jmxc.getMBeanServerConnection();
 
-        ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
 
-        String result = (String) jmxConn.invoke(name, "service", new String[] { url },
-                                                new String[] { String.class.getName() });
-        Map<String, Object> o = (Map<String, Object>) JSONUtils.parse(result);
-        
-        if (option.equals("-sql")) {
-            List<Map<String, Object>> content = (List<Map<String, Object>>) o.get("Content");
-            
-            for (Map<String, Object> sqlStat : content) {
-                Number id = (Number) sqlStat.get("ID");
-                String sql = (String) sqlStat.get("SQL");
-                System.out.print(id);
-                System.out.print(" : ");
-                System.out.println();
-                System.out.println(sql);
-                System.out.println();
-            }
-            
-            String[] fields = new String[] {"ID", "RunningCount", "ExecuteCount" };
-            for (int i = 0; i < fields.length; ++i) {
-                if (i != 0) {
-                    System.out.print('\t');
-                }
-                System.out.print(fields[i]);
-            }
-            System.out.println();
-            
-            for (Map<String, Object> sqlStat : content) {
-                for (int i = 0; i < fields.length; ++i) {
-                    if (i != 0) {
-                        System.out.print('\t');
-                    }
-                    Object value = sqlStat.get(fields[i]);
-                    System.out.print(value);
-                }
-                System.out.println();
-            }
+        if (option.printSqlData()) {
+            List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.SQL);
+            TabledDataPrinter.printSqlData(content, option);
         }
-
-        //System.out.println(o);
-
-        // ... ...
+        if (option.printDataSourceData()) {
+            List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.DATA_SOURCE);
+            TabledDataPrinter.printDataSourceData(content, option);
+        }
+        if (option.printActiveConn()) {
+            List<List<String>> content = (List<List<String>>) invokeService(jmxConn, Option.ACTIVE_CONN);
+            TabledDataPrinter.printActiveConnStack(content, option);
+        }
+        
     }
 
-    private static void printHelp() {
-        System.out.println("Usage: druidStat -help|-options");
-        System.out.println("       druidStat -<option> <vmid>");
-        System.out.println();
-        System.out.println("Definitions: druidStat -help|-options");
-        System.out.println("  <option>      An option reported by the -options option");
-        
+    @SuppressWarnings("all")
+    private static Object invokeService(MBeanServerConnection jmxConn, int dataType) throws Exception {
+            String url = Option.getUrl(dataType);
+            ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
+            String result = (String) jmxConn.invoke(name, "service", new String[] { url }, new String[] { String.class.getName() });
+            Map<String, Object> o = (Map<String, Object>) JSONUtils.parse(result);
+            List<Map<String, Object>> content = (List<Map<String, Object>>) o.get("Content");
+            return content;
     }
 
     private static String loadManagementAgentAndGetAddress(int vmid) throws IOException {
