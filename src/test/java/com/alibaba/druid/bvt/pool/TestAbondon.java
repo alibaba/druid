@@ -47,7 +47,14 @@ public class TestAbondon extends TestCase {
     public void test_0() throws Exception {
         DruidPooledConnection conn = dataSource.getConnection();
         Assert.assertEquals(false, conn.isClosed());
-        Thread.sleep(200);
+        Thread.sleep(10);
+        
+        for (int i = 0; i < 100; ++i) {
+            if (conn.isAbandonded()) {
+                break;
+            }
+            Thread.sleep(10);    
+        }
         Assert.assertEquals(true, conn.isAbandonded());
     }
 }
