@@ -13,6 +13,7 @@
         		<div class="span12">
           				<h3>
           					Web Session View
+          					<a id="viewJsonApi" target="_blank">View JSON API</a>
           				</h3>
 						<table id="dataTable" class="table table-bordered" style="background-color: #fff">
 							<tr>
@@ -94,6 +95,7 @@
     			init : function() {
     				druid.common.buildHead(4);
     				this.ajaxRequestForBasicInfo();
+    				$("#viewJsonApi").attr("href", 'websession-' + sessionId + '.json');
     			},
     			
     			ajaxRequestForBasicInfo : function() {

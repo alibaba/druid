@@ -27,49 +27,6 @@ body{
 	background-color: #E5E5E5;
 }
 
-.navbar .brand {
-	color: #555555;
-}
-.navbar .nav > li > a {
-    color: #555555;
-    float: none;
-    padding: 10px 15px;
-    text-decoration: none;
-    text-shadow: 0 1px 0 #FFFFFF;
-}
-.navbar .nav,
-.navbar .nav > li {
-	font-size: 14px;
-    float:none;
-    display:inline-block;
-    *display:inline; /* ie7 fix */
-    *zoom:1; /* hasLayout ie7 trigger */
-    vertical-align: top;
-}
-
-.navbar-inner {
-    text-align:center;
-    background-color:#FAFAFA;
-    background-image:-moz-linear-gradient(center top , #FFFFFF, #F2F2F2);
-    background-image:-ms-linear-gradient(top,#FFFFFF,#F2F2F2);
-    background-image:-webkit-gradient(linear,0 0,0 100%,from(#FFFFFF),to(#F2F2F2));
-    background-image:-webkit-linear-gradient(top,#FFFFFF,#F2F2F2);
-    background-image:-o-linear-gradient(top,#FFFFFF,#F2F2F2);
-    background-image:linear-gradient(top,#FFFFFF,#F2F2F2);
-    filter:progid:dximagetransform.microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#F2F2F2',GradientType=0)
-}
-.navbar .nav > .active > a, .navbar .nav > .active > a:hover, .navbar .nav > .active > a:focus {
-    background-color: #E5E5E5;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.125) inset;
-    color: #555555;
-    text-decoration: none;
-}
-
-.navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
-    background-color: transparent;
-    color: #333333;
-    text-decoration: none;
-}
 
 .striped {
 	background-color: #fff;
