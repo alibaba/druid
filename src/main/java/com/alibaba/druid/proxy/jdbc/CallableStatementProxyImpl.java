@@ -612,7 +612,7 @@ public class CallableStatementProxyImpl extends PreparedStatementProxyImpl imple
 
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == PreparedStatement.class) {
+        if (iface == PreparedStatement.class || iface == CallableStatement.class) {
             return (T) statement;
         }
         
