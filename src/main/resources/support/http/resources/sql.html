@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html>
 	<head>
 		<title>Druid SQL Stat</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
@@ -19,51 +19,51 @@
 							<thead>
 								<tr>
 									<th>N</th>
-									<th><a id="th-SQL" href="javascript:void(0);">SQL</a></th>
-									<th width="50" title="Execute Count"><a id="th-ExecuteCount" href="javascript:void(0);">ExecCount</a></th>
-									<th width="50" title="Execute Time Millis Total"><a id="th-TotalTime" href="javascript:void(0);">ExecTime</a></th>
-									<th width="50" title="Execute Time Millis Max"><a id="th-MaxTimespan" href="javascript:void(0);">ExecMax</a></th>
-									<th width="50" title="Execute In Transaction Count"><a id="th-InTransactionCount" href="javascript:void(0);">Txn</a></th>
-									<th width="50" title="Error Count"><a id="th-ErrorCount" href="javascript:void(0);">Error</a></th>
-									<th width="50" title="Update Count"><a id="th-UpdateCount" href="javascript:void(0);">Update</a></th>
-									<th width="50" title="Fetch Row Count"><a id="th-FetchRowCount" href="javascript:void(0);">FetchRow</a></th>
-									<th width="50" title="Running Count"><a id="th-RunningCount" href="javascript:void(0);">Running</a></th>
-									<th width="50" title="Concurrent Max"><a id="th-ConcurrentMax" href="javascript:void(0);">Concurrent</a></th>
+									<th><a id="th-SQL" >SQL</a></th>
+									<th width="50" title="Execute Count"><a id="th-ExecuteCount" >ExecCount</a></th>
+									<th width="50" title="Execute Time Millis Total"><a id="th-TotalTime" >ExecTime</a></th>
+									<th width="50" title="Execute Time Millis Max"><a id="th-MaxTimespan" >ExecMax</a></th>
+									<th width="50" title="Execute In Transaction Count"><a id="th-InTransactionCount" >Txn</a></th>
+									<th width="50" title="Error Count"><a id="th-ErrorCount" >Error</a></th>
+									<th width="50" title="Update Count"><a id="th-UpdateCount" >Update</a></th>
+									<th width="50" title="Fetch Row Count"><a id="th-FetchRowCount" >FetchRow</a></th>
+									<th width="50" title="Running Count"><a id="th-RunningCount" >Running</a></th>
+									<th width="50" title="Concurrent Max"><a id="th-ConcurrentMax" >Concurrent</a></th>
 									<th align="left" width="100" title="Execute Time Histogram">ExecHisto <br />[ 
-										<a id="th-Histogram[0]" title="count of '0-1 ms'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[1]" title="count of '1-10 ms'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[2]" title="count of '10-100 ms'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[3]" title="count of '100ms-1 s'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[4]" title="count of '1-10 s'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[5]" title="count of '10-100 s'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[6]" title="count of '100-1000 s'" href="javascript:void(0);">-</a>
-										<a id="th-Histogram[7]" title="count of '> 1000 s'" href="javascript:void(0);">-</a> ]
+										<a id="th-Histogram[0]" title="count of '0-1 ms'" >-</a>
+										<a id="th-Histogram[1]" title="count of '1-10 ms'" >-</a>
+										<a id="th-Histogram[2]" title="count of '10-100 ms'" >-</a>
+										<a id="th-Histogram[3]" title="count of '100ms-1 s'" >-</a>
+										<a id="th-Histogram[4]" title="count of '1-10 s'" >-</a>
+										<a id="th-Histogram[5]" title="count of '10-100 s'" >-</a>
+										<a id="th-Histogram[6]" title="count of '100-1000 s'" >-</a>
+										<a id="th-Histogram[7]" title="count of '> 1000 s'" >-</a> ]
 									</th>
 									<th align="left" width="100" title="Execute & ResultSet Hold Histogram">ExecRsHisto <br />[ 
-										<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" href="javascript:void(0);">-</a>
-										<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" href="javascript:void(0);">-</a> ]
+										<a id="th-ExecuteAndResultHoldTimeHistogram[0]" title="count of '0-1 ms'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[1]" title="count of '1-10 ms'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[2]" title="count of '10-100 ms'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[3]" title="count of '100ms-1s'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[4]" title="count of '1-10 s'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[5]" title="count of '10-100 s'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[6]" title="count of '100-1000 s'" >-</a>
+										<a id="th-ExecuteAndResultHoldTimeHistogram[7]" title="count of '> 1000 s'" >-</a> ]
 									</th>
 									<th align="left" width="100" title="FetchRow Count Histogram">FetchRowHisto <br />[ 
-										<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" href="javascript:void(0);">-</a>
-										<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" href="javascript:void(0);">-</a>
-										<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" href="javascript:void(0);">-</a>
-										<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" href="javascript:void(0);">-</a>
-										<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" href="javascript:void(0);">-</a>
-										<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" href="javascript:void(0);">-</a> ]
+										<a id="th-FetchRowCountHistogram[0]" title="count of '0 FetchRow'" >-</a>
+										<a id="th-FetchRowCountHistogram[1]" title="count of '1-9 FetchRow'" >-</a>
+										<a id="th-FetchRowCountHistogram[2]" title="count of '10-99 FetchRow'" >-</a>
+										<a id="th-FetchRowCountHistogram[3]" title="count of '100-999 FetchRow'" >-</a>
+										<a id="th-FetchRowCountHistogram[4]" title="count of '1000-9999 FetchRow'" >-</a>
+										<a id="th-FetchRowCountHistogram[5]" title="count of '> 9999 FetchRow'" >-</a> ]
 									</th>
 									<th align="left" width="100" title="UpdateCount Histogram">UpdateHisto <br />[ 
-										<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" href="javascript:void(0);">-</a>
-										<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" href="javascript:void(0);">-</a>
-										<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" href="javascript:void(0);">-</a>
-										<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" href="javascript:void(0);">-</a>
-										<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" href="javascript:void(0);">-</a>
-										<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" href="javascript:void(0);">-</a> ]
+										<a id="th-EffectedRowCountHistogram[0]" title="count of '0 UpdateCount'" >-</a>
+										<a id="th-EffectedRowCountHistogram[1]" title="count of '1-9 UpdateCount'" >-</a>
+										<a id="th-EffectedRowCountHistogram[2]" title="count of '10-99 UpdateCount'" >-</a>
+										<a id="th-EffectedRowCountHistogram[3]" title="count of '100-999 UpdateCount'" >-</a>
+										<a id="th-EffectedRowCountHistogram[4]" title="count of '1000-9999 UpdateCount'" >-</a>
+										<a id="th-EffectedRowCountHistogram[5]" title="count of '> 9999 UpdateCount'" >-</a> ]
 									</th>
 								</tr>
 							</thead> 
