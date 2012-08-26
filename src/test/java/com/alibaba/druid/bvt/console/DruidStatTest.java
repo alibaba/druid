@@ -1,4 +1,4 @@
-package com.alibaba.druid.console;
+package com.alibaba.druid.bvt.console;
 
 
 import java.sql.Connection;
