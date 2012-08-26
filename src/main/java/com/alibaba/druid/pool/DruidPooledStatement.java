@@ -18,6 +18,7 @@ package com.alibaba.druid.pool;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -63,10 +64,6 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     public DruidPooledConnection getPoolableConnection() {
         return conn;
-    }
-
-    public void setPoolableConnection(DruidPooledConnection conn) {
-        this.conn = conn;
     }
 
     public Statement getStatement() {
@@ -603,11 +600,11 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void closeOnCompletion() throws SQLException {
-
+        throw new SQLFeatureNotSupportedException();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        return false;
+        throw new SQLFeatureNotSupportedException();
     }
 
     @SuppressWarnings("unchecked")
