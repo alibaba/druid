@@ -505,7 +505,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
         conn.beforeExecute();
         try {
-            return super.executeBatch();
+            return stmt.executeBatch();
         } catch (Throwable t) {
             throw checkException(t);
         } finally {
