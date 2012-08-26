@@ -30,7 +30,12 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import javax.sql.DataSource;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
+
 public class DruidDataSourceFactory implements ObjectFactory {
+
+    private final static Log      LOG                                      = LogFactory.getLog(DruidDataSourceFactory.class);
 
     static final int              UNKNOWN_TRANSACTIONISOLATION             = -1;
 
@@ -106,7 +111,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         return createDataSource(properties);
     }
-    
+
     @SuppressWarnings("rawtypes")
     public static DataSource createDataSource(Properties properties) throws Exception {
         return createDataSource((Map) properties);
@@ -150,9 +155,9 @@ public class DruidDataSourceFactory implements ObjectFactory {
                 try {
                     level = Integer.parseInt(value);
                 } catch (NumberFormatException e) {
-                    System.err.println("Could not parse defaultTransactionIsolation: " + value);
-                    System.err.println("WARNING: defaultTransactionIsolation not set");
-                    System.err.println("using default value of database driver");
+                    LOG.error("Could not parse defaultTransactionIsolation: " + value);
+                    LOG.error("WARNING: defaultTransactionIsolation not set");
+                    LOG.error("using default value of database driver");
                     level = UNKNOWN_TRANSACTIONISOLATION;
                 }
             }
