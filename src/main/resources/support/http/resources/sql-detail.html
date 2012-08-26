@@ -14,6 +14,7 @@
         		<div class="span12">
           				<h3>
           					FULL SQL
+          					<a id="viewJsonApi" target="_blank">View JSON API</a>
           				</h3>
 						<h5 id="fullSql"></h5>
 						<h2> Format View:</h2>
@@ -109,6 +110,7 @@
     			init : function() {
     				druid.common.buildHead(2);
     				this.ajaxRequestForBasicInfo();
+    				$("#viewJsonApi").attr("href", 'sql-' + sqlId + '.json');
     			},
     			
     			ajaxRequestForBasicInfo : function() {
