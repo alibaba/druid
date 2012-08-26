@@ -75,6 +75,34 @@ public class DruidStatServiceTest extends TestCase {
         Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
     }
     
+    @SuppressWarnings("unchecked")
+    public void test_statService_getSqlById() throws Exception {
+        String sql = "select 1";
+        Connection conn = dataSource.getConnection();
+        
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        rs.close();
+        stmt.close();
+        
+        conn.close();
+        
+        String result = DruidStatService.getInstance().service("/sql-" + dataSource.getSqlStatMap().values().iterator().next().getId() + ".json");
+        Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
+        
+        Map<String, Object> sqlStat = (Map<String, Object>) resultMap.get("Content");
+        
+        Assert.assertEquals(0, sqlStat.get("RunningCount"));
+        Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
+        Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
+        Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
+        
+        String result2 = DruidStatService.getInstance().service("/sql-" + Integer.MAX_VALUE + ".json");
+        resultMap = (Map<String, Object>) JSONUtils.parse(result2);
+        Assert.assertNull(resultMap.get("Content"));
+    }
+
     public void test_statService_getDataSourceList() throws Exception {
         String sql = "select 1";
         Connection conn = dataSource.getConnection();
