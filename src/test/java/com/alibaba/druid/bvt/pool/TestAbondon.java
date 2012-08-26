@@ -15,12 +15,11 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 
 public class TestAbondon extends TestCase {
@@ -46,9 +45,9 @@ public class TestAbondon extends TestCase {
     }
 
     public void test_0() throws Exception {
-        Connection conn = dataSource.getConnection();
+        DruidPooledConnection conn = dataSource.getConnection();
         Assert.assertEquals(false, conn.isClosed());
         Thread.sleep(200);
-        Assert.assertEquals(true, conn.isClosed());
+        Assert.assertEquals(true, conn.isAbandonded());
     }
 }
