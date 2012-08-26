@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.stat;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -170,6 +171,15 @@ public class DruidStatManagerFacade {
             datasourceList.add(dataSourceToMapData(dataSource));
         }
         return datasourceList;
+    }
+
+    public List<List<String>> getActiveConnStackTraceList() {
+        List<List<String>> traceList = new ArrayList<List<String>>();
+        for (Object dataSource : getDruidDataSourceInstances()) {
+            List<String> stacks = ((DruidDataSource) dataSource).getActiveConnectionStackTrace();
+            traceList.add(stacks);
+        }
+        return traceList;
     }
 
     public Map<String, Object> returnJSONBasicStat() {
