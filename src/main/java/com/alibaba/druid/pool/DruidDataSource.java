@@ -1257,8 +1257,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             long timeMillis = currentMillis - activeInfo.getConnectTime();
 
             if (timeMillis >= removeAbandonedTimeoutMillis) {
-                pooledConnection.abandond();
                 JdbcUtils.close(pooledConnection);
+                pooledConnection.abandond();
                 removeAbandonedCount++;
                 removeCount++;
                 abandonedList.add(pooledConnection);
