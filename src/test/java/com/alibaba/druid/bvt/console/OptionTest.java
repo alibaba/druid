@@ -1,4 +1,4 @@
-package com.alibaba.druid.console;
+package com.alibaba.druid.bvt.console;
 
 import com.alibaba.druid.support.console.OptionParseException;
 import com.alibaba.druid.support.console.Option;
