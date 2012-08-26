@@ -61,12 +61,14 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     protected TransactionInfo                transactionInfo;
     private final boolean                    dupCloseLogEnable;
     private boolean                          traceEnable = false;
-    private boolean                          disable      = false;
+    private boolean                          disable     = false;
     private boolean                          closed      = false;
     private final Thread                     ownerThread;
 
     private long                             connectedTimeNano;
     private volatile boolean                 running     = false;
+
+    private volatile boolean                 abandoned   = false;
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -190,7 +192,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         } else {
             recycle();
         }
-        
+
         this.disable = true;
     }
 
@@ -198,7 +200,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         if (this.disable) {
             return;
         }
-
+        
         DruidConnectionHolder holder = this.holder;
         if (holder == null) {
             if (dupCloseLogEnable) {
@@ -207,7 +209,9 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             return;
         }
 
-        holder.getDataSource().recycle(this);
+        if (!this.abandoned) {
+            holder.getDataSource().recycle(this);
+        }
 
         this.holder = null;
         conn = null;
@@ -759,6 +763,10 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
         return conn.isClosed();
     }
+    
+    public boolean isAbandonded() {
+        return this.abandoned;
+    }
 
     @Override
     public DatabaseMetaData getMetaData() throws SQLException {
@@ -1024,4 +1032,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         return running;
     }
 
+    public void abandond() {
+        this.abandoned = true;
+    }
 }
