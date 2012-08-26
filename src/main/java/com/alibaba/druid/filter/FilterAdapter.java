@@ -2430,11 +2430,6 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
-    public void statement_clearWarnings(FilterChain chain, StatementProxy statement) throws SQLException {
-        chain.statement_clearWarnings(statement);
-    }
-
-    @Override
     public void statement_close(FilterChain chain, StatementProxy statement) throws SQLException {
         chain.statement_close(statement);
     }
@@ -2544,6 +2539,11 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     }
 
     @Override
+    public void statement_setQueryTimeout(FilterChain chain, StatementProxy statement, int seconds) throws SQLException {
+        chain.statement_setQueryTimeout(statement, seconds);
+    }
+
+    @Override
     public ResultSetProxy statement_getResultSet(FilterChain chain, StatementProxy statement) throws SQLException {
         return chain.statement_getResultSet(statement);
     }
@@ -2571,6 +2571,11 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     @Override
     public SQLWarning statement_getWarnings(FilterChain chain, StatementProxy statement) throws SQLException {
         return chain.statement_getWarnings(statement);
+    }
+
+    @Override
+    public void statement_clearWarnings(FilterChain chain, StatementProxy statement) throws SQLException {
+        chain.statement_clearWarnings(statement);
     }
 
     @Override
@@ -2619,11 +2624,6 @@ public abstract class FilterAdapter extends NotificationBroadcasterSupport imple
     public void statement_setPoolable(FilterChain chain, StatementProxy statement, boolean poolable)
                                                                                                     throws SQLException {
         chain.statement_setPoolable(statement, poolable);
-    }
-
-    @Override
-    public void statement_setQueryTimeout(FilterChain chain, StatementProxy statement, int seconds) throws SQLException {
-        chain.statement_setQueryTimeout(statement, seconds);
     }
 
     @Override
