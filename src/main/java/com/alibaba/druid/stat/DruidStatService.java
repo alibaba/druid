@@ -135,6 +135,10 @@ public class DruidStatService implements DruidStatServiceMBean {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebURIStatData(uri));
         }
 
+        if (url.startsWith("/webapp.json")) {
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWebAppStatDataList(parameters));
+        }
+        
         if (url.startsWith("/websession.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
         }
@@ -181,6 +185,11 @@ public class DruidStatService implements DruidStatServiceMBean {
 
     private List<Map<String, Object>> getWebSessionStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
+        return comparatorOrderBy(array, parameters);
+    }
+    
+    private List<Map<String, Object>> getWebAppStatDataList(Map<String, String> parameters) {
+        List<Map<String, Object>> array = WebAppStatManager.getInstance().getWebAppStatData();
         return comparatorOrderBy(array, parameters);
     }
 
