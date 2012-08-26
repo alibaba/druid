@@ -68,8 +68,15 @@ public class DruidDataSourceTest_notEmptyWait extends TestCase {
             threads[i].start();
         }
 
-        startLatch.await(100, TimeUnit.MILLISECONDS);
+        startLatch.await(10, TimeUnit.MILLISECONDS);
 
+        for (int i = 0; i < 100; ++i) {
+            if (dataSource.getNotEmptyWaitThreadCount() == 10) {
+                break;
+            }
+            Thread.sleep(10);
+        }
+        
         Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadCount());
         Assert.assertEquals(10, dataSource.getNotEmptyWaitThreadPeak());
 
