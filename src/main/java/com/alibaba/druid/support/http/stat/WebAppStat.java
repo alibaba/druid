@@ -38,6 +38,8 @@ public class WebAppStat {
     public final static int                         DEFAULT_MAX_STAT_URI_COUNT     = 1000;
     public final static int                         DEFAULT_MAX_STAT_SESSION_COUNT = 1000;
 
+    private final static ThreadLocal<WebAppStat>    currentLocal                   = new ThreadLocal<WebAppStat>();
+
     private volatile int                            maxStatUriCount                = DEFAULT_MAX_STAT_URI_COUNT;
     private volatile int                            maxStatSessionCount            = DEFAULT_MAX_STAT_SESSION_COUNT;
 
@@ -45,7 +47,13 @@ public class WebAppStat {
     private final AtomicInteger                     concurrentMax                  = new AtomicInteger();
     private final AtomicLong                        requestCount                   = new AtomicLong(0);
 
-    private final static ThreadLocal<WebAppStat>    currentLocal                   = new ThreadLocal<WebAppStat>();
+    private final AtomicLong                        jdbcFetchRowCount              = new AtomicLong();
+    private final AtomicLong                        jdbcUpdateCount                = new AtomicLong();
+    private final AtomicLong                        jdbcExecuteCount               = new AtomicLong();
+    private final AtomicLong                        jdbcExecuteTimeNano            = new AtomicLong();
+
+    private final AtomicLong                        jdbcCommitCount                = new AtomicLong();
+    private final AtomicLong                        jdbcRollbackCount              = new AtomicLong();
 
     private final ConcurrentMap<String, WebURIStat> uriStatMap                     = new ConcurrentHashMap<String, WebURIStat>();
     private final LRUCache<String, WebSessionStat>  sessionStatMap;
@@ -63,11 +71,11 @@ public class WebAppStat {
     private final AtomicLong                        osOpenBSDCount                 = new AtomicLong(0);
     private final AtomicLong                        osAndroidCount                 = new AtomicLong(0);
 
-    private final AtomicLong                        osWindows98Count                    = new AtomicLong();
-    private final AtomicLong                        osWindowsXPCount                    = new AtomicLong();
-    private final AtomicLong                        osWindows2000Count                  = new AtomicLong();
-    private final AtomicLong                        osWindowsVistaCount                 = new AtomicLong();
-    private final AtomicLong                        osWindows7Count                     = new AtomicLong();
+    private final AtomicLong                        osWindows98Count               = new AtomicLong();
+    private final AtomicLong                        osWindowsXPCount               = new AtomicLong();
+    private final AtomicLong                        osWindows2000Count             = new AtomicLong();
+    private final AtomicLong                        osWindowsVistaCount            = new AtomicLong();
+    private final AtomicLong                        osWindows7Count                = new AtomicLong();
 
     private final AtomicLong                        osAndroid15Count               = new AtomicLong(0);
     private final AtomicLong                        osAndroid16Count               = new AtomicLong(0);
@@ -122,6 +130,13 @@ public class WebAppStat {
         concurrentMax.set(0);
         requestCount.set(0);
         requestCount.set(0);
+        
+        jdbcFetchRowCount.set(0);
+        jdbcUpdateCount.set(0);
+        jdbcExecuteCount.set(0);
+        jdbcExecuteTimeNano.set(0);
+        jdbcCommitCount.set(0);
+        jdbcRollbackCount.set(0);
 
         sessionStatLock.readLock().lock();
         try {
@@ -329,6 +344,80 @@ public class WebAppStat {
     public void afterInvoke(Throwable error, long nanoSpan) {
         runningCount.decrementAndGet();
         currentLocal.set(null);
+        
+        WebRequestStat requestStat = WebRequestStat.current();
+        if (requestStat != null) {
+            this.addJdbcExecuteCount(requestStat.getJdbcExecuteCount());
+            this.addJdbcFetchRowCount(requestStat.getJdbcFetchRowCount());
+            this.addJdbcUpdateCount(requestStat.getJdbcUpdateCount());
+            this.addJdbcCommitCount(requestStat.getJdbcCommitCount());
+            this.addJdbcRollbackCount(requestStat.getJdbcRollbackCount());
+            this.addJdbcExecuteTimeNano(requestStat.getJdbcExecuteTimeNano());
+        }
+    }
+    
+    public void addJdbcFetchRowCount(long delta) {
+        this.jdbcFetchRowCount.addAndGet(delta);
+    }
+
+    public long getJdbcFetchRowCount() {
+        return jdbcFetchRowCount.get();
+    }
+
+    public void addJdbcUpdateCount(long updateCount) {
+        this.jdbcUpdateCount.addAndGet(updateCount);
+    }
+
+    public long getJdbcUpdateCount() {
+        return jdbcUpdateCount.get();
+    }
+
+    public void incrementJdbcExecuteCount() {
+        jdbcExecuteCount.incrementAndGet();
+    }
+
+    public void addJdbcExecuteCount(long executeCount) {
+        jdbcExecuteCount.addAndGet(executeCount);
+    }
+
+    public long getJdbcExecuteCount() {
+        return jdbcExecuteCount.get();
+    }
+
+    public long getJdbcExecuteTimeMillis() {
+        return getJdbcExecuteTimeNano() / (1000 * 1000);
+    }
+
+    public long getJdbcExecuteTimeNano() {
+        return jdbcExecuteTimeNano.get();
+    }
+
+    public void addJdbcExecuteTimeNano(long nano) {
+        jdbcExecuteTimeNano.addAndGet(nano);
+    }
+
+    public void incrementJdbcCommitCount() {
+        jdbcCommitCount.incrementAndGet();
+    }
+
+    public long getJdbcCommitCount() {
+        return jdbcCommitCount.get();
+    }
+
+    public void addJdbcCommitCount(long commitCount) {
+        this.jdbcCommitCount.addAndGet(commitCount);
+    }
+
+    public void incrementJdbcRollbackCount() {
+        jdbcRollbackCount.incrementAndGet();
+    }
+
+    public long getJdbcRollbackCount() {
+        return jdbcRollbackCount.get();
+    }
+
+    public void addJdbcRollbackCount(long rollbackCount) {
+        this.jdbcRollbackCount.addAndGet(rollbackCount);
     }
 
     public int getMaxStatUriCount() {
@@ -366,10 +455,68 @@ public class WebAppStat {
         data.put("RunningCount", this.getRunningCount());
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
+        
+        data.put("JdbcCommitCount", this.getJdbcCommitCount());
+        data.put("JdbcRollbackCount", this.getJdbcRollbackCount());
 
-        List<Map<String, Object>> uriStatDataList = getURIStatDataList();
+        data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
+        data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());
+        data.put("JdbcFetchRowCount", this.getJdbcFetchRowCount());
+        data.put("JdbcUpdateCount", this.getJdbcUpdateCount());
 
-        data.put("URIList", uriStatDataList);
+        data.put("OSMacOSXCount", this.getOSMacOSXCount());
+        data.put("OSWindowsCount", this.getOSWindowsCount());
+        data.put("OSLinuxCount", this.getOSLinuxCount());
+        data.put("OSSymbianCount", this.getOSSymbianCount());
+        data.put("OSFreeBSDCount", this.getOSFreeBSDCount());
+        data.put("OSOpenBSDCount", this.getOSOpenBSDCount());
+        data.put("OSAndroidCount", this.getOSAndroidCount());
+        data.put("OSWindows98Count", this.getOSWindows98Count());
+        data.put("OSWindowsXPCount", this.getOSWindowsXPCount());
+        data.put("OSWindows2000Count", this.getOSWindows2000Count());
+        data.put("OSWindowsVistaCount", this.getOSWindowsVistaCount());
+        data.put("OSWindows7Count", this.getOSWindows7Count());
+
+        data.put("OSAndroid15Count", this.getOSAndroid15Count());
+        data.put("OSAndroid16Count", this.getOSAndroid16Count());
+        data.put("OSAndroid20Count", this.getOSAndroid20Count());
+        data.put("OSAndroid21Count", this.getOSAndroid21Count());
+        data.put("OSAndroid22Count", this.getOSAndroid22Count());
+        data.put("OSAndroid23Count", this.getOSAndroid23Count());
+        data.put("OSAndroid30Count", this.getOSAndroid30Count());
+        data.put("OSAndroid31Count", this.getOSAndroid31Count());
+        data.put("OSAndroid32Count", this.getOSAndroid32Count());
+        data.put("OSAndroid40Count", this.getOSAndroid40Count());
+        data.put("OSLinuxUbuntuCount", this.getOSLinuxUbuntuCount());
+
+        data.put("BrowserIECount", this.getBrowserIECount());
+        data.put("BrowserFirefoxCount", this.getBrowserFirefoxCount());
+        data.put("BrowserChromeCount", this.getBrowserChromeCount());
+        data.put("BrowserSafariCount", this.getBrowserSafariCount());
+        data.put("BrowserOperaCount", this.getBrowserOperaCount());
+
+        data.put("BrowserIE5Count", this.getBrowserIE5Count());
+        data.put("BrowserIE6Count", this.getBrowserIE6Count());
+        data.put("BrowserIE7Count", this.getBrowserIE7Count());
+        data.put("BrowserIE8Count", this.getBrowserIE8Count());
+        data.put("BrowserIE9Count", this.getBrowserIE9Count());
+        data.put("BrowserIE10Count", this.getBrowserIE10Count());
+
+        data.put("Browser360SECount", this.getBrowser360SECount());
+        data.put("DeviceAndroidCount", this.getDeviceAndroidCount());
+        data.put("DeviceIpadCount", this.getDeviceIpadCount());
+        data.put("DeviceIphoneCount", this.getDeviceIphoneCount());
+        data.put("DeviceWindowsPhoneCount", this.getDeviceWindowsPhoneCount());
+
+        data.put("BotCount", this.getBotCount());
+        data.put("BotBaiduCount", this.getBotBaiduCount());
+        data.put("BotYoudaoCount", this.getBotYoudaoCount());
+        data.put("BotGoogleCount", this.getBotGoogleCount());
+        data.put("BotMsnCount", this.getBotMsnCount());
+        data.put("BotBingCount", this.getBotBingCount());
+        data.put("BotSosoCount", this.getBotSosoCount());
+        data.put("BotSogouCount", this.getBotSogouCount());
+        data.put("BotYahooCount", this.getBotYahooCount());
 
         return data;
     }

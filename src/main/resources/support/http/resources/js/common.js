@@ -23,6 +23,7 @@ druid.common = function () {
 				      	'					<li><a href="index.html">Index</a></li>'+
 				      	'					<li><a href="datasource.html">DataSource</a></li>'+
 				      	'					<li><a href="sql.html">SQL</a></li>'+
+				      	'					<li><a href="webapp.html">WebApp</a></li>'+
 				      	'					<li><a href="weburi.html">WebURI</a></li>'+
 				      	'					<li><a href="websession.html">Web Session</a></li>'+
 				      	'					<li><a href="spring.html">Spring</a></li>'+
@@ -40,7 +41,7 @@ druid.common = function () {
 		buildFooter : function() {
 			var html = '<footer class="footer">'+
 					  '    		<div class="container">'+
-				  		'	powered by <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a> & <a href="mailto:libinsong1204@gmail.com">melin</a>'+
+				  		'	powered by <a href="https://github.com/AlibabaTech/">AlibabaTech</a> & <a href="mailto:sandzhangtoo@gmail.com">sandzhang</a> & <a href="mailto:libinsong1204@gmail.com">melin</a>'+
 				  	'	</div>'+
 					'</footer>';
 			$(document.body).append(html);
