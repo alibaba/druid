@@ -1127,7 +1127,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             }
 
             return true;
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             // skip
             return false;
         }
@@ -1135,10 +1135,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     public Set<DruidPooledConnection> getActiveConnections() {
         return this.activeConnections.keySet();
-    }
-
-    void removeActiveConnection(DruidPooledConnection conn) {
-        activeConnections.remove(conn);
     }
 
     public List<String> getActiveConnectionStackTrace() {
@@ -1227,11 +1223,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         String password = getPassword();
         PasswordCallback passwordCallback = getPasswordCallback();
 
-        if (passwordCallback instanceof DruidPasswordCallback) {
-            DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
+        if (passwordCallback != null) {
+            if (passwordCallback instanceof DruidPasswordCallback) {
+                DruidPasswordCallback druidPasswordCallback = (DruidPasswordCallback) passwordCallback;
 
-            druidPasswordCallback.setUrl(url);
-            druidPasswordCallback.setProperties(connectProperties);
+                druidPasswordCallback.setUrl(url);
+                druidPasswordCallback.setProperties(connectProperties);
+            }
 
             char[] chars = passwordCallback.getPassword();
             if (chars != null) {
@@ -1312,6 +1310,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
     }
 
+    public abstract int getActivePeak();
+
     public CompositeDataSupport getCompositeData() throws JMException {
         JdbcDataSourceStat stat = this.getDataSourceStat();
 
@@ -1330,20 +1330,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("Properties", getProperties());
 
         // 0 - 4
-        map.put("ConnectionActiveCount", stat.getConnectionActiveCount());
-        map.put("ConnectionActiveCountMax", stat.getConnectionStat().getActiveMax());
-        map.put("ConnectionCloseCount", stat.getConnectionStat().getCloseCount());
-        map.put("ConnectionCommitCount", stat.getConnectionStat().getCommitCount());
-        map.put("ConnectionRollbackCount", stat.getConnectionStat().getRollbackCount());
+        map.put("ConnectionActiveCount", (long) getActiveCount());
+        map.put("ConnectionActiveCountMax", getActivePeak());
+        map.put("ConnectionCloseCount", getCloseCount());
+        map.put("ConnectionCommitCount", getCommitCount());
+        map.put("ConnectionRollbackCount", getRollbackCount());
 
         // 5 - 9
         map.put("ConnectionConnectLastTime", stat.getConnectionStat().getConnectLastTime());
-        map.put("ConnectionConnectErrorCount", stat.getConnectionStat().getConnectErrorCount());
-        Throwable lastConnectionConnectError = stat.getConnectionStat().getConnectErrorLast();
-        if (lastConnectionConnectError != null) {
-            map.put("ConnectionConnectErrorLastTime", stat.getConnectionStat().getErrorLastTime());
-            map.put("ConnectionConnectErrorLastMessage", lastConnectionConnectError.getMessage());
-            map.put("ConnectionConnectErrorLastStackTrace", IOUtils.getStackTrace(lastConnectionConnectError));
+        map.put("ConnectionConnectErrorCount", this.getCreateCount());
+        if (createError != null) {
+            map.put("ConnectionConnectErrorLastTime", getLastCreateErrorTime());
+            map.put("ConnectionConnectErrorLastMessage", createError.getMessage());
+            map.put("ConnectionConnectErrorLastStackTrace", IOUtils.getStackTrace(createError));
         } else {
             map.put("ConnectionConnectErrorLastTime", null);
             map.put("ConnectionConnectErrorLastMessage", null);
