@@ -23,6 +23,7 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.NClob;
+import java.sql.PreparedStatement;
 import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.RowId;
@@ -1076,7 +1077,7 @@ public class DruidPooledCallableStatement extends DruidPooledPreparedStatement i
 
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == CallableStatement.class) {
+        if (iface == CallableStatement.class || iface == PreparedStatement.class) {
             if (stmt instanceof CallableStatementProxy) {
                 return stmt.unwrap(iface);
             }
