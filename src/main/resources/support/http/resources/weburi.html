@@ -23,9 +23,10 @@
 									<th><a id="th-URI" >URI</a></th>
 									<th width="50"><a id="th-RequestCount" >RequestCount</a></th>
 									<th width="50"><a id="th-RequestTimeMillis" >RequestTime</a></th>
-									<th width="50"><a id="th-RunningCount" >RunningCount</a></th>
+									<th width="50"><a id="th-RunningCount" >Running</a></th>
 									<th width="50" title="Concurrent Max"><a id="th-ConcurrentMax" >Concurrent</a></th>
-									<th width="50" title="Jdbc Execute Count"><a id="th-JdbcExecuteCount" >JdbcCount </a></th>
+									<th width="50" title="Jdbc Execute Count"><a id="th-JdbcExecuteCount" >JdbcCount</a></th>
+									<th width="50" title="Jdbc Execute Error Count"><a id="th-JdbcExecuteErrorCount" >JdbcError</a></th>
 									<th width="50" title="Jdbc Execute Time"><a id="th-JdbcExecuteTimeMillis" >JdbcTime</a></th>
 									<th width="50"><a id="th-JdbcCommitCount" >JdbcCommit</a></th>
 									<th width="50"><a id="th-JdbcRollbackCount" >JdbcRollback</a></th>
@@ -75,6 +76,7 @@
     					html += "<td>" + stat.RunningCount + "</td>";
     					html += "<td>" + stat.ConcurrentMax + "</td>";
     					html += "<td>" + stat.JdbcExecuteCount + "</td>";
+    					html += "<td>" + stat.JdbcExecuteErrorCount + "</td>";
     					html += "<td>" + stat.JdbcExecuteTimeMillis + "</td>";
     					html += "<td>" + stat.JdbcCommitCount + "</td>";
     					html += "<td>" + stat.JdbcRollbackCount + "</td>";
