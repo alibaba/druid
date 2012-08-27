@@ -61,4 +61,12 @@ public class RsaDecrypterTest {
         Assert.assertEquals("It is not same.", "xiaoyu", parameters.getPassword());
     }
 
+    @Test
+    public void testDecryptWithEmptyKey() throws DecryptException {
+        RsaDecrypter decrypter = new RsaDecrypter();
+        SensitiveParameters parameters = decrypter.decrypt(new SensitiveParameters("", "", "OJfUm6WCHi7EuXqE6aEc+Po2xFrAGBeSNy8O2jWhV2FTG8/5kbRRr2rjNKhptlevm/03Y0048P7h88gdUOXAYg=="));
+
+        Assert.assertEquals("It is not same.", "xiaoyu", parameters.getPassword());
+    }
+
 }

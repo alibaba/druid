@@ -22,15 +22,14 @@ import java.security.spec.X509EncodedKeySpec;
  */
 public class RsaDecrypter extends AbstractDecrypter {
 
-    public static Log log = LogFactory.getLog(RsaDecrypter.class);
+    private static Log log = LogFactory.getLog(RsaDecrypter.class);
+
+    private static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     private volatile PublicKey publicKey;
 
     public SensitiveParameters decrypt(SensitiveParameters parameters) throws DecryptException {
         PublicKey publicKey = getPublicKey();
-        if (publicKey == null) {
-            throw new DecryptException("No public Key.");
-        }
 
         try {
             Cipher cipher = Cipher.getInstance("RSA");
@@ -46,6 +45,10 @@ public class RsaDecrypter extends AbstractDecrypter {
     }
 
     protected PublicKey getPublicKey() {
+        if (this.publicKey == null) {
+            setPublicKeyString(DEFAULT_PUBLIC_KEY_STRING);
+        }
+
         return this.publicKey;
     }
 

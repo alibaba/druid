@@ -11,7 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AesAction extends AbstractAction {
 
     public AesAction() {
-        super(6, 16, "AES");
+        super(0, 16, "AES");
     }
 
     @Override

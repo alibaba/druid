@@ -15,7 +15,7 @@ public abstract class AbstractDecrypter implements Decrypter {
     /**
      * DES, AES 密钥都有长度限制， 如果不够， 默认使用该字段补长
      */
-    protected static final String KEY_PADDING = "FOLLOW YOUR HEART. YOU CAN DO BEST THAN ANY ONE.";
+    public static final String KEY_PADDING = "FOLLOW YOUR HEART. YOU CAN DO BEST THAN ANY ONE.";
 
     /**
      * 传入密文， 返回明文

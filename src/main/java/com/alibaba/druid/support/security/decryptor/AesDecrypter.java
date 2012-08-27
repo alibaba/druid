@@ -36,6 +36,10 @@ public class AesDecrypter extends AbstractDecrypter {
     }
 
     protected SecretKeySpec getSpec() {
+        if (this.spec == null) {
+            setKey("");
+        }
+
         return this.spec;
     }
 

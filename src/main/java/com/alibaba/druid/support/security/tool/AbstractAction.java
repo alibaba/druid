@@ -54,14 +54,10 @@ public abstract class AbstractAction implements Action {
     protected String readPassword() {
         char[] keyChars = System.console().readPassword(this.prompt + "请输入密码[长度最大为" + this.maxKeyLength + "字节]: ");
         if (keyChars == null) {
-            System.err.println("错误: 密码不能为空!");
-            return null;
+            keyChars = new char[0];
         }
 
         String keyString = new String(keyChars);
-        if (keyString == null) {
-            return null;
-        }
 
         if (keyString.length() < this.minKeyLength || keyString.length() > this.maxKeyLength) {
             System.err.println("错误: 密码长度要大于等于" + this.minKeyLength + ", 小于等于" + this.maxKeyLength + ".");

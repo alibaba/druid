@@ -18,4 +18,12 @@ public class AesDecrypterTest {
 
         Assert.assertEquals("It is not same.", "xiaoyu", parameters.getPassword());
     }
+
+    @Test
+    public void testDecryptWithEmptyKey() throws DecryptException {
+        AesDecrypter decrypter = new AesDecrypter();
+        SensitiveParameters parameters = decrypter.decrypt(new SensitiveParameters("", "", "AzgdbVU3SIK6A8+0qg+Btg=="));
+
+        Assert.assertEquals("It is not same.", "xiaoyu", parameters.getPassword());
+    }
 }

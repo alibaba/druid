@@ -17,9 +17,7 @@ public class Main {
     static {
         int i = 1;
         help.addAction(Integer.toString(i++), new RsaAction());
-        help.addAction(Integer.toString(i++), new DesAction());
         help.addAction(Integer.toString(i++), new AesAction());
-        help.addAction(Integer.toString(i++), new BlowfishAction());
         help.addAction("h", help);
         help.addAction("q", new QuitAction());
     }
