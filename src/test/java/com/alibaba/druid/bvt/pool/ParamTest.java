@@ -103,13 +103,7 @@ public class ParamTest extends TestCase {
 
         Assert.assertEquals(1, dataSource.getProxyFilters().size());
 
-        error = null;
-        try {
-            dataSource.getConnection();
-        } catch (Exception ex) {
-            error = ex;
-        }
-        Assert.assertNotNull(error);
+        dataSource.getConnection();
 
         dataSource.close();
     }
