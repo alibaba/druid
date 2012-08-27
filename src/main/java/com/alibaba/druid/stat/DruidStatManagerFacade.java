@@ -15,10 +15,11 @@
  */
 package com.alibaba.druid.stat;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import java.lang.management.ManagementFactory;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.VERSION;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
@@ -188,6 +190,10 @@ public class DruidStatManagerFacade {
         dataMap.put("Drivers", getDriversData());
         dataMap.put("ResetEnable", isResetEnable());
         dataMap.put("ResetCount", getResetCount());
+        dataMap.put("JavaVMName", System.getProperty("java.vm.name"));
+        dataMap.put("JavaVersion", System.getProperty("java.version"));
+        dataMap.put("JavaClassPath", System.getProperty("java.class.path"));
+        dataMap.put("StartTime", new Date(ManagementFactory.getRuntimeMXBean().getStartTime()));
         return dataMap;
     }
 
