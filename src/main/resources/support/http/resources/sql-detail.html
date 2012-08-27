@@ -85,7 +85,7 @@
 				      	</table>
 				      	<br/>
 				      
-				      	<h3>Batch View:</h3>
+				      	<h3>Other View:</h3>
 				      	<table class="table table-bordered" style="background-color: #fff">
 				       		<tr>
 				          		<td class='td_lable' width='130'>BatchSizeMax</td>
@@ -94,6 +94,30 @@
 				        	<tr>
 				          		<td class='td_lable'>BatchSizeTotal</td>
 				          		<td id="BatchSizeTotal"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>BlobOpenCount</td>
+				          		<td id="BlobOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>ClobOpenCount</td>
+				          		<td id="ClobOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>ReaderOpenCount</td>
+				          		<td id="ReaderOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>InputStreamOpenCount</td>
+				          		<td id="InputStreamOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>ReadStringLength</td>
+				          		<td id="ReadStringLength"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>ReadBytesLength</td>
+				          		<td id="ReadBytesLength"></td>
 				        	</tr>
 				      	</table>
 				      	<div class="container">
@@ -141,6 +165,12 @@
     						
     						$("#BatchSizeMax").text(sqlInfo.BatchSizeMax)
     						$("#BatchSizeTotal").text(sqlInfo.BatchSizeTotal)
+    						$("#BlobOpenCount").text(sqlInfo.BlobOpenCount)
+    						$("#ClobOpenCount").text(sqlInfo.ClobOpenCount)
+    						$("#InputStreamOpenCount").text(sqlInfo.InputStreamOpenCount)
+    						$("#ReaderOpenCount").text(sqlInfo.ReaderOpenCount)
+    						$("#ReadStringLength").text(sqlInfo.ReadStringLength)
+    						$("#ReadBytesLength").text(sqlInfo.ReadBytesLength)
     					},
     					dataType: "json"
     				});

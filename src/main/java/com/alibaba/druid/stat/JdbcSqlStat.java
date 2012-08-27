@@ -77,6 +77,11 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong clobOpenCount                     = new AtomicLong();
     private final AtomicLong blobOpenCount                     = new AtomicLong();
+    private final AtomicLong readStringLength                  = new AtomicLong();
+    private final AtomicLong readBytesLength                   = new AtomicLong();
+
+    private final AtomicLong inputStreamOpenCount              = new AtomicLong();
+    private final AtomicLong readerOpenCount                   = new AtomicLong();
 
     private final Histogram  histogram                         = new Histogram(new long[] { //
                                                                                             //
@@ -226,6 +231,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         blobOpenCount.set(0);
         clobOpenCount.set(0);
+        readStringLength.set(0);
+        readBytesLength.set(0);
+        inputStreamOpenCount.set(0);
+        readerOpenCount.set(0);
     }
 
     public long getConcurrentMax() {
@@ -274,13 +283,45 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
     }
-    
+
     public long getBlobOpenCount() {
         return blobOpenCount.get();
     }
-    
+
     public void incrementBlobOpenCount() {
         blobOpenCount.incrementAndGet();
+    }
+
+    public long getReadStringLength() {
+        return readStringLength.get();
+    }
+
+    public void addStringReadLength(long length) {
+        this.readStringLength.addAndGet(length);
+    }
+
+    public long getReadBytesLength() {
+        return readBytesLength.get();
+    }
+
+    public void addReadBytesLength(long length) {
+        this.readBytesLength.addAndGet(length);
+    }
+    
+    public long getReaderOpenCount() {
+        return readerOpenCount.get();
+    }
+    
+    public void addReaderOpenCount(int count) {
+        this.readerOpenCount.addAndGet(count);
+    }
+    
+    public long getInputStreamOpenCount() {
+        return inputStreamOpenCount.get();
+    }
+    
+    public void addInputStreamOpenCount(int count) {
+        this.inputStreamOpenCount.addAndGet(count);
     }
 
     public long getId() {
@@ -505,8 +546,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.LONG, //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
-                
+
                 // 35 -
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
+                SimpleType.LONG, //
                 SimpleType.LONG, //
 
         };
@@ -560,9 +605,13 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "EffectedRowCountMax", //
                 "FetchRowCountMax", //
                 "ClobOpenCount",
-                
+
                 // 35 -
-                "BlobOpenCount",
+                "BlobOpenCount", //
+                "ReadStringLength", //
+                "ReadBytesLength", //
+                "InputStreamOpenCount", //
+                "ReaderOpenCount", //
 
         //
         };
@@ -634,8 +683,12 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
         map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
         map.put("ClobOpenCount", getClobOpenCount()); // 34
-        
+
         map.put("BlobOpenCount", getBlobOpenCount()); // 35
+        map.put("ReadStringLength", getReadStringLength()); // 36
+        map.put("ReadBytesLength", getReadBytesLength()); // 37
+        map.put("InputStreamOpenCount", getInputStreamOpenCount()); // 38
+        map.put("ReaderOpenCount", getReaderOpenCount()); // 39
 
         return map;
     }
