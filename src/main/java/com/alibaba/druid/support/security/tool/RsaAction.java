@@ -41,7 +41,10 @@ public class RsaAction implements Action {
     }
 
     private void encrypt() {
+        System.out.println("注意: 如果输入的不是该工具生成的私钥, 请转成PKCS#8格式, 使用下面命令");
+        System.out.println("openssl pkcs8 -topk8 -inform PEM -outform DER -in 原来的Key -nocrypt > 输出文件");
         String filePath = System.console().readLine("[RSA]请输入私钥文件路径[如果直接回车将使用默认私钥]: ");
+
 
         byte[] key = null;
         if (filePath == null || filePath.length() == 0) {
@@ -154,22 +157,4 @@ public class RsaAction implements Action {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream("/Users/yangkingsel/druid.public.key");
-            byte[] buf = new byte[512/8];
-            int len;
-            while ((len = in.read(buf)) != -1) {
-                out.write(buf, 0, len);
-            }
-            
-            System.out.println(Base64.byteArrayToBase64(out.toByteArray()));
-        } finally {
-            if  (in != null) {
-                in.close();
-            }
-        }
-    }
 }
