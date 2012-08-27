@@ -68,6 +68,8 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     private final AtomicLong                                    clobOpenCount           = new AtomicLong();
 
+    private final AtomicLong                                    blobOpenCount           = new AtomicLong();
+
     public JdbcDataSourceStat(String name, String url){
         this(name, url, null);
     }
@@ -101,6 +103,7 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
     }
 
     public void reset() {
+        blobOpenCount.set(0);
         clobOpenCount.set(0);
 
         connectionStat.reset();
@@ -316,6 +319,14 @@ public class JdbcDataSourceStat implements JdbcDataSourceStatMBean {
 
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
+    }
+
+    public long getBlobOpenCount() {
+        return blobOpenCount.get();
+    }
+
+    public void incrementBlobOpenCount() {
+        blobOpenCount.incrementAndGet();
     }
 
 }

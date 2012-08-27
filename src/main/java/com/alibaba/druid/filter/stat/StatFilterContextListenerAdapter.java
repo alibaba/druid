@@ -81,11 +81,12 @@ public class StatFilterContextListenerAdapter implements StatFilterContextListen
     public void clob_open() {
         
     }
-
+    
     @Override
-    public void clob_free() {
+    public void blob_open() {
         
     }
+
 
     
 }
