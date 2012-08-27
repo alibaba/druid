@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.bvt.support.http;
 
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.junit.Assert;
@@ -63,5 +65,8 @@ public class WebStatFilterTest extends TestCase {
         
         Assert.assertFalse(WebAppStatManager.getInstance().getWebAppStatSet().contains(appStat));
         Assert.assertFalse(StatFilterContext.getInstance().getListeners().contains(filter.getStatFilterContextListener()));
+        
+        Map<String, Object> statData = appStat.getStatData();
+        Assert.assertEquals(1L, statData.get("RequestCount"));
     }
 }
