@@ -573,6 +573,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 sqlStat.addFetchRowCount(fetchRowCount);
                 long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
                 sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanos);
+                sqlStat.addStringReadLength(resultSet.getReadStringLength());
             }
         }
 
@@ -761,10 +762,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
-        }
-        
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -777,10 +778,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
-        }
-        
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -792,10 +793,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
-        }
-        
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -808,10 +809,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
-        }
-        
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -914,5 +915,27 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         StatFilterContext.getInstance().clob_open();
+    }
+    
+    @Override
+    public String resultSet_getString(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        String value = chain.resultSet_getString(result, columnIndex);
+        
+        if (value != null) {
+            result.addReadStringLength(value.length());
+        }
+        
+        return value;
+    }
+
+    @Override
+    public String resultSet_getString(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        String value = chain.resultSet_getString(result, columnLabel);
+        
+        if (value != null) {
+            result.addReadStringLength(value.length());
+        }
+        
+        return value;
     }
 }
