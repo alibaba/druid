@@ -15,9 +15,11 @@
  */
 package com.alibaba.druid.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -51,6 +53,37 @@ public class IOUtils {
         } finally {
             JdbcUtils.close(in);
         }
+    }
+    
+    public static byte[] readByteArrayFromResource(String resource) throws IOException {
+        InputStream in = null;
+        try {
+            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+            if (in == null) {
+                return null;
+            }
+            
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            copy(in, output);
+            return output.toByteArray();
+        } finally {
+            JdbcUtils.close(in);
+        }
+    }
+    
+    public static long copy(InputStream input, OutputStream output)
+            throws IOException {
+        final int EOF = -1;
+        
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        
+        long count = 0;
+        int n = 0;
+        while (EOF != (n = input.read(buffer))) {
+            output.write(buffer, 0, n);
+            count += n;
+        }
+        return count;
     }
 
     public static String read(Reader reader) {
