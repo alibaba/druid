@@ -17,7 +17,7 @@ druid.common = function () {
 			var html = '<div class="navbar navbar-fixed-top">'+
 						'	<div class="navbar-inner">'+
 						'		<div class="container">'+
-						'			<a href="#" class="brand">Druid Monitor</a>'+
+						'			<a href="https://github.com/AlibabaTech/druid/wiki" target="_blank" class="brand">Druid Monitor</a>'+
 						'			<div class="nav-collapse">'+
 				      	'				<ul class="nav">'+
 				      	'					<li><a href="index.html">Index</a></li>'+
