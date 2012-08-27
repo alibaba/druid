@@ -35,6 +35,13 @@ public class OptionTest extends TestCase {
         Assert.assertFalse(opt.printActiveConn());
         Assert.assertEquals(opt.getStyle(), Option.PrintStyle.VERTICAL);
         Assert.assertEquals(opt.getVmid(), 1319);
+        
+        cmdArray = new String[] {"-sql","-id","5","200"};
+        opt = Option.parseOptions(cmdArray);
+        Assert.assertNotNull(opt);
+        Assert.assertEquals(opt.getId(), 5);
+        Assert.assertEquals(opt.getVmid(), 200);
+
 
 
         //not enough arguments
