@@ -25,6 +25,7 @@ public class Option {
     private PrintStyle style = PrintStyle.HORIZONTAL;
     private int printDataType = 0;
     private int vmid = -1;
+    private int id = -1;
 
     public void addPrintDataType(int newValue) {
         this.printDataType= this.printDataType |  newValue;
@@ -33,7 +34,7 @@ public class Option {
     public static boolean isPrintHelp(String[] args) {
         if (args == null ) return true;
         for (String arg: args) {
-            if (arg.equals("-h") || arg.equals("--help")) {
+            if (arg.equals("-help") ) {
                 return true;
             }
         }
@@ -112,6 +113,13 @@ public class Option {
                 option.setStyle(PrintStyle.HORIZONTAL);
             }  else if (args[i].equals("-s2")) {
                 option.setStyle(PrintStyle.VERTICAL);
+            } else if (args[i].equals("-id")) {
+            	 try {
+                     int id = Integer.parseInt(args[i+1]);
+                     option.setId(id);
+                 } catch (NumberFormatException e) {
+                     throw new OptionParseException("vmid argument is not a integer!");
+                 }
             }
             i++;
 		}
@@ -122,7 +130,7 @@ public class Option {
     }
 
     public static void printHelp() {
-        System.out.println("Usage: druidStat -help | -sql -ds -act -s1 -s2 vmid");
+        System.out.println("Usage: druidStat -help | -sql -ds -act -s1 -s2 -id vmid");
         System.out.println();
         System.out.println("arguments: ");
         System.out.println("  vmid       the process id of jvm that running druid"); 
@@ -131,7 +139,16 @@ public class Option {
         System.out.println("  -act       print active connection stacktrace data"); 
         System.out.println("  -s1        print field name in first row");
         System.out.println("  -s2        print field name in first column");
+        System.out.println("  -id        only print the sql data matched with id, use this with -sql argument" );
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
     
 
