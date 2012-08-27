@@ -76,6 +76,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     private boolean          removed                           = false;
 
     private final AtomicLong clobOpenCount                     = new AtomicLong();
+    private final AtomicLong blobOpenCount                     = new AtomicLong();
 
     private final Histogram  histogram                         = new Histogram(new long[] { //
                                                                                             //
@@ -223,6 +224,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         updateCountHistogram.reset();
         executeAndResultHoldTimeHistogram.reset();
 
+        blobOpenCount.set(0);
         clobOpenCount.set(0);
     }
 
@@ -271,6 +273,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     public void incrementClobOpenCount() {
         clobOpenCount.incrementAndGet();
+    }
+    
+    public long getBlobOpenCount() {
+        return blobOpenCount.get();
+    }
+    
+    public void incrementBlobOpenCount() {
+        blobOpenCount.incrementAndGet();
     }
 
     public long getId() {
@@ -394,7 +404,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             long current = executeSpanNanoMax.get();
             if (current < nanoSpan) {
                 if (executeSpanNanoMax.compareAndSet(current, nanoSpan)) {
-                	// 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
+                    // 可能不准确，但是绝大多数情况下都会正确，性能换取一致性
                     executeNanoSpanMaxOccurTime = System.currentTimeMillis();
 
                     break;
@@ -489,12 +499,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 SimpleType.LONG, //
                 new ArrayType<Long>(SimpleType.LONG, true), //
 
-                // 30 -
-
+                // 30 - 34
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 new ArrayType<Long>(SimpleType.LONG, true), //
                 SimpleType.LONG, //
                 SimpleType.LONG, //
+                SimpleType.LONG, //
+                
+                // 35 -
                 SimpleType.LONG, //
 
         };
@@ -548,6 +560,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "EffectedRowCountMax", //
                 "FetchRowCountMax", //
                 "ClobOpenCount",
+                
+                // 35 -
+                "BlobOpenCount",
 
         //
         };
@@ -619,6 +634,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
         map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
         map.put("ClobOpenCount", getClobOpenCount()); // 34
+        
+        map.put("BlobOpenCount", getBlobOpenCount()); // 35
 
         return map;
     }
