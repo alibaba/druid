@@ -815,7 +815,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 discardConnection(holder.getConnection());
                 return;
             }
-            
+
             final long lastActiveTimeMillis = System.currentTimeMillis();
             lock.lockInterruptibly();
             try {
@@ -1774,6 +1774,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("ConnectionHoldTimeHistogram", this.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
         dataMap.put("ClobOpenCount", this.getDataSourceStat().getClobOpenCount());
+        dataMap.put("BlobOpenCount", this.getDataSourceStat().getBlobOpenCount());
 
         return dataMap;
     }
