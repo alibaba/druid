@@ -46,6 +46,7 @@ public class WebAppStat {
     private final AtomicInteger                     runningCount                   = new AtomicInteger();
     private final AtomicInteger                     concurrentMax                  = new AtomicInteger();
     private final AtomicLong                        requestCount                   = new AtomicLong(0);
+    private final AtomicLong                        sessionCount                   = new AtomicLong(0);
 
     private final AtomicLong                        jdbcFetchRowCount              = new AtomicLong();
     private final AtomicLong                        jdbcUpdateCount                = new AtomicLong();
@@ -130,6 +131,7 @@ public class WebAppStat {
         concurrentMax.set(0);
         requestCount.set(0);
         requestCount.set(0);
+        sessionCount.set(0);
         
         jdbcFetchRowCount.set(0);
         jdbcUpdateCount.set(0);
@@ -356,6 +358,14 @@ public class WebAppStat {
         }
     }
     
+    public void incrementSessionCount() {
+        sessionCount.incrementAndGet();
+    }
+    
+    public long getSessionCount() {
+        return sessionCount.get();
+    }
+    
     public void addJdbcFetchRowCount(long delta) {
         this.jdbcFetchRowCount.addAndGet(delta);
     }
@@ -455,6 +465,7 @@ public class WebAppStat {
         data.put("RunningCount", this.getRunningCount());
         data.put("ConcurrentMax", this.getConcurrentMax());
         data.put("RequestCount", this.getRequestCount());
+        data.put("SessionCount", this.getSessionCount());
         
         data.put("JdbcCommitCount", this.getJdbcCommitCount());
         data.put("JdbcRollbackCount", this.getJdbcRollbackCount());

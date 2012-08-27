@@ -207,6 +207,7 @@ public class WebStatFilter implements Filter {
                 }
 
                 webAppStat.computeUserAgent(userAgent);
+                webAppStat.incrementSessionCount();
             }
 
             sessionStat.setUserAgent(userAgent);
