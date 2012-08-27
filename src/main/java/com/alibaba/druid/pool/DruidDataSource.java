@@ -677,10 +677,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             connectErrorCount.incrementAndGet();
             throw new DataSourceDisableException();
         }
-        
+
         final long nanos = TimeUnit.MILLISECONDS.toNanos(maxWait);
         final int maxWaitThreadCount = getMaxWaitThreadCount();
-        
+
         DruidConnectionHolder holder;
         try {
             lock.lockInterruptibly();
