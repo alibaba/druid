@@ -221,6 +221,16 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected AtomicLong                         createCount                               = new AtomicLong();
     protected AtomicLong                         destroyCount                              = new AtomicLong();
 
+    protected Decrypter                          decrypter;
+
+    public Decrypter getDecrypter() {
+        return decrypter;
+    }
+
+    public void setDecrypter(Decrypter decrypter) {
+        this.decrypter = decrypter;
+    }
+
     public boolean isOracle() {
         return isOracle;
     }
@@ -1234,6 +1244,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             char[] chars = passwordCallback.getPassword();
             if (chars != null) {
                 password = new String(chars);
+            }
+        }
+
+        Decrypter decrypter1 = this.getDecrypter();
+        if (decrypter1 != null) {
+            try {
+                SensitiveParameters parameters = decrypter1.decrypt(new SensitiveParameters(url, user, password));
+                url = parameters.getUrl();
+                user = parameters.getUsername();
+                password = parameters.getPassword();
+            } catch (DecryptException e) {
+                throw new SQLException("Failed to decrypt sensitive parameters.", e);
             }
         }
 
