@@ -811,6 +811,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 }
             }
 
+            if (!enable) {
+                discardConnection(holder.getConnection());
+                return;
+            }
+            
             final long lastActiveTimeMillis = System.currentTimeMillis();
             lock.lockInterruptibly();
             try {
@@ -916,11 +921,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) throws SQLException {
-        if (!enable) {
-            discardConnection(e.getConnection());
-            return;
-        }
-
         e.setLastActiveTimeMillis(lastActiveTimeMillis);
         connections[poolingCount++] = e;
 
