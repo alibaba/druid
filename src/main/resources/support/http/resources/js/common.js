@@ -41,7 +41,7 @@ druid.common = function () {
 		buildFooter : function() {
 			var html = '<footer class="footer">'+
 					  '    		<div class="container">'+
-				  		'	powered by <a href="https://github.com/AlibabaTech/">AlibabaTech</a> & <a href="http://www.sandzhang.com/">sandzhang</a> & <a href="mailto:libinsong1204@gmail.com">melin</a>'+
+				  		'	powered by <a href="https://github.com/AlibabaTech/">AlibabaTech</a> & <a href="http://www.sandzhang.com/">sandzhang</a> & <a href="mailto:libinsong1204@gmail.com">melin</a> & <a href="mailto:shrek.wang@gmail.com">shrek.wang</a>'+
 				  	'	</div>'+
 					'</footer>';
 			$(document.body).append(html);
