@@ -1,6 +1,6 @@
 package com.alibaba.druid.support.security.tool;
 
-import sun.misc.BASE64Encoder;
+import com.alibaba.druid.util.Base64;
 
 import javax.crypto.Cipher;
 import java.io.*;
@@ -79,7 +79,7 @@ public class RsaAction implements Action {
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
             byte[] encryptedBytes = cipher.doFinal(plainString.getBytes());
-            String encryptedString = new BASE64Encoder().encode(encryptedBytes);
+            String encryptedString = Base64.byteArrayToBase64(encryptedBytes);;
 
             System.out.println("请记住以下的密文, 长度为[" + encryptedString.length() + "].");
             System.out.println();
@@ -128,5 +128,4 @@ public class RsaAction implements Action {
             }
         }
     }
-
 }

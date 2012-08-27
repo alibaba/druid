@@ -1,11 +1,21 @@
 package com.alibaba.druid.bvt.support.security;
 
+import com.alibaba.druid.support.security.decryptor.AesDecrypterTest;
+import com.alibaba.druid.support.security.decryptor.BlowfishDecrypterTest;
+import com.alibaba.druid.support.security.decryptor.DesDecrypterTest;
+import com.alibaba.druid.support.security.decryptor.RsaDecrypterTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 /**
- * Created with IntelliJ IDEA.
- * User: yangkingsel
- * Date: 12-8-27
- * Time: 上午9:55
- * To change this template use File | Settings | File Templates.
+ * @author Jonas Yang
  */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        AesDecrypterTest.class,
+        DesDecrypterTest.class,
+        RsaDecrypterTest.class,
+        BlowfishDecrypterTest.class
+})
 public class DecrypterTestSuite {
 }

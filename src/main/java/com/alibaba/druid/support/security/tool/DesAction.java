@@ -1,6 +1,6 @@
 package com.alibaba.druid.support.security.tool;
 
-import sun.misc.BASE64Encoder;
+import com.alibaba.druid.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -32,6 +32,6 @@ public class DesAction extends AbstractAction {
 
         byte[] encryptedBytes = cipher.doFinal(plainString.getBytes());
 
-        return new BASE64Encoder().encode(encryptedBytes);
+        return Base64.byteArrayToBase64(encryptedBytes);
     }
 }
