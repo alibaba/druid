@@ -29,7 +29,7 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
     private boolean isDesc;
     private K       orderByKey;
 
-    public MapComparator(K orderByKey, boolean isDesc) {
+    public MapComparator(K orderByKey, boolean isDesc){
         this.orderByKey = orderByKey;
         this.isDesc = isDesc;
     }
@@ -58,19 +58,23 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
     private Object getValueByKey(Map<K, V> map, K key) {
         if (key instanceof String) {
             String keyStr = (String) key;
+
             if (keyStr.matches(".+\\[[0-9]+\\]")) {
                 Object value = map.get(keyStr.substring(0, keyStr.indexOf("[")));
+                if (value == null) return null;
+
                 Integer index = StringUtils.subStringToInteger(keyStr, "[", "]");
                 if (value.getClass().isArray() && Array.getLength(value) >= index) {
                     return Array.get(value, index);
                 }
+
                 return null;
             }
         }
         return map.get(key);
     }
 
-    public int compare_0(Map<K, V> o1, Map<K, V> o2) {
+    private int compare_0(Map<K, V> o1, Map<K, V> o2) {
         Object v1 = getValueByKey(o1, orderByKey);
         Object v2 = getValueByKey(o2, orderByKey);
 
