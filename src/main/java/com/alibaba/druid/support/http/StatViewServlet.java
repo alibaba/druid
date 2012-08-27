@@ -212,7 +212,8 @@ public class StatViewServlet extends HttpServlet {
             return;
         }
 
-        if (isRequireAuth() && session.getAttribute(SESSION_USER_KEY) == null
+        if (isRequireAuth()
+            && session.getAttribute(SESSION_USER_KEY) == null
             && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/img"))) {
             if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
                 response.sendRedirect("/login.html");
@@ -251,6 +252,15 @@ public class StatViewServlet extends HttpServlet {
 
     private void returnResourceFile(String fileName, String uri, HttpServletResponse response) throws ServletException,
                                                                                               IOException {
+        if (fileName.endsWith(".jpg")) {
+            byte[] bytes = IOUtils.readByteArrayFromResource(RESOURCE_PATH + fileName);
+            if (bytes != null) {
+                response.getOutputStream().write(bytes);
+            }
+            
+            return;
+        }
+
         String text = IOUtils.readFromResource(RESOURCE_PATH + fileName);
         if (text == null) {
             response.sendRedirect(uri + "/index.html");
