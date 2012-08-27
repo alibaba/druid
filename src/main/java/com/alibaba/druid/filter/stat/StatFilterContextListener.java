@@ -43,5 +43,5 @@ public interface StatFilterContextListener {
     
     void clob_open();
     
-    void clob_free();
+    void blob_open();
 }

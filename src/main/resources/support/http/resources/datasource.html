@@ -30,7 +30,9 @@
 							"NotEmptyWaitMillis", "WaitThreadCount", "StartTransactionCount", "TransactionHistogram", "PoolingCount", "PoolingPeak",
 							"PoolingPeakTime", "ActiveCount", "ActivePeak", "ActivePeakTime", "LogicConnectCount", "LogicCloseCount", "LogicConnectErrorCount",
 							"PhysicalConnectCount", "PhysicalCloseCount", "PhysicalConnectErrorCount", "ExecuteCount", "ErrorCount", "CommitCount",
-							"RollbackCount", "PSCacheAccessCount", "PSCacheHitCount", "PSCacheMissCount", "ConnectionHoldTimeHistogram"]
+							"RollbackCount", "PSCacheAccessCount", "PSCacheHitCount", "PSCacheMissCount", "ConnectionHoldTimeHistogram",
+							"ClobOpenCount", "BlobOpenCount"
+							]
 				var descs = ["Specify the username used when creating a new connection.", 
 				             "The JDBC driver connection URL", "database type", "The fully qualifed name of the JDBC driver class", 
 				             "All the fully qualifed name of the filter classes", "	Test or not when borrow a connection", "Test or not when return a connection", 
@@ -42,7 +44,9 @@
 								"The usefull connection peak time", "The current active connection count", "The current active connection peak count", "The active connection peak time", 
 								"Total connect times from datasource", "Total close connect times from datasource", "Total connect error times",
 								"Create physical connnection count", "Close physical connnection count", "Total physical connect error times", "", "", "",
-								"", "PerpareStatement access count", "PerpareStatement hit count", "PerpareStatement miss count", "The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]"]
+								"", "PerpareStatement access count", "PerpareStatement hit count", "PerpareStatement miss count", "The histogram values of connection hold time, [0-1 ms, 1-10 ms, 10-100 ms, 100ms-1s, 1-10 s, 10-100 s, 100-1000 s, >1000 s]",
+								"", ""
+								]
 				return  {
 					init : function() {
 						druid.common.buildHead(1);
