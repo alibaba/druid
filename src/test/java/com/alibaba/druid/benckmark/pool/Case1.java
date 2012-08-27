@@ -45,9 +45,9 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 50;
     private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 2;
+    private int    threadCount     = 10;
     private int    loopCount       = 4;
-    final int      LOOP_COUNT      = 1000 * 1000;
+    final int      LOOP_COUNT      = 1000 * 100;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
@@ -56,7 +56,7 @@ public class Case1 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
-    public void test_0() throws Exception {
+    public void f_test_0() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -110,6 +110,7 @@ public class Case1 extends TestCase {
         dataSource.setDriverClass(driverClass);
         dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setStatementsCacheSize(100);
+        dataSource.setServiceOrder("LIFO");
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
