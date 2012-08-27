@@ -51,14 +51,17 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     private final StatementProxy statement;
     private final String         sql;
 
-    protected int                cursorIndex      = 0;
-    protected int                fetchRowCount    = 0;
+    protected int                cursorIndex          = 0;
+    protected int                fetchRowCount        = 0;
     protected long               constructNano;
     protected final JdbcSqlStat  sqlStat;
-    private int                  closeCount       = 0;
+    private int                  closeCount           = 0;
 
-    private long                 readStringLength = 0;
-    private long                 readBytesLength  = 0;
+    private long                 readStringLength     = 0;
+    private long                 readBytesLength      = 0;
+
+    private int                  openInputStreamCount = 0;
+    private int                  openReaderCount      = 0;
 
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
@@ -1090,15 +1093,35 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     public long getReadStringLength() {
         return readStringLength;
     }
-    
+
     @Override
     public void addReadBytesLength(int length) {
         this.readBytesLength += length;
     }
-    
+
     @Override
     public long getReadBytesLength() {
         return readBytesLength;
+    }
+
+    @Override
+    public void incrementOpenInputStreamCount() {
+        openInputStreamCount++;
+    }
+
+    @Override
+    public int getOpenInputStreamCount() {
+        return openInputStreamCount;
+    }
+
+    @Override
+    public void incrementOpenReaderCount() {
+        openReaderCount++;
+    }
+
+    @Override
+    public int getOpenReaderCount() {
+        return openReaderCount;
     }
 
 }

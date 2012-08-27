@@ -104,6 +104,14 @@
 				          		<td id="ClobOpenCount"></td>
 				        	</tr>
 				        	<tr>
+				          		<td class='td_lable'>ReaderOpenCount</td>
+				          		<td id="ReaderOpenCount"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>InputStreamOpenCount</td>
+				          		<td id="InputStreamOpenCount"></td>
+				        	</tr>
+				        	<tr>
 				          		<td class='td_lable'>ReadStringLength</td>
 				          		<td id="ReadStringLength"></td>
 				        	</tr>
@@ -159,6 +167,8 @@
     						$("#BatchSizeTotal").text(sqlInfo.BatchSizeTotal)
     						$("#BlobOpenCount").text(sqlInfo.BlobOpenCount)
     						$("#ClobOpenCount").text(sqlInfo.ClobOpenCount)
+    						$("#InputStreamOpenCount").text(sqlInfo.InputStreamOpenCount)
+    						$("#ReaderOpenCount").text(sqlInfo.ReaderOpenCount)
     						$("#ReadStringLength").text(sqlInfo.ReadStringLength)
     						$("#ReadBytesLength").text(sqlInfo.ReadBytesLength)
     					},

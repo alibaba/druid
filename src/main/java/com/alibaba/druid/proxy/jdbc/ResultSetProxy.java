@@ -51,4 +51,12 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     void addReadBytesLength(int length);
     
     long getReadBytesLength();
+    
+    void incrementOpenInputStreamCount();
+    
+    int getOpenInputStreamCount();
+    
+    void incrementOpenReaderCount();
+    
+    int getOpenReaderCount();
 }
