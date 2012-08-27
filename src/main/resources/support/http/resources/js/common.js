@@ -17,7 +17,7 @@ druid.common = function () {
 			var html = '<div class="navbar navbar-fixed-top">'+
 						'	<div class="navbar-inner">'+
 						'		<div class="container">'+
-						'			<a href="#" class="brand">Druid Monitor</a>'+
+						'			<a href="https://github.com/AlibabaTech/druid/wiki" target="_blank" class="brand">Druid Monitor</a>'+
 						'			<div class="nav-collapse">'+
 				      	'				<ul class="nav">'+
 				      	'					<li><a href="index.html">Index</a></li>'+
@@ -41,9 +41,9 @@ druid.common = function () {
 		buildFooter : function() {
 			var html = '<footer class="footer">'+
 					  '    		<div class="container">'+
-				  		'	powered by <a href="https://github.com/AlibabaTech/">AlibabaTech</a> & <a href="http://www.sandzhang.com/">sandzhang</a> & <a href="mailto:libinsong1204@gmail.com">melin</a>'+
-				  	'	</div>'+
-					'</footer>';
+				  	  '	powered by <a href="https://github.com/AlibabaTech/" target="_blank">AlibabaTech</a> & <a href="http://www.sandzhang.com/" target="_blank">sandzhang</a> & <a href="http://melin.iteye.com/" target="_blank">melin</a>'+
+				  	  '	</div>'+
+					  '</footer>';
 			$(document.body).append(html);
 		},
 		
