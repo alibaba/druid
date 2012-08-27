@@ -58,6 +58,7 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     private int                  closeCount       = 0;
 
     private long                 readStringLength = 0;
+    private long                 readBytesLength  = 0;
 
     public ResultSetProxyImpl(StatementProxy statement, ResultSet resultSet, long id, String sql){
         super(resultSet, id);
@@ -1088,6 +1089,16 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     @Override
     public long getReadStringLength() {
         return readStringLength;
+    }
+    
+    @Override
+    public void addReadBytesLength(int length) {
+        this.readBytesLength += length;
+    }
+    
+    @Override
+    public long getReadBytesLength() {
+        return readBytesLength;
     }
 
 }

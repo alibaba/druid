@@ -709,26 +709,26 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         return blob;
     }
-    
+
     @Override
     public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         Blob blob = chain.resultSet_getBlob(result, columnIndex);
-        
+
         if (blob != null) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, blob);
         }
-        
+
         return blob;
     }
 
     @Override
     public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         Blob blob = chain.resultSet_getBlob(result, columnLabel);
-        
+
         if (blob != null) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, blob);
         }
-        
+
         return blob;
     }
 
@@ -826,7 +826,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
         }
-        
+
         if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
@@ -882,7 +882,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         return obj;
     }
-    
+
     private void blobOpenAfter(JdbcDataSourceStat dataSourceStat, ResultSetProxy rs, Blob blob) {
         blobOpenAfter(dataSourceStat, rs.getStatementProxy(), blob);
     }
@@ -893,7 +893,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private void blobOpenAfter(JdbcDataSourceStat dataSourceStat, StatementProxy stmt, Blob blob) {
         dataSourceStat.incrementBlobOpenCount();
-        
+
         if (stmt != null) {
             JdbcSqlStat sqlStat = stmt.getSqlStat();
             if (sqlStat != null) {
@@ -916,26 +916,48 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         StatFilterContext.getInstance().clob_open();
     }
-    
+
     @Override
     public String resultSet_getString(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
         String value = chain.resultSet_getString(result, columnIndex);
-        
+
         if (value != null) {
             result.addReadStringLength(value.length());
         }
-        
+
         return value;
     }
 
     @Override
     public String resultSet_getString(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
         String value = chain.resultSet_getString(result, columnLabel);
-        
+
         if (value != null) {
             result.addReadStringLength(value.length());
         }
-        
+
+        return value;
+    }
+
+    @Override
+    public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        byte[] value = chain.resultSet_getBytes(result, columnIndex);
+
+        if (value != null) {
+            result.addReadBytesLength(value.length);
+        }
+
+        return value;
+    }
+
+    @Override
+    public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        byte[] value = chain.resultSet_getBytes(result, columnLabel);
+
+        if (value != null) {
+            result.addReadBytesLength(value.length);
+        }
+
         return value;
     }
 }

@@ -104,8 +104,12 @@
 				          		<td id="ClobOpenCount"></td>
 				        	</tr>
 				        	<tr>
-				          		<td class='td_lable'>StringReadLength</td>
-				          		<td id="StringReadLength"></td>
+				          		<td class='td_lable'>ReadStringLength</td>
+				          		<td id="ReadStringLength"></td>
+				        	</tr>
+				        	<tr>
+				          		<td class='td_lable'>ReadBytesLength</td>
+				          		<td id="ReadBytesLength"></td>
 				        	</tr>
 				      	</table>
 				      	<div class="container">
@@ -155,7 +159,8 @@
     						$("#BatchSizeTotal").text(sqlInfo.BatchSizeTotal)
     						$("#BlobOpenCount").text(sqlInfo.BlobOpenCount)
     						$("#ClobOpenCount").text(sqlInfo.ClobOpenCount)
-    						$("#StringReadLength").text(sqlInfo.StringReadLength)
+    						$("#ReadStringLength").text(sqlInfo.ReadStringLength)
+    						$("#ReadBytesLength").text(sqlInfo.ReadBytesLength)
     					},
     					dataType: "json"
     				});

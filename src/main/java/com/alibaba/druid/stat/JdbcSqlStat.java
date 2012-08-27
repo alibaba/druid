@@ -77,7 +77,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
     private final AtomicLong clobOpenCount                     = new AtomicLong();
     private final AtomicLong blobOpenCount                     = new AtomicLong();
-    private final AtomicLong stringReadLength                  = new AtomicLong();
+    private final AtomicLong readStringLength                  = new AtomicLong();
+    private final AtomicLong readBytesLength                   = new AtomicLong();
 
     private final Histogram  histogram                         = new Histogram(new long[] { //
                                                                                             //
@@ -227,7 +228,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         blobOpenCount.set(0);
         clobOpenCount.set(0);
-        stringReadLength.set(0);
+        readStringLength.set(0);
+        readBytesLength.set(0);
     }
 
     public long getConcurrentMax() {
@@ -284,13 +286,21 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void incrementBlobOpenCount() {
         blobOpenCount.incrementAndGet();
     }
-    
-    public long getStringReadLength() {
-        return stringReadLength.get();
+
+    public long getReadStringLength() {
+        return readStringLength.get();
     }
-    
+
     public void addStringReadLength(long length) {
-        this.stringReadLength.addAndGet(length);
+        this.readStringLength.addAndGet(length);
+    }
+
+    public long getReadBytesLength() {
+        return readBytesLength.get();
+    }
+
+    public void addReadBytesLength(int length) {
+        this.readBytesLength.addAndGet(length);
     }
 
     public long getId() {
@@ -519,6 +529,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 // 35 -
                 SimpleType.LONG, //
                 SimpleType.LONG, //
+                SimpleType.LONG, //
 
         };
 
@@ -573,8 +584,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 "ClobOpenCount",
 
                 // 35 -
-                "BlobOpenCount",
-                "StringReadLength",
+                "BlobOpenCount", //
+                "ReadStringLength", //
+                "ReadBytesLength",
 
         //
         };
@@ -648,7 +660,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("ClobOpenCount", getClobOpenCount()); // 34
 
         map.put("BlobOpenCount", getBlobOpenCount()); // 35
-        map.put("StringReadLength", getStringReadLength()); // 36
+        map.put("ReadStringLength", getReadStringLength()); // 36
+        map.put("ReadBytesLength", getReadBytesLength()); // 37
 
         return map;
     }
