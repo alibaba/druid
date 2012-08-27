@@ -23,7 +23,7 @@
 								</td>
 							</tr>
 							<tr >
-								<td valign="top" class="td_lable"> drivers </td>
+								<td valign="top" class="td_lable"> Drivers </td>
 								<td id="DruidDrivers"> </td>
 							</tr>
 							<tr >
@@ -33,6 +33,22 @@
 							<tr >
 								<td valign="top" class="td_lable"> ResetCount </td>
 								<td id="ResetCount"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> JavaVersion </td>
+								<td id="JavaVersion"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> JavaVMName </td>
+								<td id="JavaVMName"></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable"> JavaClassPath </td>
+								<td id="JavaClassPath"></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> StartTime </td>
+								<td id="StartTime"></td>
 							</tr>
 						</table>
           			</div>
@@ -62,6 +78,10 @@
 								}
 								$("#ResetEnable").text(data.Content.ResetEnable)
 								$("#ResetCount").text(data.Content.ResetCount)
+								$("#JavaVersion").text(data.Content.JavaVersion)
+								$("#JavaVMName").text(data.Content.JavaVMName)
+								$("#JavaClassPath").text(data.Content.JavaClassPath)
+								$("#StartTime").text(data.Content.StartTime)
 							},
 							dataType: "json"
 						});
