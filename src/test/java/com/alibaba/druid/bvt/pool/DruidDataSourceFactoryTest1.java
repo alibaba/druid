@@ -160,4 +160,12 @@ public class DruidDataSourceFactoryTest1 extends TestCase {
             JdbcUtils.close(dataSource);
         }
     }
+
+    public void test_getObjectInstance() throws Exception {
+        Assert.assertNull(new DruidDataSourceFactory().getObjectInstance(null, null, null, null));
+    }
+    
+    public void test_getObjectInstance_1() throws Exception {
+        Assert.assertNull(new DruidDataSourceFactory().getObjectInstance(new Object(), null, null, null));
+    }
 }
