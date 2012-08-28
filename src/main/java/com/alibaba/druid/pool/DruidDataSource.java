@@ -1521,30 +1521,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     buf.append(System.identityHashCode(conn.getConnection()));
                     PreparedStatementPool pool = conn.getStatementPool();
 
-                    if (pool != null) {
-                        buf.append(", \n\tpoolStatements:[");
+                    buf.append(", \n\tpoolStatements:[");
 
-                        int entryIndex = 0;
-                        try {
-                            for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                                if (entryIndex != 0) {
-                                    buf.append(",");
-                                }
-                                buf.append("\n\t\t{hitCount:");
-                                buf.append(entry.getValue().getHitCount());
-                                buf.append(",sql:\"");
-                                buf.append(entry.getKey().getSql());
-                                buf.append("\"");
-                                buf.append("\t}");
-
-                                entryIndex++;
+                    int entryIndex = 0;
+                    try {
+                        for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
+                            if (entryIndex != 0) {
+                                buf.append(",");
                             }
-                        } catch (ConcurrentModificationException e) {
-                            // skip ..
-                        }
+                            buf.append("\n\t\t{hitCount:");
+                            buf.append(entry.getValue().getHitCount());
+                            buf.append(",sql:\"");
+                            buf.append(entry.getKey().getSql());
+                            buf.append("\"");
+                            buf.append("\t}");
 
-                        buf.append("\n\t\t]");
+                            entryIndex++;
+                        }
+                    } catch (ConcurrentModificationException e) {
+                        // skip ..
                     }
+
+                    buf.append("\n\t\t]");
 
                     buf.append("\n\t}");
                 }
