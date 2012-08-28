@@ -44,7 +44,6 @@ import javax.management.NotificationBroadcasterSupport;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -59,10 +58,6 @@ import com.alibaba.druid.proxy.jdbc.StatementProxy;
  * @author wenshao<szujobs@hotmail.com>
  */
 public abstract class FilterAdapter extends NotificationBroadcasterSupport implements Filter {
-
-    @Override
-    public void loadConfig(AbstractDruidFilterConfig DruidFilterConfig) {
-    }
 
     @Override
     public void init(DataSourceProxy dataSource) {
