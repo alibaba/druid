@@ -722,7 +722,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-        
+
         holder.incrementUseCount();
 
         DruidPooledConnection poolalbeConnection = new DruidPooledConnection(holder);
@@ -1174,9 +1174,16 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     continue;
                 }
 
+                DruidConnectionHolder holder = null;
+                try {
+                    holder = new DruidConnectionHolder(DruidDataSource.this, connection);
+                } catch (SQLException ex) {
+                    LOG.error("create connection holder error", ex);
+                    break;
+                }
+                
                 lock.lock();
                 try {
-                    DruidConnectionHolder holder = new DruidConnectionHolder(DruidDataSource.this, connection); 
                     connections[poolingCount++] = holder;
 
                     if (poolingCount > poolingPeak) {
@@ -1188,9 +1195,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     notEmpty.signal();
                     notEmptySignalCount++;
-                } catch (SQLException ex) {
-                    LOG.error("create connection holder error", ex);
-                    break;
                 } finally {
                     lock.unlock();
                 }
@@ -1214,7 +1218,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     if (closed) {
                         break;
                     }
-                    
+
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     } else {
