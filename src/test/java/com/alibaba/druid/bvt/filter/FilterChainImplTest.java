@@ -12,10 +12,12 @@ import java.sql.Types;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockNClob;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
+import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class FilterChainImplTest extends TestCase {
@@ -26,7 +28,9 @@ public class FilterChainImplTest extends TestCase {
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,log4j,wall");
+        dataSource.getProxyFilters().add(new FilterAdapter() {} );
+        dataSource.setDbType("mysql");
 
         dataSource.init();
     }
@@ -69,8 +73,18 @@ public class FilterChainImplTest extends TestCase {
         conn.close();
     }
     
+    public void test_unwrap_8() throws Exception {
+        Connection conn = dataSource.getConnection();
+        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (Clob) new MockNClob()) instanceof NClob);
+        conn.close();
+    }
+    
     public void test_unwrap_7() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (NClob) null));
+    }
+    
+    public void test_unwrap_9() throws Exception {
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((StatementProxy) null, (NClob) null));
     }
 
     public void test_getUnicodeStream() throws Exception {

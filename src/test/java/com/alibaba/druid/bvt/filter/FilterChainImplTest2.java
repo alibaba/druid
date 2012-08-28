@@ -8,6 +8,7 @@ import java.util.Collections;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -19,7 +20,8 @@ public class FilterChainImplTest2 extends TestCase {
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat");
+        dataSource.setFilters("stat,log4j,wall");
+        dataSource.getProxyFilters().add(new FilterAdapter() {} );
 
         dataSource.init();
     }
