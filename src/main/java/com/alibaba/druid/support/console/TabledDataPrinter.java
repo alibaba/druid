@@ -28,15 +28,13 @@ public class TabledDataPrinter {
     
     private static final String[] sqlRowTitle = new String[] {
         "ID", "SQL", "ExecCount", "ExecTime",
-		"ExecMax","Txn", "Error","Update","FetchRow","Running","Concurrent", 
-		"ExecHisto", "ExecRsHisto","FetchRowHisto","UpdateHisto" };
+		"ExecMax","Txn", "Error","Update","FetchRow","Running","Concurrent", "ExecRsHisto" };
         
     
     private static final String[] sqlRowField = new String[] {
         "ID", "SQL", "ExecuteCount", "TotalTime", "MaxTimespan",
 		"InTransactionCount", "ErrorCount", "EffectedRowCount", "FetchRowCount",
-		"RunningCount","ConcurrentMax","Histogram","ExecuteAndResultHoldTimeHistogram",
-		"FetchRowCountHistogram","EffectedRowCountHistogram" };
+		"RunningCount","ConcurrentMax","ExecuteAndResultHoldTimeHistogram" };
         
     private static final String[] sqlColField = new String[] {
         "ID", "DataSource", "SQL", "ExecuteCount", "ErrorCount",
@@ -50,16 +48,16 @@ public class TabledDataPrinter {
 
 
     private static final String[] dsRowTitle = new String[] {
-        "Name", "DbType", 
+        "Identity", "DbType", 
         "PoolingCount", "PoolingPeak", "PoolingPeakTime",
         "ActiveCount", "ActivePeak", "ActivePeakTime",
-        "ExecuteCount", "ErrorCount", "CommitCount", "RollbackCount" };
+        "ExecuteCount", "ErrorCount" };
 
     private static final String[] dsRowField = new String[] {
-        "Name", "DbType", 
+        "Identity", "DbType", 
         "PoolingCount", "PoolingPeak", "PoolingPeakTime",
         "ActiveCount", "ActivePeak", "ActivePeakTime",
-        "ExecuteCount", "ErrorCount", "CommitCount", "RollbackCount" };
+        "ExecuteCount", "ErrorCount"};
 
 
     private static final String[] dsColField = new String[] {
@@ -88,35 +86,73 @@ public class TabledDataPrinter {
     }
 
     public static void printDataSourceData(List<Map<String, Object>> content,Option opt) {
-        if (opt.getStyle() == Option.PrintStyle.HORIZONTAL) {
-            System.out.println(getFormattedOutput(content, dsRowTitle, dsRowField));
-        } else {
+		while (true ) {
+			_printDataSourceData(content, opt);
+			if (opt.getInterval() == -1) break;
+			try {
+				Thread.sleep( opt.getInterval() * 1000 );
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+    public static void _printDataSourceData(List<Map<String, Object>> content,Option opt) {
+		if (opt.getId() != -1 ) {
+    		List<Map<String,Object>> matchedContent = new ArrayList<Map<String,Object>>();
+		    for (Map<String, Object> dsStat : content) {
+		    	Integer idStr = (Integer)dsStat.get("Identity");
+		    	if (idStr.intValue() == opt.getId()) {
+		    		matchedContent.add(dsStat);
+		    		break;
+		    	}
+		    }
+		    content = matchedContent;
+    	}
+		if (opt.isDetailPrint()) {
             System.out.println(getVerticalFormattedOutput(content, dsColField));
+        } else {
+            System.out.println(getFormattedOutput(content, dsRowTitle, dsRowField));
         }
     }
 
     public static void printSqlData(List<Map<String, Object>> content, Option opt) {
-    	if (opt.getId() != -1) {
+		while (true ) {
+			_printSqlData(content, opt);
+			if (opt.getInterval() == -1) break;
+			try {
+				Thread.sleep( opt.getInterval() * 1000 );
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+			}
+		}
+	}
+
+    public static void _printSqlData(List<Map<String, Object>> content, Option opt) {
+    	if (opt.getId() != -1 ) {
     		List<Map<String,Object>> matchedContent = new ArrayList<Map<String,Object>>();
 		    for (Map<String, Object> sqlStat : content) {
 		    	Integer idStr = (Integer)sqlStat.get("ID");
 		    	if (idStr.intValue() == opt.getId()) {
 		    		matchedContent.add(sqlStat);
-		    		String dbType = (String) sqlStat.get("DbType");
-			        String sql = (String) sqlStat.get("SQL");
-			        System.out.println(SQLUtils.format(sql, dbType));
-		            System.out.println("===============================\n");
+					if (opt.isDetailPrint()) {
+						String dbType = (String) sqlStat.get("DbType");
+						String sql = (String) sqlStat.get("SQL");
+						System.out.println("Formatted SQL:");
+						System.out.println(SQLUtils.format(sql, dbType));
+						System.out.println();
+					}
 		    		break;
 		    	}
 		    }
 		    content = matchedContent;
-
-	        
     	}
-        if (opt.getStyle() == Option.PrintStyle.HORIZONTAL) {
-            System.out.println(getFormattedOutput(content, sqlRowTitle, sqlRowField));
-        } else {
+        if (opt.isDetailPrint()) {
             System.out.println(getVerticalFormattedOutput(content, sqlColField));
+        } else {
+            System.out.println(getFormattedOutput(content, sqlRowTitle, sqlRowField));
         }
     }
 
