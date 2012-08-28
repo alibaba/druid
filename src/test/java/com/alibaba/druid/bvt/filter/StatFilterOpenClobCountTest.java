@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.filter;
 
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,12 +11,14 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
+import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.proxy.jdbc.ClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class StatFilterReadBytesLengthTest extends TestCase {
+public class StatFilterOpenClobCountTest extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -28,18 +31,19 @@ public class StatFilterReadBytesLengthTest extends TestCase {
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                       throws SQLException {
-                return new byte[6];
+            public Clob resultSet_getClob(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                    throws SQLException {
+                return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
+                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnIndex)
-                                                                                                          throws SQLException {
-                return new byte[7];
+            public Clob resultSet_getClob(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                       throws SQLException {
+                return new ClobProxyImpl(result.getStatementProxy().getConnectionProxy().getDirectDataSource(),
+                                         result.getStatementProxy().getConnectionProxy(), new MockClob());
             }
         });
-
         dataSource.init();
     }
 
@@ -55,23 +59,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes(1);
+        rs.getClob(1);
+        rs.getClob(2);
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(6, sqlStat.getReadBytesLength());
+        Assert.assertEquals(2, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getClobOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -82,22 +84,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getClobOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes("1");
+        rs.getClob("1");
+        rs.getClob("2");
+        rs.getClob("3");
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(7, sqlStat.getReadBytesLength());
+        Assert.assertEquals(3, sqlStat.getClobOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getClobOpenCount());
     }
 }
