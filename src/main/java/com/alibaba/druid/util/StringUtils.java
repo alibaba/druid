@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.util;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -73,26 +70,6 @@ public class StringUtils {
             LOG.warn("stringToInteger fail,string=" + in, e);
             return null;
         }
-    }
-
-    public static Map<String, String> getParameters(String url) {
-        if (url == null || (url = url.trim()).length() == 0) return null;
-
-        String parametersStr = subString(url, "?", null);
-        if (parametersStr == null || parametersStr.length() == 0) return null;
-
-        String[] parametersArray = parametersStr.split("&");
-        Map<String, String> parameters = new LinkedHashMap<String, String>();
-
-        for (String parameterStr : parametersArray) {
-            int index = parameterStr.indexOf("=");
-            if (index <= 0) continue;
-
-            String name = parameterStr.substring(0, index);
-            String value = parameterStr.substring(index + 1);
-            parameters.put(name, value);
-        }
-        return parameters;
     }
 
     public static boolean equals(String a, String b) {

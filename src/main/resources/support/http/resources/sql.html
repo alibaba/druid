@@ -75,14 +75,15 @@
     	</div>
     	<script type="text/javascript">
 	    	$.namespace("druid.sql");
-	    	druid.sql = function () {  
+	    	druid.sql = function () {
+	    		var dataSourceId = druid.common.getUrlVar("dataSourceId");
 	    		return  {
 	    			init : function() {
 	    				$("#dataTable th a").click(function(obj) {
 	    					druid.common.setOrderBy(obj.target.id.substring(3))
 	    				})
 	    				druid.common.buildHead(2);
-	    				druid.common.ajaxuri = 'sql.json?';
+	    				druid.common.ajaxuri = dataSourceId ? 'sql.json?dataSourceId=' + dataSourceId + '&' : 'sql.json?';
 	    				druid.common.handleAjaxResult = druid.sql.handleAjaxResult;
 	    				druid.common.setOrderBy("SQL");
 	    				druid.common.ajaxRequestForBasicInfo();
