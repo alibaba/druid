@@ -22,6 +22,7 @@ public class FilterChainImplTest2 extends TestCase {
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("stat,log4j,wall");
         dataSource.getProxyFilters().add(new FilterAdapter() {} );
+        dataSource.setDbType("mysql");
 
         dataSource.init();
     }
