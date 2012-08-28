@@ -180,6 +180,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery();
+            
+            if (rs == null) {
+                return null;
+            }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);

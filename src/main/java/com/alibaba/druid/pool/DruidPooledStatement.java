@@ -107,6 +107,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery(sql);
+            
+            if (rs == null) {
+                return rs;
+            }
 
             DruidPooledResultSet poolableResultSet = new DruidPooledResultSet(this, rs);
             resultSetTrace.add(poolableResultSet);
