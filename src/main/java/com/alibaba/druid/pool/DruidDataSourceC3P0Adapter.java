@@ -279,8 +279,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public void setMaxStatementsPerConnection(int maxStatementsPerConnection) {
-        dataSource.setPoolPreparedStatements(maxStatementsPerConnection > 0);
-            
         dataSource.setMaxPoolPreparedStatementPerConnectionSize(maxStatementsPerConnection);
     }
 
@@ -289,8 +287,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public void setMaxStatements(int maxStatements) {
-        dataSource.setPoolPreparedStatements(maxStatements > 0);
-        
         dataSource.setMaxOpenPreparedStatements(maxStatements);
     }
 
@@ -493,6 +489,6 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
     }
 
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        throw new SQLFeatureNotSupportedException();
+        return dataSource.getParentLogger();
     }
 }
