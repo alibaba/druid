@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.console;
 
+import org.junit.runner.notification.Failure;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 import com.alibaba.druid.support.console.OptionParseException;
 import com.alibaba.druid.support.console.Option;
 
@@ -16,7 +19,7 @@ public class OptionTest extends TestCase {
         Assert.assertTrue(opt.printSqlData());
         Assert.assertTrue(opt.printDataSourceData());
         Assert.assertFalse(opt.printActiveConn());
-        Assert.assertEquals(opt.getVmid(), 200);
+        Assert.assertEquals(opt.getPid(), 200);
 
         cmdArray = new String[] {"-act", "738"};
         opt = Option.parseOptions(cmdArray);
@@ -24,25 +27,38 @@ public class OptionTest extends TestCase {
         Assert.assertFalse(opt.printSqlData());
         Assert.assertFalse(opt.printDataSourceData());
         Assert.assertTrue(opt.printActiveConn());
-        Assert.assertEquals(opt.getStyle(), Option.PrintStyle.HORIZONTAL);
-        Assert.assertEquals(opt.getVmid(), 738);
+        Assert.assertEquals(opt.getPid(), 738);
 
-        cmdArray = new String[] {"-ds", "-s2", "1319"};
+        cmdArray = new String[] {"-ds", "-detail", "1319"};
         opt = Option.parseOptions(cmdArray);
         Assert.assertNotNull(opt);
         Assert.assertFalse(opt.printSqlData());
         Assert.assertTrue(opt.printDataSourceData());
         Assert.assertFalse(opt.printActiveConn());
-        Assert.assertEquals(opt.getStyle(), Option.PrintStyle.VERTICAL);
-        Assert.assertEquals(opt.getVmid(), 1319);
+        Assert.assertTrue(opt.isDetailPrint());
+        Assert.assertEquals(opt.getPid(), 1319);
         
         cmdArray = new String[] {"-sql","-id","5","200"};
         opt = Option.parseOptions(cmdArray);
         Assert.assertNotNull(opt);
         Assert.assertEquals(opt.getId(), 5);
-        Assert.assertEquals(opt.getVmid(), 200);
+        Assert.assertEquals(opt.getPid(), 200); 
+
+		cmdArray = new String[] {"-sql","-id","5","200", "3"};
+        opt = Option.parseOptions(cmdArray);
+        Assert.assertNotNull(opt);
+        Assert.assertEquals(opt.getId(), 5);
+        Assert.assertEquals(opt.getPid(), 200);
+        Assert.assertEquals(opt.getInterval(), 3);
 
 
+        cmdArray = new String[] {"-ds","-id","5", "-detail", "200", "3"};
+        opt = Option.parseOptions(cmdArray);
+        Assert.assertNotNull(opt);
+        Assert.assertEquals(opt.getId(), 5);
+        Assert.assertEquals(opt.getPid(), 200);
+        Assert.assertEquals(opt.getInterval(), 3);
+        Assert.assertEquals(opt.isDetailPrint(), true);
 
         //not enough arguments
         cmdArray = new String[] {};
@@ -53,7 +69,7 @@ public class OptionTest extends TestCase {
             Assert.assertNotNull(e);
         }
 
-        //need vmid
+        //need pid
         cmdArray = new String[] {"-ds"};
         try {
             opt = Option.parseOptions(cmdArray);
@@ -67,4 +83,11 @@ public class OptionTest extends TestCase {
     public void test_printHelp() throws Exception {
         Option.printHelp();
     }
+
+	public static void main(String[] args) {
+		Result result = JUnitCore.runClasses(OptionTest.class);
+		for (Failure failure : result.getFailures()) {
+			System.out.println(failure.toString());
+		}
+	}
 }

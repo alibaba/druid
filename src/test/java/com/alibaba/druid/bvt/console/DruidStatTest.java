@@ -1,6 +1,7 @@
 package com.alibaba.druid.bvt.console;
 
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.Statement;
 import com.alibaba.druid.support.console.Option;
@@ -62,16 +63,27 @@ public class DruidStatTest extends TestCase {
         String[] cmdArray = {"-sql", pid};
         Option opt = Option.parseOptions(cmdArray);
         DruidStat.printDruidStat(opt);
-    }
 
-    public void test_printDruidStat2() throws Exception {
-        String pid = getSelfPid();
-        String[] cmdArray = {"-ds","-s2", pid};
-        Option opt = Option.parseOptions(cmdArray);
+        cmdArray = new String[] {"-sql","-id","1", pid};
+        opt = Option.parseOptions(cmdArray);
         DruidStat.printDruidStat(opt);
+
+        cmdArray = new String[] {"-sql","-detail", "-id","1", pid};
+        opt = Option.parseOptions(cmdArray);
+        DruidStat.printDruidStat(opt);
+
+		cmdArray = new String[] {"-ds",pid};
+        opt = Option.parseOptions(cmdArray);
+		List<Integer> ids = DruidStat.getDataSourceIds(opt);
+		opt.setDetailPrint(true);
+		opt.setId( ids.get(0).intValue());
+        DruidStat.printDruidStat(opt);
+
+		
     }
 
-    public void test_printDruidStat3() throws Exception {
+
+	public void test_printDruidStat2() throws Exception {
         String pid = getSelfPid();
         String[] cmdArray = {"-act", pid};
         Option opt = Option.parseOptions(cmdArray);
