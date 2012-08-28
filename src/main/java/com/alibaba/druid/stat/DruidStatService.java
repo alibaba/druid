@@ -79,7 +79,7 @@ public class DruidStatService implements DruidStatServiceMBean {
 
     public String service(String url) {
 
-        Map<String, String> parameters = StringUtils.getParameters(url);
+        Map<String, String> parameters = getParameters(url);
 
         if (url.equals("/basic.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, statManagerFacade.returnJSONBasicStat());
@@ -138,7 +138,7 @@ public class DruidStatService implements DruidStatServiceMBean {
         if (url.startsWith("/webapp.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebAppStatDataList(parameters));
         }
-        
+
         if (url.startsWith("/websession.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getWebSessionStatDataList(parameters));
         }
@@ -187,7 +187,7 @@ public class DruidStatService implements DruidStatServiceMBean {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getSessionStatData();
         return comparatorOrderBy(array, parameters);
     }
-    
+
     private List<Map<String, Object>> getWebAppStatDataList(Map<String, String> parameters) {
         List<Map<String, Object>> array = WebAppStatManager.getInstance().getWebAppStatData();
         return comparatorOrderBy(array, parameters);
@@ -199,7 +199,8 @@ public class DruidStatService implements DruidStatServiceMBean {
 
         // when parameters is null
         String orderBy, orderType = null;
-        Integer page, perPageCount = null;
+        Integer page = DEFAULT_PAGE;
+        Integer perPageCount = DEFAULT_PER_PAGE_COUNT;
         if (parameters == null) {
             orderBy = DEFAULT_ORDER_TYPE;
             orderType = DEFAULT_ORDER_TYPE;
@@ -208,15 +209,19 @@ public class DruidStatService implements DruidStatServiceMBean {
         } else {
             orderBy = parameters.get("orderBy");
             orderType = parameters.get("orderType");
-            page = Integer.parseInt(parameters.get("page"));
-            perPageCount = Integer.parseInt(parameters.get("perPageCount"));
+            String pageParam = parameters.get("page");
+            if (pageParam != null && pageParam.length() != 0) {
+                page = Integer.parseInt(pageParam);
+            }
+            String pageCountParam = parameters.get("perPageCount");
+            if (pageCountParam != null && pageCountParam.length() > 0) {
+                perPageCount = Integer.parseInt(pageCountParam);
+            }
         }
 
         // others,such as order
         orderBy = orderBy == null ? DEFAULT_ORDERBY : orderBy;
         orderType = orderType == null ? DEFAULT_ORDER_TYPE : orderType;
-        page = page == null ? DEFAULT_PAGE : page;
-        perPageCount = perPageCount == null ? DEFAULT_PER_PAGE_COUNT : perPageCount;
 
         if (!"desc".equals(orderType)) orderType = DEFAULT_ORDER_TYPE;
 
@@ -234,8 +239,16 @@ public class DruidStatService implements DruidStatServiceMBean {
     }
 
     private List<Map<String, Object>> getSqlStatDataList(Map<String, String> parameters) {
-        List<Map<String, Object>> array = statManagerFacade.getSqlStatDataList();
-        return comparatorOrderBy(array, parameters);
+        Integer dataSourceId = null;
+
+        String dataSourceIdParam = parameters.get("dataSourceId");
+        if (dataSourceIdParam != null && dataSourceIdParam.length() > 0) {
+            dataSourceId = Integer.parseInt(dataSourceIdParam);
+        }
+
+        List<Map<String, Object>> array = statManagerFacade.getSqlStatDataList(dataSourceId);
+        List<Map<String, Object>> sortedArray = comparatorOrderBy(array, parameters);
+        return sortedArray;
     }
 
     private String getSqlStat(Integer id) {
@@ -310,4 +323,27 @@ public class DruidStatService implements DruidStatServiceMBean {
         }
     }
 
+    public static Map<String, String> getParameters(String url) {
+        if (url == null || (url = url.trim()).length() == 0) {
+            return Collections.<String, String> emptyMap();
+        }
+
+        String parametersStr = StringUtils.subString(url, "?", null);
+        if (parametersStr == null || parametersStr.length() == 0) {
+            return Collections.<String, String> emptyMap();
+        }
+
+        String[] parametersArray = parametersStr.split("&");
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+
+        for (String parameterStr : parametersArray) {
+            int index = parameterStr.indexOf("=");
+            if (index <= 0) continue;
+
+            String name = parameterStr.substring(0, index);
+            String value = parameterStr.substring(index + 1);
+            parameters.put(name, value);
+        }
+        return parameters;
+    }
 }
