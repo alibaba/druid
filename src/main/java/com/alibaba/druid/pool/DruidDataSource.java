@@ -403,7 +403,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = createPhysicalConnection();
-                    connections[poolingCount++] = new DruidConnectionHolder(this, conn);
+                    DruidConnectionHolder holder = new DruidConnectionHolder(this, conn);
+                    connections[poolingCount++] = holder;
                 }
 
                 if (poolingCount > 0) {
@@ -721,7 +722,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         } finally {
             lock.unlock();
         }
-
+        
         holder.incrementUseCount();
 
         DruidPooledConnection poolalbeConnection = new DruidPooledConnection(holder);
@@ -1175,7 +1176,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 lock.lock();
                 try {
-                    connections[poolingCount++] = new DruidConnectionHolder(DruidDataSource.this, connection);
+                    DruidConnectionHolder holder = new DruidConnectionHolder(DruidDataSource.this, connection); 
+                    connections[poolingCount++] = holder;
 
                     if (poolingCount > poolingPeak) {
                         poolingPeak = poolingCount;
@@ -1209,6 +1211,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (;;) {
                 // 从前面开始删除
                 try {
+                    if (closed) {
+                        break;
+                    }
+                    
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     } else {

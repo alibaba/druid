@@ -1,16 +1,17 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 
-public class DruidConnectionHolderTest extends TestCase {
+public class DruidConnectionHolderTest2 extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -18,12 +19,12 @@ public class DruidConnectionHolderTest extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-        dataSource.setInitialSize(1);
+        dataSource.setPoolPreparedStatements(true);
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             public int connection_getTransactionIsolation(FilterChain chain, ConnectionProxy connection)
                                                                                                         throws SQLException {
-                throw new com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException();
+                throw new SQLException();
             }
         });
 
@@ -34,8 +35,12 @@ public class DruidConnectionHolderTest extends TestCase {
     }
 
     public void test_mysqlSyntaxError() throws Exception {
-        dataSource.init();
-        
-        dataSource.getConnection();
+        Exception error = null;
+        try {
+            dataSource.getConnection(100);
+        } catch (GetConnectionTimeoutException e) {
+            error = e;
+        }
+        Assert.assertNotNull(error);
     }
 }

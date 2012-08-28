@@ -70,8 +70,9 @@ public final class DruidConnectionHolder {
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
-            if ("com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName()))
-            ;
+            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) {
+                throw e;
+            }
         }
 
         this.defaultHoldability = underlyingHoldability;
