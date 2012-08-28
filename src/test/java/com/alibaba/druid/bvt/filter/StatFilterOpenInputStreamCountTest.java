@@ -1,5 +1,6 @@
 package com.alibaba.druid.bvt.filter;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class StatFilterReadBytesLengthTest extends TestCase {
+public class StatFilterOpenInputStreamCountTest extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -28,18 +29,17 @@ public class StatFilterReadBytesLengthTest extends TestCase {
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                       throws SQLException {
-                return new byte[6];
+            public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                                           throws SQLException {
+                return new ByteArrayInputStream(new byte[0]);
             }
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnIndex)
-                                                                                                          throws SQLException {
-                return new byte[7];
+            public java.io.InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                                              throws SQLException {
+                return new ByteArrayInputStream(new byte[0]);
             }
         });
-
         dataSource.init();
     }
 
@@ -55,23 +55,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes(1);
+        rs.getBinaryStream(1);
+        rs.getBinaryStream(2);
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(6, sqlStat.getReadBytesLength());
+        Assert.assertEquals(2, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -82,22 +80,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes("1");
+        rs.getBinaryStream("1");
+        rs.getBinaryStream("2");
+        rs.getBinaryStream("3");
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(7, sqlStat.getReadBytesLength());
+        Assert.assertEquals(3, sqlStat.getInputStreamOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getInputStreamOpenCount());
     }
 }
