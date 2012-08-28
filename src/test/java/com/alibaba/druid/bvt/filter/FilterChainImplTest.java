@@ -29,7 +29,8 @@ public class FilterChainImplTest extends TestCase {
 
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setFilters("stat,log4j,wall");
-        dataSource.getProxyFilters().add(new FilterAdapter() {} );
+        dataSource.getProxyFilters().add(new FilterAdapter() {
+        });
         dataSource.setDbType("mysql");
 
         dataSource.init();
@@ -46,43 +47,50 @@ public class FilterChainImplTest extends TestCase {
     public void test_unwrap() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).unwrap(null, null));
     }
-    
+
     public void test_unwrap_1() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).wrap((Connection) null, null));
     }
-    
+
     public void test_unwrap_2() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (Statement) null));
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (Statement) null));
     }
-    
+
     public void test_unwrap_3() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (PreparedStatement) null, ""));
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (PreparedStatement) null, ""));
     }
-    
+
     public void test_unwrap_4() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (CallableStatement) null, ""));
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (CallableStatement) null, ""));
     }
-    
+
     public void test_unwrap_5() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (Clob) null));
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (Clob) null));
     }
-    
+
     public void test_unwrap_6() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, new MockNClob()) instanceof NClob);
+        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               new MockNClob()) instanceof NClob);
         conn.close();
     }
-    
+
     public void test_unwrap_8() throws Exception {
         Connection conn = dataSource.getConnection();
-        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (Clob) new MockNClob()) instanceof NClob);
+        Assert.assertTrue(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (Clob) new MockNClob()) instanceof NClob);
         conn.close();
     }
-    
+
     public void test_unwrap_7() throws Exception {
-        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) null, (NClob) null));
+        Assert.assertNull(new FilterChainImpl(dataSource).wrap((ConnectionProxy) dataSource.getConnection().getConnection(),
+                                                               (NClob) null));
     }
-    
+
     public void test_unwrap_9() throws Exception {
         Assert.assertNull(new FilterChainImpl(dataSource).wrap((StatementProxy) null, (NClob) null));
     }
@@ -93,297 +101,297 @@ public class FilterChainImplTest extends TestCase {
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getUnicodeStream(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
 
     }
-    
+
     public void test_getUnicodeStream_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getUnicodeStream("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getRef() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getRef(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getRef_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getRef("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getArray() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getArray(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getArray_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getArray("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getURL() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getURL(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getURL_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getURL("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getRowId() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getRowId(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getRowId_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getRowId("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNClob() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNClob(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNClob_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNClob("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getSQLXML() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getSQLXML(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getSQLXML_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getSQLXML("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNString() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNString(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNString_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNString("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNCharacterStream() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNCharacterStream(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getNCharacterStream_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getNCharacterStream("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getObject() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getObject(1));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
-    
+
     public void test_getObject_1() throws Exception {
         Connection conn = dataSource.getConnection();
         PreparedStatement stmt = conn.prepareStatement("select ?");
         stmt.setNull(1, Types.VARCHAR);
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        
+
         Assert.assertNull(rs.getObject("1"));
-        
+
         rs.close();
         stmt.close();
         conn.close();
-        
+
     }
 }
