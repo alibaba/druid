@@ -35,20 +35,11 @@ public class DruidDriverTest extends TestCase {
 
         }
 
-        @Override
-        public void loadConfig(AbstractDruidFilterConfig druidFilterConfig) {
-
-        }
     }
 
     static class PrivateJdbcFilterAdapter extends FilterAdapter {
 
         private PrivateJdbcFilterAdapter(){
-
-        }
-
-        @Override
-        public void loadConfig(AbstractDruidFilterConfig druidFilterConfig) {
 
         }
     }
@@ -59,9 +50,6 @@ public class DruidDriverTest extends TestCase {
             throw new InstantiationException("init error");
         }
 
-        @Override
-        public void loadConfig(AbstractDruidFilterConfig druidFilterConfig) {
-        }
     }
 
     static class PrivateDriver extends MockDriver {
