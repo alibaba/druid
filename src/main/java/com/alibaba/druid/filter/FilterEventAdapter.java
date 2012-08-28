@@ -301,8 +301,10 @@ public abstract class FilterEventAdapter extends FilterAdapter {
         try {
             ResultSetProxy resultSet = super.statement_executeQuery(chain, statement, sql);
 
-            statementExecuteQueryAfter(statement, sql, resultSet);
-            resultSetOpenAfter(resultSet);
+            if (resultSet != null) {
+                statementExecuteQueryAfter(statement, sql, resultSet);
+                resultSetOpenAfter(resultSet);
+            }
 
             return resultSet;
         } catch (SQLException error) {
@@ -462,9 +464,11 @@ public abstract class FilterEventAdapter extends FilterAdapter {
 
             ResultSetProxy resultSet = chain.preparedStatement_executeQuery(statement);
 
-            statementExecuteQueryAfter(statement, statement.getSql(), resultSet);
+            if (resultSet != null) {
+                statementExecuteQueryAfter(statement, statement.getSql(), resultSet);
 
-            resultSetOpenAfter(resultSet);
+                resultSetOpenAfter(resultSet);
+            }
 
             return resultSet;
         } catch (SQLException error) {

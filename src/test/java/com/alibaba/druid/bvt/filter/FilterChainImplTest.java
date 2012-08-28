@@ -200,7 +200,7 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
         
-        Assert.assertNull(rs.getURL(1));
+        Assert.assertNull(rs.getRowId(1));
         
         rs.close();
         stmt.close();
@@ -215,7 +215,7 @@ public class FilterChainImplTest extends TestCase {
         ResultSet rs = stmt.executeQuery();
         rs.next();
         
-        Assert.assertNull(rs.getURL("1"));
+        Assert.assertNull(rs.getRowId("1"));
         
         rs.close();
         stmt.close();

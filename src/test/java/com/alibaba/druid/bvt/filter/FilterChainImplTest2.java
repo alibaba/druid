@@ -3,6 +3,7 @@ package com.alibaba.druid.bvt.filter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
+import java.util.Collections;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -597,6 +598,50 @@ public class FilterChainImplTest2 extends TestCase {
         stmt.registerOutParameter(1, Types.VARCHAR);
         
         Assert.assertNull(stmt.getCharacterStream("1"));
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getObject() throws Exception {
+        Connection conn = dataSource.getConnection();
+        CallableStatement stmt = conn.prepareCall("select ?");
+        stmt.registerOutParameter(1, Types.VARCHAR);
+        
+        Assert.assertNull(stmt.getObject(1));
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getObject_1() throws Exception {
+        Connection conn = dataSource.getConnection();
+        CallableStatement stmt = conn.prepareCall("select ?");
+        stmt.registerOutParameter(1, Types.VARCHAR);
+        
+        Assert.assertNull(stmt.getObject("1"));
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getObject_2() throws Exception {
+        Connection conn = dataSource.getConnection();
+        CallableStatement stmt = conn.prepareCall("select ?");
+        stmt.registerOutParameter(1, Types.VARCHAR);
+        
+        Assert.assertNull(stmt.getObject(1, Collections.<String, Class<?>>emptyMap()));
+        
+        stmt.close();
+        conn.close();
+    }
+    
+    public void test_getObject_3() throws Exception {
+        Connection conn = dataSource.getConnection();
+        CallableStatement stmt = conn.prepareCall("select ?");
+        stmt.registerOutParameter(1, Types.VARCHAR);
+        
+        Assert.assertNull(stmt.getObject("1", Collections.<String, Class<?>>emptyMap()));
         
         stmt.close();
         conn.close();
