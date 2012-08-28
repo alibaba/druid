@@ -43,6 +43,8 @@ public class DruidDataSourceTest8 extends TestCase {
         }
         Assert.assertNotNull(error);
         Assert.assertTrue(dataSource.getCreateErrorCount() > 0);
+        
+        dataSource.getCompositeData();
     }
 
 }

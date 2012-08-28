@@ -1398,11 +1398,10 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         }
 
         // 35 - 39
-        map.put("ConnectionConnectCount", stat.getConnectionStat().getConnectCount());
-        Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
-        if (lastConnectionError != null) {
-            map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
-            map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(lastConnectionError));
+        map.put("ConnectionConnectCount", createErrorCount);
+        if (createError != null) {
+            map.put("ConnectionErrorLastMessage", createError.getMessage());
+            map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(createError));
         } else {
             map.put("ConnectionErrorLastMessage", null);
             map.put("ConnectionErrorLastStackTrace", null);
