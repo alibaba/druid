@@ -1,9 +1,12 @@
 package com.alibaba.druid.bvt.filter;
 
+import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.nutz.lang.stream.StringReader;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -15,7 +18,7 @@ import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;
 
-public class StatFilterReadBytesLengthTest extends TestCase {
+public class StatFilterOpenReaderCountTest extends TestCase {
 
     private DruidDataSource dataSource;
 
@@ -28,18 +31,17 @@ public class StatFilterReadBytesLengthTest extends TestCase {
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex)
-                                                                                                       throws SQLException {
-                return new byte[6];
+            public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                                         throws SQLException {
+                return new StringReader("");
             }
 
             @Override
-            public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnIndex)
-                                                                                                          throws SQLException {
-                return new byte[7];
+            public java.io.Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                                            throws SQLException {
+                return new StringReader("");
             }
         });
-
         dataSource.init();
     }
 
@@ -55,23 +57,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes(1);
+        rs.getCharacterStream(1);
+        rs.getCharacterStream(2);
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(6, sqlStat.getReadBytesLength());
+        Assert.assertEquals(2, sqlStat.getReaderOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
     }
 
     public void test_stat_1() throws Exception {
@@ -82,22 +82,21 @@ public class StatFilterReadBytesLengthTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
 
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        rs.getBytes("1");
+        rs.getCharacterStream("1");
+        rs.getCharacterStream("2");
+        rs.getCharacterStream("3");
         rs.close();
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(7, sqlStat.getReadBytesLength());
+        Assert.assertEquals(3, sqlStat.getReaderOpenCount());
 
         sqlStat.reset();
-        Assert.assertEquals(0, sqlStat.getReadStringLength());
-        Assert.assertEquals(0, sqlStat.getReadBytesLength());
+        Assert.assertEquals(0, sqlStat.getReaderOpenCount());
     }
 }
