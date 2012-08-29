@@ -686,7 +686,7 @@ public class OracleSelectParser extends SQLSelectParser {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
             OracleSelectSubqueryTableSource tableSource;
-            if (lexer.token() == Token.SELECT) {
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
             } else if (lexer.token() == (Token.LPAREN)) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
