@@ -70,7 +70,9 @@ public class TabledDataPrinter {
     public static void printDataSourceData(List<Map<String, Object>> content, Option opt) {
         while (true) {
             _printDataSourceData(content, opt);
-            if (opt.getInterval() == -1) break;
+            if (opt.getInterval() == -1) {
+                break;
+            }
             try {
                 Thread.sleep(opt.getInterval() * 1000);
             } catch (Exception e) {
@@ -102,7 +104,9 @@ public class TabledDataPrinter {
     public static void printSqlData(List<Map<String, Object>> content, Option opt) {
         while (true) {
             _printSqlData(content, opt);
-            if (opt.getInterval() == -1) break;
+            if (opt.getInterval() == -1) {
+                break;
+            }
             try {
                 Thread.sleep(opt.getInterval() * 1000);
             } catch (Exception e) {
@@ -175,7 +179,9 @@ public class TabledDataPrinter {
     }
 
     public static String handleAndConvert(Object value, String fieldName) {
-        if (value == null) value = "";
+        if (value == null) {
+            value = "";
+        }
         if (fieldName.equals("SQL")) {
             String sql = (String) value;
             sql = sql.replace("\n", " ");
