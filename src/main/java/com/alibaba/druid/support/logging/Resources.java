@@ -28,7 +28,7 @@ import java.util.Properties;
 /**
  * A class to simplify access to resources through the classloader.
  */
-public class Resources extends Object {
+public final class Resources extends Object {
 
     private static ClassLoader defaultClassLoader;
 
@@ -79,7 +79,7 @@ public class Resources extends Object {
      */
     public static URL getResourceURL(ClassLoader loader, String resource) throws IOException {
         URL url = null;
-        
+
         if (loader != null) {
             url = loader.getResource(resource);
         }
@@ -87,11 +87,11 @@ public class Resources extends Object {
         if (url == null) {
             url = ClassLoader.getSystemResource(resource);
         }
-        
+
         if (url == null) {
             throw new IOException("Could not find resource " + resource);
         }
-        
+
         return url;
     }
 

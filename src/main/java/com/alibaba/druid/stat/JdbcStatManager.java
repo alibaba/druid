@@ -34,7 +34,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyImpl;
 
-public class JdbcStatManager implements JdbcStatManagerMBean {
+public final class JdbcStatManager implements JdbcStatManagerMBean {
 
     private final AtomicLong                                sqlIdSeed      = new AtomicLong(1000);
 

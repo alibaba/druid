@@ -20,7 +20,6 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -30,12 +29,12 @@ public class SQLServerExprParser extends SQLExprParser {
         super(lexer);
     }
 
-    public SQLServerExprParser(String sql) throws ParserException{
+    public SQLServerExprParser(String sql) {
         super(new SQLServerLexer(sql));
         this.lexer.nextToken();
     }
 
-    public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+    public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.DOTDOT) {
             expr = nameRest((SQLName) expr);
         }
@@ -43,7 +42,7 @@ public class SQLServerExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
-    public SQLName nameRest(SQLName expr) throws ParserException {
+    public SQLName nameRest(SQLName expr) {
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
             String text = lexer.stringVal();

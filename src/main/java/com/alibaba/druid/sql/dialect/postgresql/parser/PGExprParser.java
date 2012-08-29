@@ -20,12 +20,11 @@ import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
 import com.alibaba.druid.sql.parser.Lexer;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class PGExprParser extends SQLExprParser{
-    public PGExprParser(String sql) throws ParserException{
+    public PGExprParser(String sql) {
         super(new PGLexer(sql));
         this.lexer.nextToken();
     }
@@ -34,7 +33,7 @@ public class PGExprParser extends SQLExprParser{
         super(lexer);
     }
     
-    protected SQLAggregateExpr parseAggregateExpr(String methodName) throws ParserException {
+    protected SQLAggregateExpr parseAggregateExpr(String methodName)  {
         methodName = methodName.toUpperCase();
         
         PGAggregateExpr aggregateExpr;

@@ -44,7 +44,7 @@ import com.alibaba.druid.util.StringUtils;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class DruidStatService implements DruidStatServiceMBean {
+public final class DruidStatService implements DruidStatServiceMBean {
 
     private final static Log              LOG                    = LogFactory.getLog(DruidStatService.class);
 

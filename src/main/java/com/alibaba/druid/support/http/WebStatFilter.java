@@ -16,7 +16,6 @@
 package com.alibaba.druid.support.http;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -509,10 +508,6 @@ public class WebStatFilter implements Filter {
 
         public int getStatus() {
             return status;
-        }
-
-        public PrintWriter getWriter() throws IOException {
-            return super.getWriter();
         }
     }
 }

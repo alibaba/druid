@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -36,7 +35,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public SQLSelect select() throws ParserException {
+    public SQLSelect select()  {
         SQLServerSelect select = new SQLServerSelect();
 
         select.setQuery(query());
@@ -49,7 +48,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
         return select;
     }
 
-    public SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query()  {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 

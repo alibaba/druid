@@ -45,7 +45,7 @@ public class SQLParser {
         }
     }
 
-    protected String as() throws ParserException {
+    protected String as()  {
         String alias = null;
 
         if (lexer.token() == Token.AS) {
