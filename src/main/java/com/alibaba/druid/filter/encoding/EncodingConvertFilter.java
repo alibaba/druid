@@ -233,7 +233,7 @@ public class EncodingConvertFilter extends FilterAdapter {
 
             return charsetConvert.encode(s);
         } catch (UnsupportedEncodingException e) {
-            throw new SQLException(e.getMessage());
+            throw new SQLException(e.getMessage(), e);
         }
     }
 
@@ -242,7 +242,7 @@ public class EncodingConvertFilter extends FilterAdapter {
             CharsetConvert charsetConvert = (CharsetConvert) connection.getAttributes().get(ATTR_CHARSET_CONVERTER);
             return charsetConvert.decode(s);
         } catch (UnsupportedEncodingException e) {
-            throw new SQLException(e.getMessage());
+            throw new SQLException(e.getMessage(), e);
         }
     }
 

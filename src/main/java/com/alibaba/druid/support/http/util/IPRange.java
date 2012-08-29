@@ -226,7 +226,7 @@ public class IPRange {
             // create the corresponding subnet decimal
             extendedNetworkPrefix = computeNetworkPrefixFromMask(ipSubnetMask);
             if (extendedNetworkPrefix == -1) {
-                throw new IllegalArgumentException("Invalid IP range [" + range + "]");
+                throw new IllegalArgumentException("Invalid IP range [" + range + "]", ex);
             }
         }
     }

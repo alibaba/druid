@@ -808,7 +808,7 @@ public class Lexer {
         token = Token.LITERAL_HEX;
     }
 
-    public String hexString() throws NumberFormatException {
+    public String hexString() {
         return new String(buf, np, sp);
     }
 
@@ -876,7 +876,7 @@ public class Lexer {
     }
 
     // QS_TODO negative number is invisible for lexer
-    public Number integerValue() throws NumberFormatException {
+    public Number integerValue() {
         long result = 0;
         boolean negative = false;
         int i = np, max = np + sp;

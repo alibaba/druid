@@ -581,7 +581,7 @@ public class WebAppStat {
         }
 
         boolean isIE = userAgent.startsWith("MSIE", MOZILLA_COMPATIBLE_OFFSET);
-        int ie_prefix_index = 30; // "Mozilla/5.0 (compatible; MSIE ".length();
+        int iePrefixIndex = 30; // "Mozilla/5.0 (compatible; MSIE ".length();
 
         boolean isGoogleToolbar = false;
 
@@ -592,7 +592,7 @@ public class WebAppStat {
                 int tmp = userAgent.indexOf("IE ");
                 if (tmp != -1) {
                     isIE = true;
-                    ie_prefix_index = tmp + 3;
+                    iePrefixIndex = tmp + 3;
                 }
             }
         }
@@ -602,11 +602,11 @@ public class WebAppStat {
             browserIECount.incrementAndGet();
 
             char v1 = ' ', v2 = ' ';
-            if (userAgent.length() > ie_prefix_index + 1) {
-                v1 = userAgent.charAt(ie_prefix_index);
-                v2 = userAgent.charAt(ie_prefix_index + 1);
-            } else if (userAgent.length() > ie_prefix_index) {
-                v1 = userAgent.charAt(ie_prefix_index);
+            if (userAgent.length() > iePrefixIndex + 1) {
+                v1 = userAgent.charAt(iePrefixIndex);
+                v2 = userAgent.charAt(iePrefixIndex + 1);
+            } else if (userAgent.length() > iePrefixIndex) {
+                v1 = userAgent.charAt(iePrefixIndex);
             }
 
             switch (v1) {
