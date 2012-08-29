@@ -82,15 +82,16 @@ public class SpringMethodInfo {
     public static String getMethodSignature(Method method) {
         StringBuffer sb = new StringBuffer();
 
-        sb.append(method.getName() + "(");
+        sb.append(method.getName());
+        sb.append('(');
         Class<?>[] params = method.getParameterTypes();
         for (int j = 0; j < params.length; j++) {
             sb.append(params[j].getName());
             if (j < (params.length - 1)) {
-                sb.append(",");
+                sb.append(',');
             }
         }
-        sb.append(")");
+        sb.append(')');
 
         return sb.toString();
     }
