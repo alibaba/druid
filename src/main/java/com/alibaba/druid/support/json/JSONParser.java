@@ -153,7 +153,7 @@ public class JSONParser {
         throw new IllegalArgumentException("illegal token : " + token + ", expect " + token);
     }
 
-    void nextToken() {
+    final void nextToken() {
         if (index == Integer.MIN_VALUE) {
             token = Token.EOF;
             return;
