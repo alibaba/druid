@@ -28,7 +28,7 @@ public class FilterChainImplTest extends TestCase {
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
-        dataSource.setFilters("stat,log4j,wall");
+        dataSource.setFilters("stat,log4j,wall,encoding");
         dataSource.getProxyFilters().add(new FilterAdapter() {
         });
         dataSource.setDbType("mysql");
