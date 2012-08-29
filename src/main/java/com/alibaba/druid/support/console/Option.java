@@ -17,15 +17,15 @@ package com.alibaba.druid.support.console;
 
 public class Option {
 
-    public static enum PrintStyle {HORIZONTAL , VERTICAL };
     public static final int DATA_SOURCE = 1 ;
     public static final int SQL         = 2 ;
     public static final int ACTIVE_CONN = 4 ;
 
-    private PrintStyle style = PrintStyle.HORIZONTAL;
     private int printDataType = 0;
-    private int vmid = -1;
+    private int pid = -1;
     private int id = -1;
+	private int interval = -1;
+	private boolean detailPrint;
 
     public void addPrintDataType(int newValue) {
         this.printDataType= this.printDataType |  newValue;
@@ -57,18 +57,12 @@ public class Option {
         return this.printDataType;
     }
 
-    public void setStyle(PrintStyle style) {
-        this.style=style;
-    }
-    public PrintStyle getStyle() {
-        return this.style;
-    }
 
-    public void setVmid(int vmid) {
-        this.vmid=vmid;
+    public void setPid(int pid) {
+        this.pid=pid;
     }
-    public int getVmid() {
-        return this.vmid;
+    public int getPid() {
+        return this.pid;
     }
 
     public static String getUrl(int dataType) {
@@ -84,6 +78,15 @@ public class Option {
         }
     }
 
+	private static int parsePositiveInt(String v) {
+		try {
+			int pid = Integer.parseInt(v);
+			return pid;
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+	}
+
     public static Option parseOptions(String[] args) throws OptionParseException{
         Option option = new Option();
 		int i = 0;
@@ -92,57 +95,71 @@ public class Option {
         }
 
         while (i < args.length) {
-            if ( i == args.length -1 ) {
-                if (args[i].startsWith("-")) throw new OptionParseException("please specify vmid in last arguments!");
-                try {
-                    int vmid = Integer.parseInt(args[i]);
-                    option.setVmid(vmid);
-                } catch (NumberFormatException e) {
-                    throw new OptionParseException("vmid argument is not a integer!");
-                }
-            }
-            if (!args[i].startsWith("-")) {
-                i++;
-                continue;
-            }
+			int v1 = parsePositiveInt(args[i]);
+
+			//check last two arguments
+            if ( (i == args.length - 2) && v1 > 0) {
+				int v2 = parsePositiveInt(args[i+1]);
+				if ( v2 > 0) {
+					option.setPid(v1);
+					option.setInterval(v2);
+				} else {
+		             throw new OptionParseException("请在参数的最后位置上 指定 pid 和 refresh-interval");
+				}
+				break;
+            } else if ( i == args.length -1 ) {
+				option.setPid(v1);
+			}
+		
             if (args[i].equals("-sql")) {
                 option.addPrintDataType(SQL);
             } else if (args[i].equals("-ds")) {
                 option.addPrintDataType(DATA_SOURCE);
             }  else if (args[i].equals("-act")) {
                 option.addPrintDataType(ACTIVE_CONN);
-            }  else if (args[i].equals("-s1")) {
-                option.setStyle(PrintStyle.HORIZONTAL);
-            }  else if (args[i].equals("-s2")) {
-                option.setStyle(PrintStyle.VERTICAL);
+            }  else if (args[i].equals("-detail")) {
+				option.setDetailPrint(true);
             } else if (args[i].equals("-id")) {
             	 try {
                      int id = Integer.parseInt(args[i+1]);
                      option.setId(id);
+					 i++;
                  } catch (NumberFormatException e) {
-                     throw new OptionParseException("vmid argument is not a integer!");
+                     throw new OptionParseException("id参数必须是整数");
                  }
             }
             i++;
 		}
+        
         if (option.getPrintDataType() == 0) {
-            throw new OptionParseException("please specify one or more arguments in {'-sql','-ds','-act'}.");
+            throw new OptionParseException("请在{'-sql','-ds','-act'}参数中选择一个或多个");
+        }
+        if (option.getPid() == -1 ) {
+            throw new OptionParseException("请在参数中指定 pid");
         }
         return option;
     }
 
     public static void printHelp() {
-        System.out.println("Usage: druidStat -help | -sql -ds -act -s1 -s2 -id vmid");
+        System.out.println("Usage: druidStat -help | -sql -ds -act [-detail] [-id id] <pid> [refresh-interval]");
         System.out.println();
-        System.out.println("arguments: ");
-        System.out.println("  vmid       the process id of jvm that running druid"); 
-        System.out.println("  -sql       print sql stat data"); 
-        System.out.println("  -ds        print datasource stat data"); 
-        System.out.println("  -act       print active connection stacktrace data"); 
-        System.out.println("  -s1        print field name in first row");
-        System.out.println("  -s2        print field name in first column");
-        System.out.println("  -id        only print the sql data matched with id, use this with -sql argument" );
-    }
+        System.out.println("参数: ");
+        System.out.println("  -help             打印此帮助信息"); 
+        System.out.println("  -sql              打印SQL统计数据"); 
+        System.out.println("  -ds               打印DataSource统计数据"); 
+        System.out.println("  -act              打印活动连接的堆栈信息"); 
+        System.out.println("  -detail           打印统计数据的全部字段信息");
+        System.out.println("  -id id            要打印的数据的具体id值" );
+        System.out.println("  pid               使用druid连接池的jvm进程id"); 
+        System.out.println("  refresh-interval  自动刷新时间间隔, 以秒为单位" );
+
+        System.out.println();
+        System.out.println("说明: ");
+        System.out.println("  -sql,-ds,-act参数中要至少指定一种数据进行打印, 可以组合使用, 比如 -sql -ds 一起的话就打印两种统计数据");
+        System.out.println("  -id id可以跟 -sql 或-ds组合, 比如  -sql -id 5 或 -ds -id 1086752");
+        System.out.println("  pid必需指定, refresh-interval可选, 如不指定,则打印数据后退出");
+        System.out.println("  pid和refresh-interval参数必需放在命令行的最后, 否则解析会出错");
+	}
 
 	public int getId() {
 		return id;
@@ -152,6 +169,18 @@ public class Option {
 		this.id = id;
 	}
 
-    
+	public void setDetailPrint(boolean detailPrint) {
+		this.detailPrint=detailPrint;
+	}
+	public boolean isDetailPrint() {
+		return this.detailPrint;
+	}
+
+	public void setInterval(int interval) {
+		this.interval=interval;
+	}
+	public int getInterval() {
+		return this.interval;
+	}
 
 }
