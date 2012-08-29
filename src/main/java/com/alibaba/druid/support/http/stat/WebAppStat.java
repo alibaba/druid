@@ -864,9 +864,6 @@ public class WebAppStat {
             osWindows2000Count.incrementAndGet();
         } else if (userAgent.startsWith("Windows NT 5.0", 25)) {
             osWindows2000Count.incrementAndGet();
-
-        } else {
-            System.out.print("");
         }
     }
 
@@ -889,8 +886,6 @@ public class WebAppStat {
             osWindowsXPCount.incrementAndGet();
         } else if (userAgent.startsWith("Windows XP", 34)) {
             osWindowsXPCount.incrementAndGet();
-        } else {
-            System.out.print("");
         }
     }
 

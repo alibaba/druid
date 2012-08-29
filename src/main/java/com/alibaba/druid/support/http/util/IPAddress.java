@@ -118,7 +118,7 @@ public class IPAddress implements Cloneable {
      * @exception InvalidIPAddressException Throws this exception when the specified string doesn't represent a valid IP
      * address.
      */
-    public IPAddress(String ipAddressStr) {
+    public IPAddress(String ipAddressStr){
         ipAddress = parseIPAddress(ipAddressStr);
     }
 
@@ -212,7 +212,7 @@ public class IPAddress implements Cloneable {
      * @exception InvalidIPAddressException Throws this exception if the specified IP address is not compliant to the
      * decimal-dotted notation xxx.xxx.xxx.xxx.
      */
-    protected int parseIPAddress(String ipAddressStr) {
+    final int parseIPAddress(String ipAddressStr) {
         int result = 0;
 
         if (ipAddressStr == null) {
@@ -269,35 +269,15 @@ public class IPAddress implements Cloneable {
 
         return result;
     }
-    
-    public int hashCode () {
+
+    public int hashCode() {
         return this.ipAddress;
     }
 
-  
     public boolean equals(Object another) {
         if (another instanceof IPAddress) {
             return ipAddress == ((IPAddress) another).ipAddress;
         }
         return false;
-    }
-
-
-    public Object clone() {
-        return new IPAddress(ipAddress);
-    }
-
-    public static void main(String[] args) {
-
-        System.out.println(Integer.toBinaryString(255));
-
-        // try {//"192.168.1.1"
-        // IPAddress ip = new IPAddress(Integer.toBinaryString(3));
-        // System.out.println(ip.getIPAddress());
-        // System.out.println(ip.toString());
-        // System.out.println(ip.parseIPAddress("192.168.4.4"));
-        // } catch (InvalidIPAddressException e) {
-        // e.printStackTrace();
-        // }
     }
 }

@@ -193,7 +193,7 @@ public class IPRange {
      * @param range String representation of the IP range.
      * @exception InvalidIPRangeException Throws this exception if the specified range is not a valid IP network range.
      */
-    protected void parseRange(String range) {
+    final void parseRange(String range) {
         if (range == null) {
             throw new IllegalArgumentException("Invalid IP range");
         }

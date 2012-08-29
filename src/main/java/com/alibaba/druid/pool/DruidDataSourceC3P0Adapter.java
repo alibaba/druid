@@ -36,21 +36,15 @@ public class DruidDataSourceC3P0Adapter implements DataSource, DruidDataSourceC3
         dataSource = new DruidDataSource();
 
         // setDefault
-        this.setInitialPoolSize(3);
-        this.setAcquireIncrement(3);
-        this.setAcquireIncrement(30);
-        this.setAcquireRetryDelay(1000);
-        this.setAutoCommitOnClose(true);
-        this.setAutomaticTestTable(null);
-        this.setCheckoutTimeout(0);
-        this.setDebugUnreturnedConnectionStackTraces(false);
-        this.setMaxIdleTime(0);
-        this.setMaxPoolSize(15);
-        this.setMaxStatements(0);
-        this.setMaxStatementsPerConnection(0);
-        this.setMinPoolSize(3);
-        this.setTestConnectionOnCheckin(false);
-        this.setTestConnectionOnCheckout(false);
+        dataSource.setInitialSize(3);
+        acquireIncrement = 3;
+        dataSource.setTimeBetweenConnectErrorMillis(1000);
+        dataSource.setDefaultAutoCommit(true);
+        dataSource.setLogAbandoned(false);
+        dataSource.setMaxActive(15);
+        dataSource.setMinIdle(3);
+        dataSource.setTestOnReturn(false);
+        dataSource.setTestOnBorrow(false);
     }
 
     @Override
