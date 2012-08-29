@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.parser;
 
-import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
 
 public class SQLDDLParser extends SQLStatementParser {
@@ -29,13 +28,13 @@ public class SQLDDLParser extends SQLStatementParser {
     }
 
     protected SQLTableConstaint parseConstraint() {
-        SQLName name = null;
         if (lexer.token() == Token.CONSTRAINT) {
             lexer.nextToken();
         }
 
         if (lexer.token() == Token.IDENTIFIER) {
-            name = this.exprParser.name();
+            this.exprParser.name();
+            throw new ParserException("TODO");
         }
 
         if (lexer.token() == Token.PRIMARY) {
@@ -43,10 +42,6 @@ public class SQLDDLParser extends SQLStatementParser {
             accept(Token.KEY);
 
             throw new ParserException("TODO");
-        }
-
-        if (name != null) {
-
         }
 
         throw new ParserException("TODO");

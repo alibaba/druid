@@ -55,9 +55,8 @@ public class Top extends SQLServerObjectImpl {
 
     @Override
     public void accept0(SQLServerASTVisitor visitor) {
-        if (visitor.visit(this)) {
-
-        }
+        visitor.visit(this);
+        visitor.endVisit(this);
     }
 
 }

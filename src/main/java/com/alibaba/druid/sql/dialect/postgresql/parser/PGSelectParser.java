@@ -147,9 +147,6 @@ public class PGSelectParser extends SQLSelectParser {
 
             if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
                 lexer.nextToken();
-            } else {
-                // TODO
-                // throw new ParserException("expect 'ROW' or 'ROWS'");
             }
         }
 
