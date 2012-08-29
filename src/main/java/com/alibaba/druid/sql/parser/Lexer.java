@@ -178,12 +178,6 @@ public class Lexer {
         token = ERROR;
     }
 
-    /**
-     * Report an error at the current token position using the provided arguments.
-     */
-    private void lexError(String key, Object... args) {
-        lexError(tokenPos, key, args);
-    }
 
     /**
      * Return the current token, set by nextToken().
@@ -376,7 +370,7 @@ public class Lexer {
                         token = EOF;
                         tokenPos = bp = eofPos;
                     } else {
-                        lexError("illegal.char", String.valueOf((int) ch));
+                        lexError(tokenPos, "illegal.char", String.valueOf((int) ch));
                         scanChar();
                     }
 

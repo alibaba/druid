@@ -91,7 +91,6 @@ public class DruidSQLPanel extends DruidPanel {
     		add("FetchRowCountHistogram");
     	}
     };  
-    private RowHeaderTable header;
 
 	public DruidSQLPanel() {
 		super();
@@ -104,7 +103,7 @@ public class DruidSQLPanel extends DruidPanel {
 		tableModel = new DruidTableModel(data,SHOW_LIST);
 		table.setModel(tableModel);
 		
-		header = new RowHeaderTable(table,20);
+		RowHeaderTable header = new RowHeaderTable(table,20);
 		scrollPane.setRowHeaderView(header);
 	}   
 }

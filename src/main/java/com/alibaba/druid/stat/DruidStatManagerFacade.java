@@ -45,7 +45,7 @@ import com.alibaba.druid.util.StringUtils;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class DruidStatManagerFacade {
+public final class DruidStatManagerFacade {
 
     private final static DruidStatManagerFacade instance    = new DruidStatManagerFacade();
     private boolean                             resetEnable = true;

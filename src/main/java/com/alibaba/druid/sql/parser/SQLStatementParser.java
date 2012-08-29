@@ -63,13 +63,13 @@ public class SQLStatementParser extends SQLParser {
         return exprParser;
     }
 
-    public List<SQLStatement> parseStatementList() throws ParserException {
+    public List<SQLStatement> parseStatementList() {
         List<SQLStatement> statementList = new ArrayList<SQLStatement>();
         parseStatementList(statementList);
         return statementList;
     }
 
-    public void parseStatementList(List<SQLStatement> statementList) throws ParserException {
+    public void parseStatementList(List<SQLStatement> statementList) {
         for (;;) {
             if (lexer.token() == Token.EOF) {
                 return;
@@ -408,11 +408,11 @@ public class SQLStatementParser extends SQLParser {
         return false;
     }
 
-    public SQLStatement parseDropUser() throws ParserException {
+    public SQLStatement parseDropUser() {
         throw new ParserException("TODO " + lexer.token());
     }
 
-    public SQLStatement parseDropIndex() throws ParserException {
+    public SQLStatement parseDropIndex() {
         accept(Token.INDEX);
         SQLDropIndexStatement stmt = new SQLDropIndexStatement();
         stmt.setIndexName(this.exprParser.name());
@@ -421,7 +421,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLCallStatement parseCall() throws ParserException {
+    public SQLCallStatement parseCall() {
 
         boolean brace = false;
         if (lexer.token() == Token.LBRACE) {
@@ -447,7 +447,7 @@ public class SQLStatementParser extends SQLParser {
         return stmt;
     }
 
-    public SQLStatement parseSet() throws ParserException {
+    public SQLStatement parseSet() {
         accept(Token.SET);
         SQLSetStatement stmt = new SQLSetStatement();
 
@@ -470,7 +470,7 @@ public class SQLStatementParser extends SQLParser {
         }
     }
 
-    public SQLStatement parseCreate() throws ParserException {
+    public SQLStatement parseCreate() {
         char mark_ch = lexer.current();
         int mark_bp = lexer.bp();
 
@@ -530,7 +530,7 @@ public class SQLStatementParser extends SQLParser {
         return new SQLCreateTableParser(this.exprParser);
     }
 
-    public SQLSelectStatement parseSelect() throws ParserException {
+    public SQLSelectStatement parseSelect() {
         return new SQLSelectStatement(createSQLSelectParser().select());
     }
 
@@ -538,7 +538,7 @@ public class SQLStatementParser extends SQLParser {
         return new SQLSelectParser(this.exprParser);
     }
 
-    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+    public SQLUpdateStatement parseUpdateStatement() {
         SQLUpdateStatement udpateStatement = createUpdateStatement();
 
         if (lexer.token() == Token.UPDATE) {
@@ -578,7 +578,7 @@ public class SQLStatementParser extends SQLParser {
         return new SQLUpdateStatement();
     }
 
-    public SQLDeleteStatement parseDeleteStatement() throws ParserException {
+    public SQLDeleteStatement parseDeleteStatement() {
         SQLDeleteStatement deleteStatement = new SQLDeleteStatement();
 
         if (lexer.token() == Token.DELETE) {
@@ -601,13 +601,13 @@ public class SQLStatementParser extends SQLParser {
         return deleteStatement;
     }
 
-    public SQLCreateTableStatement parseCreateTable() throws ParserException {
+    public SQLCreateTableStatement parseCreateTable() {
         // SQLCreateTableParser parser = new SQLCreateTableParser(this.lexer);
         // return parser.parseCrateTable();
         throw new ParserException("TODO");
     }
 
-    public SQLCreateViewStatement parseCreateView() throws ParserException {
+    public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement();
 
         this.accept(Token.CREATE);

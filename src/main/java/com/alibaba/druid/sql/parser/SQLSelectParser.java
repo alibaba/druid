@@ -46,7 +46,7 @@ public class SQLSelectParser extends SQLParser {
         this.exprParser = exprParser;
     }
 
-    public SQLSelect select() throws ParserException {
+    public SQLSelect select() {
         SQLSelect select = new SQLSelect();
 
         select.setQuery(query());
@@ -72,7 +72,7 @@ public class SQLSelectParser extends SQLParser {
         return union;
     }
 
-    public SQLSelectQuery queryRest(SQLSelectQuery selectQuery) throws ParserException {
+    public SQLSelectQuery queryRest(SQLSelectQuery selectQuery) {
         if (lexer.token() == Token.UNION) {
             lexer.nextToken();
 
@@ -123,7 +123,7 @@ public class SQLSelectParser extends SQLParser {
         return selectQuery;
     }
 
-    public SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query() {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
 
@@ -159,7 +159,7 @@ public class SQLSelectParser extends SQLParser {
         return queryRest(queryBlock);
     }
 
-    protected void parseWhere(SQLSelectQueryBlock queryBlock) throws ParserException {
+    protected void parseWhere(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == Token.WHERE) {
             lexer.nextToken();
 
@@ -167,7 +167,7 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
-    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) throws ParserException {
+    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == Token.GROUP) {
             lexer.nextToken();
             accept(Token.BY);
@@ -198,7 +198,7 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
-    protected void parseSelectList(SQLSelectQueryBlock queryBlock) throws ParserException {
+    protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
         queryBlock.getSelectList().add(new SQLSelectItem(expr(), as()));
 
         while (lexer.token() == Token.COMMA) {
@@ -207,7 +207,7 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
-    public void parseFrom(SQLSelectQueryBlock queryBlock) throws ParserException {
+    public void parseFrom(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() != Token.FROM) {
             return;
         }
@@ -217,7 +217,7 @@ public class SQLSelectParser extends SQLParser {
         queryBlock.setFrom(parseTableSource());
     }
 
-    public SQLTableSource parseTableSource() throws ParserException {
+    public SQLTableSource parseTableSource() {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLTableSource tableSource;
@@ -248,7 +248,7 @@ public class SQLSelectParser extends SQLParser {
         return parseTableSourceRest(tableReference);
     }
 
-    private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) throws ParserException {
+    private void parseTableSourceQueryTableExpr(SQLExprTableSource tableReference) {
         if (lexer.token() == Token.LITERAL_ALIAS || lexer.token() == Token.IDENTIFIED
             || lexer.token() == Token.LITERAL_CHARS) {
             tableReference.setExpr(this.exprParser.name());
@@ -258,7 +258,7 @@ public class SQLSelectParser extends SQLParser {
         tableReference.setExpr(expr());
     }
 
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if ((tableSource.getAlias() == null) || (tableSource.getAlias().length() == 0)) {
             if (lexer.token() != Token.LEFT && lexer.token() != Token.RIGHT && lexer.token() != Token.FULL) {
                 String alias = as();
@@ -329,7 +329,7 @@ public class SQLSelectParser extends SQLParser {
         return this.exprParser.expr();
     }
 
-    public SQLOrderBy parseOrderBy() throws ParserException {
+    public SQLOrderBy parseOrderBy() {
         return this.exprParser.parseOrderBy();
     }
 

@@ -706,7 +706,7 @@ public class WebAppStat {
             } else if (userAgent.indexOf("FreeBSD") != -1) {
                 osFreeBSDCount.incrementAndGet();
                 isBSD = true;
-            } else if (isLinux == false && userAgent.indexOf("Linux") != -1) {
+            } else if ((!isLinux) && userAgent.indexOf("Linux") != -1) {
                 osLinuxCount.incrementAndGet();
                 isLinux = true;
             }

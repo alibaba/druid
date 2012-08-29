@@ -91,7 +91,7 @@ public class OracleExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
     
-    public SQLDataType parseDataType() throws ParserException {
+    public SQLDataType parseDataType() {
         
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;
@@ -127,7 +127,7 @@ public class OracleExprParser extends SQLExprParser {
         return false;
     }
 
-    public SQLExpr primary() throws ParserException {
+    public SQLExpr primary() {
         final Token tok = lexer.token();
 
         SQLExpr sqlExpr = null;
@@ -302,7 +302,7 @@ public class OracleExprParser extends SQLExprParser {
         return super.methodRest(expr, false);
     }
 
-    public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+    public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.IDENTIFIER && expr instanceof SQLNumericLiteralExpr) {
             String ident = lexer.stringVal();
             if (ident.length() == 1) {
@@ -729,7 +729,7 @@ public class OracleExprParser extends SQLExprParser {
         return interval;    
     }
     
-    public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
+    public SQLExpr relationalRest(SQLExpr expr) {
         if (lexer.token() == Token.IS) {
             lexer.nextToken();
             
@@ -752,7 +752,7 @@ public class OracleExprParser extends SQLExprParser {
     }
     
     
-    public SQLName name() throws ParserException {
+    public SQLName name() {
         SQLName name = super.name();
         
         if (lexer.token() == Token.MONKEYS_AT) {
@@ -770,7 +770,7 @@ public class OracleExprParser extends SQLExprParser {
         return name;
     }
     
-    public SQLExpr equalityRest(SQLExpr expr) throws ParserException {
+    public SQLExpr equalityRest(SQLExpr expr) {
         SQLExpr rightExp;
         if (lexer.token() == Token.EQ) {
             lexer.nextToken();
@@ -828,7 +828,7 @@ public class OracleExprParser extends SQLExprParser {
         return column;
     }
     
-    public SQLExpr exprRest(SQLExpr expr) throws ParserException {
+    public SQLExpr exprRest(SQLExpr expr) {
         expr = super.exprRest(expr);
         
         if (lexer.token() == Token.COLONEQ) {

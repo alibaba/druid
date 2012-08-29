@@ -144,7 +144,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String DELAYED      = "DELAYED";
     private static final String LOW_PRIORITY = "LOW_PRIORITY";
 
-    public MySqlStatementParser(String sql) throws ParserException{
+    public MySqlStatementParser(String sql) {
         super(new MySqlExprParser(sql));
     }
 
