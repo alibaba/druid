@@ -61,9 +61,14 @@ public class StringUtils {
      * @return
      */
     public static Integer stringToInteger(String in) {
-        if (in == null) return null;
+        if (in == null) {
+            return null;
+        }
         in = in.trim();
-        if (in.length() == 0) return null;
+        if (in.length() == 0) {
+            return null;
+        }
+        
         try {
             return Integer.parseInt(in);
         } catch (NumberFormatException e) {

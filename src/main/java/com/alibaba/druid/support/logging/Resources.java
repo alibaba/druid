@@ -79,9 +79,19 @@ public class Resources extends Object {
      */
     public static URL getResourceURL(ClassLoader loader, String resource) throws IOException {
         URL url = null;
-        if (loader != null) url = loader.getResource(resource);
-        if (url == null) url = ClassLoader.getSystemResource(resource);
-        if (url == null) throw new IOException("Could not find resource " + resource);
+        
+        if (loader != null) {
+            url = loader.getResource(resource);
+        }
+
+        if (url == null) {
+            url = ClassLoader.getSystemResource(resource);
+        }
+        
+        if (url == null) {
+            throw new IOException("Could not find resource " + resource);
+        }
+        
         return url;
     }
 
@@ -106,9 +116,15 @@ public class Resources extends Object {
      */
     public static InputStream getResourceAsStream(ClassLoader loader, String resource) throws IOException {
         InputStream in = null;
-        if (loader != null) in = loader.getResourceAsStream(resource);
-        if (in == null) in = ClassLoader.getSystemResourceAsStream(resource);
-        if (in == null) throw new IOException("Could not find resource " + resource);
+        if (loader != null) {
+            in = loader.getResourceAsStream(resource);
+        }
+        if (in == null) {
+            in = ClassLoader.getSystemResourceAsStream(resource);
+        }
+        if (in == null) {
+            throw new IOException("Could not find resource " + resource);
+        }
         return in;
     }
 

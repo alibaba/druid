@@ -78,7 +78,9 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
      * Lazy creation of a CompositeData object only when the CompositeData interface is used.
      */
     private synchronized CompositeData compositeData() {
-        if (compositeData != null) return compositeData;
+        if (compositeData != null) {
+            return compositeData;
+        }
         compositeData = getCompositeData();
         return compositeData;
     }
@@ -100,25 +102,33 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
 
     // Helper methods
     static String getString(CompositeData cd, String itemName) {
-        if (cd == null) throw new IllegalArgumentException("Null CompositeData");
+        if (cd == null) {
+            throw new IllegalArgumentException("Null CompositeData");
+        }
 
         return (String) cd.get(itemName);
     }
 
     static boolean getBoolean(CompositeData cd, String itemName) {
-        if (cd == null) throw new IllegalArgumentException("Null CompositeData");
+        if (cd == null) {
+            throw new IllegalArgumentException("Null CompositeData");
+        }
 
         return ((Boolean) cd.get(itemName)).booleanValue();
     }
 
     static long getLong(CompositeData cd, String itemName) {
-        if (cd == null) throw new IllegalArgumentException("Null CompositeData");
+        if (cd == null) {
+            throw new IllegalArgumentException("Null CompositeData");
+        }
 
         return ((Number) cd.get(itemName)).longValue();
     }
 
     static int getInt(CompositeData cd, String itemName) {
-        if (cd == null) throw new IllegalArgumentException("Null CompositeData");
+        if (cd == null) {
+            throw new IllegalArgumentException("Null CompositeData");
+        }
 
         return ((Number) cd.get(itemName)).intValue();
     }
@@ -128,7 +138,9 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
      * same.
      */
     protected static boolean isTypeMatched(CompositeType type1, CompositeType type2) {
-        if (type1 == type2) return true;
+        if (type1 == type2) {
+            return true;
+        }
 
         // We can't use CompositeType.isValue() since it returns false
         // if the type name doesn't match.
@@ -142,11 +154,19 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
             OpenType<?> ot1 = type1.getType(item);
             OpenType<?> ot2 = type2.getType(item);
             if (ot1 instanceof CompositeType) {
-                if (!(ot2 instanceof CompositeType)) return false;
-                if (!isTypeMatched((CompositeType) ot1, (CompositeType) ot2)) return false;
+                if (!(ot2 instanceof CompositeType)) {
+                    return false;
+                }
+                if (!isTypeMatched((CompositeType) ot1, (CompositeType) ot2)) {
+                    return false;
+                }
             } else if (ot1 instanceof TabularType) {
-                if (!(ot2 instanceof TabularType)) return false;
-                if (!isTypeMatched((TabularType) ot1, (TabularType) ot2)) return false;
+                if (!(ot2 instanceof TabularType)) {
+                    return false;
+                }
+                if (!isTypeMatched((TabularType) ot1, (TabularType) ot2)) {
+                    return false;
+                }
             } else if (!ot1.equals(ot2)) {
                 return false;
             }
@@ -155,7 +175,9 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
     }
 
     protected static boolean isTypeMatched(TabularType type1, TabularType type2) {
-        if (type1 == type2) return true;
+        if (type1 == type2) {
+            return true;
+        }
 
         List<String> list1 = type1.getIndexNames();
         List<String> list2 = type2.getIndexNames();

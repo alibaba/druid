@@ -78,15 +78,27 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
         Object v1 = getValueByKey(o1, orderByKey);
         Object v2 = getValueByKey(o2, orderByKey);
 
-        if (v1 == null && v2 == null) return 0;
-        if (v1 == null) return -1;
-        if (v2 == null) return 1;
+        if (v1 == null && v2 == null) {
+            return 0;
+        }
+        if (v1 == null) {
+            return -1;
+        }
+        if (v2 == null) {
+            return 1;
+        }
 
-        if (v1 instanceof Number) return compare((Number) v1, (Number) v2);
+        if (v1 instanceof Number) {
+            return compare((Number) v1, (Number) v2);
+        }
 
-        if (v1 instanceof String) return compare((String) v1, (String) v2);
+        if (v1 instanceof String) {
+            return compare((String) v1, (String) v2);
+        }
 
-        if (v1 instanceof Date) return compare((Date) v1, (Date) v2);
+        if (v1 instanceof Date) {
+            return compare((Date) v1, (Date) v2);
+        }
 
         return 0;
     }

@@ -228,7 +228,9 @@ public class MySqlSelectParser extends SQLSelectParser {
             SQLSelectGroupByClause groupBy = new SQLSelectGroupByClause();
             while (true) {
                 groupBy.getItems().add(this.exprParser.expr());
-                if (!(lexer.token() == (Token.COMMA))) break;
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                }
                 lexer.nextToken();
             }
 

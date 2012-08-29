@@ -619,10 +619,18 @@ public class OracleExprParser extends SQLExprParser {
         String currentTokenUpperValue = lexer.stringVal();
         lexer.nextToken();
 
-        if (currentTokenUpperValue.equals("YEAR")) return OracleIntervalType.YEAR;
-        if (currentTokenUpperValue.equals("MONTH")) return OracleIntervalType.MONTH;
-        if (currentTokenUpperValue.equals("HOUR")) return OracleIntervalType.HOUR;
-        if (currentTokenUpperValue.equals("MINUTE")) return OracleIntervalType.MINUTE;
+        if (currentTokenUpperValue.equals("YEAR")) {
+            return OracleIntervalType.YEAR;
+        }
+        if (currentTokenUpperValue.equals("MONTH")) {
+            return OracleIntervalType.MONTH;
+        }
+        if (currentTokenUpperValue.equals("HOUR")) {
+            return OracleIntervalType.HOUR;
+        }
+        if (currentTokenUpperValue.equals("MINUTE")) {
+            return OracleIntervalType.MINUTE;
+        }
         if (currentTokenUpperValue.equals("SECOND")) {
             return OracleIntervalType.SECOND;
         }

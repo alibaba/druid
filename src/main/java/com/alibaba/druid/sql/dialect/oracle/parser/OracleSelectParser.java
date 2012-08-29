@@ -965,7 +965,9 @@ public class OracleSelectParser extends SQLSelectParser {
                 item.setAlias(as());
                 pivot.getItems().add(item);
 
-                if (!(lexer.token() == (Token.COMMA))) break;
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                }
                 lexer.nextToken();
             }
 
@@ -977,7 +979,9 @@ public class OracleSelectParser extends SQLSelectParser {
                     pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
-                    if (!(lexer.token() == (Token.COMMA))) break;
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
                     lexer.nextToken();
                 }
 
@@ -1047,7 +1051,9 @@ public class OracleSelectParser extends SQLSelectParser {
                     unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
-                    if (!(lexer.token() == (Token.COMMA))) break;
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
                     lexer.nextToken();
                 }
 
