@@ -26,8 +26,6 @@ import java.util.Properties;
 
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
-import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
-import com.alibaba.druid.proxy.config.EncodingDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -45,14 +43,6 @@ public class EncodingConvertFilter extends FilterAdapter {
     public final static String ATTR_CHARSET_CONVERTER = "ali.charset.converter";
     private String             clientEncoding;
     private String             serverEncoding;
-
-    public void loadConfig(AbstractDruidFilterConfig druidFilterConfig) {
-        EncodingDruidFilterConfig druidEncodingFilterConfig = (EncodingDruidFilterConfig) druidFilterConfig;
-        if (druidEncodingFilterConfig != null) {
-            clientEncoding = druidEncodingFilterConfig.getClientEncoding();
-            serverEncoding = druidEncodingFilterConfig.getServerEncoding();
-        }
-    }
 
     public ConnectionProxy connection_connect(FilterChain chain, Properties info) throws SQLException {
         ConnectionProxy conn = chain.connection_connect(info);
