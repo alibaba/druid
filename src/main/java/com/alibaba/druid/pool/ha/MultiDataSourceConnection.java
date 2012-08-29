@@ -633,7 +633,7 @@ public class MultiDataSourceConnection extends WrapperAdapter implements Connect
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         boolean result = super.isWrapperFor(iface);
 
-        if (result == false && conn != null) {
+        if ((!result) && conn != null) {
             result = conn.isWrapperFor(iface);
         }
 

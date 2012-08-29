@@ -218,8 +218,6 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         }
 
         public boolean visit(SQLIdentifierExpr x) {
-            String currentTable = getCurrentTable();
-
             if (subQueryMap.containsKey(currentTable)) {
                 return false;
             }
@@ -252,13 +250,13 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         public void addOrderByColumn(String table, String columnName, SQLObject expr) {
             Column column = new Column(table, columnName);
-            
+
             SQLObject parent = expr.getParent();
             if (parent instanceof SQLSelectOrderByItem) {
                 SQLOrderingSpecification type = ((SQLSelectOrderByItem) parent).getType();
                 column.getAttributes().put("orderBy.type", type);
             }
-            
+
             orderByColumns.add(column);
         }
     }
@@ -421,12 +419,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
             String column = ((SQLIdentifierExpr) expr).getName();
             String table = getCurrentTable();
-            if (table != null) {
-                if (aliasMap.containsKey(table)) {
-                    table = aliasMap.get(table);
-                    if (table == null) {
-                        return null;
-                    }
+            if (table != null && aliasMap.containsKey(table)) {
+                table = aliasMap.get(table);
+                if (table == null) {
+                    return null;
                 }
             }
 
@@ -548,14 +544,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
             return false;
         }
 
-        if (x.getInto() != null) {
-            if (x.getInto().getExpr() instanceof SQLName) {
-                SQLName into = (SQLName) x.getInto().getExpr();
-                String ident = into.toString();
-                TableStat stat = getTableStat(ident);
-                if (stat != null) {
-                    stat.incrementInsertCount();
-                }
+        if (x.getInto() != null && x.getInto().getExpr() instanceof SQLName) {
+            SQLName into = (SQLName) x.getInto().getExpr();
+            String ident = into.toString();
+            TableStat stat = getTableStat(ident);
+            if (stat != null) {
+                stat.incrementInsertCount();
             }
         }
 
@@ -746,11 +740,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         SQLSelectQuery query = x.getSelect().getQuery();
 
         Map<String, String> aliasMap = getAliasMap();
-        if (aliasMap != null) {
-            if (x.getAlias() != null) {
-                aliasMap.put(x.getAlias(), null);
-                subQueryMap.put(x.getAlias(), query);
-            }
+        if (aliasMap != null && x.getAlias() != null) {
+            aliasMap.put(x.getAlias(), null);
+            subQueryMap.put(x.getAlias(), query);
         }
         return false;
     }
@@ -911,7 +903,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public void endVisit(SQLDeleteStatement x) {
-        
+
     }
 
     public void endVisit(SQLUpdateStatement x) {

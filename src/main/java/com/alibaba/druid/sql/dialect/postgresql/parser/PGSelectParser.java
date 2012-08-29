@@ -38,7 +38,7 @@ public class PGSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public PGSelectParser(String sql) throws ParserException{
+    public PGSelectParser(String sql) {
         this(new PGExprParser(sql));
     }
 
@@ -47,7 +47,7 @@ public class PGSelectParser extends SQLSelectParser {
     }
 
     @Override
-    public SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query() {
         PGSelectQueryBlock queryBlock = new PGSelectQueryBlock();
 
         if (lexer.token() == Token.SELECT) {
@@ -219,7 +219,7 @@ public class PGSelectParser extends SQLSelectParser {
         return queryRest(queryBlock);
     }
 
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (lexer.token() == Token.AS && tableSource instanceof SQLExprTableSource) {
             String alias = this.as();
 

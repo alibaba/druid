@@ -44,12 +44,12 @@ public class MySqlSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public MySqlSelectParser(String sql) throws ParserException{
+    public MySqlSelectParser(String sql) {
         this(new MySqlExprParser(sql));
     }
 
     @Override
-    public SQLSelectQuery query() throws ParserException {
+    public SQLSelectQuery query() {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
 
@@ -220,7 +220,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         return queryRest(queryBlock);
     }
 
-    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) throws ParserException {
+    protected void parseGroupBy(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == (Token.GROUP)) {
             lexer.nextToken();
             accept(Token.BY);
@@ -255,7 +255,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         }
     }
 
-    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) throws ParserException {
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
         if (identifierEquals("USING")) {
             return tableSource;
         }

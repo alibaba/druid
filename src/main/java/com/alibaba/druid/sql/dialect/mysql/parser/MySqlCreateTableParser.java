@@ -32,7 +32,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlCreateTableParser extends SQLCreateTableParser {
 
-    public MySqlCreateTableParser(String sql) throws ParserException{
+    public MySqlCreateTableParser(String sql) {
         super(new MySqlExprParser(sql));
     }
 
@@ -40,11 +40,11 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         super(exprParser);
     }
 
-    public SQLCreateTableStatement parseCrateTable() throws ParserException {
+    public SQLCreateTableStatement parseCrateTable() {
         return parseCrateTable(true);
     }
 
-    public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) throws ParserException {
+    public MySqlCreateTableStatement parseCrateTable(boolean acceptCreate) {
         if (acceptCreate) {
             accept(Token.CREATE);
         }
@@ -182,7 +182,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
     }
 
     @SuppressWarnings("unused")
-    protected SQLTableConstaint parseConstraint() throws ParserException {
+    protected SQLTableConstaint parseConstraint() {
         SQLName name = null;
         if (lexer.token() == (Token.CONSTRAINT)) {
             lexer.nextToken();

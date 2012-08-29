@@ -620,7 +620,7 @@ public class OracleSelectParser extends SQLSelectParser {
         }
     }
 
-    protected String as() throws ParserException {
+    protected String as() {
         if (lexer.token() == Token.CONNECT) {
             return null;
         }

@@ -52,12 +52,12 @@ public class MySqlExprParser extends SQLExprParser {
         super(lexer);
     }
 
-    public MySqlExprParser(String sql) throws ParserException{
+    public MySqlExprParser(String sql) {
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
     }
 
-    public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
+    public SQLExpr relationalRest(SQLExpr expr) {
         if (identifierEquals("REGEXP")) {
             lexer.nextToken();
             SQLExpr rightExp = equality();
@@ -79,7 +79,7 @@ public class MySqlExprParser extends SQLExprParser {
         return super.relationalRest(expr);
     }
 
-    public SQLExpr multiplicativeRest(SQLExpr expr) throws ParserException {
+    public SQLExpr multiplicativeRest(SQLExpr expr) {
         if (lexer.token() == Token.IDENTIFIER && "MOD".equalsIgnoreCase(lexer.stringVal())) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
@@ -114,7 +114,7 @@ public class MySqlExprParser extends SQLExprParser {
         return super.notRationalRest(expr);
     }
 
-    public SQLExpr primary() throws ParserException {
+    public SQLExpr primary() {
         final Token tok = lexer.token();
         
         if (identifierEquals("outfile")) {
@@ -158,7 +158,7 @@ public class MySqlExprParser extends SQLExprParser {
 
     }
 
-    public final SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+    public final SQLExpr primaryRest(SQLExpr expr) {
         if (expr == null) {
             throw new IllegalArgumentException("expr");
         }
@@ -489,7 +489,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
     }
     
-    public SQLColumnDefinition parseColumn() throws ParserException {
+    public SQLColumnDefinition parseColumn() {
         MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
         column.setName(name());
         column.setDataType(parseDataType());
@@ -497,7 +497,7 @@ public class MySqlExprParser extends SQLExprParser {
         return parseColumnRest(column);
     }
 
-    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) throws ParserException {
+    public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
             if (column instanceof MySqlSQLColumnDefinition) {
@@ -514,7 +514,7 @@ public class MySqlExprParser extends SQLExprParser {
         return column;
     }
     
-    public SQLExpr orRest(SQLExpr expr) throws ParserException {
+    public SQLExpr orRest(SQLExpr expr) {
 
         for (;;) {
             if (lexer.token() == Token.OR || lexer.token() == Token.BARBAR) {
@@ -566,7 +566,7 @@ public class MySqlExprParser extends SQLExprParser {
         return item;
     }
     
-    public SQLName nameRest(SQLName name) throws ParserException {
+    public SQLName nameRest(SQLName name) {
         if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
             lexer.nextToken();
             MySqlUserName userName = new MySqlUserName();
