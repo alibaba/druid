@@ -62,7 +62,7 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
             String keyStr = (String) key;
 
             if (keyStr.matches(".+\\[[0-9]+\\]")) {
-                Object value = map.get(keyStr.substring(0, keyStr.indexOf("[")));
+                Object value = map.get(keyStr.substring(0, keyStr.indexOf('[')));
                 if (value == null) {
                     return null;
                 }

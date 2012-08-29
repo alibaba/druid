@@ -187,8 +187,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public void printIndent() {
-        for (int i = 0; i < this.indentCount; ++i)
+        for (int i = 0; i < this.indentCount; ++i) {
             print(this.indent);
+        }
     }
 
     public void println() {
