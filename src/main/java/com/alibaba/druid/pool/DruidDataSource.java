@@ -537,7 +537,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
             if (!this.isTestWhileIdle()) {
-                if (LOG.isWarnEnabled()) LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
+                }
             }
         }
     }

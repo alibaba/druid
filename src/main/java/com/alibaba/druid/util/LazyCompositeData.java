@@ -147,7 +147,9 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
         Set<?> allItems = type1.keySet();
 
         // Check all items in the type1 exist in type2
-        if (!type2.keySet().containsAll(allItems)) return false;
+        if (!type2.keySet().containsAll(allItems)) {
+            return false;
+        }
 
         for (Iterator<?> iter = allItems.iterator(); iter.hasNext();) {
             String item = (String) iter.next();
@@ -183,7 +185,9 @@ public abstract class LazyCompositeData implements CompositeData, Serializable {
         List<String> list2 = type2.getIndexNames();
 
         // check if the list of index names are the same
-        if (!list1.equals(list2)) return false;
+        if (!list1.equals(list2)) {
+            return false;
+        }
 
         return isTypeMatched(type1.getRowType(), type2.getRowType());
     }

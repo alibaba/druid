@@ -69,9 +69,13 @@ public class TableFormatter {
 	}
 
 	public static String padStr(String old, int length) {
-		if (old == null ) return "";
+		if (old == null ) {
+		    return "";
+		}
 		int vlen = displayLen(old);
-		if (vlen > length) return old;
+		if (vlen > length) {
+		    return old;
+		}
 		StringBuffer sb = new StringBuffer(old);
 		for (int i=0; i< length -vlen ; i++) {
 			sb.append(" ");

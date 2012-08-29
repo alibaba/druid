@@ -50,7 +50,9 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
     public int compare(Map<K, V> o1, Map<K, V> o2) {
         int result = compare_0(o1, o2);
 
-        if (isDesc) result = -result;
+        if (isDesc) {
+            result = -result;
+        }
 
         return result;
     }
@@ -61,7 +63,9 @@ public class MapComparator<K extends Object, V extends Object> implements Compar
 
             if (keyStr.matches(".+\\[[0-9]+\\]")) {
                 Object value = map.get(keyStr.substring(0, keyStr.indexOf("[")));
-                if (value == null) return null;
+                if (value == null) {
+                    return null;
+                }
 
                 Integer index = StringUtils.subStringToInteger(keyStr, "[", "]");
                 if (value.getClass().isArray() && Array.getLength(value) >= index) {
