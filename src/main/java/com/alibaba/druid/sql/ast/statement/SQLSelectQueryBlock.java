@@ -100,9 +100,11 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
     public void output(StringBuffer buf) {
         buf.append("SELECT ");
 
-        if (SQLSetQuantifier.ALL == this.distionOption) buf.append("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == this.distionOption) buf.append("DISTINCT ");
-        else if (SQLSetQuantifier.UNIQUE == this.distionOption) {
+        if (SQLSetQuantifier.ALL == this.distionOption) {
+            buf.append("ALL ");
+        } else if (SQLSetQuantifier.DISTINCT == this.distionOption) {
+            buf.append("DISTINCT ");
+        } else if (SQLSetQuantifier.UNIQUE == this.distionOption) {
             buf.append("UNIQUE ");
         }
 

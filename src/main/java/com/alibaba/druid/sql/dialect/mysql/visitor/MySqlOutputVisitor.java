@@ -170,9 +170,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(' ');
         }
 
-        if (SQLSetQuantifier.ALL == x.getDistionOption()) print("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) print("DISTINCT ");
-        else if (SQLSetQuantifier.DISTINCTROW == x.getDistionOption()) {
+        if (SQLSetQuantifier.ALL == x.getDistionOption()) {
+            print("ALL ");
+        } else if (SQLSetQuantifier.DISTINCT == x.getDistionOption()) {
+            print("DISTINCT ");
+        } else if (SQLSetQuantifier.DISTINCTROW == x.getDistionOption()) {
             print("DISTINCTROW ");
         }
 
@@ -495,7 +497,8 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print("@@global.");
         } else {
             String varName = x.getName();
-            if ((!varName.startsWith("@")) && (!varName.equals("?")) && (!varName.startsWith("#")) && (!varName.startsWith("$"))) {
+            if ((!varName.startsWith("@")) && (!varName.equals("?")) && (!varName.startsWith("#"))
+                && (!varName.startsWith("$"))) {
                 print("@@");
             }
         }
@@ -2568,7 +2571,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlAlterTableAddIndex x) {
 
     }
-    
+
     @Override
     public boolean visit(MySqlAlterTableAddUnique x) {
         print("ADD ");
@@ -2576,9 +2579,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(x.getType());
             print(" ");
         }
-        
+
         print("UNIQUE ");
-        
+
         if (x.getName() != null) {
             x.getName().accept(this);
             print(' ');
@@ -2586,17 +2589,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print("(");
         printAndAccept(x.getItems(), ", ");
         print(")");
-        
+
         if (x.getUsing() != null) {
             print(" USING ");
             print(x.getUsing());
         }
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterTableAddUnique x) {
-        
+
     }
 
     @Override

@@ -35,8 +35,11 @@ public abstract class OracleConstraint extends OracleSQLObjectImpl {
     }
 
     public void setName(String name) {
-        if (name == null) this.name = null;
-        else this.name = new SQLIdentifierExpr(name);
+        if (name == null) {
+            this.name = null;
+        } else {
+            this.name = new SQLIdentifierExpr(name);
+        }
     }
 
     public void setName(SQLName name) {
