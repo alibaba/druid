@@ -19,9 +19,7 @@ import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -809,16 +807,6 @@ public class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> implement
         return found;
     }
 
-    /**
-     * Legacy method testing if some key maps into the specified value in this table. This method is identical in
-     * functionality to {@link #containsValue}, and exists solely to ensure full compatibility with class
-     * {@link Hashtable}, which supported this method prior to introduction of the Java Collections framework.
-     * 
-     * @param value a value to search for
-     * @return <tt>true</tt> if and only if some key maps to the <tt>value</tt> argument in this table as determined by
-     * the <tt>equals</tt> method; <tt>false</tt> otherwise
-     * @throws NullPointerException if the specified value is null
-     */
     public boolean contains(Object value) {
         return containsValue(value);
     }
@@ -937,51 +925,18 @@ public class ConcurrentIdentityHashMap<K, V> extends AbstractMap<K, V> implement
         }
     }
 
-    /**
-     * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map, so changes to the map
-     * are reflected in the set, and vice-versa. The set supports element removal, which removes the corresponding
-     * mapping from this map, via the <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-     * <tt>retainAll</tt>, and <tt>clear</tt> operations. It does not support the <tt>add</tt> or <tt>addAll</tt>
-     * operations.
-     * <p>
-     * The view's <tt>iterator</tt> is a "weakly consistent" iterator that will never throw
-     * {@link ConcurrentModificationException}, and guarantees to traverse elements as they existed upon construction of
-     * the iterator, and may (but is not guaranteed to) reflect any modifications subsequent to construction.
-     */
     @Override
     public Set<K> keySet() {
         Set<K> ks = keySet;
         return ks != null ? ks : (keySet = new KeySet());
     }
 
-    /**
-     * Returns a {@link Collection} view of the values contained in this map. The collection is backed by the map, so
-     * changes to the map are reflected in the collection, and vice-versa. The collection supports element removal,
-     * which removes the corresponding mapping from this map, via the <tt>Iterator.remove</tt>,
-     * <tt>Collection.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt> operations. It does not
-     * support the <tt>add</tt> or <tt>addAll</tt> operations.
-     * <p>
-     * The view's <tt>iterator</tt> is a "weakly consistent" iterator that will never throw
-     * {@link ConcurrentModificationException}, and guarantees to traverse elements as they existed upon construction of
-     * the iterator, and may (but is not guaranteed to) reflect any modifications subsequent to construction.
-     */
     @Override
     public Collection<V> values() {
         Collection<V> vs = values;
         return vs != null ? vs : (values = new Values());
     }
 
-    /**
-     * Returns a {@link Set} view of the mappings contained in this map. The set is backed by the map, so changes to the
-     * map are reflected in the set, and vice-versa. The set supports element removal, which removes the corresponding
-     * mapping from the map, via the <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-     * <tt>retainAll</tt>, and <tt>clear</tt> operations. It does not support the <tt>add</tt> or <tt>addAll</tt>
-     * operations.
-     * <p>
-     * The view's <tt>iterator</tt> is a "weakly consistent" iterator that will never throw
-     * {@link ConcurrentModificationException}, and guarantees to traverse elements as they existed upon construction of
-     * the iterator, and may (but is not guaranteed to) reflect any modifications subsequent to construction.
-     */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
         Set<Map.Entry<K, V>> es = entrySet;

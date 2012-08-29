@@ -67,7 +67,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
 
 public class SQLExprParser extends SQLParser {
 
-    public SQLExprParser(String sql) throws ParserException{
+    public SQLExprParser(String sql){
         super(sql);
     }
 
@@ -75,7 +75,7 @@ public class SQLExprParser extends SQLParser {
         super(lexer);
     }
 
-    public SQLExpr expr() throws ParserException {
+    public SQLExpr expr() {
         if (lexer.token() == Token.STAR) {
             lexer.nextToken();
 
@@ -91,7 +91,7 @@ public class SQLExprParser extends SQLParser {
         return exprRest(expr);
     }
 
-    public SQLExpr exprRest(SQLExpr expr) throws ParserException {
+    public SQLExpr exprRest(SQLExpr expr) {
         expr = bitXorRest(expr);
         expr = multiplicativeRest(expr);
         expr = additiveRest(expr);
@@ -107,12 +107,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr bitXor() throws ParserException {
+    public final SQLExpr bitXor() {
         SQLExpr expr = primary();
         return bitXorRest(expr);
     }
 
-    public SQLExpr bitXorRest(SQLExpr expr) throws ParserException {
+    public SQLExpr bitXorRest(SQLExpr expr) {
         if (lexer.token() == Token.CARET) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
@@ -123,12 +123,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr multiplicative() throws ParserException {
+    public final SQLExpr multiplicative() {
         SQLExpr expr = primary();
         return multiplicativeRest(expr);
     }
 
-    public SQLExpr multiplicativeRest(SQLExpr expr) throws ParserException {
+    public SQLExpr multiplicativeRest(SQLExpr expr) {
         if (lexer.token() == Token.STAR) {
             lexer.nextToken();
             SQLExpr rightExp = bitXor();
@@ -148,7 +148,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr primary() throws ParserException {
+    public SQLExpr primary() {
         SQLExpr sqlExpr = null;
 
         final Token tok = lexer.token();
@@ -458,7 +458,7 @@ public class SQLExprParser extends SQLParser {
         return new SQLSelectParser(this);
     }
 
-    public SQLExpr primaryRest(SQLExpr expr) throws ParserException {
+    public SQLExpr primaryRest(SQLExpr expr) {
         if (expr == null) {
             throw new IllegalArgumentException("expr");
         }
@@ -573,11 +573,11 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr groupComparisionRest(SQLExpr expr) throws ParserException {
+    public final SQLExpr groupComparisionRest(SQLExpr expr) {
         return expr;
     }
 
-    public final void names(Collection<SQLName> exprCol) throws ParserException {
+    public final void names(Collection<SQLName> exprCol) {
         if (lexer.token() == Token.RBRACE) {
             return;
         }
@@ -594,7 +594,7 @@ public class SQLExprParser extends SQLParser {
         }
     }
 
-    public final void exprList(Collection<SQLExpr> exprCol) throws ParserException {
+    public final void exprList(Collection<SQLExpr> exprCol) {
         if (lexer.token() == Token.RPAREN || lexer.token() == Token.RBRACKET) {
             return;
         }
@@ -613,7 +613,7 @@ public class SQLExprParser extends SQLParser {
         }
     }
 
-    public SQLName name() throws ParserException {
+    public SQLName name() {
         String identName;
         if (lexer.token() == Token.LITERAL_ALIAS) {
             identName = '"' + lexer.stringVal() + '"';
@@ -636,7 +636,7 @@ public class SQLExprParser extends SQLParser {
         return name;
     }
 
-    public SQLName nameRest(SQLName name) throws ParserException {
+    public SQLName nameRest(SQLName name) {
         if (lexer.token() == Token.DOT) {
             lexer.nextToken();
 
@@ -675,7 +675,7 @@ public class SQLExprParser extends SQLParser {
         return false;
     }
 
-    protected SQLAggregateExpr parseAggregateExpr(String methodName) throws ParserException {
+    protected SQLAggregateExpr parseAggregateExpr(String methodName) {
         methodName = methodName.toUpperCase();
 
         SQLAggregateExpr aggregateExpr;
@@ -696,7 +696,7 @@ public class SQLExprParser extends SQLParser {
         return aggregateExpr;
     }
 
-    public SQLOrderBy parseOrderBy() throws ParserException {
+    public SQLOrderBy parseOrderBy() {
         if (lexer.token() == Token.ORDER) {
             SQLOrderBy orderBy = new SQLOrderBy();
 
@@ -717,7 +717,7 @@ public class SQLExprParser extends SQLParser {
         return null;
     }
 
-    public SQLSelectOrderByItem parseSelectOrderByItem() throws ParserException {
+    public SQLSelectOrderByItem parseSelectOrderByItem() {
         SQLSelectOrderByItem item = new SQLSelectOrderByItem();
 
         item.setExpr(expr());
@@ -733,12 +733,12 @@ public class SQLExprParser extends SQLParser {
         return item;
     }
 
-    public final SQLExpr bitAnd() throws ParserException {
+    public final SQLExpr bitAnd() {
         SQLExpr expr = shift();
         return bitAndRest(expr);
     }
 
-    public final SQLExpr bitAndRest(SQLExpr expr) throws ParserException {
+    public final SQLExpr bitAndRest(SQLExpr expr) {
         while (lexer.token() == Token.AMP) {
             lexer.nextToken();
             SQLExpr rightExp = shift();
@@ -747,12 +747,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr bitOr() throws ParserException {
+    public final SQLExpr bitOr() {
         SQLExpr expr = bitAnd();
         return bitOrRest(expr);
     }
 
-    public final SQLExpr bitOrRest(SQLExpr expr) throws ParserException {
+    public final SQLExpr bitOrRest(SQLExpr expr) {
         if (lexer.token() == Token.BAR) {
             lexer.nextToken();
             SQLExpr rightExp = bitAnd();
@@ -767,12 +767,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr equality() throws ParserException {
+    public final SQLExpr equality() {
         SQLExpr expr = shift();
         return equalityRest(expr);
     }
 
-    public SQLExpr equalityRest(SQLExpr expr) throws ParserException {
+    public SQLExpr equalityRest(SQLExpr expr) {
         SQLExpr rightExp;
         if (lexer.token() == Token.EQ) {
             lexer.nextToken();
@@ -797,7 +797,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr inRest(SQLExpr expr) throws ParserException {
+    public final SQLExpr inRest(SQLExpr expr) {
         if (lexer.token() == Token.IN) {
             lexer.nextToken();
             accept(Token.LPAREN);
@@ -823,12 +823,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr additive() throws ParserException {
+    public final SQLExpr additive() {
         SQLExpr expr = multiplicative();
         return additiveRest(expr);
     }
 
-    public SQLExpr additiveRest(SQLExpr expr) throws ParserException {
+    public SQLExpr additiveRest(SQLExpr expr) {
         if (lexer.token() == Token.PLUS) {
             lexer.nextToken();
             SQLExpr rightExp = multiplicative();
@@ -851,12 +851,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public final SQLExpr shift() throws ParserException {
+    public final SQLExpr shift() {
         SQLExpr expr = additive();
         return shiftRest(expr);
     }
 
-    public SQLExpr shiftRest(SQLExpr expr) throws ParserException {
+    public SQLExpr shiftRest(SQLExpr expr) {
         if (lexer.token() == Token.LTLT) {
             lexer.nextToken();
             SQLExpr rightExp = additive();
@@ -874,12 +874,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr and() throws ParserException {
+    public SQLExpr and() {
         SQLExpr expr = relational();
         return andRest(expr);
     }
 
-    public SQLExpr andRest(SQLExpr expr) throws ParserException {
+    public SQLExpr andRest(SQLExpr expr) {
         for (;;) {
             if (lexer.token() == Token.AND || lexer.token() == Token.AMPAMP) {
                 lexer.nextToken();
@@ -894,12 +894,12 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr or() throws ParserException {
+    public SQLExpr or() {
         SQLExpr expr = and();
         return orRest(expr);
     }
 
-    public SQLExpr orRest(SQLExpr expr) throws ParserException {
+    public SQLExpr orRest(SQLExpr expr) {
 
         for (;;) {
             if (lexer.token() == Token.OR) {
@@ -920,24 +920,24 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLExpr relational() throws ParserException {
+    public SQLExpr relational() {
         SQLExpr expr = equality();
 
         return relationalRest(expr);
     }
 
-    public SQLExpr relationalRest(SQLExpr expr) throws ParserException {
+    public SQLExpr relationalRest(SQLExpr expr) {
         SQLExpr rightExp;
 
         if (lexer.token() == Token.LT) {
             SQLBinaryOperator op = SQLBinaryOperator.LessThan;
-            
+
             lexer.nextToken();
             if (lexer.token() == Token.EQ) {
                 lexer.nextToken();
                 op = SQLBinaryOperator.LessThanOrEqual;
             }
-            
+
             rightExp = bitOr();
             expr = new SQLBinaryOpExpr(expr, op, rightExp);
             // expr = relationalRest(expr);
@@ -1086,7 +1086,7 @@ public class SQLExprParser extends SQLParser {
         return expr;
     }
 
-    public SQLDataType parseDataType() throws ParserException {
+    public SQLDataType parseDataType() {
 
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
             return null;
