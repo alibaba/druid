@@ -499,20 +499,20 @@ public class SQLExprParser extends SQLParser {
         }
 
         if (expr instanceof SQLName || expr instanceof SQLDefaultExpr) {
-            String method_name;
+            String methodName;
 
             SQLMethodInvokeExpr methodInvokeExpr;
             if (expr instanceof SQLPropertyExpr) {
-                method_name = ((SQLPropertyExpr) expr).getName();
-                methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
+                methodName = ((SQLPropertyExpr) expr).getName();
+                methodInvokeExpr = new SQLMethodInvokeExpr(methodName);
                 methodInvokeExpr.setOwner(((SQLPropertyExpr) expr).getOwner());
             } else {
-                method_name = expr.toString();
-                methodInvokeExpr = new SQLMethodInvokeExpr(method_name);
+                methodName = expr.toString();
+                methodInvokeExpr = new SQLMethodInvokeExpr(methodName);
             }
 
-            if (isAggreateFunction(method_name)) {
-                SQLAggregateExpr aggregateExpr = parseAggregateExpr(method_name);
+            if (isAggreateFunction(methodName)) {
+                SQLAggregateExpr aggregateExpr = parseAggregateExpr(methodName);
 
                 return aggregateExpr;
             }
@@ -664,10 +664,10 @@ public class SQLExprParser extends SQLParser {
     }
 
     public boolean isAggreateFunction(String word) {
-        String[] _aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
+        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM" };
 
-        for (int i = 0; i < _aggregateFunctions.length; ++i) {
-            if (_aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
+        for (int i = 0; i < aggregateFunctions.length; ++i) {
+            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
                 return true;
             }
         }

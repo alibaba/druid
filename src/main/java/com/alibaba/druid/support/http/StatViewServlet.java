@@ -201,9 +201,9 @@ public class StatViewServlet extends HttpServlet {
         }
 
         if ("/submitLogin".equals(path)) {
-            String _username = request.getParameter(PARAM_NAME_USERNAME);
-            String _password = request.getParameter(PARAM_NAME_PASSWORD);
-            if (username.equals(_username) && password.equals(_password)) {
+            String usernameParam = request.getParameter(PARAM_NAME_USERNAME);
+            String passwordParam = request.getParameter(PARAM_NAME_PASSWORD);
+            if (username.equals(usernameParam) && password.equals(passwordParam)) {
                 request.getSession().setAttribute(SESSION_USER_KEY, username);
                 response.getWriter().print("success");
             } else {

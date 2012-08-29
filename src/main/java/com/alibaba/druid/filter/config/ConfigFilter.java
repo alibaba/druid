@@ -73,7 +73,7 @@ public class ConfigFilter extends FilterAdapter {
         return algorithm;
     }
 
-    public void setAlgorithm(String algorithm) {
+    public final void setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
         try {
             this.cipher = Cipher.getInstance(algorithm);
@@ -86,7 +86,7 @@ public class ConfigFilter extends FilterAdapter {
         return encryptedPassword;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
+    public final void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
     }
 
@@ -94,7 +94,7 @@ public class ConfigFilter extends FilterAdapter {
         return key;
     }
 
-    public void setKey(String key) {
+    public final void setKey(String key) {
         this.key = key;
 
         byte[] bytes = Base64.base64ToByteArray(key);

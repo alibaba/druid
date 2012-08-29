@@ -544,10 +544,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 from.accept(this);
             }
 
-            SQLExpr _for = (SQLExpr) x.getAttribute("FOR");
-            if (_for != null) {
+            SQLExpr forExpr = (SQLExpr) x.getAttribute("FOR");
+            if (forExpr != null) {
                 print(" FOR ");
-                _for.accept(this);
+                forExpr.accept(this);
             }
             print(")");
 
