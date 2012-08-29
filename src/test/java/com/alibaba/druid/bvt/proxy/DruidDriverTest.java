@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.proxy.DruidDriver;
-import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxyImpl;
 import com.alibaba.druid.util.JdbcUtils;
 
