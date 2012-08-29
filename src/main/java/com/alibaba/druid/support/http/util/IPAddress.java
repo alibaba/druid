@@ -227,7 +227,7 @@ public class IPAddress implements Cloneable {
             for (int i = 0; i < 3; i++) {
 
                 // get the position of the first dot
-                int index = tmp.indexOf(".");
+                int index = tmp.indexOf('.');
 
                 // if there is not a dot then the ip string representation is
                 // not compliant to the decimal-dotted notation.

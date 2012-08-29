@@ -198,7 +198,7 @@ public class IPRange {
             throw new IllegalArgumentException("Invalid IP range");
         }
 
-        int index = range.indexOf("/");
+        int index = range.indexOf('/');
         String subnetStr = null;
         if (index == -1) {
             ipAddress = new IPAddress(range);
