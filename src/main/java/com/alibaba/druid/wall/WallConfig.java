@@ -90,7 +90,7 @@ public class WallConfig implements WallConfigMBean {
         this.dir = dir;
     }
 
-    public void init() {
+    public final void init() {
         loadConfig(dir);
     }
 
