@@ -269,15 +269,12 @@ public class IPAddress implements Cloneable {
 
         return result;
     }
+    
+    public int hashCode () {
+        return this.ipAddress;
+    }
 
-    // -------------------------------------------------------------------------
-    /**
-     * Compare the specified IP address to the encapsulated one.
-     * 
-     * @param another The IP address to be compared.
-     * @return Return <code>true</code> if the encapsulated IP address is the same as the specified one, otherwise
-     * return <code>false</code>.
-     */
+  
     public boolean equals(Object another) {
         if (another instanceof IPAddress) {
             return ipAddress == ((IPAddress) another).ipAddress;
@@ -285,12 +282,7 @@ public class IPAddress implements Cloneable {
         return false;
     }
 
-    // -------------------------------------------------------------------------
-    /**
-     * Clone the encapsulated IP address.
-     * 
-     * @return Return a new object representing the encapsulated IP address.
-     */
+
     public Object clone() {
         return new IPAddress(ipAddress);
     }

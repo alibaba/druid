@@ -195,7 +195,9 @@ public class DruidStatService implements DruidStatServiceMBean {
 
     private List<Map<String, Object>> comparatorOrderBy(List<Map<String, Object>> array, Map<String, String> parameters) {
         // when open the stat page before executing some sql
-        if (array == null || array.isEmpty()) return null;
+        if (array == null || array.isEmpty()) {
+            return null;
+        }
 
         // when parameters is null
         String orderBy, orderType = null;
@@ -223,7 +225,9 @@ public class DruidStatService implements DruidStatServiceMBean {
         orderBy = orderBy == null ? DEFAULT_ORDERBY : orderBy;
         orderType = orderType == null ? DEFAULT_ORDER_TYPE : orderType;
 
-        if (!"desc".equals(orderType)) orderType = DEFAULT_ORDER_TYPE;
+        if (!"desc".equals(orderType)) {
+            orderType = DEFAULT_ORDER_TYPE;
+        }
 
         // orderby the statData array
         if (orderBy != null && orderBy.trim().length() != 0) {
@@ -233,7 +237,9 @@ public class DruidStatService implements DruidStatServiceMBean {
         // page
         int fromIndex = (page - 1) * perPageCount;
         int toIndex = page * perPageCount;
-        if (toIndex > array.size()) toIndex = array.size();
+        if (toIndex > array.size()) {
+            toIndex = array.size();
+        }
 
         return array.subList(fromIndex, toIndex);
     }
@@ -338,7 +344,9 @@ public class DruidStatService implements DruidStatServiceMBean {
 
         for (String parameterStr : parametersArray) {
             int index = parameterStr.indexOf("=");
-            if (index <= 0) continue;
+            if (index <= 0) {
+                continue;
+            }
 
             String name = parameterStr.substring(0, index);
             String value = parameterStr.substring(index + 1);
