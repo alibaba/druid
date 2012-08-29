@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
@@ -79,8 +78,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private boolean                   connectionStackTraceEnable = false;
 
-    protected final AtomicLong        resetCount                 = new AtomicLong();
-
     // 3 seconds is slow sql
     protected long                    slowSqlMillis              = 3 * 1000;
 
@@ -111,10 +108,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public void setConnectionStackTraceEnable(boolean connectionStackTraceEnable) {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
-    }
-
-    public long getResetCount() {
-        return resetCount.get();
     }
 
     public boolean isMergeSql() {
@@ -837,9 +830,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
-        }
-
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
@@ -853,9 +844,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
-        }
-
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
@@ -869,9 +858,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
-        }
-
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
@@ -886,9 +873,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
-        }
-
-        if (obj instanceof Blob) {
+        } else if (obj instanceof Blob) {
             blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
