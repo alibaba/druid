@@ -262,9 +262,9 @@ public class IPAddress implements Cloneable {
                 throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
             }
         } catch (NoSuchElementException ex) {
-            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
         }
 
         return result;

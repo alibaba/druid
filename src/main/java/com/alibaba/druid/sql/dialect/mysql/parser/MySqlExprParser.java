@@ -317,8 +317,8 @@ public class MySqlExprParser extends SQLExprParser {
 
                         if (lexer.token() == Token.FOR) {
                             lexer.nextToken();
-                            SQLExpr _for = expr();
-                            methodInvokeExpr.putAttribute("FOR", _for);
+                            SQLExpr forExpr = expr();
+                            methodInvokeExpr.putAttribute("FOR", forExpr);
                         }
                         break;
                     } else if (lexer.token() == Token.RPAREN) {

@@ -201,11 +201,11 @@ public class SQLStatementParser extends SQLParser {
             }
 
             if (lexer.token() == Token.LPAREN) {
-                char mark_ch = lexer.current();
-                int mark_bp = lexer.bp();
+                char markChar = lexer.current();
+                int markBp = lexer.bp();
                 lexer.nextToken();
                 if (lexer.token() == Token.SELECT) {
-                    lexer.reset(mark_bp, mark_ch, Token.LPAREN);
+                    lexer.reset(markBp, markChar, Token.LPAREN);
                     SQLStatement stmt = parseSelect();
                     statementList.add(stmt);
                     continue;
@@ -471,8 +471,8 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLStatement parseCreate() {
-        char mark_ch = lexer.current();
-        int mark_bp = lexer.bp();
+        char markChar = lexer.current();
+        int markBp = lexer.bp();
 
         accept(Token.CREATE);
 
@@ -489,7 +489,7 @@ public class SQLStatementParser extends SQLParser {
             lexer.nextToken();
             acceptIdentifier("REPLACE");
             if (lexer.token() == Token.PROCEDURE) {
-                lexer.reset(mark_bp, mark_ch, Token.CREATE);
+                lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateProcedure();
             }
 

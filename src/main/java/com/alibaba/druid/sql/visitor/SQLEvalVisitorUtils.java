@@ -299,7 +299,7 @@ public class SQLEvalVisitorUtils {
         try {
             return new SimpleDateFormat(format).parse(text);
         } catch (ParseException e) {
-            throw new DruidRuntimeException("format : " + format + ", value : " + text);
+            throw new DruidRuntimeException("format : " + format + ", value : " + text, e);
         }
     }
 
