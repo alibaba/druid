@@ -58,7 +58,7 @@ public abstract class StatementBase implements Statement {
         this.connection = connection;
     }
 
-    protected void checkOpen() throws SQLException, MockConnectionClosedException {
+    protected void checkOpen() throws SQLException {
         if (closed) {
             throw new SQLException();
         }

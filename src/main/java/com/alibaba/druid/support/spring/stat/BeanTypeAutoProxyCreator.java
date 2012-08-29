@@ -52,7 +52,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
         this.targetBeanType = targetClass;
     }
 
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void setApplicationContext(ApplicationContext context) {
         this.context = context;
     }
 
