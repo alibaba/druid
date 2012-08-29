@@ -62,16 +62,19 @@ public final class  HexBin {
      * @return return encoded string
      */
     static public String encode(byte[] binaryData) {
-        if (binaryData == null)
+        if (binaryData == null) {
             return null;
+        }
+        
         int lengthData   = binaryData.length;
         int lengthEncode = lengthData * 2;
         char[] encodedData = new char[lengthEncode];
         int temp;
         for (int i = 0; i < lengthData; i++) {
             temp = binaryData[i];
-            if (temp < 0)
+            if (temp < 0) {
                 temp += 256;
+            }
             encodedData[i*2] = lookUpHexAlphabet[temp >> 4];
             encodedData[i*2+1] = lookUpHexAlphabet[temp & 0xf];
         }
@@ -85,11 +88,14 @@ public final class  HexBin {
      * @return return array of byte to encode
      */
     static public byte[] decode(String encoded) {
-        if (encoded == null)
+        if (encoded == null) {
             return null;
+        }
+        
         int lengthData = encoded.length();
-        if (lengthData % 2 != 0)
+        if (lengthData % 2 != 0) {
             return null;
+        }
 
         char[] binaryData = encoded.toCharArray();
         int lengthDecode = lengthData / 2;
@@ -99,12 +105,14 @@ public final class  HexBin {
         for( int i = 0; i<lengthDecode; i++ ){
             tempChar = binaryData[i*2];
             temp1 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
-            if (temp1 == -1)
+            if (temp1 == -1) {
                 return null;
+            }
             tempChar = binaryData[i*2+1];
             temp2 = (tempChar < BASELENGTH) ? hexNumberTable[tempChar] : -1;
-            if (temp2 == -1)
+            if (temp2 == -1) {
                 return null;
+            }
             decodedData[i] = (byte)((temp1 << 4) | temp2);
         }
         return decodedData;

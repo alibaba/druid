@@ -103,8 +103,9 @@ public class ThreadLocalRandom extends Random {
      * @throws UnsupportedOperationException always
      */
     public void setSeed(long seed) {
-        if (initialized)
+        if (initialized) {
             throw new UnsupportedOperationException();
+        }
         rnd = (seed ^ multiplier) & mask;
     }
 
@@ -124,8 +125,9 @@ public class ThreadLocalRandom extends Random {
      * @return the next value
      */
     public int nextInt(int least, int bound) {
-        if (least >= bound)
+        if (least >= bound) {
             throw new IllegalArgumentException();
+        }
         return nextInt(bound - least) + least;
     }
 
@@ -139,8 +141,9 @@ public class ThreadLocalRandom extends Random {
      * @throws IllegalArgumentException if n is not positive
      */
     public long nextLong(long n) {
-        if (n <= 0)
+        if (n <= 0) {
             throw new IllegalArgumentException("n must be positive");
+        }
         // Divide n by two until small enough for nextInt. On each
         // iteration (at most 31 of them but usually much less),
         // randomly choose both whether to include high bit in result
@@ -169,8 +172,9 @@ public class ThreadLocalRandom extends Random {
      * to bound
      */
     public long nextLong(long least, long bound) {
-        if (least >= bound)
+        if (least >= bound) {
             throw new IllegalArgumentException();
+        }
         return nextLong(bound - least) + least;
     }
 
@@ -184,8 +188,9 @@ public class ThreadLocalRandom extends Random {
      * @throws IllegalArgumentException if n is not positive
      */
     public double nextDouble(double n) {
-        if (n <= 0)
+        if (n <= 0) {
             throw new IllegalArgumentException("n must be positive");
+        }
         return nextDouble() * n;
     }
 
@@ -200,8 +205,9 @@ public class ThreadLocalRandom extends Random {
      * to bound
      */
     public double nextDouble(double least, double bound) {
-        if (least >= bound)
+        if (least >= bound) {
             throw new IllegalArgumentException();
+        }
         return nextDouble() * (bound - least) + least;
     }
 

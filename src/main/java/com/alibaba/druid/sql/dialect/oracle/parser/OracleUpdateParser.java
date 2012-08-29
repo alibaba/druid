@@ -67,7 +67,9 @@ public class OracleUpdateParser extends SQLStatementParser {
     }
 
     private void parseErrorLoging(OracleUpdateStatement update) throws ParserException {
-        if (identifierEquals("LOG")) throw new ParserException("TODO");
+        if (identifierEquals("LOG")) {
+            throw new ParserException("TODO");
+        }
     }
 
     private void parseReturn(OracleUpdateStatement update) throws ParserException {

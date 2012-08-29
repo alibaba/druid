@@ -32,7 +32,9 @@ public class Option {
     }
 
     public static boolean isPrintHelp(String[] args) {
-        if (args == null ) return true;
+        if (args == null ) {
+            return true;
+        }
         for (String arg: args) {
             if (arg.equals("-help") ) {
                 return true;
