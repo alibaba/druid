@@ -941,9 +941,9 @@ public class Lexer {
         return this.ch;
     }
 
-    public void reset(int mark, char mark_ch, Token token) {
+    public void reset(int mark, char markChar, Token token) {
         this.bp = mark;
-        this.ch = mark_ch;
+        this.ch = markChar;
         this.token = token;
     }
 

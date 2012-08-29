@@ -56,11 +56,7 @@ public class CobarFailureDetecter extends DefaultDataSourceFailureDetecter {
 
             String status = rs.getString(1);
 
-            if ("on".equalsIgnoreCase(status)) {
-                return true;
-            } else {
-                return false;
-            }
+            return "on".equalsIgnoreCase(status);
         } catch (Exception ex) {
             LOG.error("check datasource valid errror", ex);
             return false;

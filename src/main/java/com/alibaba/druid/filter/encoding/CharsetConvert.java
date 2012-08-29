@@ -73,11 +73,7 @@ public class CharsetConvert {
      * @return boolean
      */
     public boolean isEmpty(String s) {
-        if (s == null || "".equals(s)) {
-            return true;
-        } else {
-            return false;
-        }
+        return s == null || "".equals(s);
     }
 
 }
