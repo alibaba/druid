@@ -72,7 +72,7 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleSelectParser extends SQLSelectParser {
 
     public OracleSelectParser(String sql){
-        super (new OracleExprParser(sql));
+        super(new OracleExprParser(sql));
     }
 
     public OracleSelectParser(SQLExprParser exprParser){
@@ -194,8 +194,9 @@ public class OracleSelectParser extends SQLSelectParser {
             if (identifierEquals("READ")) {
                 lexer.nextToken();
 
-                if (identifierEquals("ONLY")) lexer.nextToken();
-                else {
+                if (identifierEquals("ONLY")) {
+                    lexer.nextToken();
+                } else {
                     throw new ParserException("syntax error");
                 }
 
@@ -203,8 +204,9 @@ public class OracleSelectParser extends SQLSelectParser {
             } else if (lexer.token() == (Token.CHECK)) {
                 lexer.nextToken();
 
-                if (identifierEquals("OPTION")) lexer.nextToken();
-                else {
+                if (identifierEquals("OPTION")) {
+                    lexer.nextToken();
+                } else {
                     throw new ParserException("syntax error");
                 }
 
@@ -348,7 +350,6 @@ public class OracleSelectParser extends SQLSelectParser {
             model.setReturnRowsClause(returnRowsClause);
         }
 
-        
         while (identifierEquals("REFERENCE")) {
             ReferenceModelClause referenceModelClause = new ReferenceModelClause();
             lexer.nextToken();

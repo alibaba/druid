@@ -73,9 +73,9 @@ public class PGExprParser extends SQLExprParser{
 
             over.setOrderBy(parseOrderBy());
             
-            if (over.getOrderBy() != null) {
-            	//TODO window
-            }
+            // if (over.getOrderBy() != null) {
+            // //TODO window
+            // }
         	
         	accept(Token.RPAREN);
         	aggregateExpr.setOver(over);

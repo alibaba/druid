@@ -27,9 +27,7 @@ public class OracleCommitStatement extends OracleStatementImpl {
 
     @Override
     public void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-
-        }
+        visitor.visit(this);
         visitor.endVisit(this);
     }
 

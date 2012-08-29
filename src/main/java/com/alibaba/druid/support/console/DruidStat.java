@@ -117,9 +117,7 @@ public class DruidStat {
         try {
             vm = VirtualMachine.attach(name);
         } catch (AttachNotSupportedException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         }
 
         String home = vm.getSystemProperties().getProperty("java.home");
@@ -141,13 +139,9 @@ public class DruidStat {
         try {
             vm.loadAgent(agent, "com.sun.management.jmxremote");
         } catch (AgentLoadException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         } catch (AgentInitializationException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         }
 
         // get the connector address

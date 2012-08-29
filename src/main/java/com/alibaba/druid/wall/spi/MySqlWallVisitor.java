@@ -126,7 +126,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         WallVisitorUtils.checkDelete(this, x);
         return true;
     }
-    
+
     @Override
     public boolean visit(MySqlUpdateStatement x) {
         return visit((SQLUpdateStatement) x);
@@ -241,21 +241,22 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return;
         }
 
+        boolean allow = false;
         if (x instanceof SQLInsertStatement) {
-
+            allow = true;
         } else if (x instanceof SQLSelectStatement) {
-
+            allow = true;
         } else if (x instanceof SQLDeleteStatement) {
-
+            allow = true;
         } else if (x instanceof SQLUpdateStatement) {
-            
+            allow = true;
         } else if (x instanceof SQLCallStatement) {
-
+            allow = true;
         } else if (x instanceof SQLTruncateStatement) {
-            if (!config.isTruncateAllow()) {
-                violations.add(new IllegalSQLObjectViolation(toSQL(x)));
-            }
-        } else {
+            allow = config.isTruncateAllow();
+        }
+        
+        if (!allow) {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
     }

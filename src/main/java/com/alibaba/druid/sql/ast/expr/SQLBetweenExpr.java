@@ -50,8 +50,9 @@ public class SQLBetweenExpr extends SQLExprImpl implements Serializable {
 
     public void output(StringBuffer buf) {
         this.testExpr.output(buf);
-        if (this.not) buf.append(" NOT BETWEEN ");
-        else {
+        if (this.not) {
+            buf.append(" NOT BETWEEN ");
+        } else {
             buf.append(" BETWEEN ");
         }
         this.beginExpr.output(buf);

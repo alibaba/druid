@@ -251,7 +251,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
         for (;;) {
             long max = updateCountMax.get();
-            if (delta <= max) break;
+            if (delta <= max) {
+                break;
+            }
             if (updateCountMax.compareAndSet(max, delta)) {
                 break;
             }
@@ -307,19 +309,19 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void addReadBytesLength(long length) {
         this.readBytesLength.addAndGet(length);
     }
-    
+
     public long getReaderOpenCount() {
         return readerOpenCount.get();
     }
-    
+
     public void addReaderOpenCount(int count) {
         this.readerOpenCount.addAndGet(count);
     }
-    
+
     public long getInputStreamOpenCount() {
         return inputStreamOpenCount.get();
     }
-    
+
     public void addInputStreamOpenCount(int count) {
         this.inputStreamOpenCount.addAndGet(count);
     }
@@ -366,7 +368,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.fetchRowCount.addAndGet(delta);
         for (;;) {
             long max = fetchRowCountMax.get();
-            if (delta <= max) break;
+            if (delta <= max) {
+                break;
+            }
             if (fetchRowCountMax.compareAndSet(max, delta)) {
                 break;
             }
