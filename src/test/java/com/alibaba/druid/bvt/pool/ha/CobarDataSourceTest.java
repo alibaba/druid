@@ -32,10 +32,17 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.cobar.CobarConfigLoader;
 import com.alibaba.druid.pool.ha.cobar.CobarDataSource;
 import com.alibaba.druid.pool.ha.cobar.CobarFailureDetecter;
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class CobarDataSourceTest extends TestCase {
-
+    protected void setUp() throws Exception {
+        for (DruidDataSource item : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            JdbcUtils.close(item);
+        }
+    }
+    
     public void test_cobarDataSource() throws Exception {
         String url = "jdbc:cobar://127.0.0.1:8080/druid";
 
