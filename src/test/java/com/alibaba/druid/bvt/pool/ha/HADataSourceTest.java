@@ -27,6 +27,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HADataSource;
 import com.alibaba.druid.pool.ha.MultiDataSourceStatement;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class HADataSourceTest extends TestCase {
 
@@ -36,6 +37,10 @@ public class HADataSourceTest extends TestCase {
     private HADataSource    dataSourceHA;
 
     protected void setUp() throws Exception {
+        for (DruidDataSource item : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            JdbcUtils.close(item);
+        }
+        
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
         
         dataSourceA = new DruidDataSource();
