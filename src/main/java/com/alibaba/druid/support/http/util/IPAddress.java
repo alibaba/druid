@@ -118,7 +118,7 @@ public class IPAddress implements Cloneable {
      * @exception InvalidIPAddressException Throws this exception when the specified string doesn't represent a valid IP
      * address.
      */
-    public IPAddress(String ipAddressStr) {
+    public IPAddress(String ipAddressStr){
         ipAddress = parseIPAddress(ipAddressStr);
     }
 
@@ -212,7 +212,7 @@ public class IPAddress implements Cloneable {
      * @exception InvalidIPAddressException Throws this exception if the specified IP address is not compliant to the
      * decimal-dotted notation xxx.xxx.xxx.xxx.
      */
-    protected int parseIPAddress(String ipAddressStr) {
+    final int parseIPAddress(String ipAddressStr) {
         int result = 0;
 
         if (ipAddressStr == null) {
@@ -227,7 +227,7 @@ public class IPAddress implements Cloneable {
             for (int i = 0; i < 3; i++) {
 
                 // get the position of the first dot
-                int index = tmp.indexOf(".");
+                int index = tmp.indexOf('.');
 
                 // if there is not a dot then the ip string representation is
                 // not compliant to the decimal-dotted notation.
@@ -262,50 +262,22 @@ public class IPAddress implements Cloneable {
                 throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
             }
         } catch (NoSuchElementException ex) {
-            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]");
+            throw new IllegalArgumentException("Invalid IP Address [" + ipAddressStr + "]", ex);
         }
 
         return result;
     }
 
-    // -------------------------------------------------------------------------
-    /**
-     * Compare the specified IP address to the encapsulated one.
-     * 
-     * @param another The IP address to be compared.
-     * @return Return <code>true</code> if the encapsulated IP address is the same as the specified one, otherwise
-     * return <code>false</code>.
-     */
+    public int hashCode() {
+        return this.ipAddress;
+    }
+
     public boolean equals(Object another) {
         if (another instanceof IPAddress) {
             return ipAddress == ((IPAddress) another).ipAddress;
         }
         return false;
-    }
-
-    // -------------------------------------------------------------------------
-    /**
-     * Clone the encapsulated IP address.
-     * 
-     * @return Return a new object representing the encapsulated IP address.
-     */
-    public Object clone() {
-        return new IPAddress(ipAddress);
-    }
-
-    public static void main(String[] args) {
-
-        System.out.println(Integer.toBinaryString(255));
-
-        // try {//"192.168.1.1"
-        // IPAddress ip = new IPAddress(Integer.toBinaryString(3));
-        // System.out.println(ip.getIPAddress());
-        // System.out.println(ip.toString());
-        // System.out.println(ip.parseIPAddress("192.168.4.4"));
-        // } catch (InvalidIPAddressException e) {
-        // e.printStackTrace();
-        // }
     }
 }

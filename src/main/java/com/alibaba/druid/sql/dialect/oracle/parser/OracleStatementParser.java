@@ -130,11 +130,11 @@ public class OracleStatementParser extends SQLStatementParser {
     }
 
     @Override
-    public void parseStatementList(List<SQLStatement> statementList) throws ParserException {
+    public void parseStatementList(List<SQLStatement> statementList) {
         parseStatementList(statementList, -1);
     }
 
-    public void parseStatementList(List<SQLStatement> statementList, int max) throws ParserException {
+    public void parseStatementList(List<SQLStatement> statementList, int max) {
         for (;;) {
             if (max != -1) {
                 if (statementList.size() >= max) {
@@ -1106,7 +1106,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return new OracleSelectParser(this.exprParser);
     }
 
-    public OracleMergeStatement parseMerge() throws ParserException {
+    public OracleMergeStatement parseMerge() {
         accept(Token.MERGE);
 
         OracleMergeStatement stmt = new OracleMergeStatement();
@@ -1410,7 +1410,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public OracleDeleteStatement parseDeleteStatement() throws ParserException {
+    public OracleDeleteStatement parseDeleteStatement() {
         OracleDeleteStatement deleteStatement = new OracleDeleteStatement();
 
         if (lexer.token() == Token.DELETE) {
@@ -1595,7 +1595,7 @@ public class OracleStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+    public SQLUpdateStatement parseUpdateStatement() {
         return new OracleUpdateParser(this.lexer).parseUpdateStatement();
     }
 }

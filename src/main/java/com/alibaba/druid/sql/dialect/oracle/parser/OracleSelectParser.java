@@ -72,7 +72,7 @@ import com.alibaba.druid.sql.parser.Token;
 public class OracleSelectParser extends SQLSelectParser {
 
     public OracleSelectParser(String sql){
-        super (new OracleExprParser(sql));
+        super(new OracleExprParser(sql));
     }
 
     public OracleSelectParser(SQLExprParser exprParser){
@@ -194,8 +194,9 @@ public class OracleSelectParser extends SQLSelectParser {
             if (identifierEquals("READ")) {
                 lexer.nextToken();
 
-                if (identifierEquals("ONLY")) lexer.nextToken();
-                else {
+                if (identifierEquals("ONLY")) {
+                    lexer.nextToken();
+                } else {
                     throw new ParserException("syntax error");
                 }
 
@@ -203,8 +204,9 @@ public class OracleSelectParser extends SQLSelectParser {
             } else if (lexer.token() == (Token.CHECK)) {
                 lexer.nextToken();
 
-                if (identifierEquals("OPTION")) lexer.nextToken();
-                else {
+                if (identifierEquals("OPTION")) {
+                    lexer.nextToken();
+                } else {
                     throw new ParserException("syntax error");
                 }
 
@@ -348,7 +350,6 @@ public class OracleSelectParser extends SQLSelectParser {
             model.setReturnRowsClause(returnRowsClause);
         }
 
-        
         while (identifierEquals("REFERENCE")) {
             ReferenceModelClause referenceModelClause = new ReferenceModelClause();
             lexer.nextToken();
@@ -619,7 +620,7 @@ public class OracleSelectParser extends SQLSelectParser {
         }
     }
 
-    protected String as() throws ParserException {
+    protected String as() {
         if (lexer.token() == Token.CONNECT) {
             return null;
         }
@@ -685,7 +686,7 @@ public class OracleSelectParser extends SQLSelectParser {
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
             OracleSelectSubqueryTableSource tableSource;
-            if (lexer.token() == Token.SELECT) {
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
             } else if (lexer.token() == (Token.LPAREN)) {
                 tableSource = new OracleSelectSubqueryTableSource(select());
@@ -965,7 +966,9 @@ public class OracleSelectParser extends SQLSelectParser {
                 item.setAlias(as());
                 pivot.getItems().add(item);
 
-                if (!(lexer.token() == (Token.COMMA))) break;
+                if (!(lexer.token() == (Token.COMMA))) {
+                    break;
+                }
                 lexer.nextToken();
             }
 
@@ -977,7 +980,9 @@ public class OracleSelectParser extends SQLSelectParser {
                     pivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
-                    if (!(lexer.token() == (Token.COMMA))) break;
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
                     lexer.nextToken();
                 }
 
@@ -1047,7 +1052,9 @@ public class OracleSelectParser extends SQLSelectParser {
                     unPivot.getPivotFor().add(new SQLIdentifierExpr(lexer.stringVal()));
                     lexer.nextToken();
 
-                    if (!(lexer.token() == (Token.COMMA))) break;
+                    if (!(lexer.token() == (Token.COMMA))) {
+                        break;
+                    }
                     lexer.nextToken();
                 }
 

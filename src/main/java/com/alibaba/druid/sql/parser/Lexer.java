@@ -178,12 +178,6 @@ public class Lexer {
         token = ERROR;
     }
 
-    /**
-     * Report an error at the current token position using the provided arguments.
-     */
-    private void lexError(String key, Object... args) {
-        lexError(tokenPos, key, args);
-    }
 
     /**
      * Return the current token, set by nextToken().
@@ -376,7 +370,7 @@ public class Lexer {
                         token = EOF;
                         tokenPos = bp = eofPos;
                     } else {
-                        lexError("illegal.char", String.valueOf((int) ch));
+                        lexError(tokenPos, "illegal.char", String.valueOf((int) ch));
                         scanChar();
                     }
 
@@ -814,7 +808,7 @@ public class Lexer {
         token = Token.LITERAL_HEX;
     }
 
-    public String hexString() throws NumberFormatException {
+    public String hexString() {
         return new String(buf, np, sp);
     }
 
@@ -882,7 +876,7 @@ public class Lexer {
     }
 
     // QS_TODO negative number is invisible for lexer
-    public Number integerValue() throws NumberFormatException {
+    public Number integerValue() {
         long result = 0;
         boolean negative = false;
         int i = np, max = np + sp;
@@ -941,9 +935,9 @@ public class Lexer {
         return this.ch;
     }
 
-    public void reset(int mark, char mark_ch, Token token) {
+    public void reset(int mark, char markChar, Token token) {
         this.bp = mark;
-        this.ch = mark_ch;
+        this.ch = markChar;
         this.token = token;
     }
 

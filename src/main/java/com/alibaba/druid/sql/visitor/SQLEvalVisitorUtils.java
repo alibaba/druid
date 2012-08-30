@@ -19,7 +19,6 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -32,7 +31,6 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -64,7 +62,7 @@ public class SQLEvalVisitorUtils {
 
         return sqlObject.getAttributes().get(EVAL_VALUE);
     }
-    
+
     public static Object eval(String dbType, SQLObject sqlObject, List<Object> parameters) {
         return eval(dbType, sqlObject, parameters, true);
     }
@@ -88,15 +86,15 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
-        
+
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlEvalVisitorImpl();
         }
-        
+
         if (JdbcUtils.ORACLE.equals(dbType)) {
             return new OracleEvalVisitor();
         }
-        
+
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGEvalVisitor();
         }
@@ -121,9 +119,42 @@ public class SQLEvalVisitorUtils {
             return false;
         }
 
-        if (SQLBinaryOperator.Add.equals(x.getOperator())) {
-            Object value = _add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
-            x.putAttribute(EVAL_VALUE, value);
+        Object value = null;
+        switch (x.getOperator()) {
+            case Add:
+                value = _add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case Subtract:
+                value = _sub(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case Multiply:
+                value = _multi(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case Divide:
+                value = _div(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case GreaterThan:
+                value = _gt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case GreaterThanOrEqual:
+                value = _gteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case LessThan:
+                value = _lt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case LessThanOrEqual:
+                value = _lteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            default:
+                break;
         }
 
         return false;
@@ -133,9 +164,9 @@ public class SQLEvalVisitorUtils {
         if (!"?".equals(x.getName())) {
             return false;
         }
-        
+
         Map<String, Object> attributes = x.getAttributes();
-        
+
         int varIndex = x.getIndex();
 
         if (varIndex != -1 && visitor.getParameters().size() > varIndex) {
@@ -299,7 +330,7 @@ public class SQLEvalVisitorUtils {
         try {
             return new SimpleDateFormat(format).parse(text);
         } catch (ParseException e) {
-            throw new DruidRuntimeException("format : " + format + ", value : " + text);
+            throw new DruidRuntimeException("format : " + format + ", value : " + text, e);
         }
     }
 
@@ -364,21 +395,6 @@ public class SQLEvalVisitorUtils {
     }
 
     public static Object _div(Object a, Object b) {
-        if (a == null || b == null) {
-            return null;
-        }
-
-        BigDecimal decimalA = _decimal(a);
-        BigDecimal decimalB = _decimal(b);
-
-        try {
-            return decimalA.divide(decimalB);
-        } catch (ArithmeticException ex) {
-            return decimalA.divide(decimalB, 4, RoundingMode.CEILING);
-        }
-    }
-
-    public static Object _div2(Object a, Object b) {
         if (a == null || b == null) {
             return null;
         }
@@ -607,6 +623,14 @@ public class SQLEvalVisitorUtils {
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return _bigInt(a).add(_bigInt(b));
         }
+        
+        if (a instanceof Double || b instanceof Double) {
+            return _double(a) + _double(b);
+        }
+        
+        if (a instanceof Float || b instanceof Float) {
+            return _float(a) + _float(b);
+        }
 
         if (a instanceof Long || b instanceof Long) {
             return _long(a) + _long(b);
@@ -646,6 +670,14 @@ public class SQLEvalVisitorUtils {
 
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return _bigInt(a).subtract(_bigInt(b));
+        }
+        
+        if (a instanceof Double || b instanceof Double) {
+            return _double(a) - _double(b);
+        }
+        
+        if (a instanceof Float || b instanceof Float) {
+            return _float(a) - _float(b);
         }
 
         if (a instanceof Long || b instanceof Long) {

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.support.console;
 
+import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -61,29 +62,55 @@ public class DruidStat {
     @SuppressWarnings("all")
     public static void printDruidStat(Option option) throws Exception {
 
-        String address = loadManagementAgentAndGetAddress(option.getVmid());
+        String address = loadManagementAgentAndGetAddress(option.getPid());
         JMXServiceURL jmxUrl = new JMXServiceURL(address);
         JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl);
         MBeanServerConnection jmxConn = jmxc.getMBeanServerConnection();
 
-
-        if (option.printSqlData()) {
-            List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.SQL);
-            TabledDataPrinter.printSqlData(content, option);
-        }
         if (option.printDataSourceData()) {
             List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.DATA_SOURCE);
             TabledDataPrinter.printDataSourceData(content, option);
         }
+        
+        if (option.printSqlData()) {
+            List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.SQL);
+			if (content == null ) { 
+				System.out.println("无SqlStat统计数据,请检查是否已执行了SQL");
+			} else {
+				TabledDataPrinter.printSqlData(content, option);
+			}
+        }
+       
         if (option.printActiveConn()) {
             List<List<String>> content = (List<List<String>>) invokeService(jmxConn, Option.ACTIVE_CONN);
-            TabledDataPrinter.printActiveConnStack(content, option);
+			if (content == null || content.size() == 0 ) {
+				System.out.println("目前无活动中的数据库连接");
+			} else {
+				TabledDataPrinter.printActiveConnStack(content, option);
+			}
         }
         
     }
 
     @SuppressWarnings("all")
-    private static Object invokeService(MBeanServerConnection jmxConn, int dataType) throws Exception {
+	public static List<Integer> getDataSourceIds(Option option) throws Exception{
+		String address = loadManagementAgentAndGetAddress(option.getPid());
+        JMXServiceURL jmxUrl = new JMXServiceURL(address);
+        JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl);
+        MBeanServerConnection jmxConn = jmxc.getMBeanServerConnection();
+		List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.DATA_SOURCE);
+		TabledDataPrinter.printDataSourceData(content, option);
+
+		List<Integer> result = new ArrayList<Integer>();
+		for (Map<String, Object> dsStat : content) {
+			Integer id = (Integer)dsStat.get("Identity");
+			result.add(id);
+		}
+		return result;
+	}
+
+    @SuppressWarnings("all")
+    public static Object invokeService(MBeanServerConnection jmxConn, int dataType) throws Exception {
             String url = Option.getUrl(dataType);
             ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
             String result = (String) jmxConn.invoke(name, "service", new String[] { url }, new String[] { String.class.getName() });
@@ -98,9 +125,7 @@ public class DruidStat {
         try {
             vm = VirtualMachine.attach(name);
         } catch (AttachNotSupportedException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         }
 
         String home = vm.getSystemProperties().getProperty("java.home");
@@ -122,13 +147,9 @@ public class DruidStat {
         try {
             vm.loadAgent(agent, "com.sun.management.jmxremote");
         } catch (AgentLoadException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         } catch (AgentInitializationException x) {
-            IOException ioe = new IOException(x.getMessage());
-            ioe.initCause(x);
-            throw ioe;
+            throw new IOException(x.getMessage(), x);
         }
 
         // get the connector address

@@ -46,7 +46,6 @@ import java.util.Properties;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.proxy.config.AbstractDruidFilterConfig;
 import com.alibaba.druid.proxy.jdbc.CallableStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ClobProxy;
 import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
@@ -1277,8 +1276,6 @@ public interface Filter {
 
     void clob_truncate(FilterChain chain, ClobProxy wrapper, long len) throws SQLException;
 
-    void loadConfig(AbstractDruidFilterConfig druidFilterConfig);
-    
     void dataSource_releaseConnection(FilterChain chain, DruidPooledConnection connection) throws SQLException;
     
     DruidPooledConnection dataSource_getConnection(FilterChain chain, DruidDataSource dataSource, long maxWaitMillis) throws SQLException;

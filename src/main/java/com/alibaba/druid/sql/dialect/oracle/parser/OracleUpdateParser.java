@@ -27,7 +27,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class OracleUpdateParser extends SQLStatementParser {
 
-    public OracleUpdateParser(String sql) throws ParserException{
+    public OracleUpdateParser(String sql) {
         super(new OracleExprParser(sql));
     }
 
@@ -35,7 +35,7 @@ public class OracleUpdateParser extends SQLStatementParser {
         super(new OracleExprParser(lexer));
     }
 
-    public OracleUpdateStatement parseUpdateStatement() throws ParserException {
+    public OracleUpdateStatement parseUpdateStatement() {
         OracleUpdateStatement update = new OracleUpdateStatement();
         
         if (lexer.token() == Token.UPDATE) {
@@ -66,11 +66,13 @@ public class OracleUpdateParser extends SQLStatementParser {
         return update;
     }
 
-    private void parseErrorLoging(OracleUpdateStatement update) throws ParserException {
-        if (identifierEquals("LOG")) throw new ParserException("TODO");
+    private void parseErrorLoging(OracleUpdateStatement update) {
+        if (identifierEquals("LOG")) {
+            throw new ParserException("TODO");
+        }
     }
 
-    private void parseReturn(OracleUpdateStatement update) throws ParserException {
+    private void parseReturn(OracleUpdateStatement update) {
         if (identifierEquals("RETURN") || lexer.token() == Token.RETURNING) {
             lexer.nextToken();
 
@@ -102,20 +104,20 @@ public class OracleUpdateParser extends SQLStatementParser {
         }
     }
 
-    private void parseHints(OracleUpdateStatement update) throws ParserException {
+    private void parseHints(OracleUpdateStatement update) {
         if (lexer.token() == Token.HINT) {
             throw new ParserException("TODO");
         }
     }
 
-    private void parseWhere(OracleUpdateStatement update) throws ParserException {
+    private void parseWhere(OracleUpdateStatement update) {
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
             update.setWhere(this.exprParser.expr());
         }
     }
 
-    private void parseSet(OracleUpdateStatement update) throws ParserException {
+    private void parseSet(OracleUpdateStatement update) {
         accept(Token.SET);
 
         for (;;) {

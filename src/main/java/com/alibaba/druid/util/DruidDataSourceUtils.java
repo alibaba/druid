@@ -44,6 +44,21 @@ public class DruidDataSourceUtils {
         }
     }
     
+    public static long getID(Object druidDatasource) {
+        if (druidDatasource.getClass() == DruidDataSource.class) {
+            return ((DruidDataSource) druidDatasource).getID();
+        }
+        
+        try {
+            Method method = druidDatasource.getClass().getMethod("getID");
+            Object obj = method.invoke(druidDatasource);
+            return (Long) obj;
+        } catch (Exception e) {
+            LOG.error("getID error", e);
+            return -1;
+        }
+    }
+    
     public static String getName(Object druidDatasource) {
         if (druidDatasource.getClass() == DruidDataSource.class) {
             return ((DruidDataSource) druidDatasource).getName();

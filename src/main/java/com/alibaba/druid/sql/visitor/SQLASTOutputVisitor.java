@@ -187,8 +187,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public void printIndent() {
-        for (int i = 0; i < this.indentCount; ++i)
+        for (int i = 0; i < this.indentCount; ++i) {
             print(this.indent);
+        }
     }
 
     public void println() {
@@ -245,7 +246,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         for (int i = groupList.size() - 1; i >= 0; --i) {
             SQLExpr item = groupList.get(i);
             visitBinaryLeft(item, x.getOperator());
-            
+
             if (relational) {
                 println();
             } else {
@@ -254,7 +255,6 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(x.getOperator().name);
             print(" ");
         }
-
 
         visitorBinaryRight(x);
 
@@ -376,8 +376,9 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLExistsExpr x) {
-        if (x.isNot()) print("NOT EXISTS (");
-        else {
+        if (x.isNot()) {
+            print("NOT EXISTS (");
+        } else {
             print("EXISTS (");
         }
         incrementIndent();
@@ -426,12 +427,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAggregateExpr x) {
         print(x.getMethodName());
         print("(");
-        
+
         if (x.getOption() != null) {
             print(x.getOption().toString());
             print(' ');
         }
-        
+
         printAndAccept(x.getArguments(), ", ");
         print(")");
         return false;
@@ -1123,7 +1124,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print("*/");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLCreateDatabaseStatement x) {
         print("CREATE DATABASE ");

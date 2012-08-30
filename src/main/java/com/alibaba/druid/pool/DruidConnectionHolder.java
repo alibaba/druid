@@ -70,8 +70,9 @@ public final class DruidConnectionHolder {
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
-            if ("com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName()))
-            ;
+            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) {
+                throw e;
+            }
         }
 
         this.defaultHoldability = underlyingHoldability;
@@ -214,10 +215,9 @@ public final class DruidConnectionHolder {
             buf.append("\"");
         }
 
-        PreparedStatementPool statmentPool = this.getStatementPool();
-        if (statmentPool != null && statmentPool.getMap().size() > 0) {
+        if (statementPool != null && statementPool.getMap().size() > 0) {
             buf.append("\", CachedStatementCount:");
-            buf.append(this.getStatementPool().getMap().size());
+            buf.append(statementPool.getMap().size());
         }
 
         buf.append("}");

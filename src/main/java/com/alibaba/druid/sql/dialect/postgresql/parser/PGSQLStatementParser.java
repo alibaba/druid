@@ -40,7 +40,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class PGSQLStatementParser extends SQLStatementParser {
 
-    public PGSQLStatementParser(String sql) throws ParserException{
+    public PGSQLStatementParser(String sql) {
         super (new PGExprParser(sql));
     }
 
@@ -52,7 +52,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return new PGSelectParser(this.exprParser);
     }
 
-    public SQLUpdateStatement parseUpdateStatement() throws ParserException {
+    public SQLUpdateStatement parseUpdateStatement() {
         accept(Token.UPDATE);
 
         PGUpdateStatement udpateStatement = new PGUpdateStatement();
@@ -150,7 +150,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return stmt;
     }
 
-    public PGDeleteStatement parseDeleteStatement() throws ParserException {
+    public PGDeleteStatement parseDeleteStatement() {
         lexer.nextToken();
         PGDeleteStatement deleteStatement = new PGDeleteStatement();
 
@@ -329,7 +329,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         return withQuery;
     }
 
-    public PGSelectStatement parseSelect() throws ParserException {
+    public PGSelectStatement parseSelect() {
         return new PGSelectStatement(createSQLSelectParser().select());
     }
 

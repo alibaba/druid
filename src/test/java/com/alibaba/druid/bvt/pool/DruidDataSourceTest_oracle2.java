@@ -45,6 +45,14 @@ public class DruidDataSourceTest_oracle2 extends TestCase {
         Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
 
         dataSource.setUseOracleImplicitCache(true);
+        dataSource.setUseOracleImplicitCache(true);
         Assert.assertEquals("true", dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        
+        dataSource.setUseOracleImplicitCache(false);
+        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
+        dataSource.setDriver(null);
+        
+        dataSource.setUseOracleImplicitCache(true);
+        Assert.assertNull(dataSource.getConnectProperties().get("oracle.jdbc.FreeMemoryOnEnterImplicitCache"));
     }
 }

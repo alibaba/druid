@@ -30,7 +30,7 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
 
     private static final long                  serialVersionUID = 1L;
 
-    private final List<SQLCommentHint>                hints            = new ArrayList<SQLCommentHint>(1);
+    private final List<SQLCommentHint>         hints            = new ArrayList<SQLCommentHint>(1);
 
     private OracleSelectHierachicalQueryClause hierachicalQueryClause;
     private ModelClause                        modelClause;
@@ -93,9 +93,11 @@ public class OracleSelectQueryBlock extends SQLSelectQueryBlock {
     public void output(StringBuffer buf) {
         buf.append("SELECT ");
 
-        if (SQLSetQuantifier.ALL == this.distionOption) buf.append("ALL ");
-        else if (SQLSetQuantifier.DISTINCT == this.distionOption) buf.append("DISTINCT ");
-        else if (SQLSetQuantifier.UNIQUE == this.distionOption) {
+        if (SQLSetQuantifier.ALL == this.distionOption) {
+            buf.append("ALL ");
+        } else if (SQLSetQuantifier.DISTINCT == this.distionOption) {
+            buf.append("DISTINCT ");
+        } else if (SQLSetQuantifier.UNIQUE == this.distionOption) {
             buf.append("UNIQUE ");
         }
 

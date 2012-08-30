@@ -45,7 +45,7 @@ import com.alibaba.druid.util.StringUtils;
  * 
  * @author sandzhang<sandzhangtoo@gmail.com>
  */
-public class DruidStatManagerFacade {
+public final class DruidStatManagerFacade {
 
     private final static DruidStatManagerFacade instance    = new DruidStatManagerFacade();
     private boolean                             resetEnable = true;
@@ -133,9 +133,13 @@ public class DruidStatManagerFacade {
         return null;
     }
 
-    public List<Map<String, Object>> getSqlStatDataList() {
+    public List<Map<String, Object>> getSqlStatDataList(Integer dataSourceId) {
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         for (Object datasource : getDruidDataSourceInstances()) {
+            if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
+                continue;
+            }
+            
             for (Object sqlStat : DruidDataSourceUtils.getSqlStatMap(datasource).values()) {
 
                 Map<String, Object> data = JdbcSqlStatUtils.getData(sqlStat);
@@ -179,7 +183,9 @@ public class DruidStatManagerFacade {
         List<List<String>> traceList = new ArrayList<List<String>>();
         for (Object dataSource : getDruidDataSourceInstances()) {
             List<String> stacks = ((DruidDataSource) dataSource).getActiveConnectionStackTrace();
-            traceList.add(stacks);
+			if (stacks.size() > 0 ) {
+				traceList.add(stacks);
+			}
         }
         return traceList;
     }

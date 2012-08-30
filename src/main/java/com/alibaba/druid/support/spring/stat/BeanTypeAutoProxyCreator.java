@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -52,7 +51,7 @@ public class BeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implement
         this.targetBeanType = targetClass;
     }
 
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
+    public void setApplicationContext(ApplicationContext context) {
         this.context = context;
     }
 

@@ -18,7 +18,7 @@ public class DruidConnectionHolderTest extends TestCase {
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mock:xxx");
         dataSource.setTestOnBorrow(false);
-        dataSource.setPoolPreparedStatements(true);
+        dataSource.setInitialSize(1);
         dataSource.getProxyFilters().add(new FilterAdapter() {
 
             public int connection_getTransactionIsolation(FilterChain chain, ConnectionProxy connection)
@@ -34,7 +34,8 @@ public class DruidConnectionHolderTest extends TestCase {
     }
 
     public void test_mysqlSyntaxError() throws Exception {
-        Connection conn = dataSource.getConnection();
-        conn.close();
+        dataSource.init();
+        
+        dataSource.getConnection();
     }
 }

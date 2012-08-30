@@ -403,7 +403,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 // 初始化连接
                 for (int i = 0, size = getInitialSize(); i < size; ++i) {
                     Connection conn = createPhysicalConnection();
-                    connections[poolingCount++] = new DruidConnectionHolder(this, conn);
+                    DruidConnectionHolder holder = new DruidConnectionHolder(this, conn);
+                    connections[poolingCount++] = holder;
                 }
 
                 if (poolingCount > 0) {
@@ -536,7 +537,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
             if (!this.isTestWhileIdle()) {
-                if (LOG.isWarnEnabled()) LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
+                }
             }
         }
     }
@@ -815,7 +818,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 discardConnection(holder.getConnection());
                 return;
             }
-            
+
             final long lastActiveTimeMillis = System.currentTimeMillis();
             lock.lockInterruptibly();
             try {
@@ -1173,9 +1176,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     continue;
                 }
 
+                DruidConnectionHolder holder = null;
+                try {
+                    holder = new DruidConnectionHolder(DruidDataSource.this, connection);
+                } catch (SQLException ex) {
+                    LOG.error("create connection holder error", ex);
+                    break;
+                }
+                
                 lock.lock();
                 try {
-                    connections[poolingCount++] = new DruidConnectionHolder(DruidDataSource.this, connection);
+                    connections[poolingCount++] = holder;
 
                     if (poolingCount > poolingPeak) {
                         poolingPeak = poolingCount;
@@ -1186,9 +1197,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                     notEmpty.signal();
                     notEmptySignalCount++;
-                } catch (SQLException ex) {
-                    LOG.error("create connection holder error", ex);
-                    break;
                 } finally {
                     lock.unlock();
                 }
@@ -1209,6 +1217,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (;;) {
                 // 从前面开始删除
                 try {
+                    if (closed) {
+                        break;
+                    }
+
                     if (timeBetweenEvictionRunsMillis > 0) {
                         Thread.sleep(timeBetweenEvictionRunsMillis);
                     } else {
@@ -1521,30 +1533,28 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     buf.append(System.identityHashCode(conn.getConnection()));
                     PreparedStatementPool pool = conn.getStatementPool();
 
-                    if (pool != null) {
-                        buf.append(", \n\tpoolStatements:[");
+                    buf.append(", \n\tpoolStatements:[");
 
-                        int entryIndex = 0;
-                        try {
-                            for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
-                                if (entryIndex != 0) {
-                                    buf.append(",");
-                                }
-                                buf.append("\n\t\t{hitCount:");
-                                buf.append(entry.getValue().getHitCount());
-                                buf.append(",sql:\"");
-                                buf.append(entry.getKey().getSql());
-                                buf.append("\"");
-                                buf.append("\t}");
-
-                                entryIndex++;
+                    int entryIndex = 0;
+                    try {
+                        for (Map.Entry<PreparedStatementKey, PreparedStatementHolder> entry : pool.getMap().entrySet()) {
+                            if (entryIndex != 0) {
+                                buf.append(",");
                             }
-                        } catch (ConcurrentModificationException e) {
-                            // skip ..
-                        }
+                            buf.append("\n\t\t{hitCount:");
+                            buf.append(entry.getValue().getHitCount());
+                            buf.append(",sql:\"");
+                            buf.append(entry.getKey().getSql());
+                            buf.append("\"");
+                            buf.append("\t}");
 
-                        buf.append("\n\t\t]");
+                            entryIndex++;
+                        }
+                    } catch (ConcurrentModificationException e) {
+                        // skip ..
                     }
+
+                    buf.append("\n\t\t]");
 
                     buf.append("\n\t}");
                 }
@@ -1774,6 +1784,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("ConnectionHoldTimeHistogram", this.getDataSourceStat().getConnectionHoldHistogram().toArray());
         dataMap.put("RemoveAbandoned", this.isRemoveAbandoned());
         dataMap.put("ClobOpenCount", this.getDataSourceStat().getClobOpenCount());
+        dataMap.put("BlobOpenCount", this.getDataSourceStat().getBlobOpenCount());
 
         return dataMap;
     }

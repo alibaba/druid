@@ -50,7 +50,9 @@ public class SQLSelect extends SQLObjectImpl {
         this.query.output(buf);
         buf.append(" ");
 
-        if (this.orderBy != null) this.orderBy.output(buf);
+        if (this.orderBy != null) {
+            this.orderBy.output(buf);
+        }
     }
 
     protected void accept0(SQLASTVisitor visitor) {

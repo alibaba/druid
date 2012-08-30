@@ -193,12 +193,12 @@ public class IPRange {
      * @param range String representation of the IP range.
      * @exception InvalidIPRangeException Throws this exception if the specified range is not a valid IP network range.
      */
-    protected void parseRange(String range) {
+    final void parseRange(String range) {
         if (range == null) {
             throw new IllegalArgumentException("Invalid IP range");
         }
 
-        int index = range.indexOf("/");
+        int index = range.indexOf('/');
         String subnetStr = null;
         if (index == -1) {
             ipAddress = new IPAddress(range);
@@ -226,7 +226,7 @@ public class IPRange {
             // create the corresponding subnet decimal
             extendedNetworkPrefix = computeNetworkPrefixFromMask(ipSubnetMask);
             if (extendedNetworkPrefix == -1) {
-                throw new IllegalArgumentException("Invalid IP range [" + range + "]");
+                throw new IllegalArgumentException("Invalid IP range [" + range + "]", ex);
             }
         }
     }
@@ -257,18 +257,19 @@ public class IPRange {
     }
 
     public static String toDecimalString(String inBinaryIpAddress) {
-        String decimalip = new String();
+        StringBuilder decimalip = new StringBuilder();
         String[] binary = new String[4];
 
         for (int i = 0, c = 0; i < 32; i = i + 8, c++) {
             binary[c] = inBinaryIpAddress.substring(i, i + 8);
             int octet = Integer.parseInt(binary[c], 2);
-            decimalip = decimalip + Integer.toString(octet);
+            decimalip.append(octet);
             if (c < 3) {
-                decimalip = decimalip + ".";
+                
+                decimalip.append('.');
             }
         }
-        return decimalip;
+        return decimalip.toString();
     }
 
     // -------------------------------------------------------------------------

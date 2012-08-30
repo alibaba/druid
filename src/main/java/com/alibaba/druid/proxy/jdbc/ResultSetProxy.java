@@ -43,4 +43,20 @@ public interface ResultSetProxy extends ResultSet, WrapperProxy {
     void setConstructNano();
     
     int getCloseCount();
+    
+    void addReadStringLength(int length);
+    
+    long getReadStringLength();
+    
+    void addReadBytesLength(int length);
+    
+    long getReadBytesLength();
+    
+    void incrementOpenInputStreamCount();
+    
+    int getOpenInputStreamCount();
+    
+    void incrementOpenReaderCount();
+    
+    int getOpenReaderCount();
 }

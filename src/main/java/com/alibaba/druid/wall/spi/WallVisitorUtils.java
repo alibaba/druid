@@ -414,7 +414,7 @@ public class WallVisitorUtils {
 
         if (x instanceof SQLNotExpr) {
             Object result = getValue(((SQLNotExpr) x).getExpr());
-            if (result != null && result instanceof Boolean) {
+            if (result instanceof Boolean) {
                 return !((Boolean) result).booleanValue();
             }
         }

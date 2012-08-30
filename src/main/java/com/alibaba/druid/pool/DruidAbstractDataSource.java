@@ -1378,22 +1378,15 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("StatementExecuteCount", stat.getStatementStat().getExecuteCount());
         map.put("StatementRunningCount", stat.getStatementStat().getRunningCount());
 
-        // 15 -24
+        // 15 - 19
         map.put("StatementConcurrentMax", stat.getStatementStat().getConcurrentMax());
         map.put("StatementCloseCount", stat.getStatementStat().getCloseCount());
         map.put("StatementErrorCount", stat.getStatementStat().getErrorCount());
-        Throwable lastStatementError = stat.getStatementStat().getLastException();
-        if (lastStatementError != null) {
-            map.put("StatementLastErrorTime", stat.getStatementStat().getLastErrorTime());
-            map.put("StatementLastErrorMessage", lastStatementError.getMessage());
+        map.put("StatementLastErrorTime", null);
+        map.put("StatementLastErrorMessage", null);
 
-            map.put("StatementLastErrorStackTrace", IOUtils.getStackTrace(lastStatementError));
-        } else {
-            map.put("StatementLastErrorTime", null);
-            map.put("StatementLastErrorMessage", null);
-
-            map.put("StatementLastErrorStackTrace", null);
-        }
+        // 20 - 24
+        map.put("StatementLastErrorStackTrace", null);
         map.put("StatementExecuteMillisTotal", stat.getStatementStat().getMillisTotal());
         map.put("StatementExecuteLastTime", stat.getStatementStat().getExecuteLastTime());
         map.put("ConnectionConnectingCount", stat.getConnectionStat().getConnectingCount());
@@ -1410,21 +1403,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         map.put("ResultSetErrorCount", stat.getResultSetStat().getErrorCount());
         map.put("ResultSetOpenningMillisTotal", stat.getResultSetStat().getAliveMillisTotal());
         map.put("ResultSetLastErrorTime", stat.getResultSetStat().getLastErrorTime());
-        Throwable lastResultSetError = stat.getResultSetStat().getLastError();
-        if (lastResultSetError != null) {
-            map.put("ResultSetLastErrorMessage", lastResultSetError.getMessage());
-            map.put("ResultSetLastErrorStackTrace", IOUtils.getStackTrace(lastResultSetError));
-        } else {
-            map.put("ResultSetLastErrorMessage", null);
-            map.put("ResultSetLastErrorStackTrace", null);
-        }
+        map.put("ResultSetLastErrorMessage", null);
+        map.put("ResultSetLastErrorStackTrace", null);
 
         // 35 - 39
-        map.put("ConnectionConnectCount", stat.getConnectionStat().getConnectCount());
-        Throwable lastConnectionError = stat.getConnectionStat().getErrorLast();
-        if (lastConnectionError != null) {
-            map.put("ConnectionErrorLastMessage", lastConnectionError.getMessage());
-            map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(lastConnectionError));
+        map.put("ConnectionConnectCount", createErrorCount);
+        if (createError != null) {
+            map.put("ConnectionErrorLastMessage", createError.getMessage());
+            map.put("ConnectionErrorLastStackTrace", IOUtils.getStackTrace(createError));
         } else {
             map.put("ConnectionErrorLastMessage", null);
             map.put("ConnectionErrorLastStackTrace", null);

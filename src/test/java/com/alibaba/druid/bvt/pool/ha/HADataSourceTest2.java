@@ -25,6 +25,7 @@ import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.ha.HADataSource;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class HADataSourceTest2 extends TestCase {
 
@@ -37,6 +38,9 @@ public class HADataSourceTest2 extends TestCase {
     private String          SLAVE_URL  = "jdbc:mock:slave";
 
     protected void setUp() throws Exception {
+        for (DruidDataSource item : DruidDataSourceStatManager.getDruidDataSourceInstances()) {
+            JdbcUtils.close(item);
+        }
         Assert.assertEquals(0, DruidDataSourceStatManager.getInstance().getDataSourceList().size());
 
         dataSourceA = new DruidDataSource();

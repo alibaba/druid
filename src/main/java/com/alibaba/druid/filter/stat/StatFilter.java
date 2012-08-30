@@ -16,6 +16,7 @@
 package com.alibaba.druid.filter.stat;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.NClob;
@@ -23,7 +24,6 @@ import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChain;
@@ -78,8 +78,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     private boolean                   connectionStackTraceEnable = false;
 
-    protected final AtomicLong        resetCount                 = new AtomicLong();
-
     // 3 seconds is slow sql
     protected long                    slowSqlMillis              = 3 * 1000;
 
@@ -110,10 +108,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
     public void setConnectionStackTraceEnable(boolean connectionStackTraceEnable) {
         this.connectionStackTraceEnable = connectionStackTraceEnable;
-    }
-
-    public long getResetCount() {
-        return resetCount.get();
     }
 
     public boolean isMergeSql() {
@@ -507,7 +501,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             if (index != 0) {
                 out.writeComma();
             }
-            
+
             Object value = parameter.getValue();
             if (value == null) {
                 out.writeNull();
@@ -573,6 +567,18 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 sqlStat.addFetchRowCount(fetchRowCount);
                 long stmtExecuteNano = resultSet.getStatementProxy().getLastExecuteTimeNano();
                 sqlStat.addResultSetHoldTimeNano(stmtExecuteNano, nanos);
+                if (resultSet.getReadStringLength() > 0) {
+                    sqlStat.addStringReadLength(resultSet.getReadStringLength());
+                }
+                if (resultSet.getReadBytesLength() > 0) {
+                    sqlStat.addReadBytesLength(resultSet.getReadBytesLength());
+                }
+                if (resultSet.getOpenInputStreamCount() > 0) {
+                    sqlStat.addInputStreamOpenCount(resultSet.getOpenInputStreamCount());
+                }
+                if (resultSet.getOpenReaderCount() > 0) {
+                    sqlStat.addReaderOpenCount(resultSet.getOpenReaderCount());
+                }
             }
         }
 
@@ -686,6 +692,52 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     @Override
+    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
+                                                                                                                  throws SQLException {
+        Blob blob = chain.callableStatement_getBlob(statement, parameterIndex);
+
+        if (blob != null) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, blob);
+        }
+
+        return blob;
+    }
+
+    @Override
+    public Blob callableStatement_getBlob(FilterChain chain, CallableStatementProxy statement, String parameterName)
+                                                                                                                    throws SQLException {
+        Blob blob = chain.callableStatement_getBlob(statement, parameterName);
+
+        if (blob != null) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, blob);
+        }
+
+        return blob;
+    }
+
+    @Override
+    public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        Blob blob = chain.resultSet_getBlob(result, columnIndex);
+
+        if (blob != null) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, blob);
+        }
+
+        return blob;
+    }
+
+    @Override
+    public Blob resultSet_getBlob(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        Blob blob = chain.resultSet_getBlob(result, columnLabel);
+
+        if (blob != null) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, blob);
+        }
+
+        return blob;
+    }
+
+    @Override
     public Clob callableStatement_getClob(FilterChain chain, CallableStatementProxy statement, int parameterIndex)
                                                                                                                   throws SQLException {
         Clob clob = chain.callableStatement_getClob(statement, parameterIndex);
@@ -715,6 +767,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -727,6 +783,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -738,6 +798,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -750,6 +814,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), result, (Blob) obj);
+        } else if (obj instanceof String) {
+            result.addReadStringLength(((String) obj).length());
         }
 
         return obj;
@@ -762,6 +830,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
         return obj;
@@ -774,6 +844,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
         return obj;
@@ -786,6 +858,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
         return obj;
@@ -799,13 +873,32 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (obj instanceof Clob) {
             clobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (ClobProxy) obj);
+        } else if (obj instanceof Blob) {
+            blobOpenAfter(chain.getDataSource().getDataSourceStat(), statement, (Blob) obj);
         }
 
         return obj;
     }
 
+    private void blobOpenAfter(JdbcDataSourceStat dataSourceStat, ResultSetProxy rs, Blob blob) {
+        blobOpenAfter(dataSourceStat, rs.getStatementProxy(), blob);
+    }
+
     private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, ResultSetProxy rs, ClobProxy clob) {
         clobOpenAfter(dataSourceStat, rs.getStatementProxy(), clob);
+    }
+
+    private void blobOpenAfter(JdbcDataSourceStat dataSourceStat, StatementProxy stmt, Blob blob) {
+        dataSourceStat.incrementBlobOpenCount();
+
+        if (stmt != null) {
+            JdbcSqlStat sqlStat = stmt.getSqlStat();
+            if (sqlStat != null) {
+                sqlStat.incrementBlobOpenCount();
+            }
+        }
+
+        StatFilterContext.getInstance().blob_open();
     }
 
     private void clobOpenAfter(JdbcDataSourceStat dataSourceStat, StatementProxy stmt, ClobProxy clob) {
@@ -819,5 +912,121 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         StatFilterContext.getInstance().clob_open();
+    }
+
+    @Override
+    public String resultSet_getString(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        String value = chain.resultSet_getString(result, columnIndex);
+
+        if (value != null) {
+            result.addReadStringLength(value.length());
+        }
+
+        return value;
+    }
+
+    @Override
+    public String resultSet_getString(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        String value = chain.resultSet_getString(result, columnLabel);
+
+        if (value != null) {
+            result.addReadStringLength(value.length());
+        }
+
+        return value;
+    }
+
+    @Override
+    public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, int columnIndex) throws SQLException {
+        byte[] value = chain.resultSet_getBytes(result, columnIndex);
+
+        if (value != null) {
+            result.addReadBytesLength(value.length);
+        }
+
+        return value;
+    }
+
+    @Override
+    public byte[] resultSet_getBytes(FilterChain chain, ResultSetProxy result, String columnLabel) throws SQLException {
+        byte[] value = chain.resultSet_getBytes(result, columnLabel);
+
+        if (value != null) {
+            result.addReadBytesLength(value.length);
+        }
+
+        return value;
+    }
+
+    @Override
+    public InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                           throws SQLException {
+        InputStream input = chain.resultSet_getBinaryStream(result, columnIndex);
+
+        if (input != null) {
+            result.incrementOpenInputStreamCount();
+        }
+
+        return input;
+    }
+
+    @Override
+    public InputStream resultSet_getBinaryStream(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                              throws SQLException {
+        InputStream input = chain.resultSet_getBinaryStream(result, columnLabel);
+
+        if (input != null) {
+            result.incrementOpenInputStreamCount();
+        }
+
+        return input;
+    }
+
+    @Override
+    public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                          throws SQLException {
+        InputStream input = chain.resultSet_getAsciiStream(result, columnIndex);
+
+        if (input != null) {
+            result.incrementOpenInputStreamCount();
+        }
+
+        return input;
+    }
+
+    @Override
+    public InputStream resultSet_getAsciiStream(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                             throws SQLException {
+        InputStream input = chain.resultSet_getAsciiStream(result, columnLabel);
+
+        if (input != null) {
+            result.incrementOpenInputStreamCount();
+        }
+
+        return input;
+    }
+
+    @Override
+    public Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, int columnIndex)
+                                                                                                         throws SQLException {
+        Reader reader = chain.resultSet_getCharacterStream(result, columnIndex);
+
+        if (reader != null) {
+            result.incrementOpenReaderCount();
+        }
+
+        return reader;
+    }
+
+    @Override
+    public Reader resultSet_getCharacterStream(FilterChain chain, ResultSetProxy result, String columnLabel)
+                                                                                                            throws SQLException {
+        Reader reader = chain.resultSet_getCharacterStream(result, columnLabel);
+
+        if (reader != null) {
+            result.incrementOpenReaderCount();
+        }
+
+        return reader;
     }
 }

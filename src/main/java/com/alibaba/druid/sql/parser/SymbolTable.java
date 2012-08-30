@@ -27,13 +27,17 @@ public class SymbolTable {
     /** Default table size. */
     public static final int DEFAULT_TABLE_SIZE = 128;
 
+    public static final int MAX_SIZE           = 1024;
+
     /** Buckets. */
     private final Entry[]   buckets;
     private final String[]  symbols;
-    private final char[][]  symbols_char;
+    private final char[][]  symbolsChar;
 
     // actual table size
     private final int       indexMask;
+
+    private int             size               = 0;
 
     //
     // Constructors
@@ -49,7 +53,7 @@ public class SymbolTable {
         this.indexMask = tableSize - 1;
         this.buckets = new Entry[tableSize];
         this.symbols = new String[tableSize];
-        this.symbols_char = new char[tableSize][];
+        this.symbolsChar = new char[tableSize][];
     }
 
     //
@@ -97,7 +101,7 @@ public class SymbolTable {
 
         if (sym != null) {
             if (sym.length() == len) {
-                char[] characters = symbols_char[bucket];
+                char[] characters = symbolsChar[bucket];
 
                 for (int i = 0; i < len; i++) {
                     if (buffer[offset + i] != characters[i]) {
@@ -125,14 +129,19 @@ public class SymbolTable {
                 return entry.symbol;
             }
         }
+        
+        if (size >= MAX_SIZE) {
+            return new String(buffer, offset, len);
+        }
 
         // add new entry
         Entry entry = new Entry(buffer, offset, len, hash, buckets[bucket]);
         buckets[bucket] = entry;
         if (match) {
             symbols[bucket] = entry.symbol;
-            symbols_char[bucket] = entry.characters;
+            symbolsChar[bucket] = entry.characters;
         }
+        size++;
         return entry.symbol;
 
     } // addSymbol(char[],int,int):String

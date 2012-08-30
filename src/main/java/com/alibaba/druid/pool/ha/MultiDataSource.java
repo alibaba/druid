@@ -255,7 +255,9 @@ public class MultiDataSource extends DataSourceAdapter implements MultiDataSourc
     }
 
     public void close() {
-        scheduler.shutdownNow();
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+        }
 
         Object[] items = this.getDataSources().values().toArray();
         for (Object item : items) {

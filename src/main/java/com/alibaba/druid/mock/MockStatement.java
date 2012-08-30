@@ -36,7 +36,7 @@ public class MockStatement extends StatementBase implements MockStatementBase, S
         }
     }
 
-    protected void checkOpen() throws SQLException, MockConnectionClosedException {
+    protected void checkOpen() throws SQLException {
         if (closed) {
             throw new SQLException();
         }

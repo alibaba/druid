@@ -72,8 +72,9 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
     public void output(StringBuffer buf) {
         this.expr.output(buf);
 
-        if (this.not) buf.append("NOT IN ");
-        else {
+        if (this.not) {
+            buf.append("NOT IN ");
+        } else {
             buf.append("IN ");
         }
 
