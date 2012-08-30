@@ -15,4 +15,7 @@ rem See the License for the specific language governing permissions and
 rem limitations under the License.
 
 
-java -classpath "../druid.jar" com.alibaba.druid.support.console.DruidStat
+set _RUNJAVA="%JAVA_HOME%\bin\java.exe"
+set _TOOLSJAR="%JAVA_HOME%\lib\tools.jar"
+
+%_RUNJAVA% -classpath "./druid-0.2.6.jar;%_TOOLSJAR%" com.alibaba.druid.support.console.DruidStat %*
