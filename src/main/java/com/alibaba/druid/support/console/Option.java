@@ -155,10 +155,26 @@ public class Option {
 
         System.out.println();
         System.out.println("说明: ");
-        System.out.println("  -sql,-ds,-act参数中要至少指定一种数据进行打印, 可以组合使用, 比如 -sql -ds 一起的话就打印两种统计数据");
+        System.out.println("  -sql,-ds,-act参数中要至少指定一种数据进行打印, 可以");
+        System.out.println("    组合使用, 比如 -sql -ds 一起的话就打印两种统计数据");
         System.out.println("  -id id可以跟 -sql 或-ds组合, 比如  -sql -id 5 或 -ds -id 1086752");
         System.out.println("  pid必需指定, refresh-interval可选, 如不指定,则打印数据后退出");
         System.out.println("  pid和refresh-interval参数必需放在命令行的最后, 否则解析会出错");
+
+        System.out.println();
+        System.out.println("例子: ");
+        System.out.println("  打印3983进程的sql 统计数据.");
+        System.out.println("      >druidStat -sql 3983");
+        System.out.println("  打印3983进程的ds统计数据.");
+        System.out.println("      >druidStat -ds 3983");
+        System.out.println("  打印3983进程的sql的id为10的详细统计数据.");
+        System.out.println("      >druidStat -sql -id 10 -detail 3983");
+        System.out.println("  打印3983进程的当前活动连接的堆栈信息");
+        System.out.println("      >druidStat -act 3983");
+        System.out.println("  打印3983进程的ds,sql,和act信息");
+        System.out.println("      >druidStat -ds -sql -act 3983");
+        System.out.println("  每隔5秒自动打印ds统计数据");
+        System.out.println("      >druidStat -ds 3983 5");
 	}
 
 	public int getId() {
