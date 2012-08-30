@@ -74,12 +74,20 @@ public class DruidStat {
         
         if (option.printSqlData()) {
             List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.SQL);
-            TabledDataPrinter.printSqlData(content, option);
+			if (content == null ) { 
+				System.out.println("无SqlStat统计数据,请检查是否已执行了SQL");
+			} else {
+				TabledDataPrinter.printSqlData(content, option);
+			}
         }
        
         if (option.printActiveConn()) {
             List<List<String>> content = (List<List<String>>) invokeService(jmxConn, Option.ACTIVE_CONN);
-            TabledDataPrinter.printActiveConnStack(content, option);
+			if (content == null || content.size() == 0 ) {
+				System.out.println("目前无活动中的数据库连接");
+			} else {
+				TabledDataPrinter.printActiveConnStack(content, option);
+			}
         }
         
     }
