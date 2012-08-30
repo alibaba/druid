@@ -22,6 +22,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
 public class WebAppStatManager {
 
     public final static String             SYS_PROP_INSTANCES = "druid.web.webAppStat";
@@ -36,7 +38,11 @@ public class WebAppStatManager {
 
     public Set<Object> getWebAppStatSet() {
         if (webAppStatSet == null) {
-            webAppStatSet = getWebAppStatSet0();
+            if (DruidDataSourceStatManager.isRegisterToSystemProperty()) {
+                webAppStatSet = getWebAppStatSet0();
+            } else {
+                webAppStatSet = new CopyOnWriteArraySet<Object>();                
+            }
         }
 
         return webAppStatSet;
