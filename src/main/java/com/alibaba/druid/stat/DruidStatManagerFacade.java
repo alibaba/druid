@@ -183,7 +183,9 @@ public final class DruidStatManagerFacade {
         List<List<String>> traceList = new ArrayList<List<String>>();
         for (Object dataSource : getDruidDataSourceInstances()) {
             List<String> stacks = ((DruidDataSource) dataSource).getActiveConnectionStackTrace();
-            traceList.add(stacks);
+			if (stacks.size() > 0 ) {
+				traceList.add(stacks);
+			}
         }
         return traceList;
     }
