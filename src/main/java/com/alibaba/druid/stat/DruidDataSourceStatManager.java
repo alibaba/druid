@@ -100,11 +100,11 @@ public class DruidDataSourceStatManager implements DruidDataSourceStatManagerMBe
     public static boolean isRegisterToSystemProperty() {
         String value = System.getProperty(SYS_PROP_REGISTER_SYS_PROPERTY);
 
-        if ("false".equals(value)) {
-            return false;
+        if ("true".equals(value)) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     @SuppressWarnings("unchecked")
