@@ -22,6 +22,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.alibaba.druid.stat.DruidDataSourceStatManager;
+
 public class SpringStatManager {
 
     public final static String             SYS_PROP_INSTANCES = "druid.spring.springStat";
@@ -36,7 +38,11 @@ public class SpringStatManager {
 
     public Set<Object> getSpringStatSet() {
         if (springStatSet == null) {
-            springStatSet = getSpringStatSetFromSysProperty();
+            if (DruidDataSourceStatManager.isRegisterToSystemProperty()) {
+                springStatSet = getSpringStatSetFromSysProperty();
+            } else {
+                springStatSet = new CopyOnWriteArraySet<Object>();                
+            }
         }
 
         return springStatSet;

@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.support.console;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,11 +60,12 @@ public class TabledDataPrinter {
             "TransactionHistogram", "ConnectionHoldTimeHistogram", "RemoveAbandoned", "ClobOpenCount" };
 
     public static void printActiveConnStack(List<List<String>> content, Option opt) {
+		PrintStream out = opt.getPrintStream();
         for (List<String> stack : content) {
             for (String line : stack) {
-                System.out.println(line);
+                out.println(line);
             }
-            System.out.println("===============================\n");
+            out.println("===============================\n");
         }
     }
 
@@ -83,6 +85,7 @@ public class TabledDataPrinter {
     }
 
     public static void _printDataSourceData(List<Map<String, Object>> content, Option opt) {
+		PrintStream out = opt.getPrintStream();
         if (opt.getId() != -1) {
             List<Map<String, Object>> matchedContent = new ArrayList<Map<String, Object>>();
             for (Map<String, Object> dsStat : content) {
@@ -95,9 +98,9 @@ public class TabledDataPrinter {
             content = matchedContent;
         }
         if (opt.isDetailPrint()) {
-            System.out.println(getVerticalFormattedOutput(content, dsColField));
+            out.println(getVerticalFormattedOutput(content, dsColField));
         } else {
-            System.out.println(getFormattedOutput(content, dsRowTitle, dsRowField));
+            out.println(getFormattedOutput(content, dsRowTitle, dsRowField));
         }
     }
 
@@ -117,6 +120,8 @@ public class TabledDataPrinter {
     }
 
     public static void _printSqlData(List<Map<String, Object>> content, Option opt) {
+
+		PrintStream out = opt.getPrintStream();
         if (opt.getId() != -1) {
             List<Map<String, Object>> matchedContent = new ArrayList<Map<String, Object>>();
             for (Map<String, Object> sqlStat : content) {
@@ -126,9 +131,9 @@ public class TabledDataPrinter {
                     if (opt.isDetailPrint()) {
                         String dbType = (String) sqlStat.get("DbType");
                         String sql = (String) sqlStat.get("SQL");
-                        System.out.println("Formatted SQL:");
-                        System.out.println(SQLUtils.format(sql, dbType));
-                        System.out.println();
+                        out.println("Formatted SQL:");
+                        out.println(SQLUtils.format(sql, dbType));
+                        out.println();
                     }
                     break;
                 }
@@ -136,9 +141,9 @@ public class TabledDataPrinter {
             content = matchedContent;
         }
         if (opt.isDetailPrint()) {
-            System.out.println(getVerticalFormattedOutput(content, sqlColField));
+            out.println(getVerticalFormattedOutput(content, sqlColField));
         } else {
-            System.out.println(getFormattedOutput(content, sqlRowTitle, sqlRowField));
+            out.println(getFormattedOutput(content, sqlRowTitle, sqlRowField));
         }
     }
 

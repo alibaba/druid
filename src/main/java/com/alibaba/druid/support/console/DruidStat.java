@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.support.console;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +52,7 @@ public class DruidStat {
         try {
             opt = Option.parseOptions(args);
         } catch (OptionParseException e) {
-            System.out.println(e.getMessage());
-            Option.printHelp();
+            Option.printHelp(e.getMessage());
             return;
         }
 
@@ -62,6 +62,7 @@ public class DruidStat {
     @SuppressWarnings("all")
     public static void printDruidStat(Option option) throws Exception {
 
+		PrintStream out = option.getPrintStream();
         String address = loadManagementAgentAndGetAddress(option.getPid());
         JMXServiceURL jmxUrl = new JMXServiceURL(address);
         JMXConnector jmxc = JMXConnectorFactory.connect(jmxUrl);
@@ -75,7 +76,7 @@ public class DruidStat {
         if (option.printSqlData()) {
             List<Map<String, Object>> content = (List<Map<String, Object>>) invokeService(jmxConn, Option.SQL);
 			if (content == null ) { 
-				System.out.println("无SqlStat统计数据,请检查是否已执行了SQL");
+				out.println("无SqlStat统计数据,请检查是否已执行了SQL");
 			} else {
 				TabledDataPrinter.printSqlData(content, option);
 			}
@@ -84,7 +85,7 @@ public class DruidStat {
         if (option.printActiveConn()) {
             List<List<String>> content = (List<List<String>>) invokeService(jmxConn, Option.ACTIVE_CONN);
 			if (content == null || content.size() == 0 ) {
-				System.out.println("目前无活动中的数据库连接");
+				out.println("目前无活动中的数据库连接");
 			} else {
 				TabledDataPrinter.printActiveConnStack(content, option);
 			}
