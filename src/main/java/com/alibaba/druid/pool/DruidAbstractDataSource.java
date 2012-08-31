@@ -924,9 +924,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         this.jdbcUrl = jdbcUrl;
 
-        if (jdbcUrl.startsWith(ConfigFilter.URL_PREFIX)) {
-            this.filters.add(new ConfigFilter());
-        }
+//        if (jdbcUrl.startsWith(ConfigFilter.URL_PREFIX)) {
+//            this.filters.add(new ConfigFilter());
+//        }
     }
 
     public String getDriverClassName() {
