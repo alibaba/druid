@@ -1,5 +1,8 @@
-package com.alibaba.druid.filter.config.security.decrypter;
+package com.alibaba.druid.bvt.filter.config;
 
+import com.alibaba.druid.filter.config.security.decrypter.DecryptException;
+import com.alibaba.druid.filter.config.security.decrypter.RsaDecrypter;
+import com.alibaba.druid.filter.config.security.decrypter.SensitiveParameters;
 import com.alibaba.druid.util.Base64;
 import junit.framework.Assert;
 import org.junit.After;

@@ -1,5 +1,7 @@
-package com.alibaba.druid.filter.config;
+package com.alibaba.druid.bvt.filter.config;
 
+import com.alibaba.druid.filter.config.ConfigFileGenerator;
+import com.alibaba.druid.filter.config.ConfigFilter;
 import com.alibaba.druid.filter.config.loader.impl.FileConfigLoader;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;

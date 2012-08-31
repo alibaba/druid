@@ -1,6 +1,8 @@
-package com.alibaba.druid.filter.config.loader.impl;
+package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.config.ConfigFileGenerator;
+import com.alibaba.druid.filter.config.loader.impl.FileConfigLoader;
+
 import junit.framework.Assert;
 import org.junit.Test;
 
