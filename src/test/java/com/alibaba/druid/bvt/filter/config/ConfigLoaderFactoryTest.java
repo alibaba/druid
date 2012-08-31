@@ -1,4 +1,4 @@
-package com.alibaba.druid.filter.config.loader;
+package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.config.loader.ConfigLoader;
 import com.alibaba.druid.filter.config.loader.ConfigLoaderFactory;

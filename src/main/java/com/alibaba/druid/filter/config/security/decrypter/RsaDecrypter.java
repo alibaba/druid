@@ -32,17 +32,16 @@ import java.util.Properties;
 
 /**
  * RSA 解密器， 支持证书
- *
  */
 public class RsaDecrypter extends AbstractDecrypter {
 
-    private static Log log = LogFactory.getLog(RsaDecrypter.class);
+    private static Log         log                       = LogFactory.getLog(RsaDecrypter.class);
 
-    public static final String KEY = "config.decrypt.key";
-    public static final String KEY_FILE = "config.decrypt.keyFile";
-    public static final String X509_FILE = "config.decrypt.x509File";
+    public static final String KEY                       = "config.decrypt.key";
+    public static final String KEY_FILE                  = "config.decrypt.keyFile";
+    public static final String X509_FILE                 = "config.decrypt.x509File";
 
-    protected static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
+    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     public String getId() {
         return "RSA";
@@ -54,9 +53,10 @@ public class RsaDecrypter extends AbstractDecrypter {
      * 如果是密钥字符串, key 是 config.decrypt.key
      * 如果是密钥文件, key 是 config.decrypt.keyFile
      * 如果是证书文件, key 是 config.decrypt.x509File
-     *
+     * 
      * 如果不指定密钥, 将使用默认密钥
      * </pre>
+     * 
      * @param parameters 密文参数
      * @param info
      * @return
@@ -83,10 +83,11 @@ public class RsaDecrypter extends AbstractDecrypter {
 
     /**
      * 通过指定
+     * 
      * @param info
      * @return
      */
-    PublicKey getPublicKey(Properties info) {
+    public PublicKey getPublicKey(Properties info) {
         String key = null;
         String publicKeyFile = null;
         String x509File = null;
@@ -118,7 +119,7 @@ public class RsaDecrypter extends AbstractDecrypter {
         return getPublicKeyByString(key);
     }
 
-    PublicKey getPublicKeyByString(String publicKeyString) {
+    public PublicKey getPublicKeyByString(String publicKeyString) {
         if (publicKeyString == null || publicKeyString.length() == 0) {
             if (log.isDebugEnabled()) {
                 log.debug("Decrypt by default key");
@@ -137,7 +138,7 @@ public class RsaDecrypter extends AbstractDecrypter {
         }
     }
 
-    PublicKey getPublicKeyByPublicKeyFile(String publicKeyFile) {
+    public PublicKey getPublicKeyByPublicKeyFile(String publicKeyFile) {
         if (publicKeyFile == null || publicKeyFile.length() == 0) {
             return getPublicKeyByString(null);
         }
@@ -147,7 +148,7 @@ public class RsaDecrypter extends AbstractDecrypter {
             in = new FileInputStream(publicKeyFile);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             int len = 0;
-            byte[] b = new byte[512/8];
+            byte[] b = new byte[512 / 8];
             while ((len = in.read(b)) != -1) {
                 out.write(b, 0, len);
             }
@@ -163,7 +164,7 @@ public class RsaDecrypter extends AbstractDecrypter {
         }
     }
 
-    PublicKey getPublicKeyByX509(String x509File) {
+    public PublicKey getPublicKeyByX509(String x509File) {
         if (x509File == null || x509File.length() == 0) {
             return getPublicKeyByString(null);
         }
