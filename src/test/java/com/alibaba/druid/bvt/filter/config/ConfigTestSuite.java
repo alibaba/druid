@@ -1,11 +1,11 @@
 package com.alibaba.druid.bvt.filter.config;
 
 import com.alibaba.druid.filter.config.ConfigFilterTest;
-import com.alibaba.druid.filter.config.ConfigLoaderFactoryTest;
-import com.alibaba.druid.filter.config.impl.FileConfigLoaderTest;
-import com.alibaba.druid.filter.config.impl.FileConfigLoaderTest1;
-import com.alibaba.druid.filter.config.impl.HttpConfigLoaderTest;
-import com.alibaba.druid.filter.config.impl.HttpConfigLoaderTest1;
+import com.alibaba.druid.filter.config.loader.ConfigLoaderFactoryTest;
+import com.alibaba.druid.filter.config.loader.impl.FileConfigLoaderTest;
+import com.alibaba.druid.filter.config.loader.impl.FileConfigLoaderTest1;
+import com.alibaba.druid.filter.config.loader.impl.HttpConfigLoaderTest;
+import com.alibaba.druid.filter.config.loader.impl.HttpConfigLoaderTest1;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
