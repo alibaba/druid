@@ -564,7 +564,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
-        this.removeAbandonedTimeoutMillis = removeAbandonedTimeout * 1000;
+        this.removeAbandonedTimeoutMillis = (long)removeAbandonedTimeout * 1000;
     }
 
     public void setRemoveAbandonedTimeoutMillis(long removeAbandonedTimeoutMillis) {
