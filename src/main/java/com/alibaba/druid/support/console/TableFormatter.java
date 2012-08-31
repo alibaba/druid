@@ -83,13 +83,4 @@ public class TableFormatter {
 		return sb.toString();
 	}
 
-	public static void main(String[] args) {
-		List<String[]> v = new ArrayList<String[]>();
-		v.add(new String[]{"name","age","addr"});
-		v.add(new String[]{"shrek", "200", "hangzhou zhejiang "});
-		v.add(new String[]{"what as", "11", "asdfa"});
-		String formattedStr = format(v);
-		System.out.println(formattedStr);
-	}
-
 }
