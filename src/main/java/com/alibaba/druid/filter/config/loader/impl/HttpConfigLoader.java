@@ -83,7 +83,7 @@ public class HttpConfigLoader implements ConfigLoader {
         }
     }
 
-    URL getUrl(String protocol) throws MalformedURLException {
+    public URL getUrl(String protocol) throws MalformedURLException {
         return new URL(protocol.substring(PROTOCOL_PREFIX.length() - 7));
     }
 

@@ -91,7 +91,7 @@ public class FileConfigLoader implements ConfigLoader {
         }    
     }
 
-    String getFilePath(String protocol) {
+    public String getFilePath(String protocol) {
         String filePath = null;
 
         filePath = protocol.substring(PROTOCOL_PREFIX.length());
