@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import com.alibaba.druid.filter.config.ConfigFileGenerator;
-import com.alibaba.druid.filter.config.ConfigFilter;
-import com.alibaba.druid.filter.config.loader.impl.FileConfigLoader;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
+import java.sql.SQLException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.SQLException;
+import com.alibaba.druid.filter.config.ConfigFileGenerator;
+import com.alibaba.druid.filter.config.ConfigFilter;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author Jonas Yang
@@ -22,7 +22,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
     public void testInitRemoteConfigFile() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.file=" + FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        dataSource.setConnectionProperties("config.file=file://" + this.filePath);
         try {
             dataSource.init();
 
@@ -37,7 +37,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
 
-        System.setProperty(ConfigFilter.SYS_PROP_CONFIG_FILE, FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        System.setProperty(ConfigFilter.SYS_PROP_CONFIG_FILE, "file://" + this.filePath);
         try {
             dataSource.init();
 
@@ -109,8 +109,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
     public void testInitRemoteConfigAndDecrypt() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + FileConfigLoader.PROTOCOL_PREFIX
-                                           + this.filePath);
+        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + "file://" + this.filePath);
         try {
             dataSource.init();
 
