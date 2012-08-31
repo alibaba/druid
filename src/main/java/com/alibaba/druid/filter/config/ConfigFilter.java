@@ -67,10 +67,24 @@ import java.util.Properties;
  *     &lt;property name="connectionProperties" value="config.file=http://localhost:8080/remote.propreties; /&gt;
  * &lt;/bean&gt;
  *
+ * [使用系统属性配置远程文件]
+ * java -Ddruid.config.file=file:/home/test/my.properties ...
+ *
  * 远程配置文件格式:
  * 1. 其他的属性KEY请查看 @see com.alibaba.druid.pool.DruidDataSourceFactory
  * 2. config filter 相关设置:
- * config.xxxxx=yyyyy
+ * #远程文件路径
+ * config.file=http://xxxxx(http://开头或者file:开头)
+ *
+ * #AES解密, key不指定, 使用默认的
+ * config.decrypt=AES
+ * config.decrypt.key=abcdfeg
+ *
+ * #RSA解密, Key不指定, 使用默认的
+ * config.decrypt=RSA
+ * config.decrypt.key=密钥字符串
+ * config.decrypt.keyFile=密钥文件路径
+ * config.decrypt.x509File=证书路径
  *
  * </pre>
  */
@@ -78,9 +92,11 @@ public class ConfigFilter extends FilterAdapter {
 
     private static Log             log                                = LogFactory.getLog(ConfigFilter.class);
 
-    public final static String     CONFIG_FILE                        = "config.file";
+    public static final String     CONFIG_FILE                        = "config.file";
 
-    public final static String     CONFIG_DECRYPT                     = "config.decrypt";
+    public static final String     CONFIG_DECRYPT                     = "config.decrypt";
+
+    public static final String     SYS_PROP_CONFIG_FILE               = "druid.config.file";
 
     public ConfigFilter(){
     }
@@ -97,7 +113,12 @@ public class ConfigFilter extends FilterAdapter {
         //获取远程配置文件
         String protocol = connectinProperties.getProperty(CONFIG_FILE);
 
-        if (protocol != null) {
+        //如果系统参数有指定
+        if (protocol == null) {
+            protocol = System.getProperty(SYS_PROP_CONFIG_FILE);
+        }
+
+        if (protocol != null && protocol.length() > 0) {
             if (log.isDebugEnabled()) {
                 log.debug("Config file will be load from [" + protocol + "].");
             }

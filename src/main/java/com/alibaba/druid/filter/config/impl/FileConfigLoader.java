@@ -23,7 +23,6 @@ public class FileConfigLoader implements ConfigLoader {
     private static      Log   LOG                                 = LogFactory.getLog(FileConfigLoader.class);
 
     public static final String PROTOCOL_PREFIX                    = "file:";
-    public static final String SYS_PROP_CONFIG_FILE               = "druid.config.file";
 
     @Override
     public String getId() {
@@ -80,11 +79,7 @@ public class FileConfigLoader implements ConfigLoader {
     String getFilePath(String protocol) {
         String filePath = null;
 
-        if(protocol == null) {
-            filePath = System.getProperty(SYS_PROP_CONFIG_FILE);
-        } else {
-            filePath = protocol.substring(PROTOCOL_PREFIX.length());
-        }
+        filePath = protocol.substring(PROTOCOL_PREFIX.length());
 
         return filePath;
     }
@@ -95,10 +90,6 @@ public class FileConfigLoader implements ConfigLoader {
 
     @Override
     public boolean isSupported(String protocol) {
-        if (protocol == null) {
-            return System.getProperty(SYS_PROP_CONFIG_FILE) != null;
-        }
-
         return protocol.toLowerCase().startsWith(PROTOCOL_PREFIX);
     }
 }

@@ -30,6 +30,21 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         }
     }
 
+    @Test
+    public void testInitRemoteConfigFileBySystemProperty() throws SQLException {
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setFilters("config");
+
+        System.setProperty(ConfigFilter.SYS_PROP_CONFIG_FILE, FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        try {
+            dataSource.init();
+
+            Assert.assertEquals("The username is " + dataSource.getUsername(), "test1", dataSource.getUsername());
+        } finally {
+            System.clearProperty(ConfigFilter.SYS_PROP_CONFIG_FILE);
+            JdbcUtils.close(dataSource);
+        }
+    }
 
     @Test
     public void testInitInvalidRemoteConfigFile() throws SQLException {

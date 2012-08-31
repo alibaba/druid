@@ -21,17 +21,6 @@ public class FileConfigLoaderTest1 extends ConfigFileGenerator {
     }
 
     @Test
-    public void testLoadConfigBySystemProperty() {
-        System.setProperty(FileConfigLoader.SYS_PROP_CONFIG_FILE, this.filePath);
-        FileConfigLoader configLoader = new FileConfigLoader();
-        Properties p = configLoader.loadConfig(null);
-
-        Assert.assertNotNull("The properties is null", p);
-        Assert.assertEquals("The value is " + p.getProperty("username") + ", not test1", "test1", p.getProperty("username"));
-
-    }
-
-    @Test
     public void testLoadConfigByNotExistFile() {
         FileConfigLoader configLoader = new FileConfigLoader();
         Properties p = configLoader.loadConfig(FileConfigLoader.PROTOCOL_PREFIX + "/test/test/test");
