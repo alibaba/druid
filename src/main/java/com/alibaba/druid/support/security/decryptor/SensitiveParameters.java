@@ -1,4 +1,4 @@
-package com.alibaba.druid.pool;
+package com.alibaba.druid.support.security.decryptor;
 
 /**
  * <pre>

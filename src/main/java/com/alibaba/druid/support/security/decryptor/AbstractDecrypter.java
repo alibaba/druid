@@ -1,9 +1,9 @@
 package com.alibaba.druid.support.security.decryptor;
 
-import com.alibaba.druid.pool.Decrypter;
 import com.alibaba.druid.util.Base64;
 
 import javax.crypto.Cipher;
+import java.util.Properties;
 
 /**
  * 加密抽象类
@@ -16,6 +16,8 @@ public abstract class AbstractDecrypter implements Decrypter {
      * DES, AES 密钥都有长度限制， 如果不够， 默认使用该字段补长
      */
     public static final String KEY_PADDING = "FOLLOW YOUR HEART. YOU CAN DO BEST THAN ANY ONE.";
+
+    public final static String KEY = "config.decrypt.key";
 
     /**
      * 传入密文， 返回明文

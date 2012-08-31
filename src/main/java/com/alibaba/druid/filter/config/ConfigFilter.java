@@ -15,225 +15,210 @@
  */
 package com.alibaba.druid.filter.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Properties;
-
-import javax.crypto.Cipher;
-
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.Base64;
-import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.support.security.decryptor.DecryptException;
+import com.alibaba.druid.support.security.decryptor.Decrypter;
+import com.alibaba.druid.support.security.decryptor.DecrypterFactory;
+import com.alibaba.druid.support.security.decryptor.SensitiveParameters;
 
+import java.sql.SQLException;
+import java.util.Properties;
+
+/**
+ * <pre>
+ * 这个类主要是负责两个事情, 解密, 和下载远程的配置文件
+ * [解密]
+ *
+ * DruidDataSource dataSource = new DruidDataSource();
+ * //dataSource.setXXX 其他设置
+ * //下面两步很重要
+ * //启用config filter
+ * dataSource.setFilters("config");
+ * //使用RSA解密(使用默认密钥）
+ * dataSource.setConnectionPropertise("config.decrypt=RSA");
+ * dataSource.setPassword("加密的密文");
+ *
+ * [远程配置文件]
+ * DruidDataSource dataSource = new DruidDataSource();
+ * //下面两步很重要
+ * //启用config filter
+ * dataSource.setFilters("config");
+ * //使用RSA解密(使用默认密钥）
+ * dataSource.setConnectionPropertise("config.file=http://localhost:8080/remote.propreties;");
+ *
+ * [Spring的配置解密]
+ *
+ * &lt;bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"&gt;
+ *     &lt;property name="password" value="加密的密文" /&gt;
+ *     &lt;!-- 其他的属性设置 --&gt;
+ *     &lt;property name="filters" value="config" /&gt;
+ *     &lt;property name="connectionProperties" value="config.decrypt=RSA" /&gt;
+ * &lt;/bean&gt;
+ *
+ * [Spring的配置远程配置文件]
+ *
+ * &lt;bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"&gt;
+ *     &lt;property name="filters" value="config" /&gt;
+ *     &lt;property name="connectionProperties" value="config.file=http://localhost:8080/remote.propreties; /&gt;
+ * &lt;/bean&gt;
+ *
+ * 远程配置文件格式:
+ * 1. 其他的属性KEY请查看 @see com.alibaba.druid.pool.DruidDataSourceFactory
+ * 2. config filter 相关设置:
+ * config.xxxxx=yyyyy
+ *
+ * </pre>
+ */
 public class ConfigFilter extends FilterAdapter {
 
-    public final static String URL_PREFIX                         = "druid-configFile=";
-    public final static String SYS_PROP_CONFIG_FILE               = "druid.config.file";
-    public final static String SYS_PROP_CONFIG_KEY                = "druid.config.key";
-    public final static String SYS_PROP_CONFIG_ENCRYPTED_PASSWORD = "druid.config.encryptedPassword";
-    public final static String DEFAULT_ALGORITHM                  = "RSA";
+    private static Log             log                                = LogFactory.getLog(ConfigFilter.class);
 
-    private final static Log   LOG                                = LogFactory.getLog(ConfigFilter.class);
+    public final static String     CONFIG_FILE                        = "config.file";
 
-    private String             file;
-
-    private Cipher             cipher;
-    private String             algorithm;
-    private String             key;
-    private String             encryptedPassword;
+    public final static String     CONFIG_DECRYPT                     = "config.decrypt";
 
     public ConfigFilter(){
-        this.setAlgorithm(DEFAULT_ALGORITHM);
-
-        {
-            String property = System.getProperty(SYS_PROP_CONFIG_KEY);
-            if (property != null && property.length() != 0) {
-                this.setKey(property);
-            }
-        }
-        {
-            String property = System.getProperty(SYS_PROP_CONFIG_ENCRYPTED_PASSWORD);
-            if (property != null && property.length() != 0) {
-                this.setEncryptedPassword(property);
-            }
-        }
-    }
-
-    public String getAlgorithm() {
-        return algorithm;
-    }
-
-    public final void setAlgorithm(String algorithm) {
-        this.algorithm = algorithm;
-        try {
-            this.cipher = Cipher.getInstance(algorithm);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("illegal algorithm", e);
-        }
-    }
-
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public final void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public final void setKey(String key) {
-        this.key = key;
-
-        byte[] bytes = Base64.base64ToByteArray(key);
-
-        try {
-            if (cipher.getAlgorithm().startsWith("RSA")) {
-                X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(bytes);
-                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                PublicKey publicKey = keyFactory.generatePublic(x509KeySpec);
-                cipher.init(Cipher.DECRYPT_MODE, publicKey);
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("illegal key", e);
-        }
     }
 
     public void init(DataSourceProxy dataSourceProxy) {
         if (!(dataSourceProxy instanceof DruidDataSource)) {
-            LOG.error("ConfigLoader only support DruidDataSource");
+            log.error("ConfigLoader only support DruidDataSource");
         }
 
+        Properties info = null;
         DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
+        Properties connectinProperties = dataSource.getConnectProperties();
 
-        Properties properties = loadConfig(dataSource);
+        //获取远程配置文件
+        String protocol = connectinProperties.getProperty(CONFIG_FILE);
 
-        if (encryptedPassword != null) {
-            try {
-                byte[] passwordBytes = Base64.base64ToByteArray(encryptedPassword);
-                byte[] decryptedBytes = cipher.doFinal(passwordBytes);
-                String decryptedPassword = new String(decryptedBytes, "ISO-8859-1");
-                dataSource.setPassword(decryptedPassword);
-            } catch (Exception e) {
-                LOG.error("decrypt password error", e);
+        if (protocol != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Config file will be load from [" + protocol + "].");
+            }
+
+            //获取配置文件内容
+            ConfigLoader configLoader = ConfigLoaderFactory.getConfigLoader(protocol);
+
+            if (configLoader == null) {
+                throw new IllegalArgumentException("Druid doesn't support the [config.file=" + protocol + "] to load remote config file.");
+            }
+
+            info = configLoader.loadConfig(protocol);
+
+            if (info == null) {
+                throw new IllegalArgumentException("Cannot load remote config file from the [config.file=" + protocol + "].");
+            }
+        } else {
+            info = new Properties();
+            if (log.isDebugEnabled()) {
+                log.debug("No remote config file.");
             }
         }
 
-        if (properties == null) {
-            if (encryptedPassword == null) {
-                LOG.error("load config error, return null");
+        //判断是否需要解密，如果需要就进行解密行动
+        String decrypterId = info.getProperty(CONFIG_DECRYPT);
+        boolean isRemotedSecurityConfig = true;
+
+        if (decrypterId == null) {
+            decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
+            isRemotedSecurityConfig = false;
+
+            if (log.isDebugEnabled()) {
+                log.debug("Get decrypt method " + decrypterId + " from local config.");
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Get decrypt method " + decrypterId + " from remote config.");
+            }
+        }
+
+        if (decrypterId != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Use [" + decrypterId + "] to decrypt sensitive parameters.");
+            }
+
+            try {
+                Decrypter decrypter = DecrypterFactory.getDecrypter(decrypterId);
+                if (decrypter == null) {
+                    throw new IllegalArgumentException("Druid doesn't support the decrypter [config.decrypt=" + decrypterId + "].");
+                }
+
+                Properties securityInfo = isRemotedSecurityConfig
+                        ? info
+                        : connectinProperties;
+
+                SensitiveParameters originalParameter = getSensitiveParameters(dataSource, info);
+                SensitiveParameters parameters = decrypter.decrypt(originalParameter, securityInfo);
+
+                info.setProperty(DruidDataSourceFactory.PROP_URL, parameters.getUrl());
+                info.setProperty(DruidDataSourceFactory.PROP_USERNAME, parameters.getUsername());
+                info.setProperty(DruidDataSourceFactory.PROP_PASSWORD, parameters.getPassword());
+            } catch (DecryptException e) {
+                throw new IllegalArgumentException("Failed to decrypt.", e);
+            }
+
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("No decrypt.");
+            }
+        }
+
+        //没有任何配置
+        if (info.size() == 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("No config.");
             }
             return;
         }
 
         try {
-            if (this.cipher != null) {
-                String password = properties.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
-                if (password != null && password.length() != 0) {
-                    byte[] passwordBytes = Base64.base64ToByteArray(password);
-                    byte[] decryptedBytes = cipher.doFinal(passwordBytes);
-
-                    String decryptedPassword = new String(decryptedBytes, "ISO-8859-1");
-                    properties.put(DruidDataSourceFactory.PROP_PASSWORD, decryptedPassword);
-                }
-            }
-        } catch (Exception e) {
-            LOG.error("decrypt password error", e);
-        }
-
-        try {
-            DruidDataSourceFactory.config(dataSource, properties);
-        } catch (Exception e) {
-            LOG.error("config dataSource error", e);
+            DruidDataSourceFactory.config(dataSource, info);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Config DataSource error.", e);
         }
     }
 
-    public Properties loadConfig(DruidDataSource dataSource) {
-        String filePath = this.file;
+    /**
+     * 如果配置文件中没有值， 就取默认值
+     * @param dataSource
+     * @param info
+     * @return
+     */
+    SensitiveParameters getSensitiveParameters(DruidDataSource dataSource, Properties info) {
+        String username = info.getProperty(DruidDataSourceFactory.PROP_USERNAME);
+        String password = info.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
+        String url = info.getProperty(DruidDataSourceFactory.PROP_URL);
 
-        // jdbc:druid-config:
-        if (file == null && dataSource.getUrl() != null && dataSource.getUrl().startsWith(ConfigFilter.URL_PREFIX)) {
-            filePath = dataSource.getUrl().substring(ConfigFilter.URL_PREFIX.length());
+        if (username == null) {
+            username = dataSource.getUsername();
         }
 
-        if (filePath == null) {
-            filePath = System.getProperty(SYS_PROP_CONFIG_FILE);
+        if (password == null) {
+            password = dataSource.getPassword();
         }
 
-        if (filePath == null) {
-            if (this.encryptedPassword == null) {
-                LOG.error("load config error, file is null");
-            }
-            return null;
+        if (url == null) {
+            url = dataSource.getUrl();
         }
 
-        Properties properties = new Properties();
+        return new SensitiveParameters(url, username, password);
+    }
 
-        InputStream inStream = null;
-        try {
-            boolean xml = false;
-            if (filePath.startsWith("http://") || filePath.startsWith("https://")) {
-                URL url = new URL(filePath);
-                inStream = url.openStream();
+    public int hashCode() {
+        return this.getClass().hashCode();
+    }
 
-                xml = url.getPath().endsWith(".xml");
-            } else {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    inStream = new FileInputStream(file);
-                } else {
-                    inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
-                }
-
-                xml = filePath.endsWith(".xml");
-            }
-
-            if (inStream == null) {
-                LOG.error("load config file error, file : " + filePath);
-                return null;
-            }
-
-            if (xml) {
-                properties.loadFromXML(inStream);
-            } else {
-                properties.load(inStream);
-            }
-
-            return properties;
-        } catch (Exception ex) {
-            LOG.error("load config file error, file : " + filePath, ex);
-            return null;
-        } finally {
-            JdbcUtils.close(inStream);
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
         }
-    }
 
-    public String getFile() {
-        return file;
+        return obj.getClass().equals(ConfigFilter.class);
     }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
-    public Cipher getCipher() {
-        return cipher;
-    }
-
-    public void setCipher(Cipher cipher) {
-        this.cipher = cipher;
-    }
-
 }

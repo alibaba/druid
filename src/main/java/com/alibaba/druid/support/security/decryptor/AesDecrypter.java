@@ -1,27 +1,42 @@
 package com.alibaba.druid.support.security.decryptor;
 
-import com.alibaba.druid.pool.DecryptException;
-import com.alibaba.druid.pool.SensitiveParameters;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Properties;
 
 /**
- * AES 解密器
+ * <pre>
+ * AES 解密器, 如果不指定密钥, 使用默认的密钥.
+ * 通过一下方式指定密钥:
+ * Properties info = new Properties();
+ * info.put("config.decrypt.key", "密钥");
+ *
+ * String 明文 = new AesDecrypter().decrypt("密文", info);
+ * </pre>
  *
  * @author Jonas Yang
  */
 public class AesDecrypter extends AbstractDecrypter {
+    private static Log log = LogFactory.getLog(AesDecrypter.class);
 
     private final static int KEY_LENGTH = 16; //128
 
-    private volatile SecretKeySpec spec;
+    public String getId() {
+        return "AES";
+    }
 
-    public SensitiveParameters decrypt(SensitiveParameters parameters) throws DecryptException {
-        SecretKeySpec spec = getSpec();
-        if (spec == null) {
-            throw new DecryptException("No key.");
-        }
+    /**
+     * 密钥 放在 <code>Properties</code> 参数中, key 是 config.decrypt.key, 如果不指定密钥, 将使用默认密钥
+     * @param parameters 密文参数
+     * @param info
+     * @return
+     * @throws DecryptException
+     */
+    public SensitiveParameters decrypt(SensitiveParameters parameters, Properties info) throws DecryptException {
+        SecretKeySpec spec = getSpec(info);
 
         try {
             Cipher cipher = Cipher.getInstance("AES");
@@ -35,24 +50,25 @@ public class AesDecrypter extends AbstractDecrypter {
         }
     }
 
-    protected SecretKeySpec getSpec() {
-        if (this.spec == null) {
-            setKey("");
+    SecretKeySpec getSpec(Properties info) {
+        String key = null;
+
+        if (info != null) {
+            key = info.getProperty(KEY);
         }
 
-        return this.spec;
-    }
-
-    public void setKey(String key) {
         if (key == null) {
-            throw new IllegalArgumentException("The key cannot be null");
+            if (log.isDebugEnabled()) {
+                log.debug("Decrypt by default key");
+            }
+            key = "";
         }
 
         if (key.length() < 16) {
             key = KEY_PADDING.substring(0, KEY_LENGTH - key.length()) + key;
         }
 
-        this.spec = new SecretKeySpec(key.getBytes(), "AES");
+        return new SecretKeySpec(key.getBytes(), "AES");
     }
 
 }
