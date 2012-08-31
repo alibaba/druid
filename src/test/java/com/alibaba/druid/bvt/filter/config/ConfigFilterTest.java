@@ -53,15 +53,16 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
         dataSource.setConnectionProperties("config.file=abcdef");
+
+        Exception error = null;
         try {
             dataSource.init();
-            Assert.assertTrue("It is here", false);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.assertTrue(true);
+            error = e;
         } finally {
             JdbcUtils.close(dataSource);
         }
+        Assert.assertNotNull(error);
     }
 
     @Test
@@ -76,7 +77,8 @@ public class ConfigFilterTest extends ConfigFileGenerator {
 
         try {
             dataSource.init();
-            Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu", dataSource.getPassword());
+            Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
+                                dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -92,22 +94,23 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         dataSource.setFilters("config");
         dataSource.setConnectionProperties("config.decrypt=ABCDEF");
 
+        Exception error = null;
         try {
             dataSource.init();
-            Assert.assertTrue("It is here", false);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.assertTrue(true);
+            error = e;
         } finally {
             JdbcUtils.close(dataSource);
         }
+        Assert.assertNotNull(error);
     }
 
     @Test
     public void testInitRemoteConfigAndDecrypt() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + FileConfigLoader.PROTOCOL_PREFIX
+                                           + this.filePath);
         try {
             dataSource.init();
 
@@ -136,13 +139,14 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         dataSource.setFilters("config");
         dataSource.setConnectionProperties("config.file=abcdefeg");
 
+        Exception error = null;
         try {
             dataSource.init();
-            Assert.assertTrue("Get here.", false);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            error = e;
         } finally {
             JdbcUtils.close(dataSource);
         }
+        Assert.assertNotNull(error);
     }
 }
