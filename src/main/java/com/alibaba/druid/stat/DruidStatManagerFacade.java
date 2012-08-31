@@ -229,7 +229,7 @@ public final class DruidStatManagerFacade {
     public List<String> getActiveConnectionStackTraceByDataSourceId(Integer id) {
         Object datasource = getDruidDataSourceById(id);
 
-        if (datasource == null || DruidDataSourceUtils.isRemoveAbandoned(datasource)) {
+        if (datasource == null || !DruidDataSourceUtils.isRemoveAbandoned(datasource)) {
             return null;
         }
 

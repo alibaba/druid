@@ -97,7 +97,7 @@
     		var sessionId = druid.common.getUrlVar("sessionId");
     		return  {
     			init : function() {
-    				druid.common.buildHead(4);
+    				druid.common.buildHead(5);
     				this.ajaxRequestForBasicInfo();
     				$("#viewJsonApi").attr("href", 'websession-' + sessionId + '.json');
     			},
