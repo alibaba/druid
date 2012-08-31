@@ -1,6 +1,8 @@
 package com.alibaba.druid.filter.config;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JdbcUtils;
+
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -32,11 +34,7 @@ public class ConfigFileGenerator {
         } catch (IOException e) {
             Assert.assertNull("Failed to init resource.", e);
         } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch(Exception e){}
-            }
+            JdbcUtils.close(out);
         }
     }
 

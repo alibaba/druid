@@ -1,50 +1,63 @@
-package com.alibaba.druid.filter.config.security.tool;
+package com.alibaba.druid.filter.config;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.spec.PKCS8EncodedKeySpec;
+
+import javax.crypto.Cipher;
 
 import com.alibaba.druid.util.Base64;
 
-import javax.crypto.Cipher;
-import java.io.*;
-import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
-
-/**
- * @author Jonas Yang
- */
-public class RsaAction implements Action {
+public class ConfigTools {
 
     private static final String DEFAULT_PRIVATE_KEY_STRING = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAocbCrurZGbC5GArEHKlAfDSZi7gFBnd4yxOt0rwTqKBFzGyhtQLu5PRKjEiOXVa95aeIIBJ6OhC2f8FjqFUpawIDAQABAkAPejKaBYHrwUqUEEOe8lpnB6lBAsQIUFnQI/vXU4MV+MhIzW0BLVZCiarIQqUXeOhThVWXKFt8GxCykrrUsQ6BAiEA4vMVxEHBovz1di3aozzFvSMdsjTcYRRo82hS5Ru2/OECIQC2fAPoXixVTVY7bNMeuxCP4954ZkXp7fEPDINCjcQDywIgcc8XLkkPcs3Jxk7uYofaXaPbg39wuJpEmzPIxi3k0OECIGubmdpOnin3HuCP/bbjbJLNNoUdGiEmFL5hDI4UdwAdAiEAtcAwbm08bKN7pwwvyqaCBC//VnEWaq39DCzxr+Z2EIk=";
 
-    @Override
-    public String getId() {
-        return "RSA";
-    }
+    private static boolean      isEnd                      = false;
 
-    public void execute() {
-        help();
-    }
+    public static void main(String[] args) {
+        System.out.println("**************************************");
+        System.out.println("*                                    *");
+        System.out.println("*           Druid 加密工具           *");
+        System.out.println("*                                    *");
+        System.out.println("**************************************");
 
-    private void help() {
-        System.out.println();
-        System.out.println("RSA 选项: ");
-        System.out.println("1. 通过私钥加密");
-        System.out.println("2. 创建 RSA 密钥");
+        while (!isEnd) {
+            System.out.println();
+            System.out.println("RSA 选项: ");
+            System.out.println("1. 通过私钥加密");
+            System.out.println("2. 创建 RSA 密钥");
+            System.out.println("3. 退出");
+            System.out.println("");
 
-        String input = System.console().readLine("[RSA]请输入选项: ");
+            String input = System.console().readLine("[RSA]请输入选项: ");
+            input = input.toLowerCase();
 
-        if ("1".equals(input)) {
-            encrypt();
-        } else if ("2".equals(input)) {
-            generateKeys();
-        } else {
-            System.err.println("不是一个合法的输入.");
+            if ("1".equals(input)) {
+                encrypt();
+            } else if ("2".equals(input)) {
+                generateKeys();
+            } else if ("q".equals(input) || "3".equals(input)) {
+                System.exit(0);
+            } else {
+                System.err.println("不是一个合法的输入.");
+            }
         }
     }
 
-    private void encrypt() {
+
+    private static void encrypt() {
         System.out.println("注意: 如果输入的不是该工具生成的私钥, 请转成PKCS#8格式, 使用下面命令");
         System.out.println("openssl pkcs8 -topk8 -inform PEM -outform DER -in 原来的Key -nocrypt > 输出文件");
         String filePath = System.console().readLine("[RSA]请输入私钥文件路径[如果直接回车将使用默认私钥]: ");
-
 
         byte[] key = null;
         if (filePath == null || filePath.length() == 0) {
@@ -68,7 +81,8 @@ public class RsaAction implements Action {
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
             byte[] encryptedBytes = cipher.doFinal(plainString.getBytes());
-            String encryptedString = Base64.byteArrayToBase64(encryptedBytes);;
+            String encryptedString = Base64.byteArrayToBase64(encryptedBytes);
+            ;
 
             System.out.println("请记住以下的密文, 长度为[" + encryptedString.length() + "].");
             System.out.println();
@@ -80,7 +94,7 @@ public class RsaAction implements Action {
         }
     }
 
-    private byte[] getPrivateKeyFromFile(String filePath) throws IOException {
+    private static byte[] getPrivateKeyFromFile(String filePath) throws IOException {
         if (!new File(filePath).exists()) {
             System.err.println("文件不存在[" + filePath + "]");
         }
@@ -89,7 +103,7 @@ public class RsaAction implements Action {
         FileInputStream in = null;
         try {
             in = new FileInputStream(filePath);
-            byte[] b = new byte[512/8];
+            byte[] b = new byte[512 / 8];
             int len = 0;
             while ((len = in.read(b)) != -1) {
                 out.write(b, 0, len);
@@ -106,7 +120,7 @@ public class RsaAction implements Action {
         return out.toByteArray();
     }
 
-    private void generateKeys() {
+    private static void generateKeys() {
         System.out.println();
         System.out.println("[RSA]请选择密钥长度: \n1. 512 \n2. 1024 \n3. 2048");
         String keySizeString = System.console().readLine("[RSA]请输入选项: ");
@@ -145,7 +159,7 @@ public class RsaAction implements Action {
 
     }
 
-    private void saveKey(Key key, String path) throws Exception {
+    private static void saveKey(Key key, String path) throws Exception {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(path);
@@ -156,5 +170,4 @@ public class RsaAction implements Action {
             }
         }
     }
-
 }

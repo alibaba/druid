@@ -15,23 +15,28 @@
  */
 package com.alibaba.druid.filter.config;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.crypto.Cipher;
+
 import com.alibaba.druid.filter.FilterAdapter;
-import com.alibaba.druid.filter.config.security.decrypter.DecryptException;
-import com.alibaba.druid.filter.config.security.decrypter.Decrypter;
-import com.alibaba.druid.filter.config.security.decrypter.DecrypterFactory;
-import com.alibaba.druid.filter.config.security.decrypter.SensitiveParameters;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.util.Base64;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -88,144 +93,236 @@ import com.alibaba.druid.util.JdbcUtils;
  * config.decrypt.x509File=证书路径
  * 
  * </pre>
+ * @author Jonas Yang
  */
 public class ConfigFilter extends FilterAdapter {
 
-    private static Log         log                  = LogFactory.getLog(ConfigFilter.class);
+    private static Log         LOG                       = LogFactory.getLog(ConfigFilter.class);
 
-    public static final String CONFIG_FILE          = "config.file";
+    public static final String CONFIG_FILE               = "config.file";
 
-    public static final String CONFIG_DECRYPT       = "config.decrypt";
+    public static final String CONFIG_DECRYPT            = "config.decrypt";
 
-    public static final String SYS_PROP_CONFIG_FILE = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_FILE      = "druid.config.file";
+
+    public static final String KEY                       = "config.decrypt.key";
+    public static final String KEY_FILE                  = "config.decrypt.keyFile";
+    public static final String X509_FILE                 = "config.decrypt.x509File";
+
+    public static final String DEFAULT_PUBLIC_KEY_STRING = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKHGwq7q2RmwuRgKxBypQHw0mYu4BQZ3eMsTrdK8E6igRcxsobUC7uT0SoxIjl1WveWniCASejoQtn/BY6hVKWsCAwEAAQ==";
 
     public ConfigFilter(){
     }
 
     public void init(DataSourceProxy dataSourceProxy) {
         if (!(dataSourceProxy instanceof DruidDataSource)) {
-            log.error("ConfigLoader only support DruidDataSource");
+            LOG.error("ConfigLoader only support DruidDataSource");
         }
 
-        Properties info = null;
         DruidDataSource dataSource = (DruidDataSource) dataSourceProxy;
         Properties connectinProperties = dataSource.getConnectProperties();
 
-        // 获取远程配置文件
-        String configFile = connectinProperties.getProperty(CONFIG_FILE);
-
-        // 如果系统参数有指定
-        if (configFile == null) {
-            configFile = System.getProperty(SYS_PROP_CONFIG_FILE);
-        }
-
-        if (configFile != null && configFile.length() > 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("Config file will be load from [" + configFile + "].");
-            }
-
-            info = loadConfig(configFile);
-
-            if (info == null) {
-                throw new IllegalArgumentException("Cannot load remote config file from the [config.file=" + configFile
-                                                   + "].");
-            }
-        } else {
-            info = new Properties();
-            if (log.isDebugEnabled()) {
-                log.debug("No remote config file.");
-            }
-        }
+        Properties configFileProperties = loadPropertyFromConfigFile(connectinProperties);
 
         // 判断是否需要解密，如果需要就进行解密行动
-        String decrypterId = info.getProperty(CONFIG_DECRYPT);
-        boolean isRemotedSecurityConfig = true;
+        boolean decrypt = isDecrypt(connectinProperties, configFileProperties);
 
-        if (decrypterId == null) {
-            decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
-            isRemotedSecurityConfig = false;
-
-            if (log.isDebugEnabled()) {
-                log.debug("Get decrypt method " + decrypterId + " from local config.");
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Get decrypt method " + decrypterId + " from remote config.");
-            }
-        }
-
-        if (decrypterId != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Use [" + decrypterId + "] to decrypt sensitive parameters.");
-            }
-
-            try {
-                Decrypter decrypter = DecrypterFactory.getDecrypter(decrypterId);
-                if (decrypter == null) {
-                    throw new IllegalArgumentException("Druid doesn't support the decrypter [config.decrypt="
-                                                       + decrypterId + "].");
-                }
-
-                Properties securityInfo = isRemotedSecurityConfig ? info : connectinProperties;
-
-                SensitiveParameters originalParameter = getSensitiveParameters(dataSource, info);
-                SensitiveParameters parameters = decrypter.decrypt(originalParameter, securityInfo);
-
-                info.setProperty(DruidDataSourceFactory.PROP_URL, parameters.getUrl());
-                info.setProperty(DruidDataSourceFactory.PROP_USERNAME, parameters.getUsername());
-                info.setProperty(DruidDataSourceFactory.PROP_PASSWORD, parameters.getPassword());
-            } catch (DecryptException e) {
-                throw new IllegalArgumentException("Failed to decrypt.", e);
-            }
-
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("No decrypt.");
-            }
-        }
-
-        // 没有任何配置
-        if (info.size() == 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("No config.");
+        if (configFileProperties == null) {
+            if (decrypt) {
+                decrypt(dataSource, null);
             }
             return;
         }
 
+        if (decrypt) {
+            decrypt(dataSource, configFileProperties);
+        }
+
         try {
-            DruidDataSourceFactory.config(dataSource, info);
+            DruidDataSourceFactory.config(dataSource, configFileProperties);
         } catch (SQLException e) {
             throw new IllegalArgumentException("Config DataSource error.", e);
         }
     }
 
-    /**
-     * 如果配置文件中没有值， 就取默认值
-     * 
-     * @param dataSource
-     * @param info
-     * @return
-     */
-    SensitiveParameters getSensitiveParameters(DruidDataSource dataSource, Properties info) {
-        String username = info.getProperty(DruidDataSourceFactory.PROP_USERNAME);
-        String password = info.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
-        String url = info.getProperty(DruidDataSourceFactory.PROP_URL);
+    public boolean isDecrypt(Properties connectinProperties, Properties configFileProperties) {
+        boolean decrypt = false;
 
-        if (username == null) {
-            username = dataSource.getUsername();
+        String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
+        if (configFileProperties != null && (decrypterId == null || decrypterId.length() == 0)) {
+            decrypterId = configFileProperties.getProperty(CONFIG_DECRYPT);
         }
 
-        if (password == null) {
-            password = dataSource.getPassword();
+        if ("true".equals(decrypterId)) {
+            decrypt = true;
         }
 
-        if (url == null) {
-            url = dataSource.getUrl();
-        }
-
-        return new SensitiveParameters(url, username, password);
+        return decrypt;
     }
-    
+
+    Properties loadPropertyFromConfigFile(Properties connectinProperties) {
+        String configFile = connectinProperties.getProperty(CONFIG_FILE);
+
+        if (configFile == null) {
+            configFile = System.getProperty(SYS_PROP_CONFIG_FILE);
+        }
+
+        if (configFile != null && configFile.length() > 0) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("DruidDataSource Config File load from : " + configFile);
+            }
+
+            Properties info = loadConfig(configFile);
+
+            if (info == null) {
+                throw new IllegalArgumentException("Cannot load remote config file from the [config.file=" + configFile
+                                                   + "].");
+            }
+
+            return info;
+        }
+
+        return null;
+    }
+
+    public void decrypt(DruidDataSource dataSource, Properties info) {
+
+        try {
+            String encryptedPassword = null;
+            if (info != null) {
+                encryptedPassword = info.getProperty(DruidDataSourceFactory.PROP_PASSWORD);
+            }
+
+            if (encryptedPassword == null || encryptedPassword.length() == 0) {
+                encryptedPassword = dataSource.getConnectProperties().getProperty(DruidDataSourceFactory.PROP_PASSWORD);
+            }
+
+            if (encryptedPassword == null || encryptedPassword.length() == 0) {
+                encryptedPassword = dataSource.getPassword();
+            }
+
+            PublicKey publicKey = getPublicKey(dataSource.getConnectProperties(), info);
+
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, publicKey);
+            String passwordPlainText = decrypt(cipher, encryptedPassword);
+
+            if (info != null) {
+                info.setProperty(DruidDataSourceFactory.PROP_PASSWORD, passwordPlainText);
+            } else {
+                dataSource.setPassword(passwordPlainText);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to decrypt.", e);
+        }
+    }
+
+    protected String decrypt(Cipher cipher, String cipherString) throws Exception {
+        if (cipherString == null || cipherString.length() == 0) {
+            return cipherString;
+        }
+
+        byte[] cipherBytes = Base64.base64ToByteArray(cipherString);
+        byte[] plainBytes = cipher.doFinal(cipherBytes);
+
+        return new String(plainBytes);
+    }
+
+    public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
+        String key = connectinProperties.getProperty(KEY);
+        String publicKeyFile = connectinProperties.getProperty(KEY_FILE);
+        String x509File = connectinProperties.getProperty(X509_FILE);
+
+        if (connectinProperties != null && (key == null || key.length() == 0)) {
+            key = connectinProperties.getProperty(KEY);
+        }
+
+        if (connectinProperties != null && (publicKeyFile == null || publicKeyFile.length() == 0)) {
+            publicKeyFile = connectinProperties.getProperty(KEY_FILE);
+        }
+
+        if (connectinProperties != null && (x509File == null || x509File.length() == 0)) {
+            x509File = connectinProperties.getProperty(X509_FILE);
+        }
+
+        if (publicKeyFile != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Decrypt by public key file");
+            }
+            return getPublicKeyByPublicKeyFile(publicKeyFile);
+        }
+
+        if (x509File != null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Decrypt by X509 file");
+            }
+            return getPublicKeyByX509(x509File);
+        }
+
+        return getPublicKeyByString(key);
+    }
+
+    public PublicKey getPublicKeyByX509(String x509File) {
+        if (x509File == null || x509File.length() == 0) {
+            return getPublicKeyByString(null);
+        }
+
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(x509File);
+
+            CertificateFactory factory = CertificateFactory.getInstance("X.509");
+            Certificate cer = factory.generateCertificate(in);
+            return cer.getPublicKey();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to get public key", e);
+        } finally {
+            JdbcUtils.close(in);
+        }
+    }
+
+    public PublicKey getPublicKeyByPublicKeyFile(String publicKeyFile) {
+        if (publicKeyFile == null || publicKeyFile.length() == 0) {
+            return getPublicKeyByString(null);
+        }
+
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(publicKeyFile);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int len = 0;
+            byte[] b = new byte[512 / 8];
+            while ((len = in.read(b)) != -1) {
+                out.write(b, 0, len);
+            }
+
+            byte[] publicKeyBytes = out.toByteArray();
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            return factory.generatePublic(spec);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to get public key", e);
+        } finally {
+            JdbcUtils.close(in);
+        }
+    }
+
+    public PublicKey getPublicKeyByString(String publicKeyString) {
+        if (publicKeyString == null || publicKeyString.length() == 0) {
+            publicKeyString = DEFAULT_PUBLIC_KEY_STRING;
+        }
+
+        try {
+            byte[] publicKeyBytes = Base64.base64ToByteArray(publicKeyString);
+            X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(publicKeyBytes);
+
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(x509KeySpec);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to get public key", e);
+        }
+    }
+
     public Properties loadConfig(String filePath) {
         Properties properties = new Properties();
 
@@ -249,7 +346,7 @@ public class ConfigFilter extends FilterAdapter {
             }
 
             if (inStream == null) {
-                log.error("load config file error, file : " + filePath);
+                LOG.error("load config file error, file : " + filePath);
                 return null;
             }
 
@@ -261,7 +358,7 @@ public class ConfigFilter extends FilterAdapter {
 
             return properties;
         } catch (Exception ex) {
-            log.error("load config file error, file : " + filePath, ex);
+            LOG.error("load config file error, file : " + filePath, ex);
             return null;
         } finally {
             JdbcUtils.close(inStream);

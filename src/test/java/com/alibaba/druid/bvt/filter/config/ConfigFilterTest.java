@@ -73,7 +73,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         dataSource.setUsername("test");
         dataSource.setPassword(encryptedString);
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA");
+        dataSource.setConnectionProperties("config.decrypt=true");
 
         try {
             dataSource.init();
@@ -85,31 +85,10 @@ public class ConfigFilterTest extends ConfigFileGenerator {
     }
 
     @Test
-    public void testInitInvalidDecrypt() throws SQLException {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setDriver(MockDriver.instance);
-        dataSource.setUrl("");
-        dataSource.setUsername("test");
-        dataSource.setPassword(encryptedString);
-        dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=ABCDEF");
-
-        Exception error = null;
-        try {
-            dataSource.init();
-        } catch (IllegalArgumentException e) {
-            error = e;
-        } finally {
-            JdbcUtils.close(dataSource);
-        }
-        Assert.assertNotNull(error);
-    }
-
-    @Test
     public void testInitRemoteConfigAndDecrypt() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + "file://" + this.filePath);
+        dataSource.setConnectionProperties("config.decrypt=true;config.file=" + "file://" + this.filePath);
         try {
             dataSource.init();
 
