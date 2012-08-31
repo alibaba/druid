@@ -1,6 +1,6 @@
 package com.alibaba.druid.filter.config;
 
-import com.alibaba.druid.filter.config.impl.FileConfigLoader;
+import com.alibaba.druid.filter.config.loader.impl.FileConfigLoader;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JdbcUtils;

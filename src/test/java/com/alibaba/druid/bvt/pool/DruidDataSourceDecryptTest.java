@@ -1,15 +1,11 @@
 package com.alibaba.druid.bvt.pool;
 
-import com.alibaba.druid.support.security.decryptor.DecryptException;
-import com.alibaba.druid.support.security.decryptor.Decrypter;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.support.security.decryptor.SensitiveParameters;
 import com.alibaba.druid.util.JdbcUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * @author Jonas Yang
