@@ -16,15 +16,17 @@
 package com.alibaba.druid.filter.config;
 
 import com.alibaba.druid.filter.FilterAdapter;
+import com.alibaba.druid.filter.config.loader.ConfigLoader;
+import com.alibaba.druid.filter.config.loader.ConfigLoaderFactory;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.support.security.decryptor.DecryptException;
-import com.alibaba.druid.support.security.decryptor.Decrypter;
-import com.alibaba.druid.support.security.decryptor.DecrypterFactory;
-import com.alibaba.druid.support.security.decryptor.SensitiveParameters;
+import com.alibaba.druid.filter.config.security.decrypter.DecryptException;
+import com.alibaba.druid.filter.config.security.decrypter.Decrypter;
+import com.alibaba.druid.filter.config.security.decrypter.DecrypterFactory;
+import com.alibaba.druid.filter.config.security.decrypter.SensitiveParameters;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -75,10 +77,6 @@ import java.util.Properties;
  * 2. config filter 相关设置:
  * #远程文件路径
  * config.file=http://xxxxx(http://开头或者file:开头)
- *
- * #AES解密, key不指定, 使用默认的
- * config.decrypt=AES
- * config.decrypt.key=abcdfeg
  *
  * #RSA解密, Key不指定, 使用默认的
  * config.decrypt=RSA
