@@ -19,7 +19,7 @@ public class DruidDataSourceDecryptTest {
         dataSource.setUsername("xiaoyu");
         dataSource.setPassword("OJfUm6WCHi7EuXqE6aEc+Po2xFrAGBeSNy8O2jWhV2FTG8/5kbRRr2rjNKhptlevm/03Y0048P7h88gdUOXAYg==");
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA");
+        dataSource.setConnectionProperties("config.decrypt=true");
 
         try {
             dataSource.init();
