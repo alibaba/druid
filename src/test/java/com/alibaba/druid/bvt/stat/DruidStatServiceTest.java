@@ -43,6 +43,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.stat.spring.UserService;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -53,6 +54,8 @@ public class DruidStatServiceTest extends TestCase {
     protected void setUp() throws Exception {
         // DruidStatService is singleton, reset all for other testcase.
         DruidStatService.getInstance().service("/reset-all.json");
+        // clear web app.
+        WebAppStatManager.getInstance().getWebAppStatSet().clear();
 
         dataSource = new DruidDataSource();
 
