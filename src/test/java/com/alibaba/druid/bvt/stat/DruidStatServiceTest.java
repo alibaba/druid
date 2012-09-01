@@ -51,6 +51,9 @@ public class DruidStatServiceTest extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
+        // DruidStatService is singleton, reset all for other testcase.
+        DruidStatService.getInstance().service("/reset-all.json");
+
         dataSource = new DruidDataSource();
 
         dataSource.setUrl("jdbc:mock:xxx");
@@ -89,8 +92,6 @@ public class DruidStatServiceTest extends TestCase {
         Assert.assertEquals(1, sqlStat.get("ExecuteCount"));
         Assert.assertEquals(1, sqlStat.get("FetchRowCount"));
         Assert.assertEquals(0, sqlStat.get("EffectedRowCount"));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getSqlById() throws Exception {
@@ -120,8 +121,6 @@ public class DruidStatServiceTest extends TestCase {
         String result2 = DruidStatService.getInstance().service("/sql-" + Integer.MAX_VALUE + ".json");
         resultMap = (Map<String, Object>) JSONUtils.parse(result2);
         Assert.assertNull(resultMap.get("Content"));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getDataSourceList() throws Exception {
@@ -147,8 +146,6 @@ public class DruidStatServiceTest extends TestCase {
 
         Assert.assertEquals(1, dataSourceStat.get("PoolingCount"));
         Assert.assertEquals(0, dataSourceStat.get("ActiveCount"));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getDataSourceIdList() throws Exception {
@@ -173,8 +170,6 @@ public class DruidStatServiceTest extends TestCase {
         Map<String, Object> resultIdMap = (Map<String, Object>) JSONUtils.parse(resultId);
         Map<String, Object> dataSourceIdStat = (Map<String, Object>) resultIdMap.get("Content");
         assertThat((Integer) dataSourceIdStat.get("PoolingCount"), equalTo(1));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     /**
@@ -190,8 +185,6 @@ public class DruidStatServiceTest extends TestCase {
         assertThat(contentMap.get("Version"), is(not(nullValue())));
         assertThat(contentMap.get("Drivers"), is(not(nullValue())));
         assertThat((Boolean) contentMap.get("ResetEnable"), is(true));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getActiveConnectionStackTrace() throws Exception {
@@ -213,8 +206,6 @@ public class DruidStatServiceTest extends TestCase {
         // close connection at last.
         stmt.close();
         conn.close();
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getActiveConnectionStackTraceId() throws Exception {
@@ -243,20 +234,14 @@ public class DruidStatServiceTest extends TestCase {
         assertThat(contentList.get(0), is(not(nullValue())));
         stmt.close();
         conn.close();
-        
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
-    public void test_statService_returnJSONActiveConnectionStackTrace() throws Exception{
+    public void test_statService_returnJSONActiveConnectionStackTrace() throws Exception {
         String result = DruidStatService.getInstance().service("/activeConnectionStackTrace-1.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        assertThat((Integer)resultMap.get("ResultCode"), equalTo(-1));
-        
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
+        assertThat((Integer) resultMap.get("ResultCode"), equalTo(-1));
     }
-    
+
     public void test_statService_getWebURIList() throws Exception {
         String uri = "/";
         MockServletContext servletContext = new MockServletContext();
@@ -291,8 +276,6 @@ public class DruidStatServiceTest extends TestCase {
         assertThat((String) webURI.get("URI"), equalTo(uri));
         assertThat((Integer) webURI.get("RequestCount"), equalTo(2));
         filter.destroy();
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getWebURIById() throws Exception {
@@ -322,8 +305,6 @@ public class DruidStatServiceTest extends TestCase {
         contentMap = (Map<String, Object>) resultMap.get("Content");
         assertThat((Integer) contentMap.get("RequestCount"), equalTo(2));
         filter.destroy();
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getWebApp() throws Exception {
@@ -357,8 +338,6 @@ public class DruidStatServiceTest extends TestCase {
         contentMap = contentList.get(0);
         assertThat((Integer) contentMap.get("RequestCount"), equalTo(2));
         filter.destroy();
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getWebSession() throws Exception {
@@ -399,8 +378,6 @@ public class DruidStatServiceTest extends TestCase {
         contentMap = contentList.get(1);
         assertThat((String) contentMap.get("SESSIONID"), equalTo(sessionId2));
         filter.destroy();
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getSpring() throws Exception {
@@ -424,8 +401,6 @@ public class DruidStatServiceTest extends TestCase {
         contentMap = contentList.get(0);
         assertThat((String) contentMap.get("Class"), is(not(nullValue())));
         assertThat((Integer) contentMap.get("ExecuteCount"), equalTo(2));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getSpringDetail() throws Exception {
@@ -443,8 +418,6 @@ public class DruidStatServiceTest extends TestCase {
         resultMap = (Map<String, Object>) JSONUtils.parse(result);
         contentMap = (Map<String, Object>) resultMap.get("Content");
         assertThat((Integer) contentMap.get("ExecuteCount"), equalTo(2));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
 
     public void test_statService_getResetAll() throws Exception {
@@ -520,16 +493,14 @@ public class DruidStatServiceTest extends TestCase {
         resultSpringMap = (Map<String, Object>) JSONUtils.parse(resultSpring);
         contentSpringList = (List<Map<String, Object>>) resultSpringMap.get("Content");
         assertThat(contentSpringList, is(nullValue()));
-        // DruidStatService is singleton, reset all for other testcase.
-        DruidStatService.getInstance().service("/reset-all.json");
     }
-    
+
     public void test_statService() throws Exception {
         String result = DruidStatService.getInstance().service("/bad.json");
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtils.parse(result);
-        assertThat((Integer)resultMap.get("ResultCode"), equalTo(-1));
+        assertThat((Integer) resultMap.get("ResultCode"), equalTo(-1));
     }
-    
+
     public void test_statService_getParameters() throws Exception {
         String url = "?x=a&y=b";
         Map<String, String> parameters = DruidStatService.getParameters(url);
