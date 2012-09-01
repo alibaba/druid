@@ -63,12 +63,16 @@ public class IOUtils {
                 return null;
             }
             
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            copy(in, output);
-            return output.toByteArray();
+            return readByteArray(in);
         } finally {
             JdbcUtils.close(in);
         }
+    }
+    
+    public static byte[] readByteArray(InputStream input) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        copy(input, output);
+        return output.toByteArray();
     }
     
     public static long copy(InputStream input, OutputStream output)

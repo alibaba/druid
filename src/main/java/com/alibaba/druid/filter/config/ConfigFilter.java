@@ -30,6 +30,7 @@ import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.util.StringUtils;
 
 /**
  * <pre>
@@ -90,15 +91,15 @@ import com.alibaba.druid.util.JdbcUtils;
  */
 public class ConfigFilter extends FilterAdapter {
 
-    private static Log         LOG                  = LogFactory.getLog(ConfigFilter.class);
+    private static Log         LOG                       = LogFactory.getLog(ConfigFilter.class);
 
-    public static final String CONFIG_FILE          = "config.file";
-    public static final String CONFIG_DECRYPT       = "config.decrypt";
-    public static final String CONFIG_KEY           = "config.decrypt.key";
-    public static final String CONFIG_KEY_FILE      = "config.decrypt.keyFile";
-    public static final String CONFIG_X509_FILE     = "config.decrypt.x509File";
+    public static final String CONFIG_FILE               = "config.file";
+    public static final String CONFIG_DECRYPT            = "config.decrypt";
+    public static final String CONFIG_KEY                = "config.decrypt.key";
 
-    public static final String SYS_PROP_CONFIG_FILE = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_FILE      = "druid.config.file";
+    public static final String SYS_PROP_CONFIG_DECRYPT   = "druid.config.decrypt";
+    public static final String SYS_PROP_CONFIG_KEY       = "druid.config.decrypt.key";
 
     public ConfigFilter(){
     }
@@ -138,8 +139,14 @@ public class ConfigFilter extends FilterAdapter {
         boolean decrypt = false;
 
         String decrypterId = connectinProperties.getProperty(CONFIG_DECRYPT);
-        if (configFileProperties != null && (decrypterId == null || decrypterId.length() == 0)) {
-            decrypterId = configFileProperties.getProperty(CONFIG_DECRYPT);
+        if (decrypterId == null || decrypterId.length() == 0) {
+            if (configFileProperties != null) {
+                decrypterId = configFileProperties.getProperty(CONFIG_DECRYPT);
+            }
+        }
+
+        if (decrypterId == null || decrypterId.length() == 0) {
+            decrypterId = System.getProperty(SYS_PROP_CONFIG_DECRYPT);
         }
 
         if ("true".equals(decrypterId)) {
@@ -191,6 +198,7 @@ public class ConfigFilter extends FilterAdapter {
             }
 
             PublicKey publicKey = getPublicKey(dataSource.getConnectProperties(), info);
+
             String passwordPlainText = ConfigTools.decrypt(publicKey, encryptedPassword);
 
             if (info != null) {
@@ -205,27 +213,13 @@ public class ConfigFilter extends FilterAdapter {
 
     public PublicKey getPublicKey(Properties connectinProperties, Properties configFileProperties) {
         String key = connectinProperties.getProperty(CONFIG_KEY);
-        String publicKeyFile = connectinProperties.getProperty(CONFIG_KEY_FILE);
-        String x509File = connectinProperties.getProperty(CONFIG_X509_FILE);
 
-        if (connectinProperties != null && (key == null || key.length() == 0)) {
+        if (StringUtils.isEmpty(key) && connectinProperties != null) {
             key = connectinProperties.getProperty(CONFIG_KEY);
         }
 
-        if (connectinProperties != null && (publicKeyFile == null || publicKeyFile.length() == 0)) {
-            publicKeyFile = connectinProperties.getProperty(CONFIG_KEY_FILE);
-        }
-
-        if (connectinProperties != null && (x509File == null || x509File.length() == 0)) {
-            x509File = connectinProperties.getProperty(CONFIG_X509_FILE);
-        }
-
-        if (publicKeyFile != null) {
-            return ConfigTools.getPublicKeyByPublicKeyFile(publicKeyFile);
-        }
-
-        if (x509File != null) {
-            return ConfigTools.getPublicKeyByX509(x509File);
+        if (StringUtils.isEmpty(key)) {
+            key = System.getProperty(SYS_PROP_CONFIG_KEY);
         }
 
         return ConfigTools.getPublicKey(key);
