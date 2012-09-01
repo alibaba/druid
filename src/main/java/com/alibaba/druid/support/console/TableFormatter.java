@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.support.console;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TableFormatter {
