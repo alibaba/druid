@@ -1,15 +1,15 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import com.alibaba.druid.filter.config.ConfigFileGenerator;
-import com.alibaba.druid.filter.config.ConfigFilter;
-import com.alibaba.druid.filter.config.loader.impl.FileConfigLoader;
-import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.util.JdbcUtils;
+import java.sql.SQLException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.SQLException;
+import com.alibaba.druid.filter.config.ConfigFileGenerator;
+import com.alibaba.druid.filter.config.ConfigFilter;
+import com.alibaba.druid.mock.MockDriver;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author Jonas Yang
@@ -22,7 +22,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
     public void testInitRemoteConfigFile() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.file=" + FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        dataSource.setConnectionProperties("config.file=file://" + this.filePath);
         try {
             dataSource.init();
 
@@ -37,7 +37,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
 
-        System.setProperty(ConfigFilter.SYS_PROP_CONFIG_FILE, FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        System.setProperty(ConfigFilter.SYS_PROP_CONFIG_FILE, "file://" + this.filePath);
         try {
             dataSource.init();
 
@@ -53,15 +53,16 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
         dataSource.setConnectionProperties("config.file=abcdef");
+
+        Exception error = null;
         try {
             dataSource.init();
-            Assert.assertTrue("It is here", false);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.assertTrue(true);
+            error = e;
         } finally {
             JdbcUtils.close(dataSource);
         }
+        Assert.assertNotNull(error);
     }
 
     @Test
@@ -72,32 +73,12 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         dataSource.setUsername("test");
         dataSource.setPassword(encryptedString);
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA");
+        dataSource.setConnectionProperties("config.decrypt=true");
 
         try {
             dataSource.init();
-            Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu", dataSource.getPassword());
-        } finally {
-            JdbcUtils.close(dataSource);
-        }
-    }
-
-    @Test
-    public void testInitInvalidDecrypt() throws SQLException {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setDriver(MockDriver.instance);
-        dataSource.setUrl("");
-        dataSource.setUsername("test");
-        dataSource.setPassword(encryptedString);
-        dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=ABCDEF");
-
-        try {
-            dataSource.init();
-            Assert.assertTrue("It is here", false);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Assert.assertTrue(true);
+            Assert.assertEquals("The password is " + dataSource.getPassword() + ", is not xiaoyu", "xiaoyu",
+                                dataSource.getPassword());
         } finally {
             JdbcUtils.close(dataSource);
         }
@@ -107,7 +88,7 @@ public class ConfigFilterTest extends ConfigFileGenerator {
     public void testInitRemoteConfigAndDecrypt() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setFilters("config");
-        dataSource.setConnectionProperties("config.decrypt=RSA;config.file=" + FileConfigLoader.PROTOCOL_PREFIX + this.filePath);
+        dataSource.setConnectionProperties("config.decrypt=true;config.file=" + "file://" + this.filePath);
         try {
             dataSource.init();
 
@@ -136,13 +117,14 @@ public class ConfigFilterTest extends ConfigFileGenerator {
         dataSource.setFilters("config");
         dataSource.setConnectionProperties("config.file=abcdefeg");
 
+        Exception error = null;
         try {
             dataSource.init();
-            Assert.assertTrue("Get here.", false);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            error = e;
         } finally {
             JdbcUtils.close(dataSource);
         }
+        Assert.assertNotNull(error);
     }
 }
