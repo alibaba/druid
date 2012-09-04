@@ -231,7 +231,7 @@ public class ConfigFilter extends FilterAdapter {
         InputStream inStream = null;
         try {
             boolean xml = false;
-            if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("file:/")) {
+            if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("file://")) {
                 URL url = new URL(filePath);
                 inStream = url.openStream();
 
