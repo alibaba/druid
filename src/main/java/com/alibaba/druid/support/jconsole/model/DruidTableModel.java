@@ -61,7 +61,10 @@ public class DruidTableModel implements TableModel {
 	@Override
 	public String getColumnName(int columnIndex) {
 		if (showKeys != null && showKeys.size() > 0) {
-			return showKeys.get(columnIndex);
+			String keyNow = showKeys.get(columnIndex);
+			if (keyNow != null) {
+				return keyNow.substring(keyNow.indexOf('-')+1, keyNow.length());
+			}
 		}
 		if (list != null && list.size() > 0) {
 			LinkedHashMap<String,Object> firstElement = list.get(0);
@@ -78,7 +81,7 @@ public class DruidTableModel implements TableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (list != null && rowIndex < list.size()) {
+		if (list != null && rowIndex < list.size()) {//没有超出最大行数
 			LinkedHashMap<String,Object> dataNow = list.get(rowIndex);
 			if (showKeys != null) {
 				int titleLen = showKeys.size();
@@ -87,7 +90,9 @@ public class DruidTableModel implements TableModel {
 				}
 			} else {
 				Object[] values = dataNow.values().toArray();
-				return values[columnIndex];
+				if (columnIndex < values.length) {
+					return values[columnIndex];
+				}				
 			}
 		}
 		return null;

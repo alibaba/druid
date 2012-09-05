@@ -15,8 +15,8 @@
  */
 package com.alibaba.druid.support.jconsole;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -25,9 +25,12 @@ import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
@@ -43,13 +46,12 @@ public abstract class DruidPanel extends JPanel {
     protected static final String RESP_JSON_RESULT_KEY = "ResultCode";
     protected static final String RESP_JSON_CONTENT_KEY = "Content";
     protected static final long DEFAULT_ACTIVE_TIME = 5*60*1000;
-    
-    protected static final int DRUID_TABLE_WIDTH = 600;
-    protected static final int DRUID_TABLE_HEIGHT = 500;
+    private static final String COPYRIGHT_STRING = "<html>powered by <a href=\"http://blog.csdn.net/yunnysunny\">yunnysunny</a></html>";
     
     protected JScrollPane scrollPane;
     protected DruidTableModel tableModel;
     protected JTable table;
+    protected JPanel copyrightPanel;
     protected String url;
     
     /** 界面刷新的间隔时间，单位为毫秒. */
@@ -109,23 +111,49 @@ public abstract class DruidPanel extends JPanel {
 			if (scrollPane == null) {
 				table = new JTable();
 
-				scrollPane = new JScrollPane(table);
+				scrollPane = new JScrollPane();
 				scrollPane.setAutoscrolls(true);
-				GridBagLayout gridbag = new GridBagLayout();
-				GridBagConstraints c = new GridBagConstraints();
-				setLayout(gridbag);
-
-				c.fill = GridBagConstraints.BOTH;
-				c.gridx = 0;
-				c.gridy = 0;
-				c.weightx = 9;
-				c.weighty = 9;
-
-				gridbag.setConstraints(scrollPane, c);
+				scrollPane.setBorder((TitledBorder)BorderFactory.createTitledBorder("数据区"));
+				
+				setLayout(null);
+				scrollPane.setBounds(10, 10, getWidth()-20, getHeight()-80);				
 
 				this.add(scrollPane);
+				
+				copyrightPanel = new JPanel();
+				copyrightPanel.setBorder((TitledBorder)BorderFactory.createTitledBorder("版权区"));
+				JLabel authorInfo = new JLabel(COPYRIGHT_STRING);
+				copyrightPanel.add(authorInfo);
+				
+				this.add(copyrightPanel);
+				copyrightPanel.setBounds(10, getHeight()-60, getWidth()-20, 60);
+								
 				needRefresh = true;
 				lastRefreshTime = timeNow;
+				this.addComponentListener(new ComponentListener() {
+					
+					@Override
+					public void componentShown(ComponentEvent arg0) {
+						
+					}
+					
+					@Override
+					public void componentResized(ComponentEvent arg0) {
+						scrollPane.setBounds(10, 10, getWidth()-20,
+								getHeight()-80);
+						copyrightPanel.setBounds(10, getHeight()-60, getWidth()-20, 60);
+					}
+					
+					@Override
+					public void componentMoved(ComponentEvent arg0) {
+						
+					}
+					
+					@Override
+					public void componentHidden(ComponentEvent arg0) {
+						
+					}
+				});
 			} else {
 				if (lastRefreshTime + activeTime < timeNow) {
 					needRefresh = true;
