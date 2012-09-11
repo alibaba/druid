@@ -15,18 +15,24 @@
  */
 package com.alibaba.druid.support.jconsole;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
-import com.alibaba.druid.support.jconsole.model.RowHeaderTable;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
 import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 
 /**
- * 请求地址：/datasource.json
+ * service的请求地址：/datasource.json
  * 
- * 请求返回的json格式：
+ * 请求service返回的json格式：
  * {"ResultCode":1,
  * 		"Content":
  * 			[{"Identity":31375837,"Name":"DataSource-31375837","DbType":"mysql",
@@ -50,22 +56,51 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  * */
 public class DruidDataSourcePanel extends DruidPanel {
 
-    private static final long serialVersionUID = 1L;
-    private static final String REQUEST_URL = "/datasource.json";
-    private static final String KEY_WORD_IDENTITY = "Identity";
-    
-    public DruidDataSourcePanel() {
-    	super();
-    	this.url = REQUEST_URL;
-    }
+	private static final long serialVersionUID = 1L;
+	private static final String REQUEST_URL = "/datasource.json";
+	private static final String KEY_WORD_IDENTITY = "Identity";
+	private JPanel contentPanel;
+
+	public DruidDataSourcePanel() {
+		super();
+		this.url = REQUEST_URL;
+			
+	}
+
+	private void addTable(ColumnData columnData) {
+		ArrayList<ArrayList<LinkedHashMap<String, Object>>> data
+			= columnData.getTableDatas();
+
+		int i = 0;
+		ArrayList<String> ids = columnData.getNames();
+
+		for (ArrayList<LinkedHashMap<String, Object>> listNow : data) {
+						
+			tableModel = new DruidTableModel(listNow);
+			table.setModel(tableModel);
+			
+			String id = ids.get(i);
+			JPanel panelNow = new JPanel(new BorderLayout());
+			panelNow.setBorder((TitledBorder) BorderFactory
+					.createTitledBorder(KEY_WORD_IDENTITY + ":" + id));
+			contentPanel.add(panelNow);			
+			
+			panelNow.add(table.getTableHeader(),BorderLayout.NORTH);
+			panelNow.add(table);
+			table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
+			
+			i++;
+		}
+	}
+
 	@Override
 	protected void tableDataProcess(
 			ArrayList<LinkedHashMap<String, Object>> data) {
-		ColumnData columnData = TableDataProcessor.row2col(data, KEY_WORD_IDENTITY);
-		tableModel = new DruidTableModel(columnData.getDatas());
-		table.setModel(tableModel);
-		RowHeaderTable header = new RowHeaderTable(
-				columnData.getNames(),table,50,columnData.getCount());
-		scrollPane.setRowHeaderView(header);
+		ColumnData columnData = TableDataProcessor.mutilRow2col(data,
+				KEY_WORD_IDENTITY);
+		contentPanel = new JPanel(new GridLayout(0,1));	
+		addTable(columnData);
+
+		scrollPane.setViewportView(contentPanel);
 	}
 }

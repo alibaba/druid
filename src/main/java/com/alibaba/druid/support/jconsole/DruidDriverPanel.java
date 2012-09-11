@@ -18,7 +18,10 @@ package com.alibaba.druid.support.jconsole;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
+import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
+import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 
 /**
  * 请求地址：/basic.json
@@ -44,8 +47,12 @@ public class DruidDriverPanel extends DruidPanel {
 	@Override
 	protected void tableDataProcess(
 			ArrayList<LinkedHashMap<String, Object>> data) {
-		tableModel = new DruidTableModel(data);
+		ColumnData columnData = TableDataProcessor.row2col(data);
+		tableModel = new DruidTableModel(columnData.getDatas());
 		table.setModel(tableModel);
+		table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
+		
+		scrollPane.setViewportView(table);
 	}    
 }
 

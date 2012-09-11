@@ -15,8 +15,8 @@
  */
 package com.alibaba.druid.support.jconsole;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -25,9 +25,12 @@ import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
@@ -36,35 +39,63 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.sun.tools.jconsole.JConsoleContext;
 
+/**
+ * druid面板的抽象类
+ * 在类在实现的时候，通过url地址获取数据，解析此数据，然后显示在界面中
+ */
 public abstract class DruidPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    /** 成功的返回码 */
     protected static final int RESP_SUCCESS_RESULT = 1;
+    /**返回码在json中的键名 */
     protected static final String RESP_JSON_RESULT_KEY = "ResultCode";
+    /** 内容在json中的键名 */
     protected static final String RESP_JSON_CONTENT_KEY = "Content";
+    /** 默认面板刷新的间隔时间 */
     protected static final long DEFAULT_ACTIVE_TIME = 5*60*1000;
+    /**版权信息字符串 */
+    private static final String COPYRIGHT_STRING = "<html>powered by <a href=\"http://blog.csdn.net/yunnysunny\">yunnysunny</a></html>";
     
-    protected static final int DRUID_TABLE_WIDTH = 600;
-    protected static final int DRUID_TABLE_HEIGHT = 500;
-    
+    /**滚动条面板*/
     protected JScrollPane scrollPane;
+    /** 表格模板 */
     protected DruidTableModel tableModel;
+    /** 表格 */
     protected JTable table;
+    /** 版权面板 */
+    protected JPanel copyrightPanel;
+    /** json请求的地址 */
     protected String url;
     
     /** 界面刷新的间隔时间，单位为毫秒. */
     protected long activeTime;
+    /**上次刷新的时间*/
     protected long lastRefreshTime;
     private final static Log LOG = LogFactory.getLog(DruidPanel.class);
-    
+   
+    /**
+     * 根据传入的刷新时间间隔来初始化.
+     *
+     * @param activeTime 刷新时间间隔
+     */
     protected DruidPanel(long  activeTime) {
     	this.activeTime = activeTime;
-    }
+    }    
     
+    /**
+     * 初始化刷新时间间隔为默认值
+     * */
     protected DruidPanel() {
     	activeTime = DEFAULT_ACTIVE_TIME;
     }
     
+    /**
+     * 解析调用service后得到JSON数据
+     *
+     * @param respData 获取到的json对象
+     * @return 返回解析后的数据
+     */
     @SuppressWarnings("unchecked")
     protected ArrayList<LinkedHashMap<String,Object>> parseData(Object respData) {
     	ArrayList<LinkedHashMap<String,Object>> data = null;
@@ -87,6 +118,14 @@ public abstract class DruidPanel extends JPanel {
     	return data;
     }
     
+    /**
+     * 调用service，返回数据
+     *
+     * @param url service的地址
+     * @param conn MBeanServerConnection对象
+     * @return 调用service后返回的数据
+     * @throws Exception 
+     */
     protected Object getData(String url,MBeanServerConnection conn) throws Exception {
     	Object o = null;
     	ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
@@ -100,8 +139,21 @@ public abstract class DruidPanel extends JPanel {
         return o;
     }
     
+    /**
+     * 调用完service之后，各个子类对于解析后的数据的具体处理
+     *
+     * @param data 解析后的数据
+     */
     protected abstract void tableDataProcess(ArrayList<LinkedHashMap<String,Object>> data);
     
+    /**
+     * 如果是第一次调用，则生成表格对象；否则根据当前时间来和上次刷新时间的间隔，
+     * 是否大于对象初始化时设定的时间间隔来判断是否刷新表格数据。
+     *
+     * @param url service的地址
+     * @param conn MBeanServerConnection对象
+     * @throws Exception
+     */
     protected void addOrRefreshTable(String url,MBeanServerConnection conn) throws Exception {
 		if (url != null) {
 			boolean needRefresh = false;
@@ -109,23 +161,49 @@ public abstract class DruidPanel extends JPanel {
 			if (scrollPane == null) {
 				table = new JTable();
 
-				scrollPane = new JScrollPane(table);
+				scrollPane = new JScrollPane();
 				scrollPane.setAutoscrolls(true);
-				GridBagLayout gridbag = new GridBagLayout();
-				GridBagConstraints c = new GridBagConstraints();
-				setLayout(gridbag);
-
-				c.fill = GridBagConstraints.BOTH;
-				c.gridx = 0;
-				c.gridy = 0;
-				c.weightx = 9;
-				c.weighty = 9;
-
-				gridbag.setConstraints(scrollPane, c);
+				scrollPane.setBorder((TitledBorder)BorderFactory.createTitledBorder("数据区"));
+				
+				setLayout(null);
+				scrollPane.setBounds(10, 10, getWidth()-20, getHeight()-80);				
 
 				this.add(scrollPane);
+				
+				copyrightPanel = new JPanel();
+				copyrightPanel.setBorder((TitledBorder)BorderFactory.createTitledBorder("版权区"));
+				JLabel authorInfo = new JLabel(COPYRIGHT_STRING);
+				copyrightPanel.add(authorInfo);
+				
+				this.add(copyrightPanel);
+				copyrightPanel.setBounds(10, getHeight()-60, getWidth()-20, 60);
+								
 				needRefresh = true;
 				lastRefreshTime = timeNow;
+				this.addComponentListener(new ComponentListener() {
+					
+					@Override
+					public void componentShown(ComponentEvent arg0) {
+						
+					}
+					
+					@Override
+					public void componentResized(ComponentEvent arg0) {
+						scrollPane.setBounds(10, 10, getWidth()-20,
+								getHeight()-80);
+						copyrightPanel.setBounds(10, getHeight()-60, getWidth()-20, 60);
+					}
+					
+					@Override
+					public void componentMoved(ComponentEvent arg0) {
+						
+					}
+					
+					@Override
+					public void componentHidden(ComponentEvent arg0) {
+						
+					}
+				});
 			} else {
 				if (lastRefreshTime + activeTime < timeNow) {
 					needRefresh = true;

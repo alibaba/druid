@@ -39,6 +39,8 @@ import java.util.Calendar;
 
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -60,6 +62,8 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     private int                           currentQueryTimeout;
     private int                           currentFetchDirection;
     private int                           currentFetchSize;
+    
+    private final static Log              LOG = LogFactory.getLog(DruidPooledPreparedStatement.class);
 
     public DruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder.getStatement());
@@ -71,7 +75,11 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         defaultMaxFieldSize = stmt.getMaxFieldSize();
         defaultMaxRows = stmt.getMaxRows();
         defaultQueryTimeout = stmt.getQueryTimeout();
-        defaultFetchDirection = stmt.getFetchDirection();
+        try {
+        	defaultFetchDirection = stmt.getFetchDirection();
+        }catch(Exception e) {
+        	LOG.warn(e.getMessage(), e);
+        }
         defaultFetchSize = stmt.getFetchSize();
         currentMaxFieldSize = defaultMaxFieldSize;
         currentMaxRows = defaultMaxRows;
