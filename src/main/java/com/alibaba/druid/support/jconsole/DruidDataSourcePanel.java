@@ -33,74 +33,74 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
  * service的请求地址：/datasource.json
  * 
  * 请求service返回的json格式：
+ * <pre>
  * {"ResultCode":1,
- * 		"Content":
- * 			[{"Identity":31375837,"Name":"DataSource-31375837","DbType":"mysql",
- * 			"DriverClassName":"com.mysql.jdbc.Driver",
- * 			"URL":"jdbc:mysql://localhost:3306/dragoon_v25_masterdb","UserName":"root",
- * 			"FilterClassNames":["com.alibaba.druid.filter.stat.StatFilter"],
- * 			"WaitThreadCount":0,"NotEmptyWaitCount":0,"NotEmptyWaitMillis":0,"PoolingCount":1,
- * 			"PoolingPeak":0,"ActiveCount":0,"ActivePeak":1,"ActivePeakTime":"Tue Aug 21 21:22:33 CST 2012",
- * 			"InitialSize":1,"MinIdle":1,"MaxActive":20,"QueryTimeout":0,"TransactionQueryTimeout":0,
- * 			"LoginTimeout":0,"ValidConnectionCheckerClassName":"com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker",
- * 			"ExceptionSorterClassName":"com.alibaba.druid.pool.vendor.MySqlExceptionSorter",
- * 			"TestOnBorrow":false,"TestOnReturn":false,"TestWhileIdle":true,"DefaultAutoCommit":true,
- * 			"DefaultReadOnly":true,"LogicConnectCount":93,"LogicCloseCount":93,"LogicConnectErrorCount":0,
- * 			"PhysicalConnectCount":1,"PhysicalCloseCount":0,"PhysicalConnectErrorCount":0,
- * 			"ExecuteCount":93,"ErrorCount":0,"CommitCount":0,"RollbackCount":0,"PSCacheAccessCount":31,
- * 			"PSCacheHitCount":30,"PSCacheMissCount":1,"StartTransactionCount":0,
- * 			"TransactionHistogram":[0,0,0,0,0,0],"ConnectionHoldTimeHistogram":[0,0,48,45,0,0,0,0],
- * 			"RemoveAbandoned":false
- * 			}]
+ *      "Content":
+ *          [{"Identity":31375837,"Name":"DataSource-31375837","DbType":"mysql",
+ *          "DriverClassName":"com.mysql.jdbc.Driver",
+ *          "URL":"jdbc:mysql://localhost:3306/dragoon_v25_masterdb","UserName":"root",
+ *          "FilterClassNames":["com.alibaba.druid.filter.stat.StatFilter"],
+ *          "WaitThreadCount":0,"NotEmptyWaitCount":0,"NotEmptyWaitMillis":0,"PoolingCount":1,
+ *          "PoolingPeak":0,"ActiveCount":0,"ActivePeak":1,"ActivePeakTime":"Tue Aug 21 21:22:33 CST 2012",
+ *          "InitialSize":1,"MinIdle":1,"MaxActive":20,"QueryTimeout":0,"TransactionQueryTimeout":0,
+ *          "LoginTimeout":0,"ValidConnectionCheckerClassName":"com.alibaba.druid.pool.vendor.MySqlValidConnectionChecker",
+ *          "ExceptionSorterClassName":"com.alibaba.druid.pool.vendor.MySqlExceptionSorter",
+ *          "TestOnBorrow":false,"TestOnReturn":false,"TestWhileIdle":true,"DefaultAutoCommit":true,
+ *          "DefaultReadOnly":true,"LogicConnectCount":93,"LogicCloseCount":93,"LogicConnectErrorCount":0,
+ *          "PhysicalConnectCount":1,"PhysicalCloseCount":0,"PhysicalConnectErrorCount":0,
+ *          "ExecuteCount":93,"ErrorCount":0,"CommitCount":0,"RollbackCount":0,"PSCacheAccessCount":31,
+ *          "PSCacheHitCount":30,"PSCacheMissCount":1,"StartTransactionCount":0,
+ *          "TransactionHistogram":[0,0,0,0,0,0],"ConnectionHoldTimeHistogram":[0,0,48,45,0,0,0,0],
+ *          "RemoveAbandoned":false
+ *          }]
  * }
+ * </pre>
+ * 
+ * @author yunnysunny<yunnysunny@gmail.com>
  * */
 public class DruidDataSourcePanel extends DruidPanel {
 
-	private static final long serialVersionUID = 1L;
-	private static final String REQUEST_URL = "/datasource.json";
-	private static final String KEY_WORD_IDENTITY = "Identity";
-	private JPanel contentPanel;
+    private static final long   serialVersionUID  = 1L;
+    private static final String REQUEST_URL       = "/datasource.json";
+    private static final String KEY_WORD_IDENTITY = "Identity";
+    private JPanel              contentPanel;
 
-	public DruidDataSourcePanel() {
-		super();
-		this.url = REQUEST_URL;
-			
-	}
+    public DruidDataSourcePanel(){
+        super();
+        this.url = REQUEST_URL;
 
-	private void addTable(ColumnData columnData) {
-		ArrayList<ArrayList<LinkedHashMap<String, Object>>> data
-			= columnData.getTableDatas();
+    }
 
-		int i = 0;
-		ArrayList<String> ids = columnData.getNames();
+    private void addTable(ColumnData columnData) {
+        ArrayList<ArrayList<LinkedHashMap<String, Object>>> data = columnData.getTableDatas();
 
-		for (ArrayList<LinkedHashMap<String, Object>> listNow : data) {
-						
-			tableModel = new DruidTableModel(listNow);
-			table.setModel(tableModel);
-			
-			String id = ids.get(i);
-			JPanel panelNow = new JPanel(new BorderLayout());
-			panelNow.setBorder((TitledBorder) BorderFactory
-					.createTitledBorder(KEY_WORD_IDENTITY + ":" + id));
-			contentPanel.add(panelNow);			
-			
-			panelNow.add(table.getTableHeader(),BorderLayout.NORTH);
-			panelNow.add(table);
-			table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
-			
-			i++;
-		}
-	}
+        int i = 0;
+        ArrayList<String> ids = columnData.getNames();
 
-	@Override
-	protected void tableDataProcess(
-			ArrayList<LinkedHashMap<String, Object>> data) {
-		ColumnData columnData = TableDataProcessor.mutilRow2col(data,
-				KEY_WORD_IDENTITY);
-		contentPanel = new JPanel(new GridLayout(0,1));	
-		addTable(columnData);
+        for (ArrayList<LinkedHashMap<String, Object>> listNow : data) {
 
-		scrollPane.setViewportView(contentPanel);
-	}
+            tableModel = new DruidTableModel(listNow);
+            table.setModel(tableModel);
+
+            String id = ids.get(i);
+            JPanel panelNow = new JPanel(new BorderLayout());
+            panelNow.setBorder((TitledBorder) BorderFactory.createTitledBorder(KEY_WORD_IDENTITY + ":" + id));
+            contentPanel.add(panelNow);
+
+            panelNow.add(table.getTableHeader(), BorderLayout.NORTH);
+            panelNow.add(table);
+            table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
+
+            i++;
+        }
+    }
+
+    @Override
+    protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
+        ColumnData columnData = TableDataProcessor.mutilRow2col(data, KEY_WORD_IDENTITY);
+        contentPanel = new JPanel(new GridLayout(0, 1));
+        addTable(columnData);
+
+        scrollPane.setViewportView(contentPanel);
+    }
 }

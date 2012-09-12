@@ -62,7 +62,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     private int                           currentQueryTimeout;
     private int                           currentFetchDirection;
     private int                           currentFetchSize;
-    
+
     private final static Log              LOG = LogFactory.getLog(DruidPooledPreparedStatement.class);
 
     public DruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
@@ -76,9 +76,9 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         defaultMaxRows = stmt.getMaxRows();
         defaultQueryTimeout = stmt.getQueryTimeout();
         try {
-        	defaultFetchDirection = stmt.getFetchDirection();
-        }catch(Exception e) {
-        	LOG.warn(e.getMessage(), e);
+            defaultFetchDirection = stmt.getFetchDirection();
+        } catch (Exception e) {
+            LOG.warn(e.getMessage(), e);
         }
         defaultFetchSize = stmt.getFetchSize();
         currentMaxFieldSize = defaultMaxFieldSize;
@@ -188,7 +188,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs == null) {
                 return null;
             }
@@ -469,7 +469,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         if (holder.getHitCount() == 0) {
             return;
         }
-        
+
         int fetchRowPeak = holder.getFetchRowPeak();
 
         if (fetchRowPeak < 0) {
@@ -1012,7 +1012,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         }
 
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == PreparedStatement.class) {
@@ -1021,11 +1021,11 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             }
             return (T) stmt;
         }
-        
+
         if (iface == PreparedStatementHolder.class) {
             return (T) this.holder;
         }
-        
+
         return super.unwrap(iface);
     }
 }

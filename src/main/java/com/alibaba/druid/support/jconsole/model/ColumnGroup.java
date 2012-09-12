@@ -4,7 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Enumeration;
 import java.util.Vector;
- 
+
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -12,30 +12,31 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
- 
+
 public class ColumnGroup {
-    /**合并的JTableHeader的Renderer*/
-    protected TableCellRenderer renderer=null;
-    /**合并的单元格的各个实际的最小单元格存储结构*/
-    protected Vector<Object> vector=null;
-    /**合并后单元格显示的文本信息*/
-    protected String text=null;
-    /**合并的单元格内部两个最小JTableHeader的间隙,其实就是去掉线后那个Border*/
-    private int margin = 0;
- 
-    public ColumnGroup(String text) {
+
+    /** 合并的JTableHeader的Renderer */
+    protected TableCellRenderer renderer = null;
+    /** 合并的单元格的各个实际的最小单元格存储结构 */
+    protected Vector<Object>    vector   = null;
+    /** 合并后单元格显示的文本信息 */
+    protected String            text     = null;
+    /** 合并的单元格内部两个最小JTableHeader的间隙,其实就是去掉线后那个Border */
+    private int                 margin   = 0;
+
+    public ColumnGroup(String text){
         this(null, text);
     }
- 
-    public ColumnGroup(TableCellRenderer renderer, String text) {
+
+    public ColumnGroup(TableCellRenderer renderer, String text){
         if (renderer == null) {
             this.renderer = new DefaultTableCellRenderer() {
+
                 private static final long serialVersionUID = 1L;
- 
+
                 @Override
-                public Component getTableCellRendererComponent(JTable table,
-                        Object value, boolean isSelected, boolean hasFocus,
-                        int row, int column) {
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                               boolean hasFocus, int row, int column) {
                     JTableHeader header = table.getTableHeader();
                     if (header != null) {
                         setForeground(header.getForeground());
@@ -54,33 +55,35 @@ public class ColumnGroup {
         this.text = text;
         vector = new Vector<Object>();
     }
+
     /**
      * 增加单元格
+     * 
      * @param obj
      */
     public void add(Object obj) {
-        if (obj == null) 
-            return;        
+        if (obj == null) return;
         vector.addElement(obj);
     }
+
     /**
      * 根据JTable的某一列取得它的所有的包含列,
+     * 
      * @param column
      * @param group
      * @return
      */
     public Vector<ColumnGroup> getColumnGroups(TableColumn column, Vector<ColumnGroup> group) {
-        //通过递归判断列到底属于那个ColumnGroup
+        // 通过递归判断列到底属于那个ColumnGroup
         group.addElement(this);
-        if (vector.contains(column)) 
-            return group;        
+        if (vector.contains(column)) return group;
         Enumeration<Object> enumeration = vector.elements();
         while (enumeration.hasMoreElements()) {
             Object obj = enumeration.nextElement();
             if (obj instanceof ColumnGroup) {
                 @SuppressWarnings("unchecked")
                 Vector<ColumnGroup> groups = ((ColumnGroup) obj).getColumnGroups(column,
-                        (Vector<ColumnGroup>) group.clone());
+                                                                                 (Vector<ColumnGroup>) group.clone());
                 if (groups != null) {
                     return groups;
                 }
@@ -88,33 +91,35 @@ public class ColumnGroup {
         }
         return null;
     }
- 
+
     public TableCellRenderer getHeaderRenderer() {
         return renderer;
     }
- 
+
     public Object getHeaderValue() {
         return text;
     }
+
     /**
      * 取得合并后的单元格的大小
+     * 
      * @return
      */
     public int getSize() {
         return vector == null ? 0 : vector.size();
     }
+
     /**
-     * 取得合并后的单元格的大小,这个方法需要计算,首先
-     * 是取得一个没有合并的最小单元格的JTableHeader
-     * 的大小,通过Renderer取得组件
+     * 取得合并后的单元格的大小,这个方法需要计算,首先 是取得一个没有合并的最小单元格的JTableHeader 的大小,<br/>
+     * 通过Renderer取得组件
+     * 
      * @return
      */
     public Dimension getSize(JTable table) {
-        Component comp = renderer.getTableCellRendererComponent(table,
-                getHeaderValue(), false, false, -1, -1);
+        Component comp = renderer.getTableCellRendererComponent(table, getHeaderValue(), false, false, -1, -1);
         int height = comp.getPreferredSize().height;
         int width = 0;
-        //宽度需要计算合并的还要加上间隙
+        // 宽度需要计算合并的还要加上间隙
         Enumeration<Object> enumeration = vector.elements();
         while (enumeration.hasMoreElements()) {
             Object obj = enumeration.nextElement();
@@ -128,11 +133,11 @@ public class ColumnGroup {
         }
         return new Dimension(width, height);
     }
- 
+
     public java.lang.String getText() {
         return text;
     }
- 
+
     public boolean removeColumn(ColumnGroup ptg, TableColumn tc) {
         boolean retFlag = false;
         if (tc != null) {
@@ -154,7 +159,7 @@ public class ColumnGroup {
         }
         return retFlag;
     }
- 
+
     public boolean removeColumnGrp(ColumnGroup ptg, ColumnGroup tg) {
         boolean retFlag = false;
         if (tg != null) {
@@ -170,7 +175,7 @@ public class ColumnGroup {
                         if (retFlag) {
                             break;
                         }
- 
+
                     }
                 } else if (tmpObj instanceof TableColumn) {
                     break;
@@ -179,7 +184,7 @@ public class ColumnGroup {
         }
         return retFlag;
     }
- 
+
     public void setColumnMargin(int margin) {
         this.margin = margin;
         Enumeration<Object> enumeration = vector.elements();
@@ -190,13 +195,13 @@ public class ColumnGroup {
             }
         }
     }
- 
+
     public void setHeaderRenderer(TableCellRenderer renderer) {
         if (renderer != null) {
             this.renderer = renderer;
         }
     }
- 
+
     public void setText(java.lang.String newText) {
         text = newText;
     }

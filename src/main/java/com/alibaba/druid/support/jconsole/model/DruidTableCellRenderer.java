@@ -7,27 +7,27 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-public class DruidTableCellRenderer extends JLabel implements TableCellRenderer
-{
+/**
+ * @author yunnysunny<yunnysunny@gmail.com>
+ * */
+public class DruidTableCellRenderer extends JLabel implements TableCellRenderer {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	// This method is called each time a cell in a column
+    // This method is called each time a cell in a column
     // using this renderer needs to be rendered.
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                    boolean isSelected, boolean hasFocus, int row, int column)
-    {
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
 
-        if ((column == 0))
-        {
-        	setBackground(Color.lightGray);
+        if ((column == 0)) {
+            setBackground(Color.lightGray);
         }
         this.setOpaque(true);
 
         if (value != null) {
-        	setText(value.toString());
+            setText(value.toString());
         } else {
-        	setText((row + 1)+"");
+            setText((row + 1) + "");
         }
 
         // Since the renderer is a component, return itself
