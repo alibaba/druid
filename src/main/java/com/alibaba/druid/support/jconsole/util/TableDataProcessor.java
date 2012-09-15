@@ -17,7 +17,16 @@ package com.alibaba.druid.support.jconsole.util;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+
+import com.alibaba.druid.stat.DruidStatService;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 /**
  * 表格数据处理类
@@ -27,10 +36,18 @@ import java.util.Map;
 public final class TableDataProcessor {
 
     /** 名称列的列名. */
-    private static final String COLUMN_KEY_NAME   = "名称";
+    private static final String COLUMN_KEY_NAME       = "名称";
 
     /** 内容列的列名. */
-    private static final String COLUMN_VALUE_NAME = "值";
+    private static final String COLUMN_VALUE_NAME     = "值";
+
+    /** 返回码在json中的键名 */
+    private static final String RESP_JSON_RESULT_KEY  = "ResultCode";
+    /** 内容在json中的键名 */
+    private static final String RESP_JSON_CONTENT_KEY = "Content";
+    /** 成功的返回码 */
+    protected static final int  RESP_SUCCESS_RESULT   = 1;
+    private final static Log    LOG                   = LogFactory.getLog(TableDataProcessor.class);
 
     /**
      * TableDataProcessor的构造函数
@@ -123,6 +140,54 @@ public final class TableDataProcessor {
      */
     public static ColumnData row2col(ArrayList<LinkedHashMap<String, Object>> rowDatas) {
         return row2col(rowDatas, null);
+    }
+    
+    /**
+     * 解析调用service后得到JSON数据
+     * 
+     * @param respData 获取到的json对象
+     * @return 返回解析后的数据
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList<LinkedHashMap<String, Object>> parseData(Object respData) {
+        ArrayList<LinkedHashMap<String, Object>> data = null;
+        if (respData instanceof Map) {
+            LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) respData;
+            int rv = (Integer) map.get(RESP_JSON_RESULT_KEY);
+
+            if (rv == RESP_SUCCESS_RESULT) {
+                Object content = map.get(RESP_JSON_CONTENT_KEY);
+                if (content instanceof List) {
+                    data = (ArrayList<LinkedHashMap<String, Object>>) content;
+                } else if (content instanceof Map) {
+                    LinkedHashMap<String, Object> contentEle = (LinkedHashMap<String, Object>) content;
+                    data = new ArrayList<LinkedHashMap<String, Object>>();
+                    data.add(contentEle);
+                }
+            }
+        }
+        return data;
+    }
+
+    /**
+     * 调用service，返回数据
+     * 
+     * @param url service的地址
+     * @param conn MBeanServerConnection对象
+     * @return 调用service后返回的数据
+     * @throws Exception
+     */
+    public static Object getData(String url, MBeanServerConnection conn) throws Exception {
+        Object o = null;
+        ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
+
+        String result = (String) conn.invoke(name, "service", new String[] { url },
+                                             new String[] { String.class.getName() });
+        o = JSONUtils.parse(result);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(o.toString());
+        }
+        return o;
     }
 
     /**

@@ -20,11 +20,8 @@ import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,9 +29,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 
-import com.alibaba.druid.stat.DruidStatService;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
-import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.sun.tools.jconsole.JConsoleContext;
@@ -46,34 +42,31 @@ import com.sun.tools.jconsole.JConsoleContext;
  */
 public abstract class DruidPanel extends JPanel {
 
-    private static final long     serialVersionUID      = 1L;
-    /** 成功的返回码 */
-    protected static final int    RESP_SUCCESS_RESULT   = 1;
-    /** 返回码在json中的键名 */
-    protected static final String RESP_JSON_RESULT_KEY  = "ResultCode";
-    /** 内容在json中的键名 */
-    protected static final String RESP_JSON_CONTENT_KEY = "Content";
+    private static final long   serialVersionUID    = 1L;
+
     /** 默认面板刷新的间隔时间 */
-    protected static final long   DEFAULT_ACTIVE_TIME   = 5 * 60 * 1000;
+    protected static final long DEFAULT_ACTIVE_TIME = 5 * 60 * 1000;
     /** 版权信息字符串 */
-    private static final String   COPYRIGHT_STRING      = "<html>powered by <a href=\"http://blog.csdn.net/yunnysunny\">yunnysunny</a></html>";
+    private static final String COPYRIGHT_STRING    = "<html>powered by <a href=\"http://blog.csdn.net/yunnysunny\">yunnysunny</a></html>";
 
     /** 滚动条面板 */
-    protected JScrollPane         scrollPane;
+    protected JScrollPane       scrollPane;
     /** 表格模板 */
-    protected DruidTableModel     tableModel;
+    protected DruidTableModel   tableModel;
     /** 表格 */
-    protected JTable              table;
+    protected JTable            table;
     /** 版权面板 */
-    protected JPanel              copyrightPanel;
+    protected JPanel            copyrightPanel;
     /** json请求的地址 */
-    protected String              url;
+    protected String            url;
 
     /** 界面刷新的间隔时间，单位为毫秒. */
-    protected long                activeTime;
+    protected long              activeTime;
     /** 上次刷新的时间 */
-    protected long                lastRefreshTime;
-    private final static Log      LOG                   = LogFactory.getLog(DruidPanel.class);
+    protected long              lastRefreshTime;
+    /** 与界面管理的MBeanServerConnection对象 */
+    protected MBeanServerConnection conn;
+    private final static Log    LOG                 = LogFactory.getLog(DruidPanel.class);
 
     /**
      * 根据传入的刷新时间间隔来初始化.
@@ -91,53 +84,7 @@ public abstract class DruidPanel extends JPanel {
         activeTime = DEFAULT_ACTIVE_TIME;
     }
 
-    /**
-     * 解析调用service后得到JSON数据
-     * 
-     * @param respData 获取到的json对象
-     * @return 返回解析后的数据
-     */
-    @SuppressWarnings("unchecked")
-    protected ArrayList<LinkedHashMap<String, Object>> parseData(Object respData) {
-        ArrayList<LinkedHashMap<String, Object>> data = null;
-        if (respData instanceof Map) {
-            LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) respData;
-            int rv = (Integer) map.get(RESP_JSON_RESULT_KEY);
-
-            if (rv == RESP_SUCCESS_RESULT) {
-                Object content = map.get(RESP_JSON_CONTENT_KEY);
-                if (content instanceof List) {
-                    data = (ArrayList<LinkedHashMap<String, Object>>) content;
-                } else if (content instanceof Map) {
-                    LinkedHashMap<String, Object> contentEle = (LinkedHashMap<String, Object>) content;
-                    data = new ArrayList<LinkedHashMap<String, Object>>();
-                    data.add(contentEle);
-                }
-            }
-        }
-        return data;
-    }
-
-    /**
-     * 调用service，返回数据
-     * 
-     * @param url service的地址
-     * @param conn MBeanServerConnection对象
-     * @return 调用service后返回的数据
-     * @throws Exception
-     */
-    protected Object getData(String url, MBeanServerConnection conn) throws Exception {
-        Object o = null;
-        ObjectName name = new ObjectName(DruidStatService.MBEAN_NAME);
-
-        String result = (String) conn.invoke(name, "service", new String[] { url },
-                                             new String[] { String.class.getName() });
-        o = JSONUtils.parse(result);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(o.toString());
-        }
-        return o;
-    }
+    
 
     /**
      * 调用完service之后，各个子类对于解析后的数据的具体处理
@@ -154,7 +101,7 @@ public abstract class DruidPanel extends JPanel {
      * @param conn MBeanServerConnection对象
      * @throws Exception
      */
-    protected void addOrRefreshTable(String url, MBeanServerConnection conn) throws Exception {
+    protected void addOrRefreshTable(String url) throws Exception {
         if (url != null) {
             boolean needRefresh = false;
             long timeNow = new Date().getTime();
@@ -211,7 +158,8 @@ public abstract class DruidPanel extends JPanel {
             }
             if (needRefresh) {
                 LOG.debug("refresh" + timeNow);
-                ArrayList<LinkedHashMap<String, Object>> data = parseData(getData(url, conn));
+                ArrayList<LinkedHashMap<String, Object>> data = TableDataProcessor.parseData(TableDataProcessor.getData(url,
+                                                                                                                        conn));
                 if (data != null) {
                     tableDataProcess(data);
                 }
@@ -230,9 +178,13 @@ public abstract class DruidPanel extends JPanel {
     }
 
     protected void doInBackground(MBeanServerConnection conn) {
-
+        if (conn == null) {
+            LOG.warn("MBeanServerConnection is null");
+            return;
+        }
         try {
-            addOrRefreshTable(url, conn);
+            this.conn = conn;
+            addOrRefreshTable(url);
         } catch (Exception e) {
             LOG.warn("", e);
         }

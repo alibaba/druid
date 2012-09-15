@@ -299,7 +299,7 @@ public class DruidSQLPanel extends DruidPanel {
                 if (e.getClickCount() == 2) {// 点击几次，这里是双击事件
                     int row = table.getSelectedRow();
                     String id = ids.get(row);
-                    System.out.println(id);
+                    new DruidSqlDetailFrame(id,conn);
                 }
             }
         });
