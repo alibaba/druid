@@ -27,6 +27,7 @@ import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * sql语句的详细信息
  * 
@@ -117,82 +118,134 @@ import com.alibaba.druid.support.logging.LogFactory;
         }
     }
  * </pre>
+ * @author yunnysunny<yunnysunny@gmail.com>
  * */
 public class DruidSqlDetailFrame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-    private static final String BASE_URL = "/sql";
-    private String id;
-    private MBeanServerConnection conn;
-    private static final ArrayList<String> PARESE_TITLE_LIST = new ArrayList<String>(){
+    /** The Constant serialVersionUID. */
+    private static final long                        serialVersionUID       = 1L;
 
-        private static final long serialVersionUID = 1L;
+    /** service的地址的根路径. */
+    private static final String                      BASE_URL               = "/sql";
 
-        {
-            add("parsedTable");
-            add("parsedFields");
-            add("parsedConditions");
-            add("parsedRelationships");
-            add("parsedOrderbycolumns");
+    /** json中格式化sql的键名. */
+    private static final String                      KEY_FORMAT_SQL         = "formattedSql";
 
-        }
-    };
-    private static final ArrayList<String> LAST_SLOW_TITLE_LIST= new ArrayList<String>(){
+    /** json中sql的键名. */
+    private static final String                      KEY_SQL                = "SQL";
 
-        private static final long serialVersionUID = 1L;
+    /** sql语句的索引. */
+    private String                                   id;
 
-        {
-            add("MaxTimespan");
-            add("MaxTimespanOccurTime");
-            add("LastSlowParameters");
-        }
-    };
-    private static final ArrayList<String> LAST_ERROR_TITLE_LIST= new ArrayList<String>(){
+    /** MBeanServerConnection对象. */
+    private MBeanServerConnection                    conn;
 
-        private static final long serialVersionUID = 1L;
+    /** 解析信息内容表格的标题列. */
+    private static final ArrayList<String>           PARESE_TITLE_LIST      = new ArrayList<String>() {
 
-        {
-            add("LastErrorMessage");
-            add("LastErrorClass");
-            add("LastErrorTime");
-            add("LastErrorStackTrace");
-        }
-    };
-    private static final ArrayList<String> OTHER_ERROR_TITLE_LIST= new ArrayList<String>(){
+                                                                                private static final long serialVersionUID = 1L;
 
-        private static final long serialVersionUID = 1L;
+                                                                                {
+                                                                                    add("parsedTable");
+                                                                                    add("parsedFields");
+                                                                                    add("parsedConditions");
+                                                                                    add("parsedRelationships");
+                                                                                    add("parsedOrderbycolumns");
 
-        {
-            add("BatchSizeMax");
-            add("BatchSizeTotal");
-            add("BlobOpenCount");
-            add("ClobOpenCount");
-            add("ReaderOpenCount");
-            add("InputStreamOpenCount");
-            add("ReadStringLength");
-            add("ReadBytesLength");
-        }
-    };
+                                                                                }
+                                                                            };
+
+    /** 慢查询信息表格的标题列. */
+    private static final ArrayList<String>           LAST_SLOW_TITLE_LIST   = new ArrayList<String>() {
+
+                                                                                private static final long serialVersionUID = 1L;
+
+                                                                                {
+                                                                                    add("MaxTimespan");
+                                                                                    add("MaxTimespanOccurTime");
+                                                                                    add("LastSlowParameters");
+                                                                                }
+                                                                            };
+
+    /** 错误信息表格的标题列. */
+    private static final ArrayList<String>           LAST_ERROR_TITLE_LIST  = new ArrayList<String>() {
+
+                                                                                private static final long serialVersionUID = 1L;
+
+                                                                                {
+                                                                                    add("LastErrorMessage");
+                                                                                    add("LastErrorClass");
+                                                                                    add("LastErrorTime");
+                                                                                    add("LastErrorStackTrace");
+                                                                                }
+                                                                            };
+
+    /** 其他信息表格的标题列. */
+    private static final ArrayList<String>           OTHER_ERROR_TITLE_LIST = new ArrayList<String>() {
+
+                                                                                private static final long serialVersionUID = 1L;
+
+                                                                                {
+                                                                                    add("BatchSizeMax");
+                                                                                    add("BatchSizeTotal");
+                                                                                    add("BlobOpenCount");
+                                                                                    add("ClobOpenCount");
+                                                                                    add("ReaderOpenCount");
+                                                                                    add("InputStreamOpenCount");
+                                                                                    add("ReadStringLength");
+                                                                                    add("ReadBytesLength");
+                                                                                }
+                                                                            };
+
+    /** 解析信息数据. */
     private ArrayList<LinkedHashMap<String, Object>> parseData;
+
+    /** 慢查询信息数据. */
     private ArrayList<LinkedHashMap<String, Object>> lastSlowData;
+
+    /** 错误信息数据. */
     private ArrayList<LinkedHashMap<String, Object>> lastErrorData;
+
+    /** 其他信息数据. */
     private ArrayList<LinkedHashMap<String, Object>> otherData;
-    private int maxListLen;
-    private String formatSql;
-    private String sql;
-    
-    private static final int WIDTH = 620;
-    private static final int HEIGHT = 520;
-    private final static Log    LOG                 = LogFactory.getLog(DruidSqlDetailFrame.class);
-    
-    public DruidSqlDetailFrame(String id, MBeanServerConnection conn) {
+
+    /** 各个数据表格中最大的数据列长度. */
+    private int                                      maxListLen;
+
+    /** 格式化好的sql语句内容. */
+    private String                                   formatSql;
+
+    /** 未格式化的sql语句内容. */
+    private String                                   sql;
+
+    /** 窗体的宽度. */
+    private static final int                         WIDTH                  = 800;
+
+    /** 窗体的高度. */
+    private static final int                         HEIGHT                 = 600;
+
+    /** The Constant LOG. */
+    private final static Log                         LOG                    = LogFactory.getLog(DruidSqlDetailFrame.class);
+
+    /**
+     * Instantiates a new druid sql detail frame.
+     * 
+     * @param id sql语句索引
+     * @param conn MBeanServerConnection对象
+     */
+    public DruidSqlDetailFrame(String id, MBeanServerConnection conn){
         this.id = id;
         this.conn = conn;
         getMaxListLen();
         init();
         start();
     }
-    
+
+    /**
+     * 获取各个数据表格中最大的数据列长度
+     * 
+     * @return the max list len
+     */
     private void getMaxListLen() {
         maxListLen = PARESE_TITLE_LIST.size();
         int slowLen = LAST_SLOW_TITLE_LIST.size();
@@ -208,15 +261,20 @@ public class DruidSqlDetailFrame extends JFrame {
             maxListLen = otherLen;
         }
     }
-    
+
+    /**
+     * 初始化数据，得到四个表格的数据
+     */
     private void init() {
         String url = BASE_URL + "-" + id + ".json";
-        
+
         try {
-            ArrayList<LinkedHashMap<String, Object>> data = TableDataProcessor.parseData(TableDataProcessor.getData(url,conn));
+            ArrayList<LinkedHashMap<String, Object>> data = TableDataProcessor.parseData(TableDataProcessor.getData(url,
+                                                                                                                    conn));
             if (data != null) {
                 LinkedHashMap<String, Object> contentEle = data.get(0);
-                formatSql = (String)contentEle.remove("formattedSql");
+                formatSql = (String) contentEle.remove(KEY_FORMAT_SQL);
+                sql = (String) contentEle.remove(KEY_SQL);
                 int parseLen = PARESE_TITLE_LIST.size();
                 int slowLen = LAST_SLOW_TITLE_LIST.size();
                 int errLen = LAST_ERROR_TITLE_LIST.size();
@@ -233,11 +291,11 @@ public class DruidSqlDetailFrame extends JFrame {
                     Entry<String, Object> entry = it.next();
                     String key = entry.getKey();
                     Object value = entry.getValue();
-                    for(int i=0;i<maxListLen;i++) {
+                    for (int i = 0; i < maxListLen; i++) {
                         if (i < parseLen && key.equals(PARESE_TITLE_LIST.get(i))) {
                             parseDataEle.put(key, value);
                         } else if (i < slowLen && key.equals(LAST_SLOW_TITLE_LIST.get(i))) {
-                            slowDataEle.put(key, value); 
+                            slowDataEle.put(key, value);
                         } else if (i < errLen && key.equals(LAST_ERROR_TITLE_LIST.get(i))) {
                             errDataEle.put(key, value);
                         } else if (i < otherLen && key.equals(OTHER_ERROR_TITLE_LIST.get(i))) {
@@ -245,7 +303,7 @@ public class DruidSqlDetailFrame extends JFrame {
                         }
                     }
                 }
-                
+
                 parseData.add(parseDataEle);
                 lastSlowData.add(slowDataEle);
                 lastErrorData.add(errDataEle);
@@ -253,60 +311,75 @@ public class DruidSqlDetailFrame extends JFrame {
             } else {
                 LOG.warn("错误的json格式");
             }
-            
+
         } catch (Exception e) {
-            LOG.warn("获取数据时异常",e);
+            LOG.warn("获取数据时异常", e);
         }
     }
-    
-    private void addTable(JPanel contentPanel,String title,ArrayList<LinkedHashMap<String, Object>> data) {
+
+    /**
+     * 将表格添加到contentPanel对象内部。
+     * 
+     * @param contentPanel JPanel对象
+     * @param 当前表格的标题
+     * @param data 当前表格的数据
+     */
+    private void addTable(JPanel contentPanel, String title, ArrayList<LinkedHashMap<String, Object>> data) {
         final JPanel content1 = new JPanel();
-        content1.setLayout(new BorderLayout());        
-        content1.setBorder((TitledBorder)BorderFactory.createTitledBorder(title));
+        content1.setLayout(new BorderLayout());
+        content1.setBorder((TitledBorder) BorderFactory.createTitledBorder(title));
         contentPanel.add(content1);
-        
+
         ColumnData colData = TableDataProcessor.row2col(data);
         JTable table = new JTable();
         DruidTableModel tableModel = new DruidTableModel(colData.getDatas());
         table.setModel(tableModel);
-        
+
         TableColumn col = table.getColumnModel().getColumn(0);
         col.setCellRenderer(new DruidTableCellRenderer());
-        
-        final JTableHeader  header1 = table.getTableHeader();
-        content1.add(header1,BorderLayout.NORTH);        
-        content1.add(table);        
+
+        final JTableHeader header1 = table.getTableHeader();
+        content1.add(header1, BorderLayout.NORTH);
+        content1.add(table);
     }
-    
+
+    /**
+     * 将各个界面添加到JFrame中
+     * 
+     * @param pane JFrame内部的Container对象
+     */
     private void addComponentsToPane(Container pane) {
         JScrollPane scrollPane = new JScrollPane();
         JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayout(0,1));
-        
-        final JTextArea sqlField = new JTextArea(formatSql,15,20);
-        final JScrollPane  content1 = new JScrollPane (sqlField);
-     
-        content1.setBorder((TitledBorder)BorderFactory.createTitledBorder("SQL语句"));
-        contentPanel.add(content1);       
-        
-        addTable(contentPanel,"解析信息",parseData);
-        addTable(contentPanel,"上次慢查询信息",lastSlowData);
-        addTable(contentPanel,"上次错误查询信息",lastErrorData);
-        addTable(contentPanel,"其他信息",otherData);
-        
+        contentPanel.setLayout(new GridLayout(0, 1));
+
+        final JTextArea sqlField = new JTextArea(formatSql, 8, 20);
+        final JScrollPane content1 = new JScrollPane(sqlField);
+
+        content1.setBorder((TitledBorder) BorderFactory.createTitledBorder("SQL语句"));
+        contentPanel.add(content1);
+
+        addTable(contentPanel, "解析信息", parseData);
+        addTable(contentPanel, "上次慢查询信息", lastSlowData);
+        addTable(contentPanel, "上次错误查询信息", lastErrorData);
+        addTable(contentPanel, "其他信息", otherData);
+
         scrollPane.setViewportView(contentPanel);
-        pane.add(scrollPane,BorderLayout.CENTER);
+        pane.add(scrollPane, BorderLayout.CENTER);
     }
-    
+
+    /**
+     * 显示JFrame
+     */
     private void start() {
         addComponentsToPane(getContentPane());
+        setTitle("SQL:[" + sql + "]详情");
         pack();
         setSize(WIDTH, HEIGHT);
-        double   width   =   Toolkit.getDefaultToolkit().getScreenSize().getWidth(); 
-        double   height   =   Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        
-        setLocation(   (int)   (width   -   getWidth())   /   2, 
-                       (int)   (height   -   getHeight())   /   2); 
+        double width = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        double height = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+
+        setLocation((int) (width - getWidth()) / 2, (int) (height - getHeight()) / 2);
         setVisible(true);
     }
 
