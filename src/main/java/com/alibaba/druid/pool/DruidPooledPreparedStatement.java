@@ -39,8 +39,6 @@ import java.util.Calendar;
 
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
@@ -63,8 +61,6 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
     private int                           currentFetchDirection;
     private int                           currentFetchSize;
 
-    private final static Log              LOG = LogFactory.getLog(DruidPooledPreparedStatement.class);
-
     public DruidPooledPreparedStatement(DruidPooledConnection conn, PreparedStatementHolder holder) throws SQLException{
         super(conn, holder.getStatement());
         this.stmt = holder.getStatement();
@@ -75,11 +71,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         defaultMaxFieldSize = stmt.getMaxFieldSize();
         defaultMaxRows = stmt.getMaxRows();
         defaultQueryTimeout = stmt.getQueryTimeout();
-        try {
-            defaultFetchDirection = stmt.getFetchDirection();
-        } catch (Exception e) {
-            LOG.warn(e.getMessage(), e);
-        }
+        defaultFetchDirection = stmt.getFetchDirection();
         defaultFetchSize = stmt.getFetchSize();
         currentMaxFieldSize = defaultMaxFieldSize;
         currentMaxRows = defaultMaxRows;
@@ -188,7 +180,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery();
-
+            
             if (rs == null) {
                 return null;
             }
@@ -469,7 +461,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         if (holder.getHitCount() == 0) {
             return;
         }
-
+        
         int fetchRowPeak = holder.getFetchRowPeak();
 
         if (fetchRowPeak < 0) {
@@ -1012,7 +1004,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         }
 
     }
-
+    
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == PreparedStatement.class) {
@@ -1021,11 +1013,11 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             }
             return (T) stmt;
         }
-
+        
         if (iface == PreparedStatementHolder.class) {
             return (T) this.holder;
         }
-
+        
         return super.unwrap(iface);
     }
 }
