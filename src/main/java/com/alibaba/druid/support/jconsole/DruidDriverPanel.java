@@ -18,34 +18,43 @@ package com.alibaba.druid.support.jconsole;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
 import com.alibaba.druid.support.jconsole.model.DruidTableModel;
+import com.alibaba.druid.support.jconsole.util.TableDataProcessor;
+import com.alibaba.druid.support.jconsole.util.TableDataProcessor.ColumnData;
 
 /**
  * 请求地址：/basic.json
  * 
  * 请求返回的json格式：
+ * <pre>
  * {"ResultCode":1,"Content":
- * 			{"Version":"0.2.6","Drivers":
- * 					["sun.jdbc.odbc.JdbcOdbcDriver","com.alibaba.druid.mock.MockDriver",
- * 					"com.mysql.jdbc.Driver","com.alibaba.druid.proxy.DruidDriver"]
- * 			}
+ *          {"Version":"0.2.6","Drivers":
+ *                  ["sun.jdbc.odbc.JdbcOdbcDriver","com.alibaba.druid.mock.MockDriver",
+ *                  "com.mysql.jdbc.Driver","com.alibaba.druid.proxy.DruidDriver"]
+ *          }
  * }
+ * </pre>
+ * 
+ * @author yunnysunny<yunnysunny@gmail.com>
  * */
 public class DruidDriverPanel extends DruidPanel {
 
-    private static final long serialVersionUID = 1L;
-    private static final String REQUEST_URL = "/basic.json";
-    
-    public DruidDriverPanel() {
-    	super();
-    	url = REQUEST_URL;
+    private static final long   serialVersionUID = 1L;
+    private static final String REQUEST_URL      = "/basic.json";
+
+    public DruidDriverPanel(){
+        super();
+        url = REQUEST_URL;
     }
 
-	@Override
-	protected void tableDataProcess(
-			ArrayList<LinkedHashMap<String, Object>> data) {
-		tableModel = new DruidTableModel(data);
-		table.setModel(tableModel);
-	}    
-}
+    @Override
+    protected void tableDataProcess(ArrayList<LinkedHashMap<String, Object>> data) {
+        ColumnData columnData = TableDataProcessor.row2col(data);
+        tableModel = new DruidTableModel(columnData.getDatas());
+        table.setModel(tableModel);
+        table.getColumnModel().getColumn(0).setCellRenderer(new DruidTableCellRenderer());
 
+        scrollPane.setViewportView(table);
+    }
+}
