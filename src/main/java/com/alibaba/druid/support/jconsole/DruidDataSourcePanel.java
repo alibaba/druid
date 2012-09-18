@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 
 import com.alibaba.druid.support.jconsole.model.DruidTableCellRenderer;
@@ -78,7 +79,7 @@ public class DruidDataSourcePanel extends DruidPanel {
         ArrayList<String> ids = columnData.getNames();
 
         for (ArrayList<LinkedHashMap<String, Object>> listNow : data) {
-
+            JTable table = new JTable();
             tableModel = new DruidTableModel(listNow);
             table.setModel(tableModel);
 
