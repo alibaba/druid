@@ -125,6 +125,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private JdbcDataSourceStat               dataSourceStat;
 
     public DruidDataSource(){
+        this(true);
+    }
+    
+    public DruidDataSource(boolean fairLock){
+        super (fairLock);
     }
 
     public String getInitStackTrace() {
@@ -923,7 +928,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
     }
 
-    void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) throws SQLException {
+    void putLast(DruidConnectionHolder e, long lastActiveTimeMillis) {
         e.setLastActiveTimeMillis(lastActiveTimeMillis);
         connections[poolingCount++] = e;
 

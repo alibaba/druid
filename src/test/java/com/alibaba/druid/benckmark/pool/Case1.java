@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.benckmark.pool;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
 import java.sql.Connection;
 import java.text.NumberFormat;
 import java.util.concurrent.CountDownLatch;
@@ -45,8 +47,8 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 50;
     private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 10;
-    private int    loopCount       = 4;
+    private int    threadCount     = 5;
+    private int    loopCount       = 3;
     final int      LOOP_COUNT      = 1000 * 100;
 
     protected void setUp() throws Exception {
@@ -56,8 +58,8 @@ public class Case1 extends TestCase {
         driverClass = "com.alibaba.druid.mock.MockDriver";
     }
 
-    public void f_test_0() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource();
+    public void test_0() throws Exception {
+        DruidDataSource dataSource = new DruidDataSource(false);
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
@@ -78,7 +80,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void f_test_1() throws Exception {
+    public void test_1() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -130,6 +132,9 @@ public class Case1 extends TestCase {
 
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CountDownLatch endLatch = new CountDownLatch(threadCount);
+        final CountDownLatch dumpLatch = new CountDownLatch(1);
+
+        Thread[] threads = new Thread[threadCount];
         for (int i = 0; i < threadCount; ++i) {
             Thread thread = new Thread() {
 
@@ -145,8 +150,15 @@ public class Case1 extends TestCase {
                         ex.printStackTrace();
                     }
                     endLatch.countDown();
+
+                    try {
+                        dumpLatch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
+            threads[i] = thread;
             thread.start();
         }
         long startMillis = System.currentTimeMillis();
@@ -155,11 +167,30 @@ public class Case1 extends TestCase {
         startLatch.countDown();
         endLatch.await();
 
+        long[] threadIdArray = new long[threads.length];
+        for (int i = 0; i < threads.length; ++i) {
+            threadIdArray[i] = threads[i].getId();
+        }
+        ThreadInfo[] threadInfoArray = ManagementFactory.getThreadMXBean().getThreadInfo(threadIdArray);
+
+        dumpLatch.countDown();
+
+        long blockedCount = 0;
+        long waitedCount = 0;
+        for (int i = 0; i < threadInfoArray.length; ++i) {
+            ThreadInfo threadInfo = threadInfoArray[i];
+            blockedCount += threadInfo.getBlockedCount();
+            waitedCount += threadInfo.getWaitedCount();
+        }
+
         long millis = System.currentTimeMillis() - startMillis;
         long ygc = TestUtil.getYoungGC() - startYGC;
         long fullGC = TestUtil.getFullGC() - startFullGC;
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
-                           + NumberFormat.getInstance().format(millis) + ", YGC " + ygc + " FGC " + fullGC);
+                           + NumberFormat.getInstance().format(millis) + "; YGC " + ygc + " FGC " + fullGC
+                           + " blocked " + NumberFormat.getInstance().format(blockedCount) //
+                           + " waited " + NumberFormat.getInstance().format(waitedCount));
+
     }
 }
