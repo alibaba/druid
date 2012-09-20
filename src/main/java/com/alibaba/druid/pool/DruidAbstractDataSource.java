@@ -215,10 +215,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                            useOracleImplicitCache                    = true;
 
-    protected final ReentrantLock                lock                                      = new ReentrantLock(true);
+    protected final ReentrantLock                lock;
 
     protected AtomicLong                         createCount                               = new AtomicLong();
     protected AtomicLong                         destroyCount                              = new AtomicLong();
+
+    public DruidAbstractDataSource(boolean lockFair){
+        lock = new ReentrantLock(lockFair);
+    }
 
     public boolean isOracle() {
         return isOracle;
@@ -563,7 +567,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
-        this.removeAbandonedTimeoutMillis = (long)removeAbandonedTimeout * 1000;
+        this.removeAbandonedTimeoutMillis = (long) removeAbandonedTimeout * 1000;
     }
 
     public void setRemoveAbandonedTimeoutMillis(long removeAbandonedTimeoutMillis) {
@@ -923,9 +927,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
         this.jdbcUrl = jdbcUrl;
 
-//        if (jdbcUrl.startsWith(ConfigFilter.URL_PREFIX)) {
-//            this.filters.add(new ConfigFilter());
-//        }
+        // if (jdbcUrl.startsWith(ConfigFilter.URL_PREFIX)) {
+        // this.filters.add(new ConfigFilter());
+        // }
     }
 
     public String getDriverClassName() {
