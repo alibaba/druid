@@ -102,6 +102,18 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         return slowSqlMillis;
     }
 
+    public void setSlowSqlMillis(long slowSqlMillis) {
+        this.slowSqlMillis = slowSqlMillis;
+    }
+
+    public boolean isLogSlowSql() {
+        return logSlowSql;
+    }
+
+    public void setLogSlowSql(boolean logSlowSql) {
+        this.logSlowSql = logSlowSql;
+    }
+
     public boolean isConnectionStackTraceEnable() {
         return connectionStackTraceEnable;
     }
