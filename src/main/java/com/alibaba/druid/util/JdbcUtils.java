@@ -438,7 +438,13 @@ public final class JdbcUtils {
             return DERBY;
         } else if (rawUrl.startsWith("jdbc:mysql:")) {
             return MYSQL;
+        } else if (rawUrl.startsWith("jdbc:wrap-jdbc:filters=default:name=com.alibaba.dragoon.master:jdbc:mysql:")) {
+            return MYSQL;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
+            return ORACLE;
+        } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
+            return ORACLE;
+        } else if (rawUrl.startsWith("jdbc:wrap-jdbc:driver=com.alibaba.jdbc.AlibabaDriver")) {
             return ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return SQL_SERVER;
