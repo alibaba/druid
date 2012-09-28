@@ -42,18 +42,19 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class SQLUtils {
+
     private final static Log LOG = LogFactory.getLog(SQLUtils.class);
 
     public static String toSQLString(SQLObject sqlObject, String dbType) {
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
-        
+
         if (JdbcUtils.H2.equals(dbType)) {
             return toMySqlString(sqlObject);
         }
 
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return toOracleString(sqlObject);
         }
 
@@ -163,7 +164,7 @@ public class SQLUtils {
 
     public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList,
                                                                 String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             if (statementList.size() == 1) {
                 return new OracleOutputVisitor(out, false);
             } else {
@@ -191,7 +192,7 @@ public class SQLUtils {
     }
 
     public static SchemaStatVisitor createSchemaStatVisitor(List<SQLStatement> statementList, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             if (statementList.size() == 1) {
                 return new OracleSchemaStatVisitor();
             } else {
