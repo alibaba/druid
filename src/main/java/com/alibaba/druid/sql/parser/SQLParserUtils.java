@@ -28,7 +28,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class SQLParserUtils {
 
     public static SQLStatementParser createSQLStatementParser(String sql, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleStatementParser(sql);
         }
 
@@ -43,7 +43,7 @@ public class SQLParserUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerStatementParser(sql);
         }
-        
+
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlStatementParser(sql);
         }
@@ -52,14 +52,14 @@ public class SQLParserUtils {
     }
 
     public static SQLExprParser createExprParser(String sql, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleExprParser(sql);
         }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlExprParser(sql);
         }
-        
+
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlExprParser(sql);
         }

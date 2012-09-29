@@ -91,7 +91,7 @@ public class SQLEvalVisitorUtils {
             return new MySqlEvalVisitorImpl();
         }
 
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleEvalVisitor();
         }
 
@@ -623,11 +623,11 @@ public class SQLEvalVisitorUtils {
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return _bigInt(a).add(_bigInt(b));
         }
-        
+
         if (a instanceof Double || b instanceof Double) {
             return _double(a) + _double(b);
         }
-        
+
         if (a instanceof Float || b instanceof Float) {
             return _float(a) + _float(b);
         }
@@ -671,11 +671,11 @@ public class SQLEvalVisitorUtils {
         if (a instanceof BigInteger || b instanceof BigInteger) {
             return _bigInt(a).subtract(_bigInt(b));
         }
-        
+
         if (a instanceof Double || b instanceof Double) {
             return _double(a) - _double(b);
         }
-        
+
         if (a instanceof Float || b instanceof Float) {
             return _float(a) - _float(b);
         }
