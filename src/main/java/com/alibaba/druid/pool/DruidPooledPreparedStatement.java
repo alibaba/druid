@@ -39,12 +39,16 @@ import java.util.Calendar;
 
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.OracleUtils;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
 public class DruidPooledPreparedStatement extends DruidPooledStatement implements PreparedStatement {
+
+    private final static Log              LOG = LogFactory.getLog(DruidPooledPreparedStatement.class);
 
     private final PreparedStatementHolder holder;
     private final PreparedStatement       stmt;
@@ -68,11 +72,36 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         this.sql = holder.getKey().sql;
 
         // Remember the defaults
-        defaultMaxFieldSize = stmt.getMaxFieldSize();
-        defaultMaxRows = stmt.getMaxRows();
-        defaultQueryTimeout = stmt.getQueryTimeout();
-        defaultFetchDirection = stmt.getFetchDirection();
-        defaultFetchSize = stmt.getFetchSize();
+        try {
+            defaultMaxFieldSize = stmt.getMaxFieldSize();
+        } catch (SQLException e) {
+            LOG.error("getMaxFieldSize error", e);
+        }
+
+        try {
+            defaultMaxRows = stmt.getMaxRows();
+        } catch (SQLException e) {
+            LOG.error("getMaxRows error", e);
+        }
+
+        try {
+            defaultQueryTimeout = stmt.getQueryTimeout();
+        } catch (SQLException e) {
+            LOG.error("getMaxRows error", e);
+        }
+
+        try {
+            defaultFetchDirection = stmt.getFetchDirection();
+        } catch (SQLException e) {
+            LOG.error("getFetchDirection error", e);
+        }
+
+        try {
+            defaultFetchSize = stmt.getFetchSize();
+        } catch (SQLException e) {
+            LOG.error("getFetchSize error", e);
+        }
+
         currentMaxFieldSize = defaultMaxFieldSize;
         currentMaxRows = defaultMaxRows;
         currentQueryTimeout = defaultQueryTimeout;
@@ -180,7 +209,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs == null) {
                 return null;
             }
@@ -461,7 +490,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         if (holder.getHitCount() == 0) {
             return;
         }
-        
+
         int fetchRowPeak = holder.getFetchRowPeak();
 
         if (fetchRowPeak < 0) {
@@ -1004,7 +1033,7 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
         }
 
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface == PreparedStatement.class) {
@@ -1013,11 +1042,11 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
             }
             return (T) stmt;
         }
-        
+
         if (iface == PreparedStatementHolder.class) {
             return (T) this.holder;
         }
-        
+
         return super.unwrap(iface);
     }
 }
