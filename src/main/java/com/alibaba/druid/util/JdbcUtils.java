@@ -47,43 +47,46 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public final class JdbcUtils {
 
-    public static final String      JTDS             = "jtds";
+    public static final String      JTDS              = "jtds";
 
-    public static final String      MOCK             = "mock";
+    public static final String      MOCK              = "mock";
 
-    public static final String      HSQL             = "hsql";
+    public static final String      HSQL              = "hsql";
 
-    public static final String      DB2              = "db2";
+    public static final String      DB2               = "db2";
 
-    private static final String     DB2_DRIVER       = "COM.ibm.db2.jdbc.app.DB2Driver";
+    private static final String     DB2_DRIVER        = "COM.ibm.db2.jdbc.app.DB2Driver";
 
-    public static final String      POSTGRESQL       = "postgresql";
+    public static final String      POSTGRESQL        = "postgresql";
 
-    public static final String      SYBASE           = "sybase";
+    public static final String      SYBASE            = "sybase";
 
-    public static final String      SQL_SERVER       = "sqlserver";
+    public static final String      SQL_SERVER        = "sqlserver";
 
-    public static final String      ORACLE           = "oracle";
+    public static final String      ORACLE            = "oracle";
+    public static final String      ALI_ORACLE        = "AliOracle";
 
-    private static final String     ORACLE_DRIVER    = "oracle.jdbc.driver.OracleDriver";
+    private static final String     ORACLE_DRIVER     = "oracle.jdbc.driver.OracleDriver";
 
-    public static final String      MYSQL            = "mysql";
+    private static final String     ALI_ORACLE_DRIVER = "com.alibaba.jdbc.AlibabaDriver";
 
-    private static final String     MYSQL_DRIVER     = "com.mysql.jdbc.Driver";
+    public static final String      MYSQL             = "mysql";
 
-    public static final String      DERBY            = "derby";
+    private static final String     MYSQL_DRIVER      = "com.mysql.jdbc.Driver";
 
-    public static final String      HBASE            = "hbase";
+    public static final String      DERBY             = "derby";
 
-    public static final String      HIVE             = "hive";
+    public static final String      HBASE             = "hbase";
 
-    public static final String      H2               = "h2";
+    public static final String      HIVE              = "hive";
 
-    private static final String     H2_DRIVER        = "org.h2.Driver";
+    public static final String      H2                = "h2";
 
-    private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
+    private static final String     H2_DRIVER         = "org.h2.Driver";
 
-    private static final Properties driverUrlMapping = new Properties();
+    private final static Log        LOG               = LogFactory.getLog(JdbcUtils.class);
+
+    private static final Properties driverUrlMapping  = new Properties();
 
     static {
         try {
@@ -376,6 +379,8 @@ public final class JdbcUtils {
             return MYSQL_DRIVER;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
             return ORACLE_DRIVER;
+        } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
+            return ALI_ORACLE_DRIVER;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return "com.microsoft.jdbc.sqlserver.SQLServerDriver";
         } else if (rawUrl.startsWith("jdbc:sqlserver:")) {
@@ -440,6 +445,8 @@ public final class JdbcUtils {
             return MYSQL;
         } else if (rawUrl.startsWith("jdbc:oracle:")) {
             return ORACLE;
+        } else if (rawUrl.startsWith("jdbc:alibaba:oracle:")) {
+            return ALI_ORACLE;
         } else if (rawUrl.startsWith("jdbc:microsoft:")) {
             return SQL_SERVER;
         } else if (rawUrl.startsWith("jdbc:sybase:Tds:")) {

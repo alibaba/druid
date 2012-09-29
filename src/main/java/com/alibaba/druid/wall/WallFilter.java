@@ -65,7 +65,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new MySqlWallProvider(config);
-        } else if (JdbcUtils.ORACLE.equals(dbType)) {
+        } else if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(OracleWallProvider.DEFAULT_CONFIG_DIR);
             }

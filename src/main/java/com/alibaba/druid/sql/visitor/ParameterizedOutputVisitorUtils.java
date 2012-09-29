@@ -48,14 +48,14 @@ public class ParameterizedOutputVisitorUtils {
     }
 
     public static SQLASTOutputVisitor createParameterizedOutputVisitor(Appendable out, String dbType) {
-        if (JdbcUtils.ORACLE.equals(dbType)) {
+        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
             return new OracleParameterizedOutputVisitor(out);
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);
         }
-        
+
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlParameterizedOutputVisitor(out);
         }
