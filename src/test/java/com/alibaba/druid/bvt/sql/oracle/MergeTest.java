@@ -32,11 +32,12 @@ public class MergeTest extends TestCase {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
 
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ORACLE);
+        ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.ALI_ORACLE);
     }
-    
+
     public void test_mergeCall_mysql() throws Exception {
         String sql = "{ call INTERFACE_DATA_EXTRACTION.INVOICE_INFO(?,?,?)}";
-        
+
         ParameterizedOutputVisitorUtils.parameterize(sql, JdbcUtils.MYSQL);
     }
 }
