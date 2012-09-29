@@ -137,6 +137,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     private String handleName(String ident) {
         ident = ident.replaceAll("\"", "");
+        ident = ident.replaceAll("`", "");
         ident = ident.replaceAll(" ", "");
 
         ident = aliasWrap(ident);
