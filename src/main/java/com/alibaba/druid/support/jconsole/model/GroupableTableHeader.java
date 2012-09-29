@@ -56,7 +56,7 @@ public class GroupableTableHeader extends JTableHeader {
     }
 
     public boolean isFocusTraversable() {
-        return super.isFocusTraversable() && isRequestFocusEnabled();
+        return super.isFocusable() && isRequestFocusEnabled();
     }
 
     public void setColumnMargin() {
