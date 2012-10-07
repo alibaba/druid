@@ -3,8 +3,6 @@ package com.alibaba.druid.stat;
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-import com.alibaba.druid.util.Histogram;
-
 import junit.framework.TestCase;
 
 public class HistogramMemoryTest extends TestCase {
@@ -15,8 +13,8 @@ public class HistogramMemoryTest extends TestCase {
         final int COUNT = 1024 * 1;
         Object[] items = new Object[COUNT];
         for (int i = 0; i < COUNT; ++i) {
-            // items[i] = new JdbcSqlStat("");
-            items[i] = Histogram.makeHistogram(20);
+             items[i] = new JdbcSqlStat("");
+//            items[i] = Histogram.makeHistogram(20);
         }
         
         long memoryEnd = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
