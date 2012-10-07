@@ -138,7 +138,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile int                       queryTimeout;
     protected volatile int                       transactionQueryTimeout;
 
-    protected long                               createErrorCount;
+    protected AtomicLong                         createErrorCount                          = new AtomicLong();
 
     protected long                               createTimespan;
 
@@ -205,11 +205,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private final AtomicLong                     executeCount                              = new AtomicLong();
 
-    protected Throwable                          createError;
-    protected Throwable                          lastError;
-    protected long                               lastErrorTimeMillis;
-    protected Throwable                          lastCreateError;
-    protected long                               lastCreateErrorTimeMillis;
+    protected volatile Throwable                 createError;
+    protected volatile Throwable                 lastError;
+    protected volatile long                      lastErrorTimeMillis;
+    protected volatile Throwable                 lastCreateError;
+    protected volatile long                      lastCreateErrorTimeMillis;
 
     protected boolean                            isOracle                                  = false;
 
@@ -839,7 +839,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     public long getCreateErrorCount() {
-        return createErrorCount;
+        return createErrorCount.get();
     }
 
     public int getMaxActive() {
@@ -1269,19 +1269,19 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             validateConnection(conn);
             createError = null;
         } catch (SQLException ex) {
-            createErrorCount++;
+            createErrorCount.incrementAndGet();
             createError = ex;
             lastCreateError = ex;
             lastCreateErrorTimeMillis = System.currentTimeMillis();
             throw ex;
         } catch (RuntimeException ex) {
-            createErrorCount++;
+            createErrorCount.incrementAndGet();
             createError = ex;
             lastCreateError = ex;
             lastCreateErrorTimeMillis = System.currentTimeMillis();
             throw ex;
         } catch (Error ex) {
-            createErrorCount++;
+            createErrorCount.incrementAndGet();
             throw ex;
         } finally {
             long nano = System.nanoTime() - startNano;

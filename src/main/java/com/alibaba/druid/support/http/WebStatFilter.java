@@ -18,6 +18,7 @@ package com.alibaba.druid.support.http;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.Filter;
@@ -41,6 +42,9 @@ import com.alibaba.druid.support.http.stat.WebSessionStat;
 import com.alibaba.druid.support.http.stat.WebURIStat;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.support.profile.ProfileEntryKey;
+import com.alibaba.druid.support.profile.ProfileEntryReqStat;
+import com.alibaba.druid.support.profile.Profiler;
 import com.alibaba.druid.util.DruidWebUtils;
 import com.alibaba.druid.util.PatternMatcher;
 import com.alibaba.druid.util.ServletPathMatcher;
@@ -55,6 +59,7 @@ public class WebStatFilter implements Filter {
 
     private final static Log             LOG                               = LogFactory.getLog(WebStatFilter.class);
 
+    public final static String           PARAM_NAME_PORFILE_ENABLE         = "profileEnable";
     public final static String           PARAM_NAME_SESSION_STAT_ENABLE    = "sessionStatEnable";
     public final static String           PARAM_NAME_SESSION_STAT_MAX_COUNT = "sessionStatMaxCount";
     public static final String           PARAM_NAME_EXCLUSIONS             = "exclusions";
@@ -75,6 +80,7 @@ public class WebStatFilter implements Filter {
     private boolean                      sessionStatEnable                 = true;
     private int                          sessionStatMaxCount               = DEFAULT_MAX_STAT_SESSION_COUNT;
     private boolean                      createSession                     = false;
+    private boolean                      profileEnable                     = false;
 
     private String                       contextPath;
 
@@ -112,6 +118,10 @@ public class WebStatFilter implements Filter {
                 requestURI = requestURI.substring(0, index);
                 uriStat = webAppStat.getURIStat(requestURI, false);
             }
+        }
+
+        if (isProfileEnable()) {
+            Profiler.initLocal();
         }
 
         // 第一次访问时，uriStat这里为null，是为了防止404攻击。
@@ -177,6 +187,12 @@ public class WebStatFilter implements Filter {
             }
 
             WebRequestStat.set(null);
+
+            if (isProfileEnable()) {
+                Map<ProfileEntryKey, ProfileEntryReqStat> requestStatsMap = Profiler.getStatsMap();
+                uriStat.getProfiletat().record(requestStatsMap);
+                Profiler.removeLocal();
+            }
         }
     }
 
@@ -339,6 +355,20 @@ public class WebStatFilter implements Filter {
                 }
             }
         }
+
+        {
+            String param = config.getInitParameter(PARAM_NAME_PORFILE_ENABLE);
+            if (param != null && param.trim().length() != 0) {
+                param = param.trim();
+                if ("true".equals(param)) {
+                    this.profileEnable = true;
+                } else if ("false".equals(param)) {
+                    this.profileEnable = false;
+                } else {
+                    LOG.error("WebStatFilter Parameter '" + PARAM_NAME_PORFILE_ENABLE + "' config error");
+                }
+            }
+        }
         {
             String param = config.getInitParameter(PARAM_NAME_SESSION_STAT_MAX_COUNT);
             if (param != null && param.trim().length() != 0) {
@@ -374,6 +404,14 @@ public class WebStatFilter implements Filter {
 
     public void setSessionStatEnable(boolean sessionStatEnable) {
         this.sessionStatEnable = sessionStatEnable;
+    }
+
+    public boolean isProfileEnable() {
+        return profileEnable;
+    }
+
+    public void setProfileEnable(boolean profileEnable) {
+        this.profileEnable = profileEnable;
     }
 
     public WebAppStat getWebAppStat() {

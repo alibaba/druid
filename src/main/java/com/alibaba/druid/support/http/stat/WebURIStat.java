@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.alibaba.druid.support.profile.ProfileStat;
+import com.alibaba.druid.support.profile.Profiler;
+
 public class WebURIStat {
 
     private final String                         uri;
@@ -53,6 +56,8 @@ public class WebURIStat {
     private final AtomicLong                     errorCount                   = new AtomicLong();
 
     private volatile long                        lastAccessTimeMillis         = -1L;
+
+    private ProfileStat                          profiletat                   = new ProfileStat();
 
     private final static ThreadLocal<WebURIStat> currentLocal                 = new ThreadLocal<WebURIStat>();
 
@@ -93,6 +98,8 @@ public class WebURIStat {
         if (requestStat != null) {
             this.setLastAccessTimeMillis(requestStat.getStartMillis());
         }
+
+        Profiler.enter(uri, Profiler.PROFILE_TYPE_WEB);
     }
 
     public void afterInvoke(Throwable error, long nanos) {
@@ -154,16 +161,18 @@ public class WebURIStat {
 
                 this.jdbcExecuteErrorCount.addAndGet(localStat.getJdbcExecuteErrorCount());
                 this.jdbcExecuteTimeNano.addAndGet(localStat.getJdbcExecuteTimeNano());
-                
+
                 this.addJdbcPoolConnectionOpenCount(localStat.getJdbcPoolConnectionOpenCount());
                 this.addJdbcPoolConnectionCloseCount(localStat.getJdbcPoolConnectionCloseCount());
-                
+
                 this.addJdbcResultSetOpenCount(localStat.getJdbcResultSetOpenCount());
                 this.addJdbcResultSetCloseCount(localStat.getJdbcResultSetCloseCount());
             }
         }
 
         currentLocal.set(null);
+
+        Profiler.release(nanos);
     }
 
     public int getRunningCount() {
@@ -301,7 +310,7 @@ public class WebURIStat {
     public long getJdbcResultSetOpenCount() {
         return jdbcResultSetOpenCount.get();
     }
-    
+
     public void addJdbcResultSetOpenCount(long delta) {
         jdbcResultSetOpenCount.addAndGet(delta);
     }
@@ -309,9 +318,13 @@ public class WebURIStat {
     public long getJdbcResultSetCloseCount() {
         return jdbcResultSetCloseCount.get();
     }
-    
+
     public void addJdbcResultSetCloseCount(long delta) {
         jdbcResultSetCloseCount.addAndGet(delta);
+    }
+
+    public ProfileStat getProfiletat() {
+        return profiletat;
     }
 
     public Map<String, Object> getStatData() {
@@ -341,9 +354,11 @@ public class WebURIStat {
 
         data.put("JdbcPoolConnectionOpenCount", this.getJdbcPoolConnectionOpenCount());
         data.put("JdbcPoolConnectionCloseCount", this.getJdbcPoolConnectionCloseCount());
-        
+
         data.put("JdbcResultSetOpenCount", this.getJdbcResultSetOpenCount());
         data.put("JdbcResultSetCloseCount", this.getJdbcResultSetCloseCount());
+
+        data.put("Profiles", this.getProfiletat().getStatData());
 
         return data;
     }
