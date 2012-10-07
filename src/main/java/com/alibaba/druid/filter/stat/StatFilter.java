@@ -50,6 +50,7 @@ import com.alibaba.druid.stat.JdbcStatementStat;
 import com.alibaba.druid.support.json.JSONWriter;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
+import com.alibaba.druid.support.profile.Profiler;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -425,6 +426,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         StatFilterContext.getInstance().executeBefore(sql, inTransaction);
+        
+        Profiler.enter(sql, Profiler.PROFILE_TYPE_SQL);
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
@@ -433,10 +436,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         final JdbcStatementStat.Entry entry = getStatementInfo(statement);
 
         final long nowNano = System.nanoTime();
-        final long nanoSpan = nowNano - entry.getLastExecuteStartNano();
+        final long nanos = nowNano - entry.getLastExecuteStartNano();
 
         JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
-        dataSourceStat.getStatementStat().afterExecute(nanoSpan);
+        dataSourceStat.getStatementStat().afterExecute(nanos);
 
         final JdbcSqlStat sqlStat = statement.getSqlStat();
 
@@ -444,8 +447,8 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             sqlStat.incrementExecuteSuccessCount();
 
             sqlStat.decrementRunningCount();
-            sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanoSpan);
-            statement.setLastExecuteTimeNano(nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), firstResult, nanos);
+            statement.setLastExecuteTimeNano(nanos);
             if ((!statement.isFirstResultSet()) && statement.getLastExecuteType() == StatementExecuteType.Execute) {
                 try {
                     int updateCount = statement.getUpdateCount();
@@ -461,7 +464,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
                 }
             }
 
-            long millis = nanoSpan / (1000 * 1000);
+            long millis = nanos / (1000 * 1000);
             if (millis >= slowSqlMillis) {
                 String slowParameters = buildSlowParameters(statement);
                 sqlStat.setLastSlowParameters(slowParameters);
@@ -474,7 +477,9 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         String sql = statement.getLastExecuteSql();
-        StatFilterContext.getInstance().executeAfter(sql, nanoSpan, null);
+        StatFilterContext.getInstance().executeAfter(sql, nanos, null);
+
+        Profiler.release(nanos);
     }
 
     @Override
@@ -484,11 +489,11 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         ConnectionProxy connection = statement.getConnectionProxy();
         JdbcConnectionStat.Entry connectionCounter = getConnectionInfo(connection);
 
-        long nanoSpan = System.nanoTime() - counter.getLastExecuteStartNano();
+        long nanos = System.nanoTime() - counter.getLastExecuteStartNano();
 
         JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().error(error);
-        dataSourceStat.getStatementStat().afterExecute(nanoSpan);
+        dataSourceStat.getStatementStat().afterExecute(nanos);
 
         connectionCounter.error(error);
 
@@ -497,11 +502,12 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
 
         if (sqlStat != null) {
             sqlStat.error(error);
-            sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanoSpan);
-            statement.setLastExecuteTimeNano(nanoSpan);
+            sqlStat.addExecuteTime(statement.getLastExecuteType(), statement.isFirstResultSet(), nanos);
+            statement.setLastExecuteTimeNano(nanos);
         }
 
-        StatFilterContext.getInstance().executeAfter(sql, nanoSpan, error);
+        StatFilterContext.getInstance().executeAfter(sql, nanos, error);
+        Profiler.release(nanos);
     }
 
     private String buildSlowParameters(StatementProxy statement) {

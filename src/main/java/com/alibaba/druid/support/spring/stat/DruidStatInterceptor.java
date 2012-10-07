@@ -30,6 +30,8 @@ import com.alibaba.druid.support.logging.LogFactory;
 
 public class DruidStatInterceptor implements MethodInterceptor, InitializingBean, DisposableBean {
 
+    public static final String          PROP_NAME_PORFILE   = "druid.profile";
+
     private final static Log            LOG                 = LogFactory.getLog(DruidStatInterceptor.class);
 
     private static SpringStat           springStat          = new SpringStat();
