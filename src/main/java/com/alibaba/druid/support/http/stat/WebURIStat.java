@@ -18,48 +18,93 @@ package com.alibaba.druid.support.http.stat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import com.alibaba.druid.support.profile.ProfileStat;
 import com.alibaba.druid.support.profile.Profiler;
 
 public class WebURIStat {
 
-    private final String                         uri;
+    private final String                                              uri;
 
-    private final AtomicInteger                  runningCount                 = new AtomicInteger();
-    private final AtomicInteger                  concurrentMax                = new AtomicInteger();
-    private final AtomicLong                     requestCount                 = new AtomicLong(0);
-    private final AtomicLong                     requestTimeNano              = new AtomicLong();
+    private volatile int                                              runningCount;
+    private volatile int                                              concurrentMax;
+    private volatile long                                             requestCount;
+    private volatile long                                             requestTimeNano;
+    final static AtomicIntegerFieldUpdater<WebURIStat>                runningCountUpdater                 = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                                 "runningCount");
+    final static AtomicIntegerFieldUpdater<WebURIStat>                concurrentMaxUpdater                = AtomicIntegerFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                                 "concurrentMax");
+    final static AtomicLongFieldUpdater<WebURIStat>                   requestCountUpdater                 = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "requestCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   requestTimeNanoUpdater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "requestTimeNano");
 
-    private final AtomicLong                     jdbcFetchRowCount            = new AtomicLong();
-    private final AtomicLong                     jdbcFetchRowPeak             = new AtomicLong();             // 单次请求读取行数的峰值
+    private volatile long                                             jdbcFetchRowCount;
+    private volatile long                                             jdbcFetchRowPeak;                                                                                       // 单次请求读取行数的峰值
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcFetchRowCountUpdater            = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcFetchRowCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcFetchRowPeakUpdater             = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcFetchRowPeak");
 
-    private final AtomicLong                     jdbcUpdateCount              = new AtomicLong();
-    private final AtomicLong                     jdbcUpdatePeak               = new AtomicLong();             // 单次请求更新行数的峰值
+    private volatile long                                             jdbcUpdateCount;
+    private volatile long                                             jdbcUpdatePeak;                                                                                         // 单次请求更新行数的峰值
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcUpdateCountUpdater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcUpdateCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcUpdatePeakUpdater               = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcUpdatePeak");
 
-    private final AtomicLong                     jdbcExecuteCount             = new AtomicLong();
-    private final AtomicLong                     jdbcExecuteErrorCount        = new AtomicLong();
-    private final AtomicLong                     jdbcExecutePeak              = new AtomicLong();             // 单次请求执行SQL次数的峰值
-    private final AtomicLong                     jdbcExecuteTimeNano          = new AtomicLong();
+    private volatile long                                             jdbcExecuteCount;
+    private volatile long                                             jdbcExecuteErrorCount;
+    private volatile long                                             jdbcExecutePeak;                                                                                        // 单次请求执行SQL次数的峰值
+    private volatile long                                             jdbcExecuteTimeNano;
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcExecuteCountUpdater             = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcExecuteCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcExecuteErrorCountUpdater        = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcExecuteErrorCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcExecutePeakUpdater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcExecutePeak");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcExecuteTimeNanoUpdater          = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcExecuteTimeNano");
 
-    private final AtomicLong                     jdbcCommitCount              = new AtomicLong();
-    private final AtomicLong                     jdbcRollbackCount            = new AtomicLong();
+    private volatile long                                             jdbcCommitCount;
+    private volatile long                                             jdbcRollbackCount;
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcCommitCountUpdater              = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcCommitCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcRollbackCountUpdater            = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcRollbackCount");
 
-    private final AtomicLong                     jdbcPoolConnectionOpenCount  = new AtomicLong();
-    private final AtomicLong                     jdbcPoolConnectionCloseCount = new AtomicLong();
+    private volatile long                                             jdbcPoolConnectionOpenCount;
+    private volatile long                                             jdbcPoolConnectionCloseCount;
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcPoolConnectionOpenCountUpdater  = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcPoolConnectionOpenCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcPoolConnectionCloseCountUpdater = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcPoolConnectionCloseCount");
 
-    private final AtomicLong                     jdbcResultSetOpenCount       = new AtomicLong();
-    private final AtomicLong                     jdbcResultSetCloseCount      = new AtomicLong();
+    private volatile long                                             jdbcResultSetOpenCount;
+    private volatile long                                             jdbcResultSetCloseCount;
 
-    private final AtomicLong                     errorCount                   = new AtomicLong();
+    private volatile long                                             errorCount;
 
-    private volatile long                        lastAccessTimeMillis         = -1L;
+    private volatile long                                             lastAccessTimeMillis                = -1L;
 
-    private ProfileStat                          profiletat                   = new ProfileStat();
+    private volatile ProfileStat                                      profiletat;
 
-    private final static ThreadLocal<WebURIStat> currentLocal                 = new ThreadLocal<WebURIStat>();
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcResultSetOpenCountUpdater       = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcResultSetOpenCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   jdbcResultSetCloseCountUpdater      = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "jdbcResultSetCloseCount");
+    final static AtomicLongFieldUpdater<WebURIStat>                   errorCountUpdater                   = AtomicLongFieldUpdater.newUpdater(WebURIStat.class,
+                                                                                                                                              "errorCount");
+    final static AtomicReferenceFieldUpdater<WebURIStat, ProfileStat> profiletatUpdater;
+
+    static {
+        profiletatUpdater = AtomicReferenceFieldUpdater.newUpdater(WebURIStat.class, ProfileStat.class, "profiletat");
+    }
+
+    private final static ThreadLocal<WebURIStat>                      currentLocal                        = new ThreadLocal<WebURIStat>();
 
     public WebURIStat(String uri){
         super();
@@ -77,12 +122,12 @@ public class WebURIStat {
     public void beforeInvoke() {
         currentLocal.set(this);
 
-        int running = runningCount.incrementAndGet();
+        int running = runningCountUpdater.incrementAndGet(this);
 
         for (;;) {
-            int max = concurrentMax.get();
+            int max = concurrentMaxUpdater.get(this);
             if (running > max) {
-                if (concurrentMax.compareAndSet(max, running)) {
+                if (concurrentMaxUpdater.compareAndSet(this, max, running)) {
                     break;
                 } else {
                     continue;
@@ -92,7 +137,7 @@ public class WebURIStat {
             }
         }
 
-        requestCount.incrementAndGet();
+        requestCountUpdater.incrementAndGet(this);
 
         WebRequestStat requestStat = WebRequestStat.current();
         if (requestStat != null) {
@@ -103,11 +148,11 @@ public class WebURIStat {
     }
 
     public void afterInvoke(Throwable error, long nanos) {
-        runningCount.decrementAndGet();
-        requestTimeNano.addAndGet(nanos);
+        runningCountUpdater.decrementAndGet(this);
+        requestTimeNanoUpdater.addAndGet(this, nanos);
 
         if (error != null) {
-            errorCount.incrementAndGet();
+            errorCountUpdater.incrementAndGet(this);
         }
 
         {
@@ -118,12 +163,12 @@ public class WebURIStat {
                     this.addJdbcFetchRowCount(fetchRowCount);
 
                     for (;;) {
-                        long peak = jdbcFetchRowPeak.get();
+                        long peak = jdbcFetchRowPeakUpdater.get(this);
                         if (fetchRowCount <= peak) {
                             break;
                         }
 
-                        if (jdbcFetchRowPeak.compareAndSet(peak, fetchRowCount)) {
+                        if (jdbcFetchRowPeakUpdater.compareAndSet(this, peak, fetchRowCount)) {
                             break;
                         }
                     }
@@ -133,12 +178,12 @@ public class WebURIStat {
                     this.addJdbcExecuteCount(executeCount);
 
                     for (;;) {
-                        long peak = jdbcExecutePeak.get();
+                        long peak = jdbcExecutePeakUpdater.get(this);
                         if (executeCount <= peak) {
                             break;
                         }
 
-                        if (jdbcExecutePeak.compareAndSet(peak, executeCount)) {
+                        if (jdbcExecutePeakUpdater.compareAndSet(this, peak, executeCount)) {
                             break;
                         }
                     }
@@ -148,19 +193,19 @@ public class WebURIStat {
                     this.addJdbcUpdateCount(updateCount);
 
                     for (;;) {
-                        long peak = jdbcUpdatePeak.get();
+                        long peak = jdbcUpdatePeakUpdater.get(this);
                         if (updateCount <= peak) {
                             break;
                         }
 
-                        if (jdbcUpdatePeak.compareAndSet(peak, updateCount)) {
+                        if (jdbcUpdatePeakUpdater.compareAndSet(this, peak, updateCount)) {
                             break;
                         }
                     }
                 }
 
-                this.jdbcExecuteErrorCount.addAndGet(localStat.getJdbcExecuteErrorCount());
-                this.jdbcExecuteTimeNano.addAndGet(localStat.getJdbcExecuteTimeNano());
+                jdbcExecuteErrorCountUpdater.addAndGet(this, localStat.getJdbcExecuteErrorCount());
+                jdbcExecuteTimeNanoUpdater.addAndGet(this, localStat.getJdbcExecuteTimeNano());
 
                 this.addJdbcPoolConnectionOpenCount(localStat.getJdbcPoolConnectionOpenCount());
                 this.addJdbcPoolConnectionCloseCount(localStat.getJdbcPoolConnectionCloseCount());
@@ -176,19 +221,19 @@ public class WebURIStat {
     }
 
     public int getRunningCount() {
-        return this.runningCount.get();
+        return this.runningCount;
     }
 
     public long getConcurrentMax() {
-        return concurrentMax.get();
+        return concurrentMax;
     }
 
     public long getRequestCount() {
-        return requestCount.get();
+        return requestCount;
     }
 
     public long getRequestTimeNano() {
-        return requestTimeNano.get();
+        return requestTimeNano;
     }
 
     public long getRequestTimeMillis() {
@@ -196,47 +241,47 @@ public class WebURIStat {
     }
 
     public void addJdbcFetchRowCount(long delta) {
-        this.jdbcFetchRowCount.addAndGet(delta);
+        jdbcFetchRowCountUpdater.addAndGet(this, delta);
     }
 
     public long getJdbcFetchRowCount() {
-        return jdbcFetchRowCount.get();
+        return jdbcFetchRowCount;
     }
 
     public long getJdbcFetchRowPeak() {
-        return jdbcFetchRowPeak.get();
+        return jdbcFetchRowPeak;
     }
 
     public void addJdbcUpdateCount(long updateCount) {
-        this.jdbcUpdateCount.addAndGet(updateCount);
+        jdbcUpdateCountUpdater.addAndGet(this, updateCount);
     }
 
     public long getJdbcUpdateCount() {
-        return jdbcUpdateCount.get();
+        return jdbcUpdateCount;
     }
 
     public long getJdbcUpdatePeak() {
-        return jdbcUpdatePeak.get();
+        return jdbcUpdatePeak;
     }
 
     public void incrementJdbcExecuteCount() {
-        jdbcExecuteCount.incrementAndGet();
+        jdbcExecuteCountUpdater.incrementAndGet(this);
     }
 
     public void addJdbcExecuteCount(long executeCount) {
-        jdbcExecuteCount.addAndGet(executeCount);
+        jdbcExecuteCountUpdater.addAndGet(this, executeCount);
     }
 
     public long getJdbcExecuteCount() {
-        return jdbcExecuteCount.get();
+        return jdbcExecuteCount;
     }
 
-    public AtomicLong getJdbcExecuteErrorCount() {
+    public long getJdbcExecuteErrorCount() {
         return jdbcExecuteErrorCount;
     }
 
     public long getJdbcExecutePeak() {
-        return jdbcExecutePeak.get();
+        return jdbcExecutePeak;
     }
 
     public long getJdbcExecuteTimeMillis() {
@@ -244,23 +289,23 @@ public class WebURIStat {
     }
 
     public long getJdbcExecuteTimeNano() {
-        return jdbcExecuteTimeNano.get();
+        return jdbcExecuteTimeNano;
     }
 
     public void incrementJdbcCommitCount() {
-        jdbcCommitCount.incrementAndGet();
+        jdbcCommitCountUpdater.incrementAndGet(this);
     }
 
     public long getJdbcCommitCount() {
-        return jdbcCommitCount.get();
+        return jdbcCommitCount;
     }
 
     public void incrementJdbcRollbackCount() {
-        jdbcRollbackCount.incrementAndGet();
+        jdbcRollbackCountUpdater.incrementAndGet(this);
     }
 
     public long getJdbcRollbackCount() {
-        return jdbcRollbackCount.get();
+        return jdbcRollbackCount;
     }
 
     public void setLastAccessTimeMillis(long lastAccessTimeMillis) {
@@ -280,50 +325,56 @@ public class WebURIStat {
     }
 
     public long getErrorCount() {
-        return errorCount.get();
+        return errorCount;
     }
 
     public long getJdbcPoolConnectionOpenCount() {
-        return jdbcPoolConnectionOpenCount.get();
+        return jdbcPoolConnectionOpenCount;
     }
 
     public void addJdbcPoolConnectionOpenCount(long delta) {
-        jdbcPoolConnectionOpenCount.addAndGet(delta);
+        jdbcPoolConnectionOpenCountUpdater.addAndGet(this, delta);
     }
 
     public void incrementJdbcPoolConnectionOpenCount() {
-        jdbcPoolConnectionOpenCount.incrementAndGet();
+        jdbcPoolConnectionOpenCountUpdater.incrementAndGet(this);
     }
 
     public long getJdbcPoolConnectionCloseCount() {
-        return jdbcPoolConnectionCloseCount.get();
+        return jdbcPoolConnectionCloseCount;
     }
 
     public void addJdbcPoolConnectionCloseCount(long delta) {
-        jdbcPoolConnectionCloseCount.addAndGet(delta);
+        jdbcPoolConnectionCloseCountUpdater.addAndGet(this, delta);
     }
 
     public void incrementJdbcPoolConnectionCloseCount() {
-        jdbcPoolConnectionCloseCount.incrementAndGet();
+        jdbcPoolConnectionCloseCountUpdater.incrementAndGet(this);
     }
 
     public long getJdbcResultSetOpenCount() {
-        return jdbcResultSetOpenCount.get();
+        return jdbcResultSetOpenCount;
     }
 
     public void addJdbcResultSetOpenCount(long delta) {
-        jdbcResultSetOpenCount.addAndGet(delta);
+        jdbcResultSetOpenCountUpdater.addAndGet(this, delta);
     }
 
     public long getJdbcResultSetCloseCount() {
-        return jdbcResultSetCloseCount.get();
+        return jdbcResultSetCloseCount;
     }
 
     public void addJdbcResultSetCloseCount(long delta) {
-        jdbcResultSetCloseCount.addAndGet(delta);
+        jdbcResultSetCloseCountUpdater.addAndGet(this, delta);
     }
 
     public ProfileStat getProfiletat() {
+        if (profiletat != null) {
+            return profiletat;
+        }
+
+        profiletatUpdater.compareAndSet(this, null, new ProfileStat());
+
         return profiletat;
     }
 
