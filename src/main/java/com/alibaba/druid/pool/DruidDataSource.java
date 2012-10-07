@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -47,6 +48,7 @@ import javax.sql.PooledConnection;
 
 import com.alibaba.druid.TransactionTimeoutException;
 import com.alibaba.druid.VERSION;
+import com.alibaba.druid.filter.AutoLoad;
 import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.mock.MockDriver;
@@ -127,9 +129,9 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public DruidDataSource(){
         this(true);
     }
-    
+
     public DruidDataSource(boolean fairLock){
-        super (fairLock);
+        super(fairLock);
     }
 
     public String getInitStackTrace() {
@@ -367,6 +369,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 initFromWrapDriverUrl();
             }
 
+            initFromSPIServiceLoader();
+
             if (this.driver == null) {
                 if (this.driverClass == null || this.driverClass.isEmpty()) {
                     this.driverClass = JdbcUtils.getDriverClassName(this.jdbcUrl);
@@ -468,6 +472,31 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         this.setFilters(property);
     }
 
+    /**
+     * load filters from SPI ServiceLoader
+     * 
+     * @see ServiceLoader
+     */
+    private void initFromSPIServiceLoader() {
+
+        String property = System.getProperty("druid.load.spifilter.skip");
+        if (property != null) {
+            return;
+        }
+
+        ServiceLoader<Filter> druidAutoFilterLoader = ServiceLoader.load(Filter.class);
+
+        for (Filter autoFilter : druidAutoFilterLoader) {
+            AutoLoad autoLoad = autoFilter.getClass().getAnnotation(AutoLoad.class);
+            if (autoLoad != null && autoLoad.value()) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("load filter from spi :" + autoFilter.getClass().getName());
+                }
+                addFilter(autoFilter);
+            }
+        }
+    }
+
     private void initFromWrapDriverUrl() throws SQLException {
         if (!jdbcUrl.startsWith(DruidDriver.DEFAULT_PREFIX)) {
             return;
@@ -483,23 +512,30 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.name = config.getName();
         }
 
-        // 防止重复
         for (Filter filter : config.getFilters()) {
-            boolean exists = false;
-            for (Filter initedFilter : this.filters) {
-                if (initedFilter.getClass() == filter.getClass()) {
-                    exists = true;
-                    break;
-                }
-            }
+            addFilter(filter);
+        }
+    }
 
-            if (exists) {
-                continue;
+    /**
+     * 会去重复
+     * 
+     * @param filter
+     */
+    private void addFilter(Filter filter) {
+        boolean exists = false;
+        for (Filter initedFilter : this.filters) {
+            if (initedFilter.getClass() == filter.getClass()) {
+                exists = true;
+                break;
             }
+        }
 
+        if (!exists) {
             filter.init(this);
             this.filters.add(filter);
         }
+
     }
 
     private void validationQueryCheck() {
@@ -1188,7 +1224,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     LOG.error("create connection holder error", ex);
                     break;
                 }
-                
+
                 lock.lock();
                 try {
                     connections[poolingCount++] = holder;
