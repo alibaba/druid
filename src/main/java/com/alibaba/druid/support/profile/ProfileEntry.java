@@ -2,41 +2,51 @@ package com.alibaba.druid.support.profile;
 
 public class ProfileEntry {
 
-    private final Key    key;
-    private final String type;
+    private final ProfileEntry    parent;
+    private final ProfileEntryKey key;
 
-    public ProfileEntry(Key key, String type){
-        super();
+    private int                   executeCount     = 0;
+    private long                  executeTimeNanos = 0;
+
+    public ProfileEntry(ProfileEntry parent, ProfileEntryKey key){
+        this.parent = parent;
         this.key = key;
-        this.type = type;
     }
 
-    public Key getKey() {
+    public ProfileEntry getParent() {
+        return parent;
+    }
+
+    public ProfileEntryKey getKey() {
         return key;
     }
 
+    public String getParentName() {
+        return key.getParentName();
+    }
+
+    public String getName() {
+        return key.getName();
+    }
+
     public String getType() {
-        return type;
+        return key.getType();
     }
 
-    public static class Key {
-
-        private String parent;
-        private String name;
-
-        public Key(String parentName, String name){
-            super();
-            this.parent = parentName;
-            this.name = name;
-        }
-
-        public String getParent() {
-            return parent;
-        }
-
-        public String getName() {
-            return name;
-        }
-
+    public int getExecuteCount() {
+        return executeCount;
     }
+
+    public void incrementExecuteCount() {
+        this.executeCount++;
+    }
+
+    public long getExecuteTimeNanos() {
+        return executeTimeNanos;
+    }
+
+    public void addExecuteTimeNanos(long nanos) {
+        this.executeTimeNanos += nanos;
+    }
+
 }

@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.alibaba.druid.support.profile.Profiler;
+
 public class SpringMethodStat {
 
     private final static ThreadLocal<SpringMethodStat> currentLocal                 = new ThreadLocal<SpringMethodStat>();
@@ -72,7 +74,7 @@ public class SpringMethodStat {
 
         jdbcPoolConnectionOpenCount.set(0);
         jdbcPoolConnectionCloseCount.set(0);
-        
+
         jdbcResultSetOpenCount.set(0);
         jdbcResultSetCloseCount.set(0);
 
@@ -111,6 +113,8 @@ public class SpringMethodStat {
         }
 
         executeCount.incrementAndGet();
+
+        Profiler.enter(methodInfo.getSignature(), Profiler.PROFILE_TYPE_SPRING);
     }
 
     public void afterInvoke(Throwable error, long nanos) {
@@ -122,6 +126,8 @@ public class SpringMethodStat {
             lastError = error;
             lastErrorTimeMillis = System.currentTimeMillis();
         }
+        
+        Profiler.release(nanos);
     }
 
     public Throwable getLastError() {
@@ -263,15 +269,15 @@ public class SpringMethodStat {
     public void incrementJdbcPoolConnectionCloseCount() {
         jdbcPoolConnectionCloseCount.incrementAndGet();
     }
-    
+
     public long getJdbcResultSetOpenCount() {
         return jdbcResultSetOpenCount.get();
     }
-    
+
     public void addJdbcResultSetOpenCount(long delta) {
         jdbcResultSetOpenCount.addAndGet(delta);
     }
-    
+
     public void incrementJdbcResultSetOpenCount() {
         jdbcResultSetOpenCount.incrementAndGet();
     }
@@ -279,11 +285,11 @@ public class SpringMethodStat {
     public long getJdbcResultSetCloseCount() {
         return jdbcResultSetCloseCount.get();
     }
-    
+
     public void addJdbcResultSetCloseCount(long delta) {
         jdbcResultSetCloseCount.addAndGet(delta);
     }
-    
+
     public void incrementJdbcResultSetCloseCount() {
         jdbcResultSetCloseCount.incrementAndGet();
     }
@@ -305,10 +311,10 @@ public class SpringMethodStat {
 
         data.put("JdbcPoolConnectionOpenCount", this.getJdbcPoolConnectionOpenCount());
         data.put("JdbcPoolConnectionCloseCount", this.getJdbcPoolConnectionCloseCount());
-        
+
         data.put("JdbcResultSetOpenCount", this.getJdbcResultSetOpenCount());
         data.put("JdbcResultSetCloseCount", this.getJdbcResultSetCloseCount());
-        
+
         data.put("JdbcExecuteCount", this.getJdbcExecuteCount());
         data.put("JdbcExecuteErrorCount", this.getJdbcExecuteErrorCount());
         data.put("JdbcExecuteTimeMillis", this.getJdbcExecuteTimeMillis());

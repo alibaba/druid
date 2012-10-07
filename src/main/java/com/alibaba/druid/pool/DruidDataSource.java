@@ -699,7 +699,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * @param realConnection
      * @throws SQLException
      */
-    private void discardConnection(Connection realConnection) throws SQLException {
+    private void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
         lock.lock();
@@ -825,10 +825,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
         }
 
-        try {
-            final boolean isAutoCommit = holder.isUnderlyingAutoCommit();
-            final boolean isReadOnly = holder.isUnderlyingReadOnly();
+        final boolean isAutoCommit = holder.isUnderlyingAutoCommit();
+        final boolean isReadOnly = holder.isUnderlyingReadOnly();
+        final boolean testOnReturn = this.isTestOnReturn();
 
+        try {
             // check need to rollback?
             if ((!isAutoCommit) && (!isReadOnly)) {
                 pooledConnection.rollback();
@@ -837,7 +838,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             // reset holder, restore default settings, clear warnings
             holder.reset();
 
-            if (isTestOnReturn()) {
+            if (testOnReturn) {
                 boolean validate = testConnectionInternal(physicalConnection);
                 if (!validate) {
                     JdbcUtils.close(physicalConnection);
@@ -1761,6 +1762,32 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public Map<String, Object> getStatData() {
+        final int activeCount;
+        final int activePeak;
+        final Date activePeakTime;
+
+        final int poolingCount;
+        final int poolingPeak;
+        final Date poolingPeakTime;
+
+        final long connectCount;
+        final long closeCount;
+
+        lock.lock();
+        try {
+            poolingCount = this.poolingCount;
+            poolingPeak = this.poolingPeak;
+            poolingPeakTime = this.getPoolingPeakTime();
+
+            activeCount = this.activeCount;
+            activePeak = this.activePeak;
+            activePeakTime = this.getActivePeakTime();
+
+            connectCount = this.connectCount;
+            closeCount = this.closeCount;
+        } finally {
+            lock.unlock();
+        }
         Map<String, Object> dataMap = new LinkedHashMap<String, Object>();
 
         dataMap.put("Identity", System.identityHashCode(this));
@@ -1776,13 +1803,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("NotEmptyWaitCount", this.getNotEmptyWaitCount());
         dataMap.put("NotEmptyWaitMillis", this.getNotEmptyWaitMillis());
 
-        dataMap.put("PoolingCount", this.getPoolingCount());
-        dataMap.put("PoolingPeak", this.getPoolingPeak());
-        dataMap.put("PoolingPeakTime", this.getPoolingPeakTime() == null ? null : this.getPoolingPeakTime().toString());
+        dataMap.put("PoolingCount", poolingCount);
+        dataMap.put("PoolingPeak", poolingPeak);
+        dataMap.put("PoolingPeakTime", poolingPeakTime);
 
-        dataMap.put("ActiveCount", this.getActiveCount());
-        dataMap.put("ActivePeak", this.getActivePeak());
-        dataMap.put("ActivePeakTime", this.getActivePeakTime() == null ? null : this.getActivePeakTime().toString());
+        dataMap.put("ActiveCount", activeCount);
+        dataMap.put("ActivePeak", activePeak);
+        dataMap.put("ActivePeakTime", activePeakTime);
 
         dataMap.put("InitialSize", this.getInitialSize());
         dataMap.put("MinIdle", this.getMinIdle());
@@ -1802,8 +1829,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         dataMap.put("DefaultReadOnly", this.isDefaultAutoCommit());
         dataMap.put("DefaultTransactionIsolation", this.getDefaultTransactionIsolation());
 
-        dataMap.put("LogicConnectCount", this.getConnectCount());
-        dataMap.put("LogicCloseCount", this.getCloseCount());
+        dataMap.put("LogicConnectCount", connectCount);
+        dataMap.put("LogicCloseCount", closeCount);
         dataMap.put("LogicConnectErrorCount", this.getConnectErrorCount());
 
         dataMap.put("PhysicalConnectCount", this.getCreateCount());
