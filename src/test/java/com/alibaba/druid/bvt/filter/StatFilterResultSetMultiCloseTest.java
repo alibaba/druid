@@ -66,17 +66,16 @@ public class StatFilterResultSetMultiCloseTest extends TestCase {
         sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
         Assert.assertNotNull(sqlStat);
 
-        Histogram histogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
-        Assert.assertEquals("first failed", 1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        Assert.assertEquals("first failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
         rs.close();
 
-        Assert.assertEquals("second failed", 1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        Assert.assertEquals("second failed", 1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
 
         stmt.close();
 
         conn.close();
 
-        Assert.assertEquals(1, histogram.getValue(0) + histogram.getValue(1) + histogram.getValue(2));
+        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 }

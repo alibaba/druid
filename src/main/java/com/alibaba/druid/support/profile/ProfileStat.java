@@ -5,10 +5,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProfileStat {
+    private ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> entries = new ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat>(
+                                                                                                                                    4,
+                                                                                                                                    0.75f,
+                                                                                                                                    1);
 
-    private ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> entries = new ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat>();
-
-    public ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> getEntries() {
+    public Map<ProfileEntryKey, ProfileEntryStat> getEntries() {
         return entries;
     }
 
@@ -16,7 +18,7 @@ public class ProfileStat {
         if (requestStatsMap == null) {
             return;
         }
-        
+
         for (Map.Entry<ProfileEntryKey, ProfileEntryReqStat> entry : requestStatsMap.entrySet()) {
             ProfileEntryKey entryKey = entry.getKey();
             ProfileEntryReqStat reqEntryStat = entry.getValue();

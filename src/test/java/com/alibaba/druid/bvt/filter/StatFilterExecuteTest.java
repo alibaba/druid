@@ -67,7 +67,7 @@ public class StatFilterExecuteTest extends TestCase {
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         
-        Assert.assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogram().getSum());
+        Assert.assertEquals(0, dataSource.getDataSourceStat().getSqlStat(sql).getExecuteAndResultHoldTimeHistogramSum());
         
         boolean firstResult = stmt.execute();
         Assert.assertFalse(firstResult);
@@ -78,12 +78,9 @@ public class StatFilterExecuteTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Histogram histogram = sqlStat.getHistogram();
-        Assert.assertEquals(1, histogram.getSum());
+        Assert.assertEquals(1, sqlStat.getHistogramSum());
 
-        Histogram rsHoldHistogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
-
-        Assert.assertEquals(1, rsHoldHistogram.getSum());
+        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {

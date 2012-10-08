@@ -79,12 +79,10 @@ public class StatFilterExecuteFirstResultSetTest extends TestCase {
 
         JdbcSqlStat sqlStat = dataSource.getDataSourceStat().getSqlStat(sql);
 
-        Histogram histogram = sqlStat.getHistogram();
-        Assert.assertEquals(1, histogram.getSum());
+        Assert.assertEquals(1, sqlStat.getHistogramSum());
 
-        Histogram rsHoldHistogram = sqlStat.getExecuteAndResultHoldTimeHistogram();
 
-        Assert.assertEquals(1, rsHoldHistogram.getSum());
+        Assert.assertEquals(1, sqlStat.getExecuteAndResultHoldTimeHistogramSum());
     }
 
     static class MyMockPreparedStatement extends MockPreparedStatement {
