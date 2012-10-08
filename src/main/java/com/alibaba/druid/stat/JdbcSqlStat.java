@@ -18,6 +18,7 @@ package com.alibaba.druid.stat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 import javax.management.JMException;
@@ -29,7 +30,6 @@ import javax.management.openmbean.SimpleType;
 
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.StatementExecuteType;
-import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 
@@ -38,129 +38,189 @@ import com.alibaba.druid.util.JMXUtils;
  */
 public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
-    private final String                             sql;
-    private long                                     id;
-    private String                                   dataSource;
-    private long                                     executeLastStartTime;
+    private final String                                sql;
+    private long                                        id;
+    private String                                      dataSource;
+    private long                                        executeLastStartTime;
 
-    private volatile long                            executeBatchSizeTotal;
-    private volatile long                            executeBatchSizeMax;
+    private volatile long                               executeBatchSizeTotal;
+    private volatile int                                executeBatchSizeMax;
 
-    private volatile long                            executeSuccessCount;
-    private volatile long                            executeSpanNanoTotal;
-    private volatile long                            executeSpanNanoMax;
-    private volatile long                            runningCount;
-    private volatile long                            concurrentMax;
-    private volatile long                            resultSetHoldTimeNano;
-    private volatile long                            executeAndResultSetHoldTime;
+    private volatile long                               executeSuccessCount;
+    private volatile long                               executeSpanNanoTotal;
+    private volatile long                               executeSpanNanoMax;
+    private volatile int                                runningCount;
+    private volatile int                                concurrentMax;
+    private volatile long                               resultSetHoldTimeNano;
+    private volatile long                               executeAndResultSetHoldTime;
 
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeBatchSizeTotalUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeBatchSizeMaxUpdater;
-    
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeSuccessCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeSpanNanoTotalUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeSpanNanoMaxUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> runningCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> concurrentMaxUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> resultSetHoldTimeNanoUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeAndResultSetHoldTimeUpdater;
-    static {
-        executeBatchSizeTotalUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeBatchSizeTotal");
-        executeBatchSizeMaxUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeBatchSizeMax");
-        
-        executeSuccessCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeSuccessCount");
-        executeSpanNanoTotalUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeSpanNanoTotal");
-        executeSpanNanoMaxUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeSpanNanoMax");
-        runningCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "runningCount");
-        concurrentMaxUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "concurrentMax");
-        resultSetHoldTimeNanoUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "resultSetHoldTimeNano");
-        executeAndResultSetHoldTimeUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
-                                                                               "executeAndResultSetHoldTime");
-    }
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeBatchSizeTotalUpdater                    = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeBatchSizeTotal");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeBatchSizeMaxUpdater                      = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeBatchSizeMax");
 
-    private String                                   name;
-    private String                                   file;
-    private String                                   dbType;
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeSuccessCountUpdater                      = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeSuccessCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeSpanNanoTotalUpdater                     = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeSpanNanoTotal");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeSpanNanoMaxUpdater                       = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeSpanNanoMax");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> runningCountUpdater                             = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "runningCount");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> concurrentMaxUpdater                            = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "concurrentMax");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    resultSetHoldTimeNanoUpdater                    = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "resultSetHoldTimeNano");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeAndResultSetHoldTimeUpdater              = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeAndResultSetHoldTime");
 
-    private long                                     executeNanoSpanMaxOccurTime;
+    private String                                      name;
+    private String                                      file;
+    private String                                      dbType;
 
-    private volatile long                            executeErrorCount;
-    private Throwable                                executeErrorLast;
-    private long                                     executeErrorLastTime;
+    private volatile long                               executeNanoSpanMaxOccurTime;
 
-    private volatile long                            updateCount;
-    private volatile long                            updateCountMax;
-    private volatile long                            fetchRowCount;
-    private volatile long                            fetchRowCountMax;
+    private volatile long                               executeErrorCount;
+    private volatile Throwable                          executeErrorLast;
+    private volatile long                               executeErrorLastTime;
 
-    private volatile long                            inTransactionCount;
+    private volatile long                               updateCount;
+    private volatile long                               updateCountMax;
+    private volatile long                               fetchRowCount;
+    private volatile long                               fetchRowCountMax;
 
-    private String                                   lastSlowParameters;
+    private volatile long                               inTransactionCount;
 
-    private boolean                                  removed                           = false;
+    private volatile String                             lastSlowParameters;
 
-    private volatile long                            clobOpenCount;
-    private volatile long                            blobOpenCount;
-    private volatile long                            readStringLength;
-    private volatile long                            readBytesLength;
+    private boolean                                     removed                                         = false;
 
-    private volatile long                            inputStreamOpenCount;
-    private volatile long                            readerOpenCount;
+    private volatile long                               clobOpenCount;
+    private volatile long                               blobOpenCount;
+    private volatile long                               readStringLength;
+    private volatile long                               readBytesLength;
 
-    final static AtomicLongFieldUpdater<JdbcSqlStat> executeErrorCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> updateCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> updateCountMaxUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> fetchRowCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> fetchRowCountMaxUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> inTransactionCountUpdater;
+    private volatile long                               inputStreamOpenCount;
+    private volatile long                               readerOpenCount;
 
-    final static AtomicLongFieldUpdater<JdbcSqlStat> clobOpenCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> blobOpenCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> readStringLengthUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> readBytesLengthUpdater;
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeErrorCountUpdater                        = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeErrorCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    updateCountUpdater                              = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "updateCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    updateCountMaxUpdater                           = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "updateCountMax");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    fetchRowCountUpdater                            = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "fetchRowCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    fetchRowCountMaxUpdater                         = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "fetchRowCountMax");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    inTransactionCountUpdater                       = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "inTransactionCount");
 
-    final static AtomicLongFieldUpdater<JdbcSqlStat> inputStreamOpenCountUpdater;
-    final static AtomicLongFieldUpdater<JdbcSqlStat> readerOpenCountUpdater;
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    clobOpenCountUpdater                            = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "clobOpenCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    blobOpenCountUpdater                            = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "blobOpenCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    readStringLengthUpdater                         = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "readStringLength");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    readBytesLengthUpdater                          = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "readBytesLength");
 
-    static {
-        executeErrorCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "executeErrorCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    inputStreamOpenCountUpdater                     = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "inputStreamOpenCount");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    readerOpenCountUpdater                          = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "readerOpenCount");
 
-        updateCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "updateCount");
-        updateCountMaxUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "updateCountMax");
-        fetchRowCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "fetchRowCount");
-        fetchRowCountMaxUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "fetchRowCountMax");
-        inTransactionCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "inTransactionCount");
+    private volatile long                               histogram_0_1;
+    private volatile long                               histogram_1_10;
+    private volatile int                                histogram_10_100;
+    private volatile int                                histogram_100_1000;
+    private volatile int                                histogram_1000_10000;
+    private volatile int                                histogram_10000_100000;
+    private volatile int                                histogram_100000_1000000;
+    private volatile int                                histogram_1000000_more;
 
-        clobOpenCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "clobOpenCount");
-        blobOpenCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "blobOpenCount");
-        readStringLengthUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "readStringLength");
-        readBytesLengthUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "readBytesLength");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    histogram_0_1_Updater                           = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "histogram_0_1");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    histogram_1_10_Updater                          = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "histogram_1_10");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_10_100_Updater                        = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_10_100");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_100_1000_Updater                      = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_100_1000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_1000_10000_Updater                    = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_1000_10000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_10000_100000_Updater                  = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_10000_100000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_100000_1000000_Updater                = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_100000_1000000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> histogram_1000000_more_Updater                  = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "histogram_1000000_more");
 
-        inputStreamOpenCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "inputStreamOpenCount");
-        readerOpenCountUpdater = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class, "readerOpenCount");
-    }
+    private volatile long                               executeAndResultHoldTime_0_1;
+    private volatile long                               executeAndResultHoldTime_1_10;
+    private volatile int                                executeAndResultHoldTime_10_100;
+    private volatile int                                executeAndResultHoldTime_100_1000;
+    private volatile int                                executeAndResultHoldTime_1000_10000;
+    private volatile int                                executeAndResultHoldTime_10000_100000;
+    private volatile int                                executeAndResultHoldTime_100000_1000000;
+    private volatile int                                executeAndResultHoldTime_1000000_more;
 
-    private final Histogram                          histogram                         = new Histogram(new long[] { //
-                                                                                                                    //
-            1, 10, 100, 1000, 10 * 1000, //
-            100 * 1000, 1000 * 1000
-                                                                                                       //
-                                                                                                       });
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeAndResultHoldTime_0_1_Updater            = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeAndResultHoldTime_0_1");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    executeAndResultHoldTime_1_10_Updater           = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "executeAndResultHoldTime_1_10");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_10_100_Updater         = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_10_100");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_100_1000_Updater       = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_100_1000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_1000_10000_Updater     = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_1000_10000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_10000_100000_Updater   = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_10000_100000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_100000_1000000_Updater = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_100000_1000000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> executeAndResultHoldTime_1000000_more_Updater   = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "executeAndResultHoldTime_1000000_more");
 
-    private final Histogram                          executeAndResultHoldTimeHistogram = new Histogram(new long[] { //
-                                                                                                       //
-            1, 10, 100, 1000, 10 * 1000, //
-            100 * 1000, 1000 * 1000
-                                                                                                       //
-                                                                                                       });
+    private volatile long                               fetchRowCount_0_1;
+    private volatile long                               fetchRowCount_1_10;
+    private volatile long                               fetchRowCount_10_100;
+    private volatile int                                fetchRowCount_100_1000;
+    private volatile int                                fetchRowCount_1000_10000;
+    private volatile int                                fetchRowCount_10000_more;
 
-    private final Histogram                          fetchRowCountHistogram            = new Histogram(new long[] { //
-                                                                                                       1, 10, 100,
-            1000, 10 * 1000                                                                           });
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    fetchRowCount_0_1_Updater                       = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "fetchRowCount_0_1");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    fetchRowCount_1_10_Updater                      = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "fetchRowCount_1_10");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    fetchRowCount_10_100_Updater                    = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "fetchRowCount_10_100");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> fetchRowCount_100_1000_Updater                  = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "fetchRowCount_100_1000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> fetchRowCount_1000_10000_Updater                = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "fetchRowCount_1000_10000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> fetchRowCount_10000_more_Updater                = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "fetchRowCount_10000_more");
 
-    private final Histogram                          updateCountHistogram              = new Histogram(new long[] { //
-                                                                                                       1, 10, 100,
-            1000, 10 * 1000                                                                           });
+    private volatile long                               updateCount_0_1;
+    private volatile long                               updateCount_1_10;
+    private volatile long                               updateCount_10_100;
+    private volatile int                                updateCount_100_1000;
+    private volatile int                                updateCount_1000_10000;
+    private volatile int                                updateCount_10000_more;
+
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    updateCount_0_1_Updater                         = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "updateCount_0_1");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    updateCount_1_10_Updater                        = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "updateCount_1_10");
+    final static AtomicLongFieldUpdater<JdbcSqlStat>    updateCount_10_100_Updater                      = AtomicLongFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                            "updateCount_10_100");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> updateCount_100_1000_Updater                    = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "updateCount_100_1000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> updateCount_1000_10000_Updater                  = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "updateCount_1000_10000");
+    final static AtomicIntegerFieldUpdater<JdbcSqlStat> updateCount_10000_more_Updater                  = AtomicIntegerFieldUpdater.newUpdater(JdbcSqlStat.class,
+                                                                                                                                               "updateCount_10000_more");
 
     public JdbcSqlStat(String sql){
         this.sql = sql;
@@ -279,14 +339,42 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         fetchRowCountUpdater.set(this, 0);
         fetchRowCountMaxUpdater.set(this, 0);
 
-        histogram.reset();
+        histogram_0_1_Updater.set(this, 0);
+        histogram_1_10_Updater.set(this, 0);
+        histogram_10_100_Updater.set(this, 0);
+        histogram_100_1000_Updater.set(this, 0);
+        histogram_1000_10000_Updater.set(this, 0);
+        histogram_10000_100000_Updater.set(this, 0);
+        histogram_100000_1000000_Updater.set(this, 0);
+        histogram_1000000_more_Updater.set(this, 0);
+
         this.lastSlowParameters = null;
         inTransactionCountUpdater.set(this, 0);
         resultSetHoldTimeNanoUpdater.set(this, 0);
         executeAndResultSetHoldTimeUpdater.set(this, 0);
-        fetchRowCountHistogram.reset();
-        updateCountHistogram.reset();
-        executeAndResultHoldTimeHistogram.reset();
+
+        fetchRowCount_0_1_Updater.set(this, 0);
+        fetchRowCount_1_10_Updater.set(this, 0);
+        fetchRowCount_10_100_Updater.set(this, 0);
+        fetchRowCount_100_1000_Updater.set(this, 0);
+        fetchRowCount_1000_10000_Updater.set(this, 0);
+        fetchRowCount_10000_more_Updater.set(this, 0);
+
+        updateCount_0_1_Updater.set(this, 0);
+        updateCount_1_10_Updater.set(this, 0);
+        updateCount_10_100_Updater.set(this, 0);
+        updateCount_100_1000_Updater.set(this, 0);
+        updateCount_1000_10000_Updater.set(this, 0);
+        updateCount_10000_more_Updater.set(this, 0);
+
+        executeAndResultHoldTime_0_1_Updater.set(this, 0);
+        executeAndResultHoldTime_1_10_Updater.set(this, 0);
+        executeAndResultHoldTime_10_100_Updater.set(this, 0);
+        executeAndResultHoldTime_100_1000_Updater.set(this, 0);
+        executeAndResultHoldTime_1000_10000_Updater.set(this, 0);
+        executeAndResultHoldTime_10000_100000_Updater.set(this, 0);
+        executeAndResultHoldTime_100000_1000000_Updater.set(this, 0);
+        executeAndResultHoldTime_1000000_more_Updater.set(this, 0);
 
         blobOpenCountUpdater.set(this, 0);
         clobOpenCountUpdater.set(this, 0);
@@ -318,7 +406,19 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             }
         }
 
-        this.updateCountHistogram.record(delta);
+        if (delta < 1) {
+            updateCount_0_1_Updater.incrementAndGet(this);
+        } else if (delta < 10) {
+            updateCount_1_10_Updater.incrementAndGet(this);
+        } else if (delta < 100) {
+            updateCount_10_100_Updater.incrementAndGet(this);
+        } else if (delta < 1000) {
+            updateCount_100_1000_Updater.incrementAndGet(this);
+        } else if (delta < 10000) {
+            updateCount_1000_10000_Updater.incrementAndGet(this);
+        } else {
+            updateCount_10000_more_Updater.incrementAndGet(this);
+        }
     }
 
     public long getUpdateCount() {
@@ -434,7 +534,20 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
                 break;
             }
         }
-        this.fetchRowCountHistogram.record(delta);
+
+        if (delta < 1) {
+            fetchRowCount_0_1_Updater.incrementAndGet(this);
+        } else if (delta < 10) {
+            fetchRowCount_1_10_Updater.incrementAndGet(this);
+        } else if (delta < 100) {
+            fetchRowCount_10_100_Updater.incrementAndGet(this);
+        } else if (delta < 1000) {
+            fetchRowCount_100_1000_Updater.incrementAndGet(this);
+        } else if (delta < 10000) {
+            fetchRowCount_1000_10000_Updater.incrementAndGet(this);
+        } else {
+            fetchRowCount_10000_more_Updater.incrementAndGet(this);
+        }
 
     }
 
@@ -443,9 +556,9 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
 
         // executeBatchSizeMax
         for (;;) {
-            long current = executeBatchSizeMaxUpdater.get(this);
+            int current = executeBatchSizeMaxUpdater.get(this);
             if (current < batchSize) {
-                if (executeBatchSizeMaxUpdater.compareAndSet(this, current, batchSize)) {
+                if (executeBatchSizeMaxUpdater.compareAndSet(this, current, (int) batchSize)) {
                     break;
                 } else {
                     continue;
@@ -465,10 +578,10 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     }
 
     public void incrementRunningCount() {
-        long val = runningCountUpdater.incrementAndGet(this);
+        int val = runningCountUpdater.incrementAndGet(this);
 
         for (;;) {
-            long max = concurrentMaxUpdater.get(this);
+            int max = concurrentMaxUpdater.get(this);
             if (val > max) {
                 if (concurrentMaxUpdater.compareAndSet(this, max, val)) {
                     break;
@@ -497,7 +610,51 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         addExecuteTime(nanoSpan);
 
         if (StatementExecuteType.ExecuteQuery != executeType && !firstResultSet) {
-            executeAndResultHoldTimeHistogram.record((nanoSpan) / 1000 / 1000);
+            executeAndResultHoldTimeHistogramRecord(nanoSpan);
+        }
+    }
+
+    private void executeAndResultHoldTimeHistogramRecord(long nanoSpan) {
+        long millis = nanoSpan / 1000 / 1000;
+
+        if (millis < 1) {
+            executeAndResultHoldTime_0_1_Updater.incrementAndGet(this);
+        } else if (millis < 10) {
+            executeAndResultHoldTime_1_10_Updater.incrementAndGet(this);
+        } else if (millis < 100) {
+            executeAndResultHoldTime_10_100_Updater.incrementAndGet(this);
+        } else if (millis < 1000) {
+            executeAndResultHoldTime_100_1000_Updater.incrementAndGet(this);
+        } else if (millis < 10000) {
+            executeAndResultHoldTime_1000_10000_Updater.incrementAndGet(this);
+        } else if (millis < 100000) {
+            executeAndResultHoldTime_10000_100000_Updater.incrementAndGet(this);
+        } else if (millis < 1000000) {
+            executeAndResultHoldTime_100000_1000000_Updater.incrementAndGet(this);
+        } else {
+            executeAndResultHoldTime_1000000_more_Updater.incrementAndGet(this);
+        }
+    }
+
+    private void histogramRecord(long nanoSpan) {
+        long millis = nanoSpan / 1000 / 1000;
+
+        if (millis < 1) {
+            histogram_0_1_Updater.incrementAndGet(this);
+        } else if (millis < 10) {
+            histogram_1_10_Updater.incrementAndGet(this);
+        } else if (millis < 100) {
+            histogram_10_100_Updater.incrementAndGet(this);
+        } else if (millis < 1000) {
+            histogram_100_1000_Updater.incrementAndGet(this);
+        } else if (millis < 10000) {
+            histogram_1000_10000_Updater.incrementAndGet(this);
+        } else if (millis < 100000) {
+            histogram_10000_100000_Updater.incrementAndGet(this);
+        } else if (millis < 1000000) {
+            histogram_100000_1000000_Updater.incrementAndGet(this);
+        } else {
+            histogram_1000000_more_Updater.incrementAndGet(this);
         }
     }
 
@@ -521,7 +678,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         }
 
         long millis = nanoSpan / (1000 * 1000);
-        histogram.record(millis);
+        histogramRecord(millis);
     }
 
     public long getExecuteMillisTotal() {
@@ -735,14 +892,14 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         map.put("URL", null); // 23
         map.put("InTransactionCount", getInTransactionCount()); // 24
 
-        map.put("Histogram", this.histogram.toArray()); // 25
+        map.put("Histogram", this.getHistogramValues()); // 25
         map.put("LastSlowParameters", lastSlowParameters); // 26
         map.put("ResultSetHoldTime", getResultSetHoldTimeMilis()); // 27
         map.put("ExecuteAndResultSetHoldTime", this.getExecuteAndResultSetHoldTimeMilis()); // 28
-        map.put("FetchRowCountHistogram", this.getFetchRowCountHistogram().toArray()); // 29
+        map.put("FetchRowCountHistogram", this.getFetchRowCountHistogramValues()); // 29
 
-        map.put("EffectedRowCountHistogram", this.getUpdateCountHistogram().toArray()); // 30
-        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogram().toArray()); // 31
+        map.put("EffectedRowCountHistogram", this.getUpdateCountHistogramValues()); // 30
+        map.put("ExecuteAndResultHoldTimeHistogram", this.getExecuteAndResultHoldTimeHistogramValues()); // 31
         map.put("EffectedRowCountMax", getUpdateCountMax()); // 32
         map.put("FetchRowCountMax", getFetchRowCountMax()); // 33
         map.put("ClobOpenCount", getClobOpenCount()); // 34
@@ -756,8 +913,27 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return map;
     }
 
-    public Histogram getHistogram() {
-        return this.histogram;
+    public long[] getHistogramValues() {
+        return new long[] {
+                //
+                histogram_0_1, //
+                histogram_1_10, //
+                histogram_10_100, //
+                histogram_100_1000, //
+                histogram_1000_10000, //
+                histogram_10000_100000, //
+                histogram_100000_1000000, //
+                histogram_1000000_more //
+        };
+    }
+
+    public long getHistogramSum() {
+        long[] values = this.getHistogramValues();
+        long sum = 0;
+        for (int i = 0; i < values.length; ++i) {
+            sum += values[i];
+        }
+        return sum;
     }
 
     public CompositeDataSupport getCompositeData() throws JMException {
@@ -783,16 +959,51 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return getExecuteAndResultSetHoldTimeNano() / (1000 * 1000);
     }
 
-    public Histogram getFetchRowCountHistogram() {
-        return this.fetchRowCountHistogram;
+    public long[] getFetchRowCountHistogramValues() {
+        return new long[] {
+                //
+                fetchRowCount_0_1, //
+                fetchRowCount_1_10, //
+                fetchRowCount_10_100, //
+                fetchRowCount_100_1000, //
+                fetchRowCount_1000_10000, //
+                fetchRowCount_10000_more //
+        };
     }
 
-    public Histogram getUpdateCountHistogram() {
-        return this.updateCountHistogram;
+    public long[] getUpdateCountHistogramValues() {
+        return new long[] {
+                //
+                updateCount_0_1, //
+                updateCount_1_10, //
+                updateCount_10_100, //
+                updateCount_100_1000, //
+                updateCount_1000_10000, //
+                updateCount_10000_more //
+        };
     }
 
-    public Histogram getExecuteAndResultHoldTimeHistogram() {
-        return this.executeAndResultHoldTimeHistogram;
+    public long[] getExecuteAndResultHoldTimeHistogramValues() {
+        return new long[] {
+                //
+                executeAndResultHoldTime_0_1, //
+                executeAndResultHoldTime_1_10, //
+                executeAndResultHoldTime_10_100, //
+                executeAndResultHoldTime_100_1000, //
+                executeAndResultHoldTime_1000_10000, //
+                executeAndResultHoldTime_10000_100000, //
+                executeAndResultHoldTime_100000_1000000, //
+                executeAndResultHoldTime_1000000_more //
+        };
+    }
+
+    public long getExecuteAndResultHoldTimeHistogramSum() {
+        long[] values = this.getExecuteAndResultHoldTimeHistogramValues();
+        long sum = 0;
+        for (int i = 0; i < values.length; ++i) {
+            sum += values[i];
+        }
+        return sum;
     }
 
     public long getResultSetHoldTimeNano() {
@@ -810,8 +1021,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
     public void addResultSetHoldTimeNano(long statementExecuteNano, long resultHoldTimeNano) {
         resultSetHoldTimeNanoUpdater.addAndGet(this, resultHoldTimeNano);
         executeAndResultSetHoldTimeUpdater.addAndGet(this, statementExecuteNano + resultHoldTimeNano);
-        executeAndResultHoldTimeHistogram.record((statementExecuteNano + resultHoldTimeNano) / 1000 / 1000);
-        updateCountHistogram.record(0);
+        executeAndResultHoldTimeHistogramRecord((statementExecuteNano + resultHoldTimeNano) / 1000 / 1000);
+        updateCount_0_1_Updater.incrementAndGet(this);
     }
 
     public boolean isRemoved() {
