@@ -1083,7 +1083,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     }
 
     public long getConnectCount() {
-        return connectCount;
+        lock.lock();
+        try {
+            return connectCount;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public long getCloseCount() {
