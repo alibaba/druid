@@ -2,23 +2,22 @@ package com.alibaba.druid.stat;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.support.http.stat.WebURIStat;
-
-public class WebURIStatMemoryTest extends TestCase {
+public class HashMapMemoryTest extends TestCase {
 
     public void test_0() throws Exception {
-        WebURIStat item = new WebURIStat("");
+        HashMap item = new HashMap();
         gc();
         long memoryStart = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 
         final int COUNT = 1024 * 1024;
-        WebURIStat[] items = new WebURIStat[COUNT];
+        Map[] items = new Map[COUNT];
         for (int i = 0; i < COUNT; ++i) {
-            items[i] = new WebURIStat("");
-            items[i].getProfiletat();
+            items[i] = new HashMap();
             // items[i] = Histogram.makeHistogram(20);
         }
 

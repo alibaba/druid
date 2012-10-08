@@ -2,23 +2,21 @@ package com.alibaba.druid.stat;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
+import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.support.http.stat.WebURIStat;
-
-public class WebURIStatMemoryTest extends TestCase {
+public class AtomicMemoryTest extends TestCase {
 
     public void test_0() throws Exception {
-        WebURIStat item = new WebURIStat("");
+        AtomicLong item = new AtomicLong();
         gc();
         long memoryStart = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 
         final int COUNT = 1024 * 1024;
-        WebURIStat[] items = new WebURIStat[COUNT];
+        AtomicLong[] items = new AtomicLong[COUNT];
         for (int i = 0; i < COUNT; ++i) {
-            items[i] = new WebURIStat("");
-            items[i].getProfiletat();
+            items[i] = new AtomicLong();
             // items[i] = Histogram.makeHistogram(20);
         }
 

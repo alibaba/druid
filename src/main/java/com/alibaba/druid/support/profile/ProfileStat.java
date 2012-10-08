@@ -5,13 +5,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProfileStat {
-
     private ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> entries = new ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat>(
-                                                                                                                                    16,
+                                                                                                                                    4,
                                                                                                                                     0.75f,
                                                                                                                                     1);
 
-    public ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> getEntries() {
+    public Map<ProfileEntryKey, ProfileEntryStat> getEntries() {
         return entries;
     }
 

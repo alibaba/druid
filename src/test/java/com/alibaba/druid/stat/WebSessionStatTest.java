@@ -10,7 +10,7 @@ import com.alibaba.druid.support.http.stat.WebSessionStat;
 public class WebSessionStatTest extends TestCase {
 
     public void test_0() throws Exception {
-        WebSessionStat item = new WebSessionStat("");
+        WebSessionStat item = new WebSessionStat("1b959a6db8489c4c7ef7bf0bd743ab52");
         gc();
         long memoryStart = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 

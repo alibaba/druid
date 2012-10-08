@@ -229,14 +229,7 @@ public class WebStatFilter implements Filter {
 
             String ip = DruidWebUtils.getRemoteAddr(request);
 
-            int addressCount = sessionStat.getRemoteAddresses().size();
-            if (addressCount < 10) {
-                sessionStat.addRemoteAddress(ip);
-            } else {
-                if (!sessionStat.getRemoteAddress().contains(ip)) {
-                    LOG.error("sessoin ip change too many");
-                }
-            }
+            sessionStat.addRemoteAddress(ip);
         }
 
         return sessionStat;

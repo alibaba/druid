@@ -16,67 +16,95 @@
 package com.alibaba.druid.support.http.stat;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
-import com.alibaba.druid.util.Histogram;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class WebSessionStat {
+
+    private final static Log                               LOG                                               = LogFactory.getLog(WebSessionStat.class);
 
     private final String                                   sessionId;
 
     private volatile int                                   runningCount;
     private volatile int                                   concurrentMax;
-    final static AtomicIntegerFieldUpdater<WebSessionStat> runningCountUpdater        = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                             "runningCount");
-    final static AtomicIntegerFieldUpdater<WebSessionStat> concurrentMaxUpdater       = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                             "concurrentMax");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> runningCountUpdater                               = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "runningCount");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> concurrentMaxUpdater                              = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "concurrentMax");
 
     private volatile long                                  requestCount;
     private volatile long                                  requestErrorCount;
     private volatile long                                  requestTimeNano;
 
-    final static AtomicLongFieldUpdater<WebSessionStat>    requestCountUpdater        = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "requestCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    requestErrorCountUpdater   = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "requestErrorCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    requestTimeNanoUpdater     = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "requestTimeNano");
+    final static AtomicLongFieldUpdater<WebSessionStat>    requestCountUpdater                               = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "requestCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    requestErrorCountUpdater                          = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "requestErrorCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    requestTimeNanoUpdater                            = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "requestTimeNano");
 
     private volatile long                                  jdbcFetchRowCount;
     private volatile long                                  jdbcUpdateCount;
     private volatile long                                  jdbcExecuteCount;
     private volatile long                                  jdbcExecuteTimeNano;
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcFetchRowCountUpdater   = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcFetchRowCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcUpdateCountUpdater     = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcUpdateCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcExecuteCountUpdater    = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcExecuteCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcExecuteTimeNanoUpdater = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcExecuteTimeNano");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcFetchRowCountUpdater                          = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcFetchRowCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcUpdateCountUpdater                            = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcUpdateCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcExecuteCountUpdater                           = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcExecuteCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcExecuteTimeNanoUpdater                        = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcExecuteTimeNano");
 
     private volatile long                                  jdbcCommitCount;
     private volatile long                                  jdbcRollbackCount;
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcCommitCountUpdater     = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcCommitCount");
-    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcRollbackCountUpdater   = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
-                                                                                                                          "jdbcRollbackCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcCommitCountUpdater                            = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcCommitCount");
+    final static AtomicLongFieldUpdater<WebSessionStat>    jdbcRollbackCountUpdater                          = AtomicLongFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                 "jdbcRollbackCount");
 
-    private long                                           createTimeMillis           = -1L;
-    private volatile long                                  lastAccessTimeMillis       = -1L;
+    private long                                           createTimeMillis                                  = -1L;
+    private volatile long                                  lastAccessTimeMillis                              = -1L;
 
-    private Set<String>                                    remoteAddresses            = new HashSet<String>(2);
+    private String                                         remoteAddresses;
 
-    private String                                         principal                  = null;
+    private String                                         principal                                         = null;
 
     private String                                         userAgent;
 
-    private Histogram                                      requestIntervalHistogram   = Histogram.makeHistogram(8);
+    private volatile int                                   requestIntervalHistogram_0_1;
+    private volatile int                                   requestIntervalHistogram_1_10;
+    private volatile int                                   requestIntervalHistogram_10_100;
+    private volatile int                                   requestIntervalHistogram_100_1000;
+    private volatile int                                   requestIntervalHistogram_1000_10000;
+    private volatile int                                   requestIntervalHistogram_10000_100000;
+    private volatile int                                   requestIntervalHistogram_100000_1000000;
+    private volatile int                                   requestIntervalHistogram_1000000_10000000;
+    private volatile int                                   requestIntervalHistogram_10000000_more;
+
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_0_1_Updater              = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_0_1");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_1_10_Updater             = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_1_10");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_10_100_Updater           = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_10_100");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_100_1000_Updater         = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_100_1000");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_1000_10000_Updater       = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_1000_10000");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_10000_100000_Updater     = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_10000_100000");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_100000_1000000_Updater   = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_100000_1000000");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_1000000_10000000_Updater = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_1000000_10000000");
+    final static AtomicIntegerFieldUpdater<WebSessionStat> requestIntervalHistogram_10000000_more_Updater    = AtomicIntegerFieldUpdater.newUpdater(WebSessionStat.class,
+                                                                                                                                                    "requestIntervalHistogram_10000000_more");
 
     public WebSessionStat(String sessionId){
         super();
@@ -96,10 +124,18 @@ public class WebSessionStat {
         jdbcCommitCountUpdater.set(this, 0);
         jdbcRollbackCountUpdater.set(this, 0);
 
-        remoteAddresses.clear();
+        remoteAddresses = null;
         principal = null;
 
-        requestIntervalHistogram.reset();
+        requestIntervalHistogram_0_1_Updater.set(this, 0);
+        requestIntervalHistogram_1_10_Updater.set(this, 0);
+        requestIntervalHistogram_10_100_Updater.set(this, 0);
+        requestIntervalHistogram_100_1000_Updater.set(this, 0);
+        requestIntervalHistogram_1000_10000_Updater.set(this, 0);
+        requestIntervalHistogram_10000_100000_Updater.set(this, 0);
+        requestIntervalHistogram_100000_1000000_Updater.set(this, 0);
+        requestIntervalHistogram_1000000_10000000_Updater.set(this, 0);
+        requestIntervalHistogram_10000000_more_Updater.set(this, 0);
     }
 
     public String getUserAgent() {
@@ -150,36 +186,40 @@ public class WebSessionStat {
         return new Date(lastAccessTimeMillis);
     }
 
-    public Set<String> getRemoteAddresses() {
-        return remoteAddresses;
-    }
-
     public String getRemoteAddress() {
-        if (remoteAddresses.size() == 0) {
-            return null;
-        }
-
-        if (remoteAddresses.size() == 1) {
-            return remoteAddresses.iterator().next();
-        }
-
-        StringBuilder buf = new StringBuilder();
-        for (String item : remoteAddresses) {
-            if (buf.length() != 0) {
-                buf.append(";");
-            }
-            buf.append(item);
-        }
-
-        return buf.toString();
+        return remoteAddresses;
     }
 
     public void setLastAccessTimeMillis(long lastAccessTimeMillis) {
         if (this.lastAccessTimeMillis > 0) {
             long interval = lastAccessTimeMillis - this.lastAccessTimeMillis;
-            requestIntervalHistogram.record(interval);
+            requestIntervalHistogramRecord(interval);
         }
         this.lastAccessTimeMillis = lastAccessTimeMillis;
+    }
+
+    private void requestIntervalHistogramRecord(long nanoSpan) {
+        long millis = nanoSpan / 1000 / 1000;
+
+        if (millis < 1) {
+            requestIntervalHistogram_0_1_Updater.incrementAndGet(this);
+        } else if (millis < 10) {
+            requestIntervalHistogram_1_10_Updater.incrementAndGet(this);
+        } else if (millis < 100) {
+            requestIntervalHistogram_10_100_Updater.incrementAndGet(this);
+        } else if (millis < 1000) {
+            requestIntervalHistogram_100_1000_Updater.incrementAndGet(this);
+        } else if (millis < 10000) {
+            requestIntervalHistogram_1000_10000_Updater.incrementAndGet(this);
+        } else if (millis < 100000) {
+            requestIntervalHistogram_10000_100000_Updater.incrementAndGet(this);
+        } else if (millis < 1000000) {
+            requestIntervalHistogram_100000_1000000_Updater.incrementAndGet(this);
+        } else if (millis < 10000000) {
+            requestIntervalHistogram_1000000_10000000_Updater.incrementAndGet(this);
+        } else {
+            requestIntervalHistogram_10000000_more_Updater.incrementAndGet(this);
+        }
     }
 
     public void beforeInvoke() {
@@ -230,7 +270,21 @@ public class WebSessionStat {
     }
 
     public void addRemoteAddress(String ip) {
-        this.remoteAddresses.add(ip);
+        if (remoteAddresses == null) {
+            this.remoteAddresses = ip;
+            return;
+        }
+
+        if (remoteAddresses.contains(ip)) {
+            return;
+        }
+
+        if (remoteAddresses.length() > 256) {
+            LOG.error("sessoin ip change too many");
+            return;
+        }
+
+        remoteAddresses += ';' + ip;
     }
 
     public int getRunningCount() {
@@ -322,7 +376,18 @@ public class WebSessionStat {
     }
 
     public long[] getRequestInterval() {
-        return requestIntervalHistogram.toArray();
+        return new long[] {
+                //
+                requestIntervalHistogram_0_1, //
+                requestIntervalHistogram_1_10, //
+                requestIntervalHistogram_10_100, //
+                requestIntervalHistogram_100_1000, //
+                requestIntervalHistogram_1000_10000, //
+                requestIntervalHistogram_10000_100000, //
+                requestIntervalHistogram_100000_1000000, //
+                requestIntervalHistogram_1000000_10000000, //
+                requestIntervalHistogram_10000000_more //
+        };
     }
 
     public Map<String, Object> getStatData() {
