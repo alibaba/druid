@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface AutoLoad {
 
-    boolean value() default false;
+    boolean value() default true;
 }
