@@ -122,6 +122,7 @@ public class WebStatFilter implements Filter {
 
         if (isProfileEnable()) {
             Profiler.initLocal();
+            Profiler.enter(requestURI, Profiler.PROFILE_TYPE_WEB);
         }
 
         // 第一次访问时，uriStat这里为null，是为了防止404攻击。
@@ -189,6 +190,8 @@ public class WebStatFilter implements Filter {
             WebRequestStat.set(null);
 
             if (isProfileEnable()) {
+                Profiler.release(nanos);
+                
                 Map<ProfileEntryKey, ProfileEntryReqStat> requestStatsMap = Profiler.getStatsMap();
                 uriStat.getProfiletat().record(requestStatsMap);
                 Profiler.removeLocal();
