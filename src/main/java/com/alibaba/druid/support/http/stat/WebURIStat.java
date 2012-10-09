@@ -143,8 +143,6 @@ public class WebURIStat {
         if (requestStat != null) {
             this.setLastAccessTimeMillis(requestStat.getStartMillis());
         }
-
-        Profiler.enter(uri, Profiler.PROFILE_TYPE_WEB);
     }
 
     public void afterInvoke(Throwable error, long nanos) {
@@ -216,8 +214,6 @@ public class WebURIStat {
         }
 
         currentLocal.set(null);
-
-        Profiler.release(nanos);
     }
 
     public int getRunningCount() {

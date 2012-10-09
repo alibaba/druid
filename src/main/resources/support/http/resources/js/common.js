@@ -144,6 +144,10 @@ druid.common = function () {
 		},
 		
 		subSqlString : function(sql, len) {
+			if (sql == undefined || sql == null) {
+				return '';
+			}
+			
 			if (sql.length <= len)
 				return sql;
 			return sql.substr(0, len) + '...';

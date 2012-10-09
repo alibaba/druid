@@ -1,14 +1,33 @@
+/*
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.alibaba.druid.support.profile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ProfileStat {
-    private ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat> entries = new ConcurrentHashMap<ProfileEntryKey, ProfileEntryStat>(
-                                                                                                                                    4,
-                                                                                                                                    0.75f,
-                                                                                                                                    1);
+
+    private Map<ProfileEntryKey, ProfileEntryStat> entries = new LinkedHashMap<ProfileEntryKey, ProfileEntryStat>(4);
+
+    private ReadWriteLock                          lock    = new ReentrantReadWriteLock();
 
     public Map<ProfileEntryKey, ProfileEntryStat> getEntries() {
         return entries;
@@ -23,35 +42,61 @@ public class ProfileStat {
             ProfileEntryKey entryKey = entry.getKey();
             ProfileEntryReqStat reqEntryStat = entry.getValue();
 
-            ProfileEntryStat entryStat = entries.get(entryKey);
-            if (entryStat == null) {
-                entries.putIfAbsent(entryKey, new ProfileEntryStat());
-                entryStat = entries.get(entryKey);
-            }
+            ProfileEntryStat entryStat = getProfileEntry(entryKey);
 
             entryStat.addExecuteCount(reqEntryStat.getExecuteCount());
             entryStat.addExecuteTimeNanos(reqEntryStat.getExecuteTimeNanos());
         }
     }
 
-    public Map<Map<String, Object>, Map<String, Object>> getStatData() {
-        Map<Map<String, Object>, Map<String, Object>> data = new LinkedHashMap<Map<String, Object>, Map<String, Object>>();
+    private ProfileEntryStat getProfileEntry(ProfileEntryKey entryKey) {
 
-        for (Map.Entry<ProfileEntryKey, ProfileEntryStat> entry : entries.entrySet()) {
-            Map<String, Object> key = new LinkedHashMap<String, Object>();
-            Map<String, Object> value = new LinkedHashMap<String, Object>();
-
-            key.put("Parent", entry.getKey().getParentName());
-            key.put("Name", entry.getKey().getName());
-            key.put("Type", entry.getKey().getType());
-
-            value.put("ExecuteCount", entry.getValue().getExecuteCount());
-            value.put("ExecuteTimeNanos", entry.getValue().getExecuteTimeNanos());
-
-            data.put(key, value);
+        lock.readLock().lock();
+        try {
+            ProfileEntryStat entryStat = entries.get(entryKey);
+            if (entryStat != null) {
+                return entryStat;
+            }
+        } finally {
+            lock.readLock().unlock();
         }
 
-        return data;
+        lock.writeLock().lock();
+        try {
+            ProfileEntryStat entryStat = entries.get(entryKey);
+            if (entryStat == null) {
+                entries.put(entryKey, new ProfileEntryStat());
+                entryStat = entries.get(entryKey);
+            }
+            return entryStat;
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public List<Map<String, Object>> getStatData() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        lock.readLock().lock();
+        try {
+            for (Map.Entry<ProfileEntryKey, ProfileEntryStat> entry : entries.entrySet()) {
+                Map<String, Object> entryData = new LinkedHashMap<String, Object>();
+
+                entryData.put("Name", entry.getKey().getName());
+                entryData.put("Parent", entry.getKey().getParentName());
+                entryData.put("Type", entry.getKey().getType());
+                entryData.put("ExecuteCount", entry.getValue().getExecuteCount());
+                entryData.put("ExecuteTimeMillis", entry.getValue().getExecuteTimeNanos() / 1000 / 1000);
+
+                list.add(entryData);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        
+        Collections.reverse(list);
+
+        return list;
     }
 
 }

@@ -98,6 +98,21 @@
 				          		<td id="JdbcResultSetCloseCount"></td>
 				        	</tr>
 				      	</table>
+				      	
+          				<h3>Profiles</h3>
+						<table id="profileDataTable" class="table table-bordered table-striped responsive-utilities">
+							<thead>
+								<tr>
+									<th>N</th>
+									<th><a id="th-Name" >Name</a></th>
+									<th>ParentName</th>
+									<th>Type</th>
+									<th>ExecuteCount</th>
+									<th>ExecuteTimeMillis</th>
+								</tr>
+							</thead> 
+							<tbody></tbody>
+						</table>
 				      	<div class="container">
 				      		<a class="btn btn-primary" href="javascript:window.close();">Close</a>
 				      	</div>
@@ -122,26 +137,56 @@
     					success: function(data) {
     						if (data.Content == null)
     							return;
-    						$("#URI").text(data.Content.URI)
-    						$("#RequestCount").text(data.Content.RequestCount)
-    						$("#RequestTimeMillis").text(data.Content.RequestTimeMillis)
-    						$("#LastAccessTime").text(data.Content.LastAccessTime)
-    						$("#RunningCount").text(data.Content.RunningCount)
-    						$("#ConcurrentMax").text(data.Content.ConcurrentMax)
-    						$("#JdbcExecuteCount").text(data.Content.JdbcExecuteCount)
-    						$("#JdbcExecuteErrorCount").text(data.Content.JdbcExecuteErrorCount)
-    						$("#JdbcExecutePeak").text(data.Content.JdbcExecutePeak)
-    						$("#JdbcExecuteTimeMillis").text(data.Content.JdbcExecuteTimeMillis)
-    						$("#JdbcCommitCount").text(data.Content.JdbcCommitCount)
-    						$("#JdbcRollbackCount").text(data.Content.JdbcRollbackCount)
-    						$("#JdbcFetchRowCount").text(data.Content.JdbcFetchRowCount)
-    						$("#JdbcFetchRowPeak").text(data.Content.JdbcFetchRowPeak)
-    						$("#JdbcUpdateCount").text(data.Content.JdbcUpdateCount)
-    						$("#JdbcUpdatePeak").text(data.Content.JdbcUpdatePeak)
-    						$("#JdbcPoolConnectionOpenCount").text(data.Content.JdbcPoolConnectionOpenCount)
-    						$("#JdbcPoolConnectionCloseCount").text(data.Content.JdbcPoolConnectionCloseCount)
-    						$("#JdbcResultSetOpenCount").text(data.Content.JdbcResultSetOpenCount)
-    						$("#JdbcResultSetCloseCount").text(data.Content.JdbcResultSetCloseCount)
+    						$("#URI").text(data.Content.URI);
+    						$("#RequestCount").text(data.Content.RequestCount);
+    						$("#RequestTimeMillis").text(data.Content.RequestTimeMillis);
+    						$("#LastAccessTime").text(data.Content.LastAccessTime);
+    						$("#RunningCount").text(data.Content.RunningCount);
+    						$("#ConcurrentMax").text(data.Content.ConcurrentMax);
+    						$("#JdbcExecuteCount").text(data.Content.JdbcExecuteCount);
+    						$("#JdbcExecuteErrorCount").text(data.Content.JdbcExecuteErrorCount);
+    						$("#JdbcExecutePeak").text(data.Content.JdbcExecutePeak);
+    						$("#JdbcExecuteTimeMillis").text(data.Content.JdbcExecuteTimeMillis);
+    						$("#JdbcCommitCount").text(data.Content.JdbcCommitCount);
+    						$("#JdbcRollbackCount").text(data.Content.JdbcRollbackCount);
+    						$("#JdbcFetchRowCount").text(data.Content.JdbcFetchRowCount);
+    						$("#JdbcFetchRowPeak").text(data.Content.JdbcFetchRowPeak);
+    						$("#JdbcUpdateCount").text(data.Content.JdbcUpdateCount);
+    						$("#JdbcUpdatePeak").text(data.Content.JdbcUpdatePeak);
+    						$("#JdbcPoolConnectionOpenCount").text(data.Content.JdbcPoolConnectionOpenCount);
+    						$("#JdbcPoolConnectionCloseCount").text(data.Content.JdbcPoolConnectionCloseCount);
+    						$("#JdbcResultSetOpenCount").text(data.Content.JdbcResultSetOpenCount);
+    						$("#JdbcResultSetCloseCount").text(data.Content.JdbcResultSetCloseCount);
+    						
+    						var profiles = data.Content.Profiles;
+    						if (profiles == null) {
+    							return;
+    						}
+    						
+    						var profileDataTable = document.getElementById("profileDataTable");
+    	    				while (profileDataTable.rows.length > 1) {
+    	    					profileDataTable.deleteRow(1);
+    	    				}
+    						
+    						var html = "";
+    	    				for ( var i = 0; i < profiles.length; i++) {
+    	    					var stat = profiles[i];
+    	    					var newRow = profileDataTable.insertRow(-1);
+    	    					html += "<tr>";
+    	    					html += "<td>" + (i + 1) + "</td>";
+    	    					html += "<td>" + stat.Name + "</td>";
+    	    					if (stat.Parent == null) {
+    	    						html += "<td> </td>";	
+    	    					} else {
+    	    						html += "<td>" + stat.Parent + "</td>";
+    	    					}
+    	    					
+    	    					html += "<td>" + stat.Type + "</td>";
+    	    					html += "<td>" + stat.ExecuteCount + "</td>";
+    	    					html += "<td>" + stat.ExecuteTimeMillis + "</td>";
+    	    					html += "</tr>";
+    	    				}
+    	    				$("#profileDataTable tbody").html(html);
     					},
     					dataType: "json"
     				});
