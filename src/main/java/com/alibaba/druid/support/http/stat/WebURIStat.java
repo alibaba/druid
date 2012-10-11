@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import com.alibaba.druid.support.profile.ProfileStat;
-import com.alibaba.druid.support.profile.Profiler;
 
 public class WebURIStat {
 
