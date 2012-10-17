@@ -72,15 +72,15 @@
 									var driverHtml = '';
 									for ( var i = 0; i < driversList.length; i++) {
 										var driver = driversList[i];
-										driverHtml += driver + ' , ';
+										driverHtml += driver + '<br/>';
 									}
-									$("#DruidDrivers").text(driverHtml);
+									$("#DruidDrivers").html(driverHtml);
 								}
 								$("#ResetEnable").text(data.Content.ResetEnable)
 								$("#ResetCount").text(data.Content.ResetCount)
 								$("#JavaVersion").text(data.Content.JavaVersion)
 								$("#JavaVMName").text(data.Content.JavaVMName)
-								$("#JavaClassPath").text(data.Content.JavaClassPath)
+								$("#JavaClassPath").html(data.Content.JavaClassPath.split(/;|:/).join("<br/>"))
 								$("#StartTime").text(data.Content.StartTime)
 							},
 							dataType: "json"
