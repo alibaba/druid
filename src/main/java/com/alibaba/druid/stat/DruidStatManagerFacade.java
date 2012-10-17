@@ -61,7 +61,7 @@ public final class DruidStatManagerFacade {
     private Set<Object> getDruidDataSourceInstances() {
         return DruidDataSourceStatManager.getInstances().keySet();
     }
-    
+
     public Object getDruidDataSourceByName(String name) {
         for (Object o : this.getDruidDataSourceInstances()) {
             String itemName = DruidDataSourceUtils.getName(o);
@@ -69,7 +69,7 @@ public final class DruidStatManagerFacade {
                 return o;
             }
         }
-        
+
         return null;
     }
 
@@ -85,7 +85,7 @@ public final class DruidStatManagerFacade {
         if (!isResetEnable()) {
             return;
         }
-        
+
         SpringStatManager.getInstance().resetStat();
         WebAppStatManager.getInstance().resetStat();
         resetSqlStat();
@@ -117,7 +117,7 @@ public final class DruidStatManagerFacade {
         }
 
         Object datasource = getDruidDataSourceById(id);
-        return datasource == null ? null : dataSourceToMapData(datasource);
+        return datasource == null ? null : dataSourceToMapData(datasource, false);
     }
 
     public Object getDruidDataSourceById(Integer identity) {
@@ -134,26 +134,32 @@ public final class DruidStatManagerFacade {
     }
 
     public List<Map<String, Object>> getSqlStatDataList(Integer dataSourceId) {
-        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         for (Object datasource : getDruidDataSourceInstances()) {
             if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
                 continue;
             }
-            
-            for (Object sqlStat : DruidDataSourceUtils.getSqlStatMap(datasource).values()) {
 
-                Map<String, Object> data = JdbcSqlStatUtils.getData(sqlStat);
-
-                long executeCount = (Long) data.get("ExecuteCount");
-                long runningCount = (Long) data.get("RunningCount");
-
-                if (executeCount == 0 && runningCount == 0) {
-                    continue;
-                }
-
-                result.add(data);
-            }
+            return getSqlStatDataList(datasource);
         }
+
+        return new ArrayList<Map<String, Object>>();
+    }
+
+    public List<Map<String, Object>> getSqlStatDataList(Object datasource) {
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        for (Object sqlStat : DruidDataSourceUtils.getSqlStatMap(datasource).values()) {
+            Map<String, Object> data = JdbcSqlStatUtils.getData(sqlStat);
+
+            long executeCount = (Long) data.get("ExecuteCount");
+            long runningCount = (Long) data.get("RunningCount");
+
+            if (executeCount == 0 && runningCount == 0) {
+                continue;
+            }
+
+            result.add(data);
+        }
+
         return result;
     }
 
@@ -172,9 +178,13 @@ public final class DruidStatManagerFacade {
     }
 
     public List<Map<String, Object>> getDataSourceStatDataList() {
+        return getDataSourceStatDataList(false);
+    }
+
+    public List<Map<String, Object>> getDataSourceStatDataList(boolean includeSqlList) {
         List<Map<String, Object>> datasourceList = new ArrayList<Map<String, Object>>();
         for (Object dataSource : getDruidDataSourceInstances()) {
-            datasourceList.add(dataSourceToMapData(dataSource));
+            datasourceList.add(dataSourceToMapData(dataSource, includeSqlList));
         }
         return datasourceList;
     }
@@ -183,9 +193,9 @@ public final class DruidStatManagerFacade {
         List<List<String>> traceList = new ArrayList<List<String>>();
         for (Object dataSource : getDruidDataSourceInstances()) {
             List<String> stacks = ((DruidDataSource) dataSource).getActiveConnectionStackTrace();
-			if (stacks.size() > 0 ) {
-				traceList.add(stacks);
-			}
+            if (stacks.size() > 0) {
+                traceList.add(stacks);
+            }
         }
         return traceList;
     }
@@ -236,8 +246,14 @@ public final class DruidStatManagerFacade {
         return DruidDataSourceUtils.getActiveConnectionStackTrace(datasource);
     }
 
-    private Map<String, Object> dataSourceToMapData(Object dataSource) {
+    private Map<String, Object> dataSourceToMapData(Object dataSource, boolean includeSql) {
+        Map<String, Object> map = DruidDataSourceUtils.getStatData(dataSource);
 
-        return DruidDataSourceUtils.getStatData(dataSource);
+        if (includeSql) {
+            List<Map<String, Object>> sqlList = getSqlStatDataList(dataSource);
+            map.put("SQL", sqlList);
+        }
+
+        return map;
     }
 }
