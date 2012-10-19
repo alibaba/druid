@@ -106,6 +106,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected volatile String                    password;
     protected volatile String                    jdbcUrl;
     protected volatile String                    driverClass;
+    protected volatile ClassLoader               driverClassLoader;
     protected volatile Properties                connectProperties                         = new Properties();
 
     protected volatile PasswordCallback          passwordCallback;
@@ -944,6 +945,14 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         this.driverClass = driverClass;
     }
 
+    public ClassLoader getDriverClassLoader() {
+        return driverClassLoader;
+    }
+
+    public void setDriverClassLoader(ClassLoader driverClassLoader) {
+        this.driverClassLoader = driverClassLoader;
+    }
+
     @Override
     public PrintWriter getLogWriter() {
         return logWriter;
@@ -1499,4 +1508,6 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     // just for code format
     public final static class ActiveConnectionTraceInfoMap extends ConcurrentIdentityHashMap<DruidPooledConnection, ActiveConnectionTraceInfo> {
     }
+
+    public abstract void discardConnection(Connection realConnection);
 }

@@ -109,7 +109,13 @@ public class DruidDataSourceFactory implements ObjectFactory {
             }
         }
 
-        return createDataSource(properties);
+        return createDataSourceInternal(properties);
+    }
+    
+    protected DataSource createDataSourceInternal(Properties properties) throws Exception {
+        DruidDataSource dataSource = new DruidDataSource();
+        config(dataSource, properties);
+        return dataSource;
     }
 
     @SuppressWarnings("rawtypes")
