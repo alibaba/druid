@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.util.LRUCache;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
@@ -61,7 +62,7 @@ public abstract class WallProvider {
         lock.writeLock().lock();
         try {
             if (whiteList == null) {
-                whiteList = new LinkedHashMap<String, Object>(whileListMaxSize, 0.75f, false);
+                whiteList = new LRUCache<String, Object>(whileListMaxSize);
             }
 
             whiteList.put(sql, PRESENT);
