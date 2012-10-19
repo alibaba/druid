@@ -165,6 +165,22 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     public boolean isDisable() {
         return disable;
     }
+    
+    public void discard() {
+        if (this.disable) {
+            return;
+        }
+
+        DruidConnectionHolder holder = this.holder;
+        if (holder == null) {
+            if (dupCloseLogEnable) {
+                LOG.error("dup close");
+            }
+            return;
+        }
+        
+        holder.getDataSource().discardConnection(holder.getConnection());
+    }
 
     @Override
     public void close() throws SQLException {
