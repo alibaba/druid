@@ -497,8 +497,24 @@ public final class JdbcUtils {
             return null;
         }
     }
-
+    
     public static Driver createDriver(String driverClassName) throws SQLException {
+        return createDriver(null, driverClassName);
+    }
+
+    public static Driver createDriver(ClassLoader classLoader, String driverClassName) throws SQLException {
+        if (classLoader != null) {
+            try {
+                return (Driver) classLoader.loadClass(driverClassName).newInstance();
+            } catch (IllegalAccessException e) {
+                throw new SQLException(e.getMessage(), e);
+            } catch (InstantiationException e) {
+                throw new SQLException(e.getMessage(), e);
+            } catch (ClassNotFoundException e) {
+                throw new SQLException(e.getMessage(), e);
+            }
+        }
+        
         try {
             return (Driver) Class.forName(driverClassName).newInstance();
         } catch (IllegalAccessException e) {

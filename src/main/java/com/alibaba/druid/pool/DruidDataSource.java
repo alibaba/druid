@@ -379,7 +379,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 if (MockDriver.class.getName().equals(driverClass)) {
                     driver = MockDriver.instance;
                 } else {
-                    driver = JdbcUtils.createDriver(driverClass);
+                    driver = JdbcUtils.createDriver(driverClassLoader, driverClass);
                 }
             } else {
                 if (this.driverClass == null) {
@@ -699,7 +699,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
      * @param realConnection
      * @throws SQLException
      */
-    private void discardConnection(Connection realConnection) {
+    public void discardConnection(Connection realConnection) {
         JdbcUtils.close(realConnection);
 
         lock.lock();
