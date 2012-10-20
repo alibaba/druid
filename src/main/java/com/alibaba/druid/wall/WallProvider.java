@@ -147,6 +147,10 @@ public abstract class WallProvider {
         if (parser.getLexer().token() != Token.EOF) {
             return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
         }
+        
+        if (statementList.size() == 0) {
+            return Collections.emptyList();
+        }
 
         if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
             return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
