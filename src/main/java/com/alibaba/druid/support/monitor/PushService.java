@@ -83,7 +83,7 @@ public class PushService {
     protected void execute() {
         Map<String, Object> data = collectAndReset();
         String json = JSONUtils.toJSONString(data);
-        push(json);
+        push("data=" + json);
     }
 
     /**

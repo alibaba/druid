@@ -29,29 +29,46 @@ public class HttpClientUtils {
             conn.setDoOutput(true);
             conn.setConnectTimeout(1000 * 5);
             wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write("");
+
+            wr.write(data);
             wr.flush();
 
-            // Get the response
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            responseBuilder = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                responseBuilder.append(line + "\n");
+            if (LOG.isDebugEnabled()) {
+                reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                responseBuilder = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    responseBuilder.append(line + "\n");
+                }
+                LOG.debug(responseBuilder.toString());
             }
-            wr.close();
-            reader.close();
-
-            System.out.println(responseBuilder.toString());
         } catch (IOException e) {
             LOG.error("", e);
+        } finally {
+
+            if (wr != null) {
+                try {
+                    wr.close();
+                } catch (IOException e) {
+                    LOG.error("close error", e);
+                }
+            }
+
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    LOG.error("close error", e);
+                }
+            }
+
         }
 
         return false;
     }
 
     public static void main(String args[]) {
-        post("http://www.alibaba.com", "", 6000);
+        post("http://www.alibaba.com/trade/search", "fsb=y&IndexArea=product_en&CatId=&SearchText=test", 6000);
     }
 
 }
