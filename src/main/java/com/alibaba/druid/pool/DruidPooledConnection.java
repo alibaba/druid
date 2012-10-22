@@ -70,6 +70,8 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     private volatile boolean                 abandoned   = false;
 
+    private StackTraceElement[]              connectStackTrace;
+
     public DruidPooledConnection(DruidConnectionHolder holder){
         this.conn = holder.getConnection();
         this.holder = holder;
@@ -81,8 +83,22 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         return ownerThread;
     }
 
+    public StackTraceElement[] getConnectStackTrace() {
+        return connectStackTrace;
+    }
+
+    public void setConnectStackTrace(StackTraceElement[] connectStackTrace) {
+        this.connectStackTrace = connectStackTrace;
+    }
+
     public long getConnectedTimeNano() {
         return connectedTimeNano;
+    }
+
+    public void setConnectedTimeNano() {
+        if (connectedTimeNano <= 0) {
+            this.setConnectedTimeNano(System.nanoTime());
+        }
     }
 
     public void setConnectedTimeNano(long connectedTimeNano) {
@@ -165,7 +181,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     public boolean isDisable() {
         return disable;
     }
-    
+
     public void discard() {
         if (this.disable) {
             return;
@@ -178,7 +194,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
             return;
         }
-        
+
         holder.getDataSource().discardConnection(holder.getConnection());
     }
 
@@ -216,7 +232,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         if (this.disable) {
             return;
         }
-        
+
         DruidConnectionHolder holder = this.holder;
         if (holder == null) {
             if (dupCloseLogEnable) {
@@ -779,7 +795,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
         return conn.isClosed();
     }
-    
+
     public boolean isAbandonded() {
         return this.abandoned;
     }
