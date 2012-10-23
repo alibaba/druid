@@ -38,6 +38,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
@@ -220,13 +221,18 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     protected boolean                                  useOracleImplicitCache                    = true;
 
-    protected final ReentrantLock                      lock;
+    protected ReentrantLock                            lock;
+    protected Condition                                notEmpty;
+    protected Condition                                empty;
 
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
 
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
+
+        notEmpty = lock.newCondition();
+        empty = lock.newCondition();
     }
 
     public boolean isOracle() {
@@ -786,6 +792,20 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public void setMaxWait(long maxWaitMillis) {
         if (maxWaitMillis == this.maxWait) {
             return;
+        }
+
+        if (maxWaitMillis > 0 && !this.inited) {
+            final ReentrantLock lock = this.lock;
+            lock.lock();
+            try {
+                if ((!this.inited) && (!lock.isFair())) {
+                    this.lock = new ReentrantLock(true);
+                    this.notEmpty = this.lock.newCondition();
+                    this.empty = this.lock.newCondition();
+                }
+            } finally {
+                lock.unlock();
+            }
         }
 
         if (inited) {

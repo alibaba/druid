@@ -32,7 +32,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 import javax.management.JMException;
@@ -83,9 +82,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private static final long                serialVersionUID        = 1L;
 
-    private final Condition                  notEmpty                = lock.newCondition();
-    private final Condition                  empty                   = lock.newCondition();
-
     // stats
     private long                             connectCount            = 0L;
     private long                             closeCount              = 0L;
@@ -127,7 +123,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private JdbcDataSourceStat               dataSourceStat;
 
     public DruidDataSource(){
-        this(true);
+        this(false);
     }
 
     public DruidDataSource(boolean fairLock){
