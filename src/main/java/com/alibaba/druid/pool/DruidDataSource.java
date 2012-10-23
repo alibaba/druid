@@ -32,7 +32,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 import javax.management.JMException;
@@ -83,9 +82,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     private static final long                serialVersionUID        = 1L;
 
-    private final Condition                  notEmpty                = lock.newCondition();
-    private final Condition                  empty                   = lock.newCondition();
-
     // stats
     private long                             connectCount            = 0L;
     private long                             closeCount              = 0L;
@@ -127,7 +123,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     private JdbcDataSourceStat               dataSourceStat;
 
     public DruidDataSource(){
-        this(true);
+        this(false);
     }
 
     public DruidDataSource(boolean fairLock){
@@ -680,9 +676,13 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             if (isRemoveAbandoned()) {
                 StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-                activeConnections.put(poolalbeConnection, new ActiveConnectionTraceInfo(System.currentTimeMillis(),
-                                                                                        stackTrace));
+                poolalbeConnection.setConnectStackTrace(stackTrace);
+                poolalbeConnection.setConnectedTimeNano();
                 poolalbeConnection.setTraceEnable(true);
+
+                synchronized (activeConnections) {
+                    activeConnections.put(poolalbeConnection, PRESENT);
+                }
             }
 
             if (!this.isDefaultAutoCommit()) {
@@ -791,7 +791,12 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             // exceptionSorter.isExceptionFatal
             if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
                 if (pooledConnection.isTraceEnable()) {
-                    activeConnections.remove(pooledConnection);
+                    synchronized (activeConnections) {
+                        if (pooledConnection.isTraceEnable()) {
+                            activeConnections.remove(pooledConnection);
+                            pooledConnection.setTraceEnable(false);
+                        }
+                    }
                 }
                 this.discardConnection(holder.getConnection());
                 pooledConnection.disable();
@@ -817,10 +822,15 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final Connection physicalConnection = holder.getConnection();
 
         if (pooledConnection.isTraceEnable()) {
-            ActiveConnectionTraceInfo oldInfo = activeConnections.remove(pooledConnection);
-            if (oldInfo == null) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+            synchronized (activeConnections) {
+                if (pooledConnection.isTraceEnable()) {
+                    Object oldInfo = activeConnections.remove(pooledConnection);
+                    if (oldInfo == null) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+                        }
+                    }
+                    pooledConnection.setTraceEnable(false);
                 }
             }
         }
@@ -1294,35 +1304,42 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
     public int removeAbandoned() {
         int removeCount = 0;
 
-        Iterator<Map.Entry<DruidPooledConnection, ActiveConnectionTraceInfo>> iter = activeConnections.entrySet().iterator();
-
-        long currentMillis = System.currentTimeMillis();
+        long currrentNanos = System.nanoTime();
 
         List<DruidPooledConnection> abandonedList = new ArrayList<DruidPooledConnection>();
 
-        for (; iter.hasNext();) {
-            Map.Entry<DruidPooledConnection, ActiveConnectionTraceInfo> entry = iter.next();
-            DruidPooledConnection pooledConnection = entry.getKey();
+        synchronized (activeConnections) {
+            Iterator<DruidPooledConnection> iter = activeConnections.keySet().iterator();
 
-            if (pooledConnection.isRunning()) {
-                continue;
+            for (; iter.hasNext();) {
+                DruidPooledConnection pooledConnection = iter.next();
+
+                if (pooledConnection.isRunning()) {
+                    continue;
+                }
+
+                long timeMillis = (currrentNanos - pooledConnection.getConnectedTimeNano()) / (1000 * 1000);
+
+                if (timeMillis >= removeAbandonedTimeoutMillis) {
+                    iter.remove();
+                    pooledConnection.setTraceEnable(false);
+                    abandonedList.add(pooledConnection);
+                }
             }
+        }
 
-            ActiveConnectionTraceInfo activeInfo = entry.getValue();
-            long timeMillis = currentMillis - activeInfo.getConnectTime();
-
-            if (timeMillis >= removeAbandonedTimeoutMillis) {
+        if (abandonedList.size() > 0) {
+            for (DruidPooledConnection pooledConnection : abandonedList) {
                 JdbcUtils.close(pooledConnection);
                 pooledConnection.abandond();
                 removeAbandonedCount++;
                 removeCount++;
-                abandonedList.add(pooledConnection);
 
                 if (isLogAbandoned()) {
                     StringBuilder buf = new StringBuilder();
                     buf.append("abandon connection, open stackTrace\n");
 
-                    StackTraceElement[] trace = activeInfo.getStackTrace();
+                    StackTraceElement[] trace = pooledConnection.getConnectStackTrace();
                     for (int i = 0; i < trace.length; i++) {
                         buf.append("\tat ");
                         buf.append(trace[i].toString());
@@ -1332,11 +1349,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     LOG.error(buf.toString());
                 }
             }
-        }
-
-        // multi-check dup close
-        for (DruidPooledConnection conn : abandonedList) {
-            activeConnections.remove(conn);
         }
 
         return removeCount;
@@ -1351,26 +1363,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         Reference ref = new Reference(className, factoryName, null);
         ref.add(new StringRefAddr("instanceKey", instanceKey));
         return ref;
-    }
-
-    static class ActiveConnectionTraceInfo {
-
-        private final long                connectTime;
-        private final StackTraceElement[] stackTrace;
-
-        public ActiveConnectionTraceInfo(long connectTime, StackTraceElement[] stackTrace){
-            super();
-            this.connectTime = connectTime;
-            this.stackTrace = stackTrace;
-        }
-
-        public long getConnectTime() {
-            return connectTime;
-        }
-
-        public StackTraceElement[] getStackTrace() {
-            return stackTrace;
-        }
     }
 
     @Override
