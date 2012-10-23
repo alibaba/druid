@@ -679,7 +679,7 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         DruidPooledConnection conn = chain.dataSource_connect(dataSource, maxWaitMillis);
 
         if (conn != null) {
-            conn.setConnectedTimeNano(System.nanoTime());
+            conn.setConnectedTimeNano();
 
             StatFilterContext.getInstance().pool_connection_open();
         }

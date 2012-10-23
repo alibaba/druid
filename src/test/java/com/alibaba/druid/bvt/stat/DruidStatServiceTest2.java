@@ -76,16 +76,18 @@ public class DruidStatServiceTest2 {
         PreparedStatement stmt = conn.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery();
         rs.next();
+        Thread.sleep(1);
         rs.close();
         stmt.close();
         conn.close();
 
         // second data source
-        String sql2 = "select 2";
+        String sql2 = "select 1,1";
         conn = dataSource2.getConnection();
         stmt = conn.prepareStatement(sql2);
         rs = stmt.executeQuery();
         rs.next();
+        Thread.sleep(1);
         rs.close();
         stmt.close();
         conn.close();

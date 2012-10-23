@@ -60,7 +60,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     protected volatile DruidConnectionHolder holder;
     protected TransactionInfo                transactionInfo;
     private final boolean                    dupCloseLogEnable;
-    private boolean                          traceEnable = false;
+    private volatile boolean                 traceEnable = false;
     private boolean                          disable     = false;
     private boolean                          closed      = false;
     private final Thread                     ownerThread;
@@ -69,6 +69,8 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private volatile boolean                 running     = false;
 
     private volatile boolean                 abandoned   = false;
+
+    private StackTraceElement[]              connectStackTrace;
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         this.conn = holder.getConnection();
@@ -81,8 +83,22 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         return ownerThread;
     }
 
+    public StackTraceElement[] getConnectStackTrace() {
+        return connectStackTrace;
+    }
+
+    public void setConnectStackTrace(StackTraceElement[] connectStackTrace) {
+        this.connectStackTrace = connectStackTrace;
+    }
+
     public long getConnectedTimeNano() {
         return connectedTimeNano;
+    }
+
+    public void setConnectedTimeNano() {
+        if (connectedTimeNano <= 0) {
+            this.setConnectedTimeNano(System.nanoTime());
+        }
     }
 
     public void setConnectedTimeNano(long connectedTimeNano) {
@@ -165,7 +181,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     public boolean isDisable() {
         return disable;
     }
-    
+
     public void discard() {
         if (this.disable) {
             return;
@@ -178,12 +194,46 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
             }
             return;
         }
-        
+
         holder.getDataSource().discardConnection(holder.getConnection());
     }
 
     @Override
     public void close() throws SQLException {
+        if (this.disable) {
+            return;
+        }
+
+        DruidConnectionHolder holder = this.holder;
+        if (holder == null) {
+            if (dupCloseLogEnable) {
+                LOG.error("dup close");
+            }
+            return;
+        }
+
+        if (holder.getDataSource().isRemoveAbandoned()) {
+            syncClose();
+            return;
+        }
+
+        for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+            listener.connectionClosed(new ConnectionEvent(this));
+        }
+
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        List<Filter> filters = dataSource.getProxyFilters();
+        if (filters.size() > 0) {
+            FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+            filterChain.dataSource_recycle(this);
+        } else {
+            recycle();
+        }
+
+        this.disable = true;
+    }
+
+    public synchronized void syncClose() throws SQLException {
         if (this.disable) {
             return;
         }
@@ -216,7 +266,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         if (this.disable) {
             return;
         }
-        
+
         DruidConnectionHolder holder = this.holder;
         if (holder == null) {
             if (dupCloseLogEnable) {
@@ -779,7 +829,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
         return conn.isClosed();
     }
-    
+
     public boolean isAbandonded() {
         return this.abandoned;
     }
