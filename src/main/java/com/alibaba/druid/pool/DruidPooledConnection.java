@@ -60,7 +60,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     protected volatile DruidConnectionHolder holder;
     protected TransactionInfo                transactionInfo;
     private final boolean                    dupCloseLogEnable;
-    private boolean                          traceEnable = false;
+    private volatile boolean                 traceEnable = false;
     private boolean                          disable     = false;
     private boolean                          closed      = false;
     private final Thread                     ownerThread;
@@ -200,6 +200,40 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
 
     @Override
     public void close() throws SQLException {
+        if (this.disable) {
+            return;
+        }
+
+        DruidConnectionHolder holder = this.holder;
+        if (holder == null) {
+            if (dupCloseLogEnable) {
+                LOG.error("dup close");
+            }
+            return;
+        }
+
+        if (holder.getDataSource().isRemoveAbandoned()) {
+            syncClose();
+            return;
+        }
+
+        for (ConnectionEventListener listener : holder.getConnectionEventListeners()) {
+            listener.connectionClosed(new ConnectionEvent(this));
+        }
+
+        DruidAbstractDataSource dataSource = holder.getDataSource();
+        List<Filter> filters = dataSource.getProxyFilters();
+        if (filters.size() > 0) {
+            FilterChainImpl filterChain = new FilterChainImpl(dataSource);
+            filterChain.dataSource_recycle(this);
+        } else {
+            recycle();
+        }
+
+        this.disable = true;
+    }
+
+    public synchronized void syncClose() throws SQLException {
         if (this.disable) {
             return;
         }

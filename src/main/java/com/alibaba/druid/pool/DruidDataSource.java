@@ -796,7 +796,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (exceptionSorter != null && exceptionSorter.isExceptionFatal(sqlEx)) {
                 if (pooledConnection.isTraceEnable()) {
                     synchronized (activeConnections) {
-                        activeConnections.remove(pooledConnection);
+                        if (pooledConnection.isTraceEnable()) {
+                            activeConnections.remove(pooledConnection);
+                            pooledConnection.setTraceEnable(false);
+                        }
                     }
                 }
                 this.discardConnection(holder.getConnection());
@@ -824,11 +827,14 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
         if (pooledConnection.isTraceEnable()) {
             synchronized (activeConnections) {
-                Object oldInfo = activeConnections.remove(pooledConnection);
-                if (oldInfo == null) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+                if (pooledConnection.isTraceEnable()) {
+                    Object oldInfo = activeConnections.remove(pooledConnection);
+                    if (oldInfo == null) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn("remove abandonded failed. activeConnections.size " + activeConnections.size());
+                        }
                     }
+                    pooledConnection.setTraceEnable(false);
                 }
             }
         }
@@ -1320,6 +1326,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
                 if (timeMillis >= removeAbandonedTimeoutMillis) {
                     iter.remove();
+                    pooledConnection.setTraceEnable(false);
                     abandonedList.add(pooledConnection);
                 }
             }
