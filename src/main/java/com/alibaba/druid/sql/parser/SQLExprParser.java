@@ -329,6 +329,10 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLNumberExpr(lexer.decimalValue().negate());
                         lexer.nextToken();
                         break;
+                    case IDENTIFIER: // 当负号后面为字段的情况
+                        sqlExpr = new SQLIdentifierExpr('-' + lexer.stringVal());
+                        lexer.nextToken();
+                        break;
                     default:
                         throw new ParserException("TODO");
                 }
