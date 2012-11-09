@@ -38,7 +38,7 @@ public class PGSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public PGSelectParser(String sql) {
+    public PGSelectParser(String sql){
         this(new PGExprParser(sql));
     }
 
@@ -129,24 +129,26 @@ public class PGSelectParser extends SQLSelectParser {
 
         queryBlock.setOrderBy(this.createExprParser().parseOrderBy());
 
-        if (lexer.token() == Token.LIMIT) {
-            lexer.nextToken();
-            if (lexer.token() == Token.ALL) {
-                queryBlock.setLimit(new SQLIdentifierExpr("ALL"));
+        for (;;) {
+            if (lexer.token() == Token.LIMIT) {
                 lexer.nextToken();
+                if (lexer.token() == Token.ALL) {
+                    queryBlock.setLimit(new SQLIdentifierExpr("ALL"));
+                    lexer.nextToken();
+                } else {
+                    SQLExpr limit = expr();
+                    queryBlock.setLimit(limit);
+                }
+            } else if (lexer.token() == Token.OFFSET) {
+                lexer.nextToken();
+                SQLExpr offset = expr();
+                queryBlock.setOffset(offset);
+
+                if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
+                    lexer.nextToken();
+                }
             } else {
-                SQLExpr limit = expr();
-                queryBlock.setLimit(limit);
-            }
-        }
-
-        if (lexer.token() == Token.OFFSET) {
-            lexer.nextToken();
-            SQLExpr offset = expr();
-            queryBlock.setOffset(offset);
-
-            if (lexer.token() == Token.ROW || lexer.token() == Token.ROWS) {
-                lexer.nextToken();
+                break;
             }
         }
 
