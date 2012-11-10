@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -65,6 +68,19 @@ public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEva
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLIntegerExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLNumberExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    @Override
+    public boolean visit(SQLCaseExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 
