@@ -33,6 +33,19 @@ public class SQLServerExprParser extends SQLExprParser {
         super(new SQLServerLexer(sql));
         this.lexer.nextToken();
     }
+    
+    public SQLExpr primary() {
+        
+        
+        if (lexer.token() == Token.LBRACKET) {
+            lexer.nextToken();
+            SQLExpr name = this.name();
+            accept(Token.RBRACKET);
+            return primaryRest(name);
+        }
+        
+        return super.primary();
+    }
 
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.DOTDOT) {
@@ -42,11 +55,38 @@ public class SQLServerExprParser extends SQLExprParser {
         return super.primaryRest(expr);
     }
     
+    protected SQLExpr dotRest(SQLExpr expr) {
+        boolean backet = false;
+        
+        if (lexer.token() == Token.LBRACKET) {
+            lexer.nextToken();
+            backet = true;
+        }
+        
+        expr = super.dotRest(expr);
+
+        if (backet) {
+            accept(Token.RBRACKET);
+        }
+        
+        return expr;
+    }
+    
     public SQLName nameRest(SQLName expr) {
         if (lexer.token() == Token.DOTDOT) {
             lexer.nextToken();
+            
+            boolean backet = false;
+            if (lexer.token() == Token.LBRACKET) {
+                lexer.nextToken();
+                backet = true;
+            }
             String text = lexer.stringVal();
             lexer.nextToken();
+            
+            if (backet) {
+                accept(Token.RBRACKET);
+            }
 
             SQLServerObjectReferenceExpr owner = new SQLServerObjectReferenceExpr(expr);
             expr = new SQLPropertyExpr(owner, text);
