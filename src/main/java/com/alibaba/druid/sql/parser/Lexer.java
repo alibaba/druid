@@ -822,7 +822,7 @@ public class Lexer {
      * translation)
      */
     public final int pos() {
-        return 0;
+        return pos;
     }
 
     /**

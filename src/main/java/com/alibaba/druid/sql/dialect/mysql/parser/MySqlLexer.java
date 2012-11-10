@@ -61,8 +61,6 @@ public class MySqlLexer extends Lexer {
     }
 
     public void scanVariable() {
-        final char first = ch;
-
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
             throw new SQLParseException("illegal variable");
         }
