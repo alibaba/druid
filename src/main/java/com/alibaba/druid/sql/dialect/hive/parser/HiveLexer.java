@@ -76,7 +76,7 @@ public class HiveLexer extends Lexer {
             }
 
             for (;;) {
-                if (ch == '*' && buf[bp + 1] == '/') {
+                if (ch == '*' && charAt(bp + 1) == '/') {
                     sp += 2;
                     scanChar();
                     scanChar();
@@ -88,10 +88,10 @@ public class HiveLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 2).trim();
+                stringVal = subString(np + startHintSp, (sp - startHintSp) - 2).trim();
                 token = Token.HINT;
             } else {
-                stringVal = new String(buf, np, sp);
+                stringVal = subString(np, sp);
                 token = Token.MULTI_LINE_COMMENT;
             }
 
@@ -112,7 +112,7 @@ public class HiveLexer extends Lexer {
 
             for (;;) {
                 if (ch == '\r') {
-                    if (buf[bp + 1] == '\n') {
+                    if (charAt(bp + 1) == '\n') {
                         sp += 2;
                         scanChar();
                         break;
@@ -131,7 +131,7 @@ public class HiveLexer extends Lexer {
                 sp++;
             }
 
-            stringVal = new String(buf, np + 1, sp);
+            stringVal = subString(np + 1, sp);
             token = Token.LINE_COMMENT;
             return;
         }

@@ -114,12 +114,12 @@ public class OracleLexer extends Lexer {
 
         boolean quoteFlag = false;
         boolean mybatisFlag = false;
-        if (buf[bp + 1] == '"') {
+        if (charAt(bp + 1) == '"') {
             hash = 31 * hash + '"';
             bp++;
             sp++;
             quoteFlag = true;
-        } else if (buf[bp + 1] == '{') {
+        } else if (charAt(bp + 1) == '{') {
             hash = 31 * hash + '"';
             bp++;
             sp++;
@@ -127,7 +127,7 @@ public class OracleLexer extends Lexer {
         }
         
         for (;;) {
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (!isIdentifierChar(ch)) {
                 break;
@@ -155,9 +155,9 @@ public class OracleLexer extends Lexer {
             sp++;
         }
 
-        this.ch = buf[bp];
+        this.ch = charAt(bp);
 
-        stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+        stringVal = addSymbol(hash);
         Token tok = keywods.getKeyword(stringVal);
         if (tok != null) {
             token = tok;
@@ -194,7 +194,7 @@ public class OracleLexer extends Lexer {
             }
 
             for (;;) {
-                if (ch == '*' && buf[bp + 1] == '/') {
+                if (ch == '*' && charAt(bp + 1) == '/') {
                     sp += 2;
                     scanChar();
                     scanChar();
@@ -206,10 +206,10 @@ public class OracleLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = new String(buf, np + startHintSp, (sp - startHintSp) - 1);
+                stringVal = subString(np + startHintSp, (sp - startHintSp) - 1);
                 token = Token.HINT;
             } else {
-                stringVal = new String(buf, np, sp);
+                stringVal = subString(np, sp);
                 token = Token.MULTI_LINE_COMMENT;
             }
 
@@ -230,7 +230,7 @@ public class OracleLexer extends Lexer {
 
             for (;;) {
                 if (ch == '\r') {
-                    if (buf[bp + 1] == '\n') {
+                    if (charAt(bp + 1) == '\n') {
                         sp += 2;
                         scanChar();
                         break;
@@ -251,7 +251,7 @@ public class OracleLexer extends Lexer {
                 sp++;
             }
 
-            stringVal = new String(buf, np + 1, sp);
+            stringVal = subString(np + 1, sp);
             token = Token.LINE_COMMENT;
             return;
         }
@@ -262,7 +262,7 @@ public class OracleLexer extends Lexer {
 
         if (ch == '-') {
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         for (;;) {
@@ -271,18 +271,18 @@ public class OracleLexer extends Lexer {
             } else {
                 break;
             }
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         boolean isDouble = false;
 
         if (ch == '.') {
-            if (buf[bp + 1] == '.') {
+            if (charAt(bp + 1) == '.') {
                 token = Token.LITERAL_INT;
                 return;
             }
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
             isDouble = true;
 
             for (;;) {
@@ -291,17 +291,17 @@ public class OracleLexer extends Lexer {
                 } else {
                     break;
                 }
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
         }
 
         if (ch == 'e' || ch == 'E') {
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (ch == '+' || ch == '-') {
                 sp++;
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
 
             for (;;) {
@@ -310,7 +310,7 @@ public class OracleLexer extends Lexer {
                 } else {
                     break;
                 }
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
 
             isDouble = true;

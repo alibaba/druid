@@ -40,52 +40,69 @@ import java.math.BigInteger;
  */
 public class Lexer {
 
-    protected final char[]                     buf;
-    protected int                              bp;
-    protected int                              buflen;
+    private final String  text;
+    protected int         bp;
     // QS_TODO what is the purpose?
-    protected int                              eofPos;
+    protected int         eofPos;
 
     /** The current character. */
-    protected char                             ch;
+    protected char        ch;
 
     /** The token's position, 0-based offset from beginning of text. */
-    protected int                              tokenPos;
+    protected int         tokenPos;
 
-    /** A character buffer for literals. */
-    protected final static ThreadLocal<char[]> sbufRef      = new ThreadLocal<char[]>();
-    protected char[]                           sbuf;
+    protected char[]      sbuf;
 
     /** string point as size */
-    protected int                              sp;
+    protected int         sp;
 
     /** string point as offset */
-    protected int                              np;
+    protected int         np;
 
-    protected SymbolTable                      symbolTable  = new SymbolTable();
+    protected SymbolTable symbolTable  = new SymbolTable();
 
     /**
      * The token, set by nextToken().
      */
-    protected Token                            token;
+    protected Token       token;
 
-    protected Keywords                         keywods      = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords    keywods      = Keywords.DEFAULT_KEYWORDS;
 
-    protected String                           stringVal;
+    protected String      stringVal;
 
-    protected boolean                          skipComment  = true;
+    protected boolean     skipComment  = true;
 
-    private SavePoint                          savePoint    = null;
+    private SavePoint     savePoint    = null;
 
     /*
      * anti sql injection
      */
-    private boolean                            allowComment = true;
+    private boolean       allowComment = true;
 
-    private int                                varIndex     = -1;
+    private int           varIndex     = -1;
 
     public Lexer(String input){
         this(input, true);
+    }
+
+    public final char charAt(int index) {
+        if (index >= text.length()) {
+            return EOI;
+        }
+
+        return text.charAt(index);
+    }
+
+    public String addSymbol(int hash) {
+        return subString(np, sp);
+    }
+
+    public final String subString(int offset, int count) {
+        return text.substring(offset, offset + count);
+    }
+
+    public void arraycopy(int srcPos, char[] dest, int destPos, int length) {
+        text.getChars(srcPos, srcPos + length, dest, destPos);
     }
 
     public boolean isAllowComment() {
@@ -95,7 +112,7 @@ public class Lexer {
     public void setAllowComment(boolean allowComment) {
         this.allowComment = allowComment;
     }
-    
+
     public int nextVarIndex() {
         return ++varIndex;
     }
@@ -132,43 +149,28 @@ public class Lexer {
     }
 
     public Lexer(String input, boolean skipComment){
-        this(input.toCharArray(), input.length(), skipComment);
-    }
-
-    public Lexer(char[] input, int inputLength, boolean skipComment){
         this.skipComment = skipComment;
-        this.sbuf = sbufRef.get(); // new char[1024];
-        if (this.sbuf == null) {
-            this.sbuf = new char[1024];
-            sbufRef.set(sbuf);
-        }
 
-        this.eofPos = inputLength;
-
-        // QS_TODO ?
-        if (inputLength == input.length) {
-            if (input.length > 0 && isWhitespace(input[input.length - 1])) {
-                inputLength--;
-            } else {
-                char[] newInput = new char[inputLength + 1];
-                System.arraycopy(input, 0, newInput, 0, input.length);
-                input = newInput;
-            }
-        }
-        this.buf = input;
-        this.buflen = inputLength;
-        this.buf[this.buflen] = EOI;
+        this.text = input;
         this.bp = -1;
 
         scanChar();
     }
 
+    public Lexer(char[] input, int inputLength, boolean skipComment){
+        this(new String(input, 0, inputLength), skipComment);
+    }
+
     protected final void scanChar() {
-        ch = buf[++bp];
+        ch = charAt(++bp);
     }
 
     protected void unscan() {
-        ch = buf[--bp];
+        ch = charAt(--bp);
+    }
+
+    public boolean isEOF() {
+        return bp >= text.length();
     }
 
     /**
@@ -177,7 +179,6 @@ public class Lexer {
     protected void lexError(int pos, String key, Object... args) {
         token = ERROR;
     }
-
 
     /**
      * Return the current token, set by nextToken().
@@ -200,15 +201,15 @@ public class Lexer {
                 scanChar();
                 continue;
             }
-            
-            if (ch == '$' && buf[bp + 1] == '{') {
+
+            if (ch == '$' && charAt(bp + 1) == '{') {
                 scanVariable();
                 return;
             }
 
             if (isFirstIdentifierChar(ch)) {
                 if (ch == 'N') {
-                    if (buf[bp + 1] == '\'') {
+                    if (charAt(bp + 1) == '\'') {
                         ++bp;
                         ch = '\'';
                         scanString();
@@ -223,7 +224,7 @@ public class Lexer {
 
             switch (ch) {
                 case '0':
-                    if (buf[bp + 1] == 'x') {
+                    if (charAt(bp + 1) == 'x') {
                         scanChar();
                         scanChar();
                         scanHexaDecimal();
@@ -330,7 +331,7 @@ public class Lexer {
                     scanVariable();
                     return;
                 case '-':
-                    int subNextChar = buf[bp + 1];
+                    int subNextChar = charAt(bp + 1);
                     if (subNextChar == '-') {
                         scanComment();
                         if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
@@ -342,7 +343,7 @@ public class Lexer {
                     }
                     return;
                 case '/':
-                    int nextChar = buf[bp + 1];
+                    int nextChar = charAt(bp + 1);
                     if (nextChar == '/' || nextChar == '*') {
                         scanComment();
                         if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
@@ -366,7 +367,7 @@ public class Lexer {
                     }
 
                     // QS_TODO ?
-                    if (bp == buflen || ch == EOI && bp + 1 == buflen) { // JLS
+                    if (isEOF()) { // JLS
                         token = EOF;
                         tokenPos = bp = eofPos;
                     } else {
@@ -498,12 +499,12 @@ public class Lexer {
         boolean hasSpecial = false;
 
         for (;;) {
-            if (bp >= buflen) {
+            if (isEOF()) {
                 lexError(tokenPos, "unclosed.str.lit");
                 return;
             }
 
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (ch == '\'') {
                 scanChar();
@@ -512,7 +513,10 @@ public class Lexer {
                     break;
                 } else {
                     if (!hasSpecial) {
-                        System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                        if (sbuf == null) {
+                            sbuf = new char[32];
+                        }
+                        arraycopy(np + 1, sbuf, 0, sp);
                         hasSpecial = true;
                     }
                     putChar('\'');
@@ -533,7 +537,7 @@ public class Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = new String(buf, np + 1, sp);
+            stringVal = subString(np + 1, sp);
         } else {
             stringVal = new String(sbuf, 0, sp);
         }
@@ -542,13 +546,17 @@ public class Lexer {
     private final void scanAlias() {
         np = bp;
 
+        if (sbuf == null) {
+            sbuf = new char[32];
+        }
+        
         for (;;) {
-            if (bp >= buflen) {
+            if (isEOF()) {
                 lexError(tokenPos, "unclosed.str.lit");
                 return;
             }
 
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (ch == '\"') {
                 scanChar();
@@ -563,7 +571,7 @@ public class Lexer {
             }
         }
 
-        stringVal = new String(buf, np + 1, sp);
+        stringVal = subString(np + 1, sp);
     }
 
     public void scanVariable() {
@@ -580,12 +588,12 @@ public class Lexer {
         char ch;
 
         boolean mybatisFlag = false;
-        if (buf[bp + 1] == '@') {
-            ch = buf[++bp];
+        if (charAt(bp + 1) == '@') {
+            ch = charAt(++bp);
             hash = 31 * hash + ch;
 
             sp++;
-        } else if (buf[bp + 1] == '{') {
+        } else if (charAt(bp + 1) == '{') {
             hash = 31 * hash + '"';
             bp++;
             sp++;
@@ -593,7 +601,7 @@ public class Lexer {
         }
 
         for (;;) {
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (!isIdentifierChar(ch)) {
                 break;
@@ -604,7 +612,7 @@ public class Lexer {
             sp++;
             continue;
         }
-        
+
         if (mybatisFlag) {
             if (ch != '}') {
                 throw new SQLParseException("syntax error");
@@ -614,9 +622,9 @@ public class Lexer {
             sp++;
         }
 
-        this.ch = buf[bp];
+        this.ch = charAt(bp);
 
-        stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+        stringVal = addSymbol(hash);
         token = Token.VARIANT;
     }
 
@@ -638,7 +646,7 @@ public class Lexer {
             sp++;
 
             for (;;) {
-                if (ch == '*' && buf[bp + 1] == '/') {
+                if (ch == '*' && charAt(bp + 1) == '/') {
                     sp += 2;
                     scanChar();
                     scanChar();
@@ -649,7 +657,7 @@ public class Lexer {
                 sp++;
             }
 
-            stringVal = new String(buf, np, sp);
+            stringVal = subString(np, sp);
             token = Token.MULTI_LINE_COMMENT;
             return;
         }
@@ -660,7 +668,7 @@ public class Lexer {
 
             for (;;) {
                 if (ch == '\r') {
-                    if (buf[bp + 1] == '\n') {
+                    if (charAt(bp + 1) == '\n') {
                         sp += 2;
                         scanChar();
                         break;
@@ -679,7 +687,7 @@ public class Lexer {
                 sp++;
             }
 
-            stringVal = new String(buf, np + 1, sp);
+            stringVal = subString(np + 1, sp);
             token = Token.LINE_COMMENT;
             return;
         }
@@ -699,7 +707,7 @@ public class Lexer {
         sp = 1;
         char ch;
         for (;;) {
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (!isIdentifierChar(ch)) {
                 break;
@@ -711,9 +719,9 @@ public class Lexer {
             continue;
         }
 
-        this.ch = buf[bp];
+        this.ch = charAt(bp);
 
-        stringVal = symbolTable.addSymbol(buf, np, sp, hash);
+        stringVal = addSymbol(hash);
         Token tok = keywods.getKeyword(stringVal);
         if (tok != null) {
             token = tok;
@@ -727,7 +735,7 @@ public class Lexer {
 
         if (ch == '-') {
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         for (;;) {
@@ -736,18 +744,18 @@ public class Lexer {
             } else {
                 break;
             }
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         boolean isDouble = false;
 
         if (ch == '.') {
-            if (buf[bp + 1] == '.') {
+            if (charAt(bp + 1) == '.') {
                 token = Token.LITERAL_INT;
                 return;
             }
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
             isDouble = true;
 
             for (;;) {
@@ -756,17 +764,17 @@ public class Lexer {
                 } else {
                     break;
                 }
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
         }
 
         if (ch == 'e' || ch == 'E') {
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (ch == '+' || ch == '-') {
                 sp++;
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
 
             for (;;) {
@@ -775,7 +783,7 @@ public class Lexer {
                 } else {
                     break;
                 }
-                ch = buf[++bp];
+                ch = charAt(++bp);
             }
 
             isDouble = true;
@@ -793,7 +801,7 @@ public class Lexer {
 
         if (ch == '-') {
             sp++;
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         for (;;) {
@@ -802,14 +810,14 @@ public class Lexer {
             } else {
                 break;
             }
-            ch = buf[++bp];
+            ch = charAt(++bp);
         }
 
         token = Token.LITERAL_HEX;
     }
 
     public String hexString() {
-        return new String(buf, np, sp);
+        return subString(np, sp);
     }
 
     public final boolean isDigit(char ch) {
@@ -884,7 +892,7 @@ public class Lexer {
         long multmin;
         int digit;
 
-        if (buf[np] == '-') {
+        if (charAt(np) == '-') {
             negative = true;
             limit = Long.MIN_VALUE;
             i++;
@@ -893,12 +901,12 @@ public class Lexer {
         }
         multmin = negative ? MULTMIN_RADIX_TEN : N_MULTMAX_RADIX_TEN;
         if (i < max) {
-            digit = digits[buf[i++]];
+            digit = digits[charAt(i++)];
             result = -digit;
         }
         while (i < max) {
             // Accumulating negatively avoids surprises near MAX_VALUE
-            digit = digits[buf[i++]];
+            digit = digits[charAt(i++)];
             if (result < multmin) {
                 return new BigInteger(numberString());
             }
@@ -942,10 +950,10 @@ public class Lexer {
     }
 
     public final String numberString() {
-        return new String(buf, np, sp);
+        return subString(np, sp);
     }
 
     public BigDecimal decimalValue() {
-        return new BigDecimal(buf, np, sp);
+        return new BigDecimal(text.toCharArray(), np, sp);
     }
 }

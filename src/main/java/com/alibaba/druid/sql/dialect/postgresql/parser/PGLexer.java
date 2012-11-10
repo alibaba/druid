@@ -74,17 +74,20 @@ public class PGLexer extends Lexer {
         boolean hasSpecial = false;
 
         for (;;) {
-            if (bp >= buflen) {
+            if (isEOF()) {
                 lexError(tokenPos, "unclosed.str.lit");
                 return;
             }
 
-            ch = buf[++bp];
+            ch = charAt(++bp);
 
             if (ch == '\\') {
                 scanChar();
                 if (!hasSpecial) {
-                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                    if (sbuf == null) {
+                        sbuf = new char[32];
+                    }
+                    arraycopy(np + 1, sbuf, 0, sp);
                     hasSpecial = true;
                 }
 
@@ -129,7 +132,7 @@ public class PGLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    System.arraycopy(buf, np + 1, sbuf, 0, sp);
+                    arraycopy(np + 1, sbuf, 0, sp);
                     hasSpecial = true;
                     putChar('\'');
                     continue;
@@ -149,7 +152,7 @@ public class PGLexer extends Lexer {
         }
 
         if (!hasSpecial) {
-            stringVal = new String(buf, np + 1, sp);
+            stringVal = subString(np + 1, sp);
         } else {
             stringVal = new String(sbuf, 0, sp);
         }
