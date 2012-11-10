@@ -236,6 +236,9 @@ public class ConfigFilter extends FilterAdapter {
                 inStream = url.openStream();
 
                 xml = url.getPath().endsWith(".xml");
+            } else if (filePath.startsWith("classpath:")) {
+                String resourcePath = filePath.substring("classpath:".length());
+                inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
             } else {
                 File file = new File(filePath);
                 if (file.exists()) {

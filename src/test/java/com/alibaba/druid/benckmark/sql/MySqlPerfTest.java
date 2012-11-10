@@ -28,6 +28,7 @@ public class MySqlPerfTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		sql = "SELECT * FROM T";
+		sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
 	}
 
 	public void test_pert() throws Exception {
