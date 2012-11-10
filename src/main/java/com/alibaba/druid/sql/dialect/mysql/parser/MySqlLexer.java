@@ -67,76 +67,76 @@ public class MySqlLexer extends Lexer {
             throw new SQLParseException("illegal variable");
         }
 
-        np = bp;
-        sp = 1;
+        mark = pos;
+        bufPos = 1;
 
-        if (charAt(bp + 1) == '@') {
-            ch = charAt(++bp);
-            sp++;
+        if (charAt(pos + 1) == '@') {
+            ch = charAt(++pos);
+            bufPos++;
         }
 
-        if (charAt(bp + 1) == '`') {
-            ++bp;
-            ++sp;
+        if (charAt(pos + 1) == '`') {
+            ++pos;
+            ++bufPos;
             char ch;
             for (;;) {
-                ch = charAt(++bp);
+                ch = charAt(++pos);
 
                 if (ch == '`') {
-                    sp++;
-                    ch = charAt(++bp);
+                    bufPos++;
+                    ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
                     throw new SQLParseException("illegal identifier");
                 }
 
-                sp++;
+                bufPos++;
                 continue;
             }
 
-            this.ch = charAt(bp);
+            this.ch = charAt(pos);
 
-            stringVal = subString(np, sp);
+            stringVal = subString(mark, bufPos);
             token = Token.VARIANT;
-        } else if (charAt(bp + 1) == '{') {
-                ++bp;
-                ++sp;
+        } else if (charAt(pos + 1) == '{') {
+                ++pos;
+                ++bufPos;
                 char ch;
                 for (;;) {
-                    ch = charAt(++bp);
+                    ch = charAt(++pos);
                     
                     if (ch == '}') {
-                        sp++;
-                        ch = charAt(++bp);
+                        bufPos++;
+                        ch = charAt(++pos);
                         break;
                     } else if (ch == EOI) {
                         throw new SQLParseException("illegal identifier");
                     }
                     
-                    sp++;
+                    bufPos++;
                     continue;
                 }
                 
-                this.ch = charAt(bp);
+                this.ch = charAt(pos);
                 
-                stringVal = subString(np, sp);
+                stringVal = subString(mark, bufPos);
                 token = Token.VARIANT;
         } else {
             for (;;) {
-                ch = charAt(++bp);
+                ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
                     break;
                 }
 
-                sp++;
+                bufPos++;
                 continue;
             }
         }
 
-        this.ch = charAt(bp);
+        this.ch = charAt(pos);
 
-        stringVal = subString(np, sp);
+        stringVal = subString(mark, bufPos);
         token = Token.VARIANT;
     }
 
@@ -145,27 +145,27 @@ public class MySqlLexer extends Lexer {
 
         if (ch == '`') {
 
-            np = bp;
-            sp = 1;
+            mark = pos;
+            bufPos = 1;
             char ch;
             for (;;) {
-                ch = charAt(++bp);
+                ch = charAt(++pos);
 
                 if (ch == '`') {
-                    sp++;
-                    ch = charAt(++bp);
+                    bufPos++;
+                    ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
                     throw new SQLParseException("illegal identifier");
                 }
 
-                sp++;
+                bufPos++;
                 continue;
             }
 
-            this.ch = charAt(bp);
+            this.ch = charAt(pos);
 
-            stringVal = subString(np, sp);
+            stringVal = subString(mark, bufPos);
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;
@@ -181,11 +181,11 @@ public class MySqlLexer extends Lexer {
 
             int hash = first;
 
-            np = bp;
-            sp = 1;
+            mark = pos;
+            bufPos = 1;
             char ch;
             for (;;) {
-                ch = charAt(++bp);
+                ch = charAt(++pos);
 
                 if (!isIdentifierChar(ch)) {
                     break;
@@ -193,11 +193,11 @@ public class MySqlLexer extends Lexer {
 
                 hash = 31 * hash + ch;
 
-                sp++;
+                bufPos++;
                 continue;
             }
 
-            this.ch = charAt(bp);
+            this.ch = charAt(pos);
 
             stringVal = addSymbol(hash);
             Token tok = keywods.getKeyword(stringVal);
@@ -210,24 +210,24 @@ public class MySqlLexer extends Lexer {
     }
 
     protected void scanString() {
-        np = bp;
+        mark = pos;
         boolean hasSpecial = false;
 
         for (;;) {
             if (isEOF()) {
-                lexError(tokenPos, "unclosed.str.lit");
+                lexError("unclosed.str.lit");
                 return;
             }
 
-            ch = charAt(++bp);
+            ch = charAt(++pos);
 
             if (ch == '\\') {
                 scanChar();
                 if (!hasSpecial) {
-                    if (sbuf == null) {
-                        sbuf = new char[32];
+                    if (buf == null) {
+                        buf = new char[32];
                     }
-                    arraycopy(np + 1, sbuf, 0, sp);
+                    arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                 }
 
@@ -272,10 +272,10 @@ public class MySqlLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    if (sbuf == null) {
-                        sbuf = new char[32];
+                    if (buf == null) {
+                        buf = new char[32];
                     }
-                    arraycopy(np + 1, sbuf, 0, sp);
+                    arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                     putChar('\'');
                     continue;
@@ -283,21 +283,21 @@ public class MySqlLexer extends Lexer {
             }
 
             if (!hasSpecial) {
-                sp++;
+                bufPos++;
                 continue;
             }
 
-            if (sp == sbuf.length) {
+            if (bufPos == buf.length) {
                 putChar(ch);
             } else {
-                sbuf[sp++] = ch;
+                buf[bufPos++] = ch;
             }
         }
 
         if (!hasSpecial) {
-            stringVal = subString(np + 1, sp);
+            stringVal = subString(mark + 1, bufPos);
         } else {
-            stringVal = new String(sbuf, 0, sp);
+            stringVal = new String(buf, 0, bufPos);
         }
     }
     
@@ -306,45 +306,45 @@ public class MySqlLexer extends Lexer {
             throw new IllegalStateException();
         }
 
-        np = bp;
-        sp = 0;
+        mark = pos;
+        bufPos = 0;
         scanChar();
 
         // /*+ */
         if (ch == '*') {
             scanChar();
-            sp++;
+            bufPos++;
 
             while (ch == ' ') {
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             boolean isHint = false;
-            int startHintSp = sp + 1;
+            int startHintSp = bufPos + 1;
             if (ch == '!') {
                 isHint = true;
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             for (;;) {
-                if (ch == '*' && charAt(bp + 1) == '/') {
-                    sp += 2;
+                if (ch == '*' && charAt(pos + 1) == '/') {
+                    bufPos += 2;
                     scanChar();
                     scanChar();
                     break;
                 }
 
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             if (isHint) {
-                stringVal = subString(np + startHintSp, (sp - startHintSp) - 1);
+                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
                 token = Token.HINT;
             } else {
-                stringVal = subString(np, sp);
+                stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
             }
             
@@ -361,16 +361,16 @@ public class MySqlLexer extends Lexer {
 
         if (ch == '/' || ch == '-') {
             scanChar();
-            sp++;
+            bufPos++;
 
             for (;;) {
                 if (ch == '\r') {
-                    if (charAt(bp + 1) == '\n') {
-                        sp += 2;
+                    if (charAt(pos + 1) == '\n') {
+                        bufPos += 2;
                         scanChar();
                         break;
                     }
-                    sp++;
+                    bufPos++;
                     break;
                 } else if (ch == EOI) {
                     break;
@@ -378,15 +378,15 @@ public class MySqlLexer extends Lexer {
 
                 if (ch == '\n') {
                     scanChar();
-                    sp++;
+                    bufPos++;
                     break;
                 }
 
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
-            stringVal = subString(np + 1, sp);
+            stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
             return;
         }

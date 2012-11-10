@@ -70,24 +70,24 @@ public class PGLexer extends Lexer {
     }
     
     protected void scanString() {
-        np = bp;
+        mark = pos;
         boolean hasSpecial = false;
 
         for (;;) {
             if (isEOF()) {
-                lexError(tokenPos, "unclosed.str.lit");
+                lexError("unclosed.str.lit");
                 return;
             }
 
-            ch = charAt(++bp);
+            ch = charAt(++pos);
 
             if (ch == '\\') {
                 scanChar();
                 if (!hasSpecial) {
-                    if (sbuf == null) {
-                        sbuf = new char[32];
+                    if (buf == null) {
+                        buf = new char[32];
                     }
-                    arraycopy(np + 1, sbuf, 0, sp);
+                    arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                 }
 
@@ -132,7 +132,7 @@ public class PGLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
-                    arraycopy(np + 1, sbuf, 0, sp);
+                    arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                     putChar('\'');
                     continue;
@@ -140,21 +140,21 @@ public class PGLexer extends Lexer {
             }
 
             if (!hasSpecial) {
-                sp++;
+                bufPos++;
                 continue;
             }
 
-            if (sp == sbuf.length) {
+            if (bufPos == buf.length) {
                 putChar(ch);
             } else {
-                sbuf[sp++] = ch;
+                buf[bufPos++] = ch;
             }
         }
 
         if (!hasSpecial) {
-            stringVal = subString(np + 1, sp);
+            stringVal = subString(mark + 1, bufPos);
         } else {
-            stringVal = new String(sbuf, 0, sp);
+            stringVal = new String(buf, 0, bufPos);
         }
     }
 }

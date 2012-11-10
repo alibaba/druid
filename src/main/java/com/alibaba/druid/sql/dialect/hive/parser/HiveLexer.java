@@ -52,46 +52,46 @@ public class HiveLexer extends Lexer {
             throw new IllegalStateException();
         }
 
-        np = bp;
-        sp = 0;
+        mark = pos;
+        bufPos = 0;
         scanChar();
-        sp++;
+        bufPos++;
 
         // /*+ */
         if (ch == '*') {
             scanChar();
-            sp++;
+            bufPos++;
 
             while (ch == ' ') {
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             boolean isHint = false;
-            int startHintSp = sp + 1;
+            int startHintSp = bufPos + 1;
             if (ch == '+') {
                 isHint = true;
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             for (;;) {
-                if (ch == '*' && charAt(bp + 1) == '/') {
-                    sp += 2;
+                if (ch == '*' && charAt(pos + 1) == '/') {
+                    bufPos += 2;
                     scanChar();
                     scanChar();
                     break;
                 }
 
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
             if (isHint) {
-                stringVal = subString(np + startHintSp, (sp - startHintSp) - 2).trim();
+                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 2).trim();
                 token = Token.HINT;
             } else {
-                stringVal = subString(np, sp);
+                stringVal = subString(mark, bufPos);
                 token = Token.MULTI_LINE_COMMENT;
             }
 
@@ -108,30 +108,30 @@ public class HiveLexer extends Lexer {
 
         if (ch == '/') {
             scanChar();
-            sp++;
+            bufPos++;
 
             for (;;) {
                 if (ch == '\r') {
-                    if (charAt(bp + 1) == '\n') {
-                        sp += 2;
+                    if (charAt(pos + 1) == '\n') {
+                        bufPos += 2;
                         scanChar();
                         break;
                     }
-                    sp++;
+                    bufPos++;
                     break;
                 }
 
                 if (ch == '\r') {
                     scanChar();
-                    sp++;
+                    bufPos++;
                     break;
                 }
 
                 scanChar();
-                sp++;
+                bufPos++;
             }
 
-            stringVal = subString(np + 1, sp);
+            stringVal = subString(mark + 1, bufPos);
             token = Token.LINE_COMMENT;
             return;
         }
