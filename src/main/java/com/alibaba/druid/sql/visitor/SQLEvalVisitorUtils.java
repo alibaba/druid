@@ -31,6 +31,7 @@ import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -106,6 +107,46 @@ public class SQLEvalVisitorUtils {
         x.putAttribute(EVAL_VALUE, x.getText());
         return true;
     }
+    
+    public static boolean visit(SQLEvalVisitor visitor, SQLCaseExpr x) {
+        x.getValueExpr().accept(visitor);
+        
+        if (!x.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
+            return false;
+        }
+            
+        Object value = x.getValueExpr().getAttribute(EVAL_VALUE);
+        
+        for (SQLCaseExpr.Item item : x.getItems()) {
+            item.getConditionExpr().accept(visitor);
+            
+            if (!item.getConditionExpr().getAttributes().containsKey(EVAL_VALUE)) {
+                return false;
+            }
+            
+            Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
+            
+            if (_eq(value, conditionValue)) {
+                item.getValueExpr().accept(visitor);
+                
+                if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
+                    x.getAttributes().put(EVAL_VALUE, item.getValueExpr().getAttribute(EVAL_VALUE));
+                }
+                
+                return false;
+            }
+        }
+        
+        if (x.getElseExpr() != null) {
+            x.getElseExpr().accept(visitor);
+            
+            if (x.getElseExpr().getAttributes().containsKey(EVAL_VALUE)) {
+                x.getAttributes().put(EVAL_VALUE, x.getElseExpr().getAttribute(EVAL_VALUE));
+            }
+        }
+        
+        return false;
+    }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
         x.getLeft().accept(visitor);
@@ -122,35 +163,35 @@ public class SQLEvalVisitorUtils {
         Object value = null;
         switch (x.getOperator()) {
             case Add:
-                value = _add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Subtract:
-                value = _sub(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = sub(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Multiply:
-                value = _multi(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = multi(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Divide:
-                value = _div(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = div(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThan:
-                value = _gt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = gt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThanOrEqual:
-                value = _gteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = gteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThan:
-                value = _lt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = lt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThanOrEqual:
-                value = _lteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = lteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             default:
@@ -160,6 +201,11 @@ public class SQLEvalVisitorUtils {
         return false;
     }
 
+    public static boolean visit(SQLEvalVisitor visitor, SQLNumericLiteralExpr x) {
+        x.getAttributes().put(EVAL_VALUE, x.getNumber());
+        return false;
+    }
+    
     public static boolean visit(SQLEvalVisitor visitor, SQLVariantRefExpr x) {
         if (!"?".equals(x.getName())) {
             return false;
@@ -394,7 +440,7 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static Object _div(Object a, Object b) {
+    public static Object div(Object a, Object b) {
         if (a == null || b == null) {
             return null;
         }
@@ -426,7 +472,7 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static boolean _gt(Object a, Object b) {
+    public static boolean gt(Object a, Object b) {
         if (a == null) {
             return false;
         }
@@ -481,15 +527,15 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static boolean _gteq(Object a, Object b) {
+    public static boolean gteq(Object a, Object b) {
         if (_eq(a, b)) {
             return true;
         }
 
-        return _gt(a, b);
+        return gt(a, b);
     }
 
-    public static boolean _lt(Object a, Object b) {
+    public static boolean lt(Object a, Object b) {
         if (a == null) {
             return true;
         }
@@ -544,12 +590,12 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static boolean _lteq(Object a, Object b) {
+    public static boolean lteq(Object a, Object b) {
         if (_eq(a, b)) {
             return true;
         }
 
-        return _lt(a, b);
+        return lt(a, b);
     }
 
     public static boolean _eq(Object a, Object b) {
@@ -607,7 +653,7 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static Object _add(Object a, Object b) {
+    public static Object add(Object a, Object b) {
         if (a == null) {
             return b;
         }
@@ -655,7 +701,7 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static Object _sub(Object a, Object b) {
+    public static Object sub(Object a, Object b) {
         if (a == null) {
             return null;
         }
@@ -699,7 +745,7 @@ public class SQLEvalVisitorUtils {
         throw new IllegalArgumentException();
     }
 
-    public static Object _multi(Object a, Object b) {
+    public static Object multi(Object a, Object b) {
         if (a == null || b == null) {
             return null;
         }
