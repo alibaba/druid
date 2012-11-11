@@ -21,10 +21,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
@@ -34,11 +36,16 @@ import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
@@ -106,24 +113,202 @@ public class SQLEvalVisitorUtils {
 
         return new SQLEvalVisitorImpl();
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if ("concat".equals(x.getMethodName())) {
+        if ("concat".equalsIgnoreCase(x.getMethodName())) {
             StringBuilder buf = new StringBuilder();
-            
+
             for (SQLExpr item : x.getParameters()) {
                 item.accept(visitor);
-                
+
                 Object itemValue = item.getAttributes().get(EVAL_VALUE);
                 if (itemValue == null) {
                     continue;
                 }
                 buf.append(itemValue.toString());
             }
-            
+
             x.getAttributes().put(EVAL_VALUE, buf.toString());
-        } else if ("now".equals(x.getMethodName())) {
+        } else if ("now".equalsIgnoreCase(x.getMethodName())) {
             x.getAttributes().put(EVAL_VALUE, new Date());
+        } else if ("ascii".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() == 0) {
+                return false;
+            }
+            SQLExpr param = x.getParameters().get(0);
+            param.accept(visitor);
+
+            Object paramValue = param.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            String strValue = paramValue.toString();
+            if (strValue.length() == 0) {
+                return false;
+            }
+
+            int ascii = strValue.charAt(0);
+            x.getAttributes().put(EVAL_VALUE, ascii);
+        } else if ("instr".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            String strValue0 = param0Value.toString();
+            String strValue1 = param1Value.toString();
+
+            int result = strValue0.indexOf(strValue1) + 1;
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("left".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+            int intValue = _int(param1Value);
+
+            String result = strValue.substring(0, intValue);
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("right".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+            int intValue = _int(param1Value);
+
+            String result = strValue.substring(strValue.length() - intValue, strValue.length());
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("reverse".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+
+            StringBuilder buf = new StringBuilder();
+            for (int i = strValue.length() - 1; i >= 0; --i) {
+                buf.append(strValue.charAt(i));
+            }
+            String result = buf.toString();
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("trim".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+            String result = strValue.trim();
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("length".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+
+            int result = strValue.length();
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("ucase".equalsIgnoreCase(x.getMethodName()) || "upper".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+
+            String result = strValue.toUpperCase();
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("lcase".equalsIgnoreCase(x.getMethodName()) || "lower".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null) {
+                return false;
+            }
+
+            String strValue = param0Value.toString();
+
+            String result = strValue.toLowerCase();
+
+            x.putAttribute(EVAL_VALUE, result);
         }
         return false;
     }
@@ -132,35 +317,35 @@ public class SQLEvalVisitorUtils {
         x.putAttribute(EVAL_VALUE, x.getText());
         return true;
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBetweenExpr x) {
         x.getTestExpr().accept(visitor);
-        
+
         if (!x.getTestExpr().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
         Object value = x.getTestExpr().getAttribute(EVAL_VALUE);
-        
+
         x.getBeginExpr().accept(visitor);
         if (!x.getBeginExpr().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
         Object begin = x.getBeginExpr().getAttribute(EVAL_VALUE);
-        
+
         if (lt(value, begin)) {
             x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
             return false;
         }
-        
+
         x.getEndExpr().accept(visitor);
         if (!x.getEndExpr().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
         Object end = x.getEndExpr().getAttribute(EVAL_VALUE);
-        
+
         if (gt(value, end)) {
             x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
             return false;
@@ -169,7 +354,7 @@ public class SQLEvalVisitorUtils {
         x.getAttributes().put(EVAL_VALUE, x.isNot() ? false : true);
         return false;
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLNullExpr x) {
         x.getAttributes().put(EVAL_VALUE, null);
         return false;
@@ -214,7 +399,7 @@ public class SQLEvalVisitorUtils {
 
         return false;
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLInListExpr x) {
         SQLExpr valueExpr = x.getExpr();
         valueExpr.accept(visitor);
@@ -222,7 +407,7 @@ public class SQLEvalVisitorUtils {
             return false;
         }
         Object value = valueExpr.getAttribute(EVAL_VALUE);
-        
+
         for (SQLExpr item : x.getTargetList()) {
             item.accept(visitor);
             if (!item.getAttributes().containsKey(EVAL_VALUE)) {
@@ -234,20 +419,62 @@ public class SQLEvalVisitorUtils {
                 return false;
             }
         }
-        
+
         x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
         return false;
     }
-    
+
+    public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
+        if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
+            
+            boolean nullFrom = false;
+            if (queryBlock.getFrom() == null) {
+                nullFrom = true;
+            } else if (queryBlock.getFrom() instanceof SQLExprTableSource) {
+                SQLExpr expr = ((SQLExprTableSource) queryBlock.getFrom()).getExpr();
+                if (expr instanceof SQLIdentifierExpr) {
+                    if ("dual".equalsIgnoreCase(((SQLIdentifierExpr) expr).getName())) {
+                        nullFrom = true;
+                    }
+                }
+            }
+            
+            if (nullFrom) {
+                Object[] row = new Object[queryBlock.getSelectList().size()];
+                for (int i = 0; i < queryBlock.getSelectList().size(); ++i) {
+                    SQLSelectItem item = queryBlock.getSelectList().get(i);
+                    item.getExpr().accept(visitor);
+                    Object cell = item.getExpr().getAttribute(EVAL_VALUE);
+                    row[i] = cell;
+                }
+                Object result;
+                if (row.length == 1) {
+                    result = row[0];
+                } else {
+                    result = row;                    
+                }
+                
+                queryBlock.putAttribute(EVAL_VALUE, result);
+                x.getSubQuery().putAttribute(EVAL_VALUE, result);
+                x.putAttribute(EVAL_VALUE, result);
+                
+                return false;
+            }
+        }
+        
+        return false;
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
-        
+
         left.accept(visitor);
         if (!left.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
-        
+
         right.accept(visitor);
         if (!right.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
@@ -294,6 +521,22 @@ public class SQLEvalVisitorUtils {
             case IsNot:
                 value = !eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
+                break;
+            case RegExp:
+            case RLike: {
+                String pattern = _string(right.getAttributes().get(EVAL_VALUE));
+                String input = _string(left.getAttributes().get(EVAL_VALUE));
+                boolean matchResult = Pattern.matches(pattern, input);
+                x.putAttribute(EVAL_VALUE, matchResult);
+            }
+                break;
+            case NotRegExp:
+            case NotRLike: {
+                String pattern = _string(right.getAttributes().get(EVAL_VALUE));
+                String input = _string(left.getAttributes().get(EVAL_VALUE));
+                boolean matchResult = !Pattern.matches(pattern, input);
+                x.putAttribute(EVAL_VALUE, matchResult);
+            }
                 break;
             default:
                 break;

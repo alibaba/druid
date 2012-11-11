@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 
 public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalVisitor {
@@ -79,7 +80,7 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public boolean visit(SQLNumberExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     @Override
     public boolean visit(SQLCaseExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
@@ -99,7 +100,12 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
     public boolean visit(SQLMethodInvokeExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
+    @Override
+    public boolean visit(SQLQueryExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+
     public boolean isMarkVariantIndex() {
         return markVariantIndex;
     }
