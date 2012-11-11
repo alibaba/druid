@@ -30,9 +30,13 @@ import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
+import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
@@ -102,96 +106,193 @@ public class SQLEvalVisitorUtils {
 
         return new SQLEvalVisitorImpl();
     }
+    
+    public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
+        if ("concat".equals(x.getMethodName())) {
+            StringBuilder buf = new StringBuilder();
+            
+            for (SQLExpr item : x.getParameters()) {
+                item.accept(visitor);
+                
+                Object itemValue = item.getAttributes().get(EVAL_VALUE);
+                if (itemValue == null) {
+                    continue;
+                }
+                buf.append(itemValue.toString());
+            }
+            
+            x.getAttributes().put(EVAL_VALUE, buf.toString());
+        } else if ("now".equals(x.getMethodName())) {
+            x.getAttributes().put(EVAL_VALUE, new Date());
+        }
+        return false;
+    }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLCharExpr x) {
         x.putAttribute(EVAL_VALUE, x.getText());
         return true;
     }
     
+    public static boolean visit(SQLEvalVisitor visitor, SQLBetweenExpr x) {
+        x.getTestExpr().accept(visitor);
+        
+        if (!x.getTestExpr().getAttributes().containsKey(EVAL_VALUE)) {
+            return false;
+        }
+
+        Object value = x.getTestExpr().getAttribute(EVAL_VALUE);
+        
+        x.getBeginExpr().accept(visitor);
+        if (!x.getBeginExpr().getAttributes().containsKey(EVAL_VALUE)) {
+            return false;
+        }
+
+        Object begin = x.getBeginExpr().getAttribute(EVAL_VALUE);
+        
+        if (lt(value, begin)) {
+            x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
+            return false;
+        }
+        
+        x.getEndExpr().accept(visitor);
+        if (!x.getEndExpr().getAttributes().containsKey(EVAL_VALUE)) {
+            return false;
+        }
+
+        Object end = x.getEndExpr().getAttribute(EVAL_VALUE);
+        
+        if (gt(value, end)) {
+            x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
+            return false;
+        }
+
+        x.getAttributes().put(EVAL_VALUE, x.isNot() ? false : true);
+        return false;
+    }
+    
+    public static boolean visit(SQLEvalVisitor visitor, SQLNullExpr x) {
+        x.getAttributes().put(EVAL_VALUE, null);
+        return false;
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLCaseExpr x) {
         x.getValueExpr().accept(visitor);
-        
+
         if (!x.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
-            
+
         Object value = x.getValueExpr().getAttribute(EVAL_VALUE);
-        
+
         for (SQLCaseExpr.Item item : x.getItems()) {
             item.getConditionExpr().accept(visitor);
-            
+
             if (!item.getConditionExpr().getAttributes().containsKey(EVAL_VALUE)) {
                 return false;
             }
-            
+
             Object conditionValue = item.getConditionExpr().getAttribute(EVAL_VALUE);
-            
-            if (_eq(value, conditionValue)) {
+
+            if (eq(value, conditionValue)) {
                 item.getValueExpr().accept(visitor);
-                
+
                 if (item.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
                     x.getAttributes().put(EVAL_VALUE, item.getValueExpr().getAttribute(EVAL_VALUE));
                 }
-                
+
                 return false;
             }
         }
-        
+
         if (x.getElseExpr() != null) {
             x.getElseExpr().accept(visitor);
-            
+
             if (x.getElseExpr().getAttributes().containsKey(EVAL_VALUE)) {
                 x.getAttributes().put(EVAL_VALUE, x.getElseExpr().getAttribute(EVAL_VALUE));
             }
         }
-        
+
         return false;
     }
-
-    public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
-        x.getLeft().accept(visitor);
-        x.getRight().accept(visitor);
-
-        if (!x.getLeft().getAttributes().containsKey(EVAL_VALUE)) {
+    
+    public static boolean visit(SQLEvalVisitor visitor, SQLInListExpr x) {
+        SQLExpr valueExpr = x.getExpr();
+        valueExpr.accept(visitor);
+        if (!valueExpr.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
-
-        if (!x.getRight().getAttributes().containsKey(EVAL_VALUE)) {
+        Object value = valueExpr.getAttribute(EVAL_VALUE);
+        
+        for (SQLExpr item : x.getTargetList()) {
+            item.accept(visitor);
+            if (!item.getAttributes().containsKey(EVAL_VALUE)) {
+                return false;
+            }
+            Object itemValue = item.getAttribute(EVAL_VALUE);
+            if (eq(value, itemValue)) {
+                x.getAttributes().put(EVAL_VALUE, x.isNot() ? false : true);
+                return false;
+            }
+        }
+        
+        x.getAttributes().put(EVAL_VALUE, x.isNot() ? true : false);
+        return false;
+    }
+    
+    public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
+        SQLExpr left = x.getLeft();
+        SQLExpr right = x.getRight();
+        
+        left.accept(visitor);
+        if (!left.getAttributes().containsKey(EVAL_VALUE)) {
+            return false;
+        }
+        
+        right.accept(visitor);
+        if (!right.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
         Object value = null;
         switch (x.getOperator()) {
             case Add:
-                value = add(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = add(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Subtract:
-                value = sub(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = sub(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Multiply:
-                value = multi(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = multi(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Divide:
-                value = div(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = div(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThan:
-                value = gt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = gt(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThanOrEqual:
-                value = gteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = gteq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThan:
-                value = lt(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = lt(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThanOrEqual:
-                value = lteq(x.getLeft().getAttribute(EVAL_VALUE), x.getRight().getAttributes().get(EVAL_VALUE));
+                value = lteq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case Is:
+                value = eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case IsNot:
+                value = !eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             default:
@@ -205,7 +306,7 @@ public class SQLEvalVisitorUtils {
         x.getAttributes().put(EVAL_VALUE, x.getNumber());
         return false;
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLVariantRefExpr x) {
         if (!"?".equals(x.getName())) {
             return false;
@@ -528,7 +629,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean gteq(Object a, Object b) {
-        if (_eq(a, b)) {
+        if (eq(a, b)) {
             return true;
         }
 
@@ -591,14 +692,14 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean lteq(Object a, Object b) {
-        if (_eq(a, b)) {
+        if (eq(a, b)) {
             return true;
         }
 
         return lt(a, b);
     }
 
-    public static boolean _eq(Object a, Object b) {
+    public static boolean eq(Object a, Object b) {
         if (a == b) {
             return true;
         }
