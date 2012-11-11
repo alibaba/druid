@@ -1,5 +1,8 @@
 package com.alibaba.druid.bvt.sql.eval;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -9,6 +12,10 @@ import com.alibaba.druid.util.JdbcConstants;
 
 public class EvalSelectTest extends TestCase {
     public void test_select() throws Exception {
-        Assert.assertEquals(1, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
+        List<List<Object>> rows = new ArrayList<List<Object>>();
+        List<Object> row = new ArrayList<Object>();
+        row.add(1);
+        rows.add(row);
+        Assert.assertEquals(rows, SQLEvalVisitorUtils.evalExpr(JdbcConstants.MYSQL, "SELECT 1"));
     }
 }

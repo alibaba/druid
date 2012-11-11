@@ -441,20 +441,17 @@ public class SQLEvalVisitorUtils {
             }
             
             if (nullFrom) {
-                Object[] row = new Object[queryBlock.getSelectList().size()];
+                List<Object> row = new ArrayList<Object>(queryBlock.getSelectList().size());
                 for (int i = 0; i < queryBlock.getSelectList().size(); ++i) {
                     SQLSelectItem item = queryBlock.getSelectList().get(i);
                     item.getExpr().accept(visitor);
                     Object cell = item.getExpr().getAttribute(EVAL_VALUE);
-                    row[i] = cell;
+                    row.add(cell);
                 }
-                Object result;
-                if (row.length == 1) {
-                    result = row[0];
-                } else {
-                    result = row;                    
-                }
+                List<List<Object>> rows = new ArrayList<List<Object>>(1);
+                rows.add(row);
                 
+                Object result = rows;
                 queryBlock.putAttribute(EVAL_VALUE, result);
                 x.getSubQuery().putAttribute(EVAL_VALUE, result);
                 x.putAttribute(EVAL_VALUE, result);
