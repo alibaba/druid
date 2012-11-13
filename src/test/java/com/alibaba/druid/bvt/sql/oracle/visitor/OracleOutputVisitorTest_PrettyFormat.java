@@ -6,6 +6,7 @@ import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcUtils;
+import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -24,14 +25,14 @@ public class OracleOutputVisitorTest_PrettyFormat {
         SQLStatementParser parser = SQLParserUtils.createSQLStatementParser(sql, JdbcUtils.ORACLE);
         List<SQLStatement> stmtList = parser.parseStatementList();
         StringBuilder out = new StringBuilder();
-
+        // PrettyFormat use default : true
         SQLASTOutputVisitor visitor = new OracleOutputVisitor(out);
         for(SQLStatement statement : stmtList) {
             statement.accept(visitor);
         }
-        // PrettyFormat use default : true
-        System.out.println(out);
-        System.out.println("=========================================\n");
+
+        String expectResult = "SELECT *\nFROM ge_rms_company\nSTART WITH comcode = '00'\nCONNECT BY NOCYCLE PRIOR comcode = uppercomcode;\n";
+        Assert.assertEquals(expectResult, out.toString());
 
         out.setLength(0);
         visitor = new OracleOutputVisitor(out);
@@ -40,6 +41,7 @@ public class OracleOutputVisitorTest_PrettyFormat {
         for(SQLStatement statement : stmtList) {
             statement.accept(visitor);
         }
-        System.out.println(out);
+        expectResult = "SELECT * FROM ge_rms_company START WITH comcode = '00' CONNECT BY NOCYCLE PRIOR comcode = uppercomcode";
+        Assert.assertEquals(expectResult, out.toString());
     }
 }
