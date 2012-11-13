@@ -228,6 +228,8 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected AtomicLong                               createCount                               = new AtomicLong();
     protected AtomicLong                               destroyCount                              = new AtomicLong();
 
+    private Boolean                                    useUnfairLock                             = null;
+
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
 
@@ -244,6 +246,32 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             throw new IllegalStateException();
         }
         this.isOracle = isOracle;
+    }
+
+    public boolean isUseUnfairLock() {
+        return lock.isFair();
+    }
+
+    public void setUseUnfairLock(boolean useUnfairLock) {
+        if (lock.isFair() == !useUnfairLock) {
+            return;
+        }
+
+        if (!this.inited) {
+            final ReentrantLock lock = this.lock;
+            lock.lock();
+            try {
+                if (!this.inited) {
+                    this.lock = new ReentrantLock(!useUnfairLock);
+                    this.notEmpty = this.lock.newCondition();
+                    this.empty = this.lock.newCondition();
+
+                    this.useUnfairLock = useUnfairLock;
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
     }
 
     public boolean isUseOracleImplicitCache() {
@@ -794,7 +822,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             return;
         }
 
-        if (maxWaitMillis > 0 && !this.inited) {
+        if (maxWaitMillis > 0 && useUnfairLock == null && !this.inited) {
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {

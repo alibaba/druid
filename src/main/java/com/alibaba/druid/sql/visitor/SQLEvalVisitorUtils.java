@@ -309,6 +309,316 @@ public class SQLEvalVisitorUtils {
             String result = strValue.toLowerCase();
 
             x.putAttribute(EVAL_VALUE, result);
+
+        } else if ("mod".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            int intValue0 = _int(param0Value);
+            int intValue1 = _int(param1Value);
+
+            int result = intValue0 % intValue1;
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("abs".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            Object result;
+            if (paramValue instanceof Integer) {
+                result = Math.abs(((Integer) paramValue).intValue());
+            } else if (paramValue instanceof Long) {
+                result = Math.abs(((Long) paramValue).longValue());
+            } else {
+                result = _decimal(paramValue).abs();
+            }
+
+            x.putAttribute(EVAL_VALUE, result);
+        } else if ("acos".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            double result = Math.acos(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("asin".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            double result = Math.asin(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("atan".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            double result = Math.atan(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("atan2".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            double doubleValue0 = _double(param0Value);
+            double doubleValue1 = _double(param1Value);
+            double result = Math.atan2(doubleValue0, doubleValue1);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("ceil".equalsIgnoreCase(x.getMethodName()) || "ceiling".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.ceil(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("cos".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.cos(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("sin".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.sin(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("log".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.log(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("log10".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.log10(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("tan".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.tan(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("sqrt".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 1) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            param0.accept(visitor);
+
+            Object paramValue = param0.getAttributes().get(EVAL_VALUE);
+            if (paramValue == null) {
+                return false;
+            }
+
+            double doubleValue = _double(paramValue);
+            int result = (int) Math.sqrt(doubleValue);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("power".equalsIgnoreCase(x.getMethodName())) {
+            if (x.getParameters().size() != 2) {
+                return false;
+            }
+
+            SQLExpr param0 = x.getParameters().get(0);
+            SQLExpr param1 = x.getParameters().get(1);
+            param0.accept(visitor);
+            param1.accept(visitor);
+
+            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+            if (param0Value == null || param1Value == null) {
+                return false;
+            }
+
+            double doubleValue0 = _double(param0Value);
+            double doubleValue1 = _double(param1Value);
+            double result = Math.pow(doubleValue0, doubleValue1);
+
+            if (Double.isNaN(result)) {
+                x.putAttribute(EVAL_VALUE, null);
+            } else {
+                x.putAttribute(EVAL_VALUE, result);
+            }
+        } else if ("pi".equalsIgnoreCase(x.getMethodName())) {
+            x.putAttribute(EVAL_VALUE, Math.PI);
+        } else if ("rand".equalsIgnoreCase(x.getMethodName())) {
+            x.putAttribute(EVAL_VALUE, Math.random());
         }
         return false;
     }
@@ -361,13 +671,18 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLCaseExpr x) {
-        x.getValueExpr().accept(visitor);
+        Object value;
+        if (x.getValueExpr() != null) {
+            x.getValueExpr().accept(visitor);
 
-        if (!x.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
-            return false;
+            if (!x.getValueExpr().getAttributes().containsKey(EVAL_VALUE)) {
+                return false;
+            }
+            
+            value = x.getValueExpr().getAttribute(EVAL_VALUE);
+        } else {
+            value = null;
         }
-
-        Object value = x.getValueExpr().getAttribute(EVAL_VALUE);
 
         for (SQLCaseExpr.Item item : x.getItems()) {
             item.getConditionExpr().accept(visitor);
@@ -427,7 +742,7 @@ public class SQLEvalVisitorUtils {
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
         if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
-            
+
             boolean nullFrom = false;
             if (queryBlock.getFrom() == null) {
                 nullFrom = true;
@@ -439,7 +754,7 @@ public class SQLEvalVisitorUtils {
                     }
                 }
             }
-            
+
             if (nullFrom) {
                 List<Object> row = new ArrayList<Object>(queryBlock.getSelectList().size());
                 for (int i = 0; i < queryBlock.getSelectList().size(); ++i) {
@@ -450,16 +765,16 @@ public class SQLEvalVisitorUtils {
                 }
                 List<List<Object>> rows = new ArrayList<List<Object>>(1);
                 rows.add(row);
-                
+
                 Object result = rows;
                 queryBlock.putAttribute(EVAL_VALUE, result);
                 x.getSubQuery().putAttribute(EVAL_VALUE, result);
                 x.putAttribute(EVAL_VALUE, result);
-                
+
                 return false;
             }
         }
-        
+
         return false;
     }
 

@@ -643,6 +643,12 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (identifierEquals("NOCYCLE")) {
                 hierachical.setNoCycle(true);
+                lexer.nextToken();
+                
+                if (lexer.token() == Token.PRIOR) {
+                    lexer.nextToken();
+                    hierachical.setPrior(true);
+                }
             }
             hierachical.setConnectBy(this.exprParser.expr());
         }
@@ -672,6 +678,12 @@ public class OracleSelectParser extends SQLSelectParser {
 
             if (identifierEquals("NOCYCLE")) {
                 hierachical.setNoCycle(true);
+                lexer.nextToken();
+                
+                if (lexer.token() == Token.PRIOR) {
+                    lexer.nextToken();
+                    hierachical.setPrior(true);
+                }
             }
             hierachical.setConnectBy(this.exprParser.expr());
         }

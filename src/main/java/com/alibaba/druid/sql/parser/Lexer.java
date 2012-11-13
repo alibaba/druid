@@ -34,6 +34,7 @@ import static com.alibaba.druid.sql.parser.Token.RPAREN;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * @author wenshao<szujobs@hotmail.com>
@@ -84,6 +85,18 @@ public class Lexer {
 
     public final String subString(int offset, int count) {
         return text.substring(offset, offset + count);
+    }
+    
+    protected void initBuff(int size) {
+        if (buf == null) {
+            if (size < 32) {
+                buf = new char[32];
+            } else {
+                buf = new char[size + 32];
+            }
+        } else if(buf.length < size) {
+            buf = Arrays.copyOf(buf, size);
+        }
     }
 
     public void arraycopy(int srcPos, char[] dest, int destPos, int length) {
@@ -494,9 +507,7 @@ public class Lexer {
                     break;
                 } else {
                     if (!hasSpecial) {
-                        if (buf == null) {
-                            buf = new char[32];
-                        }
+                        initBuff(bufPos);
                         arraycopy(mark + 1, buf, 0, bufPos);
                         hasSpecial = true;
                     }

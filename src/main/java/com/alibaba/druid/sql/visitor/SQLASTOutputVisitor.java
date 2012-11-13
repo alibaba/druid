@@ -97,8 +97,9 @@ import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     protected final Appendable appender;
-    private String             indent      = "\t";
-    private int                indentCount = 0;
+    private String             indent       = "\t";
+    private int                indentCount  = 0;
+    private boolean            prettyFormat = true;
 
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
@@ -110,6 +111,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public Appendable getAppender() {
         return appender;
+    }
+
+    public boolean isPrettyFormat() {
+        return prettyFormat;
+    }
+
+    public void setPrettyFormat(boolean prettyFormat) {
+        this.prettyFormat = prettyFormat;
     }
 
     public void decrementIndent() {
@@ -193,6 +202,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public void println() {
+        if (!isPrettyFormat()) {
+            print(' ');
+            return;
+        }
+        
         print("\n");
         printIndent();
     }
