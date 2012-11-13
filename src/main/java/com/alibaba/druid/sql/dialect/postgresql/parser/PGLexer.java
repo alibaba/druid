@@ -84,9 +84,7 @@ public class PGLexer extends Lexer {
             if (ch == '\\') {
                 scanChar();
                 if (!hasSpecial) {
-                    if (buf == null) {
-                        buf = new char[32];
-                    }
+                    initBuff(bufPos);
                     arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                 }
@@ -132,6 +130,7 @@ public class PGLexer extends Lexer {
                     token = LITERAL_CHARS;
                     break;
                 } else {
+                    initBuff(bufPos);
                     arraycopy(mark + 1, buf, 0, bufPos);
                     hasSpecial = true;
                     putChar('\'');
