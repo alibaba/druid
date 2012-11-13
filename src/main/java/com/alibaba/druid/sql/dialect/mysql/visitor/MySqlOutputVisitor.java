@@ -488,7 +488,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLCharExpr x) {
-        print(x.toString());
+        print('\'');
+        
+        String text = x.getText();
+        text = text.replaceAll("'", "''");
+        text = text.replaceAll("\\\\", "\\\\");
+        
+        print(text);
+        
+        print('\'');
         return false;
     }
 

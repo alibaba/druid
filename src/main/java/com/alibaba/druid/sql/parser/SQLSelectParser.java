@@ -306,6 +306,10 @@ public class SQLSelectParser extends SQLParser {
         } else if (identifierEquals("STRAIGHT_JOIN")) {
             lexer.nextToken();
             joinType = SQLJoinTableSource.JoinType.STRAIGHT_JOIN;
+        } else if (identifierEquals("CROSS")) {
+            lexer.nextToken();
+            accept(Token.JOIN);
+            joinType = SQLJoinTableSource.JoinType.CROSS_JOIN;
         }
 
         if (joinType != null) {
