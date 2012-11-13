@@ -1,11 +1,10 @@
-package com.alibaba.druid.sql.oracle.demo;
+package com.alibaba.druid.bvt.sql.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ import java.util.List;
  * Time: 下午7:16
  * Test OralceOutputVisitor and start with ... connect by parser.
  */
-public class OutputVisitorTest {
+public class OracleOutputVisitorTest_PrettyFormat {
     @Test
     public void testConnectByParserAndPrettyFormatOutput() {
         String sql = "select * from ge_rms_company start with comcode = '00' connect by nocycle prior comcode = uppercomcode";
