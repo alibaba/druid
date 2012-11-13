@@ -192,10 +192,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 return;
             }
 
-            if (x.getParent() != null) {
-                print(";");
-            } else {
-                println(";");
+            if(isPrettyFormat()) {
+                if (x.getParent() != null) {
+                    print(";");
+                } else {
+                    println(";");
+                }
             }
         }
     }
@@ -445,12 +447,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
         print("CONNECT BY ");
 
-        if (x.isPrior()) {
-            print("PRIOR ");
-        }
-
         if (x.isNoCycle()) {
             print("NOCYCLE ");
+        }
+
+        if (x.isPrior()) {
+            print("PRIOR ");
         }
 
         x.getConnectBy().accept(this);
