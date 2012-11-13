@@ -17,8 +17,10 @@ package com.alibaba.druid.filter.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.PublicKey;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -231,22 +233,29 @@ public class ConfigFilter extends FilterAdapter {
         InputStream inStream = null;
         try {
             boolean xml = false;
-            if (filePath.startsWith("http://") || filePath.startsWith("https://") || filePath.startsWith("file://")) {
+            if (filePath.startsWith("http://") || filePath.startsWith("https://")  || filePath.startsWith("file://")) {
                 URL url = new URL(filePath);
-                inStream = url.openStream();
+                try {
+                    inStream = url.openStream();
+                    xml = url.getPath().endsWith(".xml");
+                } catch (UnknownHostException e) {
+                    // 处理本地的文件，格式：file://C:\Users\UserName\AppData\Local\Temp\MyTest6192238555052741793919301884303
+                    if(url.getHost().length() == 1 && filePath.startsWith("file://")) {
+                        filePath = filePath.substring("file://".length());
+                        inStream = getFileAsStream(filePath);
+                        xml = filePath.endsWith(".xml");
+                    } else {
+                        throw new UnknownHostException(e.getMessage());
+                    }
+                }
 
-                xml = url.getPath().endsWith(".xml");
             } else if (filePath.startsWith("classpath:")) {
                 String resourcePath = filePath.substring("classpath:".length());
                 inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+                // 在classpath下应该也可以配置xml文件吧？
+                xml = resourcePath.endsWith(".xml");
             } else {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    inStream = new FileInputStream(file);
-                } else {
-                    inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
-                }
-
+                inStream = getFileAsStream(filePath);
                 xml = filePath.endsWith(".xml");
             }
 
@@ -268,5 +277,16 @@ public class ConfigFilter extends FilterAdapter {
         } finally {
             JdbcUtils.close(inStream);
         }
+    }
+
+    private InputStream getFileAsStream(String filePath) throws FileNotFoundException {
+        InputStream inStream = null;
+        File file = new File(filePath);
+        if (file.exists()) {
+            inStream = new FileInputStream(file);
+        } else {
+            inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        }
+        return inStream;
     }
 }
