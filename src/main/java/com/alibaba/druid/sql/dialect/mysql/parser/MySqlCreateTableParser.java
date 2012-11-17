@@ -21,7 +21,6 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLTableConstaint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
@@ -218,31 +217,11 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         }
 
         if (lexer.token() == (Token.PRIMARY)) {
-            lexer.nextToken();
-            accept(Token.KEY);
-
-            MySqlPrimaryKey primaryKey = new MySqlPrimaryKey();
-
-            if (identifierEquals("USING")) {
-                lexer.nextToken();
-                primaryKey.setIndexType(lexer.stringVal());
-                lexer.nextToken();
-            }
-
-            accept(Token.LPAREN);
-            for (;;) {
-                primaryKey.getColumns().add(this.exprParser.expr());
-                if (!(lexer.token() == (Token.COMMA))) {
-                    break;
-                } else {
-                    lexer.nextToken();
-                }
-            }
-            accept(Token.RPAREN);
-
-            return primaryKey;
+            return (SQLTableConstaint) this.exprParser.parsePrimaryKey();
         }
 
         throw new ParserException("TODO");
     }
+
+  
 }

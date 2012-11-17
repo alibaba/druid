@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.ast;
 
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
 @SuppressWarnings("serial")
 public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
@@ -24,4 +25,11 @@ public class MySqlPrimaryKey extends MySqlKey implements SQLPrimaryKey {
 
     }
 
+    protected void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.getName());
+            acceptChild(visitor, this.getColumns());
+        }
+        visitor.endVisit(this);
+    }
 }

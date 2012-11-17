@@ -1144,7 +1144,7 @@ public class SQLExprParser extends SQLParser {
 
             accept(Token.SET);
 
-            if (lexer.token() != Token.IDENTIFIER) {
+            if (lexer.token() != Token.IDENTIFIER && lexer.token() != Token.LITERAL_CHARS) {
                 throw new ParserException();
             }
             charType.setCharSetName(lexer.stringVal());
