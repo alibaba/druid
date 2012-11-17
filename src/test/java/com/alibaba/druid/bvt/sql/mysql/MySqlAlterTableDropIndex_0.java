@@ -32,7 +32,7 @@ public class MySqlAlterTableDropIndex_0 extends TestCase {
         parser.match(Token.EOF);
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE `test`.`tb1`," + //
-                            "\n\tDROP `ix`", output);
+                            "\n\tDROP INDEX `ix`", output);
     }
 
 }
