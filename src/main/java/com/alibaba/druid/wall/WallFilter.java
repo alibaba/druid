@@ -78,7 +78,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
             provider = new SQLServerProvider(config);
         } else {
-            throw new IllegalStateException("dbType not support : " + dbType);
+            throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }
 
         this.inited = true;
