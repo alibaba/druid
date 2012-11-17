@@ -53,7 +53,9 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -352,6 +354,14 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropColumnItem x);
 
     void endVisit(SQLAlterTableDropColumnItem x);
+    
+    boolean visit(SQLAlterTableDropIndex x);
+    
+    void endVisit(SQLAlterTableDropIndex x);
+    
+    boolean visit(SQLAlterTableAddPrimaryKey x);
+    
+    void endVisit(SQLAlterTableAddPrimaryKey x);
 
     boolean visit(SQLDropIndexStatement x);
 

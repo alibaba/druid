@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -29,14 +30,36 @@ public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLA
 
     private SQLColumnDefinition newColumnDefinition;
 
-    private Boolean             first;
+    private boolean             first;
+
+    private SQLExpr             firstColumn;
+    private SQLExpr             afterColumn;
 
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, columnName);
             acceptChild(visitor, newColumnDefinition);
+            
+            acceptChild(visitor, firstColumn);
+            acceptChild(visitor, afterColumn);
         }
+    }
+
+    public SQLExpr getFirstColumn() {
+        return firstColumn;
+    }
+
+    public void setFirstColumn(SQLExpr firstColumn) {
+        this.firstColumn = firstColumn;
+    }
+
+    public SQLExpr getAfterColumn() {
+        return afterColumn;
+    }
+
+    public void setAfterColumn(SQLExpr afterColumn) {
+        this.afterColumn = afterColumn;
     }
 
     public SQLName getColumnName() {
@@ -55,11 +78,11 @@ public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLA
         this.newColumnDefinition = newColumnDefinition;
     }
 
-    public Boolean getFirst() {
+    public boolean isFirst() {
         return first;
     }
 
-    public void setFirst(Boolean first) {
+    public void setFirst(boolean first) {
         this.first = first;
     }
 

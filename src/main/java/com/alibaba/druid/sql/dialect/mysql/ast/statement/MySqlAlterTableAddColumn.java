@@ -25,14 +25,33 @@ public class MySqlAlterTableAddColumn extends SQLAlterTableAddColumn implements 
 
     private static final long serialVersionUID = 1L;
 
-    private SQLName           after;
+    private SQLName           firstColumn;
+    private SQLName           afterColumn;
 
-    public SQLName getAfter() {
-        return after;
+    private boolean           first;
+
+    public SQLName getFirstColumn() {
+        return firstColumn;
     }
 
-    public void setAfter(SQLName after) {
-        this.after = after;
+    public void setFirstColumn(SQLName first) {
+        this.firstColumn = first;
+    }
+
+    public boolean isFirst() {
+        return first;
+    }
+
+    public void setFirst(boolean first) {
+        this.first = first;
+    }
+
+    public SQLName getAfterColumn() {
+        return afterColumn;
+    }
+
+    public void setAfterColumn(SQLName after) {
+        this.afterColumn = after;
     }
 
     @Override
@@ -47,6 +66,9 @@ public class MySqlAlterTableAddColumn extends SQLAlterTableAddColumn implements 
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, getColumns());
+            
+            acceptChild(visitor, firstColumn);
+            acceptChild(visitor, afterColumn);
         }
         visitor.endVisit(this);
     }

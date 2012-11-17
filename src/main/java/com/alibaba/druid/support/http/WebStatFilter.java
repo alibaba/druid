@@ -265,7 +265,7 @@ public class WebStatFilter implements Filter {
             return sessionValue.toString();
         }
 
-        if (principalCookieName != null) {
+        if (principalCookieName != null && httpRequest.getCookies() != null) {
             for (Cookie cookie : httpRequest.getCookies()) {
                 if (principalCookieName.equals(cookie.getName())) {
                     return cookie.getValue();

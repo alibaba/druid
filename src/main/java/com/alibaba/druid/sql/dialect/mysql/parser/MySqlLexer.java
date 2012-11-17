@@ -20,7 +20,6 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.LITERAL_CHARS;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
