@@ -27,6 +27,8 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlCharExpr;
@@ -606,5 +608,31 @@ public class MySqlExprParser extends SQLExprParser {
 
         return null;
     }
-    
+
+    @Override
+    public SQLPrimaryKey parsePrimaryKey() {
+        accept(Token.PRIMARY);
+        accept(Token.KEY);
+
+        MySqlPrimaryKey primaryKey = new MySqlPrimaryKey();
+
+        if (identifierEquals("USING")) {
+            lexer.nextToken();
+            primaryKey.setIndexType(lexer.stringVal());
+            lexer.nextToken();
+        }
+
+        accept(Token.LPAREN);
+        for (;;) {
+            primaryKey.getColumns().add(this.expr());
+            if (!(lexer.token() == (Token.COMMA))) {
+                break;
+            } else {
+                lexer.nextToken();
+            }
+        }
+        accept(Token.RPAREN);
+
+        return primaryKey;
+    }
 }

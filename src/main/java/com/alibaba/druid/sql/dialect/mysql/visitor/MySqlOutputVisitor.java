@@ -2264,9 +2264,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlAlterTableAddColumn x) {
         print("ADD COLUMN ");
         printAndAccept(x.getColumns(), ", ");
-        if (x.getAfter() != null) {
+        if (x.getFirstColumn() != null) {
+            print(" FIRST ");
+            x.getFirstColumn().accept(this);
+        } else if (x.getAfterColumn() != null) {
             print(" AFTER ");
-            x.getAfter().accept(this);
+            x.getAfterColumn().accept(this);
+        } else if (x.isFirst()) {
+            print(" FIRST");
         }
         return false;
     }
@@ -2516,12 +2521,14 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         x.getColumnName().accept(this);
         print(' ');
         x.getNewColumnDefinition().accept(this);
-        if (x.getFirst() != null) {
-            if (x.getFirst().booleanValue()) {
-                print(" FIRST");
-            } else {
-                print(" AFTER");
-            }
+        if (x.getFirstColumn() != null) {
+            print(" FIRST ");
+            x.getFirstColumn().accept(this);
+        } else if (x.getAfterColumn() != null) {
+            print(" AFTER ");
+            x.getAfterColumn().accept(this);
+        } else if (x.isFirst()) {
+            print(" FIRST");
         }
 
         return false;
