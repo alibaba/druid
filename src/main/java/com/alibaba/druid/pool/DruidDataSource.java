@@ -336,6 +336,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.id = DruidDriver.createDataSourceId();
 
             loadFilterFromSystemProperty();
+            
+            if (this.dbType == null || this.dbType.length() == 0) {
+                this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
+            }
 
             for (Filter filter : filters) {
                 filter.init(this);
