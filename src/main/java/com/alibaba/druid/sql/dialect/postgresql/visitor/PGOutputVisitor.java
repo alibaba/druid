@@ -18,7 +18,6 @@ package com.alibaba.druid.sql.dialect.postgresql.visitor;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
@@ -441,32 +440,6 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
     }
 
     @Override
-    public void endVisit(PGAggregateExpr x) {
-
-    }
-
-    @Override
-    public boolean visit(PGAggregateExpr x) {
-        print(x.getMethodName());
-        
-        print("(");
-        
-        if (x.getOption() != null) {
-            print(x.getOption().toString());
-            print(' ');
-        }
-        
-        printAndAccept(x.getArguments(), ", ");
-        print(")");
-        
-        if (x.getOver() != null) {
-            x.getOver().accept(this);
-        }
-        
-        return false;
-    }
-
-    @Override
     public void endVisit(PGAnalytic x) {
 
     }
@@ -513,7 +486,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
             print(" AS ");
             print(x.getAlias());
         }
-        
+
         if (x.getParameters().size() > 0) {
             print('(');
             printAndAccept(x.getParameters(), ", ");
@@ -525,7 +498,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
 
     @Override
     public void endVisit(PGFunctionTableSource x) {
-        
+
     }
 
 }

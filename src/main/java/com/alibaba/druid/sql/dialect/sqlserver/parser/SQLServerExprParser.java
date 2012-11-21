@@ -94,4 +94,16 @@ public class SQLServerExprParser extends SQLExprParser {
 
         return super.nameRest(expr);
     }
+    
+    public boolean isAggreateFunction(String word) {
+        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "ROW_NUMBER", "STDDEV", "SUM" };
+
+        for (int i = 0; i < aggregateFunctions.length; ++i) {
+            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

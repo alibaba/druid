@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithClause;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGWithQuery;
 import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
@@ -74,10 +73,6 @@ public interface PGASTVisitor extends SQLASTVisitor {
     void endVisit(PGUpdateStatement x);
 
     boolean visit(PGUpdateStatement x);
-
-    void endVisit(PGAggregateExpr x);
-
-    boolean visit(PGAggregateExpr x);
 
     void endVisit(PGAnalytic x);
 

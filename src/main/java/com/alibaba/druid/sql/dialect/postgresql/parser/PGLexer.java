@@ -47,7 +47,6 @@ public class PGLexer extends Lexer {
 
         map.put("OFFSET", Token.OFFSET);
         map.put("ONLY", Token.ONLY);
-        map.put("OVER", Token.OVER);
         map.put("RECURSIVE", Token.RECURSIVE);
         map.put("RESTART", Token.RESTART);
 

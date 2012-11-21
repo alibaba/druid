@@ -25,7 +25,6 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class OracleAggregateExpr extends SQLAggregateExpr implements Serializable, OracleExpr {
 
     private static final long serialVersionUID = 1L;
-    private OracleAnalytic    over;
     private boolean           ignoreNulls      = false;
 
     public boolean isUnique() {
@@ -50,14 +49,6 @@ public class OracleAggregateExpr extends SQLAggregateExpr implements Serializabl
 
     public OracleAggregateExpr(String methodName, Option option){
         super(methodName, option);
-    }
-
-    public OracleAnalytic getOver() {
-        return this.over;
-    }
-
-    public void setOver(OracleAnalytic over) {
-        this.over = over;
     }
 
     public void output(StringBuffer buf) {

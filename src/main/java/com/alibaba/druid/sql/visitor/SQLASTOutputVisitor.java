@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
@@ -451,6 +452,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         printAndAccept(x.getArguments(), ", ");
         print(")");
+        
+        if (x.getOver() != null) {
+            print(" ");
+            x.getOver().accept(this);
+        }
         return false;
     }
 
@@ -1159,6 +1165,18 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLAlterTableAddPrimaryKey x) {
         print("ADD ");
         x.getPrimaryKey().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLOver x) {
+        print("OVER (");
+        printAndAccept(x.getPartitionBy(), ", ");
+        print(")");
+        if (x.getOrderBy() != null) {
+            print(" ");
+            x.getOrderBy().accept(this);
+        }
         return false;
     }
 }
