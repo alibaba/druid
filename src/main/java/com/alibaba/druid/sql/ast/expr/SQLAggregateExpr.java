@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLExprImpl;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
@@ -29,6 +30,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
     protected String              methodName;
     protected Option              option;
     protected final List<SQLExpr> arguments        = new ArrayList<SQLExpr>();
+    protected SQLOver             over;
 
     public SQLAggregateExpr(String methodName){
 
@@ -60,20 +62,19 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         return this.arguments;
     }
 
-    public void output(StringBuffer buf) {
-        buf.append(this.methodName);
-        buf.append("(");
-        int i = 0;
-        for (int size = this.arguments.size(); i < size; ++i) {
-            ((SQLExpr) this.arguments.get(i)).output(buf);
-        }
-        buf.append(")");
+    public SQLOver getOver() {
+        return over;
+    }
+
+    public void setOver(SQLOver over) {
+        this.over = over;
     }
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.arguments);
+            acceptChild(visitor, this.over);
         }
 
         visitor.endVisit(this);
@@ -86,6 +87,7 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
         result = prime * result + ((arguments == null) ? 0 : arguments.hashCode());
         result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
         result = prime * result + ((option == null) ? 0 : option.hashCode());
+        result = prime * result + ((over == null) ? 0 : over.hashCode());
         return result;
     }
 
@@ -113,6 +115,13 @@ public class SQLAggregateExpr extends SQLExprImpl implements Serializable {
                 return false;
             }
         } else if (!methodName.equals(other.methodName)) {
+            return false;
+        }
+        if (over == null) {
+            if (other.over != null) {
+                return false;
+            }
+        } else if (!over.equals(other.over)) {
             return false;
         }
         if (option != other.option) {

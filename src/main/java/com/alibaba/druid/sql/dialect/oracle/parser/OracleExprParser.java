@@ -551,7 +551,7 @@ public class OracleExprParser extends SQLExprParser {
 
         accept(Token.RPAREN);
 
-        if (identifierEquals("OVER")) {
+        if (lexer.token() == Token.OVER) {
             OracleAnalytic over = new OracleAnalytic();
 
             lexer.nextToken();

@@ -15,16 +15,14 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
-import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
-import com.alibaba.druid.sql.dialect.postgresql.ast.PGAggregateExpr;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
-import com.alibaba.druid.sql.dialect.postgresql.ast.expr.PGAnalytic;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
-public class PGExprParser extends SQLExprParser{
-    public PGExprParser(String sql) {
+public class PGExprParser extends SQLExprParser {
+
+    public PGExprParser(String sql){
         super(new PGLexer(sql));
         this.lexer.nextToken();
     }
@@ -32,63 +30,11 @@ public class PGExprParser extends SQLExprParser{
     public PGExprParser(Lexer lexer){
         super(lexer);
     }
-    
-    protected SQLAggregateExpr parseAggregateExpr(String methodName)  {
-        methodName = methodName.toUpperCase();
-        
-        PGAggregateExpr aggregateExpr;
-        if (lexer.token() == Token.ALL) {
-            aggregateExpr = new PGAggregateExpr(methodName, SQLAggregateExpr.Option.ALL);
-            lexer.nextToken();
-        } else if (lexer.token() == Token.DISTINCT) {
-            aggregateExpr = new PGAggregateExpr(methodName, SQLAggregateExpr.Option.DISTINCT);
-            lexer.nextToken();
-        } else {
-            aggregateExpr = new PGAggregateExpr(methodName);
-        }
 
-        exprList(aggregateExpr.getArguments());
-
-        accept(Token.RPAREN);
-        
-        if (lexer.token() == Token.OVER) {
-        	lexer.nextToken();
-        	PGAnalytic over = new PGAnalytic();
-        	accept(Token.LPAREN);
-        	
-            if (identifierEquals("PARTITION")) {
-                lexer.nextToken();
-                accept(Token.BY);
-
-                if (lexer.token() == (Token.LPAREN)) {
-                    lexer.nextToken();
-                    exprList(over.getPartitionBy());
-                    accept(Token.RPAREN);
-                } else {
-                    exprList(over.getPartitionBy());
-                }
-            }
-
-
-            over.setOrderBy(parseOrderBy());
-            
-            // if (over.getOrderBy() != null) {
-            // //TODO window
-            // }
-        	
-        	accept(Token.RPAREN);
-        	aggregateExpr.setOver(over);
-
-        }
-        
-        return aggregateExpr;
-    }
-    
-    
     @Override
     public PGOrderBy parseOrderBy() {
         if (lexer.token() == (Token.ORDER)) {
-        	PGOrderBy orderBy = new PGOrderBy();
+            PGOrderBy orderBy = new PGOrderBy();
             lexer.nextToken();
 
             if (identifierEquals("SIBLINGS")) {
