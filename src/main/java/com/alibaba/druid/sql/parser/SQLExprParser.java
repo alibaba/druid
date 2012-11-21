@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -696,6 +697,36 @@ public class SQLExprParser extends SQLParser {
         exprList(aggregateExpr.getArguments());
 
         accept(Token.RPAREN);
+        
+        if (lexer.token() == Token.OVER) {
+            lexer.nextToken();
+            SQLOver over = new SQLOver();
+            accept(Token.LPAREN);
+            
+            if (identifierEquals("PARTITION")) {
+                lexer.nextToken();
+                accept(Token.BY);
+
+                if (lexer.token() == (Token.LPAREN)) {
+                    lexer.nextToken();
+                    exprList(over.getPartitionBy());
+                    accept(Token.RPAREN);
+                } else {
+                    exprList(over.getPartitionBy());
+                }
+            }
+
+
+            over.setOrderBy(parseOrderBy());
+            
+            // if (over.getOrderBy() != null) {
+            // //TODO window
+            // }
+            
+            accept(Token.RPAREN);
+            aggregateExpr.setOver(over);
+
+        }
 
         return aggregateExpr;
     }

@@ -111,6 +111,8 @@ public class Keywords {
         map.put("WHEN", Token.WHEN);
         map.put("WHERE", Token.WHERE);
         map.put("XOR", Token.XOR);
+        
+        map.put("OVER", Token.OVER);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

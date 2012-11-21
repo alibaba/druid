@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllExpr;
@@ -390,4 +391,8 @@ public interface SQLASTVisitor {
     void endVisit(SQLCreateDatabaseStatement x);
 
     boolean visit(SQLCreateDatabaseStatement x);
+    
+    void endVisit(SQLOver x);
+    
+    boolean visit(SQLOver x);
 }

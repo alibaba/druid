@@ -15,20 +15,13 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.expr;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLObjectImpl;
-import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.ast.SQLOver;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class OracleAnalytic extends SQLObjectImpl implements OracleExpr {
+public class OracleAnalytic extends SQLOver implements OracleExpr {
 
     private static final long       serialVersionUID = 1L;
-    private final List<SQLExpr>     partitionBy      = new ArrayList<SQLExpr>();
-    private OracleOrderBy           orderBy;
     private OracleAnalyticWindowing windowing;
 
     public OracleAnalytic(){
@@ -49,23 +42,11 @@ public class OracleAnalytic extends SQLObjectImpl implements OracleExpr {
         visitor.endVisit(this);
     }
 
-    public OracleOrderBy getOrderBy() {
-        return this.orderBy;
-    }
-
-    public void setOrderBy(OracleOrderBy orderBy) {
-        this.orderBy = orderBy;
-    }
-
     public OracleAnalyticWindowing getWindowing() {
         return this.windowing;
     }
 
     public void setWindowing(OracleAnalyticWindowing windowing) {
         this.windowing = windowing;
-    }
-
-    public List<SQLExpr> getPartitionBy() {
-        return this.partitionBy;
     }
 }
