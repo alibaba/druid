@@ -75,7 +75,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new OracleWallProvider(config);
-        } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+        } else if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }

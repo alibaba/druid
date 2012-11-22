@@ -183,6 +183,10 @@ public class SQLUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerOutputVisitor(out);
         }
+        
+        if (JdbcUtils.JTDS.equals(dbType)) {
+            return new SQLServerOutputVisitor(out);
+        }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlOutputVisitor(out);
@@ -209,6 +213,10 @@ public class SQLUtils {
         }
 
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerSchemaStatVisitor();
+        }
+        
+        if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerSchemaStatVisitor();
         }
 

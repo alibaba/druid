@@ -43,6 +43,10 @@ public class SQLParserUtils {
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerStatementParser(sql);
         }
+        
+        if (JdbcUtils.JTDS.equals(dbType)) {
+            return new SQLServerStatementParser(sql);
+        }
 
         if (JdbcUtils.H2.equals(dbType)) {
             return new MySqlStatementParser(sql);
@@ -69,6 +73,10 @@ public class SQLParserUtils {
         }
 
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerExprParser(sql);
+        }
+        
+        if (JdbcUtils.JTDS.equals(dbType)) {
             return new SQLServerExprParser(sql);
         }
 
