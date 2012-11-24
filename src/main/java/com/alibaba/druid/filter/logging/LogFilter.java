@@ -17,6 +17,7 @@ package com.alibaba.druid.filter.logging;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Types;
 
 import com.alibaba.druid.filter.FilterChain;
@@ -290,6 +291,30 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             connectionLog("{conn-" + connection.getId() + "} connected");
         }
     }
+    
+    @Override
+    public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection) throws SQLException {
+
+        Savepoint savepoint = chain.connection_setSavepoint(connection);
+        
+        if (isConnectionLogEnabled()) {
+            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + savepoint.getSavepointId());
+        }
+        
+        return savepoint;
+    }
+
+    @Override
+    public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection, String name)
+                                                                                                        throws SQLException {
+        Savepoint savepoint = chain.connection_setSavepoint(connection, name);
+        
+        if (isConnectionLogEnabled()) {
+            connectionLog("{conn " + connection.getId() + "} setSavepoint-" + name);
+        }
+        
+        return savepoint;
+    }
 
     @Override
     public void connection_rollback(FilterChain chain, ConnectionProxy connection) throws SQLException {
@@ -297,6 +322,15 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
         if (connectionRollbackAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn " + connection.getId() + "} rollback");
+        }
+    }
+    
+    @Override
+    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savePoint) throws SQLException {
+        super.connection_rollback(chain, connection, savePoint);
+        
+        if (connectionRollbackAfterLogEnable && isConnectionLogEnabled()) {
+            connectionLog("{conn " + connection.getId() + "} rollback -> " + savePoint.getSavepointId());
         }
     }
 

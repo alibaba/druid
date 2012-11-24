@@ -17,6 +17,7 @@ package com.alibaba.druid.bvt.pool.basic;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -90,8 +91,24 @@ public class ConnectionTest3 extends TestCase {
         conn.setSavepoint();
         conn.setSavepoint("savepoint");
         conn.rollback();
-        conn.rollback(null);
-        conn.releaseSavepoint(null);
+        {
+            Exception error = null;
+            try {
+                conn.rollback(null);
+            } catch (SQLException e) {
+                error = e;
+            }
+            Assert.assertNotNull(error);
+        }
+        {
+            Exception error = null;
+            try {
+                conn.releaseSavepoint(null);
+            } catch (SQLException e) {
+                error = e;
+            }
+            Assert.assertNotNull(error);
+        }
         conn.createBlob();
         conn.createClob();
         conn.createNClob();

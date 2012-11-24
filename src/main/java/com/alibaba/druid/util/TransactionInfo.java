@@ -21,7 +21,7 @@ import java.util.List;
 public class TransactionInfo {
 
     private final long         id;
-    private final List<String> sqlList = new ArrayList<String>();
+    private final List<String> sqlList = new ArrayList<String>(4);
     private final long         startTimeMillis;
     private long               endTimeMillis;
 
