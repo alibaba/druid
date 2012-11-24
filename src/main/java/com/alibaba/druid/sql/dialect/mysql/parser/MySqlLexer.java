@@ -177,8 +177,6 @@ public class MySqlLexer extends Lexer {
                 throw new SQLParseException("illegal identifier");
             }
 
-            int hash = first;
-
             mark = pos;
             bufPos = 1;
             char ch;
@@ -189,15 +187,13 @@ public class MySqlLexer extends Lexer {
                     break;
                 }
 
-                hash = 31 * hash + ch;
-
                 bufPos++;
                 continue;
             }
 
             this.ch = charAt(pos);
 
-            stringVal = addSymbol(hash);
+            stringVal = addSymbol();
             Token tok = keywods.getKeyword(stringVal);
             if (tok != null) {
                 token = tok;

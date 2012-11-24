@@ -736,7 +736,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction(dataSource);
+            handleEndTransaction(dataSource, null);
         }
     }
 
@@ -762,7 +762,7 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction(dataSource);
+            handleEndTransaction(dataSource, null);
         }
     }
 
@@ -787,12 +787,12 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         } catch (SQLException ex) {
             handleException(ex);
         } finally {
-            handleEndTransaction(dataSource);
+            handleEndTransaction(dataSource, savepoint);
         }
     }
 
-    private void handleEndTransaction(DruidAbstractDataSource dataSource) {
-        if (transactionInfo != null) {
+    private void handleEndTransaction(DruidAbstractDataSource dataSource, Savepoint savepoint) {
+        if (transactionInfo != null && savepoint == null) {
             transactionInfo.setEndTimeMillis();
 
             long transactionMillis = transactionInfo.getEndTimeMillis() - transactionInfo.getStartTimeMillis();

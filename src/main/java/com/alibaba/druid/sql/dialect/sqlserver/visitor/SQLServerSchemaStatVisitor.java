@@ -15,10 +15,12 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 
@@ -58,6 +60,17 @@ public class SQLServerSchemaStatVisitor extends SchemaStatVisitor implements SQL
     @Override
     public void endVisit(SQLServerObjectReferenceExpr x) {
         
+    }
+
+    @Override
+    public boolean visit(SQLServerInsertStatement x) {
+        this.visit((SQLInsertStatement) x);
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerInsertStatement x) {
+        this.endVisit((SQLInsertStatement) x);        
     }
 
 

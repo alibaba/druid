@@ -106,8 +106,6 @@ public class OracleLexer extends Lexer {
             throw new SQLParseException("illegal variable");
         }
 
-        int hash = ch;
-
         mark = pos;
         bufPos = 1;
         char ch;
@@ -115,12 +113,10 @@ public class OracleLexer extends Lexer {
         boolean quoteFlag = false;
         boolean mybatisFlag = false;
         if (charAt(pos + 1) == '"') {
-            hash = 31 * hash + '"';
             pos++;
             bufPos++;
             quoteFlag = true;
         } else if (charAt(pos + 1) == '{') {
-            hash = 31 * hash + '"';
             pos++;
             bufPos++;
             mybatisFlag = true;
@@ -133,8 +129,6 @@ public class OracleLexer extends Lexer {
                 break;
             }
 
-            hash = 31 * hash + ch;
-
             bufPos++;
             continue;
         }
@@ -143,21 +137,19 @@ public class OracleLexer extends Lexer {
             if (ch != '"') {
                 throw new SQLParseException("syntax error");
             }
-            hash = 31 * hash + '"';
             ++pos;
             bufPos++;
         } else if (mybatisFlag) {
             if (ch != '}') {
                 throw new SQLParseException("syntax error");
             }
-            hash = 31 * hash + '"';
             ++pos;
             bufPos++;
         }
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol(hash);
+        stringVal = addSymbol();
         Token tok = keywods.getKeyword(stringVal);
         if (tok != null) {
             token = tok;

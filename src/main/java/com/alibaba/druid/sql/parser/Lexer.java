@@ -79,7 +79,7 @@ public class Lexer {
         return text.charAt(index);
     }
 
-    public String addSymbol(int hash) {
+    public String addSymbol() {
         return subString(mark, bufPos);
     }
 
@@ -567,13 +567,9 @@ public class Lexer {
     }
 
     public void scanVariable() {
-        final char first = ch;
-
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
             throw new SQLParseException("illegal variable");
         }
-
-        int hash = first;
 
         mark = pos;
         bufPos = 1;
@@ -582,11 +578,9 @@ public class Lexer {
         boolean mybatisFlag = false;
         if (charAt(pos + 1) == '@') {
             ch = charAt(++pos);
-            hash = 31 * hash + ch;
 
             bufPos++;
         } else if (charAt(pos + 1) == '{') {
-            hash = 31 * hash + '"';
             pos++;
             bufPos++;
             mybatisFlag = true;
@@ -599,8 +593,6 @@ public class Lexer {
                 break;
             }
 
-            hash = 31 * hash + ch;
-
             bufPos++;
             continue;
         }
@@ -609,14 +601,13 @@ public class Lexer {
             if (ch != '}') {
                 throw new SQLParseException("syntax error");
             }
-            hash = 31 * hash + '"';
             ++pos;
             bufPos++;
         }
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol(hash);
+        stringVal = addSymbol();
         token = Token.VARIANT;
     }
 
@@ -693,8 +684,6 @@ public class Lexer {
             throw new SQLParseException("illegal identifier");
         }
 
-        int hash = first;
-
         mark = pos;
         bufPos = 1;
         char ch;
@@ -705,7 +694,6 @@ public class Lexer {
                 break;
             }
 
-            hash = 31 * hash + ch;
 
             bufPos++;
             continue;
@@ -713,7 +701,7 @@ public class Lexer {
 
         this.ch = charAt(pos);
 
-        stringVal = addSymbol(hash);
+        stringVal = addSymbol();
         Token tok = keywods.getKeyword(stringVal);
         if (tok != null) {
             token = tok;
