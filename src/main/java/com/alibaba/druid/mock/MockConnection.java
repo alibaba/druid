@@ -30,6 +30,8 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -40,14 +42,16 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     // private final static Log LOG = LogFactory.getLog(MockConnection.class);
 
-    private boolean    closed               = false;
+    private boolean         closed               = false;
 
-    private MockDriver driver;
+    private MockDriver      driver;
+    private int             savepointIdSeed      = 0;
+    private List<Savepoint> savepoints           = new ArrayList<Savepoint>();
 
-    private long       id;
+    private long            id;
 
-    private final long createdTimeMillis    = System.currentTimeMillis();
-    private long       lastActiveTimeMillis = System.currentTimeMillis();
+    private final long      createdTimeMillis    = System.currentTimeMillis();
+    private long            lastActiveTimeMillis = System.currentTimeMillis();
 
     public MockConnection(){
         this(null, null, null);
@@ -61,6 +65,10 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (driver != null) {
             this.id = driver.generateConnectionId();
         }
+    }
+
+    public List<Savepoint> getSavepoints() {
+        return savepoints;
     }
 
     public long getLastActiveTimeMillis() {
@@ -168,6 +176,7 @@ public class MockConnection extends ConnectionBase implements Connection {
             throw new MockConnectionClosedException();
         }
 
+        this.savepoints.clear();
     }
 
     @Override
@@ -248,7 +257,12 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (closed) {
             throw new MockConnectionClosedException();
         }
-        return null;
+
+        MockSavepoint savepoint = new MockSavepoint();
+        savepoint.setSavepointId(this.savepointIdSeed++);
+        this.savepoints.add(savepoint);
+
+        return savepoint;
     }
 
     @Override
@@ -256,13 +270,28 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (closed) {
             throw new MockConnectionClosedException();
         }
-        return null;
+
+        MockSavepoint savepoint = new MockSavepoint();
+        savepoint.setSavepointId(this.savepointIdSeed++);
+        savepoint.setSavepointName(name);
+        this.savepoints.add(savepoint);
+
+        return savepoint;
     }
 
     @Override
     public void rollback(Savepoint savepoint) throws SQLException {
         if (closed) {
             throw new MockConnectionClosedException();
+        }
+
+
+        int index = this.savepoints.indexOf(savepoint);
+        if (index == -1) {
+            throw new SQLException("savepoint not contained");
+        }
+        for (int i = savepoints.size() - 1; i >= index; --i) {
+            savepoints.remove(i);
         }
     }
 
@@ -271,6 +300,16 @@ public class MockConnection extends ConnectionBase implements Connection {
         if (closed) {
             throw new MockConnectionClosedException();
         }
+
+        if (savepoint == null) {
+            throw new SQLException("argument is null");
+        }
+
+        int index = this.savepoints.indexOf(savepoint);
+        if (index == -1) {
+            throw new SQLException("savepoint not contained");
+        }
+        savepoints.remove(savepoint);
     }
 
     @Override

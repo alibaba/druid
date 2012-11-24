@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
@@ -91,7 +92,54 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     @Override
     public void endVisit(SQLServerObjectReferenceExpr x) {
-        
+
+    }
+
+    @Override
+    public boolean visit(SQLServerInsertStatement x) {
+        print("INSERT INTO ");
+
+        x.getTableName().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            incrementIndent();
+            print(" (");
+            for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print(", ");
+                }
+
+                x.getColumns().get(i).accept(this);
+            }
+            print(")");
+            decrementIndent();
+        }
+
+        if (x.getValuesList().size() != 0) {
+            println();
+            print("VALUES ");
+            for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
+                if (i != 0) {
+                    print(", ");
+                }
+                x.getValuesList().get(i).accept(this);
+            }
+
+        }
+
+        if (x.getQuery() != null) {
+            println();
+            x.getQuery().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerInsertStatement x) {
+
     }
 
 }

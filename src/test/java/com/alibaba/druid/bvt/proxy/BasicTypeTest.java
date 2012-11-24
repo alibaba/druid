@@ -191,7 +191,7 @@ public class BasicTypeTest extends TestCase {
             rs.updateRow();
 
             JdbcUtils.close(rs);
-            conn.rollback(point);
+//            conn.rollback(point);
             conn.setAutoCommit(true);
 
             rs = stmt.executeQuery("SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17 FROM T_BASIC_TYPE");
@@ -212,7 +212,7 @@ public class BasicTypeTest extends TestCase {
             rs.getTimestamp("F11");
             rs.getTimestamp("F11", Calendar.getInstance());
             rs.getBytes("F12");
-            rs.getBlob("F12").free();
+            rs.getBlob("F12");
             rs.getString("F13");
             rs.getAsciiStream("F13");
             rs.getCharacterStream("F14");

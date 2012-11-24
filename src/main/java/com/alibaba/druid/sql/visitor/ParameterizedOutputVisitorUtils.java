@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleParameterizedOutputVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGParameterizedOutputVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerParameterizedOutputVisitor;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.util.JdbcUtils;
@@ -62,6 +63,10 @@ public class ParameterizedOutputVisitorUtils {
 
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGParameterizedOutputVisitor(out);
+        }
+        
+        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
+            return new SQLServerParameterizedOutputVisitor(out);
         }
 
         return new ParameterizedOutputVisitor(out);
