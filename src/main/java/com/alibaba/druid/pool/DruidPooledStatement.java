@@ -90,7 +90,22 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void incrementExecuteCount() {
-        this.getPoolableConnection().getConnectionHolder().getDataSource().incrementExecuteCount();
+        DruidPooledConnection conn = this.getPoolableConnection();
+        
+        if (conn == null) {
+            return;
+        }
+        
+        DruidConnectionHolder holder = conn.getConnectionHolder();
+        if (holder == null) {
+            return;
+        }
+        
+        if (holder.getDataSource() == null) {
+            return;
+        }
+        
+        holder.getDataSource().incrementExecuteCount();
     }
 
     protected void transactionRecord(String sql) throws SQLException {
