@@ -33,13 +33,17 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.util.JdbcConstants;
@@ -74,6 +78,47 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
     public boolean visit(SQLSelectStatement x) {
         input = x;
         return true;
+    }
+
+    public boolean visit(MySqlDeleteStatement x) {
+        input = x;
+
+        if (x.getFrom() != null) {
+            x.getFrom().setParent(x);
+            x.getFrom().accept(this);
+        }
+
+        if (x.getTableSource() != null) {
+            x.getTableSource().setParent(x);
+            x.getTableSource().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+        }
+
+        result.add(x);
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(MySqlUpdateStatement x) {
+        input = x;
+        
+        if (x.getTableSource() != null) {
+            x.getTableSource().setParent(x);
+            x.getTableSource().accept(this);
+        }
+        
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+        }
+        
+        result.add(x);
+        return false;
     }
 
     public boolean visit(MySqlInsertStatement x) {
@@ -160,12 +205,7 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
 
     @Override
     public boolean visit(SQLExprTableSource x) {
-        SQLSelectQueryBlock select = getSQLSelectQueryBlock(x);
-
-        Map<String, SQLTableSource> aliasMap = null;
-        if (select != null) {
-            aliasMap = getAliasMap(select);
-        }
+        Map<String, SQLTableSource> aliasMap = getAliasMap(x);
 
         if (aliasMap != null) {
             if (x.getAlias() != null) {
@@ -266,12 +306,12 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
             return tableSource;
         }
 
-        SQLSelectQueryBlock select = getSQLSelectQueryBlock(x.getParent());
-        if (select != null && select.getFrom() instanceof SQLExprTableSource) {
-            SQLExpr expr = ((SQLExprTableSource) select.getFrom()).getExpr();
+        SQLTableSource defaltTableSource = getDefaultTableSource(x.getParent());
+        if (defaltTableSource instanceof SQLExprTableSource) {
+            SQLExpr expr = ((SQLExprTableSource) defaltTableSource).getExpr();
             if (expr instanceof SQLIdentifierExpr) {
-                x.putAttribute(ATTR_TABLE_SOURCE, select.getFrom());
-                return select.getFrom();
+                x.putAttribute(ATTR_TABLE_SOURCE, defaltTableSource);
+                return defaltTableSource;
             }
         }
 
@@ -298,13 +338,7 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
     }
 
     public static SQLTableSource getTableSource(String name, SQLObject parent) {
-        SQLSelectQueryBlock select = getSQLSelectQueryBlock(parent);
-
-        if (select == null) {
-            return null;
-        }
-
-        Map<String, SQLTableSource> aliasMap = getAliasMap(select);
+        Map<String, SQLTableSource> aliasMap = getAliasMap(parent);
 
         if (aliasMap == null) {
             return null;
@@ -327,27 +361,40 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
 
     @SuppressWarnings("unchecked")
     public static Map<String, SQLTableSource> getAliasMap(SQLObject x) {
-        Map<String, SQLTableSource> map = (Map<String, SQLTableSource>) x.getAttribute(ATTR_ALIAS);
-        if (map == null) {
-            map = new HashMap<String, SQLTableSource>();
-            x.putAttribute(ATTR_ALIAS, map);
+        if (x == null) {
+            return null;
         }
-        return map;
+
+        if (x instanceof SQLSelectQueryBlock || x instanceof SQLDeleteStatement) {
+            Map<String, SQLTableSource> map = (Map<String, SQLTableSource>) x.getAttribute(ATTR_ALIAS);
+            if (map == null) {
+                map = new HashMap<String, SQLTableSource>();
+                x.putAttribute(ATTR_ALIAS, map);
+            }
+            return map;
+        }
+
+        return getAliasMap(x.getParent());
     }
 
-    public static SQLSelectQueryBlock getSQLSelectQueryBlock(SQLObject x) {
+    public static SQLTableSource getDefaultTableSource(SQLObject x) {
         if (x == null) {
             return null;
         }
 
         if (x instanceof SQLSelectQueryBlock) {
-            return (SQLSelectQueryBlock) x;
+            return ((SQLSelectQueryBlock) x).getFrom();
         }
 
-        if (x.getParent() != null) {
-            return getSQLSelectQueryBlock(x.getParent());
+        if (x instanceof SQLDeleteStatement) {
+            return ((SQLDeleteStatement) x).getTableSource();
         }
 
-        return null;
+        if (x instanceof SQLUpdateStatement) {
+            return ((SQLUpdateStatement) x).getTableSource();
+        }
+
+        return getDefaultTableSource(x.getParent());
     }
+
 }

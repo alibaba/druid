@@ -41,7 +41,7 @@ public class MySqlParameterizedOutputVisitorTest extends TestCase {
         validateOracle("SELECT * FROM T WHERE A.ID = ? OR A.ID = ?", "SELECT *\nFROM T\nWHERE A.ID = ?");
         validate("INSERT INTO T (F1, F2) VALUES(?, ?), (?, ?), (?, ?)", "INSERT INTO T (F1, F2) VALUES (?, ?)");
         validate("update net_device d, sys_user u set d.resp_user_id=u.id where d.resp_user_login_name=u.username and d.id in (42354)", //
-                 "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\nAND d.id IN (?)");
+                 "UPDATE net_device d, sys_user u\nSET d.resp_user_id = u.id\nWHERE d.resp_user_login_name = u.username\n\tAND d.id IN (?)");
 
         // System.out.println("SELECT * FORM A WHERE ID = (##)".replaceAll("##", "?"));
     }
