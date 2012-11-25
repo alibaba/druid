@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.sharding;
 
-public class ShardingDataSource {
+import javax.sql.DataSource;
+
+import com.alibaba.druid.pool.DataSourceAdapter;
+
+public class ShardingDataSource extends DataSourceAdapter implements DataSource {
 
 }
