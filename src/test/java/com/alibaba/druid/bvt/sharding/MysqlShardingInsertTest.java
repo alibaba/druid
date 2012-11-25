@@ -17,7 +17,7 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 
-public class InsertTest extends TestCase {
+public class MysqlShardingInsertTest extends TestCase {
 
     private RouteConfig routeConfig = new RouteConfig();
 
