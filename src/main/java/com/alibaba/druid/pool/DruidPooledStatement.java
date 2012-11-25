@@ -274,7 +274,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             clearResultSet();
             stmt.close();
             this.closed = true;
-            conn.getConnectionHolder().removeTrace(this);
+            
+            if (conn.getConnectionHolder() != null) {
+                conn.getConnectionHolder().removeTrace(this);
+            }
         }
     }
 
