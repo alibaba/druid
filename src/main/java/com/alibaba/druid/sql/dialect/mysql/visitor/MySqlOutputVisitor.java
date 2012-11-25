@@ -743,9 +743,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             println();
+            incrementIndent();
             print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         if (x.getOrderBy() != null) {
@@ -1505,9 +1507,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         if (x.getWhere() != null) {
             println();
+            incrementIndent();
             print("WHERE ");
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
+            decrementIndent();
         }
 
         if (x.getOrderBy() != null) {
