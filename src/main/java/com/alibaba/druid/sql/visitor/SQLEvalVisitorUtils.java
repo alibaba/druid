@@ -1305,6 +1305,10 @@ public class SQLEvalVisitorUtils {
 
             return d1.equals(d2);
         }
+        
+        if (a instanceof String || b instanceof String) {
+            return _string(a).equals(_string(b));
+        }
 
         throw new IllegalArgumentException();
     }

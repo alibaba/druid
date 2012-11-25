@@ -103,7 +103,8 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getColumns().size() > 0) {
             incrementIndent();
-            print(" (");
+            println();
+            print("(");
             for (int i = 0, size = x.getColumns().size(); i < size; ++i) {
                 if (i != 0) {
                     if (i % 5 == 0) {
@@ -120,14 +121,15 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getValuesList().size() != 0) {
             println();
-            print("VALUES ");
+            print("VALUES");
+            println();
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
                 if (i != 0) {
-                    print(", ");
+                    print(",");
+                    println();
                 }
                 x.getValuesList().get(i).accept(this);
             }
-
         }
 
         if (x.getQuery() != null) {

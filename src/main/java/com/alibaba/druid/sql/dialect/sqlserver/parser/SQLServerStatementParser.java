@@ -15,9 +15,16 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
+import com.alibaba.druid.sql.parser.Token;
 
 public class SQLServerStatementParser extends SQLStatementParser {
 
@@ -32,5 +39,65 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(Lexer lexer){
         super(new SQLServerExprParser(lexer));
     }
+    
+    public SQLStatement parseInsert() {
+        SQLServerInsertStatement insertStatement = new SQLServerInsertStatement();
 
+        if (lexer.token() == Token.INSERT) {
+            accept(Token.INSERT);
+        }
+
+        parseInsert0(insertStatement);
+        return insertStatement;
+    }
+
+    protected void parseInsert0(SQLInsertInto insert, boolean acceptSubQuery) {
+        SQLServerInsertStatement insertStatement = (SQLServerInsertStatement) insert;
+        
+        if (lexer.token() == Token.INTO) {
+            lexer.nextToken();
+
+            SQLName tableName = this.exprParser.name();
+            insertStatement.setTableName(tableName);
+
+            if (lexer.token() == Token.LITERAL_ALIAS) {
+                insertStatement.setAlias(as());
+            }
+
+            parseInsert0_hinits(insertStatement);
+
+            if (lexer.token() == Token.IDENTIFIER) {
+                insertStatement.setAlias(lexer.stringVal());
+                lexer.nextToken();
+            }
+        }
+
+        if (lexer.token() == (Token.LPAREN)) {
+            lexer.nextToken();
+            this.exprParser.exprList(insertStatement.getColumns());
+            accept(Token.RPAREN);
+        }
+
+        if (lexer.token() == Token.VALUES) {
+            lexer.nextToken();
+
+            for (;;) {
+                accept(Token.LPAREN);
+                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
+                this.exprParser.exprList(values.getValues());
+                insertStatement.getValuesList().add(values);
+                accept(Token.RPAREN);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        } else if (acceptSubQuery && (lexer.token() == Token.SELECT || lexer.token() == Token.LPAREN)) {
+            SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
+            insertStatement.setQuery(queryExpr.getSubQuery());
+        }
+    }
 }
