@@ -56,7 +56,7 @@ public class DMLDeleteParserTest extends TestCase {
         Assert.assertEquals("DELETE FROM offer.*, wp_image.*\n" + //
                             "USING offer a, wp_image b\n" + //
                             "WHERE a.member_id = b.member_id\n" + //
-                            "AND a.member_id = 'abc'", output);
+                            "\tAND a.member_id = 'abc'", output);
     }
 
     public void testDelete_3() throws Exception {
@@ -91,7 +91,7 @@ public class DMLDeleteParserTest extends TestCase {
         Assert.assertEquals("DELETE id.*\n" + //
                             "FROM t1, t2\n" + //
                             "WHERE col1 = 'adf'\n" + //
-                            "AND col2 = 1", output);
+                            "\tAND col2 = 1", output);
     }
 
     public void testDelete_6() throws Exception {
