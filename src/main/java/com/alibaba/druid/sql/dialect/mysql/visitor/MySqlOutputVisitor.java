@@ -812,13 +812,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         if (x.getValuesList().size() != 0) {
             println();
             print("VALUES ");
+            if (x.getValuesList().size() > 1) {
+                incrementIndent();
+            }
             for (int i = 0, size = x.getValuesList().size(); i < size; ++i) {
                 if (i != 0) {
-                    print(", ");
+                    print(",");
+                    println();
                 }
                 x.getValuesList().get(i).accept(this);
             }
-
+            if (x.getValuesList().size() > 1) {
+                decrementIndent();
+            }
         }
 
         if (x.getQuery() != null) {
@@ -827,8 +833,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         if (x.getDuplicateKeyUpdate().size() != 0) {
-            print(" ON DUPLICATE KEY UPDATE ");
-            printAndAccept(x.getDuplicateKeyUpdate(), ", ");
+            println();
+            print("ON DUPLICATE KEY UPDATE ");
+            for (int i = 0, size = x.getDuplicateKeyUpdate().size(); i < size; ++i) {
+                if (i != 0) {
+                    if (i % 5 == 0) {
+                        println();
+                    }
+                    print(", ");
+                }
+                x.getDuplicateKeyUpdate().get(i).accept(this);
+            }
         }
 
         return false;

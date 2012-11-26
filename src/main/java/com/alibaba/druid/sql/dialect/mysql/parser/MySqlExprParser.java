@@ -154,6 +154,12 @@ public class MySqlExprParser extends SQLExprParser {
                     lexer.nextToken();
                 } 
                 return primaryRest(varRefExpr);
+            case VALUES:
+                lexer.nextToken();
+                if (lexer.token() != Token.LPAREN) {
+                    throw new ParserException("syntax error, illegal values clause");
+                }
+                return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
             default:
                 return super.primary();
         }
