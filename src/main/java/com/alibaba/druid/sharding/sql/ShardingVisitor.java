@@ -15,10 +15,18 @@
  */
 package com.alibaba.druid.sharding.sql;
 
-public interface ShardingVisitor {
+import java.util.List;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+
+public interface ShardingVisitor extends SQLASTVisitor {
 
     public static final String ATTR_DB           = "sharding.db";
     public static final String ATTR_PARTITION    = "sharding.partition";
     public static final String ATTR_TABLE_SOURCE = "sharding.tableSource";
     public static final String ATTR_ALIAS        = "sharding.alias";
+    public static final String ATTR_TABLES       = "sharding.tables";
+
+    List<SQLStatement> getResult();
 }

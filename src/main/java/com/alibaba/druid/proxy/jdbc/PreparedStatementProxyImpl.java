@@ -368,7 +368,7 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
-        setParameter(parameterIndex, new JdbcParameter(targetSqlType, x));
+        setParameter(parameterIndex, new JdbcParameter(targetSqlType, x, -1, null, scaleOrLength));
 
         createChain().preparedStatement_setObject(this, parameterIndex, x, targetSqlType, scaleOrLength);
     }
