@@ -67,6 +67,10 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
         this(routeConfig, Arrays.asList(parameters));
     }
 
+    public List<SQLStatement> getResult() {
+        return result;
+    }
+
     public RouteConfig getRouteConfig() {
         return routeConfig;
     }
@@ -106,17 +110,17 @@ public class MySqlShardingVisitor extends MySqlASTVisitorAdapter implements Shar
     @Override
     public boolean visit(MySqlUpdateStatement x) {
         input = x;
-        
+
         if (x.getTableSource() != null) {
             x.getTableSource().setParent(x);
             x.getTableSource().accept(this);
         }
-        
+
         if (x.getWhere() != null) {
             x.getWhere().setParent(x);
             x.getWhere().accept(this);
         }
-        
+
         result.add(x);
         return false;
     }
