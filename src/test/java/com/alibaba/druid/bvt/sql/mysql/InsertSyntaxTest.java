@@ -68,7 +68,9 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)\nVALUES (1, 2, 3), (4, 5, 6), (7, 8, 9);", text);
+        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)\nVALUES (1, 2, 3)," + //
+                            "\n\t(4, 5, 6)," + //
+                            "\n\t(7, 8, 9);", text);
     }
 
     public void test_4() throws Exception {
@@ -79,7 +81,9 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)\nVALUES (1, 2, 3, 4, 5\n\t, 6, 7, 8, 9);", text);
+        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
+                            "\nVALUES (1, 2, 3, 4, 5" + //
+                            "\n\t, 6, 7, 8, 9);", text);
     }
 
     public void test_5() throws Exception {
@@ -102,8 +106,9 @@ public class InsertSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)\nVALUES (1, 2, 3) ON DUPLICATE KEY UPDATE c = c + 1;",
-                            text);
+        Assert.assertEquals("INSERT INTO tbl_name (a, b, c)" + //
+                            "\nVALUES (1, 2, 3)" + //
+                            "\nON DUPLICATE KEY UPDATE c = c + 1;", text);
     }
 
     private String output(List<SQLStatement> stmtList) {
