@@ -32,12 +32,18 @@ public class JdbcParameter {
     private final Object    value;
     private final long      length;
     private final Calendar  calendar;
+    private final int       scaleOrLength;
 
-    public JdbcParameter(int sqlType, Object value, long length, Calendar calendar){
+    public JdbcParameter(int sqlType, Object value, long length, Calendar calendar, int scaleOrLength){
         this.sqlType = sqlType;
         this.value = value;
         this.length = length;
         this.calendar = calendar;
+        this.scaleOrLength = scaleOrLength;
+    }
+
+    public JdbcParameter(int sqlType, Object value, long length, Calendar calendar){
+        this(sqlType, value, -1, null, -1);
     }
 
     public JdbcParameter(int sqlType, Object value){
@@ -50,6 +56,10 @@ public class JdbcParameter {
 
     public JdbcParameter(int sqlType, Object value, Calendar calendar){
         this(sqlType, value, -1, calendar);
+    }
+
+    public int getScaleOrLength() {
+        return scaleOrLength;
     }
 
     public Object getValue() {

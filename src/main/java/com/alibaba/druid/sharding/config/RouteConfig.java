@@ -20,8 +20,17 @@ import java.util.Map;
 
 public class RouteConfig {
 
-    private Map<String, LogicTable> logicTables  = new HashMap<String, LogicTable>();
-    private Map<String, MappingRule>          mappingRules = new HashMap<String, MappingRule>();
+    private String                   defaultDatabase;
+    private Map<String, LogicTable>  logicTables  = new HashMap<String, LogicTable>();
+    private Map<String, MappingRule> mappingRules = new HashMap<String, MappingRule>();
+
+    public String getDefaultDatabase() {
+        return defaultDatabase;
+    }
+
+    public void setDefaultDatabase(String defaultDatabase) {
+        this.defaultDatabase = defaultDatabase;
+    }
 
     public Map<String, LogicTable> getLogicTables() {
         return logicTables;
@@ -38,7 +47,7 @@ public class RouteConfig {
     public void setMappingRules(Map<String, MappingRule> mappingRules) {
         this.mappingRules = mappingRules;
     }
-    
+
     public MappingRule getMappingRule(String table) {
         if (table == null) {
             return null;
