@@ -39,7 +39,9 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
     private final Statement        statement;
 
     protected String               lastExecuteSql;
+    private long                   lastExecuteStartNano;
     private long                   lastExecuteTimeNano;
+
     protected JdbcSqlStat          sqlStat;
     protected boolean              firstResultSet;
 
@@ -144,11 +146,11 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         firstResultSet = false;
         lastExecuteType = StatementExecuteType.ExecuteBatch;
         int[] updateCounts = createChain().statement_executeBatch(this);
-        
+
         if (updateCounts != null && updateCounts.length == 1) {
             updateCount = updateCounts[0];
         }
-        
+
         return updateCounts;
     }
 
@@ -264,13 +266,13 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         return createChain().statement_getResultSetType(this);
     }
 
-    //bug fixed for oracle
+    // bug fixed for oracle
     @Override
     public int getUpdateCount() throws SQLException {
         if (updateCount == null) {
             updateCount = createChain().statement_getUpdateCount(this);
         }
-        return updateCount;        
+        return updateCount;
     }
 
     @Override
@@ -390,6 +392,27 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
 
     public void setLastExecuteTimeNano(long lastExecuteTimeNano) {
         this.lastExecuteTimeNano = lastExecuteTimeNano;
+    }
+    
+    public void setLastExecuteTimeNano() {
+        if (this.lastExecuteTimeNano <= 0 && this.lastExecuteStartNano > 0) {
+            this.lastExecuteTimeNano = System.nanoTime() - this.lastExecuteStartNano;
+        }
+    }
+
+    public long getLastExecuteStartNano() {
+        return lastExecuteStartNano;
+    }
+
+    public void setLastExecuteStartNano(long lastExecuteStartNano) {
+        this.lastExecuteStartNano = lastExecuteStartNano;
+        this.lastExecuteTimeNano = -1L;
+    }
+
+    public void setLastExecuteStartNano() {
+        if (lastExecuteStartNano <= 0) {
+            setLastExecuteStartNano(System.nanoTime());
+        }
     }
 
     public StatementExecuteType getLastExecuteType() {
