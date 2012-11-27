@@ -382,8 +382,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
         if (statementExecuteAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
-            long nanos = statement.getLastExecuteTimeNano();
-            long millis = nanos / (1000 * 1000);
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
                          + sql + " (" + millis + " milliseconds)");
@@ -399,8 +399,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void statementExecuteBatchAfter(StatementProxy statement, int[] result) {
         if (statementExecuteBatchAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
-            long nanos = statement.getLastExecuteTimeNano();
-            long millis = nanos / (1000 * 1000);
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
 
             String sql;
             if (statement instanceof PreparedStatementProxy) {
@@ -426,8 +426,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
         if (statementExecuteQueryAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
-            long nanos = statement.getLastExecuteTimeNano();
-            long millis = nanos / (1000 * 1000);
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + ", rs-"
                          + resultSet.getId() + "} query executed. " + sql + " (" + millis + " milliseconds)");
@@ -446,8 +446,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected void statementExecuteUpdateAfter(StatementProxy statement, String sql, int updateCount) {
         if (statementExecuteUpdateAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
-            long nanos = statement.getLastExecuteTimeNano();
-            long millis = nanos / (1000 * 1000);
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                          + "} update executed. effort " + updateCount + ". " + sql + " (" + millis + " milliseconds)");
