@@ -34,6 +34,7 @@ public class HibernateCRUDTest extends TestCase {
 		dataSource.setUsername("sa");
 		dataSource.setPassword("");
 		dataSource.setDefaultAutoCommit(false);
+		dataSource.setFilters("log4j");
 
 		/*init sessionFactory*/
 		LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();

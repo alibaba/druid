@@ -386,7 +386,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
-                         + sql + " (" + millis + " milliseconds)");
+                         + millis + " millis. " + sql);
         }
     }
 
@@ -410,7 +410,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             }
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} batch executed. " + sql + " (" + millis + " milliseconds)");
+                         + "} batch executed. " + millis + " millis. " + sql);
         }
     }
 
@@ -430,7 +430,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + ", rs-"
-                         + resultSet.getId() + "} query executed. " + sql + " (" + millis + " milliseconds)");
+                         + resultSet.getId() + "} query executed. " + millis + " millis. " + sql);
         }
     }
 
@@ -450,7 +450,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             double millis = nanos / (1000 * 1000);
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} update executed. effort " + updateCount + ". " + sql + " (" + millis + " milliseconds)");
+                         + "} update executed. effort " + updateCount + ". " + millis + " millis. " + sql);
         }
     }
 
