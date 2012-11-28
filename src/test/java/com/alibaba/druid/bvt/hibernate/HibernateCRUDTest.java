@@ -1,8 +1,11 @@
 package com.alibaba.druid.bvt.hibernate;
 
-import com.alibaba.druid.bvt.hibernate.entity.Sample;
-import com.alibaba.druid.pool.DruidDataSource;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Properties;
+
 import junit.framework.TestCase;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Properties;
+import com.alibaba.druid.bvt.hibernate.entity.Sample;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author yinheli <yinheli@gmail.com>
@@ -59,6 +62,7 @@ public class HibernateCRUDTest extends TestCase {
 	@Override
 	public void tearDown() throws Exception {
 		sessionFactory.close();
+		JdbcUtils.close(dataSource);
 	}
 
 	private void doCreate(Session session) {
