@@ -710,6 +710,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             activeCount--;
             discardCount++;
+            
+            if (activeCount <= 0) {
+                empty.signal();
+            }
         } finally {
             lock.unlock();
         }

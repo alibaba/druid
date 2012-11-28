@@ -376,18 +376,13 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     }
 
     private final void internalBeforeStatementExecute(StatementProxy statement, String sql) {
-
-        final long startNano = System.nanoTime();
-
         JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().beforeExecute();
 
-        final JdbcStatementStat.Entry statementStat = getStatementInfo(statement);
         final ConnectionProxy connection = statement.getConnectionProxy();
         final JdbcConnectionStat.Entry connectionCounter = getConnectionInfo(connection);
 
-        statementStat.setLastExecuteStartNano(startNano);
-        statementStat.setLastExecuteSql(sql);
+        statement.setLastExecuteStartNano();
 
         connectionCounter.setLastSql(sql);
 
@@ -426,17 +421,14 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
         }
 
         StatFilterContext.getInstance().executeBefore(sql, inTransaction);
-        
+
         Profiler.enter(sql, Profiler.PROFILE_TYPE_SQL);
     }
 
     private final void internalAfterStatementExecute(StatementProxy statement, boolean firstResult,
                                                      int... updateCountArray) {
-
-        final JdbcStatementStat.Entry entry = getStatementInfo(statement);
-
         final long nowNano = System.nanoTime();
-        final long nanos = nowNano - entry.getLastExecuteStartNano();
+        final long nanos = nowNano - statement.getLastExecuteStartNano();
 
         JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().afterExecute(nanos);
@@ -485,11 +477,10 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
     @Override
     protected void statement_executeErrorAfter(StatementProxy statement, String sql, Throwable error) {
 
-        JdbcStatementStat.Entry counter = getStatementInfo(statement);
         ConnectionProxy connection = statement.getConnectionProxy();
         JdbcConnectionStat.Entry connectionCounter = getConnectionInfo(connection);
 
-        long nanos = System.nanoTime() - counter.getLastExecuteStartNano();
+        long nanos = System.nanoTime() - statement.getLastExecuteStartNano();
 
         JdbcDataSourceStat dataSourceStat = statement.getConnectionProxy().getDirectDataSource().getDataSourceStat();
         dataSourceStat.getStatementStat().error(error);
@@ -613,17 +604,6 @@ public class StatFilter extends FilterEventAdapter implements StatFilterMBean {
             connection.getAttributes().put(ATTR_NAME_CONNECTION_STAT,
                                            new JdbcConnectionStat.Entry(dataSourceName, connection.getId()));
             counter = (JdbcConnectionStat.Entry) connection.getAttributes().get(ATTR_NAME_CONNECTION_STAT);
-        }
-
-        return counter;
-    }
-
-    public JdbcStatementStat.Entry getStatementInfo(StatementProxy statement) {
-        JdbcStatementStat.Entry counter = (JdbcStatementStat.Entry) statement.getAttributes().get(ATTR_NAME_STATEMENT_STAT);
-
-        if (counter == null) {
-            statement.getAttributes().put(ATTR_NAME_STATEMENT_STAT, new JdbcStatementStat.Entry());
-            counter = (JdbcStatementStat.Entry) statement.getAttributes().get(ATTR_NAME_STATEMENT_STAT);
         }
 
         return counter;
