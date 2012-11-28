@@ -202,26 +202,4 @@ public class JdbcStatementStat implements JdbcStatementStatMBean {
     public void incrementStatementCloseCounter() {
         closeCount.incrementAndGet();
     }
-
-    public static class Entry {
-
-        private long   lastExecuteStartNano;
-        private String lastExecuteSql;
-
-        public long getLastExecuteStartNano() {
-            return lastExecuteStartNano;
-        }
-
-        public void setLastExecuteStartNano(long lastExecuteStartNano) {
-            this.lastExecuteStartNano = lastExecuteStartNano;
-        }
-
-        public String getLastExecuteSql() {
-            return lastExecuteSql;
-        }
-
-        public void setLastExecuteSql(String lastExecuteSql) {
-            this.lastExecuteSql = lastExecuteSql;
-        }
-    }
 }

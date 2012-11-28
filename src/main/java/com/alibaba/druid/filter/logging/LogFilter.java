@@ -291,16 +291,16 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             connectionLog("{conn-" + connection.getId() + "} connected");
         }
     }
-    
+
     @Override
     public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection) throws SQLException {
 
         Savepoint savepoint = chain.connection_setSavepoint(connection);
-        
+
         if (isConnectionLogEnabled()) {
             connectionLog("{conn " + connection.getId() + "} setSavepoint-" + savepoint.getSavepointId());
         }
-        
+
         return savepoint;
     }
 
@@ -308,11 +308,11 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     public Savepoint connection_setSavepoint(FilterChain chain, ConnectionProxy connection, String name)
                                                                                                         throws SQLException {
         Savepoint savepoint = chain.connection_setSavepoint(connection, name);
-        
+
         if (isConnectionLogEnabled()) {
             connectionLog("{conn " + connection.getId() + "} setSavepoint-" + name);
         }
-        
+
         return savepoint;
     }
 
@@ -324,11 +324,12 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             connectionLog("{conn " + connection.getId() + "} rollback");
         }
     }
-    
+
     @Override
-    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savePoint) throws SQLException {
+    public void connection_rollback(FilterChain chain, ConnectionProxy connection, Savepoint savePoint)
+                                                                                                       throws SQLException {
         super.connection_rollback(chain, connection, savePoint);
-        
+
         if (connectionRollbackAfterLogEnable && isConnectionLogEnabled()) {
             connectionLog("{conn " + connection.getId() + "} rollback -> " + savePoint.getSavepointId());
         }
@@ -371,7 +372,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteBefore(StatementProxy statement, String sql) {
-
+        statement.setLastExecuteStartNano();
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
         }
@@ -380,14 +381,27 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
         if (statementExecuteAfterLogEnable && isStatementLogEnabled()) {
+            statement.setLastExecuteTimeNano();
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
+
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
-                         + sql);
+                         + millis + " millis. " + sql);
         }
+    }
+
+    @Override
+    protected void statementExecuteBatchBefore(StatementProxy statement) {
+        statement.setLastExecuteStartNano();
     }
 
     @Override
     protected void statementExecuteBatchAfter(StatementProxy statement, int[] result) {
         if (statementExecuteBatchAfterLogEnable && isStatementLogEnabled()) {
+            statement.setLastExecuteTimeNano();
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
+
             String sql;
             if (statement instanceof PreparedStatementProxy) {
                 sql = ((PreparedStatementProxy) statement).getSql();
@@ -396,13 +410,13 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             }
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} batch executed. " + sql);
+                         + "} batch executed. " + millis + " millis. " + sql);
         }
     }
 
     @Override
     protected void statementExecuteQueryBefore(StatementProxy statement, String sql) {
-
+        statement.setLastExecuteStartNano();
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
         }
@@ -411,14 +425,18 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
         if (statementExecuteQueryAfterLogEnable && isStatementLogEnabled()) {
+            statement.setLastExecuteTimeNano();
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
+
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + ", rs-"
-                         + resultSet.getId() + "} query executed. " + sql);
+                         + resultSet.getId() + "} query executed. " + millis + " millis. " + sql);
         }
     }
 
     @Override
     protected void statementExecuteUpdateBefore(StatementProxy statement, String sql) {
-
+        statement.setLastExecuteStartNano();
         if (statement instanceof PreparedStatementProxy) {
             logParameter((PreparedStatementProxy) statement);
         }
@@ -427,8 +445,12 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     @Override
     protected void statementExecuteUpdateAfter(StatementProxy statement, String sql, int updateCount) {
         if (statementExecuteUpdateAfterLogEnable && isStatementLogEnabled()) {
+            statement.setLastExecuteTimeNano();
+            double nanos = statement.getLastExecuteTimeNano();
+            double millis = nanos / (1000 * 1000);
+
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
-                         + "} update executed. effort " + updateCount + ". " + sql);
+                         + "} update executed. effort " + updateCount + ". " + millis + " millis. " + sql);
         }
     }
 
