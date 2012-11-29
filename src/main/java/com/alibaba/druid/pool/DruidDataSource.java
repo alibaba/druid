@@ -63,6 +63,12 @@ import com.alibaba.druid.pool.vendor.SybaseExceptionSorter;
 import com.alibaba.druid.proxy.DruidDriver;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxyConfig;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.parser.SQLParserUtils;
+import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.stat.DruidDataSourceStatManager;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
 import com.alibaba.druid.stat.JdbcSqlStat;
@@ -336,7 +342,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             this.id = DruidDriver.createDataSourceId();
 
             loadFilterFromSystemProperty();
-            
+
             if (this.dbType == null || this.dbType.length() == 0) {
                 this.dbType = JdbcUtils.getDbType(jdbcUrl, null);
             }
@@ -576,11 +582,73 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             if (driver.getMajorVersion() == 10 && isUseOracleImplicitCache()) {
                 this.getConnectProperties().setProperty("oracle.jdbc.FreeMemoryOnEnterImplicitCache", "true");
             }
+
+            oracleValidationQueryCheck();
         } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
             if (!this.isTestWhileIdle()) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
                 }
+            }
+        } else if (JdbcUtils.DB2.equals(dbType)) {
+            db2ValidationQueryCheck();
+        }
+    }
+
+    private void oracleValidationQueryCheck() {
+        if (validationQuery == null) {
+            return;
+        }
+        if (validationQuery.length() == 0) {
+            return;
+        }
+
+        SQLStatementParser sqlStmtParser = SQLParserUtils.createSQLStatementParser(validationQuery, this.dbType);
+        List<SQLStatement> stmtList = sqlStmtParser.parseStatementList();
+
+        if (stmtList.size() != 1) {
+            return;
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+        if (!(stmt instanceof SQLSelectStatement)) {
+            return;
+        }
+
+        SQLSelectQuery query = ((SQLSelectStatement) stmt).getSelect().getQuery();
+        if (query instanceof SQLSelectQueryBlock) {
+            if (((SQLSelectQueryBlock) query).getFrom() == null) {
+                LOG.error("invalid oracle validationQuery. " + validationQuery + ", may should be : " + validationQuery
+                          + " FROM DUAL");
+            }
+        }
+    }
+
+    private void db2ValidationQueryCheck() {
+        if (validationQuery == null) {
+            return;
+        }
+        if (validationQuery.length() == 0) {
+            return;
+        }
+
+        SQLStatementParser sqlStmtParser = SQLParserUtils.createSQLStatementParser(validationQuery, this.dbType);
+        List<SQLStatement> stmtList = sqlStmtParser.parseStatementList();
+
+        if (stmtList.size() != 1) {
+            return;
+        }
+
+        SQLStatement stmt = stmtList.get(0);
+        if (!(stmt instanceof SQLSelectStatement)) {
+            return;
+        }
+
+        SQLSelectQuery query = ((SQLSelectStatement) stmt).getSelect().getQuery();
+        if (query instanceof SQLSelectQueryBlock) {
+            if (((SQLSelectQueryBlock) query).getFrom() == null) {
+                LOG.error("invalid db2 validationQuery. " + validationQuery + ", may should be : " + validationQuery
+                          + " FROM SYSDUMMY");
             }
         }
     }
@@ -710,7 +778,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         try {
             activeCount--;
             discardCount++;
-            
+
             if (activeCount <= 0) {
                 empty.signal();
             }
