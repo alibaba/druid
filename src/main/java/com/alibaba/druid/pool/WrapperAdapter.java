@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.SQLException;
 import java.sql.Wrapper;
 
 public class WrapperAdapter implements Wrapper {
