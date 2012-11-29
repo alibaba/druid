@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.pool;
 
-import java.sql.SQLException;
 import java.sql.Wrapper;
 
 public class WrapperAdapter implements Wrapper {
@@ -24,7 +23,7 @@ public class WrapperAdapter implements Wrapper {
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         if (iface == null) {
             return false;
         }
@@ -38,7 +37,7 @@ public class WrapperAdapter implements Wrapper {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         if (iface == null) {
             return null;
         }
