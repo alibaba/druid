@@ -32,13 +32,15 @@ public class ValidationQueryLogTest extends TestCase {
     }
 
     public void test_oracle() throws Exception {
+        Field field = DruidDataSource.class.getDeclaredField("LOG");
+        field.setAccessible(true);
+        Log log = (Log) field.get(null);
+        log.resetStat();
+        
         Connection conn = dataSource.getConnection();
         
         conn.close();
         
-        Field field = DruidDataSource.class.getDeclaredField("LOG");
-        field.setAccessible(true);
-        Log log = (Log) field.get(null);
         Assert.assertEquals(1, log.getErrorCount());
     }
 }
