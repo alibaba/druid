@@ -26,10 +26,12 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.TestUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * TestOnBo 类Case1.java的实现描述：TODO 类实现描述
@@ -47,19 +49,19 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 50;
     private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 5;
-    private int    loopCount       = 3;
-    final int      LOOP_COUNT      = 1000 * 100;
+    private int    threadCount     = 2;
+    private int    loopCount       = 5;
+    final int      LOOP_COUNT      = 1000 * 500;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:fake:dragoon_v25masterdb";
+        jdbcUrl = "jdbc:h2:mem:";
         user = "dragoon25";
         password = "dragoon25";
-        driverClass = "com.alibaba.druid.mock.MockDriver";
+        driverClass = "org.h2.Driver";
     }
 
-    public void test_0() throws Exception {
-        DruidDataSource dataSource = new DruidDataSource(false);
+    public void test_druid() throws Exception {
+        DruidDataSource dataSource = new DruidDataSource();
 
         dataSource.setInitialSize(initialSize);
         dataSource.setMaxActive(maxActive);
@@ -80,7 +82,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void test_1() throws Exception {
+    public void test_dbcp() throws Exception {
         final BasicDataSource dataSource = new BasicDataSource();
 
         dataSource.setInitialSize(initialSize);
@@ -102,7 +104,7 @@ public class Case1 extends TestCase {
         System.out.println();
     }
 
-    public void test_2() throws Exception {
+    public void test_bonecp() throws Exception {
         BoneCPDataSource dataSource = new BoneCPDataSource();
         // dataSource.(10);
         // dataSource.setMaxActive(50);
@@ -124,6 +126,66 @@ public class Case1 extends TestCase {
 
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "boneCP", threadCount);
+        }
+        System.out.println();
+    }
+    
+    public void test_c3p0() throws Exception {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        // dataSource.(10);
+        // dataSource.setMaxActive(50);
+        dataSource.setMinPoolSize(minPoolSize);
+        dataSource.setMaxPoolSize(maxPoolSize);
+
+        dataSource.setDriverClass(driverClass);
+        dataSource.setJdbcUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "c3p0", threadCount);
+        }
+        System.out.println();
+    }
+    
+    public void test_proxool() throws Exception {
+        ProxoolDataSource dataSource = new ProxoolDataSource();
+        // dataSource.(10);
+        // dataSource.setMaxActive(50);
+        dataSource.setMinimumConnectionCount(minPoolSize);
+        dataSource.setMaximumConnectionCount(maxPoolSize);
+
+        dataSource.setDriver(driverClass);
+        dataSource.setDriverUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "proxool", threadCount);
+        }
+        System.out.println();
+    }
+    
+    public void test_tomcat_jdbc() throws Exception {
+        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+        // dataSource.(10);
+         dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMinIdle(minPoolSize);
+        dataSource.setMaxActive(maxPoolSize);
+        
+        dataSource.setDriverClassName(driverClass);
+        dataSource.setUrl(jdbcUrl);
+        // dataSource.setPoolPreparedStatements(true);
+        // dataSource.setMaxOpenPreparedStatements(100);
+        dataSource.setUsername(user);
+        dataSource.setPassword(password);
+        
+        for (int i = 0; i < loopCount; ++i) {
+            p0(dataSource, "tomcat-jdbc", threadCount);
         }
         System.out.println();
     }
