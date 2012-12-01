@@ -63,7 +63,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             dbType = JdbcUtils.getDbType(dataSource.getUrl(), null);
         }
 
-        if (JdbcUtils.MYSQL.equals(dbType)) {
+        if (JdbcUtils.MYSQL.equals(dbType) || JdbcUtils.H2.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(MySqlWallProvider.DEFAULT_CONFIG_DIR);
             }

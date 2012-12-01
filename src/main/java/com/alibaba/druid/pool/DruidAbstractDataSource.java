@@ -1325,7 +1325,7 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             conn = createPhysicalConnection(url, physicalConnectProperties);
 
             if (conn == null) {
-                throw new SQLException("connect error, url " + url);
+                throw new SQLException("connect error, url " + url + ", driverClass " + this.driverClass);
             }
 
             initPhysicalConnection(conn);
