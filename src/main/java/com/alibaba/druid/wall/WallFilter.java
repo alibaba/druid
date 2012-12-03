@@ -54,9 +54,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public void init(DataSourceProxy dataSource) {
-
         if (this.dbType == null || this.dbType.trim().length() == 0) {
-            this.dbType = dataSource.getDbType();
+            this.dbType = JdbcUtils.getDbType(dataSource.getRawJdbcUrl(), "");
         }
 
         if (JdbcUtils.MYSQL.equals(dbType)) {
@@ -71,7 +70,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new OracleWallProvider(config);
-        } else if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+        } else if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
             if (config == null) {
                 config = new WallConfig(SQLServerProvider.DEFAULT_CONFIG_DIR);
             }
