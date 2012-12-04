@@ -49,9 +49,9 @@ public class Case1 extends TestCase {
     private int    maxPoolSize     = 50;
     private int    maxActive       = 50;
     private String validationQuery = "SELECT 1";
-    private int    threadCount     = 2;
-    private int    loopCount       = 5;
-    final int      LOOP_COUNT      = 1000 * 500;
+    private int    threadCount     = 1;
+    private int    loopCount       = 10;
+    final int      LOOP_COUNT      = 1000 * 1000 * 1 / threadCount;
 
     protected void setUp() throws Exception {
         jdbcUrl = "jdbc:h2:mem:";
