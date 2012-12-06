@@ -55,7 +55,7 @@ public class IbatisUtils {
      * 
      * @return
      */
-    protected static String createId(Object statement) {
+    protected static String getId(Object statement) {
         try {
             if (methodGetId == null) {
                 Class<?> clazz = statement.getClass();
@@ -80,7 +80,7 @@ public class IbatisUtils {
      * 
      * @return
      */
-    protected static String createResource(Object statement) {
+    protected static String getResource(Object statement) {
         try {
             if (methodGetResource == null) {
                 methodGetResource = statement.getClass().getMethod("getResource");

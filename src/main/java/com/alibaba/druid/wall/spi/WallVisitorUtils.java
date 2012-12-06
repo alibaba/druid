@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -245,15 +247,44 @@ public class WallVisitorUtils {
                 }
             }
         }
+        
+        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
+	        List<SQLExpr> groupList = new ArrayList<SQLExpr>();
+	        SQLExpr left = x.getLeft();
+	        for (;;) {
+	            if (left instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) left).getOperator() == x.getOperator()) {
+	                SQLBinaryOpExpr binaryLeft = (SQLBinaryOpExpr) left;
+	                groupList.add(binaryLeft.getRight());
+	                left = binaryLeft.getLeft();
+	            } else {
+	                groupList.add(left);
+	                break;
+	            }
+	        }
+	        groupList.add(x.getRight());
+	        
+	        boolean allFalse = true;
+	        for (int i = groupList.size() - 1; i >= 0; --i) {
+	        	Object result = getValue(groupList.get(i));
+	        	if (Boolean.TRUE == result) {
+	        		return true;
+	        	}
+	        	
+	        	if (Boolean.FALSE != result) {
+	        		allFalse = false;
+	        	}
+	        }
+	        
+	        if (allFalse) {
+	        	return false;
+	        }
+	        
+	        return null;
+        }
+
 
         Object leftResult = getValue(x.getLeft());
         Object rightResult = getValue(x.getRight());
-
-        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            if (Boolean.TRUE == leftResult || Boolean.TRUE == rightResult) {
-                return true;
-            }
-        }
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {

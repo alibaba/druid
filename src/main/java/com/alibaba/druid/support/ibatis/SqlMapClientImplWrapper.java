@@ -5,8 +5,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import com.alibaba.druid.stat.JdbcSqlStat;
 import com.ibatis.common.util.PaginatedList;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.ibatis.sqlmap.client.event.RowHandler;
 import com.ibatis.sqlmap.engine.execution.BatchException;
@@ -16,170 +20,240 @@ import com.ibatis.sqlmap.engine.impl.SqlMapSessionImpl;
 @SuppressWarnings("deprecation")
 public class SqlMapClientImplWrapper extends SqlMapClientImpl {
 
-    private SqlMapClientImpl raw;
+	private SqlMapClientImpl raw;
 
-    private static Method    getLocalSqlMapSessionMethod = null;
+	private static Method getLocalSqlMapSessionMethod = null;
 
-    public SqlMapClientImplWrapper(SqlMapClientImpl raw){
-        super(raw.getDelegate());
-        this.raw = raw;
-    }
+	private ConcurrentMap<String, IbatisStatementInfo> statementInfoMap = new ConcurrentHashMap<String, IbatisStatementInfo>();
 
-    protected SqlMapSessionWrapper getLocalSqlMapSessionWrapper() {
-        try {
-            if (getLocalSqlMapSessionMethod == null) {
-                getLocalSqlMapSessionMethod = raw.getClass().getDeclaredMethod("getLocalSqlMapSession");
-                getLocalSqlMapSessionMethod.setAccessible(true);
-            }
-            SqlMapSessionImpl sessionImpl = (SqlMapSessionImpl) getLocalSqlMapSessionMethod.invoke(raw);
-            IbatisUtils.set(sessionImpl, this);
-            return new SqlMapSessionWrapper(raw, sessionImpl);
-        } catch (Exception e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
-    }
+	public SqlMapClientImplWrapper(SqlMapClientImpl raw) {
+		super(raw.getDelegate());
+		this.raw = raw;
+	}
 
-    public SqlMapSession openSession(Connection conn) {
-        SqlMapSession session = raw.openSession(conn);
-        IbatisUtils.setClientImpl(session, this);
-        return new SqlMapSessionWrapper(raw, session);
-    }
+	public void setLocal(String id, SqlMapExecutor executor) {
+		IbatisStatementInfo stmtInfo = statementInfoMap.get(id);
 
-    public SqlMapSession getSession() {
-        SqlMapSession session = raw.getSession();
-        IbatisUtils.setClientImpl(session, this);
-        return new SqlMapSessionWrapper(raw, session);
-    }
+		if (stmtInfo != null) {
+			JdbcSqlStat.setContextSqlName(stmtInfo.getId());
+			JdbcSqlStat.setContextSqlFile(stmtInfo.getResource());
+			return;
+		}
 
-    // /////
-    public Object insert(String id, Object param) throws SQLException {
-        return getLocalSqlMapSessionWrapper().insert(id, param);
-    }
+		Object statement = null;
+		if (executor instanceof SqlMapSessionImpl) {
+			statement = ((SqlMapSessionImpl) executor).getMappedStatement(id);
+		}
 
-    public Object insert(String id) throws SQLException {
-        return getLocalSqlMapSessionWrapper().insert(id);
-    }
+		if (executor instanceof SqlMapClientImpl) {
+			statement = ((SqlMapClientImpl) executor).getMappedStatement(id);
+		}
 
-    public int update(String id, Object param) throws SQLException {
-        return getLocalSqlMapSessionWrapper().update(id, param);
-    }
+		if (statement == null) {
+			return;
+		}
 
-    public int update(String id) throws SQLException {
-        return getLocalSqlMapSessionWrapper().update(id);
-    }
+		String stmtId = IbatisUtils.getId(statement);
+		String stmtResource = IbatisUtils.getResource(statement);
+		stmtInfo = new IbatisStatementInfo(stmtId, stmtResource);
+		statementInfoMap.putIfAbsent(id, stmtInfo);
+		
+		JdbcSqlStat.setContextSqlName(stmtId);
+		JdbcSqlStat.setContextSqlFile(stmtResource);
+	}
 
-    public int delete(String id, Object param) throws SQLException {
-        return getLocalSqlMapSessionWrapper().delete(id, param);
-    }
+	protected SqlMapSessionWrapper getLocalSqlMapSessionWrapper() {
+		try {
+			if (getLocalSqlMapSessionMethod == null) {
+				getLocalSqlMapSessionMethod = raw.getClass().getDeclaredMethod(
+						"getLocalSqlMapSession");
+				getLocalSqlMapSessionMethod.setAccessible(true);
+			}
+			SqlMapSessionImpl sessionImpl = (SqlMapSessionImpl) getLocalSqlMapSessionMethod
+					.invoke(raw);
+			IbatisUtils.set(sessionImpl, this);
+			return new SqlMapSessionWrapper(raw, sessionImpl);
+		} catch (Exception e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+	}
 
-    public int delete(String id) throws SQLException {
-        return getLocalSqlMapSessionWrapper().delete(id);
-    }
+	public SqlMapSession openSession(Connection conn) {
+		SqlMapSession session = raw.openSession(conn);
+		IbatisUtils.setClientImpl(session, this);
+		return new SqlMapSessionWrapper(raw, session);
+	}
 
-    public Object queryForObject(String id, Object paramObject) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForObject(id, paramObject);
-    }
+	public SqlMapSession getSession() {
+		SqlMapSession session = raw.getSession();
+		IbatisUtils.setClientImpl(session, this);
+		return new SqlMapSessionWrapper(raw, session);
+	}
 
-    public Object queryForObject(String id) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForObject(id);
-    }
+	// /////
+	public Object insert(String id, Object param) throws SQLException {
+		return getLocalSqlMapSessionWrapper().insert(id, param);
+	}
 
-    public Object queryForObject(String id, Object paramObject, Object resultObject) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForObject(id, paramObject, resultObject);
-    }
+	public Object insert(String id) throws SQLException {
+		return getLocalSqlMapSessionWrapper().insert(id);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public List queryForList(String id, Object paramObject) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForList(id, paramObject);
-    }
+	public int update(String id, Object param) throws SQLException {
+		return getLocalSqlMapSessionWrapper().update(id, param);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public List queryForList(String id) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForList(id);
-    }
+	public int update(String id) throws SQLException {
+		return getLocalSqlMapSessionWrapper().update(id);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public List queryForList(String id, Object paramObject, int skip, int max) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForList(id, paramObject, skip, max);
-    }
+	public int delete(String id, Object param) throws SQLException {
+		return getLocalSqlMapSessionWrapper().delete(id, param);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public List queryForList(String id, int skip, int max) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForList(id, skip, max);
-    }
+	public int delete(String id) throws SQLException {
+		return getLocalSqlMapSessionWrapper().delete(id);
+	}
 
-    /**
-     * @deprecated All paginated list features have been deprecated
-     */
-    public PaginatedList queryForPaginatedList(String id, Object paramObject, int pageSize) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForPaginatedList(id, paramObject, pageSize);
-    }
+	public Object queryForObject(String id, Object paramObject)
+			throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForObject(id, paramObject);
+	}
 
-    /**
-     * @deprecated All paginated list features have been deprecated
-     */
-    public PaginatedList queryForPaginatedList(String id, int pageSize) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForPaginatedList(id, pageSize);
-    }
+	public Object queryForObject(String id) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForObject(id);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public Map queryForMap(String id, Object paramObject, String keyProp) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForMap(id, paramObject, keyProp);
-    }
+	public Object queryForObject(String id, Object paramObject,
+			Object resultObject) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForObject(id, paramObject,
+				resultObject);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public Map queryForMap(String id, Object paramObject, String keyProp, String valueProp) throws SQLException {
-        return getLocalSqlMapSessionWrapper().queryForMap(id, paramObject, keyProp, valueProp);
-    }
+	@SuppressWarnings("rawtypes")
+	public List queryForList(String id, Object paramObject) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForList(id, paramObject);
+	}
 
-    public void queryWithRowHandler(String id, Object paramObject, RowHandler rowHandler) throws SQLException {
-        getLocalSqlMapSessionWrapper().queryWithRowHandler(id, paramObject, rowHandler);
-    }
+	@SuppressWarnings("rawtypes")
+	public List queryForList(String id) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForList(id);
+	}
 
-    public void queryWithRowHandler(String id, RowHandler rowHandler) throws SQLException {
-        getLocalSqlMapSessionWrapper().queryWithRowHandler(id, rowHandler);
-    }
+	@SuppressWarnings("rawtypes")
+	public List queryForList(String id, Object paramObject, int skip, int max)
+			throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForList(id, paramObject,
+				skip, max);
+	}
 
-    public void startTransaction() throws SQLException {
-        getLocalSqlMapSessionWrapper().startTransaction();
-    }
+	@SuppressWarnings("rawtypes")
+	public List queryForList(String id, int skip, int max) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForList(id, skip, max);
+	}
 
-    public void startTransaction(int transactionIsolation) throws SQLException {
-        getLocalSqlMapSessionWrapper().startTransaction(transactionIsolation);
-    }
+	/**
+	 * @deprecated All paginated list features have been deprecated
+	 */
+	public PaginatedList queryForPaginatedList(String id, Object paramObject,
+			int pageSize) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForPaginatedList(id,
+				paramObject, pageSize);
+	}
 
-    public void commitTransaction() throws SQLException {
-        getLocalSqlMapSessionWrapper().commitTransaction();
-    }
+	/**
+	 * @deprecated All paginated list features have been deprecated
+	 */
+	public PaginatedList queryForPaginatedList(String id, int pageSize)
+			throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForPaginatedList(id,
+				pageSize);
+	}
 
-    public void endTransaction() throws SQLException {
-        try {
-            getLocalSqlMapSessionWrapper().endTransaction();
-        } finally {
-            getLocalSqlMapSessionWrapper().close();
-        }
-    }
+	@SuppressWarnings("rawtypes")
+	public Map queryForMap(String id, Object paramObject, String keyProp)
+			throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForMap(id, paramObject,
+				keyProp);
+	}
 
-    public void startBatch() throws SQLException {
-        getLocalSqlMapSessionWrapper().startBatch();
-    }
+	@SuppressWarnings("rawtypes")
+	public Map queryForMap(String id, Object paramObject, String keyProp,
+			String valueProp) throws SQLException {
+		return getLocalSqlMapSessionWrapper().queryForMap(id, paramObject,
+				keyProp, valueProp);
+	}
 
-    public int executeBatch() throws SQLException {
-        return getLocalSqlMapSessionWrapper().executeBatch();
-    }
+	public void queryWithRowHandler(String id, Object paramObject,
+			RowHandler rowHandler) throws SQLException {
+		getLocalSqlMapSessionWrapper().queryWithRowHandler(id, paramObject,
+				rowHandler);
+	}
 
-    @SuppressWarnings("rawtypes")
-    public List executeBatchDetailed() throws SQLException, BatchException {
-        return getLocalSqlMapSessionWrapper().executeBatchDetailed();
-    }
+	public void queryWithRowHandler(String id, RowHandler rowHandler)
+			throws SQLException {
+		getLocalSqlMapSessionWrapper().queryWithRowHandler(id, rowHandler);
+	}
 
-    public void setUserConnection(Connection connection) throws SQLException {
-        try {
-            getLocalSqlMapSessionWrapper().setUserConnection(connection);
-        } finally {
-            if (connection == null) {
-                getLocalSqlMapSessionWrapper().close();
-            }
-        }
-    }
+	public void startTransaction() throws SQLException {
+		getLocalSqlMapSessionWrapper().startTransaction();
+	}
+
+	public void startTransaction(int transactionIsolation) throws SQLException {
+		getLocalSqlMapSessionWrapper().startTransaction(transactionIsolation);
+	}
+
+	public void commitTransaction() throws SQLException {
+		getLocalSqlMapSessionWrapper().commitTransaction();
+	}
+
+	public void endTransaction() throws SQLException {
+		try {
+			getLocalSqlMapSessionWrapper().endTransaction();
+		} finally {
+			getLocalSqlMapSessionWrapper().close();
+		}
+	}
+
+	public void startBatch() throws SQLException {
+		getLocalSqlMapSessionWrapper().startBatch();
+	}
+
+	public int executeBatch() throws SQLException {
+		return getLocalSqlMapSessionWrapper().executeBatch();
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List executeBatchDetailed() throws SQLException, BatchException {
+		return getLocalSqlMapSessionWrapper().executeBatchDetailed();
+	}
+
+	public void setUserConnection(Connection connection) throws SQLException {
+		try {
+			getLocalSqlMapSessionWrapper().setUserConnection(connection);
+		} finally {
+			if (connection == null) {
+				getLocalSqlMapSessionWrapper().close();
+			}
+		}
+	}
+
+	public static class IbatisStatementInfo {
+		private final String id;
+		private final String resource;
+
+		public IbatisStatementInfo(String id, String resource) {
+			this.id = id;
+			this.resource = resource;
+		}
+
+		public String getId() {
+			return id;
+		}
+
+		public String getResource() {
+			return resource;
+		}
+
+	}
 }

@@ -18,9 +18,5 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="mapperInterface" value="com.alibaba.druid.bvt.pool.SpringMybatisFilterTest$UserMapper" />
 	</bean>
 	
-	<bean class="com.alibaba.druid.support.ibatis.SpringIbatisBeanTypeAutoProxyCreator" >
-		<property name="targetClass" value="com.ibatis.sqlmap.client.SqlMapClient" />
-	</bean>
-	
 	<import resource="classpath:com/alibaba/druid/pool/dataSource.xml"/>
 </beans>
