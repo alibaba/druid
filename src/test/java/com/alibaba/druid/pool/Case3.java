@@ -22,8 +22,6 @@ import java.sql.Statement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class Case3 extends TestCase {
 
     public void test_1() throws Exception {

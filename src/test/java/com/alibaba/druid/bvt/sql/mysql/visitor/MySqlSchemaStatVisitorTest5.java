@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat.Column;
 
 public class MySqlSchemaStatVisitorTest5 extends TestCase {
 

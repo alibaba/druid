@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.bvt.filter.wall;
 
+import junit.framework.TestCase;
+
 import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
-
-import junit.framework.TestCase;
 
 /**
  * 这个场景测试访问MySql系统函数

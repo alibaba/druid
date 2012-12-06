@@ -37,11 +37,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.Entry;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -539,24 +538,13 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     }
 
     @Override
-    public boolean visit(SubqueryFactoringClause x) {
+    public boolean visit(OracleWithSubqueryEntry x) {
 
         return true;
     }
 
     @Override
-    public void endVisit(SubqueryFactoringClause x) {
-
-    }
-
-    @Override
-    public boolean visit(Entry x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(Entry x) {
+    public void endVisit(OracleWithSubqueryEntry x) {
 
     }
 

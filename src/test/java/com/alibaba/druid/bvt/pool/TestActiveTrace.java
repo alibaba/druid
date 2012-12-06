@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 
 import junit.framework.Assert;

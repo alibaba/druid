@@ -24,8 +24,6 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.stat.JdbcStatManager;
-import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterResultSetMultiCloseTest extends TestCase {

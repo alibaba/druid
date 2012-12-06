@@ -17,10 +17,10 @@ package com.alibaba.druid.pool;
 
 import java.sql.Connection;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.pool.vendor.MySqlExceptionSorter;
 import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 
 public class CobarTest extends TestCase {

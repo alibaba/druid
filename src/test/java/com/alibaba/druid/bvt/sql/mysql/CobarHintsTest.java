@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.visitor.ParameterizedOutputVisitorUtils;
 import com.alibaba.druid.util.JdbcUtils;
 

@@ -98,6 +98,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUniqueConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 
 public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
@@ -550,6 +551,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSelect x) {
         x.getQuery().setParent(x);
+        
+        if (x.getWithSubQuery() != null) {
+            x.getWithSubQuery().accept(this);
+            println();
+        }
+        
         x.getQuery().accept(this);
 
         if (x.getOrderBy() != null) {
@@ -1191,6 +1198,42 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLColumnUniqueIndex x) {
         print(" UNIQUE INDEX");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLWithSubqueryClause x) {
+        print("WITH");
+        if (x.getRecursive() == Boolean.TRUE) {
+            print(" RECURSIVE");
+        }
+        incrementIndent();
+        println();
+        printlnAndAccept(x.getEntries(), ", ");
+        decrementIndent();
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLWithSubqueryClause.Entry x) {
+        x.getName().accept(this);
+
+        if (x.getColumns().size() > 0) {
+            print(" (");
+            printAndAccept(x.getColumns(), ", ");
+            print(")");
+        }
+        println();
+        print("AS");
+        println();
+        print("(");
+        incrementIndent();
+        println();
+        x.getSubQuery().accept(this);
+        decrementIndent();
+        println();
+        print(")");
+
         return false;
     }
 }

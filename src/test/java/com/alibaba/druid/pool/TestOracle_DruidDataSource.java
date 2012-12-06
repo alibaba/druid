@@ -18,7 +18,6 @@ package com.alibaba.druid.pool;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.TreeMap;
 import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;

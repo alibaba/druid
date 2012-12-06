@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;

@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

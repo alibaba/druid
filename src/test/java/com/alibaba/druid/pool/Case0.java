@@ -20,7 +20,6 @@ import java.sql.Connection;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.util.JMXUtils;
 
 public class Case0 extends TestCase {

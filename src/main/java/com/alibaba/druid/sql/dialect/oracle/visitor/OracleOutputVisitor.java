@@ -62,10 +62,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -192,7 +192,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 return;
             }
 
-            if(isPrettyFormat()) {
+            if (isPrettyFormat()) {
                 if (x.getParent() != null) {
                     print(";");
                 } else {
@@ -213,12 +213,12 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     public boolean visit(OracleAggregateExpr expr) {
         print(expr.getMethodName());
         print("(");
-        
+
         if (expr.getOption() != null) {
             print(expr.getOption().toString());
             print(' ');
         }
-        
+
         printAndAccept(expr.getArguments(), ", ");
         print(")");
 
@@ -394,8 +394,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     public boolean visit(OracleSelect x) {
-        if (x.getFactoring() != null) {
-            x.getFactoring().accept(this);
+        if (x.getWithSubQuery() != null) {
+            x.getWithSubQuery().accept(this);
             println();
         }
 
@@ -1122,7 +1122,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public boolean visit(SubqueryFactoringClause.Entry x) {
+    public boolean visit(OracleWithSubqueryEntry x) {
         x.getName().accept(this);
 
         if (x.getColumns().size() > 0) {
@@ -1154,22 +1154,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     }
 
     @Override
-    public void endVisit(SubqueryFactoringClause.Entry x) {
-
-    }
-
-    @Override
-    public boolean visit(SubqueryFactoringClause x) {
-        print("WITH");
-        incrementIndent();
-        println();
-        printlnAndAccept(x.getEntries(), ", ");
-        decrementIndent();
-        return false;
-    }
-
-    @Override
-    public void endVisit(SubqueryFactoringClause x) {
+    public void endVisit(OracleWithSubqueryEntry x) {
 
     }
 

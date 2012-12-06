@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import junit.framework.TestCase;
-import oracle.jdbc.OracleConnection;
 
 
 public class TestMySqlPing extends TestCase {

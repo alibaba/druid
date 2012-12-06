@@ -23,7 +23,6 @@ import junit.framework.TestCase;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class DBCPTest extends TestCase {
 
