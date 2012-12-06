@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.sql.PooledConnection;
-
 import junit.framework.TestCase;
 
 import org.junit.Assert;

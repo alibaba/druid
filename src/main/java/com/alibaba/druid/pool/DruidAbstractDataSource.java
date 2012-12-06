@@ -56,6 +56,7 @@ import com.alibaba.druid.pool.vendor.NullExceptionSorter;
 import com.alibaba.druid.proxy.jdbc.DataSourceProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.stat.JdbcDataSourceStat;
+import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.stat.JdbcStatManager;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -1161,6 +1162,11 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     }
 
     protected boolean testConnectionInternal(Connection conn) {
+        String sqlFile = JdbcSqlStat.getContextSqlFile();
+        String sqlName = JdbcSqlStat.getContextSqlName();
+        
+        JdbcSqlStat.setContextSqlFile(null);
+        JdbcSqlStat.setContextSqlName(null);
         try {
             if (validConnectionChecker != null) {
                 return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
@@ -1194,6 +1200,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
         } catch (Exception ex) {
             // skip
             return false;
+        } finally {
+            JdbcSqlStat.setContextSqlFile(sqlFile);
+            JdbcSqlStat.setContextSqlName(sqlName);
         }
     }
 

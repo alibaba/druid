@@ -27,7 +27,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdle3_Concurrent_Starvation_Longtime extends TestCase {
 

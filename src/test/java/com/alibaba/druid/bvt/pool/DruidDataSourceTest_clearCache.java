@@ -6,9 +6,7 @@ import java.sql.PreparedStatement;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 
 /**
  * 这个场景测试minIdle > maxActive

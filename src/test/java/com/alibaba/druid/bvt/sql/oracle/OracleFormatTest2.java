@@ -15,10 +15,10 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.TestCase;
 
 public class OracleFormatTest2 extends TestCase {
 

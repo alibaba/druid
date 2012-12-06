@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;

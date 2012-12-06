@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
 
 public class MysqlTest extends TestCase {
 	protected String output(List<SQLStatement> stmtList) {

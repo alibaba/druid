@@ -29,10 +29,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -266,13 +266,9 @@ public interface OracleASTVisitor extends SQLASTVisitor {
 
     void endVisit(GroupingSetExpr x);
 
-    boolean visit(SubqueryFactoringClause x);
+    boolean visit(OracleWithSubqueryEntry x);
 
-    void endVisit(SubqueryFactoringClause x);
-
-    boolean visit(SubqueryFactoringClause.Entry x);
-
-    void endVisit(SubqueryFactoringClause.Entry x);
+    void endVisit(OracleWithSubqueryEntry x);
 
     boolean visit(SearchClause x);
 

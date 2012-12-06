@@ -22,8 +22,6 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class ConcurrentTest extends TestCase {
 
     private String jdbcUrl;

@@ -251,7 +251,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         this.dataSource = dataSource;
     }
 
-    @Deprecated
     public final static String getContextSqlName() {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context == null) {
@@ -260,7 +259,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return context.getName();
     }
 
-    @Deprecated
     public final static void setContextSqlName(String val) {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context == null) {
@@ -271,7 +269,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         context.setName(val);
     }
 
-    @Deprecated
     public final static String getContextSqlFile() {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context == null) {
@@ -280,7 +277,6 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
         return context.getFile();
     }
 
-    @Deprecated
     public final static void setContextSqlFile(String val) {
         JdbcStatContext context = JdbcStatManager.getInstance().getStatContext();
         if (context == null) {

@@ -15,18 +15,13 @@
  */
 package com.alibaba.druid.pool;
 
-import java.lang.management.ManagementFactory;
 import java.sql.Connection;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
-import javax.management.ObjectName;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockDriver;
-import com.alibaba.druid.pool.DruidDataSource;
 
 public class TestIdle3_Concurrent_MaxActive extends TestCase {
 

@@ -29,8 +29,8 @@ import junit.framework.TestCase;
 
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import com.alibaba.druid.pool.PreparedStatementHolder;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
+import com.alibaba.druid.pool.PreparedStatementHolder;
 
 public class PoolablePreparedStatementTest extends TestCase {
 
