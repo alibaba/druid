@@ -21,13 +21,22 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLSelect extends SQLObjectImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-    protected SQLSelectQuery  query;
-    protected SQLOrderBy      orderBy;
+    protected SQLWithSubqueryClause withSubQuery;
+    protected SQLSelectQuery      query;
+    protected SQLOrderBy          orderBy;
 
     public SQLSelect(){
 
+    }
+
+    public SQLWithSubqueryClause getWithSubQuery() {
+        return withSubQuery;
+    }
+
+    public void setWithSubQuery(SQLWithSubqueryClause withSubQuery) {
+        this.withSubQuery = withSubQuery;
     }
 
     public SQLSelectQuery getQuery() {

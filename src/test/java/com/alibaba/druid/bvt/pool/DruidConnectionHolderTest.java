@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.pool;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;

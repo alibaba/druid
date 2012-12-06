@@ -3,9 +3,9 @@ package com.alibaba.druid.bvt.pool;
 import java.sql.Connection;
 import java.sql.SQLFeatureNotSupportedException;
 
-import org.junit.Assert;
-
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;

@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 public class DruidTest {
 
     private static DruidDataSource DS;

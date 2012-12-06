@@ -1,10 +1,10 @@
 package com.alibaba.druid.bvt.sql.eval;
 
-import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
-import com.alibaba.druid.util.JdbcConstants;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.util.JdbcConstants;
 
 
 public class EvalIsNullTest extends TestCase {

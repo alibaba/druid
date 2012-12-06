@@ -21,8 +21,6 @@ import java.sql.ResultSet;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;

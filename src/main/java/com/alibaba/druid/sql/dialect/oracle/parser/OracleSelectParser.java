@@ -23,11 +23,13 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -46,10 +48,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ModelRulesCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.QueryPartitionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReferenceModelClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.ModelClause.ReturnRowsClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleOrderByItem;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelect;
@@ -82,78 +84,7 @@ public class OracleSelectParser extends SQLSelectParser {
     public OracleSelect select() {
         OracleSelect select = new OracleSelect();
 
-        if (lexer.token() == Token.WITH) {
-            lexer.nextToken();
-
-            SubqueryFactoringClause subqueryFactoringClause = new SubqueryFactoringClause();
-            for (;;) {
-                SubqueryFactoringClause.Entry entry = new SubqueryFactoringClause.Entry();
-                entry.setName((SQLIdentifierExpr) this.exprParser.name());
-
-                if (lexer.token() == Token.LPAREN) {
-                    lexer.nextToken();
-                    exprParser.names(entry.getColumns());
-                    accept(Token.RPAREN);
-                }
-
-                accept(Token.AS);
-                accept(Token.LPAREN);
-                entry.setSubQuery(query());
-                accept(Token.RPAREN);
-
-                if (identifierEquals("SEARCH")) {
-                    lexer.nextToken();
-                    SearchClause searchClause = new SearchClause();
-
-                    if (lexer.token() != Token.IDENTIFIER) {
-                        throw new SQLParseException("syntax erorr : " + lexer.token());
-                    }
-
-                    searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
-                    lexer.nextToken();
-
-                    acceptIdentifier("FIRST");
-                    accept(Token.BY);
-
-                    searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
-
-                    while (lexer.token() == (Token.COMMA)) {
-                        lexer.nextToken();
-                        searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
-                    }
-
-                    accept(Token.SET);
-
-                    searchClause.setOrderingColumn((SQLIdentifierExpr) exprParser.name());
-
-                    entry.setSearchClause(searchClause);
-                }
-
-                if (identifierEquals("CYCLE")) {
-                    lexer.nextToken();
-                    CycleClause cycleClause = new CycleClause();
-                    exprParser.exprList(cycleClause.getAliases());
-                    accept(Token.SET);
-                    cycleClause.setMark(exprParser.expr());
-                    acceptIdentifier("TO");
-                    cycleClause.setValue(exprParser.expr());
-                    accept(Token.DEFAULT);
-                    cycleClause.setDefaultValue(exprParser.expr());
-                    entry.setCycleClause(cycleClause);
-                }
-
-                subqueryFactoringClause.getEntries().add(entry);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                }
-
-                break;
-            }
-
-            select.setFactoring(subqueryFactoringClause);
-        }
+        withSubquery(select);
 
         select.setQuery(query());
         select.setOrderBy(this.parseOrderBy());
@@ -224,6 +155,81 @@ public class OracleSelectParser extends SQLSelectParser {
         }
 
         return select;
+    }
+
+    protected void withSubquery(SQLSelect select) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+
+            SQLWithSubqueryClause subqueryFactoringClause = new SQLWithSubqueryClause();
+            for (;;) {
+                OracleWithSubqueryEntry entry = new OracleWithSubqueryEntry();
+                entry.setName((SQLIdentifierExpr) this.exprParser.name());
+
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    exprParser.names(entry.getColumns());
+                    accept(Token.RPAREN);
+                }
+
+                accept(Token.AS);
+                accept(Token.LPAREN);
+                entry.setSubQuery(query());
+                accept(Token.RPAREN);
+
+                if (identifierEquals("SEARCH")) {
+                    lexer.nextToken();
+                    SearchClause searchClause = new SearchClause();
+
+                    if (lexer.token() != Token.IDENTIFIER) {
+                        throw new SQLParseException("syntax erorr : " + lexer.token());
+                    }
+
+                    searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
+                    lexer.nextToken();
+
+                    acceptIdentifier("FIRST");
+                    accept(Token.BY);
+
+                    searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
+
+                    while (lexer.token() == (Token.COMMA)) {
+                        lexer.nextToken();
+                        searchClause.getItems().add((OracleOrderByItem) exprParser.parseSelectOrderByItem());
+                    }
+
+                    accept(Token.SET);
+
+                    searchClause.setOrderingColumn((SQLIdentifierExpr) exprParser.name());
+
+                    entry.setSearchClause(searchClause);
+                }
+
+                if (identifierEquals("CYCLE")) {
+                    lexer.nextToken();
+                    CycleClause cycleClause = new CycleClause();
+                    exprParser.exprList(cycleClause.getAliases());
+                    accept(Token.SET);
+                    cycleClause.setMark(exprParser.expr());
+                    acceptIdentifier("TO");
+                    cycleClause.setValue(exprParser.expr());
+                    accept(Token.DEFAULT);
+                    cycleClause.setDefaultValue(exprParser.expr());
+                    entry.setCycleClause(cycleClause);
+                }
+
+                subqueryFactoringClause.getEntries().add(entry);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+
+            select.setWithSubQuery(subqueryFactoringClause);
+        }
     }
 
     public SQLSelectQuery query() {
@@ -644,7 +650,7 @@ public class OracleSelectParser extends SQLSelectParser {
             if (identifierEquals("NOCYCLE")) {
                 hierachical.setNoCycle(true);
                 lexer.nextToken();
-                
+
                 if (lexer.token() == Token.PRIOR) {
                     lexer.nextToken();
                     hierachical.setPrior(true);
@@ -679,7 +685,7 @@ public class OracleSelectParser extends SQLSelectParser {
             if (identifierEquals("NOCYCLE")) {
                 hierachical.setNoCycle(true);
                 lexer.nextToken();
-                
+
                 if (lexer.token() == Token.PRIOR) {
                     lexer.nextToken();
                     hierachical.setPrior(true);

@@ -15,14 +15,14 @@
  */
 package com.alibaba.druid.bvt.sql.cobar;
 
+import junit.framework.TestCase;
+
 import org.junit.Assert;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.parser.Token;
-
-import junit.framework.TestCase;
 
 public class DMLInsertParserTest extends TestCase {
 

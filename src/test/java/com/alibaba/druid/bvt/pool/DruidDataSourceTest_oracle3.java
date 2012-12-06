@@ -3,7 +3,6 @@ package com.alibaba.druid.bvt.pool;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.vendor.OracleValidConnectionChecker;
 

@@ -1,6 +1,5 @@
 package com.alibaba.druid.bvt.filter;
 
-import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +12,7 @@ import junit.framework.TestCase;
 import com.alibaba.druid.filter.FilterAdapter;
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.mock.MockBlob;
-import com.alibaba.druid.mock.MockClob;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.proxy.jdbc.ClobProxyImpl;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.stat.JdbcSqlStat;
 import com.alibaba.druid.util.JdbcUtils;

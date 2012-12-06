@@ -23,7 +23,6 @@ import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
-import com.alibaba.druid.stat.TableStat;
 
 public class OracleSetTransactionTest2 extends OracleTest {
 

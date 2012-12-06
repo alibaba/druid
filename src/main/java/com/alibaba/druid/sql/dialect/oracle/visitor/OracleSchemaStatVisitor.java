@@ -58,11 +58,10 @@ import com.alibaba.druid.sql.dialect.oracle.ast.clause.OraclePartitionByRangeCla
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleRangeValuesClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleReturningClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleStorageClause;
+import com.alibaba.druid.sql.dialect.oracle.ast.clause.OracleWithSubqueryEntry;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.PartitionExtensionClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SampleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.SearchClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause;
-import com.alibaba.druid.sql.dialect.oracle.ast.clause.SubqueryFactoringClause.Entry;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalyticWindowing;
@@ -281,7 +280,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
             x.getOrderBy().setParent(x);
         }
 
-        accept(x.getFactoring());
+        accept(x.getWithSubQuery());
         accept(x.getQuery());
 
         setCurrentTable(x, (String) x.getQuery().getAttribute("table"));
@@ -810,18 +809,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public boolean visit(SubqueryFactoringClause x) {
-
-        return true;
-    }
-
-    @Override
-    public void endVisit(SubqueryFactoringClause x) {
-
-    }
-
-    @Override
-    public boolean visit(Entry x) {
+    public boolean visit(OracleWithSubqueryEntry x) {
         Map<String, String> aliasMap = getAliasMap();
         if (aliasMap != null) {
             String alias = null;
@@ -839,7 +827,7 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     }
 
     @Override
-    public void endVisit(Entry x) {
+    public void endVisit(OracleWithSubqueryEntry x) {
 
     }
 

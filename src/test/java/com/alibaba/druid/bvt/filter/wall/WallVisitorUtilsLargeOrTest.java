@@ -1,10 +1,10 @@
 package com.alibaba.druid.bvt.filter.wall;
 
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.wall.spi.WallVisitorUtils;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallVisitorUtilsLargeOrTest extends TestCase {
 	public void test_largeOr() throws Exception {

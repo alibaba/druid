@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -29,8 +30,10 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
+import com.alibaba.druid.sql.ast.statement.SQLWithSubqueryClause;
 
 public class SQLSelectParser extends SQLParser {
+
     protected SQLExprParser exprParser;
 
     public SQLSelectParser(String sql){
@@ -40,7 +43,7 @@ public class SQLSelectParser extends SQLParser {
     public SQLSelectParser(Lexer lexer){
         super(lexer);
     }
-    
+
     public SQLSelectParser(SQLExprParser exprParser){
         super(exprParser.getLexer());
         this.exprParser = exprParser;
@@ -48,6 +51,8 @@ public class SQLSelectParser extends SQLParser {
 
     public SQLSelect select() {
         SQLSelect select = new SQLSelect();
+
+        withSubquery(select);
 
         select.setQuery(query());
         select.setOrderBy(parseOrderBy());
@@ -159,6 +164,46 @@ public class SQLSelectParser extends SQLParser {
         return queryRest(queryBlock);
     }
 
+    protected void withSubquery(SQLSelect select) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            
+            SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
+            
+            if (lexer.token == Token.RECURSIVE || identifierEquals("RECURSIVE")) {
+                lexer.nextToken();
+                withQueryClause.setRecursive(true);
+            }
+            
+            for (;;) {
+                SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
+                entry.setName((SQLIdentifierExpr) this.exprParser.name());
+
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    exprParser.names(entry.getColumns());
+                    accept(Token.RPAREN);
+                }
+
+                accept(Token.AS);
+                accept(Token.LPAREN);
+                entry.setSubQuery(query());
+                accept(Token.RPAREN);
+
+                withQueryClause.getEntries().add(entry);
+
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                }
+
+                break;
+            }
+
+            select.setWithSubQuery(withQueryClause);
+        }
+    }
+
     protected void parseWhere(SQLSelectQueryBlock queryBlock) {
         if (lexer.token() == Token.WHERE) {
             lexer.nextToken();
@@ -221,7 +266,7 @@ public class SQLSelectParser extends SQLParser {
         if (lexer.token() == Token.LPAREN) {
             lexer.nextToken();
             SQLTableSource tableSource;
-            if (lexer.token() == Token.SELECT) {
+            if (lexer.token() == Token.SELECT || lexer.token() == Token.WITH) {
                 SQLSelect select = select();
                 accept(Token.RPAREN);
                 queryRest(select.getQuery());
