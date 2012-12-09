@@ -1438,6 +1438,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         final String factoryName = className + "Factory"; // XXX: not robust
         Reference ref = new Reference(className, factoryName, null);
         ref.add(new StringRefAddr("instanceKey", instanceKey));
+        ref.add(new StringRefAddr("url", this.getUrl()));
+        ref.add(new StringRefAddr("username", this.getUsername()));
+        ref.add(new StringRefAddr("password",this.getPassword()));
+        //TODO ADD OTHER PROPERTIES
         return ref;
     }
 
