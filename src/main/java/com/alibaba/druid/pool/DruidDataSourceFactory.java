@@ -95,9 +95,9 @@ public class DruidDataSourceFactory implements ObjectFactory {
             return null;
         }
         Reference ref = (Reference) obj;
-        if (!"javax.sql.DataSource".equals(ref.getClassName())) {
-            return null;
-        }
+        //if (!"javax.sql.DataSource".equals(ref.getClassName())) {
+        //    return null;
+        //}
 
         Properties properties = new Properties();
         for (int i = 0; i < ALL_PROPERTIES.length; i++) {
