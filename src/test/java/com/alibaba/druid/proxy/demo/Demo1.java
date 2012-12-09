@@ -18,10 +18,10 @@ package com.alibaba.druid.proxy.demo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import com.alibaba.druid.stat.JdbcStatManager;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import com.alibaba.druid.stat.JdbcStatManager;
 
 public class Demo1 extends TestCase {
 

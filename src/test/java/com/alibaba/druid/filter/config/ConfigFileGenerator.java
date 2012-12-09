@@ -1,16 +1,17 @@
 package com.alibaba.druid.filter.config;
 
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import com.alibaba.druid.util.JdbcUtils;
-
-import junit.framework.Assert;
-import org.junit.After;
-import org.junit.Before;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import junit.framework.Assert;
+
+import org.junit.After;
+import org.junit.Before;
+
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.util.JdbcUtils;
 
 /**
  * @author Jonas Yang

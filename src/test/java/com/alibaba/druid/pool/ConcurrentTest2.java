@@ -22,8 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
-
 public class ConcurrentTest2 extends TestCase {
 
     private String jdbcUrl;

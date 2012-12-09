@@ -15,7 +15,6 @@
  */
 package com.alibaba.druid.bvt.pool.basic;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 

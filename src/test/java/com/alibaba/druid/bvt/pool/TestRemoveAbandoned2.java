@@ -16,7 +16,6 @@
 package com.alibaba.druid.bvt.pool;
 
 import java.sql.Connection;
-import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

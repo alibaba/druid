@@ -17,12 +17,10 @@ package com.alibaba.druid.pool.dbcp;
 
 import java.sql.Connection;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import com.alibaba.druid.mock.MockConnection;
 import com.alibaba.druid.mock.MockDriver;
 
 public class Test0 extends TestCase {

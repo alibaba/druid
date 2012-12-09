@@ -1,14 +1,17 @@
 package com.alibaba.druid.bvt.console;
 
-import org.junit.runner.notification.Failure;
+import java.lang.management.ManagementFactory;
+
+import junit.framework.TestCase;
+
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
-import com.alibaba.druid.support.console.DruidStat;
-import com.alibaba.druid.util.JdbcUtils;
+import org.junit.runner.notification.Failure;
+
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.support.console.DruidStat;
 import com.alibaba.druid.support.console.Option;
-import junit.framework.TestCase;
-import java.lang.management.ManagementFactory;
+import com.alibaba.druid.util.JdbcUtils;
 
 public class DruidStatNullDataTest extends TestCase {
 

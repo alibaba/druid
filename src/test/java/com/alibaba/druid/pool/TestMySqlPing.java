@@ -16,7 +16,6 @@
 package com.alibaba.druid.pool;
 
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import junit.framework.TestCase;
 

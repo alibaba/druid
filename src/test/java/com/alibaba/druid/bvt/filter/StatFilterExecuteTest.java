@@ -17,7 +17,6 @@ package com.alibaba.druid.bvt.filter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import junit.framework.Assert;
@@ -28,7 +27,6 @@ import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.mock.MockPreparedStatement;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.stat.JdbcSqlStat;
-import com.alibaba.druid.util.Histogram;
 import com.alibaba.druid.util.JdbcUtils;
 
 public class StatFilterExecuteTest extends TestCase {

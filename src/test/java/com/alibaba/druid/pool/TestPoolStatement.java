@@ -22,9 +22,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 
-import com.alibaba.druid.util.JdbcUtils;
-
 import junit.framework.TestCase;
+
+import com.alibaba.druid.util.JdbcUtils;
 
 public class TestPoolStatement extends TestCase {
 

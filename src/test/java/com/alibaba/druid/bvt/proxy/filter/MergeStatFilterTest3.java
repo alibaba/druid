@@ -23,7 +23,6 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.IOUtils;
 
 public class MergeStatFilterTest3 extends TestCase {

@@ -17,7 +17,6 @@ package com.alibaba.druid.pool;
 
 import junit.framework.TestCase;
 import oracle.jdbc.pool.OracleConnectionPoolDataSource;
-import oracle.jdbc.pool.OracleConnectionPoolDataSource;
 
 
 public class OracleConnectionPoolDataSourceTest extends TestCase {

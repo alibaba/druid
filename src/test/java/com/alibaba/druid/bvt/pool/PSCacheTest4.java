@@ -18,7 +18,6 @@ package com.alibaba.druid.bvt.pool;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.TestForZY.A;
 import com.alibaba.druid.pool.DruidConnectionHolder;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;

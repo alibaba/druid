@@ -1,9 +1,9 @@
 package com.alibaba.druid.bvt.filter.config;
 
-import com.alibaba.druid.filter.config.ConfigFilter;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import com.alibaba.druid.filter.config.ConfigFilter;
 
 
 public class ConfigFilterTest5 extends TestCase {

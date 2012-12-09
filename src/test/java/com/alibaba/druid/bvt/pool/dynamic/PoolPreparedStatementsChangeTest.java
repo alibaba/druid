@@ -23,7 +23,6 @@ import java.sql.ResultSet;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.logging.Log;
 

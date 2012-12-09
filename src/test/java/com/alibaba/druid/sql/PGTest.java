@@ -17,10 +17,10 @@ package com.alibaba.druid.sql;
 
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGOutputVisitor;
-
-import junit.framework.TestCase;
 
 public class PGTest extends TestCase {
 	protected String output(List<SQLStatement> stmtList) {

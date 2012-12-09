@@ -16,14 +16,11 @@
 package com.alibaba.druid.pool;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.Assert;
 
 public class Test_C2 extends TestCase {
 

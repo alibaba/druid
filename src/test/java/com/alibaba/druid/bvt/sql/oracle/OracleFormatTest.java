@@ -15,9 +15,9 @@
  */
 package com.alibaba.druid.bvt.sql.oracle;
 
-import com.alibaba.druid.sql.SQLUtils;
-
 import junit.framework.TestCase;
+
+import com.alibaba.druid.sql.SQLUtils;
 
 public class OracleFormatTest extends TestCase{
 	public void test_formatOracle(){
