@@ -23,13 +23,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.Assert;
 import org.springframework.util.PatternMatchUtils;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
@@ -41,29 +36,14 @@ import com.ibatis.sqlmap.engine.impl.ExtendedSqlMapClient;
  * @author hualiang.lihl 2011-12-31 上午10:48:20
  */
 @SuppressWarnings("deprecation")
-public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implements InitializingBean, ApplicationContextAware, SpringIbatisBeanTypeAutoProxyCreatorMBean {
+public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreator implements SpringIbatisBeanTypeAutoProxyCreatorMBean {
 
     private final static Log   LOG              = LogFactory.getLog(SpringIbatisBeanTypeAutoProxyCreator.class);
 
     private static final long  serialVersionUID = -9094985530794052264L;
 
-    private Class<?>           targetBeanType   = SqlMapClient.class;
-
-    private ApplicationContext context;
-
     private List<String>       beanNames        = new ArrayList<String>();
     private final List<String> proxyBeanNames   = new ArrayList<String>();
-
-    /**
-     * @param targetClass the targetClass to set
-     */
-    public void setTargetBeanType(Class<?> targetClass) {
-        this.targetBeanType = targetClass;
-    }
-
-    public void setApplicationContext(ApplicationContext context) throws BeansException {
-        this.context = context;
-    }
 
     /**
      * Identify as bean to proxy if the bean name is in the configured list of names.
@@ -122,14 +102,6 @@ public class SpringIbatisBeanTypeAutoProxyCreator extends AbstractAutoProxyCreat
      */
     protected boolean isMatch(String beanName, String mappedName) {
         return PatternMatchUtils.simpleMatch(mappedName, beanName);
-    }
-
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(targetBeanType, "targetType cannot be null");
-        String[] beanNames = context.getBeanNamesForType(targetBeanType);
-        for (String name : beanNames) {
-            this.beanNames.add(name);
-        }
     }
 
     public List<String> getBeanNames() {
