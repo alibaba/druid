@@ -12,18 +12,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-	<bean class="com.alibaba.druid.support.mybatis.SqlWrapperCreator" >
-	</bean>
-	
-		
-	<bean class="com.alibaba.druid.support.mybatis.SqlWrapperNameCreator" >
-		<property name="beanNames">
-			<list>
-				<value>sqlSessionFactory</value>
-			</list>
-		</property>
-	</bean>
-	
 	<bean class="org.mybatis.spring.mapper.MapperFactoryBean"
 		id="userMapper">
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
