@@ -13,28 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.wall;
+package com.alibaba.druid.support.ibatis;
 
-import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
-public interface WallFilterMBean {
 
-    String getDbType();
-
-    boolean isLogViolation();
-
-    void setLogViolation(boolean logViolation);
-
-    boolean isThrowException();
-    
-    void setThrowException(boolean throwException);
-    
-    boolean isInited();
-    
-    void clearProviderCache();
-    
-    Set<String> getProviderWhiteList();
-    
-    String check(String sql) throws SQLException;
+public interface SpringIbatisBeanNameAutoProxyCreatorMBean {
+    List<String> getProxyBeanNames();
 }

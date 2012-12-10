@@ -145,14 +145,7 @@ public class SQLUtils {
         try {
             List<SQLStatement> statementList = toStatementList(sql, dbType);
 
-            StringBuilder out = new StringBuilder();
-            SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
-
-            for (SQLStatement stmt : statementList) {
-                stmt.accept(visitor);
-            }
-
-            return out.toString();
+            return toSQLString(statementList, dbType);
         } catch (SQLParseException ex) {
             LOG.warn("format error", ex);
             return sql;
@@ -160,6 +153,17 @@ public class SQLUtils {
             LOG.warn("format error", ex);
             return sql;
         }
+    }
+
+    public static String toSQLString(List<SQLStatement> statementList, String dbType) {
+        StringBuilder out = new StringBuilder();
+        SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
+
+        for (SQLStatement stmt : statementList) {
+            stmt.accept(visitor);
+        }
+
+        return out.toString();
     }
 
     public static SQLASTOutputVisitor createFormatOutputVisitor(Appendable out, List<SQLStatement> statementList,

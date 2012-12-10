@@ -16,11 +16,8 @@
 package com.alibaba.druid.wall;
 
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -112,22 +109,24 @@ public abstract class WallProvider {
     public abstract SQLStatementParser createParser(String sql);
 
     public abstract WallVisitor createWallVisitor();
-    
+
     public abstract ExportParameterVisitor createExportParameterVisitor();
 
     public boolean checkValid(String sql) {
-        return check(sql).size() == 0;
+        return check(sql).getViolations().isEmpty();
     }
 
-    public List<Violation> check(String sql) {
-        if (privileged.get() == Boolean.TRUE) {
-            return Collections.emptyList();
+    public WallCheckResult check(String sql) {
+        WallCheckResult result = new WallCheckResult();
+
+        if (config.isAllowDoPrivileged() && privileged.get() == Boolean.TRUE) {
+            return result;
         }
 
         // first step, check whiteList
         boolean isWhite = whiteContains(sql);
         if (isWhite) {
-            return Collections.emptyList();
+            return result;
         }
 
         SQLStatementParser parser = createParser(sql);
@@ -136,34 +135,36 @@ public abstract class WallProvider {
             parser.getLexer().setAllowComment(false); // permit comment
         }
 
-        List<SQLStatement> statementList = new ArrayList<SQLStatement>();
-
         try {
-            parser.parseStatementList(statementList);
+            parser.parseStatementList(result.getStatementList());
         } catch (Exception e) {
-            return Collections.<Violation> singletonList(new SyntaxErrorViolation(e, sql));
+            result.getViolations().add(new SyntaxErrorViolation(e, sql));
+            return result;
         }
 
         if (parser.getLexer().token() != Token.EOF) {
-            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
-        }
-        
-        if (statementList.size() == 0) {
-            return Collections.emptyList();
+            result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            return result;
         }
 
-        if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
-            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
+        if (result.getStatementList().size() == 0) {
+            return result;
         }
 
-        SQLStatement stmt = statementList.get(0);
+        if (result.getStatementList().size() > 1 && !config.isMultiStatementAllow()) {
+            result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            return result;
+        }
+
+        SQLStatement stmt = result.getStatementList().get(0);
 
         WallVisitor visitor = createWallVisitor();
 
         try {
             stmt.accept(visitor);
         } catch (ParserException e) {
-            return Collections.<Violation> singletonList(new IllegalSQLObjectViolation(sql));
+            result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            return result;
         }
 
         if (visitor.getViolations().size() == 0) {
@@ -172,7 +173,8 @@ public abstract class WallProvider {
             }
         }
 
-        return visitor.getViolations();
+        result.getViolations().addAll(visitor.getViolations());
+        return result;
     }
 
     public static <T> T doPrivileged(PrivilegedAction<T> action) {
@@ -182,5 +184,15 @@ public abstract class WallProvider {
         } finally {
             privileged.set(null);
         }
+    }
+
+    private static final ThreadLocal<Object> guardValueLocal = new ThreadLocal<Object>();
+
+    public static void setGuardValue(Object value) {
+        guardValueLocal.set(value);
+    }
+
+    public static Object getGuardValue() {
+        return guardValueLocal;
     }
 }
