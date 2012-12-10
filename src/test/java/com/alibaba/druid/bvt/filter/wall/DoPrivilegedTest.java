@@ -21,6 +21,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallUtils;
 
@@ -31,10 +32,13 @@ public class DoPrivilegedTest extends TestCase {
     }
 
     public void test_1() throws Exception {
+        final WallConfig config = new WallConfig();
+        config.setAllowDoPrivileged(true);
+        
         WallProvider.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
-                Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os"));
+                Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os", config));
                 return null;
             }
         });

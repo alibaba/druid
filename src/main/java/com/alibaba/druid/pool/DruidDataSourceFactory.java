@@ -95,7 +95,10 @@ public class DruidDataSourceFactory implements ObjectFactory {
             return null;
         }
         Reference ref = (Reference) obj;
-        if (!"javax.sql.DataSource".equals(ref.getClassName())) {
+
+        if ((!"javax.sql.DataSource".equals(ref.getClassName())) //
+            && (!"com.alibaba.druid.pool.DruidDataSource".equals(ref.getClassName())) //
+        ) {
             return null;
         }
 
@@ -111,7 +114,7 @@ public class DruidDataSourceFactory implements ObjectFactory {
 
         return createDataSourceInternal(properties);
     }
-    
+
     protected DataSource createDataSourceInternal(Properties properties) throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
         config(dataSource, properties);
