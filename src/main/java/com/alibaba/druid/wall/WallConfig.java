@@ -71,8 +71,27 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             inited;
 
+    private String              guardTablePattern;
+    private String              guardField;
+
     public WallConfig(){
 
+    }
+
+    public String getGuardTablePattern() {
+        return guardTablePattern;
+    }
+
+    public void setGuardTablePattern(String guardTablePattern) {
+        this.guardTablePattern = guardTablePattern;
+    }
+
+    public String getGuardField() {
+        return guardField;
+    }
+
+    public void setGuardField(String guardField) {
+        this.guardField = guardField;
     }
 
     public boolean isAllowDoPrivileged() {
