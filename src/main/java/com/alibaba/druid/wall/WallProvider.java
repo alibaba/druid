@@ -120,7 +120,7 @@ public abstract class WallProvider {
     }
 
     public List<Violation> check(String sql) {
-        if (privileged.get() == Boolean.TRUE) {
+        if (config.isAllowDoPrivileged() && privileged.get() == Boolean.TRUE) {
             return Collections.emptyList();
         }
 

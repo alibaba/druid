@@ -57,6 +57,8 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             mustParameterized          = false;
 
+    private boolean             allowDoPrivileged          = false;
+
     protected final Set<String> permitFunctions            = new HashSet<String>();
     protected final Set<String> permitTables               = new HashSet<String>();
     protected final Set<String> permitSchemas              = new HashSet<String>();
@@ -71,6 +73,14 @@ public class WallConfig implements WallConfigMBean {
 
     public WallConfig(){
 
+    }
+
+    public boolean isAllowDoPrivileged() {
+        return allowDoPrivileged;
+    }
+
+    public void setAllowDoPrivileged(boolean allowDoPrivileged) {
+        this.allowDoPrivileged = allowDoPrivileged;
     }
 
     public boolean isInited() {
