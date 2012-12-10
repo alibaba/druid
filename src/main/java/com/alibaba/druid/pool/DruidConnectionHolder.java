@@ -27,6 +27,7 @@ import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
 import com.alibaba.druid.util.IOUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -65,7 +66,11 @@ public final class DruidConnectionHolder {
         this.lastActiveTimeMillis = connecttimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
-        this.underlyingHoldability = conn.getHoldability();
+        
+        if (!JdbcConstants.SYBASE.equals(dataSource.getDbType())) {
+            this.underlyingHoldability = conn.getHoldability();
+        }
+
         this.underlyingReadOnly = conn.isReadOnly();
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
