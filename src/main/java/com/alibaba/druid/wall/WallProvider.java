@@ -186,13 +186,13 @@ public abstract class WallProvider {
         }
     }
 
-    private static final ThreadLocal<Object> guardValueLocal = new ThreadLocal<Object>();
+    private static final ThreadLocal<Object> tenantValueLocal = new ThreadLocal<Object>();
 
-    public static void setGuardValue(Object value) {
-        guardValueLocal.set(value);
+    public static void setTenantValue(Object value) {
+        tenantValueLocal.set(value);
     }
 
-    public static Object getGuardValue() {
-        return guardValueLocal;
+    public static Object getTenantValue() {
+        return tenantValueLocal.get();
     }
 }
