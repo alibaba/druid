@@ -16,6 +16,11 @@
 package com.alibaba.druid.util;
 
 public class ServletPathMatcher implements PatternMatcher {
+	private final static ServletPathMatcher instance = new ServletPathMatcher();
+	
+	public static ServletPathMatcher getInstance() {
+		return instance;
+	}
 
     /**
      * <p>
