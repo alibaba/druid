@@ -71,6 +71,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public WallConfig getConfig() {
         return config;
     }
+    
+    public void addViolation(Violation violation) {
+        this.violations.add(violation);
+    }
 
     public List<Violation> getViolations() {
         return violations;

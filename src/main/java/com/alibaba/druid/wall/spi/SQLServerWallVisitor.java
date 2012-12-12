@@ -68,6 +68,10 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         return this.config;
     }
 
+    public void addViolation(Violation violation) {
+        this.violations.add(violation);
+    }
+    
     @Override
     public List<Violation> getViolations() {
         return violations;

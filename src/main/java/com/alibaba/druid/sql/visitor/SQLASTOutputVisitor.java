@@ -942,19 +942,25 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLJoinTableSource x) {
         x.getLeft().accept(this);
+        incrementIndent();
+        
         if (x.getJoinType() == JoinType.COMMA) {
             print(",");
         } else {
-            print(" ");
+            println();
             print(JoinType.toString(x.getJoinType()));
         }
         print(" ");
         x.getRight().accept(this);
 
         if (x.getCondition() != null) {
+            incrementIndent();
             print(" ON ");
             x.getCondition().accept(this);
+            decrementIndent();
         }
+        
+        decrementIndent();
 
         return false;
     }

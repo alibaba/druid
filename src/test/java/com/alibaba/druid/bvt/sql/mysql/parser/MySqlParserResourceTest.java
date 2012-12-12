@@ -33,7 +33,7 @@ import com.alibaba.druid.util.JdbcUtils;
 public class MySqlParserResourceTest extends TestCase {
 
     public void test_0() throws Exception {
-        exec_test("bvt/parser/mysql-0.txt");
+//        exec_test("bvt/parser/mysql-0.txt");
         exec_test("bvt/parser/mysql-1.txt");
         exec_test("bvt/parser/mysql-2.txt");
         exec_test("bvt/parser/mysql-3.txt");

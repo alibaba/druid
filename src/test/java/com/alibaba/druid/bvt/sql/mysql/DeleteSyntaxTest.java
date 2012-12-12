@@ -46,7 +46,10 @@ public class DeleteSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("DELETE t1\nFROM t1 LEFT JOIN t2 ON t1.id = t2.id\nWHERE t2.id IS NULL;", text);
+        Assert.assertEquals("DELETE t1" + //
+                            "\nFROM t1" + //
+                            "\n\tLEFT JOIN t2 ON t1.id = t2.id" + //
+                            "\nWHERE t2.id IS NULL;", text);
     }
 
     public void test_2() throws Exception {
@@ -57,7 +60,9 @@ public class DeleteSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("DELETE a1, a2\nFROM t1 a1 INNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
+        Assert.assertEquals("DELETE a1, a2\nFROM t1 a1" + //
+                            "\n\tINNER JOIN t2 a2" + //
+                            "\nWHERE a1.id = a2.id;", text);
     }
 
     public void test_3() throws Exception {
@@ -68,7 +73,8 @@ public class DeleteSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("DELETE FROM a1, a2\nUSING t1 a1 INNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
+        Assert.assertEquals("DELETE FROM a1, a2\nUSING t1 a1" + //
+                            "\n\tINNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
     }
 
     public void test_4() throws Exception {
