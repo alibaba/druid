@@ -37,7 +37,9 @@ public class SQLServerRowNumberTest extends TestCase {
                      "    AND SalesYTD <> 0;";
 
         String expect = "SELECT c.FirstName, c.LastName, ROW_NUMBER() OVER () ORDER BY SalesYTD DESC AS 'Row Number', s.SalesYTD, a.PostalCode" //
-                        + "\nFROM Sales.SalesPerson s INNER JOIN Person.Contact c ON s.SalesPersonID = c.ContactID INNER JOIN Person.Address a ON a.AddressID = c.ContactID" //
+                        + "\nFROM Sales.SalesPerson s"
+                        + "\n\tINNER JOIN Person.Contact c ON s.SalesPersonID = c.ContactID"
+                        + "\n\tINNER JOIN Person.Address a ON a.AddressID = c.ContactID" //
                         + "\nWHERE TerritoryID IS NOT NULL" //
                         + "\n\tAND SalesYTD <> 0";
 
