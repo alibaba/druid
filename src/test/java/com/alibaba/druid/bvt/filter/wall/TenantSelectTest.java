@@ -26,28 +26,27 @@ import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
-public class TenantUpdateTest extends TestCase {
-	private String sql = "UPDATE T_USER SET FNAME = ? WHERE FID = ?";
+public class TenantSelectTest extends TestCase {
 
-	private WallConfig config = new WallConfig();
+    private String     sql    = "SELECT ID, NAME FROM orders WHERE FID = ?";
 
-	protected void setUp() throws Exception {
-		config.setDeleteAllow(false);
-		config.setTenantTablePattern("*");
-		config.setTenantColumn("tenant");
-	}
+    private WallConfig config = new WallConfig();
 
-	public void testMySql() throws Exception {
-		WallProvider.setTenantValue(123);
-		MySqlWallProvider provider = new MySqlWallProvider(config);
-		WallCheckResult checkResult = provider.check(sql);
-		Assert.assertEquals(0, checkResult.getViolations().size());
+    protected void setUp() throws Exception {
+        config.setTenantTablePattern("*");
+        config.setTenantColumn("tenant");
+    }
 
-		String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(),
-				JdbcConstants.MYSQL);
-		Assert.assertEquals("UPDATE T_USER" + //
-				"\nSET FNAME = ?" + //
-				"\nWHERE tenant = 123" + //
-				"\n\tAND FID = ?", resultSql);
-	}
+    public void testMySql() throws Exception {
+        WallProvider.setTenantValue(123);
+        MySqlWallProvider provider = new MySqlWallProvider(config);
+        WallCheckResult checkResult = provider.check(sql);
+        Assert.assertEquals(0, checkResult.getViolations().size());
+
+        String resultSql = SQLUtils.toSQLString(checkResult.getStatementList(), JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT ID, NAME" + //
+                            "\nFROM orders" + //
+                            "\nWHERE tenant = 123" + //
+                            "\n\tAND FID = ?", resultSql);
+    }
 }

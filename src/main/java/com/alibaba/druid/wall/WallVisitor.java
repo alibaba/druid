@@ -28,6 +28,8 @@ public interface WallVisitor extends SQLASTVisitor {
 
     List<Violation> getViolations();
     
+    void addViolation(Violation violation);
+    
     boolean isPermitTable(String name);
 
     String toSQL(SQLObject obj);

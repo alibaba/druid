@@ -71,6 +71,10 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         return config;
     }
 
+    public void addViolation(Violation violation) {
+        this.violations.add(violation);
+    }
+    
     public List<Violation> getViolations() {
         return violations;
     }
