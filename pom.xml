@@ -522,6 +522,12 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>4.1.8.Final</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId> org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -542,6 +548,12 @@
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
 			<version>1.b.46</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.taobao.tbdatasource</groupId>
+			<artifactId>tbdatasource</artifactId>
+			<version>2.0.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
