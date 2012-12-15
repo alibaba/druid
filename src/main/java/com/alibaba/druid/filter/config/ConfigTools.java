@@ -174,9 +174,9 @@ public class ConfigTools {
             //For IBM JDK, 原因请看解密方法中的说明
             RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
             RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(), rsaPrivateKey.getPrivateExponent());
-            Key publicKey = KeyFactory.getInstance("RSA").generatePublic(publicKeySpec);
+            Key fakePublicKey = KeyFactory.getInstance("RSA").generatePublic(publicKeySpec);
             cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
         }
 
 		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
