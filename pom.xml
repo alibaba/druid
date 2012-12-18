@@ -522,12 +522,6 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>4.1.8.Final</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId> org.jboss.logging</groupId>
-					<artifactId>jboss-logging</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
