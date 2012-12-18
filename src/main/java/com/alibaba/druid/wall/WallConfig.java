@@ -34,6 +34,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
 
+    private boolean             selectAllColumnAllow       = true;
+
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
 
@@ -110,6 +112,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setAllowDoPrivileged(boolean allowDoPrivileged) {
         this.allowDoPrivileged = allowDoPrivileged;
+    }
+
+    public boolean isSelectAllColumnAllow() {
+        return selectAllColumnAllow;
+    }
+
+    public void setSelectAllColumnAllow(boolean selectAllColumnAllow) {
+        this.selectAllColumnAllow = selectAllColumnAllow;
     }
 
     public boolean isInited() {

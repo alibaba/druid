@@ -33,11 +33,13 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
@@ -135,6 +137,13 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     public boolean visit(SQLSelectGroupByClause x) {
         WallVisitorUtils.checkHaving(this, x.getHaving());
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLServerSelectQueryBlock x) {
+        WallVisitorUtils.checkSelelct(this, x);
+
         return true;
     }
 
@@ -247,5 +256,11 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public void endVisit(SQLServerInsertStatement x) {
         this.endVisit((SQLInsertStatement) x);        
+    }
+    
+    @Override
+    public boolean visit(SQLSelectItem x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }
