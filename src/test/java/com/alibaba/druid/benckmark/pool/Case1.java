@@ -18,8 +18,12 @@ package com.alibaba.druid.benckmark.pool;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
@@ -29,6 +33,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.logicalcobwebs.proxool.ProxoolDataSource;
 
 import com.alibaba.druid.TestUtil;
+import com.alibaba.druid.mock.MockDriver;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -43,26 +48,52 @@ import com.taobao.datasource.resource.adapter.jdbc.local.LocalTxDataSource;
  */
 public class Case1 extends TestCase {
 
-    private String jdbcUrl;
-    private String user;
-    private String password;
-    private String driverClass;
-    private int    initialSize     = 10;
-    private int    minPoolSize     = 10;
-    private int    maxPoolSize     = 50;
-    private int    maxActive       = 50;
-    private String validationQuery = "SELECT 1";
-    private int    threadCount     = 1;
-    private int    loopCount       = 10;
-    final int      LOOP_COUNT      = 1000 * 1000 * 1 / threadCount;
+    private String            jdbcUrl;
+    private String            user;
+    private String            password;
+    private String            driverClass;
+    private int               initialSize      = 10;
+    private int               minPoolSize      = 10;
+    private int               maxPoolSize      = 50;
+    private int               maxActive        = 50;
+    private String            validationQuery  = "SELECT 1";
+    private int               threadCount      = 5;
+    private int               loopCount        = 10;
+    final int                 LOOP_COUNT       = 1000 * 1000 * 1 / threadCount;
+
+    private static AtomicLong physicalConnStat = new AtomicLong();
+
+    public static class TestDriver extends MockDriver {
+
+        public static TestDriver instance = new TestDriver();
+
+        public boolean acceptsURL(String url) throws SQLException {
+            if (url.startsWith("jdbc:test:")) {
+                return true;
+            }
+            return super.acceptsURL(url);
+        }
+
+        public Connection connect(String url, Properties info) throws SQLException {
+            physicalConnStat.incrementAndGet();
+            return super.connect("jdbc:mock:case1", info);
+        }
+    }
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:h2:mem:";
+        DriverManager.registerDriver(TestDriver.instance);
+
         user = "dragoon25";
         password = "dragoon25";
-        driverClass = "org.h2.Driver";
+
+        // jdbcUrl = "jdbc:h2:mem:";
+        // driverClass = "org.h2.Driver";
+        jdbcUrl = "jdbc:test:case1:";
+        driverClass = "com.alibaba.druid.benckmark.pool.Case1$TestDriver";
+
+        physicalConnStat.set(0);
     }
-    
+
     public void test_druid() throws Exception {
         DruidDataSource dataSource = new DruidDataSource();
 
@@ -84,21 +115,21 @@ public class Case1 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_jobss() throws Exception {
-    	LocalTxDataSourceDO dataSourceDO = new LocalTxDataSourceDO();
-    	dataSourceDO.setBlockingTimeoutMillis(1000 * 60);
-    	dataSourceDO.setMaxPoolSize(maxPoolSize);
-    	dataSourceDO.setMinPoolSize(minPoolSize);
-    	
-    	dataSourceDO.setDriverClass(driverClass);
-    	dataSourceDO.setConnectionURL(jdbcUrl);
-    	dataSourceDO.setUserName(user);
-    	dataSourceDO.setPassword(password);
-    	
+        LocalTxDataSourceDO dataSourceDO = new LocalTxDataSourceDO();
+        dataSourceDO.setBlockingTimeoutMillis(1000 * 60);
+        dataSourceDO.setMaxPoolSize(maxPoolSize);
+        dataSourceDO.setMinPoolSize(minPoolSize);
+
+        dataSourceDO.setDriverClass(driverClass);
+        dataSourceDO.setConnectionURL(jdbcUrl);
+        dataSourceDO.setUserName(user);
+        dataSourceDO.setPassword(password);
+
         LocalTxDataSource tx = TaobaoDataSourceFactory.createLocalTxDataSource(dataSourceDO);
         DataSource dataSource = tx.getDatasource();
-        
+
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "jboss-datasource", threadCount);
         }
@@ -152,7 +183,7 @@ public class Case1 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_c3p0() throws Exception {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         // dataSource.(10);
@@ -172,7 +203,7 @@ public class Case1 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_proxool() throws Exception {
         ProxoolDataSource dataSource = new ProxoolDataSource();
         // dataSource.(10);
@@ -192,21 +223,21 @@ public class Case1 extends TestCase {
         }
         System.out.println();
     }
-    
+
     public void test_tomcat_jdbc() throws Exception {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         // dataSource.(10);
-         dataSource.setMaxIdle(maxPoolSize);
+        dataSource.setMaxIdle(maxPoolSize);
         dataSource.setMinIdle(minPoolSize);
         dataSource.setMaxActive(maxPoolSize);
-        
+
         dataSource.setDriverClassName(driverClass);
         dataSource.setUrl(jdbcUrl);
         // dataSource.setPoolPreparedStatements(true);
         // dataSource.setMaxOpenPreparedStatements(100);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
-        
+
         for (int i = 0; i < loopCount; ++i) {
             p0(dataSource, "tomcat-jdbc", threadCount);
         }
@@ -274,8 +305,10 @@ public class Case1 extends TestCase {
 
         System.out.println("thread " + threadCount + " " + name + " millis : "
                            + NumberFormat.getInstance().format(millis) + "; YGC " + ygc + " FGC " + fullGC
-                           + " blocked " + NumberFormat.getInstance().format(blockedCount) //
-                           + " waited " + NumberFormat.getInstance().format(waitedCount));
+                           + " blocked "
+                           + NumberFormat.getInstance().format(blockedCount) //
+                           + " waited " + NumberFormat.getInstance().format(waitedCount) + " physicalConn "
+                           + physicalConnStat.get());
 
     }
 }

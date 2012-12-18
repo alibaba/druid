@@ -24,353 +24,363 @@ import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig implements WallConfigMBean {
 
-	private boolean noneBaseStatementAllow = false;
+    private boolean             noneBaseStatementAllow     = false;
 
-	private boolean callAllow = true;
-	private boolean selelctAllow = true;
-	private boolean selectIntoAllow = true;
-	private boolean selectIntoOutfileAllow = false;
-	private boolean selectWhereAlwayTrueCheck = true;
-	private boolean selectHavingAlwayTrueCheck = true;
-	private boolean selectUnionCheck = true;
+    private boolean             callAllow                  = true;
+    private boolean             selelctAllow               = true;
+    private boolean             selectIntoAllow            = true;
+    private boolean             selectIntoOutfileAllow     = false;
+    private boolean             selectWhereAlwayTrueCheck  = true;
+    private boolean             selectHavingAlwayTrueCheck = true;
+    private boolean             selectUnionCheck           = true;
 
-	private boolean deleteAllow = true;
-	private boolean deleteWhereAlwayTrueCheck = true;
+    private boolean             deleteAllow                = true;
+    private boolean             deleteWhereAlwayTrueCheck  = true;
 
-	private boolean updateAllow = true;
-	private boolean updateWhereAlayTrueCheck = true;
+    private boolean             updateAllow                = true;
+    private boolean             updateWhereAlayTrueCheck   = true;
 
-	private boolean insertAllow = true;
-	private boolean mergeAllow = true;
+    private boolean             insertAllow                = true;
+    private boolean             mergeAllow                 = true;
 
-	private boolean multiStatementAllow = false;
+    private boolean             multiStatementAllow        = false;
 
-	private boolean truncateAllow = false;
+    private boolean             truncateAllow              = false;
 
-	private boolean commentAllow = false;
+    private boolean             commentAllow               = false;
 
-	private boolean schemaCheck = true;
-	private boolean tableCheck = true;
-	private boolean functionCheck = true;
-	private boolean objectCheck = true;
-	private boolean variantCheck = true;
+    private boolean             schemaCheck                = true;
+    private boolean             tableCheck                 = true;
+    private boolean             functionCheck              = true;
+    private boolean             objectCheck                = true;
+    private boolean             variantCheck               = true;
 
-	private boolean mustParameterized = false;
+    private boolean             mustParameterized          = false;
 
-	private boolean allowDoPrivileged = false;
+    private boolean             allowDoPrivileged          = false;
 
-	protected final Set<String> permitFunctions = new HashSet<String>();
-	protected final Set<String> permitTables = new HashSet<String>();
-	protected final Set<String> permitSchemas = new HashSet<String>();
-	protected final Set<String> permitVariants = new HashSet<String>();
-	protected final Set<String> permitObjects = new HashSet<String>();
+    protected final Set<String> permitFunctions            = new HashSet<String>();
+    protected final Set<String> permitTables               = new HashSet<String>();
+    protected final Set<String> permitSchemas              = new HashSet<String>();
+    protected final Set<String> permitVariants             = new HashSet<String>();
+    protected final Set<String> permitObjects              = new HashSet<String>();
 
-	protected final Set<String> readOnlyTables = new HashSet<String>();
+    protected final Set<String> readOnlyTables             = new HashSet<String>();
 
-	private String dir;
+    private String              dir;
 
-	private boolean inited;
+    private boolean             inited;
 
-	private String tenantTablePattern;
-	private String tenantColumn;
+    private String              tenantTablePattern;
+    private String              tenantColumn;
 
-	public WallConfig() {
+    private boolean             wrapAllow                  = false;
 
-	}
+    public WallConfig(){
 
-	public String getTenantTablePattern() {
-		return tenantTablePattern;
-	}
+    }
 
-	public void setTenantTablePattern(String tenantTablePattern) {
-		this.tenantTablePattern = tenantTablePattern;
-	}
+    public String getTenantTablePattern() {
+        return tenantTablePattern;
+    }
 
-	public String getTenantColumn() {
-		return tenantColumn;
-	}
+    public void setTenantTablePattern(String tenantTablePattern) {
+        this.tenantTablePattern = tenantTablePattern;
+    }
 
-	public void setTenantColumn(String tenantColumn) {
-		this.tenantColumn = tenantColumn;
-	}
+    public String getTenantColumn() {
+        return tenantColumn;
+    }
 
-	public boolean isAllowDoPrivileged() {
-		return allowDoPrivileged;
-	}
+    public void setTenantColumn(String tenantColumn) {
+        this.tenantColumn = tenantColumn;
+    }
 
-	public void setAllowDoPrivileged(boolean allowDoPrivileged) {
-		this.allowDoPrivileged = allowDoPrivileged;
-	}
+    public boolean isWrapAllow() {
+        return wrapAllow;
+    }
 
-	public boolean isInited() {
-		return inited;
-	}
+    public void setWrapAllow(boolean wrapAllow) {
+        this.wrapAllow = wrapAllow;
+    }
 
-	public WallConfig(String dir) {
-		this.dir = dir;
-		this.init();
-	}
+    public boolean isAllowDoPrivileged() {
+        return allowDoPrivileged;
+    }
 
-	public String getDir() {
-		return dir;
-	}
+    public void setAllowDoPrivileged(boolean allowDoPrivileged) {
+        this.allowDoPrivileged = allowDoPrivileged;
+    }
 
-	public void setDir(String dir) {
-		this.dir = dir;
-	}
+    public boolean isInited() {
+        return inited;
+    }
 
-	public final void init() {
-		loadConfig(dir);
-	}
+    public WallConfig(String dir){
+        this.dir = dir;
+        this.init();
+    }
 
-	public void loadConfig(String dir) {
-		if (dir.endsWith("/")) {
-			dir = dir.substring(0, dir.length() - 1);
-		}
-
-		loadResource(this.permitVariants, dir + "/permit-variant.txt");
-		loadResource(this.permitSchemas, dir + "/permit-schema.txt");
-		loadResource(this.permitFunctions, dir + "/permit-function.txt");
-		loadResource(this.permitTables, dir + "/permit-table.txt");
-		loadResource(this.permitObjects, dir + "/permit-object.txt");
-		loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
-	}
-
-	public boolean isNoneBaseStatementAllow() {
-		return noneBaseStatementAllow;
-	}
-
-	public void setNoneBaseStatementAllow(boolean noneBaseStatementAllow) {
-		this.noneBaseStatementAllow = noneBaseStatementAllow;
-	}
-
-	public boolean isTruncateAllow() {
-		return truncateAllow;
-	}
-
-	public void setTruncateAllow(boolean truncateAllow) {
-		this.truncateAllow = truncateAllow;
-	}
-
-	public boolean isSelelctAllow() {
-		return selelctAllow;
-	}
-
-	public void setSelelctAllow(boolean selelctAllow) {
-		this.selelctAllow = selelctAllow;
-	}
-
-	public boolean isSelectIntoAllow() {
-		return selectIntoAllow;
-	}
-
-	public void setSelectIntoAllow(boolean selectIntoAllow) {
-		this.selectIntoAllow = selectIntoAllow;
-	}
-
-	public boolean isSelectIntoOutfileAllow() {
-		return selectIntoOutfileAllow;
-	}
-
-	public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
-		this.selectIntoOutfileAllow = selectIntoOutfileAllow;
-	}
-
-	public boolean isSelectUnionCheck() {
-		return selectUnionCheck;
-	}
-
-	public void setSelectUnionCheck(boolean selectUnionCheck) {
-		this.selectUnionCheck = selectUnionCheck;
-	}
-
-	public boolean isSelectWhereAlwayTrueCheck() {
-		return selectWhereAlwayTrueCheck;
-	}
-
-	public void setSelectWhereAlwayTrueCheck(boolean selectWhereAlwayTrueCheck) {
-		this.selectWhereAlwayTrueCheck = selectWhereAlwayTrueCheck;
-	}
-
-	public boolean isSelectHavingAlwayTrueCheck() {
-		return selectHavingAlwayTrueCheck;
-	}
-
-	public void setSelectHavingAlwayTrueCheck(boolean selectHavingAlwayTrueCheck) {
-		this.selectHavingAlwayTrueCheck = selectHavingAlwayTrueCheck;
-	}
-
-	public boolean isDeleteAllow() {
-		return deleteAllow;
-	}
-
-	public void setDeleteAllow(boolean deleteAllow) {
-		this.deleteAllow = deleteAllow;
-	}
-
-	public boolean isDeleteWhereAlwayTrueCheck() {
-		return deleteWhereAlwayTrueCheck;
-	}
-
-	public void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck) {
-		this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
-	}
-
-	public boolean isUpdateAllow() {
-		return updateAllow;
-	}
-
-	public void setUpdateAllow(boolean updateAllow) {
-		this.updateAllow = updateAllow;
-	}
-
-	public boolean isUpdateWhereAlayTrueCheck() {
-		return updateWhereAlayTrueCheck;
-	}
-
-	public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck) {
-		this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
-	}
-
-	public boolean isInsertAllow() {
-		return insertAllow;
-	}
-
-	public void setInsertAllow(boolean insertAllow) {
-		this.insertAllow = insertAllow;
-	}
-
-	public boolean isMergeAllow() {
-		return mergeAllow;
-	}
-
-	public void setMergeAllow(boolean mergeAllow) {
-		this.mergeAllow = mergeAllow;
-	}
-
-	public boolean isMultiStatementAllow() {
-		return multiStatementAllow;
-	}
-
-	public void setMultiStatementAllow(boolean multiStatementAllow) {
-		this.multiStatementAllow = multiStatementAllow;
-	}
-
-	public boolean isSchemaCheck() {
-		return schemaCheck;
-	}
-
-	public void setSchemaCheck(boolean schemaCheck) {
-		this.schemaCheck = schemaCheck;
-	}
-
-	public boolean isTableCheck() {
-		return tableCheck;
-	}
-
-	public void setTableCheck(boolean tableCheck) {
-		this.tableCheck = tableCheck;
-	}
-
-	public boolean isFunctionCheck() {
-		return functionCheck;
-	}
-
-	public void setFunctionCheck(boolean functionCheck) {
-		this.functionCheck = functionCheck;
-	}
-
-	public boolean isVariantCheck() {
-		return variantCheck;
-	}
-
-	public void setVariantCheck(boolean variantCheck) {
-		this.variantCheck = variantCheck;
-	}
-
-	public boolean isObjectCheck() {
-		return objectCheck;
-	}
-
-	public void setObjectCheck(boolean objectCheck) {
-		this.objectCheck = objectCheck;
-	}
-
-	// ///////////////////
-
-	public boolean isCommentAllow() {
-		return commentAllow;
-	}
-
-	public void setCommentAllow(boolean commentAllow) {
-		this.commentAllow = commentAllow;
-	}
-
-	public Set<String> getPermitFunctions() {
-		return permitFunctions;
-	}
-
-	public Set<String> getPermitTables() {
-		return permitTables;
-	}
-
-	public Set<String> getPermitSchemas() {
-		return permitSchemas;
-	}
-
-	public Set<String> getPermitVariants() {
-		return permitVariants;
-	}
-
-	public Set<String> getPermitObjects() {
-		return permitObjects;
-	}
-
-	public Set<String> getReadOnlyTables() {
-		return readOnlyTables;
-	}
-
-	public boolean isMustParameterized() {
-		return mustParameterized;
-	}
-
-	public void setMustParameterized(boolean mustParameterized) {
-		this.mustParameterized = mustParameterized;
-	}
-
-	public boolean isPermitObjects(String name) {
-		if (!objectCheck) {
-			return false;
-		}
-
-		name = WallVisitorUtils.form(name);
-		return permitObjects.contains(name);
-	}
-
-	public boolean isPermitSchema(String name) {
-		if (!schemaCheck) {
-			return false;
-		}
-
-		name = WallVisitorUtils.form(name);
-		return this.permitSchemas.contains(name);
-	}
-
-	public boolean isPermitFunction(String name) {
-		if (!functionCheck) {
-			return false;
-		}
-
-		name = WallVisitorUtils.form(name);
-		return this.permitFunctions.contains(name);
-	}
-
-	public boolean isCallAllow() {
-		return callAllow;
-	}
-
-	public void setCallAllow(boolean callAllow) {
-		this.callAllow = callAllow;
-	}
+    public String getDir() {
+        return dir;
+    }
+
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
+    public final void init() {
+        loadConfig(dir);
+    }
+
+    public void loadConfig(String dir) {
+        if (dir.endsWith("/")) {
+            dir = dir.substring(0, dir.length() - 1);
+        }
+
+        loadResource(this.permitVariants, dir + "/permit-variant.txt");
+        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
+        loadResource(this.permitFunctions, dir + "/permit-function.txt");
+        loadResource(this.permitTables, dir + "/permit-table.txt");
+        loadResource(this.permitObjects, dir + "/permit-object.txt");
+        loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
+    }
+
+    public boolean isNoneBaseStatementAllow() {
+        return noneBaseStatementAllow;
+    }
+
+    public void setNoneBaseStatementAllow(boolean noneBaseStatementAllow) {
+        this.noneBaseStatementAllow = noneBaseStatementAllow;
+    }
+
+    public boolean isTruncateAllow() {
+        return truncateAllow;
+    }
+
+    public void setTruncateAllow(boolean truncateAllow) {
+        this.truncateAllow = truncateAllow;
+    }
+
+    public boolean isSelelctAllow() {
+        return selelctAllow;
+    }
+
+    public void setSelelctAllow(boolean selelctAllow) {
+        this.selelctAllow = selelctAllow;
+    }
+
+    public boolean isSelectIntoAllow() {
+        return selectIntoAllow;
+    }
+
+    public void setSelectIntoAllow(boolean selectIntoAllow) {
+        this.selectIntoAllow = selectIntoAllow;
+    }
+
+    public boolean isSelectIntoOutfileAllow() {
+        return selectIntoOutfileAllow;
+    }
+
+    public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
+        this.selectIntoOutfileAllow = selectIntoOutfileAllow;
+    }
+
+    public boolean isSelectUnionCheck() {
+        return selectUnionCheck;
+    }
+
+    public void setSelectUnionCheck(boolean selectUnionCheck) {
+        this.selectUnionCheck = selectUnionCheck;
+    }
+
+    public boolean isSelectWhereAlwayTrueCheck() {
+        return selectWhereAlwayTrueCheck;
+    }
+
+    public void setSelectWhereAlwayTrueCheck(boolean selectWhereAlwayTrueCheck) {
+        this.selectWhereAlwayTrueCheck = selectWhereAlwayTrueCheck;
+    }
+
+    public boolean isSelectHavingAlwayTrueCheck() {
+        return selectHavingAlwayTrueCheck;
+    }
+
+    public void setSelectHavingAlwayTrueCheck(boolean selectHavingAlwayTrueCheck) {
+        this.selectHavingAlwayTrueCheck = selectHavingAlwayTrueCheck;
+    }
+
+    public boolean isDeleteAllow() {
+        return deleteAllow;
+    }
+
+    public void setDeleteAllow(boolean deleteAllow) {
+        this.deleteAllow = deleteAllow;
+    }
+
+    public boolean isDeleteWhereAlwayTrueCheck() {
+        return deleteWhereAlwayTrueCheck;
+    }
+
+    public void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck) {
+        this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
+    }
+
+    public boolean isUpdateAllow() {
+        return updateAllow;
+    }
+
+    public void setUpdateAllow(boolean updateAllow) {
+        this.updateAllow = updateAllow;
+    }
+
+    public boolean isUpdateWhereAlayTrueCheck() {
+        return updateWhereAlayTrueCheck;
+    }
+
+    public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck) {
+        this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
+    }
+
+    public boolean isInsertAllow() {
+        return insertAllow;
+    }
+
+    public void setInsertAllow(boolean insertAllow) {
+        this.insertAllow = insertAllow;
+    }
+
+    public boolean isMergeAllow() {
+        return mergeAllow;
+    }
+
+    public void setMergeAllow(boolean mergeAllow) {
+        this.mergeAllow = mergeAllow;
+    }
+
+    public boolean isMultiStatementAllow() {
+        return multiStatementAllow;
+    }
+
+    public void setMultiStatementAllow(boolean multiStatementAllow) {
+        this.multiStatementAllow = multiStatementAllow;
+    }
+
+    public boolean isSchemaCheck() {
+        return schemaCheck;
+    }
+
+    public void setSchemaCheck(boolean schemaCheck) {
+        this.schemaCheck = schemaCheck;
+    }
+
+    public boolean isTableCheck() {
+        return tableCheck;
+    }
+
+    public void setTableCheck(boolean tableCheck) {
+        this.tableCheck = tableCheck;
+    }
+
+    public boolean isFunctionCheck() {
+        return functionCheck;
+    }
+
+    public void setFunctionCheck(boolean functionCheck) {
+        this.functionCheck = functionCheck;
+    }
+
+    public boolean isVariantCheck() {
+        return variantCheck;
+    }
+
+    public void setVariantCheck(boolean variantCheck) {
+        this.variantCheck = variantCheck;
+    }
+
+    public boolean isObjectCheck() {
+        return objectCheck;
+    }
+
+    public void setObjectCheck(boolean objectCheck) {
+        this.objectCheck = objectCheck;
+    }
+
+    // ///////////////////
+
+    public boolean isCommentAllow() {
+        return commentAllow;
+    }
+
+    public void setCommentAllow(boolean commentAllow) {
+        this.commentAllow = commentAllow;
+    }
+
+    public Set<String> getPermitFunctions() {
+        return permitFunctions;
+    }
+
+    public Set<String> getPermitTables() {
+        return permitTables;
+    }
+
+    public Set<String> getPermitSchemas() {
+        return permitSchemas;
+    }
+
+    public Set<String> getPermitVariants() {
+        return permitVariants;
+    }
+
+    public Set<String> getPermitObjects() {
+        return permitObjects;
+    }
+
+    public Set<String> getReadOnlyTables() {
+        return readOnlyTables;
+    }
+
+    public boolean isMustParameterized() {
+        return mustParameterized;
+    }
+
+    public void setMustParameterized(boolean mustParameterized) {
+        this.mustParameterized = mustParameterized;
+    }
+
+    public boolean isPermitObjects(String name) {
+        if (!objectCheck) {
+            return false;
+        }
+
+        name = WallVisitorUtils.form(name);
+        return permitObjects.contains(name);
+    }
+
+    public boolean isPermitSchema(String name) {
+        if (!schemaCheck) {
+            return false;
+        }
+
+        name = WallVisitorUtils.form(name);
+        return this.permitSchemas.contains(name);
+    }
+
+    public boolean isPermitFunction(String name) {
+        if (!functionCheck) {
+            return false;
+        }
+
+        name = WallVisitorUtils.form(name);
+        return this.permitFunctions.contains(name);
+    }
+
+    public boolean isCallAllow() {
+        return callAllow;
+    }
+
+    public void setCallAllow(boolean callAllow) {
+        this.callAllow = callAllow;
+    }
 
 }
