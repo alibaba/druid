@@ -16,6 +16,7 @@
 package com.alibaba.druid.wall;
 
 import java.sql.SQLException;
+import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -309,5 +310,20 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         
         return sql;
     }
+    
+    @Override
+    public boolean isWrapperFor(FilterChain chain, Wrapper wrapper, Class<?> iface) throws SQLException {
+        if (!this.provider.getConfig().isWrapAllow()) {
+            return false;
+        }
+        return chain.isWrapperFor(wrapper, iface);
+    }
 
+    @Override
+    public <T> T unwrap(FilterChain chain, Wrapper wrapper, Class<T> iface) throws SQLException {
+        if (!this.provider.getConfig().isWrapAllow()) {
+            return null;
+        }
+        return chain.unwrap(wrapper, iface);
+    }
 }
