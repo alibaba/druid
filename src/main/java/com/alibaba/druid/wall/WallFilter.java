@@ -20,6 +20,7 @@ import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
@@ -52,6 +53,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private volatile boolean logViolation   = false;
     private volatile boolean throwException = true;
+
+    // stats
+    private final AtomicLong violationCount = new AtomicLong();
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -294,6 +298,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         List<Violation> violations = checkResult.getViolations();
 
         if (violations.size() > 0) {
+            violationCount.incrementAndGet();
+            
             if (isLogViolation()) {
                 LOG.error("sql injection violation : " + sql);
             }
@@ -307,16 +313,16 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 }
             }
         }
-        
+
         return sql;
     }
-    
+
     @Override
     public boolean isWrapperFor(FilterChain chain, Wrapper wrapper, Class<?> iface) throws SQLException {
         if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
             return chain.isWrapperFor(wrapper, iface);
         }
-        
+
         if (!this.provider.getConfig().isWrapAllow()) {
             return false;
         }
@@ -328,10 +334,14 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
             return chain.unwrap(wrapper, iface);
         }
-        
+
         if (!this.provider.getConfig().isWrapAllow()) {
             return null;
         }
         return chain.unwrap(wrapper, iface);
+    }
+    
+    public long getViolationCount() {
+        return this.violationCount.get();
     }
 }
