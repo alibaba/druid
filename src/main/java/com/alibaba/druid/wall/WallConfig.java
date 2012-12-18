@@ -77,6 +77,7 @@ public class WallConfig implements WallConfigMBean {
     private String              tenantColumn;
 
     private boolean             wrapAllow                  = false;
+    private boolean             metadataAllow              = true;
 
     public WallConfig(){
 
@@ -96,6 +97,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setTenantColumn(String tenantColumn) {
         this.tenantColumn = tenantColumn;
+    }
+
+    public boolean isMetadataAllow() {
+        return metadataAllow;
+    }
+
+    public void setMetadataAllow(boolean metadataAllow) {
+        this.metadataAllow = metadataAllow;
     }
 
     public boolean isWrapAllow() {

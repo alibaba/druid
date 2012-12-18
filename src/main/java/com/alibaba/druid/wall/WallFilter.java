@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.wall;
 
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 import java.util.Collections;
@@ -299,7 +300,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
         if (violations.size() > 0) {
             violationCount.incrementAndGet();
-            
+
             if (isLogViolation()) {
                 LOG.error("sql injection violation : " + sql);
             }
@@ -336,11 +337,35 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         }
 
         if (!this.provider.getConfig().isWrapAllow()) {
+            violationCount.incrementAndGet();
             return null;
         }
+
         return chain.unwrap(wrapper, iface);
     }
-    
+
+    @Override
+    public DatabaseMetaData connection_getMetaData(FilterChain chain, ConnectionProxy connection) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.connection_getMetaData(connection);
+        }
+
+        if (!this.provider.getConfig().isMetadataAllow()) {
+            violationCount.incrementAndGet();
+            if (isLogViolation()) {
+                LOG.error("not support method : Connection.getMetdataData");
+            }
+            
+            if (throwException) {
+                throw new WallSQLException("not support method : Connection.getMetdataData");
+            } else {
+
+            }
+        }
+
+        return chain.connection_getMetaData(connection);
+    }
+
     public long getViolationCount() {
         return this.violationCount.get();
     }
