@@ -86,7 +86,11 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     @Override
     public boolean execute() throws SQLException {
         updateCount = null;
+        lastExecuteSql = sql;
         lastExecuteType = StatementExecuteType.Execute;
+        lastExecuteStartNano = -1L;
+        lastExecuteTimeNano = -1L;
+        
         firstResultSet = createChain().preparedStatement_execute(this);
         return firstResultSet;
     }
@@ -94,15 +98,26 @@ public class PreparedStatementProxyImpl extends StatementProxyImpl implements Pr
     @Override
     public ResultSet executeQuery() throws SQLException {
         firstResultSet = true;
+        
         updateCount = null;
+        lastExecuteSql = sql;
         lastExecuteType = StatementExecuteType.ExecuteQuery;
+        lastExecuteStartNano = -1L;
+        lastExecuteTimeNano = -1L;
+        
         return createChain().preparedStatement_executeQuery(this);
     }
 
     @Override
     public int executeUpdate() throws SQLException {
         firstResultSet = false;
+        
+        updateCount = null;
+        lastExecuteSql = sql;
         lastExecuteType = StatementExecuteType.ExecuteUpdate;
+        lastExecuteStartNano = -1L;
+        lastExecuteTimeNano = -1L;
+        
         updateCount = createChain().preparedStatement_executeUpdate(this);
         return updateCount;
     }
