@@ -313,6 +313,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     
     @Override
     public boolean isWrapperFor(FilterChain chain, Wrapper wrapper, Class<?> iface) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.isWrapperFor(wrapper, iface);
+        }
+        
         if (!this.provider.getConfig().isWrapAllow()) {
             return false;
         }
@@ -321,6 +325,10 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public <T> T unwrap(FilterChain chain, Wrapper wrapper, Class<T> iface) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.unwrap(wrapper, iface);
+        }
+        
         if (!this.provider.getConfig().isWrapAllow()) {
             return null;
         }

@@ -176,6 +176,15 @@ public abstract class WallProvider {
         result.getViolations().addAll(visitor.getViolations());
         return result;
     }
+    
+    public static boolean ispPivileged() {
+        Boolean value = privileged.get();
+        if (value == null) {
+            return false;
+        }
+        
+        return value.booleanValue();
+    }
 
     public static <T> T doPrivileged(PrivilegedAction<T> action) {
         privileged.set(Boolean.TRUE);
