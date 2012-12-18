@@ -28,9 +28,11 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
@@ -128,11 +130,13 @@ public class ConfigTools {
 		try {
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 		} catch (InvalidKeyException e) {
-			// for ibm jdk
-			RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-			RSAPrivateKeySpec spec = new RSAPrivateKeySpec(rsaPublicKey.getModulus(), rsaPublicKey.getPublicExponent());
-			Key fakePublicKey = KeyFactory.getInstance("RSA").generatePrivate(spec);
-			cipher.init(Cipher.DECRYPT_MODE, fakePublicKey);
+            // 因为 IBM JDK 不支持私钥加密, 公钥解密, 所以要反转公私钥
+            // 也就是说对于解密, 可以通过公钥的参数伪造一个私钥对象欺骗 IBM JDK
+            RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
+            RSAPrivateKeySpec spec = new RSAPrivateKeySpec(rsaPublicKey.getModulus(), rsaPublicKey.getPublicExponent());
+            Key fakePrivateKey = KeyFactory.getInstance("RSA").generatePrivate(spec);
+            cipher = Cipher.getInstance("RSA"); //It is a stateful object. so we need to get new one.
+            cipher.init(Cipher.DECRYPT_MODE, fakePrivateKey);
 		}
 		
 		if (cipherText == null || cipherText.length() == 0) {
@@ -164,7 +168,16 @@ public class ConfigTools {
 		KeyFactory factory = KeyFactory.getInstance("RSA");
 		PrivateKey privateKey = factory.generatePrivate(spec);
 		Cipher cipher = Cipher.getInstance("RSA");
-		cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+        try {
+		    cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+        } catch (InvalidKeyException e) {
+            //For IBM JDK, 原因请看解密方法中的说明
+            RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
+            RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(rsaPrivateKey.getModulus(), rsaPrivateKey.getPrivateExponent());
+            Key fakePublicKey = KeyFactory.getInstance("RSA").generatePublic(publicKeySpec);
+            cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, fakePublicKey);
+        }
 
 		byte[] encryptedBytes = cipher.doFinal(plainText.getBytes("UTF-8"));
 		String encryptedString = Base64.byteArrayToBase64(encryptedBytes);
