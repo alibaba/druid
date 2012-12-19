@@ -375,10 +375,10 @@ public class ConnectionProxyImpl extends WrapperProxyImpl implements ConnectionP
 
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == Connection.class) {
-            return (T) connection;
+        if (iface == this.getClass() || iface == ConnectionProxy.class) {
+            return (T) this;
         }
-
+        
         return super.unwrap(iface);
     }
 

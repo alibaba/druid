@@ -44,7 +44,6 @@ import com.alibaba.druid.filter.Filter;
 import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement.PreparedStatementKey;
 import com.alibaba.druid.pool.PreparedStatementPool.MethodType;
-import com.alibaba.druid.proxy.jdbc.ConnectionProxy;
 import com.alibaba.druid.proxy.jdbc.TransactionInfo;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
@@ -52,7 +51,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
-public class DruidPooledConnection implements javax.sql.PooledConnection, Connection {
+public class DruidPooledConnection extends PoolableWrapper implements javax.sql.PooledConnection, Connection {
 
     private final static Log                 LOG         = LogFactory.getLog(DruidPooledConnection.class);
 
@@ -73,6 +72,8 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
     private StackTraceElement[]              connectStackTrace;
 
     public DruidPooledConnection(DruidConnectionHolder holder){
+        super(holder.getConnection());
+        
         this.conn = holder.getConnection();
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
@@ -643,47 +644,6 @@ public class DruidPooledConnection implements javax.sql.PooledConnection, Connec
         holder.addTrace(poolableStatement);
 
         return poolableStatement;
-    }
-
-    // ////////////////////
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == null) {
-            return null;
-        }
-
-        if (iface == Connection.class) {
-            if (conn instanceof ConnectionProxy) {
-                return conn.unwrap(iface);
-            }
-
-            return (T) conn;
-        }
-
-        if (iface.isInstance(conn)) {
-            return (T) conn;
-        }
-
-        if (iface.isInstance(this)) {
-            return (T) this;
-        }
-
-        return conn.unwrap(iface);
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        if (iface == null) {
-            return false;
-        }
-
-        if (iface.isInstance(this)) {
-            return true;
-        }
-
-        return conn.isWrapperFor(iface);
     }
 
     @Override

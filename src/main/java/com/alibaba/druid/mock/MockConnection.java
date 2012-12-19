@@ -98,7 +98,7 @@ public class MockConnection extends ConnectionBase implements Connection {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == MockConnection.class) {
+        if (iface.isInstance(this)) {
             return (T) this;
         }
 
@@ -107,7 +107,7 @@ public class MockConnection extends ConnectionBase implements Connection {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return iface == MockConnection.class;
+        return iface.isInstance(this);
     }
 
     @Override

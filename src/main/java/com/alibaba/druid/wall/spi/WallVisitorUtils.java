@@ -79,6 +79,22 @@ public class WallVisitorUtils {
 
     }
 
+    public static void check(WallVisitor visitor, SQLSelectItem x) {
+        if (visitor.getConfig().isSelectAllColumnAllow()) {
+            return;
+        }
+
+        if (x.getExpr() instanceof SQLAllColumnExpr //
+            && x.getParent() instanceof SQLSelectQueryBlock) {
+            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
+            SQLTableSource from = queryBlock.getFrom();
+            
+            if (from instanceof SQLExprTableSource) {
+                addViolation(visitor, x);
+            }
+        }
+    }
+
     public static void check(WallVisitor visitor, SQLPropertyExpr x) {
         checkSchema(visitor, x.getOwner());
     }
@@ -92,6 +108,10 @@ public class WallVisitorUtils {
     }
 
     public static void checkSelelct(WallVisitor visitor, SQLSelectQueryBlock x) {
+        for (SQLSelectItem item : x.getSelectList()) {
+            item.setParent(x);
+        }
+
         if (x.getInto() != null) {
             checkReadOnly(visitor, x.getInto());
         }
@@ -228,8 +248,8 @@ public class WallVisitorUtils {
                         alias = join.getLeft().getAlias();
                     }
                 }
-                
-                checkJoinConditionForMultiTenant(visitor, join, false);    
+
+                checkJoinConditionForMultiTenant(visitor, join, false);
             } else {
                 checkJoinConditionForMultiTenant(visitor, join, true);
             }
@@ -262,14 +282,14 @@ public class WallVisitorUtils {
         if (tenantTablePattern == null || tenantTablePattern.length() == 0) {
             return;
         }
-        
+
         SQLExpr condition = join.getCondition();
-        
+
         if (checkLeft) {
-            
+
         }
-        
-        SQLTableSource  right = join.getRight();
+
+        SQLTableSource right = join.getRight();
         if (right instanceof SQLExprTableSource) {
             SQLExpr tableExpr = ((SQLExprTableSource) right).getExpr();
 
@@ -281,7 +301,7 @@ public class WallVisitorUtils {
                         alias = tableName;
                     }
                     SQLBinaryOpExpr tenantCondition = cretateTenantCondition(visitor, alias);
-                    
+
                     if (condition == null) {
                         condition = tenantCondition;
                     } else {
@@ -290,12 +310,12 @@ public class WallVisitorUtils {
                 }
             }
         }
-        
+
         if (condition != join.getCondition()) {
             join.setCondition(condition);
         }
     }
-    
+
     private static SQLBinaryOpExpr cretateTenantCondition(WallVisitor visitor, String alias) {
         SQLExpr left, right;
         if (alias != null) {
