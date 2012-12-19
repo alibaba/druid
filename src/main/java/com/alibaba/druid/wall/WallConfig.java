@@ -51,6 +51,8 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             commentAllow               = false;
 
+    private boolean             describeAllow              = false;
+
     private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
     private boolean             functionCheck              = true;
@@ -171,6 +173,24 @@ public class WallConfig implements WallConfigMBean {
 
     public void setNoneBaseStatementAllow(boolean noneBaseStatementAllow) {
         this.noneBaseStatementAllow = noneBaseStatementAllow;
+    }
+
+    /**
+     * allow mysql describe statement
+     * @since 0.2.10
+     * @return
+     */
+    public boolean isDescribeAllow() {
+        return describeAllow;
+    }
+
+    /**
+     * set allow mysql describe statement
+     * @since 0.2.10
+     * @return
+     */
+    public void setDescribeAllow(boolean describeAllow) {
+        this.describeAllow = describeAllow;
     }
 
     public boolean isTruncateAllow() {
