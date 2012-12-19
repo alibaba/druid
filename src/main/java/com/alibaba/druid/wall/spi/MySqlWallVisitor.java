@@ -41,6 +41,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
@@ -259,6 +260,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             allow = true;
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
+        } else if (x instanceof MySqlDescribeStatement) {
+            allow = config.isDescribeAllow();
         }
 
         if (!allow) {
