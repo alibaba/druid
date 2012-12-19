@@ -177,6 +177,7 @@ public class WallConfig implements WallConfigMBean {
 
     /**
      * allow mysql describe statement
+     * 
      * @since 0.2.10
      * @return
      */
@@ -186,6 +187,7 @@ public class WallConfig implements WallConfigMBean {
 
     /**
      * set allow mysql describe statement
+     * 
      * @since 0.2.10
      * @return
      */
