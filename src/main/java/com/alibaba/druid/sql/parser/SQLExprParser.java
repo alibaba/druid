@@ -449,6 +449,10 @@ public class SQLExprParser extends SQLParser {
 
                 sqlExpr = allExpr;
                 break;
+            case LITERAL_ALIAS:
+                sqlExpr = new SQLIdentifierExpr('"' + lexer.stringVal() + '"');
+                lexer.nextToken();
+                break;
             default:
                 throw new ParserException("ERROR. token : " + tok + " " + lexer.stringVal());
         }
