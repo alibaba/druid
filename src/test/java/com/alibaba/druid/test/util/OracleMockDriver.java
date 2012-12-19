@@ -26,4 +26,14 @@ public class OracleMockDriver extends MockDriver {
     public Connection connect(String url, Properties info) throws SQLException {
         return new OracleMockConnection(this, url, info);
     }
+    
+    @Override
+    public int getMajorVersion() {
+        return 11;
+    }
+
+    @Override
+    public int getMinorVersion() {
+        return 0;
+    }
 }

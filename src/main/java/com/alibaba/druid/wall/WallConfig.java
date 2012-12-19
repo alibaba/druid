@@ -76,7 +76,7 @@ public class WallConfig implements WallConfigMBean {
     private String              tenantTablePattern;
     private String              tenantColumn;
 
-    private boolean             wrapAllow                  = false;
+    private boolean             wrapAllow                  = true;
     private boolean             metadataAllow              = true;
 
     public WallConfig(){

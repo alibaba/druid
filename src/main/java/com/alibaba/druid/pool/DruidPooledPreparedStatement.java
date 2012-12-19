@@ -499,8 +499,10 @@ public class DruidPooledPreparedStatement extends DruidPooledStatement implement
 
         if (holder.getDefaultRowPretch() == -1) {
             int defaultRowPretch = OracleUtils.getRowPrefetch(this);
-            holder.setDefaultRowPretch(defaultRowPretch);
-            holder.setRowPrefetch(defaultRowPretch);
+            if (defaultRowPretch != holder.getDefaultRowPretch()) {
+                holder.setDefaultRowPretch(defaultRowPretch);
+                holder.setRowPrefetch(defaultRowPretch);
+            }
         }
 
         int rowPrefetch;

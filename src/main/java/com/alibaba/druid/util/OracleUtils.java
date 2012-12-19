@@ -31,42 +31,53 @@ import oracle.jdbc.xa.client.OracleXAConnection;
 import oracle.sql.ROWID;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.pool.DruidPooledPreparedStatement;
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class OracleUtils {
+
+    private final static Log LOG = LogFactory.getLog(OracleUtils.class);
 
     public static XAConnection OracleXAConnection(Connection oracleConnection) throws XAException {
         return new OracleXAConnection(oracleConnection);
     }
 
-    public static void clearDefines(DruidPooledPreparedStatement stmt) throws SQLException {
-        OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
-        oracleStmt.clearDefines();
-    }
-
     public static int getRowPrefetch(PreparedStatement stmt) throws SQLException {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
+        
+        if (oracleStmt == null) {
+            return -1;
+        }
+        
         return oracleStmt.getRowPrefetch();
     }
 
     public static void setRowPrefetch(PreparedStatement stmt, int value) throws SQLException {
         OracleStatement oracleStmt = stmt.unwrap(OracleStatement.class);
-        oracleStmt.setRowPrefetch(value);
+        if (oracleStmt != null) {
+            oracleStmt.setRowPrefetch(value);
+        }
     }
 
     public static void enterImplicitCache(PreparedStatement stmt) throws SQLException {
         oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
-        oracleStmt.enterImplicitCache();
+        if (oracleStmt != null) {
+            oracleStmt.enterImplicitCache();
+        }
     }
 
     public static void exitImplicitCacheToClose(PreparedStatement stmt) throws SQLException {
         oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
-        oracleStmt.exitImplicitCacheToClose();
+        if (oracleStmt != null) {
+            oracleStmt.exitImplicitCacheToClose();
+        }
     }
 
     public static void exitImplicitCacheToActive(PreparedStatement stmt) throws SQLException {
         oracle.jdbc.internal.OraclePreparedStatement oracleStmt = unwrapInternal(stmt);
-        oracleStmt.exitImplicitCacheToActive();
+        if (oracleStmt != null) {
+            oracleStmt.exitImplicitCacheToActive();
+        }
     }
 
     public static OraclePreparedStatement unwrapInternal(PreparedStatement stmt) throws SQLException {
@@ -74,7 +85,13 @@ public class OracleUtils {
             return (OraclePreparedStatement) stmt;
         }
 
-        return stmt.unwrap(OraclePreparedStatement.class);
+        OraclePreparedStatement unwrapped = stmt.unwrap(OraclePreparedStatement.class);
+
+        if (unwrapped == null) {
+            LOG.error("can not unwrap statement : " + stmt.getClass());
+        }
+
+        return unwrapped;
     }
 
     public static short getVersionNumber(DruidPooledConnection conn) throws SQLException {
