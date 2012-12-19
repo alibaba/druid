@@ -33,6 +33,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
+import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
@@ -71,7 +72,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public WallConfig getConfig() {
         return config;
     }
-    
+
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
@@ -259,10 +260,15 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
         }
-        
+
         if (!allow) {
             violations.add(new IllegalSQLObjectViolation(toSQL(x)));
         }
     }
 
+    @Override
+    public boolean visit(SQLSelectItem x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
 }

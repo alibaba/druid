@@ -18,6 +18,8 @@ package com.alibaba.druid.pool;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 
+import com.alibaba.druid.proxy.jdbc.WrapperProxy;
+
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
@@ -35,12 +37,18 @@ public class PoolableWrapper implements Wrapper {
             return false;
         }
 
-        if (iface.isInstance(wrapper)) {
+        if (wrapper != null && iface == wrapper.getClass()) {
             return true;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return true;
+        }
+        
+        if (!(wrapper instanceof WrapperProxy)) {
+            if (iface.isInstance(wrapper)) {
+                return true;
+            }
         }
 
         return wrapper.isWrapperFor(iface);
@@ -53,13 +61,20 @@ public class PoolableWrapper implements Wrapper {
             return null;
         }
 
-        if (iface.isInstance(wrapper)) {
+        if (wrapper != null && iface == wrapper.getClass()) {
             return (T) wrapper;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return (T) this;
         }
+        
+        if (!(wrapper instanceof WrapperProxy)) {
+            if (iface.isInstance(wrapper)) {
+                return (T) wrapper;
+            }
+        }
+
 
         return wrapper.unwrap(iface);
     }

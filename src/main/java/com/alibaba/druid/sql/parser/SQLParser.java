@@ -83,6 +83,10 @@ public class SQLParser {
                 default:
                     break;
             }
+            
+            if (lexer.token() == Token.LPAREN) {
+                return null;
+            }
 
             throw new ParserException("Error : " + lexer.token());
         }

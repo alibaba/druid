@@ -24,7 +24,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alibaba.druid.proxy.jdbc.StatementProxy;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 
@@ -627,17 +626,5 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     public boolean isCloseOnCompletion() throws SQLException {
         throw new SQLFeatureNotSupportedException();
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == Statement.class) {
-            if (stmt instanceof StatementProxy) {
-                return stmt.unwrap(iface);
-            }
-            return (T) stmt;
-        }
-
-        return super.unwrap(iface);
     }
 }

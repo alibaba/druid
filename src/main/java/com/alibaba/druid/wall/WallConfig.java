@@ -34,6 +34,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
 
+    private boolean             selectAllColumnAllow       = true;
+
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
 
@@ -74,7 +76,8 @@ public class WallConfig implements WallConfigMBean {
     private String              tenantTablePattern;
     private String              tenantColumn;
 
-    private boolean             wrapAllow                  = false;
+    private boolean             wrapAllow                  = true;
+    private boolean             metadataAllow              = true;
 
     public WallConfig(){
 
@@ -96,6 +99,14 @@ public class WallConfig implements WallConfigMBean {
         this.tenantColumn = tenantColumn;
     }
 
+    public boolean isMetadataAllow() {
+        return metadataAllow;
+    }
+
+    public void setMetadataAllow(boolean metadataAllow) {
+        this.metadataAllow = metadataAllow;
+    }
+
     public boolean isWrapAllow() {
         return wrapAllow;
     }
@@ -110,6 +121,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setAllowDoPrivileged(boolean allowDoPrivileged) {
         this.allowDoPrivileged = allowDoPrivileged;
+    }
+
+    public boolean isSelectAllColumnAllow() {
+        return selectAllColumnAllow;
+    }
+
+    public void setSelectAllColumnAllow(boolean selectAllColumnAllow) {
+        this.selectAllColumnAllow = selectAllColumnAllow;
     }
 
     public boolean isInited() {

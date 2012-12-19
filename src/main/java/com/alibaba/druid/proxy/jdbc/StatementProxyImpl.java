@@ -393,15 +393,6 @@ public class StatementProxyImpl extends WrapperProxyImpl implements StatementPro
         throw new SQLFeatureNotSupportedException();
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == Statement.class) {
-            return (T) statement;
-        }
-
-        return super.unwrap(iface);
-    }
-
     @Override
     public Map<Integer, JdbcParameter> getParameters() {
         return Collections.emptyMap();

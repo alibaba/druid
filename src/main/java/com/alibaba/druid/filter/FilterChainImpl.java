@@ -105,7 +105,7 @@ public class FilterChainImpl implements FilterChain {
         }
 
         // // if driver is for jdbc 3.0
-        if (iface.isAssignableFrom(wrapper.getClass())) {
+        if (iface.isInstance(wrapper)) {
             return true;
         }
 

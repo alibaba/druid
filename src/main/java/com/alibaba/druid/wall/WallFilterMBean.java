@@ -37,4 +37,6 @@ public interface WallFilterMBean {
     Set<String> getProviderWhiteList();
     
     String check(String sql) throws SQLException;
+    
+    long getViolationCount();
 }

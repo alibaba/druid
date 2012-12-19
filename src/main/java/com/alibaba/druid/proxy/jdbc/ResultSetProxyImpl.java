@@ -1071,15 +1071,6 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
         throw new SQLFeatureNotSupportedException();
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (iface == ResultSet.class) {
-            return (T) resultSet;
-        }
-
-        return super.unwrap(iface);
-    }
-
     public int getCloseCount() {
         return closeCount;
     }

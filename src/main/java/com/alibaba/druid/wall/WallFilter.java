@@ -15,11 +15,13 @@
  */
 package com.alibaba.druid.wall;
 
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
@@ -52,6 +54,9 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private volatile boolean logViolation   = false;
     private volatile boolean throwException = true;
+
+    // stats
+    private final AtomicLong violationCount = new AtomicLong();
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -294,6 +299,8 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         List<Violation> violations = checkResult.getViolations();
 
         if (violations.size() > 0) {
+            violationCount.incrementAndGet();
+
             if (isLogViolation()) {
                 LOG.error("sql injection violation : " + sql);
             }
@@ -307,12 +314,16 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
                 }
             }
         }
-        
+
         return sql;
     }
-    
+
     @Override
     public boolean isWrapperFor(FilterChain chain, Wrapper wrapper, Class<?> iface) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.isWrapperFor(wrapper, iface);
+        }
+
         if (!this.provider.getConfig().isWrapAllow()) {
             return false;
         }
@@ -321,9 +332,41 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     @Override
     public <T> T unwrap(FilterChain chain, Wrapper wrapper, Class<T> iface) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.unwrap(wrapper, iface);
+        }
+
         if (!this.provider.getConfig().isWrapAllow()) {
+            violationCount.incrementAndGet();
             return null;
         }
+
         return chain.unwrap(wrapper, iface);
+    }
+
+    @Override
+    public DatabaseMetaData connection_getMetaData(FilterChain chain, ConnectionProxy connection) throws SQLException {
+        if (config.isAllowDoPrivileged() && WallProvider.ispPivileged()) {
+            return chain.connection_getMetaData(connection);
+        }
+
+        if (!this.provider.getConfig().isMetadataAllow()) {
+            violationCount.incrementAndGet();
+            if (isLogViolation()) {
+                LOG.error("not support method : Connection.getMetdataData");
+            }
+            
+            if (throwException) {
+                throw new WallSQLException("not support method : Connection.getMetdataData");
+            } else {
+
+            }
+        }
+
+        return chain.connection_getMetaData(connection);
+    }
+
+    public long getViolationCount() {
+        return this.violationCount.get();
     }
 }
