@@ -67,6 +67,7 @@ public class TestOraclePrefetch extends TestCase {
             oracleStmt = stmt.unwrap(OraclePreparedStatement.class);
             Assert.assertEquals(50, oracleStmt.getRowPrefetch());
             
+            Assert.assertTrue(stmt.isWrapperFor(PreparedStatementHolder.class));
             stmtHolder = stmt.unwrap(PreparedStatementHolder.class);
             Assert.assertNotNull(stmtHolder);
             Assert.assertEquals(0, stmtHolder.getHitCount());

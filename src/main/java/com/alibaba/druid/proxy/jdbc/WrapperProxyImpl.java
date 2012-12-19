@@ -54,7 +54,7 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
             return false;
         }
 
-        if (iface.isInstance(this)) {
+        if (iface == this.getClass()) {
             return true;
         }
 
@@ -67,8 +67,8 @@ public abstract class WrapperProxyImpl implements WrapperProxy {
         if (iface == null) {
             return null;
         }
-
-        if (iface.isInstance(this)) {
+        
+        if (iface == this.getClass()) {
             return (T) this;
         }
 

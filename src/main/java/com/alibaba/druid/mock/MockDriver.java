@@ -234,6 +234,10 @@ public class MockDriver implements Driver, MockDriverMBean {
     public boolean jdbcCompliant() {
         return true;
     }
+    
+    public MockResultSet createMockResultSet(MockStatementBase stmt) {
+        return new MockResultSet(stmt);
+    }
 
     public ResultSet executeQuery(MockStatementBase stmt, String sql) throws SQLException {
         if (logExecuteQueryEnable && LOG.isDebugEnabled()) {
@@ -252,7 +256,7 @@ public class MockDriver implements Driver, MockDriverMBean {
         handleSleep(conn);
 
         if ("SELECT value FROM _int_1000_".equalsIgnoreCase(sql)) {
-            MockResultSet rs = new MockResultSet(stmt);
+            MockResultSet rs = createMockResultSet(stmt);
 
             for (int i = 0; i < 1000; ++i) {
                 rs.getRows().add(new Object[] { i });

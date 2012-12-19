@@ -25,14 +25,14 @@ import com.alibaba.druid.mock.MockResultSet;
 import com.alibaba.druid.mock.MockStatementBase;
 
 
-public class OracleMockDriver extends MockDriver {
+public class OracleMockDriverJdbc3 extends MockDriver {
     public Connection connect(String url, Properties info) throws SQLException {
-        return new OracleMockConnection(this, url, info);
+        return new OracleMockConnectionJdbc3(this, url, info);
     }
     
     @Override
     public int getMajorVersion() {
-        return 11;
+        return 10;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class OracleMockDriver extends MockDriver {
     }
     
     public MockResultSet createMockResultSet(MockStatementBase stmt) {
-        return new OracleMockResultSet(stmt);
+        return new OracleMockResultSetJdbc3(stmt);
     }
     
     public OracleMockPreparedStatement createMockPreparedStatement(MockConnection conn, String sql) {
-        return new OracleMockPreparedStatement((OracleMockConnection) conn, sql);
+        return new OracleMockPreparedStatementJdbc3((OracleMockConnection) conn, sql);
     }
 }

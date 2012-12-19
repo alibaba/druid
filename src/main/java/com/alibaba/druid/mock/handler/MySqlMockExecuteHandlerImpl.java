@@ -120,7 +120,7 @@ public class MySqlMockExecuteHandlerImpl implements MockExecuteHandler {
     }
 
     public ResultSet executeQueryFromDual(MockStatementBase statement, SQLSelectQueryBlock query) throws SQLException {
-        MockResultSet rs = new MockResultSet(statement);
+        MockResultSet rs = statement.getConnection().getDriver().createMockResultSet(statement);
         MockResultSetMetaData metaData = rs.getMockMetaData();
 
         Object[] row = new Object[query.getSelectList().size()];

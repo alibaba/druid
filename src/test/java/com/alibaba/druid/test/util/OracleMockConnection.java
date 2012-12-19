@@ -730,7 +730,7 @@ public class OracleMockConnection extends MockConnection implements oracle.jdbc.
             throw new MockConnectionClosedException();
         }
 
-        return new OracleMockPreparedStatement(this, sql);
+        return this.getDriver().createMockPreparedStatement(this, sql);
     }
 
     @Override

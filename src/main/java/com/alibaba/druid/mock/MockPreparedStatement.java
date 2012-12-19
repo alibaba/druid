@@ -50,6 +50,8 @@ public class MockPreparedStatement extends PreparedStatementBase implements Mock
 
         if (conn != null) {
             conn.handleSleep();
+            
+            return conn.getDriver().createMockResultSet(this);
         }
         
         return new MockResultSet(this);
