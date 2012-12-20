@@ -211,15 +211,6 @@ public class MySqlExprParser extends SQLExprParser {
                     expr = mysqlCharExpr;
 
                     return primaryRest(expr);
-                } else if (ident.equalsIgnoreCase("BINARY")) {
-                    String charValue = lexer.stringVal();
-                    lexer.nextToken();
-
-                    MySqlCharExpr mysqlCharExpr = new MySqlCharExpr(charValue);
-                    mysqlCharExpr.setCharset("BINARY");
-                    expr = mysqlCharExpr;
-
-                    return primaryRest(expr);
                 }
             } else if (expr instanceof SQLCharExpr) {
                 SQLMethodInvokeExpr concat = new SQLMethodInvokeExpr("CONCAT");
