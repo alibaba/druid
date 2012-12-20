@@ -24,6 +24,8 @@ import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -160,6 +162,10 @@ public class MySqlExprParser extends SQLExprParser {
                     throw new ParserException("syntax error, illegal values clause");
                 }
                 return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
+            case BINARY:
+                lexer.nextToken();
+                SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
+                return primaryRest(binaryExpr);
             default:
                 return super.primary();
         }
