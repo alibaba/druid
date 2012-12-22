@@ -77,6 +77,18 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     protected DataSourceProxy dataSource;
 
     public LogFilter(){
+        {
+            String prop = System.getProperty("druid.log.stmt");
+            if (prop == "false") {
+                statementLogEnabled = false;
+            }
+        }
+        {
+            String prop = System.getProperty("druid.log.rs");
+            if (prop == "false") {
+                resultSetLogEnabled = false;
+            }
+        }
     }
 
     @Override

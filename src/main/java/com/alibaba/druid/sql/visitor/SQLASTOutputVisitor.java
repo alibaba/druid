@@ -212,7 +212,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             print(' ');
             return;
         }
-        
+
         print("\n");
         printIndent();
     }
@@ -455,7 +455,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
         printAndAccept(x.getArguments(), ", ");
         print(")");
-        
+
         if (x.getOver() != null) {
             print(" ");
             x.getOver().accept(this);
@@ -551,12 +551,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLSelect x) {
         x.getQuery().setParent(x);
-        
+
         if (x.getWithSubQuery() != null) {
             x.getWithSubQuery().accept(this);
             println();
         }
-        
+
         x.getQuery().accept(this);
 
         if (x.getOrderBy() != null) {
@@ -885,7 +885,20 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLUnaryExpr x) {
         print(x.getOperator().name);
+
         SQLExpr expr = x.getExpr();
+        
+        switch (x.getOperator()) {
+            case BINARY:
+            case Prior:
+            case ConnectByRoot:
+                print(' ');
+                expr.accept(this);
+                return false;
+            default:
+                break;
+        }
+
         if (expr instanceof SQLBinaryOpExpr) {
             print('(');
             expr.accept(this);
@@ -943,7 +956,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLJoinTableSource x) {
         x.getLeft().accept(this);
         incrementIndent();
-        
+
         if (x.getJoinType() == JoinType.COMMA) {
             print(",");
         } else {
@@ -959,7 +972,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getCondition().accept(this);
             decrementIndent();
         }
-        
+
         decrementIndent();
 
         return false;
@@ -1168,21 +1181,21 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         x.getName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropIndex x) {
         print("DROP INDEX ");
         x.getIndexName().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddPrimaryKey x) {
         print("ADD ");
         x.getPrimaryKey().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLOver x) {
         print("OVER (");
@@ -1194,19 +1207,19 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLColumnPrimaryKey x) {
         print(" PRIMARY KEY");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLColumnUniqueIndex x) {
         print(" UNIQUE INDEX");
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLWithSubqueryClause x) {
         print("WITH");
@@ -1219,7 +1232,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         decrementIndent();
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
         x.getName().accept(this);
