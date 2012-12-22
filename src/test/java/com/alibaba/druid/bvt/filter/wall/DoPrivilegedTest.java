@@ -33,7 +33,7 @@ public class DoPrivilegedTest extends TestCase {
 
     public void test_1() throws Exception {
         final WallConfig config = new WallConfig();
-        config.setAllowDoPrivileged(true);
+        config.setDoPrivilegedAllow(true);
         
         WallProvider.doPrivileged(new PrivilegedAction<Object>() {
             @Override

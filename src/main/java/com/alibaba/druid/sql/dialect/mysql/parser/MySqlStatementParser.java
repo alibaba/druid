@@ -755,7 +755,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return new MySqlShowAuthorsStatement();
         }
 
-        if (identifierEquals("BINARY")) {
+        if (lexer.token() == Token.BINARY) {
             lexer.nextToken();
             acceptIdentifier("LOGS");
             return new MySqlShowBinaryLogsStatement();

@@ -119,7 +119,7 @@ public abstract class WallProvider {
     public WallCheckResult check(String sql) {
         WallCheckResult result = new WallCheckResult();
 
-        if (config.isAllowDoPrivileged() && privileged.get() == Boolean.TRUE) {
+        if (config.isDoPrivilegedAllow() && ispPivileged()) {
             return result;
         }
 
