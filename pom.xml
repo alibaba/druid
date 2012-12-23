@@ -508,7 +508,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.1.8.Final</version>
+			<version>4.1.9.Final</version>
 			<scope>provided</scope>
 		</dependency>
 
