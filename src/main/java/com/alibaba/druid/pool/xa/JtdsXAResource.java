@@ -15,25 +15,47 @@
  */
 package com.alibaba.druid.pool.xa;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
-import net.sourceforge.jtds.jdbc.ConnectionJDBC2;
 import net.sourceforge.jtds.jdbc.XASupport;
+
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 
 public class JtdsXAResource implements XAResource {
 
+    private final static Log       LOG = LogFactory.getLog(JtdsXAResource.class);
+
     private final Connection       connection;
     private final JtdsXAConnection xaConnection;
-    private final String           rmHost;
+    private String                 rmHost;
+
+    private static Method          method;
 
     public JtdsXAResource(JtdsXAConnection xaConnection, Connection connection){
         this.xaConnection = xaConnection;
         this.connection = connection;
-        rmHost = ((ConnectionJDBC2) connection).getRmHost();
+
+        if (method == null) {
+            try {
+                method = connection.getClass().getMethod("getRmHost");
+            } catch (Exception e) {
+                LOG.error("getRmHost method error", e);
+            }
+        }
+
+        if (method != null) {
+            try {
+                rmHost = (String) method.invoke(connection);
+            } catch (Exception e) {
+                LOG.error("getRmHost error", e);
+            }
+        }
     }
 
     protected JtdsXAConnection getResourceManager() {

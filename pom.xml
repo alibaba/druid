@@ -13,16 +13,15 @@
 	<inceptionYear>2012</inceptionYear>
 
 	<properties>
-		<gpg.skip>true</gpg.skip>
+		<spring.version>3.1.1.RELEASE</spring.version>
 		<junit.version>4.10</junit.version>
+
+		<gpg.skip>true</gpg.skip>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jdk.version>1.6</jdk.version>
 	</properties>
+
 	<repositories>
-		<repository>
-			<id>bonecp</id>
-			<name>bonecp</name>
-			<url>http://jolbox.com/bonecp/downloads/maven/</url>
-			<layout>default</layout>
-		</repository>
 		<repository>
 			<id>alibaba</id>
 			<name>alibaba</name>
@@ -33,12 +32,6 @@
 			<id>local-file</id>
 			<url>file://${basedir}/lib/</url>
 			<layout>default</layout>
-		</repository>
-
-		<repository>
-			<id>springsource-repo</id>
-			<name>SpringSource Repository</name>
-			<url>http://repo.springsource.org/release</url>
 		</repository>
 	</repositories>
 
@@ -337,21 +330,21 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>3.1.1.RELEASE</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
@@ -399,13 +392,13 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.20</version>
+			<version>5.1.22</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
-			<version>1.2.7</version>
+			<version>1.3.0</version>
 			<scope>provided</scope>
 		</dependency>
 
