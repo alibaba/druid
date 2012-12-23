@@ -14,7 +14,7 @@
 
 	<properties>
 		<spring.version>3.1.1.RELEASE</spring.version>
-		<junit.version>4.10</junit.version>
+		<junit.version>4.11</junit.version>
 
 		<gpg.skip>true</gpg.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,12 +22,6 @@
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>alibaba</id>
-			<name>alibaba</name>
-			<url>http://code.alibabatech.com/mvn/releases/</url>
-			<layout>default</layout>
-		</repository>
 		<repository>
 			<id>local-file</id>
 			<url>file://${basedir}/lib/</url>
@@ -89,7 +83,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.0</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>1.6</source>
@@ -100,7 +94,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.2</version>
+				<version>2.12.4</version>
 				<configuration>
 					<includes>
 						<include>**/bvt/**/*.java</include>
@@ -111,7 +105,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.1</version>
+				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -127,7 +121,7 @@
 
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
+				<version>2.9</version>
 				<executions>
 					<execution>
 						<id>attach-javadoc</id>
@@ -150,6 +144,7 @@
 
 			<plugin>
 				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
 				<configuration>
 					<skip>${gpg.skip}</skip>
 				</configuration>
