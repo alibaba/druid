@@ -345,6 +345,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-ibatis</artifactId>
 			<version>2.0.8</version>
 			<scope>provided</scope>
@@ -434,15 +441,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>3.1.2.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
-			<version>10.8.2.2</version>
+			<version>10.9.1.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -487,7 +488,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jdbc</artifactId>
-			<version>7.0.33</version>
+			<version>7.0.34</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -520,16 +521,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-dbutils</groupId>
-			<artifactId>commons-dbutils</artifactId>
-			<version>1.5</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.46</version>
+			<version>1.b.47</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
