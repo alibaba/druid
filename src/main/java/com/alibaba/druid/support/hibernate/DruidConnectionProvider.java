@@ -32,6 +32,10 @@ public class DruidConnectionProvider implements ConnectionProvider, Configurable
 
     private DruidDataSource   dataSource;
 
+    public DruidConnectionProvider(){
+        dataSource = new DruidDataSource();
+    }
+
     @SuppressWarnings("rawtypes")
     @Override
     public boolean isUnwrappableAs(Class unwrapType) {
