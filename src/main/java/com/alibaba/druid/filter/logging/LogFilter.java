@@ -19,6 +19,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.filter.FilterChain;
 import com.alibaba.druid.filter.FilterEventAdapter;
@@ -31,6 +34,7 @@ import com.alibaba.druid.proxy.jdbc.JdbcParameter;
 import com.alibaba.druid.proxy.jdbc.PreparedStatementProxy;
 import com.alibaba.druid.proxy.jdbc.ResultSetProxy;
 import com.alibaba.druid.proxy.jdbc.StatementProxy;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.util.JdbcUtils;
 
 /**
@@ -57,6 +61,7 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
     private boolean           statementExecuteQueryAfterLogEnable  = true;
     private boolean           statementExecuteUpdateAfterLogEnable = true;
     private boolean           statementExecuteBatchAfterLogEnable  = true;
+    private boolean           statementExecutableSqlLogEnable      = false;
 
     private boolean           statementCloseAfterLogEnable         = true;
 
@@ -87,6 +92,12 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             String prop = System.getProperty("druid.log.rs");
             if (prop == "false") {
                 resultSetLogEnabled = false;
+            }
+        }
+        {
+            String prop = System.getProperty("druid.log.stmt.executableSql");
+            if (prop == "true") {
+                statementExecutableSqlLogEnable = true;
             }
         }
     }
@@ -222,6 +233,14 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     public void setStatementExecuteUpdateAfterLogEnabled(boolean afterStatementExecuteUpdateLogEnable) {
         this.statementExecuteUpdateAfterLogEnable = afterStatementExecuteUpdateLogEnable;
+    }
+
+    public boolean isStatementExecutableSqlLogEnable() {
+        return statementExecutableSqlLogEnable;
+    }
+
+    public void setStatementExecutableSqlLogEnable(boolean statementExecutableSqlLogEnable) {
+        this.statementExecutableSqlLogEnable = statementExecutableSqlLogEnable;
     }
 
     public boolean isStatementPrepareCallAfterLogEnabled() {
@@ -392,6 +411,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteAfter(StatementProxy statement, String sql, boolean firstResult) {
+        logExecutableSql(statement, sql);
+        
         if (statementExecuteAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -409,17 +430,19 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteBatchAfter(StatementProxy statement, int[] result) {
+        String sql;
+        if (statement instanceof PreparedStatementProxy) {
+            sql = ((PreparedStatementProxy) statement).getSql();
+        } else {
+            sql = statement.getBatchSql();
+        }
+        
+        logExecutableSql(statement, sql);
+        
         if (statementExecuteBatchAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
             double millis = nanos / (1000 * 1000);
-
-            String sql;
-            if (statement instanceof PreparedStatementProxy) {
-                sql = ((PreparedStatementProxy) statement).getSql();
-            } else {
-                sql = statement.getBatchSql();
-            }
 
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                          + "} batch executed. " + millis + " millis. " + sql);
@@ -436,6 +459,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteQueryAfter(StatementProxy statement, String sql, ResultSetProxy resultSet) {
+        logExecutableSql(statement, sql);
+        
         if (statementExecuteQueryAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -456,6 +481,8 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
 
     @Override
     protected void statementExecuteUpdateAfter(StatementProxy statement, String sql, int updateCount) {
+        logExecutableSql(statement, sql);
+
         if (statementExecuteUpdateAfterLogEnable && isStatementLogEnabled()) {
             statement.setLastExecuteTimeNano();
             double nanos = statement.getLastExecuteTimeNano();
@@ -464,6 +491,29 @@ public abstract class LogFilter extends FilterEventAdapter implements LogFilterM
             statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement)
                          + "} update executed. effort " + updateCount + ". " + millis + " millis. " + sql);
         }
+    }
+
+    private void logExecutableSql(StatementProxy statement, String sql) {
+        if (!isStatementExecutableSqlLogEnable()) {
+            return;
+        }
+
+        Map<Integer, JdbcParameter> parameterMap = statement.getParameters();
+        if (parameterMap == null || parameterMap.size() == 0) {
+            statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
+                         + sql);
+            return;
+        }
+
+        List<Object> parameters = new ArrayList<Object>(parameterMap.size());
+        for (JdbcParameter jdbcParam : parameterMap.values()) {
+            parameters.add(jdbcParam.getValue());
+        }
+
+        String dbType = statement.getConnectionProxy().getDirectDataSource().getDbType();
+        String formattedSql = SQLUtils.format(sql, dbType, parameters);
+        statementLog("{conn-" + statement.getConnectionProxy().getId() + ", " + stmtId(statement) + "} executed. "
+                     + formattedSql);
     }
 
     @Override
