@@ -59,7 +59,7 @@ public class Case1 extends TestCase {
     private String            validationQuery  = "SELECT 1";
     private int               threadCount      = 5;
     private int               loopCount        = 10;
-    final int                 LOOP_COUNT       = 1000 * 1000 * 1 / threadCount;
+    final int                 LOOP_COUNT       = 1000 * 1 * 1 / threadCount;
 
     private static AtomicLong physicalConnStat = new AtomicLong();
 

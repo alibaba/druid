@@ -16,7 +16,14 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.NClob;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
@@ -107,8 +114,22 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     private int                indentCount  = 0;
     private boolean            prettyFormat = true;
 
+    private List<Object>       parameters;
+
     public SQLASTOutputVisitor(Appendable appender){
         this.appender = appender;
+    }
+
+    public List<Object> getParameters() {
+        if (parameters == null) {
+            parameters = new ArrayList<Object>();
+        }
+
+        return parameters;
+    }
+
+    public void setParameters(List<Object> parameters) {
+        this.parameters = parameters;
     }
 
     public int getIndentCount() {
@@ -145,6 +166,16 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
 
     public void print(int value) {
         print(Integer.toString(value));
+    }
+
+    public void print(Date date) {
+        SimpleDateFormat dateFormat;
+        if (date instanceof java.sql.Timestamp) {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        } else {
+            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        }
+        print("'" + dateFormat.format(date) + "'");
     }
 
     public void print(long value) {
@@ -655,7 +686,63 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLVariantRefExpr x) {
-        print(x.getName());
+        int index = x.getIndex();
+
+        if (parameters == null || index >= parameters.size()) {
+            print(x.getName());
+            return false;
+        }
+
+        Object param = parameters.get(index);
+
+        if (param == null) {
+            print("NULL");
+            return false;
+        }
+
+        if (param instanceof Number //
+            || param instanceof Boolean) {
+            print(param.toString());
+            return false;
+        }
+        
+        if (param instanceof String) {
+            SQLCharExpr charExpr = new SQLCharExpr((String) param);
+            visit(charExpr);
+            return false;
+        }
+
+        if (param instanceof Date) {
+            print((Date) param);
+            return false;
+        }
+
+        if (param instanceof InputStream) {
+            print("'<InputStream>");
+            return false;
+        }
+
+        if (param instanceof Reader) {
+            print("'<Reader>");
+            return false;
+        }
+
+        if (param instanceof Blob) {
+            print("'<Blob>");
+            return false;
+        }
+        
+        if (param instanceof NClob) {
+            print("'<NClob>");
+            return false;
+        }
+
+        if (param instanceof Clob) {
+            print("'<Clob>");
+            return false;
+        }
+        
+        print("'" + param.getClass().getName() + "'");
         return false;
     }
 
@@ -887,7 +974,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print(x.getOperator().name);
 
         SQLExpr expr = x.getExpr();
-        
+
         switch (x.getOperator()) {
             case BINARY:
             case Prior:
