@@ -140,12 +140,16 @@ public class SQLUtils {
     public static SQLExpr toSQLExpr(String sql) {
         return toSQLExpr(sql, null);
     }
-
+    
     public static String format(String sql, String dbType) {
+        return format(sql, dbType, null);
+    }
+
+    public static String format(String sql, String dbType, List<Object> parameters) {
         try {
             List<SQLStatement> statementList = toStatementList(sql, dbType);
 
-            return toSQLString(statementList, dbType);
+            return toSQLString(statementList, dbType, parameters);
         } catch (SQLParseException ex) {
             LOG.warn("format error", ex);
             return sql;
@@ -156,8 +160,15 @@ public class SQLUtils {
     }
 
     public static String toSQLString(List<SQLStatement> statementList, String dbType) {
+        return toSQLString(statementList, dbType, null);
+    }
+    
+    public static String toSQLString(List<SQLStatement> statementList, String dbType, List<Object> parameters) {
         StringBuilder out = new StringBuilder();
         SQLASTOutputVisitor visitor = createFormatOutputVisitor(out, statementList, dbType);
+        if (parameters != null) {
+            visitor.setParameters(parameters);
+        }
 
         for (SQLStatement stmt : statementList) {
             stmt.accept(visitor);
