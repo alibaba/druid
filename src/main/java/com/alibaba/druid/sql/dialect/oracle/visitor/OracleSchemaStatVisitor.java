@@ -99,6 +99,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
@@ -161,17 +162,17 @@ import com.alibaba.druid.util.JdbcUtils;
 public class OracleSchemaStatVisitor extends SchemaStatVisitor implements OracleASTVisitor {
 
     public OracleSchemaStatVisitor(){
-        this (new ArrayList<Object>());
+        this(new ArrayList<Object>());
     }
-    
-    public OracleSchemaStatVisitor(List<Object> parameters) {
-        super (parameters);
+
+    public OracleSchemaStatVisitor(List<Object> parameters){
+        super(parameters);
         this.variants.put("DUAL", null);
         this.variants.put("NOTFOUND", null);
         this.variants.put("TRUE", null);
         this.variants.put("FALSE", null);
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcUtils.ORACLE;
@@ -1800,4 +1801,15 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
     public void endVisit(OracleCreateProcedureStatement x) {
 
     }
+
+    @Override
+    public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
+
+    }
+
 }

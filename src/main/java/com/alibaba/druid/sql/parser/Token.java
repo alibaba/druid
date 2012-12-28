@@ -70,6 +70,7 @@ public enum Token {
     COLUMN("COLUMN"),
     USE("USE"),
     DATABASE("DATABASE"),
+    TO("TO"),
 
     AND("AND"), 
     OR("OR"), 
@@ -154,7 +155,6 @@ public enum Token {
     ADVISE("ADVISE"),
     SESSION("SESSION"),
     PROCEDURE("PROCEDURE"),
-    LOCAL("LOCAL"),
     SYSDATE("SYSDATE"),
     DECLARE("DECLARE"),
     EXCEPTION("EXCEPTION"),

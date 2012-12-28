@@ -234,7 +234,7 @@ public class SQLStatementParser extends SQLParser {
 
         SQLRollbackStatement stmt = new SQLRollbackStatement();
 
-        if (identifierEquals("TO")) {
+        if (lexer.token() == Token.TO) {
             lexer.nextToken();
 
             if (identifierEquals("SAVEPOINT")) {
@@ -439,7 +439,7 @@ public class SQLStatementParser extends SQLParser {
             exprParser.exprList(stmt.getParameters());
             accept(Token.RPAREN);
         }
-        
+
         if (brace) {
             accept(Token.RBRACE);
         }
@@ -496,9 +496,23 @@ public class SQLStatementParser extends SQLParser {
             // lexer.reset(mark_bp, mark_ch, Token.CREATE);
             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
         } else if (token == Token.DATABASE) {
+            lexer.nextToken();
+            if (identifierEquals("LINK")) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+                return parseCreateDbLink();
+            }
+            
+            lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateDatabase();
+        } else if (identifierEquals("PUBLIC") || identifierEquals("SHARE")) {
+            lexer.reset(markBp, markChar, Token.CREATE);
+            return parseCreateDbLink();
         }
 
+        throw new ParserException("TODO " + lexer.token());
+    }
+
+    public SQLStatement parseCreateDbLink() {
         throw new ParserException("TODO " + lexer.token());
     }
 

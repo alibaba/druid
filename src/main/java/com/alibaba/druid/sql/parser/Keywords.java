@@ -113,6 +113,7 @@ public class Keywords {
         map.put("XOR", Token.XOR);
         
         map.put("OVER", Token.OVER);
+        map.put("TO", Token.TO);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }
