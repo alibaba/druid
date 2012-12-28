@@ -1431,7 +1431,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
         }
 
-        if (identifierEquals("TO")) {
+        if (lexer.token() == Token.TO) {
             lexer.nextToken();
 
             if (identifierEquals("SAVEPOINT")) {
@@ -2329,7 +2329,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         for (;;) {
             MySqlRenameTableStatement.Item item = new MySqlRenameTableStatement.Item();
             item.setName(this.exprParser.name());
-            acceptIdentifier("TO");
+            accept(Token.TO);
             item.setTo(this.exprParser.name());
 
             stmt.getItems().add(item);

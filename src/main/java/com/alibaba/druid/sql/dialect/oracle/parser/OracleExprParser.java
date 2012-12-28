@@ -380,7 +380,7 @@ public class OracleExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
             }
             
-            acceptIdentifier("TO");
+            accept(Token.TO);
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();
                 interval.setToType(OracleIntervalType.SECOND);
@@ -405,7 +405,7 @@ public class OracleExprParser extends SQLExprParser {
             char markChar = lexer.current();
             int markBp = lexer.bp();
             lexer.nextToken();
-            if (lexer.token() == Token.LOCAL) {
+            if (identifierEquals("LOCAL")) {
                 lexer.nextToken();
                 expr = new OracleDatetimeExpr(expr, new SQLIdentifierExpr("LOCAL"));
             } else {
@@ -706,7 +706,7 @@ public class OracleExprParser extends SQLExprParser {
             accept(Token.RPAREN);
         }
         
-        if (identifierEquals("TO")) {
+        if (lexer.token() == Token.TO) {
             lexer.nextToken();
             if (identifierEquals("SECOND")) {
                 lexer.nextToken();

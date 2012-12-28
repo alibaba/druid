@@ -49,6 +49,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -981,5 +982,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     @Override
     public void endVisit(SQLAlterTableAddColumn x) {
 
+    }
+    
+    @Override
+    public boolean visit(SQLRollbackStatement x) {
+        return false;
     }
 }

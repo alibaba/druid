@@ -95,7 +95,7 @@ public class SQLUtils {
 
     public static String toOracleString(SQLObject sqlObject) {
         StringBuilder out = new StringBuilder();
-        sqlObject.accept(new OracleOutputVisitor(out));
+        sqlObject.accept(new OracleOutputVisitor(out, false));
 
         String sql = out.toString();
         return sql;

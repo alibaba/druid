@@ -56,7 +56,6 @@ public class OracleLexer extends Lexer {
         map.put("IF", Token.IF);
 
         map.put("LIMIT", Token.LIMIT);
-        map.put("LOCAL", Token.LOCAL);
         map.put("LOOP", Token.LOOP);
         map.put("MATCHED", Token.MATCHED);
         map.put("MERGE", Token.MERGE);
@@ -81,6 +80,8 @@ public class OracleLexer extends Lexer {
 
         map.put("WAIT", Token.WAIT);
         map.put("WITH", Token.WITH);
+        
+        map.put("IDENTIFIED", Token.IDENTIFIED);
 
         DEFAULT_ORACLE_KEYWORDS = new Keywords(map);
     }
