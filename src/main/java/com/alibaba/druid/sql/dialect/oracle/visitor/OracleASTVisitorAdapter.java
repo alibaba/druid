@@ -78,6 +78,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
@@ -1369,6 +1370,16 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
     @Override
     public void endVisit(OracleCreateProcedureStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
+        
     }
 
 }

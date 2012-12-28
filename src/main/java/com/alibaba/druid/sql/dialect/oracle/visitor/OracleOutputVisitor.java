@@ -107,6 +107,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterViewStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleBlockStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCommitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleConstraintState;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateDatabaseDbLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
@@ -3031,5 +3032,52 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleCreateProcedureStatement x) {
 
+    }
+
+    @Override
+    public boolean visit(OracleCreateDatabaseDbLinkStatement x) {
+        print("CREATE ");
+        if (x.isShared()) {
+            print("SHARE ");
+        }
+        
+        if (x.isPublic()) {
+            print("PUBLIC ");
+        }
+        
+        print("DATABASE LINK ");
+        
+        x.getName().accept(this);
+        
+        if (x.getUser() != null) {
+            print(" CONNECT TO ");
+            x.getUser().accept(this);
+            
+            if (x.getPassword() != null) {
+                print(" IDENTIFIED BY ");
+                print(x.getPassword());
+            }
+        }
+        
+        if (x.getAuthenticatedUser() != null) {
+            print(" AUTHENTICATED BY ");
+            x.getAuthenticatedUser().accept(this);
+            if (x.getAuthenticatedPassword() != null) {
+                print(" IDENTIFIED BY ");
+                print(x.getAuthenticatedPassword());
+            }
+        }
+        
+        if (x.getUsing() != null) {
+            print(" USING ");
+            x.getUsing().accept(this);
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
+        
     }
 }
