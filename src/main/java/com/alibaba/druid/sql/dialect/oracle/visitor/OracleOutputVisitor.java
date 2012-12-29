@@ -113,6 +113,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -3078,6 +3079,23 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDropDatabaseLinkStatement x) {
+        print("DROP ");
+        if (x.isPublic()) {
+            print("PUBLIC ");
+        }
+        print("DATABASE LINK ");
+        x.getName().accept(this);
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDropDatabaseLinkStatement x) {
         
     }
 }
