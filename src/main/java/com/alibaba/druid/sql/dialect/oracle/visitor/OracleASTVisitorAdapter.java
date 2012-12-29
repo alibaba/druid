@@ -84,6 +84,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -1379,6 +1380,16 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDropDatabaseLinkStatement x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDropDatabaseLinkStatement x) {
         
     }
 

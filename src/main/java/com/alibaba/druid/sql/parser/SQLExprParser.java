@@ -1134,6 +1134,18 @@ public class SQLExprParser extends SQLParser {
 
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
+        
+        if (isCharType(typeName)) {
+            SQLCharactorDataType charType = new SQLCharactorDataType(typeName);
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                charType.getArguments().add(this.expr());
+                accept(Token.RPAREN);
+            }
+            
+            return parseCharTypeRest(charType);
+        }
 
         if ("character".equalsIgnoreCase(typeName) && "varying".equalsIgnoreCase(lexer.stringVal())) {
             typeName += ' ' + lexer.stringVal();
@@ -1149,16 +1161,12 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             exprList(dataType.getArguments());
             accept(Token.RPAREN);
-
-            return parseCharTypeRest(dataType);
         }
 
         return dataType;
     }
 
-    protected boolean isCharType(SQLDataType dataType) {
-        String dataTypeName = dataType.getName();
-
+    protected boolean isCharType(String dataTypeName) {
         return "char".equalsIgnoreCase(dataTypeName) //
                || "varchar".equalsIgnoreCase(dataTypeName)
                || "nchar".equalsIgnoreCase(dataTypeName)
@@ -1167,14 +1175,7 @@ public class SQLExprParser extends SQLParser {
         ;
     }
 
-    protected SQLDataType parseCharTypeRest(SQLDataType dataType) {
-        if (!isCharType(dataType)) {
-            return dataType;
-        }
-
-        SQLCharactorDataType charType = new SQLCharactorDataType(dataType.getName());
-        charType.getArguments().addAll(dataType.getArguments());
-
+    protected SQLDataType parseCharTypeRest(SQLCharactorDataType charType) {
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
 

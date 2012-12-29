@@ -105,6 +105,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -1812,4 +1813,13 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     }
 
+    @Override
+    public boolean visit(OracleDropDatabaseLinkStatement x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDropDatabaseLinkStatement x) {
+        
+    }
 }

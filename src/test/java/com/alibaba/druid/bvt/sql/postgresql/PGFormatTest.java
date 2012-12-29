@@ -26,10 +26,10 @@ public class PGFormatTest extends TestCase {
     public void test_0() throws Exception {
         String sql = "CREATE TABLE foo (fooid int, foosubid int, fooname text);";
         String formatedSql = SQLUtils.format(sql, JdbcUtils.POSTGRESQL);
-        Assert.assertEquals("CREATE TABLE foo (\n" + //
-                            "\tfooid int, \n" + //
-                            "\tfoosubid int, \n" + //
-                            "\tfooname text\n" + //
-                            ")", formatedSql);
+        Assert.assertEquals("CREATE TABLE foo (" + //
+                            "\n\tfooid int," + //
+                            "\n\tfoosubid int," + //
+                            "\n\tfooname text" + //
+                            "\n)", formatedSql);
     }
 }

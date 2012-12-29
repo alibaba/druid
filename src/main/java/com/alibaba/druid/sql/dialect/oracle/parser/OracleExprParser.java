@@ -35,6 +35,7 @@ import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
@@ -66,6 +67,14 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
+
+
+
+
+
+
+
     public boolean                allowStringAdditive = false;
 
     /**
@@ -91,6 +100,17 @@ public class OracleExprParser extends SQLExprParser {
         this.lexer.nextToken();
     }
     
+    protected boolean isCharType(String dataTypeName) {
+        return "varchar2".equalsIgnoreCase(dataTypeName) //
+                || "nvarchar2".equalsIgnoreCase(dataTypeName) //
+                || "char".equalsIgnoreCase(dataTypeName) //
+               || "varchar".equalsIgnoreCase(dataTypeName) //
+               || "nchar".equalsIgnoreCase(dataTypeName) //
+               || "nvarchar".equalsIgnoreCase(dataTypeName) //
+        //
+        ;
+    }
+    
     public SQLDataType parseDataType() {
         
         if (lexer.token() == Token.DEFAULT || lexer.token() == Token.NOT || lexer.token() == Token.NULL) {
@@ -99,6 +119,28 @@ public class OracleExprParser extends SQLExprParser {
         
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
+        
+        if (isCharType(typeName)) {
+            SQLCharactorDataType charType = new SQLCharactorDataType(typeName);
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                
+                charType.getArguments().add(this.expr());
+                
+                if (identifierEquals("CHAR")) {
+                    lexer.nextToken();
+                    charType.setCharType(SQLCharactorDataType.CHAR_TYPE_CHAR);
+                } else if (identifierEquals("BYTE")) {
+                    lexer.nextToken();
+                    charType.setCharType(SQLCharactorDataType.CHAR_TYPE_BYTE);
+                }
+                
+                accept(Token.RPAREN);
+            }
+            
+            return parseCharTypeRest(charType);
+        }
         
         if (lexer.token() == Token.PERCENT) {
             lexer.nextToken();
@@ -113,7 +155,7 @@ public class OracleExprParser extends SQLExprParser {
             }
         }
 
-        SQLDataType dataType = new SQLDataTypeImpl(typeName);
+        SQLDataType dataType = new SQLDataTypeImpl(typeName);        
         return parseDataTypeRest(dataType);
     }
 

@@ -335,6 +335,26 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         return false;
     }
 
+    public boolean visit(SQLCharactorDataType x) {
+        print(x.getName());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            printAndAccept(x.getArguments(), ", ");
+            print(")");
+        }
+        
+        if (x.getCharSetName() != null) {
+            print(" CHARACTER SET ");
+            print(x.getCharSetName());
+
+            if (x.getCollate() != null) {
+                print(" COLLATE ");
+                print(x.getCollate());
+            }
+        }
+        return false;
+    }
+
     @Override
     public void endVisit(Limit x) {
 
@@ -489,13 +509,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     public boolean visit(SQLCharExpr x) {
         print('\'');
-        
+
         String text = x.getText();
         text = text.replaceAll("'", "''");
         text = text.replaceAll("\\\\", "\\\\");
-        
+
         print(text);
-        
+
         print('\'');
         return false;
     }

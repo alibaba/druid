@@ -76,6 +76,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -606,4 +607,8 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleCreateDatabaseDbLinkStatement x);
 
     void endVisit(OracleCreateDatabaseDbLinkStatement x);
+
+    boolean visit(OracleDropDatabaseLinkStatement x);
+
+    void endVisit(OracleDropDatabaseLinkStatement x);
 }
