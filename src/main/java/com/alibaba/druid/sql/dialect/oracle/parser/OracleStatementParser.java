@@ -71,6 +71,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -418,6 +419,30 @@ public class OracleStatementParser extends SQLStatementParser {
                     SQLDropTableStatement stmt = parseDropTable(false);
                     statementList.add(stmt);
                     continue;
+                }
+                
+                boolean isPublic = false;
+                if (identifierEquals("PUBLIC")) {
+                    lexer.nextToken();
+                    isPublic = true;
+                }
+                
+                if (lexer.token() == Token.DATABASE) {
+                    lexer.nextToken();
+                    
+                    if (identifierEquals("LINK")) {
+                        lexer.nextToken();
+                        
+                        OracleDropDatabaseLinkStatement stmt = new OracleDropDatabaseLinkStatement();
+                        if (isPublic) {
+                            stmt.setPublic(isPublic);
+                        }
+                        
+                        stmt.setName(this.exprParser.name());
+                        
+                        statementList.add(stmt);
+                        continue;
+                    }
                 }
 
                 throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());

@@ -16,12 +16,18 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
 public class SQLCharactorDataType extends SQLDataTypeImpl {
 
-    private String charSetName;
-    private String collate;
+    private String             charSetName;
+    private String             collate;
+
+    private String             charType;
+
+    public final static String CHAR_TYPE_BYTE = "BYTE";
+    public final static String CHAR_TYPE_CHAR = "CHAR";
 
     public SQLCharactorDataType(String name){
         super(name);
@@ -43,4 +49,20 @@ public class SQLCharactorDataType extends SQLDataTypeImpl {
         this.collate = collate;
     }
 
+    public String getCharType() {
+        return charType;
+    }
+
+    public void setCharType(String charType) {
+        this.charType = charType;
+    }
+
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.arguments);
+        }
+
+        visitor.endVisit(this);
+    }
 }

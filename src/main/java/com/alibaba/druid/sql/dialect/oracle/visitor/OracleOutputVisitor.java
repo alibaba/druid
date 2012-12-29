@@ -17,7 +17,6 @@ package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.List;
 
-import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLHint;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -31,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
@@ -113,6 +113,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -883,11 +884,6 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public void endVisit(OracleAnalyticWindowing x) {
-
-    }
-
-    @Override
-    public void endVisit(SQLDataType x) {
 
     }
 
@@ -3079,5 +3075,36 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
     @Override
     public void endVisit(OracleCreateDatabaseDbLinkStatement x) {
         
+    }
+
+    @Override
+    public boolean visit(OracleDropDatabaseLinkStatement x) {
+        print("DROP ");
+        if (x.isPublic()) {
+            print("PUBLIC ");
+        }
+        print("DATABASE LINK ");
+        x.getName().accept(this);
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDropDatabaseLinkStatement x) {
+        
+    }
+    
+    public boolean visit(SQLCharactorDataType x) {
+        print(x.getName());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            x.getArguments().get(0).accept(this);
+            if (x.getCharType() != null) {
+                print(' ');
+                print(x.getCharType());
+            }
+            print(")");
+        }
+        return false;
     }
 }
