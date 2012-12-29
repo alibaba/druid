@@ -38,6 +38,9 @@ import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource.JoinType;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -3106,5 +3109,73 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             print(")");
         }
         return false;
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeTimestamp x) {
+        print(x.getName());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            x.getArguments().get(0).accept(this);
+            print(")");
+        }
+        
+        if (x.isWithTimeZone()) {
+            print(" WITH TIME ZONE");
+        } else if (x.isWithLocalTimeZone()) {
+            print(" WITH LOCAL TIME ZONE");
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeTimestamp x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalYear x) {
+        print(x.getName());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            x.getArguments().get(0).accept(this);
+            print(")");
+        }
+        
+        print(" TO MONTH");
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalYear x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalDay x) {
+        print(x.getName());
+        if (x.getArguments().size() > 0) {
+            print("(");
+            x.getArguments().get(0).accept(this);
+            print(")");
+        }
+        
+        print(" TO SECOND");
+        
+        if (x.getFractionalSeconds().size() > 0) {
+            print("(");
+            x.getFractionalSeconds().get(0).accept(this);
+            print(")");
+        }
+        
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalDay x) {
+        // TODO Auto-generated method stub
+        
     }
 }

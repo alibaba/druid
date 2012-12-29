@@ -16,6 +16,9 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -1390,6 +1393,36 @@ public class OracleASTVisitorAdapter extends SQLASTVisitorAdapter implements Ora
 
     @Override
     public void endVisit(OracleDropDatabaseLinkStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeTimestamp x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeTimestamp x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalYear x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalYear x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalDay x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalDay x) {
         
     }
 

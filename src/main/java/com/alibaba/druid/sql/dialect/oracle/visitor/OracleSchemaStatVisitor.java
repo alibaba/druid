@@ -37,6 +37,9 @@ import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -1820,6 +1823,36 @@ public class OracleSchemaStatVisitor extends SchemaStatVisitor implements Oracle
 
     @Override
     public void endVisit(OracleDropDatabaseLinkStatement x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeTimestamp x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeTimestamp x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalYear x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalYear x) {
+        
+    }
+
+    @Override
+    public boolean visit(OracleDataTypeIntervalDay x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(OracleDataTypeIntervalDay x) {
         
     }
 }
