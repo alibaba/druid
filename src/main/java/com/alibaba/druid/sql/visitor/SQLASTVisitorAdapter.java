@@ -59,6 +59,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
@@ -753,5 +754,15 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
     @Override
     public boolean visit(SQLWithSubqueryClause.Entry x) {
         return true;
+    }
+
+    @Override
+    public boolean visit(SQLCharactorDataType x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCharactorDataType x) {
+        
     }
 }

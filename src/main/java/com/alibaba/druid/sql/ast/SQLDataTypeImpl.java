@@ -46,14 +46,6 @@ public class SQLDataTypeImpl extends SQLObjectImpl implements SQLDataType {
         visitor.endVisit(this);
     }
 
-    protected void accept0(OracleASTVisitor visitor) {
-        if (visitor.visit(this)) {
-            acceptChild(visitor, this.arguments);
-        }
-
-        visitor.endVisit(this);
-    }
-
     public String getName() {
         return this.name;
     }

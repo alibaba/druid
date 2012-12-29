@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.ast.statement;
 
 import com.alibaba.druid.sql.ast.SQLDataTypeImpl;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 @SuppressWarnings("serial")
 public class SQLCharactorDataType extends SQLDataTypeImpl {
@@ -56,4 +57,12 @@ public class SQLCharactorDataType extends SQLDataTypeImpl {
         this.charType = charType;
     }
 
+    @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.arguments);
+        }
+
+        visitor.endVisit(this);
+    }
 }

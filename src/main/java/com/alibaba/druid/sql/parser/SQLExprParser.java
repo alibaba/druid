@@ -1175,14 +1175,7 @@ public class SQLExprParser extends SQLParser {
         ;
     }
 
-    protected SQLDataType parseCharTypeRest(SQLDataType dataType) {
-        if (!isCharType(dataType.getName())) {
-            return dataType;
-        }
-
-        SQLCharactorDataType charType = new SQLCharactorDataType(dataType.getName());
-        charType.getArguments().addAll(dataType.getArguments());
-
+    protected SQLDataType parseCharTypeRest(SQLCharactorDataType charType) {
         if (identifierEquals("CHARACTER")) {
             lexer.nextToken();
 
