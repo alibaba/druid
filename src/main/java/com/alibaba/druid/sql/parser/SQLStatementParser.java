@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -80,7 +81,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.token() == (Token.SELECT)) {
+            if (lexer.token() == Token.SELECT) {
                 statementList.add(parseSelect());
                 continue;
             }
@@ -545,7 +546,9 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectStatement parseSelect() {
-        return new SQLSelectStatement(createSQLSelectParser().select());
+        SQLSelectParser selectParser = createSQLSelectParser();
+        SQLSelect select = selectParser.select();
+        return new SQLSelectStatement(select);
     }
 
     public SQLSelectParser createSQLSelectParser() {
