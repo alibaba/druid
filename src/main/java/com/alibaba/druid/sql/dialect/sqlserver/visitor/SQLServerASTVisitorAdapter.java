@@ -16,7 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
@@ -35,12 +35,12 @@ public class SQLServerASTVisitorAdapter extends SQLASTVisitorAdapter implements 
     }
 
     @Override
-    public boolean visit(Top x) {
+    public boolean visit(SQLServerTop x) {
         return true;
     }
 
     @Override
-    public void endVisit(Top x) {
+    public void endVisit(SQLServerTop x) {
 
     }
     

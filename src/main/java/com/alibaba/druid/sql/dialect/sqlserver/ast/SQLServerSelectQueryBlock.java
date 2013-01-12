@@ -26,13 +26,13 @@ public class SQLServerSelectQueryBlock extends SQLSelectQueryBlock {
      */
     private static final long serialVersionUID = 1L;
 
-    private Top               top;
+    private SQLServerTop               top;
 
-    public Top getTop() {
+    public SQLServerTop getTop() {
         return top;
     }
 
-    public void setTop(Top top) {
+    public void setTop(SQLServerTop top) {
         this.top = top;
     }
 

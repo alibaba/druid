@@ -15,20 +15,21 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
-public class SQLServerSelectTest5 extends TestCase {
+public class SQLServerSelectTest8 extends TestCase {
 
     public void test_isEmpty() throws Exception {
-        String sql = "SELECT name, password_hash FROM [master].[sys].sql_logins";
+        String sql = "SELECT Location.Distance (@p)" + " FROM Cities;";
 
-        String expect = "SELECT name, password_hash\n" + //
-                        "FROM [master].[sys].sql_logins";
+        String expect = "SELECT Location.Distance(@p)" + //
+                        "\nFROM Cities";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

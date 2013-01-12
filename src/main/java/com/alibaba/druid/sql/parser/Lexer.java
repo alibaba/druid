@@ -251,8 +251,7 @@ public class Lexer {
                     token = RPAREN;
                     return;
                 case '[':
-                    scanChar();
-                    token = LBRACKET;
+                    scanLBracket();
                     return;
                 case ']':
                     scanChar();
@@ -373,6 +372,11 @@ public class Lexer {
             }
         }
 
+    }
+
+    protected void scanLBracket() {
+        scanChar();
+        token = LBRACKET;
     }
 
     private final void scanOperator() {
