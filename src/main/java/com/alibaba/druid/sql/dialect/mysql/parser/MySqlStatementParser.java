@@ -23,6 +23,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
@@ -199,27 +200,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             stmt.setTableSource(tableSource);
         }
 
-        accept(Token.SET);
-
-        for (;;) {
-            SQLUpdateSetItem item = new SQLUpdateSetItem();
-            item.setColumn(this.exprParser.name());
-            if (lexer.token() == Token.EQ) {
-                lexer.nextToken();
-            } else {
-                accept(Token.COLONEQ);
-            }
-            item.setValue(this.exprParser.expr());
-
-            stmt.getItems().add(item);
-
-            if (lexer.token() == (Token.COMMA)) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
+        parseUpdateSet(stmt);
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
@@ -2360,5 +2341,36 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return stmt;
+    }
+    
+    protected void parseUpdateSet(SQLUpdateStatement update) {
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = new SQLUpdateSetItem();
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                SQLListExpr list = new SQLListExpr();
+                this.exprParser.exprList(list.getItems());
+                accept(Token.RPAREN);
+                item.setColumn(list);
+            } else {
+                item.setColumn(this.exprParser.primary());
+            }
+            if (lexer.token() == Token.COLONEQ) {
+                lexer.nextToken();
+            } else {
+                accept(Token.EQ);
+            }
+            item.setValue(this.exprParser.expr());
+            update.getItems().add(item);
+
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+
+            lexer.nextToken();
+        }
     }
 }

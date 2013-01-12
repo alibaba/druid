@@ -55,7 +55,7 @@ public class OracleUpdateParser extends SQLStatementParser {
             }
         }
 
-        parseSet(update);
+        parseUpdateSet(update);
 
         parseWhere(update);
 
@@ -117,30 +117,4 @@ public class OracleUpdateParser extends SQLStatementParser {
         }
     }
 
-    private void parseSet(OracleUpdateStatement update) {
-        accept(Token.SET);
-
-        for (;;) {
-            SQLUpdateSetItem item = new SQLUpdateSetItem();
-
-            if (lexer.token() == (Token.LPAREN)) {
-                lexer.nextToken();
-                SQLListExpr list = new SQLListExpr();
-                this.exprParser.exprList(list.getItems());
-                accept(Token.RPAREN);
-                item.setColumn(list);
-            } else {
-                item.setColumn(this.exprParser.primary());
-            }
-            accept(Token.EQ);
-            item.setValue(this.exprParser.expr());
-            update.getItems().add(item);
-
-            if (lexer.token() != Token.COMMA) {
-                break;
-            }
-
-            lexer.nextToken();
-        }
-    }
 }

@@ -22,7 +22,11 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
+import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
@@ -111,5 +115,35 @@ public class SQLServerStatementParser extends SQLStatementParser {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
+    }
+    
+    protected SQLServerUpdateStatement createUpdateStatement() {
+        return new SQLServerUpdateStatement();
+    }
+    
+    public SQLUpdateStatement parseUpdateStatement() {
+        SQLServerUpdateStatement udpateStatement = createUpdateStatement();
+
+        if (lexer.token() == Token.UPDATE) {
+            lexer.nextToken();
+
+            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+            udpateStatement.setTableSource(tableSource);
+        }
+
+        parseUpdateSet(udpateStatement);
+        
+        if (lexer.token() == Token.FROM) {
+            lexer.nextToken();
+            SQLTableSource from = this.exprParser.createSelectParser().parseTableSource();
+            udpateStatement.setFrom(from);
+        }
+        
+        if (lexer.token() == (Token.WHERE)) {
+            lexer.nextToken();
+            udpateStatement.setWhere(this.exprParser.expr());
+        }
+
+        return udpateStatement;
     }
 }
