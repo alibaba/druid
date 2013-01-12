@@ -21,6 +21,7 @@ import java.util.List;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
@@ -38,6 +39,7 @@ import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLReleaseSavePointStatement;
 import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSavePointStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
@@ -80,7 +82,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (lexer.token() == (Token.SELECT)) {
+            if (lexer.token() == Token.SELECT) {
                 statementList.add(parseSelect());
                 continue;
             }
@@ -545,7 +547,9 @@ public class SQLStatementParser extends SQLParser {
     }
 
     public SQLSelectStatement parseSelect() {
-        return new SQLSelectStatement(createSQLSelectParser().select());
+        SQLSelectParser selectParser = createSQLSelectParser();
+        SQLSelect select = selectParser.select();
+        return new SQLSelectStatement(select);
     }
 
     public SQLSelectParser createSQLSelectParser() {
@@ -562,23 +566,7 @@ public class SQLStatementParser extends SQLParser {
             udpateStatement.setTableSource(tableSource);
         }
 
-        accept(Token.SET);
-
-        for (;;) {
-            SQLUpdateSetItem item = new SQLUpdateSetItem();
-            item.setColumn(this.exprParser.name());
-            accept(Token.EQ);
-            item.setValue(this.exprParser.expr());
-
-            udpateStatement.getItems().add(item);
-
-            if (lexer.token() == (Token.COMMA)) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
+        parseUpdateSet(udpateStatement);
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
@@ -586,6 +574,33 @@ public class SQLStatementParser extends SQLParser {
         }
 
         return udpateStatement;
+    }
+    
+    protected void parseUpdateSet(SQLUpdateStatement update) {
+        accept(Token.SET);
+
+        for (;;) {
+            SQLUpdateSetItem item = new SQLUpdateSetItem();
+
+            if (lexer.token() == (Token.LPAREN)) {
+                lexer.nextToken();
+                SQLListExpr list = new SQLListExpr();
+                this.exprParser.exprList(list.getItems());
+                accept(Token.RPAREN);
+                item.setColumn(list);
+            } else {
+                item.setColumn(this.exprParser.primary());
+            }
+            accept(Token.EQ);
+            item.setValue(this.exprParser.expr());
+            update.getItems().add(item);
+
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+
+            lexer.nextToken();
+        }
     }
 
     protected SQLUpdateStatement createUpdateStatement() {
