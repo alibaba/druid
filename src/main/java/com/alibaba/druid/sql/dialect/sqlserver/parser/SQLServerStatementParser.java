@@ -23,8 +23,8 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
@@ -37,7 +37,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(String sql){
         super(new SQLServerExprParser(sql));
     }
-    
+
     public SQLSelectParser createSQLSelectParser() {
         return new SQLServerSelectParser(this.exprParser);
     }
@@ -45,7 +45,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
     public SQLServerStatementParser(Lexer lexer){
         super(new SQLServerExprParser(lexer));
     }
-    
+
     public boolean parseStatementListDialect(List<SQLStatement> statementList) {
         if (lexer.token() == Token.WITH) {
             SQLStatement stmt = parseSelect();
@@ -55,7 +55,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
         return false;
     }
-    
+
     public SQLStatement parseInsert() {
         SQLServerInsertStatement insertStatement = new SQLServerInsertStatement();
 
@@ -69,7 +69,7 @@ public class SQLServerStatementParser extends SQLStatementParser {
 
     protected void parseInsert0(SQLInsertInto insert, boolean acceptSubQuery) {
         SQLServerInsertStatement insertStatement = (SQLServerInsertStatement) insert;
-        
+
         if (lexer.token() == Token.INTO) {
             lexer.nextToken();
 
@@ -116,34 +116,41 @@ public class SQLServerStatementParser extends SQLStatementParser {
             insertStatement.setQuery(queryExpr.getSubQuery());
         }
     }
-    
+
     protected SQLServerUpdateStatement createUpdateStatement() {
         return new SQLServerUpdateStatement();
     }
-    
+
     public SQLUpdateStatement parseUpdateStatement() {
         SQLServerUpdateStatement udpateStatement = createUpdateStatement();
 
-        if (lexer.token() == Token.UPDATE) {
-            lexer.nextToken();
-
-            SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
-            udpateStatement.setTableSource(tableSource);
+        accept(Token.UPDATE);
+        
+        SQLServerTop top = this.getExprParser().parseTop();
+        if (top != null) {
+            udpateStatement.setTop(top);
         }
 
+        SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
+        udpateStatement.setTableSource(tableSource);
+
         parseUpdateSet(udpateStatement);
-        
+
         if (lexer.token() == Token.FROM) {
             lexer.nextToken();
             SQLTableSource from = this.exprParser.createSelectParser().parseTableSource();
             udpateStatement.setFrom(from);
         }
-        
+
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();
             udpateStatement.setWhere(this.exprParser.expr());
         }
 
         return udpateStatement;
+    }
+    
+    public SQLServerExprParser getExprParser() {
+        return (SQLServerExprParser) exprParser;
     }
 }

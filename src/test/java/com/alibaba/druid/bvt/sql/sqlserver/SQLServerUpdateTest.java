@@ -45,7 +45,8 @@ public class SQLServerUpdateTest extends TestCase {
         		"\nFROM reg_student_charge_item a, (SELECT a.FId, CASE WHEN SUM(b.FChargeAmount) IS NULL THEN 0 ELSE SUM(b.FChargeAmount) END AS amount" +
         		"\n\t\tFROM reg_student_charge_item a" +
         		"\n\t\t\tLEFT JOIN reg_student_charge_daybook b ON a.FId = b.FChargeItemId" +
-        		"\n\t\tWHERE a.FId = ? GROUP BY a.FId" +
+        		"\n\t\tWHERE a.FId = ?" +
+        		"\n\t\tGROUP BY a.FId" +
         		"\n\t\t) b" +
         		"\nWHERE a.FId = b.FId" +
         		"\nAND a.FId = ?";

@@ -631,7 +631,7 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         if (x.getGroupBy() != null) {
-            print(" ");
+            println();
             x.getGroupBy().accept(this);
         }
 

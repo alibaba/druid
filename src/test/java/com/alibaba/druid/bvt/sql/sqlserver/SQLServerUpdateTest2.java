@@ -15,20 +15,24 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
-public class SQLServerSelectTest5 extends TestCase {
+public class SQLServerUpdateTest2 extends TestCase {
 
-    public void test_isEmpty() throws Exception {
-        String sql = "SELECT name, password_hash FROM [master].[sys].sql_logins";
+    public void test_update() throws Exception {
+        String sql = "UPDATE Cities " + //
+                     "SET Location = CONVERT(Point, '12.3:46.2') " + //
+                     "WHERE Name = 'Anchorage';";
 
-        String expect = "SELECT name, password_hash\n" + //
-                        "FROM [master].[sys].sql_logins";
+        String expect = "UPDATE Cities" + //
+                        "\nSET Location = CONVERT(Point, '12.3:46.2')" + //
+                        "\nWHERE Name = 'Anchorage'";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

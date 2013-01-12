@@ -18,6 +18,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.parser;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -105,5 +106,28 @@ public class SQLServerExprParser extends SQLExprParser {
         }
 
         return false;
+    }
+    
+    public SQLServerTop parseTop() {
+        if (lexer.token() == Token.TOP) {
+            SQLServerTop top = new SQLServerTop();
+            lexer.nextToken();
+            
+            boolean paren = false;
+            if (lexer.token() == Token.LPAREN) {
+                paren = true;
+                lexer.nextToken();
+            }
+            
+            top.setExpr(primary());
+            
+            if (paren) {
+                accept(Token.RPAREN);
+            }
+            
+            return top;
+        }
+        
+        return null;
     }
 }

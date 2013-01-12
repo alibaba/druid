@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.ast;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class Top extends SQLServerObjectImpl {
+public class SQLServerTop extends SQLServerObjectImpl {
 
     /**
      * 

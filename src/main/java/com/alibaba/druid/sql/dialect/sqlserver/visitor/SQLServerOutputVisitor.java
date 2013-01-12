@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.dialect.sqlserver.visitor;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
@@ -42,9 +42,16 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
         if (x.getTop() != null) {
             x.getTop().accept(this);
+            print(' ');
         }
 
         printSelectList(x.getSelectList());
+        
+        if (x.getInto() != null) {
+            println();
+            print("INTO ");
+            x.getInto().accept(this);
+        }
 
         if (x.getFrom() != null) {
             println();
@@ -73,15 +80,27 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     }
 
     @Override
-    public boolean visit(Top x) {
+    public boolean visit(SQLServerTop x) {
         print("TOP ");
+        
+        boolean paren = false;
+        
+        if (x.getParent() instanceof SQLServerUpdateStatement) {
+            paren = true;
+            print("(");
+        }
+        
         x.getExpr().accept(this);
-        print(" ");
+        
+        if (paren) {
+            print(")");
+        }
+        
         return false;
     }
 
     @Override
-    public void endVisit(Top x) {
+    public void endVisit(SQLServerTop x) {
 
     }
 
@@ -148,6 +167,12 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
     @Override
     public boolean visit(SQLServerUpdateStatement x) {
         print("UPDATE ");
+        
+        if (x.getTop() != null) {
+            x.getTop().setParent(x);
+            x.getTop().accept(this);
+            print(' ');
+        }
 
         x.getTableSource().accept(this);
 
