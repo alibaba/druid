@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
+import static com.alibaba.druid.sql.parser.Token.IDENTIFIER;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -141,5 +142,36 @@ public class SQLServerLexer extends Lexer {
             token = Token.LINE_COMMENT;
             return;
         }
+    }
+    
+    protected void scanLBracket() {
+        mark = pos;
+
+        if (buf == null) {
+            buf = new char[32];
+        }
+
+        for (;;) {
+            if (isEOF()) {
+                lexError("unclosed.str.lit");
+                return;
+            }
+
+            ch = charAt(++pos);
+
+            if (ch == ']') {
+                scanChar();
+                token = IDENTIFIER;
+                break;
+            }
+
+            if (bufPos == buf.length) {
+                putChar(ch);
+            } else {
+                buf[bufPos++] = ch;
+            }
+        }
+
+        stringVal = subString(mark, bufPos + 2);
     }
 }

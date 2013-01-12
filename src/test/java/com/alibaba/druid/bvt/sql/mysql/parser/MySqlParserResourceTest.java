@@ -71,7 +71,7 @@ public class MySqlParserResourceTest extends TestCase {
         System.out.println();
         
         expect = expect.replaceAll("\\r\\n", "\n");
-        Assert.assertEquals(expect, text.trim());
+        Assert.assertEquals("errror resource " + resource, expect, text.trim());
 
         String mergeExpect = null;
         if (items.length == 3) {

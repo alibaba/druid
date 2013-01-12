@@ -204,7 +204,7 @@ public class MySqlLexer extends Lexer {
         }
     }
 
-    protected void scanString() {
+    protected final void scanString() {
         mark = pos;
         boolean hasSpecial = false;
 

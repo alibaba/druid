@@ -16,11 +16,13 @@
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelect;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
-import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -74,13 +76,20 @@ public class SQLServerSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.TOP) {
-                Top top = new Top();
+                SQLServerTop top = new SQLServerTop();
                 lexer.nextToken();
                 top.setExpr(createExprParser().primary());
                 queryBlock.setTop(top);
             }
 
             parseSelectList(queryBlock);
+        }
+        
+        if (lexer.token() == Token.INTO) {
+            lexer.nextToken();
+            
+            SQLTableSource into = this.parseTableSource();
+            queryBlock.setInto((SQLExprTableSource) into);
         }
 
         parseFrom(queryBlock);

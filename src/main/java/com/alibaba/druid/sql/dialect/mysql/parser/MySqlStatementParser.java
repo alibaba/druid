@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
@@ -23,6 +24,7 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
@@ -127,6 +129,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
+import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -1762,6 +1765,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         }
 
+        int columnSize = 0;
         if (lexer.token() == (Token.LPAREN)) {
             lexer.nextToken();
             if (lexer.token() == (Token.SELECT)) {
@@ -1770,22 +1774,73 @@ public class MySqlStatementParser extends SQLStatementParser {
                 insertStatement.setQuery(select);
             } else {
                 this.exprParser.exprList(insertStatement.getColumns());
+                columnSize = insertStatement.getColumns().size();
             }
             accept(Token.RPAREN);
         }
 
         if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
-            lexer.nextToken();
+            lexer.nextTokenLParen();
 
             for (;;) {
                 accept(Token.LPAREN);
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                this.exprParser.exprList(values.getValues());
-                insertStatement.getValuesList().add(values);
-                accept(Token.RPAREN);
 
+                if (lexer.token() != Token.RPAREN) {
+                    List<SQLExpr> valueExprList;
+                    if (columnSize > 0) {
+                        valueExprList = new ArrayList<SQLExpr>(columnSize);
+                    } else {
+                        valueExprList = new ArrayList<SQLExpr>();
+                    }
+
+                    for (;;) {
+                        SQLExpr expr;
+                        if (lexer.token() == Token.LITERAL_INT) {
+                            expr = new SQLIntegerExpr(lexer.integerValue());
+                            lexer.nextTokenComma();
+                        } else if (lexer.token() == Token.LITERAL_CHARS) {
+                            expr = new SQLCharExpr(lexer.stringVal());
+                            lexer.nextTokenComma();
+                        } else if (lexer.token() == Token.LITERAL_CHARS) {
+                            expr = new SQLCharExpr(lexer.stringVal());
+                            lexer.nextTokenComma();
+                        } else {
+                            expr = exprParser.expr();
+                        }
+
+                        if (lexer.token() == Token.COMMA) {
+                            valueExprList.add(expr);
+                            lexer.nextToken();
+                            continue;
+                        } else if (lexer.token() == Token.RPAREN) {
+                            valueExprList.add(expr);
+                            break;
+                        } else {
+                            expr = this.exprParser.primaryRest(expr);
+                            valueExprList.add(expr);
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                    
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
+                    insertStatement.getValuesList().add(values);
+                } else {
+                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                    insertStatement.getValuesList().add(values);
+                }
+
+                if (lexer.token() != Token.RPAREN) {
+                    throw new SQLParseException("syntax error");
+                }
+
+                lexer.nextTokenComma();
                 if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
+                    lexer.nextTokenLParen();
                     continue;
                 } else {
                     break;
@@ -2114,11 +2169,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                         stmt.getItems().add(item);
                     } else if (lexer.token() == Token.UNIQUE) {
                         lexer.nextToken();
-                        
+
                         if (lexer.token() == Token.INDEX) {
                             lexer.nextToken();
                         }
-                        
+
                         MySqlAlterTableAddUnique item = new MySqlAlterTableAddUnique();
 
                         if (lexer.token() == Token.LPAREN) {
@@ -2342,7 +2397,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         return stmt;
     }
-    
+
     protected void parseUpdateSet(SQLUpdateStatement update) {
         accept(Token.SET);
 

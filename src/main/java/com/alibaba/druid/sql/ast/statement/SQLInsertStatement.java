@@ -46,7 +46,15 @@ public class SQLInsertStatement extends SQLInsertInto implements SQLStatement {
     public static class ValuesClause extends SQLObjectImpl {
 
         private static final long   serialVersionUID = 1L;
-        private final List<SQLExpr> values           = new ArrayList<SQLExpr>();
+        private final List<SQLExpr> values;
+
+        public ValuesClause(){
+            this(new ArrayList<SQLExpr>());
+        }
+
+        public ValuesClause(List<SQLExpr> values){
+            this.values = values;
+        }
 
         public List<SQLExpr> getValues() {
             return values;
