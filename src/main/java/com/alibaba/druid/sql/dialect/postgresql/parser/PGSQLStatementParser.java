@@ -60,23 +60,7 @@ public class PGSQLStatementParser extends SQLStatementParser {
         SQLTableSource tableSource = this.exprParser.createSelectParser().parseTableSource();
         udpateStatement.setTableSource(tableSource);
 
-        accept(Token.SET);
-
-        for (;;) {
-            SQLUpdateSetItem item = new SQLUpdateSetItem();
-            item.setColumn(this.exprParser.name());
-            accept(Token.EQ);
-            item.setValue(this.exprParser.expr());
-
-            udpateStatement.getItems().add(item);
-
-            if (lexer.token() == (Token.COMMA)) {
-                lexer.nextToken();
-                continue;
-            }
-
-            break;
-        }
+        parseUpdateSet(udpateStatement);
 
         if (lexer.token() == (Token.WHERE)) {
             lexer.nextToken();

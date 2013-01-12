@@ -16,6 +16,9 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import com.alibaba.druid.sql.ast.expr.SQLObjectCreateExpr;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.CycleClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause.AsOfFlashbackQueryClause;
@@ -77,6 +80,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStateme
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -611,4 +615,20 @@ public interface OracleASTVisitor extends SQLASTVisitor {
     boolean visit(OracleDropDatabaseLinkStatement x);
 
     void endVisit(OracleDropDatabaseLinkStatement x);
+    
+    boolean visit(OracleDataTypeTimestamp x);
+
+    void endVisit(OracleDataTypeTimestamp x);
+    
+    boolean visit(OracleDataTypeIntervalYear x);
+
+    void endVisit(OracleDataTypeIntervalYear x);
+    
+    boolean visit(OracleDataTypeIntervalDay x);
+
+    void endVisit(OracleDataTypeIntervalDay x);
+
+    boolean visit(OracleDropSequenceStatement x);
+
+    void endVisit(OracleDropSequenceStatement x);
 }

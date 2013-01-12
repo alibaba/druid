@@ -37,6 +37,9 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalDay;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeIntervalYear;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleDataTypeTimestamp;
 import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAggregateExpr;
 import com.alibaba.druid.sql.dialect.oracle.ast.expr.OracleAnalytic;
@@ -67,6 +70,7 @@ import com.alibaba.druid.sql.parser.SQLExprParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class OracleExprParser extends SQLExprParser {
+
 
 
 
@@ -117,8 +121,72 @@ public class OracleExprParser extends SQLExprParser {
             return null;
         }
         
+        if (lexer.token() == Token.INTERVAL) {
+            lexer.nextToken();
+            if (identifierEquals("YEAR")) {
+                lexer.nextToken();
+                OracleDataTypeIntervalYear interval = new OracleDataTypeIntervalYear();
+                
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    interval.getArguments().add(this.expr());
+                    accept(Token.RPAREN);
+                }
+                
+                accept(Token.TO);
+                acceptIdentifier("MONTH");
+                
+                return interval;
+            } else {
+                acceptIdentifier("DAY");
+                OracleDataTypeIntervalDay interval = new OracleDataTypeIntervalDay();
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    interval.getArguments().add(this.expr());
+                    accept(Token.RPAREN);
+                }
+                
+                accept(Token.TO);
+                acceptIdentifier("SECOND");
+                
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    interval.getFractionalSeconds().add(this.expr());
+                    accept(Token.RPAREN);
+                }
+                
+                return interval;
+            }
+        }
+        
         SQLName typeExpr = name();
         String typeName = typeExpr.toString();
+        
+        if ("TIMESTAMP".equalsIgnoreCase(typeName)) {
+            OracleDataTypeTimestamp timestamp = new OracleDataTypeTimestamp();
+            
+            if (lexer.token() == Token.LPAREN) {
+                lexer.nextToken();
+                timestamp.getArguments().add(this.expr());
+                accept(Token.RPAREN);
+            }
+            
+            if (lexer.token() == Token.WITH) {
+                lexer.nextToken();
+                
+                if (identifierEquals("LOCAL")) {
+                    lexer.nextToken();
+                    timestamp.setWithLocalTimeZone(true);
+                } else {
+                    timestamp.setWithTimeZone(true);
+                }
+                
+                acceptIdentifier("TIME");
+                acceptIdentifier("ZONE");
+            }
+            
+            return timestamp;
+        }
         
         if (isCharType(typeName)) {
             SQLCharactorDataType charType = new SQLCharactorDataType(typeName);

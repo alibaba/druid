@@ -72,6 +72,7 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateProcedureStatem
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropDatabaseLinkStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDropSequenceStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExceptionStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExitStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleExplainStatement;
@@ -443,6 +444,18 @@ public class OracleStatementParser extends SQLStatementParser {
                         statementList.add(stmt);
                         continue;
                     }
+                }
+                
+                if (identifierEquals("SEQUENCE")) {
+                    lexer.nextToken();
+                    
+                    SQLName name = this.exprParser.name();
+                    
+                    OracleDropSequenceStatement stmt = new OracleDropSequenceStatement();
+                    stmt.setName(name);
+                    
+                    statementList.add(stmt);
+                    continue;
                 }
 
                 throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());

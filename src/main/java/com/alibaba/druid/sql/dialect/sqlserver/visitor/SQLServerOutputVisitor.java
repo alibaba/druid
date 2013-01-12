@@ -20,6 +20,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.Top;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerInsertStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.stmt.SQLServerUpdateStatement;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLServerASTVisitor {
@@ -144,4 +145,40 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
 
     }
 
+    @Override
+    public boolean visit(SQLServerUpdateStatement x) {
+        print("UPDATE ");
+
+        x.getTableSource().accept(this);
+
+        println();
+        print("SET ");
+        for (int i = 0, size = x.getItems().size(); i < size; ++i) {
+            if (i != 0) {
+                print(", ");
+            }
+            x.getItems().get(i).accept(this);
+        }
+        
+        if (x.getFrom() != null) {
+            println();
+            print("FROM ");
+            x.getFrom().setParent(x);
+            x.getFrom().accept(this);
+        }
+
+        if (x.getWhere() != null) {
+            println();
+            print("WHERE ");
+            x.getWhere().setParent(x);
+            x.getWhere().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(SQLServerUpdateStatement x) {
+        
+    }
 }
