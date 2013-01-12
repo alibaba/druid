@@ -17,32 +17,23 @@ package com.alibaba.druid.benckmark.sql;
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
 import com.alibaba.druid.sql.test.TestUtils;
 import com.alibaba.druid.util.IOUtils;
 
-public class MySqlPerfTest extends TestCase {
+public class MySqlPerfMain {
 
-    private String sql;
-
-    protected void setUp() throws Exception {
-        sql = "SELECT * FROM T";
-        sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
-
-        sql = IOUtils.readFromResource("benchmark/sql/ob_sql.txt");
-    }
-
-    public void test_pert() throws Exception {
+    public static void main(String[] args) throws Exception {
+        String sql = IOUtils.readFromResource("benchmark/sql/ob_sql.txt");
+        
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);
         }
     }
 
-    long perfMySql(String sql) {
+    static long perfMySql(String sql) {
         long startYGC = TestUtils.getYoungGC();
         long startYGCTime = TestUtils.getYoungGCTime();
         long startFGC = TestUtils.getFullGC();
@@ -61,7 +52,7 @@ public class MySqlPerfTest extends TestCase {
         return millis;
     }
 
-    private String execMySql(String sql) {
+    static String execMySql(String sql) {
         StringBuilder out = new StringBuilder();
         MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
         MySqlStatementParser parser = new MySqlStatementParser(sql);

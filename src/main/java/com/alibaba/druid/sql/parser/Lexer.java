@@ -187,7 +187,40 @@ public class Lexer {
     public String info() {
         return this.token + " " + this.stringVal();
     }
-
+    
+    public final void nextTokenComma() {
+        if (ch == ' ') {
+            scanChar();
+        }
+        
+        if (ch == ',') {
+            scanChar();
+            token = COMMA;
+            return;
+        }
+        
+        if (ch == ')') {
+            scanChar();
+            token = RPAREN;
+            return;
+        }
+        
+        nextToken();
+    }
+    
+    public final void nextTokenLParen() {
+        if (ch == ' ') {
+            scanChar();
+        }
+        
+        if (ch == '(') {
+            scanChar();
+            token = LPAREN;
+            return;
+        }
+        nextToken();
+    }
+    
     public final void nextToken() {
         bufPos = 0;
 

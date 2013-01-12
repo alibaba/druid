@@ -223,7 +223,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal() + ", pos " + lexer.pos());
         }
     }
 
