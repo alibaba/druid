@@ -1783,7 +1783,10 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextTokenLParen();
 
             for (;;) {
-                accept(Token.LPAREN);
+                if (lexer.token() != Token.LPAREN) {
+                    throw new SQLParseException("syntax error, expect ')'");
+                }
+                lexer.nextTokenValue();
 
                 if (lexer.token() != Token.RPAREN) {
                     List<SQLExpr> valueExprList;
@@ -1810,7 +1813,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                         if (lexer.token() == Token.COMMA) {
                             valueExprList.add(expr);
-                            lexer.nextToken();
+                            lexer.nextTokenValue();
                             continue;
                         } else if (lexer.token() == Token.RPAREN) {
                             valueExprList.add(expr);

@@ -221,6 +221,32 @@ public class Lexer {
         nextToken();
     }
     
+    public final void nextTokenValue() {
+        if (ch == ' ') {
+            scanChar();
+        }
+        
+        if (ch == '\'') {
+            bufPos = 0;
+            scanString();
+            return;
+        }
+        
+        if (ch >= '0' && ch <= '9') {
+            bufPos = 0;
+            scanNumber();
+            return;
+        }
+        
+        if (ch == '?') {
+            scanChar();
+            token = Token.QUES;
+            return;
+        }
+        
+        nextToken();
+    }
+    
     public final void nextToken() {
         bufPos = 0;
 
