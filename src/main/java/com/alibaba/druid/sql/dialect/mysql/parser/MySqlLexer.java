@@ -26,6 +26,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -205,9 +206,38 @@ public class MySqlLexer extends Lexer {
     }
 
     protected final void scanString() {
+        {
+            boolean hasSpecial = false;
+            int startIndex = pos + 1;
+            int endIndex = indexOf('\'', startIndex);
+            if (endIndex == -1) {
+                throw new ParserException("unclosed str");
+            }
+
+            String stringVal = subString(startIndex, endIndex - startIndex);
+            for (int i = 0; i < stringVal.length(); ++i) {
+                char ch = stringVal.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                    break;
+                }
+            }
+
+            if (!hasSpecial) {
+                this.stringVal = stringVal;
+                int pos = endIndex + 1;
+                char ch = charAt(pos);
+                if (ch != '\'') {
+                    this.pos = pos;
+                    this.ch = ch;
+                    token = LITERAL_CHARS;
+                    return;
+                }
+            }
+        }
+
         mark = pos;
         boolean hasSpecial = false;
-
         for (;;) {
             if (isEOF()) {
                 lexError("unclosed.str.lit");
@@ -286,6 +316,7 @@ public class MySqlLexer extends Lexer {
         }
 
         if (!hasSpecial) {
+            stringVal = "";
             stringVal = subString(mark + 1, bufPos);
         } else {
             stringVal = new String(buf, 0, bufPos);

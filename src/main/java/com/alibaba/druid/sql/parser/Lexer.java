@@ -41,7 +41,7 @@ import java.util.Arrays;
  */
 public class Lexer {
 
-    private final String  text;
+    protected final String  text;
     protected int         pos;
     protected int         mark;
 
@@ -77,6 +77,10 @@ public class Lexer {
         }
 
         return text.charAt(index);
+    }
+    
+    public final int indexOf(char ch, int fromIndex) {
+        return text.indexOf(ch, fromIndex);
     }
 
     public String addSymbol() {
