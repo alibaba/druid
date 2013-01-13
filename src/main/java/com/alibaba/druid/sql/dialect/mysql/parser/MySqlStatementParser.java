@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
@@ -1488,21 +1489,8 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
             lexer.nextToken();
-
-            for (;;) {
-                accept(Token.LPAREN);
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                this.exprParser.exprList(values.getValues());
-                stmt.getValuesList().add(values);
-                accept(Token.RPAREN);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            
+            parseValueClause(stmt.getValuesList(), 0);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
             stmt.setQuery(queryExpr);
@@ -1781,74 +1769,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
             lexer.nextTokenLParen();
-
-            for (;;) {
-                if (lexer.token() != Token.LPAREN) {
-                    throw new SQLParseException("syntax error, expect ')'");
-                }
-                lexer.nextTokenValue();
-
-                if (lexer.token() != Token.RPAREN) {
-                    List<SQLExpr> valueExprList;
-                    if (columnSize > 0) {
-                        valueExprList = new ArrayList<SQLExpr>(columnSize);
-                    } else {
-                        valueExprList = new ArrayList<SQLExpr>();
-                    }
-
-                    for (;;) {
-                        SQLExpr expr;
-                        if (lexer.token() == Token.LITERAL_INT) {
-                            expr = new SQLIntegerExpr(lexer.integerValue());
-                            lexer.nextTokenComma();
-                        } else if (lexer.token() == Token.LITERAL_CHARS) {
-                            expr = new SQLCharExpr(lexer.stringVal());
-                            lexer.nextTokenComma();
-                        } else if (lexer.token() == Token.LITERAL_CHARS) {
-                            expr = new SQLCharExpr(lexer.stringVal());
-                            lexer.nextTokenComma();
-                        } else {
-                            expr = exprParser.expr();
-                        }
-
-                        if (lexer.token() == Token.COMMA) {
-                            valueExprList.add(expr);
-                            lexer.nextTokenValue();
-                            continue;
-                        } else if (lexer.token() == Token.RPAREN) {
-                            valueExprList.add(expr);
-                            break;
-                        } else {
-                            expr = this.exprParser.primaryRest(expr);
-                            valueExprList.add(expr);
-                            if (lexer.token() == Token.COMMA) {
-                                lexer.nextToken();
-                                continue;
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    
-                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
-                    insertStatement.getValuesList().add(values);
-                } else {
-                    SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
-                    insertStatement.getValuesList().add(values);
-                }
-
-                if (lexer.token() != Token.RPAREN) {
-                    throw new SQLParseException("syntax error");
-                }
-
-                lexer.nextTokenComma();
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextTokenLParen();
-                    continue;
-                } else {
-                    break;
-                }
-            }
+            parseValueClause(insertStatement.getValuesList(), columnSize);
         } else if (lexer.token() == Token.SET) {
             lexer.nextToken();
 
@@ -1895,6 +1816,76 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         return insertStatement;
+    }
+
+    private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
+        for (;;) {
+            if (lexer.token() != Token.LPAREN) {
+                throw new SQLParseException("syntax error, expect ')'");
+            }
+            lexer.nextTokenValue();
+
+            if (lexer.token() != Token.RPAREN) {
+                List<SQLExpr> valueExprList;
+                if (columnSize > 0) {
+                    valueExprList = new ArrayList<SQLExpr>(columnSize);
+                } else {
+                    valueExprList = new ArrayList<SQLExpr>();
+                }
+
+                for (;;) {
+                    SQLExpr expr;
+                    if (lexer.token() == Token.LITERAL_INT) {
+                        expr = new SQLIntegerExpr(lexer.integerValue());
+                        lexer.nextTokenComma();
+                    } else if (lexer.token() == Token.LITERAL_CHARS) {
+                        expr = new SQLCharExpr(lexer.stringVal());
+                        lexer.nextTokenComma();
+                    } else if (lexer.token() == Token.LITERAL_CHARS) {
+                        expr = new SQLCharExpr(lexer.stringVal());
+                        lexer.nextTokenComma();
+                    } else {
+                        expr = exprParser.expr();
+                    }
+
+                    if (lexer.token() == Token.COMMA) {
+                        valueExprList.add(expr);
+                        lexer.nextTokenValue();
+                        continue;
+                    } else if (lexer.token() == Token.RPAREN) {
+                        valueExprList.add(expr);
+                        break;
+                    } else {
+                        expr = this.exprParser.primaryRest(expr);
+                        valueExprList.add(expr);
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                
+                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
+                valueClauseList.add(values);
+            } else {
+                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(new ArrayList<SQLExpr>(0));
+                valueClauseList.add(values);
+            }
+
+            if (lexer.token() != Token.RPAREN) {
+                throw new SQLParseException("syntax error");
+            }
+
+            lexer.nextTokenComma();
+            if (lexer.token() == Token.COMMA) {
+                lexer.nextTokenLParen();
+                continue;
+            } else {
+                break;
+            }
+        }
     }
 
     public SQLStatement parseDropUser() {
