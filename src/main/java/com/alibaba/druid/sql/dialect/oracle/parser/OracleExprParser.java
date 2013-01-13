@@ -79,6 +79,7 @@ public class OracleExprParser extends SQLExprParser {
 
 
 
+
     public boolean                allowStringAdditive = false;
 
     /**
@@ -389,12 +390,6 @@ public class OracleExprParser extends SQLExprParser {
                     sqlExpr = cursorExpr;
                     return  primaryRest(sqlExpr);
             default:
-                if (identifierEquals("DATE")) {
-                    return primaryRest(parseDate());     
-                }
-                if (identifierEquals("TIMESTAMP")) {
-                    return primaryRest(parseTimestamp());     
-                }
                 return super.primary();
         }
     }
@@ -413,8 +408,46 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
+        if (expr.getClass() == SQLIdentifierExpr.class) {
+            String ident = ((SQLIdentifierExpr)expr).getName();
+            
+            if ("DATE".equalsIgnoreCase(ident)) {
+                OracleDateExpr timestamp = new OracleDateExpr();
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+                
+                return primaryRest(timestamp);     
+            }
+            if ("TIMESTAMP".equalsIgnoreCase(ident)) {
+                if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.LITERAL_CHARS) {
+                    return new SQLIdentifierExpr("TIMESTAMP");
+                }
+
+                OracleTimestampExpr timestamp = new OracleTimestampExpr();
+
+                String literal = lexer.stringVal();
+                timestamp.setLiteral(literal);
+                accept(Token.LITERAL_CHARS);
+
+                if (identifierEquals("AT")) {
+                    lexer.nextToken();
+                    acceptIdentifier("TIME");
+                    acceptIdentifier("ZONE");
+
+                    String timezone = lexer.stringVal();
+                    timestamp.setTimeZone(timezone);
+                    accept(Token.LITERAL_CHARS);
+                }
+
+                
+                return primaryRest(timestamp);     
+            }
+        }
         if (lexer.token() == Token.IDENTIFIER && expr instanceof SQLNumericLiteralExpr) {
             String ident = lexer.stringVal();
+            
             if (ident.length() == 1) {
                 char unit = ident.charAt(0);
                 switch (unit) {
@@ -568,44 +601,6 @@ public class OracleExprParser extends SQLExprParser {
         }
 
         return super.dotRest(expr);
-    }
-
-    public OracleDateExpr parseDate() {
-        acceptIdentifier("DATE");
-
-        OracleDateExpr timestamp = new OracleDateExpr();
-
-        String literal = lexer.stringVal();
-        timestamp.setLiteral(literal);
-        accept(Token.LITERAL_CHARS);
-
-        return timestamp;
-    }
-
-    public SQLExpr parseTimestamp() {
-        acceptIdentifier("TIMESTAMP");
-        
-        if (lexer.token() != Token.LITERAL_ALIAS && lexer.token() != Token.LITERAL_CHARS) {
-            return new SQLIdentifierExpr("TIMESTAMP");
-        }
-
-        OracleTimestampExpr timestamp = new OracleTimestampExpr();
-
-        String literal = lexer.stringVal();
-        timestamp.setLiteral(literal);
-        accept(Token.LITERAL_CHARS);
-
-        if (identifierEquals("AT")) {
-            lexer.nextToken();
-            acceptIdentifier("TIME");
-            acceptIdentifier("ZONE");
-
-            String timezone = lexer.stringVal();
-            timestamp.setTimeZone(timezone);
-            accept(Token.LITERAL_CHARS);
-        }
-
-        return timestamp;
     }
 
     @Override

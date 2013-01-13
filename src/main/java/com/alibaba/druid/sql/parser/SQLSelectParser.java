@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.sql.parser;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
@@ -243,12 +245,30 @@ public class SQLSelectParser extends SQLParser {
         }
     }
 
-    protected void parseSelectList(SQLSelectQueryBlock queryBlock) {
-        queryBlock.getSelectList().add(new SQLSelectItem(expr(), as()));
-
-        while (lexer.token() == Token.COMMA) {
+    protected final void parseSelectList(SQLSelectQueryBlock queryBlock) {
+        final List<SQLSelectItem> selectList = queryBlock.getSelectList();
+        for (;;) {
+            SQLExpr expr;
+            if (lexer.token() == Token.IDENTIFIER) {
+                expr = new SQLIdentifierExpr(lexer.stringVal());
+                lexer.nextTokenComma();
+                
+                if (lexer.token() != Token.COMMA) {
+                    expr = this.exprParser.primaryRest(expr);
+                    expr = this.exprParser.exprRest(expr);
+                }
+            } else {
+                expr = expr();
+            }
+            final String alias = as();
+            
+            final SQLSelectItem selectItem = new SQLSelectItem(expr, alias);
+            selectList.add(selectItem);
+            if (lexer.token() != Token.COMMA) {
+                break;
+            }
+            
             lexer.nextToken();
-            queryBlock.getSelectList().add(new SQLSelectItem(expr(), as()));
         }
     }
 
