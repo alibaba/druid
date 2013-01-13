@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.benckmark.sql;
 
+import java.lang.management.ManagementFactory;
 import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -26,6 +27,10 @@ import com.alibaba.druid.util.IOUtils;
 public class MySqlPerfMain {
 
     public static void main(String[] args) throws Exception {
+        System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
+        List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        System.out.println(arguments);
+        
         String sql = IOUtils.readFromResource("benchmark/sql/ob_sql.txt");
         
         for (int i = 0; i < 10; ++i) {
