@@ -137,9 +137,30 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     private String handleName(String ident) {
-        ident = ident.replaceAll("\"", "");
-        ident = ident.replaceAll("`", "");
-        ident = ident.replaceAll(" ", "");
+        boolean flag0 = false;
+        boolean flag1 = false;
+        boolean flag2 = false;
+        for (int i = 0; i < ident.length(); ++i) {
+            final char ch = ident.charAt(i);
+            if (ch == '\"') {
+                flag0 = true;
+            } else if (ch == '`') {
+                flag1 = true;
+            } else if (ch == ' ') {
+                flag2 = true;
+            }
+        }
+        if (flag0) {
+            ident = ident.replaceAll("\"", "");
+        }
+        
+        if (flag1) {
+            ident = ident.replaceAll("`", "");
+        }
+        
+        if (flag2) {
+            ident = ident.replaceAll(" ", "");
+        }
 
         ident = aliasWrap(ident);
 

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.druid.util.StringUtils;
+
 public class TableStat {
 
     int selectCount      = 0;
@@ -170,7 +172,7 @@ public class TableStat {
         }
 
         public int hashCode() {
-            return this.name.toLowerCase().hashCode();
+            return StringUtils.lowerHashCode(name);
         }
 
         public boolean equals(Object o) {
@@ -401,8 +403,8 @@ public class TableStat {
         }
 
         public int hashCode() {
-            int tableHashCode = table != null ? table.toLowerCase().hashCode() : 0;
-            int nameHashCode = name != null ? name.toLowerCase().hashCode() : 0;
+            int tableHashCode = table != null ? StringUtils.lowerHashCode(table) : 0;
+            int nameHashCode = name != null ? StringUtils.lowerHashCode(name) : 0;
 
             return tableHashCode + nameHashCode;
         }

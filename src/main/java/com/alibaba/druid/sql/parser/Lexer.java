@@ -79,11 +79,7 @@ public class Lexer {
         return text.charAt(index);
     }
     
-    public final int indexOf(char ch, int fromIndex) {
-        return text.indexOf(ch, fromIndex);
-    }
-
-    public String addSymbol() {
+    public final String addSymbol() {
         return subString(mark, bufPos);
     }
 
@@ -245,6 +241,11 @@ public class Lexer {
         if (ch == '?') {
             scanChar();
             token = Token.QUES;
+            return;
+        }
+        
+        if (isFirstIdentifierChar(ch) && ch != 'N') {
+            scanIdentifier();
             return;
         }
         
