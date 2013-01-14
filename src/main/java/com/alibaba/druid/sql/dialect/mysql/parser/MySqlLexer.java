@@ -204,24 +204,29 @@ public class MySqlLexer extends Lexer {
             }
         }
     }
-
+    
     protected final void scanString() {
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
-            int endIndex = indexOf('\'', startIndex);
+            int endIndex = -1; //text.indexOf('\'', startIndex);
+            for (int i = startIndex; i < text.length(); ++i) {
+                final char ch = text.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                }
+                if (ch == '\'') {
+                    endIndex = i;
+                    break;
+                }
+            }
+            
             if (endIndex == -1) {
                 throw new ParserException("unclosed str");
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
-            for (int i = 0; i < stringVal.length(); ++i) {
-                char ch = stringVal.charAt(i);
-                if (ch == '\\') {
-                    hasSpecial = true;
-                    break;
-                }
-            }
+//            hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
                 this.stringVal = stringVal;
