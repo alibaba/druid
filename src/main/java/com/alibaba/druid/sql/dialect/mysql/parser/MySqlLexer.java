@@ -209,13 +209,24 @@ public class MySqlLexer extends Lexer {
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
-            int endIndex = text.indexOf('\'', startIndex);
+            int endIndex = -1; //text.indexOf('\'', startIndex);
+            for (int i = startIndex; i < text.length(); ++i) {
+                final char ch = text.charAt(i);
+                if (ch == '\\') {
+                    hasSpecial = true;
+                }
+                if (ch == '\'') {
+                    endIndex = i;
+                    break;
+                }
+            }
+            
             if (endIndex == -1) {
                 throw new ParserException("unclosed str");
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
-            hasSpecial = stringVal.indexOf('\\') != -1;
+//            hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
                 this.stringVal = stringVal;

@@ -79,7 +79,7 @@ public class Lexer {
         return text.charAt(index);
     }
     
-    public String addSymbol() {
+    public final String addSymbol() {
         return subString(mark, bufPos);
     }
 

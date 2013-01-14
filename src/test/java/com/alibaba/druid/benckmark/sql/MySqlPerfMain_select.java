@@ -20,9 +20,8 @@ import java.util.List;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.sql.test.TestUtils;
-import com.alibaba.druid.util.IOUtils;
 
 public class MySqlPerfMain_select {
 
@@ -30,9 +29,9 @@ public class MySqlPerfMain_select {
         System.out.println(System.getProperty("java.vm.name") + " " + System.getProperty("java.runtime.version"));
         List<String> arguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
         System.out.println(arguments);
-        
+
         String sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
-        
+
         for (int i = 0; i < 10; ++i) {
             perfMySql(sql);
         }
@@ -57,15 +56,18 @@ public class MySqlPerfMain_select {
         return millis;
     }
 
-    static String execMySql(String sql) {
-        StringBuilder out = new StringBuilder();
-        MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
+    static void execMySql(String sql) {
+
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        // for (SQLStatement statement : statementList) {
-        // statement.accept(visitor);
-        // visitor.println();
-        // }
-        return out.toString();
+
+        // StringBuilder out = new StringBuilder();
+        // MySqlOutputVisitor visitor = new MySqlOutputVisitor(out);
+//        MySqlASTVisitorAdapter visitor = new MySqlASTVisitorAdapter();
+//
+//        for (SQLStatement statement : statementList) {
+//            statement.accept(visitor);
+//        }
+        // out.toString();
     }
 }
