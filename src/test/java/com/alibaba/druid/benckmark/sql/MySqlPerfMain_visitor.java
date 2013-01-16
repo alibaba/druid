@@ -33,7 +33,7 @@ public class MySqlPerfMain_visitor {
 
         String sql = "SELECT ID, NAME, AGE FROM USER WHERE ID = ?";
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 5; ++i) {
             perfMySql(sql);
         }
     }
@@ -47,7 +47,7 @@ public class MySqlPerfMain_visitor {
         List<SQLStatement> statementList = parser.parseStatementList();
         
         long startMillis = System.currentTimeMillis();
-        for (int i = 0; i < 1000 * 100 * 1; ++i) {
+        for (int i = 0; i < 1000 * 1000 * 1; ++i) {
             execMySql(statementList);
         }
         long millis = System.currentTimeMillis() - startMillis;
