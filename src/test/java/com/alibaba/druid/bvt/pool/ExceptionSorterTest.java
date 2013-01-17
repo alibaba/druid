@@ -21,6 +21,7 @@ public class ExceptionSorterTest extends TestCase {
         dataSource.setTestOnBorrow(true);
         dataSource.setDbType("mysql");
         dataSource.setPoolPreparedStatements(true);
+        dataSource.setFilters("stat");
 
         dataSource.init();
     }

@@ -437,7 +437,7 @@ public abstract class FilterEventAdapter extends FilterAdapter {
         try {
             statementExecuteBefore(statement, statement.getSql());
 
-            boolean firstResult = super.preparedStatement_execute(chain, statement);
+            boolean firstResult = chain.preparedStatement_execute(statement);
 
             this.statementExecuteAfter(statement, statement.getSql(), firstResult);
 
