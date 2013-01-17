@@ -673,8 +673,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean {
             }
         }
 
-        long millis = nanoSpan / (1000 * 1000);
-        histogramRecord(millis);
+        histogramRecord(nanoSpan);
     }
 
     public long getExecuteMillisTotal() {
