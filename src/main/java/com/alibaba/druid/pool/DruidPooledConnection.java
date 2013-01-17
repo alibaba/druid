@@ -149,7 +149,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
                     return;
                 }
                 
-                LOG.warn("clear parameter error", ex);
+                LOG.error("clear parameter error", ex);
             }
         }
 
