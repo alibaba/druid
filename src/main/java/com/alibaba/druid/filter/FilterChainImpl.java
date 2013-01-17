@@ -88,6 +88,10 @@ public class FilterChainImpl implements FilterChain {
     public int getFilterSize() {
         return filterSize;
     }
+    
+    public void reset() {
+        pos = 0;
+    }
 
     @Override
     public FilterChain cloneChain() {
