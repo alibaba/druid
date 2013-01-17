@@ -73,7 +73,7 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
     public DruidPooledConnection(DruidConnectionHolder holder){
         super(holder.getConnection());
-        
+
         this.conn = holder.getConnection();
         this.holder = holder;
         dupCloseLogEnable = holder.getDataSource().isDupCloseLogEnable();
@@ -140,12 +140,16 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
         if (holder == null) {
             return;
         }
-        
+
         if (holder.isPoolPreparedStatements()) {
             try {
                 rawStatement.clearParameters();
             } catch (SQLException ex) {
-                LOG.error("clear parameter error", ex);
+                if (rawStatement.getConnection().isClosed()) {
+                    return;
+                }
+                
+                LOG.warn("clear parameter error", ex);
             }
         }
 
