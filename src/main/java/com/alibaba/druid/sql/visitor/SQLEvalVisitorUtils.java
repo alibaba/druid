@@ -1514,7 +1514,6 @@ public class SQLEvalVisitorUtils {
         if ("%".equals(pattern) || "%%".equals(pattern)) {
             return true;
         }
-        // %xxxx
 
         String regexpr = regexprBuilder.toString();
         return Pattern.matches(regexpr, input);
