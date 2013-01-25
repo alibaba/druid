@@ -850,6 +850,7 @@ public class SQLEvalVisitorUtils {
                 boolean matchResult = !Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
             }
+            break;
             case Like: {
                 String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
