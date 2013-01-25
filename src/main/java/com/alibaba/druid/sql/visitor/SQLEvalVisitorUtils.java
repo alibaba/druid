@@ -827,6 +827,7 @@ public class SQLEvalVisitorUtils {
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Is:
+            case Equality:
                 value = eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
                 x.putAttribute(EVAL_VALUE, value);
                 break;
