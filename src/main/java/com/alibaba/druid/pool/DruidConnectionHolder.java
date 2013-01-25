@@ -26,6 +26,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sql.ConnectionEventListener;
 import javax.sql.StatementEventListener;
 
+import com.alibaba.druid.support.logging.Log;
+import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
@@ -34,7 +36,8 @@ import com.alibaba.druid.util.JdbcUtils;
  * @author wenshao<szujobs@hotmail.com>
  */
 public final class DruidConnectionHolder {
-
+    private final static Log                 LOG                     = LogFactory.getLog(DruidConnectionHolder.class);
+    
     private final DruidAbstractDataSource       dataSource;
     private final Connection                    conn;
     private final List<ConnectionEventListener> connectionEventListeners = new CopyOnWriteArrayList<ConnectionEventListener>();
@@ -66,16 +69,31 @@ public final class DruidConnectionHolder {
         this.lastActiveTimeMillis = connecttimeMillis;
 
         this.underlyingAutoCommit = conn.getAutoCommit();
-        
-        if (!JdbcConstants.SYBASE.equals(dataSource.getDbType())) {
-            this.underlyingHoldability = conn.getHoldability();
+
+        {
+            boolean initUnderlyHoldability = true;
+            if (JdbcConstants.SYBASE.equals(dataSource.getDbType()) //
+                || JdbcConstants.DB2.equals(dataSource.getDbType()) //
+            ) {
+                initUnderlyHoldability = false;
+            }
+            if (initUnderlyHoldability) {
+                try {
+                    this.underlyingHoldability = conn.getHoldability();
+                } catch (SQLException e) {
+                    LOG.warn("getHoldability error", e);
+                }
+            }
         }
 
         this.underlyingReadOnly = conn.isReadOnly();
         try {
             this.underlyingTransactionIsolation = conn.getTransactionIsolation();
         } catch (SQLException e) {
-            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) {
+            if (!"com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException".equals(e.getClass().getName())) { // compatible
+                                                                                                               // for
+                                                                                                               // alibaba
+                                                                                                               // corba
                 throw e;
             }
         }
