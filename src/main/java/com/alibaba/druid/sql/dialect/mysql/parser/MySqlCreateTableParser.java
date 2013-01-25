@@ -31,7 +31,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlCreateTableParser extends SQLCreateTableParser {
 
-    public MySqlCreateTableParser(String sql) {
+    public MySqlCreateTableParser(String sql){
         super(new MySqlExprParser(sql));
     }
 
@@ -155,7 +155,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     accept(Token.RPAREN);
                     stmt.setPartitioning(clause);
-                    
+
                     if (identifierEquals("PARTITIONS")) {
                         lexer.nextToken();
                         clause.setPartitionCount(this.exprParser.expr());
@@ -202,6 +202,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
             }
 
+            if (lexer.token() == Token.IDENTIFIER) {
+                name = this.exprParser.name();
+            }
+
             accept(Token.LPAREN);
             for (;;) {
                 key.getColumns().add(this.exprParser.expr());
@@ -212,6 +216,10 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 }
             }
             accept(Token.RPAREN);
+            
+            if (name != null) {
+                key.setName(name);
+            }
 
             return key;
         }
@@ -223,5 +231,4 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         throw new ParserException("TODO");
     }
 
-  
 }
