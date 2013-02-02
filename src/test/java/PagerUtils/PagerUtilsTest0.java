@@ -30,7 +30,17 @@ public class PagerUtilsTest0 extends TestCase {
                             "FROM t", result);
     }
 
-    public void test_mysql_3() throws Exception {
+    public void test_mysql_group_0() throws Exception {
+        String sql = "select type, count(*) from t group by type";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT COUNT(*)" + //
+                            "\nFROM (SELECT type, COUNT(*)" + //
+                            "\n\tFROM t" + //
+                            "\n\tGROUP BY type" + //
+                            "\n\t)", result);
+    }
+
+    public void test_mysql_union_0() throws Exception {
         String sql = "select id, name from t1 union select id, name from t2 order by id";
         String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
