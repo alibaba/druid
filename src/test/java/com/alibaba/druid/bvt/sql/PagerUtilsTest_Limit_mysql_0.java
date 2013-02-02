@@ -7,7 +7,7 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class PagerUtilsTestLimit_0 extends TestCase {
+public class PagerUtilsTest_Limit_mysql_0 extends TestCase {
 
     public void test_mysql_0() throws Exception {
         String sql = "select * from t";

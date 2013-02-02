@@ -197,7 +197,7 @@ public class PGOutputVisitor extends SQLASTOutputVisitor implements PGASTVisitor
         }
 
         if (x.getGroupBy() != null) {
-            print(" ");
+            println();
             x.getGroupBy().accept(this);
         }
 
