@@ -1292,12 +1292,14 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLOver x) {
         print("OVER (");
-        printAndAccept(x.getPartitionBy(), ", ");
-        print(")");
+        if (x.getPartitionBy().size() > 0) {
+            printAndAccept(x.getPartitionBy(), ", ");
+            print(' ');
+        }
         if (x.getOrderBy() != null) {
-            print(" ");
             x.getOrderBy().accept(this);
         }
+        print(")");
         return false;
     }
 
