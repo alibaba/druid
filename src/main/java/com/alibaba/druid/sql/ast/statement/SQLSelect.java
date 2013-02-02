@@ -30,6 +30,10 @@ public class SQLSelect extends SQLObjectImpl {
     public SQLSelect(){
 
     }
+    
+    public SQLSelect(SQLSelectQuery query) {
+        this.query = query;
+    }
 
     public SQLWithSubqueryClause getWithSubQuery() {
         return withSubQuery;
