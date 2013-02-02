@@ -7,32 +7,32 @@ import org.junit.Assert;
 import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.util.JdbcConstants;
 
-public class PagerUtilsTest0 extends TestCase {
+public class PagerUtilsTest_Count_SQLServer_0 extends TestCase {
 
-    public void test_mysql_0() throws Exception {
+    public void test_sqlserver_0() throws Exception {
         String sql = "select * from t";
-        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                             "FROM t", result);
     }
 
-    public void test_mysql_1() throws Exception {
+    public void test_sqlserver_1() throws Exception {
         String sql = "select id, name from t";
-        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                             "FROM t", result);
     }
 
-    public void test_mysql_2() throws Exception {
+    public void test_sqlserver_2() throws Exception {
         String sql = "select id, name from t order by id";
-        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                             "FROM t", result);
     }
 
-    public void test_mysql_group_0() throws Exception {
+    public void test_sqlserver_group_0() throws Exception {
         String sql = "select type, count(*) from t group by type";
-        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("SELECT COUNT(*)" + //
                             "\nFROM (SELECT type, COUNT(*)" + //
                             "\n\tFROM t" + //
@@ -40,9 +40,9 @@ public class PagerUtilsTest0 extends TestCase {
                             "\n\t)", result);
     }
 
-    public void test_mysql_union_0() throws Exception {
+    public void test_sqlserver_union_0() throws Exception {
         String sql = "select id, name from t1 union select id, name from t2 order by id";
-        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        String result = PagerUtils.count(sql, JdbcConstants.SQL_SERVER);
         Assert.assertEquals("SELECT COUNT(*)\n" + //
                             "FROM (SELECT id, name" + //
                             "\n\tFROM t1" + //
