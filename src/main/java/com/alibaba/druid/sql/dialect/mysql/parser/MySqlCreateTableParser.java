@@ -180,7 +180,6 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
         return stmt;
     }
 
-    @SuppressWarnings("unused")
     protected SQLTableConstaint parseConstraint() {
         SQLName name = null;
         if (lexer.token() == (Token.CONSTRAINT)) {
