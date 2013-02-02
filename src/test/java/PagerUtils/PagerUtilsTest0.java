@@ -1,0 +1,44 @@
+package PagerUtils;
+
+import junit.framework.TestCase;
+
+import org.junit.Assert;
+
+import com.alibaba.druid.sql.PagerUtils;
+import com.alibaba.druid.util.JdbcConstants;
+
+public class PagerUtilsTest0 extends TestCase {
+
+    public void test_mysql_0() throws Exception {
+        String sql = "select * from t";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT COUNT(*)\n" + //
+                            "FROM t", result);
+    }
+
+    public void test_mysql_1() throws Exception {
+        String sql = "select id, name from t";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT COUNT(*)\n" + //
+                            "FROM t", result);
+    }
+
+    public void test_mysql_2() throws Exception {
+        String sql = "select id, name from t order by id";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT COUNT(*)\n" + //
+                            "FROM t", result);
+    }
+
+    public void test_mysql_3() throws Exception {
+        String sql = "select id, name from t1 union select id, name from t2 order by id";
+        String result = PagerUtils.count(sql, JdbcConstants.MYSQL);
+        Assert.assertEquals("SELECT COUNT(*)\n" + //
+                            "FROM (SELECT id, name" + //
+                            "\n\tFROM t1" + //
+                            "\n\tUNION" + //
+                            "\n\tSELECT id, name" + //
+                            "\n\tFROM t2" + //
+                            "\n\t)", result);
+    }
+}
