@@ -1,4 +1,4 @@
-package PagerUtils;
+package com.alibaba.druid.bvt.sql;
 
 import junit.framework.TestCase;
 
