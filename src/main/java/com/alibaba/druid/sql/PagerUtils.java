@@ -123,10 +123,10 @@ public class PagerUtils {
         }
 
         OracleSelectQueryBlock countQueryBlock = new OracleSelectQueryBlock();
-        countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLPropertyExpr(new SQLIdentifierExpr("_X"), "*")));
-        countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLIdentifierExpr("ROWNUM"), "_RN"));
+        countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLPropertyExpr(new SQLIdentifierExpr("XX"), "*")));
+        countQueryBlock.getSelectList().add(new SQLSelectItem(new SQLIdentifierExpr("ROWNUM"), "RN"));
 
-        countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "_X"));
+        countQueryBlock.setFrom(new SQLSubqueryTableSource(select, "XX"));
         countQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("ROWNUM"), //
                                                      SQLBinaryOperator.LessThanOrEqual, //
                                                      new SQLNumberExpr(count + offset)));
@@ -136,8 +136,8 @@ public class PagerUtils {
 
         OracleSelectQueryBlock offsetQueryBlock = new OracleSelectQueryBlock();
         offsetQueryBlock.getSelectList().add(new SQLSelectItem(new SQLAllColumnExpr()));
-        offsetQueryBlock.setFrom(new SQLSubqueryTableSource(new SQLSelect(countQueryBlock), "_XX"));
-        offsetQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("_RN"), //
+        offsetQueryBlock.setFrom(new SQLSubqueryTableSource(new SQLSelect(countQueryBlock), "XXX"));
+        offsetQueryBlock.setWhere(new SQLBinaryOpExpr(new SQLIdentifierExpr("RN"), //
                                                       SQLBinaryOperator.GreaterThan, //
                                                       new SQLNumberExpr(offset)));
 
