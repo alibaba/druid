@@ -132,18 +132,21 @@ public class WallVisitorUtils {
             checkCondition(visitor, x.getWhere());
 
             if (Boolean.TRUE == getValue(where)) {
+                boolean isSimpleConstExpr = false;
                 if (where instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
                     if (binaryOpExpr.getOperator() == SQLBinaryOperator.Equality
                         || binaryOpExpr.getOperator() == SQLBinaryOperator.NotEqual) {
                         if (binaryOpExpr.getLeft() instanceof SQLIntegerExpr
                             && binaryOpExpr.getRight() instanceof SQLIntegerExpr) {
-                            return;
+                            isSimpleConstExpr = true;
                         }
                     }
                 }
 
-                addViolation(visitor, x);
+                if (!isSimpleConstExpr) {
+                    addViolation(visitor, x);
+                }
             }
 
         }
