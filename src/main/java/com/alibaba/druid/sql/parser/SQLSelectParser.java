@@ -189,7 +189,7 @@ public class SQLSelectParser extends SQLParser {
 
                 accept(Token.AS);
                 accept(Token.LPAREN);
-                entry.setSubQuery(query());
+                entry.setSubQuery(select());
                 accept(Token.RPAREN);
 
                 withQueryClause.getEntries().add(entry);
