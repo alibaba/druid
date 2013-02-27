@@ -35,7 +35,7 @@ public class SQLServerRowNumberTest2 extends TestCase {
                      "   WHERE RowNumber BETWEEN ? AND ?";
 
         String expect = "SELECT *" +
-        		"\nFROM (SELECT ROW_NUMBER() OVER () ORDER BY FAlertDate DESC, FAlertLevel, FAlertType AS RowNumber, *" +
+        		"\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *" +
         		"\n\tFROM monitor_business" +
         		"\n\tWHERE FRemoveAlert = ?" +
         		"\n\t) temp_table" +
