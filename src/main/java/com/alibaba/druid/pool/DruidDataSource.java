@@ -875,7 +875,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                     }
                 }
                 this.discardConnection(holder.getConnection());
-                pooledConnection.disable();
+                pooledConnection.disable(t);
             }
 
             throw sqlEx;

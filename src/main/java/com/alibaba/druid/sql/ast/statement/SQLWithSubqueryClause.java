@@ -55,7 +55,7 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
         private static final long     serialVersionUID = 1L;
         protected SQLIdentifierExpr   name;
         protected final List<SQLName> columns          = new ArrayList<SQLName>();
-        protected SQLSelectQuery      subQuery;
+        protected SQLSelect      subQuery;
 
         @Override
         protected void accept0(SQLASTVisitor visitor) {
@@ -75,11 +75,11 @@ public class SQLWithSubqueryClause extends SQLObjectImpl {
             this.name = name;
         }
 
-        public SQLSelectQuery getSubQuery() {
+        public SQLSelect getSubQuery() {
             return subQuery;
         }
 
-        public void setSubQuery(SQLSelectQuery subQuery) {
+        public void setSubQuery(SQLSelect subQuery) {
             this.subQuery = subQuery;
         }
 

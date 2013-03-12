@@ -30,6 +30,18 @@ public class PGExprParser extends SQLExprParser {
     public PGExprParser(Lexer lexer){
         super(lexer);
     }
+    
+    public boolean isAggreateFunction(String word) {
+        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+
+        for (int i = 0; i < aggregateFunctions.length; ++i) {
+            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     @Override
     public PGOrderBy parseOrderBy() {

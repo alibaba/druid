@@ -174,7 +174,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
                 accept(Token.AS);
                 accept(Token.LPAREN);
-                entry.setSubQuery(query());
+                entry.setSubQuery(select());
                 accept(Token.RPAREN);
 
                 if (identifierEquals("SEARCH")) {

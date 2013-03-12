@@ -123,7 +123,7 @@ public class SQLParser {
         } else {
             setErrorEndPos(lexer.pos());
             throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
-                                        + lexer.stringVal());
+                                        + lexer.stringVal() + ", pos " + this.lexer.pos());
         }
     }
 
