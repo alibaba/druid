@@ -58,6 +58,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
+import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.stat.TableStat;
@@ -153,11 +154,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (flag0) {
             ident = ident.replaceAll("\"", "");
         }
-        
+
         if (flag1) {
             ident = ident.replaceAll("`", "");
         }
-        
+
         if (flag2) {
             ident = ident.replaceAll(" ", "");
         }
@@ -869,15 +870,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLUpdateStatement x) {
         setAliasMap();
+        
+        setMode(x, Mode.Update);
 
-        String ident = x.getTableName().toString();
-        setCurrentTable(ident);
+        SQLName identName = x.getTableName();
+        if (identName != null) {
+            String ident = identName.toString();
+            setCurrentTable(ident);
 
-        TableStat stat = getTableStat(ident);
-        stat.incrementUpdateCount();
+            TableStat stat = getTableStat(ident);
+            stat.incrementUpdateCount();
 
-        Map<String, String> aliasMap = getAliasMap();
-        aliasMap.put(ident, ident);
+            Map<String, String> aliasMap = getAliasMap();
+            aliasMap.put(ident, ident);
+        } else {
+            x.getTableSource().accept(this);
+        }
 
         accept(x.getItems());
         accept(x.getWhere());
@@ -1004,7 +1012,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public void endVisit(SQLAlterTableAddColumn x) {
 
     }
-    
+
     @Override
     public boolean visit(SQLRollbackStatement x) {
         return false;
