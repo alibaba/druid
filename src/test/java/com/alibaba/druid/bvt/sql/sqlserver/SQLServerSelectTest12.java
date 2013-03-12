@@ -15,31 +15,30 @@
  */
 package com.alibaba.druid.bvt.sql.sqlserver;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.test.TestUtils;
 
-public class SQLServerRowNumberTest2 extends TestCase {
+public class SQLServerSelectTest12 extends TestCase {
 
-    public void test_isEmpty() throws Exception {
-        String sql = "SELECT * FROM ("
-                     + //
-                     "   SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate Desc, FAlertLevel, FAlertType)  AS RowNumber, *"
-                     + //
-                     "        from monitor_business" + //
-                     "   where FRemoveAlert = ?" + //
-                     " ) AS temp_table" + //
-                     "   WHERE RowNumber BETWEEN ? AND ?";
+    public void test_simple() throws Exception {
+        String sql = "SELECT Row, Name " + //
+                     "FROM(" + //
+                     "SELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name " + //
+                     "FROM Product " + //
+                     ") AS ProductsWithRowNumbers " + //
+                     "WHERE Row >= 6 AND Row <= 10";
 
-        String expect = "SELECT *" +
-        		"\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY FAlertDate DESC, FAlertLevel, FAlertType) AS RowNumber, *" +
-        		"\n\tFROM monitor_business" +
-        		"\n\tWHERE FRemoveAlert = ?" +
-        		"\n\t) temp_table" +
-        		"\nWHERE RowNumber BETWEEN ? AND ?";
+        String expect = "SELECT Row, Name" + //
+                        "\nFROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductID) AS Row, Name" + //
+                        "\n\tFROM Product" + //
+                        "\n\t) ProductsWithRowNumbers" + //
+                        "\nWHERE Row >= 6" + //
+                        "\n\tAND Row <= 10";
 
         SQLServerStatementParser parser = new SQLServerStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);

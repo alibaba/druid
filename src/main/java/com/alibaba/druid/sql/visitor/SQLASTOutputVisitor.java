@@ -700,56 +700,59 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         Object param = parameters.get(index);
+        printParameter(param);
+        return false;
+    }
 
+    public void printParameter(Object param) {
         if (param == null) {
             print("NULL");
-            return false;
+            return;
         }
 
         if (param instanceof Number //
             || param instanceof Boolean) {
             print(param.toString());
-            return false;
+            return;
         }
         
         if (param instanceof String) {
             SQLCharExpr charExpr = new SQLCharExpr((String) param);
             visit(charExpr);
-            return false;
+            return;
         }
 
         if (param instanceof Date) {
             print((Date) param);
-            return false;
+            return;
         }
 
         if (param instanceof InputStream) {
             print("'<InputStream>");
-            return false;
+            return;
         }
 
         if (param instanceof Reader) {
             print("'<Reader>");
-            return false;
+            return;
         }
 
         if (param instanceof Blob) {
             print("'<Blob>");
-            return false;
+            return;
         }
         
         if (param instanceof NClob) {
             print("'<NClob>");
-            return false;
+            return;
         }
 
         if (param instanceof Clob) {
             print("'<Clob>");
-            return false;
+            return;
         }
         
         print("'" + param.getClass().getName() + "'");
-        return false;
     }
 
     public boolean visit(SQLDropTableStatement x) {

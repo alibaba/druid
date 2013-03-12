@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
+import java.util.List;
 import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLCommentHint;
@@ -342,7 +343,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printAndAccept(x.getArguments(), ", ");
             print(")");
         }
-        
+
         if (x.getCharSetName() != null) {
             print(" CHARACTER SET ");
             print(x.getCharSetName());
@@ -521,6 +522,17 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     }
 
     public boolean visit(SQLVariantRefExpr x) {
+        {
+            List<Object> parameters = this.getParameters();
+            int index = x.getIndex();
+
+            if (parameters != null && index >= 0 && index < parameters.size()) {
+                Object param = parameters.get(index);
+                printParameter(param);
+                return false;
+            }
+        }
+
         if (x.isGlobal()) {
             print("@@global.");
         } else {

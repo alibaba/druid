@@ -47,11 +47,9 @@ import com.alibaba.druid.support.logging.LogFactory;
  */
 public final class JdbcUtils implements JdbcConstants {
 
-    
+    private final static Log        LOG              = LogFactory.getLog(JdbcUtils.class);
 
-    private final static Log        LOG               = LogFactory.getLog(JdbcUtils.class);
-
-    private static final Properties driverUrlMapping  = new Properties();
+    private static final Properties driverUrlMapping = new Properties();
 
     static {
         try {
@@ -213,13 +211,21 @@ public final class JdbcUtils implements JdbcConstants {
                     } else {
                         out.print(String.valueOf(objec));
                     }
+                } else if (type == Types.NULL) {
+                    out.print("null");
                 } else {
                     Object objec = rs.getObject(columnIndex);
 
                     if (rs.wasNull()) {
                         out.print("null");
                     } else {
-                        out.print(String.valueOf(objec));
+                        if (objec instanceof byte[]) {
+                            byte[] bytes = (byte[]) objec;
+                            String text = HexBin.encode(bytes);
+                            out.print(text);
+                        } else {
+                            out.print(String.valueOf(objec));
+                        }
                     }
                 }
             }
@@ -462,7 +468,7 @@ public final class JdbcUtils implements JdbcConstants {
             return null;
         }
     }
-    
+
     public static Driver createDriver(String driverClassName) throws SQLException {
         return createDriver(null, driverClassName);
     }
@@ -479,7 +485,7 @@ public final class JdbcUtils implements JdbcConstants {
                 throw new SQLException(e.getMessage(), e);
             }
         }
-        
+
         try {
             return (Driver) Class.forName(driverClassName).newInstance();
         } catch (IllegalAccessException e) {
