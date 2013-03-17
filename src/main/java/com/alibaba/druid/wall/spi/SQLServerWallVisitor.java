@@ -85,8 +85,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
             return false;
         }
 
-        name = WallVisitorUtils.form(name);
-        return config.getDenyTables().contains(name);
+        return !this.provider.checkDenyTable(name);
     }
 
     @Override

@@ -69,7 +69,7 @@ import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class WallVisitorUtils {
 
-    private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
+    private final static Log                          LOG          = LogFactory.getLog(WallVisitorUtils.class);
 
     public static void check(WallVisitor visitor, SQLInListExpr x) {
 
@@ -88,7 +88,7 @@ public class WallVisitorUtils {
             && x.getParent() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
             SQLTableSource from = queryBlock.getFrom();
-            
+
             if (from instanceof SQLExprTableSource) {
                 addViolation(visitor, x);
             }
@@ -348,11 +348,9 @@ public class WallVisitorUtils {
                 tableName = ((SQLName) tableNameExpr).getSimleName();
             }
 
-            if (tableName != null) {
-                tableName = form(tableName);
-                if (visitor.getConfig().isReadOnly(tableName)) {
-                    addViolation(visitor, tableSource);
-                }
+            boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
+            if (!readOnlyValid) {
+                addViolation(visitor, tableSource);
             }
         } else if (tableSource instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
@@ -737,7 +735,7 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName();
 
-        if (visitor.getConfig().isDenyFunction(methodName.toLowerCase())) {
+        if (!visitor.getProvider().checkDenyFunction(methodName)) {
             addViolation(visitor, x);
         }
 

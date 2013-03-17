@@ -242,8 +242,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
-        name = WallVisitorUtils.form(name);
-        return config.getDenyTables().contains(name);
+        return !this.provider.checkDenyTable(name);
     }
 
     public void preVisit(SQLObject x) {

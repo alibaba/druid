@@ -167,7 +167,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         if (name.startsWith("v$") || name.startsWith("v_$")) {
             return true;
         }
-        return config.getDenyTables().contains(name);
+        return !this.provider.checkDenyTable(name);
     }
 
     public void preVisit(SQLObject x) {

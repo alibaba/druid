@@ -19,6 +19,8 @@ import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -27,22 +29,26 @@ import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.LRUCache;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
 
-    private LinkedHashMap<String, WallSqlStat> whiteList;
+    private LinkedHashMap<String, WallSqlStat>        whiteList;
 
-    private int                                whileListMaxSize  = 1024;
+    private int                                       whileListMaxSize  = 1024;
 
-    private int                                whiteSqlMaxLength = 1024;                        // 1k
+    private int                                       whiteSqlMaxLength = 1024;                                         // 1k
 
-    protected final WallConfig                 config;
+    protected final WallConfig                        config;
 
-    private final ReentrantReadWriteLock       lock              = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock              lock              = new ReentrantReadWriteLock();
 
-    private static final ThreadLocal<Boolean>  privileged        = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean>         privileged        = new ThreadLocal<Boolean>();
+
+    private final ConcurrentMap<String, WallDenyStat> deniedTables      = new ConcurrentHashMap<String, WallDenyStat>();
+    private final ConcurrentMap<String, WallDenyStat> deniedFunctions   = new ConcurrentHashMap<String, WallDenyStat>();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -78,7 +84,7 @@ public abstract class WallProvider {
 
         return hashSet;
     }
-    
+
     public void clearCache() {
         clearWhiteList();
     }
@@ -93,15 +99,15 @@ public abstract class WallProvider {
             lock.writeLock().unlock();
         }
     }
-    
+
     public WallSqlStat getWhiteSql(String sql) {
         lock.readLock().lock();
         try {
             if (whiteList == null) {
                 return null;
             }
-            
-            return whiteList.get(sql); 
+
+            return whiteList.get(sql);
         } finally {
             lock.readLock().unlock();
         }
@@ -120,6 +126,72 @@ public abstract class WallProvider {
     public boolean checkValid(String sql) {
         WallCheckResult result = check(sql);
         return result.getViolations().isEmpty();
+    }
+
+    public boolean checkDenyFunction(String functionName) {
+        if (functionName == null) {
+            return true;
+        }
+
+        functionName = functionName.toLowerCase();
+        if (getConfig().getDenyFunctions().contains(functionName)) {
+            WallDenyStat denyStat = this.deniedFunctions.get(functionName);
+            if (denyStat == null) {
+                this.deniedFunctions.putIfAbsent(functionName, new WallDenyStat());
+                denyStat = this.deniedFunctions.get(functionName);
+            }
+            denyStat.incrementAndGetDenyCount();
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkDenyTable(String tableName) {
+        if (tableName == null) {
+            return true;
+        }
+
+        tableName = WallVisitorUtils.form(tableName);
+        if (getConfig().getDenyTables().contains(tableName)) {
+            WallDenyStat denyStat = this.deniedTables.get(tableName);
+            if (denyStat == null) {
+                this.deniedTables.putIfAbsent(tableName, new WallDenyStat());
+                denyStat = this.deniedTables.get(tableName);
+            }
+            denyStat.incrementAndGetDenyCount();
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkReadOnlyTable(String tableName) {
+        if (tableName == null) {
+            return true;
+        }
+
+        tableName = WallVisitorUtils.form(tableName);
+        if (getConfig().isReadOnly(tableName)) {
+            WallDenyStat denyStat = this.deniedTables.get(tableName);
+            if (denyStat == null) {
+                this.deniedTables.putIfAbsent(tableName, new WallDenyStat());
+                denyStat = this.deniedTables.get(tableName);
+            }
+            denyStat.incrementAndGetDenyCount();
+            return false;
+        }
+
+        return true;
+    }
+
+    public WallDenyStat getDenniedTableStat(String tableName) {
+        if (tableName == null) {
+            return null;
+        }
+
+        String formName = WallVisitorUtils.form(tableName);
+        return deniedTables.get(formName);
     }
 
     public WallCheckResult check(String sql) {
