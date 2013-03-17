@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.parser.NotAllowCommentException;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -49,7 +50,9 @@ public abstract class WallProvider {
 
     private final ConcurrentMap<String, WallDenyStat> deniedTables      = new ConcurrentHashMap<String, WallDenyStat>();
     private final ConcurrentMap<String, WallDenyStat> deniedFunctions   = new ConcurrentHashMap<String, WallDenyStat>();
-    private final ConcurrentMap<String, WallDenyStat> deniedSchemas   = new ConcurrentHashMap<String, WallDenyStat>();
+    private final ConcurrentMap<String, WallDenyStat> deniedSchemas     = new ConcurrentHashMap<String, WallDenyStat>();
+
+    public final WallDenyStat                         commentDeniedStat = new WallDenyStat();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -129,6 +132,10 @@ public abstract class WallProvider {
         return result.getViolations().isEmpty();
     }
 
+    public void incrementCommentDeniedCount() {
+        this.commentDeniedStat.incrementAndGetDenyCount();
+    }
+
     public boolean checkDenyFunction(String functionName) {
         if (functionName == null) {
             return true;
@@ -147,7 +154,7 @@ public abstract class WallProvider {
 
         return true;
     }
-    
+
     public boolean checkDenySchema(String schemaName) {
         if (schemaName == null) {
             return true;
@@ -213,7 +220,7 @@ public abstract class WallProvider {
         String formName = WallVisitorUtils.form(tableName);
         return deniedTables.get(formName);
     }
-    
+
     public WallDenyStat getDenniedSchemaStat(String schemaName) {
         if (schemaName == null) {
             return null;
@@ -221,6 +228,10 @@ public abstract class WallProvider {
 
         String formName = WallVisitorUtils.form(schemaName);
         return deniedSchemas.get(formName);
+    }
+
+    public WallDenyStat getCommentDenyStat() {
+        return this.commentDeniedStat;
     }
 
     public WallCheckResult check(String sql) {
@@ -245,6 +256,10 @@ public abstract class WallProvider {
 
         try {
             parser.parseStatementList(result.getStatementList());
+        } catch (NotAllowCommentException e) {
+            result.getViolations().add(new SyntaxErrorViolation(e, sql));
+            incrementCommentDeniedCount();
+            return result;
         } catch (Exception e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
             return result;
