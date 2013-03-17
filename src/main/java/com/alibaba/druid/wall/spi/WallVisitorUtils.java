@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
@@ -63,6 +63,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
+import com.alibaba.druid.wall.WallDenyStat;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
@@ -350,7 +351,7 @@ public class WallVisitorUtils {
 
             if (tableName != null) {
                 tableName = form(tableName);
-                if (visitor.getConfig().getReadOnlyTables().contains(tableName)) {
+                if (visitor.getConfig().checkReadOnly(tableName)) {
                     addViolation(visitor, tableSource);
                 }
             }
@@ -850,7 +851,7 @@ public class WallVisitorUtils {
         return name;
     }
 
-    public static void loadResource(Set<String> names, String resource) {
+    public static void loadResource(ConcurrentMap<String, WallDenyStat> names, String resource) {
         try {
             Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(resource);
             while (e.hasMoreElements()) {
@@ -868,7 +869,7 @@ public class WallVisitorUtils {
                         line = line.trim();
                         if (line.length() > 0) {
                             line = line.toLowerCase();
-                            names.add(line);
+                            names.put(line, new WallDenyStat());
                         }
                     }
 

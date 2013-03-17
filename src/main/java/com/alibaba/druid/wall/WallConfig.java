@@ -17,69 +17,70 @@ package com.alibaba.druid.wall;
 
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig implements WallConfigMBean {
 
-    private boolean             noneBaseStatementAllow     = false;
+    private boolean                                     noneBaseStatementAllow     = false;
 
-    private boolean             callAllow                  = true;
-    private boolean             selelctAllow               = true;
-    private boolean             selectIntoAllow            = true;
-    private boolean             selectIntoOutfileAllow     = false;
-    private boolean             selectWhereAlwayTrueCheck  = true;
-    private boolean             selectHavingAlwayTrueCheck = true;
-    private boolean             selectUnionCheck           = true;
+    private boolean                                     callAllow                  = true;
+    private boolean                                     selelctAllow               = true;
+    private boolean                                     selectIntoAllow            = true;
+    private boolean                                     selectIntoOutfileAllow     = false;
+    private boolean                                     selectWhereAlwayTrueCheck  = true;
+    private boolean                                     selectHavingAlwayTrueCheck = true;
+    private boolean                                     selectUnionCheck           = true;
 
-    private boolean             selectAllColumnAllow       = true;
+    private boolean                                     selectAllColumnAllow       = true;
 
-    private boolean             deleteAllow                = true;
-    private boolean             deleteWhereAlwayTrueCheck  = true;
+    private boolean                                     deleteAllow                = true;
+    private boolean                                     deleteWhereAlwayTrueCheck  = true;
 
-    private boolean             updateAllow                = true;
-    private boolean             updateWhereAlayTrueCheck   = true;
+    private boolean                                     updateAllow                = true;
+    private boolean                                     updateWhereAlayTrueCheck   = true;
 
-    private boolean             insertAllow                = true;
-    private boolean             mergeAllow                 = true;
+    private boolean                                     insertAllow                = true;
+    private boolean                                     mergeAllow                 = true;
 
-    private boolean             multiStatementAllow        = false;
+    private boolean                                     multiStatementAllow        = false;
 
-    private boolean             truncateAllow              = false;
+    private boolean                                     truncateAllow              = false;
 
-    private boolean             commentAllow               = false;
+    private boolean                                     commentAllow               = false;
 
-    private boolean             describeAllow              = false;
+    private boolean                                     describeAllow              = false;
 
-    private boolean             schemaCheck                = true;
-    private boolean             tableCheck                 = true;
-    private boolean             functionCheck              = true;
-    private boolean             objectCheck                = true;
-    private boolean             variantCheck               = true;
+    private boolean                                     schemaCheck                = true;
+    private boolean                                     tableCheck                 = true;
+    private boolean                                     functionCheck              = true;
+    private boolean                                     objectCheck                = true;
+    private boolean                                     variantCheck               = true;
 
-    private boolean             mustParameterized          = false;
+    private boolean                                     mustParameterized          = false;
 
-    private boolean             doPrivilegedAllow          = false;
+    private boolean                                     doPrivilegedAllow          = false;
 
-    protected final Set<String> denyFunctions            = new HashSet<String>();
-    protected final Set<String> denyTables               = new HashSet<String>();
-    protected final Set<String> denySchemas              = new HashSet<String>();
-    protected final Set<String> denyVariants             = new HashSet<String>();
-    protected final Set<String> denyObjects              = new HashSet<String>();
+    protected final ConcurrentMap<String, WallDenyStat> denyFunctions              = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final ConcurrentMap<String, WallDenyStat> denyTables                 = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final ConcurrentMap<String, WallDenyStat> denySchemas                = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final ConcurrentMap<String, WallDenyStat> denyVariants               = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final ConcurrentMap<String, WallDenyStat> denyObjects                = new ConcurrentHashMap<String, WallDenyStat>();
 
-    protected final Set<String> readOnlyTables             = new HashSet<String>();
+    protected final ConcurrentMap<String, WallDenyStat> readOnlyTables             = new ConcurrentHashMap<String, WallDenyStat>();
 
-    private String              dir;
+    private String                                      dir;
 
-    private boolean             inited;
+    private boolean                                     inited;
 
-    private String              tenantTablePattern;
-    private String              tenantColumn;
+    private String                                      tenantTablePattern;
+    private String                                      tenantColumn;
 
-    private boolean             wrapAllow                  = true;
-    private boolean             metadataAllow              = true;
+    private boolean                                     wrapAllow                  = true;
+    private boolean                                     metadataAllow              = true;
 
     public WallConfig(){
 
@@ -358,27 +359,43 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public Set<String> getDenyFunctions() {
-        return denyFunctions;
+        return denyFunctions.keySet();
     }
 
     public Set<String> getDenyTables() {
-        return denyTables;
+        return denyTables.keySet();
     }
 
     public Set<String> getDenySchemas() {
-        return denySchemas;
+        return denySchemas.keySet();
     }
 
     public Set<String> getDenyVariants() {
-        return denyVariants;
+        return denyVariants.keySet();
     }
 
     public Set<String> getDenyObjects() {
-        return denyObjects;
+        return denyObjects.keySet();
     }
 
     public Set<String> getReadOnlyTables() {
-        return readOnlyTables;
+        return readOnlyTables.keySet();
+    }
+    
+    public void addReadOnlyTable(String tableName) {
+        this.readOnlyTables.putIfAbsent(tableName, new WallDenyStat());
+    }
+    
+    public boolean checkReadOnly(String tableName) {
+        WallDenyStat wallStat = this.readOnlyTables.get(tableName);
+        
+        if (wallStat == null) {
+            return false;
+        }
+        
+        wallStat.incrementAndGetDenyCount();
+        
+        return true;
     }
 
     public boolean isMustParameterized() {
@@ -395,7 +412,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return denyObjects.contains(name);
+        return denyObjects.containsKey(name);
     }
 
     public boolean isDenySchema(String name) {
@@ -404,7 +421,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return this.denySchemas.contains(name);
+        return this.denySchemas.containsKey(name);
     }
 
     public boolean isDenyFunction(String name) {
@@ -413,7 +430,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return this.denyFunctions.contains(name);
+        return this.denyFunctions.containsKey(name);
     }
 
     public boolean isCallAllow() {
