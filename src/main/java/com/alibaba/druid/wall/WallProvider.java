@@ -139,7 +139,7 @@ public abstract class WallProvider {
         SQLStatementParser parser = createParser(sql);
 
         if (!config.isCommentAllow()) {
-            parser.getLexer().setAllowComment(false); // permit comment
+            parser.getLexer().setAllowComment(false); // deny comment
         }
 
         try {

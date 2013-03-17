@@ -83,7 +83,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public boolean visit(SQLIdentifierExpr x) {
         String name = x.getName();
         name = WallVisitorUtils.form(name);
-        if (config.isVariantCheck() && config.getPermitVariants().contains(name)) {
+        if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
             getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
         }
         return true;
@@ -158,7 +158,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     @Override
-    public boolean isPermitTable(String name) {
+    public boolean isDenyTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
@@ -167,7 +167,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         if (name.startsWith("v$") || name.startsWith("v_$")) {
             return true;
         }
-        return config.getPermitTables().contains(name);
+        return config.getDenyTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {

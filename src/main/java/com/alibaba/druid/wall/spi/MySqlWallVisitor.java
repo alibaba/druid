@@ -237,13 +237,13 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     @Override
-    public boolean isPermitTable(String name) {
+    public boolean isDenyTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return config.getPermitTables().contains(name);
+        return config.getDenyTables().contains(name);
     }
 
     public void preVisit(SQLObject x) {

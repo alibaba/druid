@@ -737,7 +737,7 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName();
 
-        if (visitor.getConfig().isPermitFunction(methodName.toLowerCase())) {
+        if (visitor.getConfig().isDenyFunction(methodName.toLowerCase())) {
             addViolation(visitor, x);
         }
 
@@ -747,11 +747,11 @@ public class WallVisitorUtils {
         if (x instanceof SQLName) {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
-            if (visitor.getConfig().isPermitSchema(owner)) {
+            if (visitor.getConfig().isDenySchema(owner)) {
                 addViolation(visitor, x);
             }
 
-            if (visitor.getConfig().isPermitObjects(owner)) {
+            if (visitor.getConfig().isDenyObjects(owner)) {
                 addViolation(visitor, x);
             }
         }
@@ -771,7 +771,7 @@ public class WallVisitorUtils {
 
         if (expr instanceof SQLName) {
             String tableName = ((SQLName) expr).getSimleName();
-            if (visitor.isPermitTable(tableName)) {
+            if (visitor.isDenyTable(tableName)) {
                 addViolation(visitor, x);
             }
         }
@@ -879,7 +879,7 @@ public class WallVisitorUtils {
                 }
             }
         } catch (IOException e) {
-            LOG.error("load oracle permit tables errror", e);
+            LOG.error("load oracle deny tables errror", e);
         }
     }
 }

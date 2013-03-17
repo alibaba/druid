@@ -80,13 +80,13 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     }
 
     @Override
-    public boolean isPermitTable(String name) {
+    public boolean isDenyTable(String name) {
         if (!config.isTableCheck()) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return config.getPermitTables().contains(name);
+        return config.getDenyTables().contains(name);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public boolean visit(SQLIdentifierExpr x) {
         String name = x.getName();
         name = WallVisitorUtils.form(name);
-        if (config.isVariantCheck() && config.getPermitVariants().contains(name)) {
+        if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
             getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
         }
         return true;
@@ -238,10 +238,10 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
-        if (x.getSchema() != null && config.isPermitSchema(x.getSchema())) {
+        if (x.getSchema() != null && config.isDenySchema(x.getSchema())) {
             this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
         }
-        if (x.getDatabase() != null && config.isPermitSchema(x.getDatabase())) {
+        if (x.getDatabase() != null && config.isDenySchema(x.getDatabase())) {
             this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
         }
         return true;

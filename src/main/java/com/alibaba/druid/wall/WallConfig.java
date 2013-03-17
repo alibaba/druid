@@ -63,11 +63,11 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             doPrivilegedAllow          = false;
 
-    protected final Set<String> permitFunctions            = new HashSet<String>();
-    protected final Set<String> permitTables               = new HashSet<String>();
-    protected final Set<String> permitSchemas              = new HashSet<String>();
-    protected final Set<String> permitVariants             = new HashSet<String>();
-    protected final Set<String> permitObjects              = new HashSet<String>();
+    protected final Set<String> denyFunctions            = new HashSet<String>();
+    protected final Set<String> denyTables               = new HashSet<String>();
+    protected final Set<String> denySchemas              = new HashSet<String>();
+    protected final Set<String> denyVariants             = new HashSet<String>();
+    protected final Set<String> denyObjects              = new HashSet<String>();
 
     protected final Set<String> readOnlyTables             = new HashSet<String>();
 
@@ -159,11 +159,11 @@ public class WallConfig implements WallConfigMBean {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(this.permitVariants, dir + "/permit-variant.txt");
-        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
-        loadResource(this.permitFunctions, dir + "/permit-function.txt");
-        loadResource(this.permitTables, dir + "/permit-table.txt");
-        loadResource(this.permitObjects, dir + "/permit-object.txt");
+        loadResource(this.denyVariants, dir + "/deny-variant.txt");
+        loadResource(this.denySchemas, dir + "/deny-schema.txt");
+        loadResource(this.denyFunctions, dir + "/deny-function.txt");
+        loadResource(this.denyTables, dir + "/deny-table.txt");
+        loadResource(this.denyObjects, dir + "/deny-object.txt");
         loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
     }
 
@@ -357,24 +357,24 @@ public class WallConfig implements WallConfigMBean {
         this.commentAllow = commentAllow;
     }
 
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
+    public Set<String> getDenyFunctions() {
+        return denyFunctions;
     }
 
-    public Set<String> getPermitTables() {
-        return permitTables;
+    public Set<String> getDenyTables() {
+        return denyTables;
     }
 
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
+    public Set<String> getDenySchemas() {
+        return denySchemas;
     }
 
-    public Set<String> getPermitVariants() {
-        return permitVariants;
+    public Set<String> getDenyVariants() {
+        return denyVariants;
     }
 
-    public Set<String> getPermitObjects() {
-        return permitObjects;
+    public Set<String> getDenyObjects() {
+        return denyObjects;
     }
 
     public Set<String> getReadOnlyTables() {
@@ -389,31 +389,31 @@ public class WallConfig implements WallConfigMBean {
         this.mustParameterized = mustParameterized;
     }
 
-    public boolean isPermitObjects(String name) {
+    public boolean isDenyObjects(String name) {
         if (!objectCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return permitObjects.contains(name);
+        return denyObjects.contains(name);
     }
 
-    public boolean isPermitSchema(String name) {
+    public boolean isDenySchema(String name) {
         if (!schemaCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitSchemas.contains(name);
+        return this.denySchemas.contains(name);
     }
 
-    public boolean isPermitFunction(String name) {
+    public boolean isDenyFunction(String name) {
         if (!functionCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitFunctions.contains(name);
+        return this.denyFunctions.contains(name);
     }
 
     public boolean isCallAllow() {
