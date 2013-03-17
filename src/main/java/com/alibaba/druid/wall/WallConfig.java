@@ -18,69 +18,68 @@ package com.alibaba.druid.wall;
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig implements WallConfigMBean {
 
-    private boolean                                     noneBaseStatementAllow     = false;
+    private boolean                           noneBaseStatementAllow     = false;
 
-    private boolean                                     callAllow                  = true;
-    private boolean                                     selelctAllow               = true;
-    private boolean                                     selectIntoAllow            = true;
-    private boolean                                     selectIntoOutfileAllow     = false;
-    private boolean                                     selectWhereAlwayTrueCheck  = true;
-    private boolean                                     selectHavingAlwayTrueCheck = true;
-    private boolean                                     selectUnionCheck           = true;
+    private boolean                           callAllow                  = true;
+    private boolean                           selelctAllow               = true;
+    private boolean                           selectIntoAllow            = true;
+    private boolean                           selectIntoOutfileAllow     = false;
+    private boolean                           selectWhereAlwayTrueCheck  = true;
+    private boolean                           selectHavingAlwayTrueCheck = true;
+    private boolean                           selectUnionCheck           = true;
 
-    private boolean                                     selectAllColumnAllow       = true;
+    private boolean                           selectAllColumnAllow       = true;
 
-    private boolean                                     deleteAllow                = true;
-    private boolean                                     deleteWhereAlwayTrueCheck  = true;
+    private boolean                           deleteAllow                = true;
+    private boolean                           deleteWhereAlwayTrueCheck  = true;
 
-    private boolean                                     updateAllow                = true;
-    private boolean                                     updateWhereAlayTrueCheck   = true;
+    private boolean                           updateAllow                = true;
+    private boolean                           updateWhereAlayTrueCheck   = true;
 
-    private boolean                                     insertAllow                = true;
-    private boolean                                     mergeAllow                 = true;
+    private boolean                           insertAllow                = true;
+    private boolean                           mergeAllow                 = true;
 
-    private boolean                                     multiStatementAllow        = false;
+    private boolean                           multiStatementAllow        = false;
 
-    private boolean                                     truncateAllow              = false;
+    private boolean                           truncateAllow              = false;
 
-    private boolean                                     commentAllow               = false;
+    private boolean                           commentAllow               = false;
 
-    private boolean                                     describeAllow              = false;
+    private boolean                           describeAllow              = false;
 
-    private boolean                                     schemaCheck                = true;
-    private boolean                                     tableCheck                 = true;
-    private boolean                                     functionCheck              = true;
-    private boolean                                     objectCheck                = true;
-    private boolean                                     variantCheck               = true;
+    private boolean                           schemaCheck                = true;
+    private boolean                           tableCheck                 = true;
+    private boolean                           functionCheck              = true;
+    private boolean                           objectCheck                = true;
+    private boolean                           variantCheck               = true;
 
-    private boolean                                     mustParameterized          = false;
+    private boolean                           mustParameterized          = false;
 
-    private boolean                                     doPrivilegedAllow          = false;
+    private boolean                           doPrivilegedAllow          = false;
 
-    protected final ConcurrentMap<String, WallDenyStat> denyFunctions              = new ConcurrentHashMap<String, WallDenyStat>();
-    protected final ConcurrentMap<String, WallDenyStat> denyTables                 = new ConcurrentHashMap<String, WallDenyStat>();
-    protected final ConcurrentMap<String, WallDenyStat> denySchemas                = new ConcurrentHashMap<String, WallDenyStat>();
-    protected final ConcurrentMap<String, WallDenyStat> denyVariants               = new ConcurrentHashMap<String, WallDenyStat>();
-    protected final ConcurrentMap<String, WallDenyStat> denyObjects                = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final Set<String> denyFunctions              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyTables                 = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denySchemas                = new ConcurrentSkipListSet<String>();
+    protected final Set<String>               denyVariants               = new ConcurrentSkipListSet<String>();
+    protected final Set<String>               denyObjects                = new ConcurrentSkipListSet<String>();
 
-    protected final ConcurrentMap<String, WallDenyStat> readOnlyTables             = new ConcurrentHashMap<String, WallDenyStat>();
+    protected final Set<String>               readOnlyTables             = new ConcurrentSkipListSet<String>();
 
-    private String                                      dir;
+    private String                            dir;
 
-    private boolean                                     inited;
+    private boolean                           inited;
 
-    private String                                      tenantTablePattern;
-    private String                                      tenantColumn;
+    private String                            tenantTablePattern;
+    private String                            tenantColumn;
 
-    private boolean                                     wrapAllow                  = true;
-    private boolean                                     metadataAllow              = true;
+    private boolean                           wrapAllow                  = true;
+    private boolean                           metadataAllow              = true;
 
     public WallConfig(){
 
@@ -359,43 +358,35 @@ public class WallConfig implements WallConfigMBean {
     }
 
     public Set<String> getDenyFunctions() {
-        return denyFunctions.keySet();
+        return denyFunctions;
     }
 
     public Set<String> getDenyTables() {
-        return denyTables.keySet();
+        return denyTables;
     }
 
     public Set<String> getDenySchemas() {
-        return denySchemas.keySet();
+        return denySchemas;
     }
 
     public Set<String> getDenyVariants() {
-        return denyVariants.keySet();
+        return denyVariants;
     }
 
     public Set<String> getDenyObjects() {
-        return denyObjects.keySet();
+        return denyObjects;
     }
 
     public Set<String> getReadOnlyTables() {
-        return readOnlyTables.keySet();
+        return readOnlyTables;
     }
-    
+
     public void addReadOnlyTable(String tableName) {
-        this.readOnlyTables.putIfAbsent(tableName, new WallDenyStat());
+        this.readOnlyTables.add(tableName);
     }
-    
-    public boolean checkReadOnly(String tableName) {
-        WallDenyStat wallStat = this.readOnlyTables.get(tableName);
-        
-        if (wallStat == null) {
-            return false;
-        }
-        
-        wallStat.incrementAndGetDenyCount();
-        
-        return true;
+
+    public boolean isReadOnly(String tableName) {
+        return this.readOnlyTables.contains(tableName);
     }
 
     public boolean isMustParameterized() {
@@ -412,7 +403,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return denyObjects.containsKey(name);
+        return denyObjects.contains(name);
     }
 
     public boolean isDenySchema(String name) {
@@ -421,7 +412,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return this.denySchemas.containsKey(name);
+        return this.denySchemas.contains(name);
     }
 
     public boolean isDenyFunction(String name) {
@@ -430,7 +421,7 @@ public class WallConfig implements WallConfigMBean {
         }
 
         name = WallVisitorUtils.form(name);
-        return this.denyFunctions.containsKey(name);
+        return this.denyFunctions.contains(name);
     }
 
     public boolean isCallAllow() {
