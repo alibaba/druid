@@ -32,20 +32,17 @@ import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
 public abstract class WallProvider {
 
-    // Dummy value to associate with an Object in the backing Map
-    private static final Object               PRESENT           = new Object();
+    private LinkedHashMap<String, WallSqlStat> whiteList;
 
-    private LinkedHashMap<String, Object>     whiteList;
+    private int                                whileListMaxSize  = 1024;
 
-    private int                               whileListMaxSize  = 1024;
+    private int                                whiteSqlMaxLength = 1024;                        // 1k
 
-    private int                               whiteSqlMaxLength = 1024;                        // 1k
+    protected final WallConfig                 config;
 
-    protected final WallConfig                config;
+    private final ReentrantReadWriteLock       lock              = new ReentrantReadWriteLock();
 
-    private final ReentrantReadWriteLock      lock              = new ReentrantReadWriteLock();
-
-    private static final ThreadLocal<Boolean> privileged        = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean>  privileged        = new ThreadLocal<Boolean>();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -59,10 +56,10 @@ public abstract class WallProvider {
         lock.writeLock().lock();
         try {
             if (whiteList == null) {
-                whiteList = new LRUCache<String, Object>(whileListMaxSize);
+                whiteList = new LRUCache<String, WallSqlStat>(whileListMaxSize);
             }
 
-            whiteList.put(sql, PRESENT);
+            whiteList.put(sql, new WallSqlStat());
         } finally {
             lock.writeLock().unlock();
         }
@@ -81,8 +78,12 @@ public abstract class WallProvider {
 
         return hashSet;
     }
-
+    
     public void clearCache() {
+        clearWhiteList();
+    }
+
+    public void clearWhiteList() {
         lock.writeLock().lock();
         try {
             if (whiteList != null) {
@@ -92,18 +93,22 @@ public abstract class WallProvider {
             lock.writeLock().unlock();
         }
     }
-
-    public boolean whiteContains(String sql) {
+    
+    public WallSqlStat getWhiteSql(String sql) {
         lock.readLock().lock();
         try {
             if (whiteList == null) {
-                return false;
+                return null;
             }
-
-            return whiteList.get(sql) != null;
+            
+            return whiteList.get(sql); 
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    public boolean whiteContains(String sql) {
+        return getWhiteSql(sql) != null;
     }
 
     public abstract SQLStatementParser createParser(String sql);
@@ -113,7 +118,8 @@ public abstract class WallProvider {
     public abstract ExportParameterVisitor createExportParameterVisitor();
 
     public boolean checkValid(String sql) {
-        return check(sql).getViolations().isEmpty();
+        WallCheckResult result = check(sql);
+        return result.getViolations().isEmpty();
     }
 
     public WallCheckResult check(String sql) {
@@ -124,8 +130,9 @@ public abstract class WallProvider {
         }
 
         // first step, check whiteList
-        boolean isWhite = whiteContains(sql);
-        if (isWhite) {
+        WallSqlStat sqlStat = getWhiteSql(sql);
+        if (sqlStat != null) {
+            sqlStat.incrementAndGetExecuteCount();
             return result;
         }
 
@@ -176,13 +183,13 @@ public abstract class WallProvider {
         result.getViolations().addAll(visitor.getViolations());
         return result;
     }
-    
+
     public static boolean ispPivileged() {
         Boolean value = privileged.get();
         if (value == null) {
             return false;
         }
-        
+
         return value.booleanValue();
     }
 
