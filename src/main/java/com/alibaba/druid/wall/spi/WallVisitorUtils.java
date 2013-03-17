@@ -741,38 +741,48 @@ public class WallVisitorUtils {
 
     }
 
-    private static void checkSchema(WallVisitor visitor, SQLExpr x) {
+    private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {
         if (x instanceof SQLName) {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
-            if (visitor.getConfig().isDenySchema(owner)) {
+            if (!visitor.getProvider().checkDenySchema(owner)) {
                 addViolation(visitor, x);
+                return false;
             }
 
             if (visitor.getConfig().isDenyObjects(owner)) {
                 addViolation(visitor, x);
+                return false;
             }
         }
 
         // if (ownerExpr instanceof SQLPropertyExpr) {
         if (x instanceof SQLPropertyExpr) {
-            checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
+            return checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
         }
+        
+        return true;
     }
 
-    public static void check(WallVisitor visitor, SQLExprTableSource x) {
+    public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLPropertyExpr) {
-            checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
+            boolean checkResult = checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
+            if (!checkResult) {
+                return false;
+            }
         }
 
         if (expr instanceof SQLName) {
             String tableName = ((SQLName) expr).getSimleName();
             if (visitor.isDenyTable(tableName)) {
                 addViolation(visitor, x);
+                return false;
             }
         }
+        
+        return true;
     }
 
     private static void addViolation(WallVisitor visitor, SQLObject x) {

@@ -49,6 +49,7 @@ public abstract class WallProvider {
 
     private final ConcurrentMap<String, WallDenyStat> deniedTables      = new ConcurrentHashMap<String, WallDenyStat>();
     private final ConcurrentMap<String, WallDenyStat> deniedFunctions   = new ConcurrentHashMap<String, WallDenyStat>();
+    private final ConcurrentMap<String, WallDenyStat> deniedSchemas   = new ConcurrentHashMap<String, WallDenyStat>();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -146,6 +147,25 @@ public abstract class WallProvider {
 
         return true;
     }
+    
+    public boolean checkDenySchema(String schemaName) {
+        if (schemaName == null) {
+            return true;
+        }
+
+        schemaName = schemaName.toLowerCase();
+        if (getConfig().getDenySchemas().contains(schemaName)) {
+            WallDenyStat denyStat = this.deniedSchemas.get(schemaName);
+            if (denyStat == null) {
+                this.deniedSchemas.putIfAbsent(schemaName, new WallDenyStat());
+                denyStat = this.deniedSchemas.get(schemaName);
+            }
+            denyStat.incrementAndGetDenyCount();
+            return false;
+        }
+
+        return true;
+    }
 
     public boolean checkDenyTable(String tableName) {
         if (tableName == null) {
@@ -192,6 +212,15 @@ public abstract class WallProvider {
 
         String formName = WallVisitorUtils.form(tableName);
         return deniedTables.get(formName);
+    }
+    
+    public WallDenyStat getDenniedSchemaStat(String schemaName) {
+        if (schemaName == null) {
+            return null;
+        }
+
+        String formName = WallVisitorUtils.form(schemaName);
+        return deniedSchemas.get(formName);
     }
 
     public WallCheckResult check(String sql) {

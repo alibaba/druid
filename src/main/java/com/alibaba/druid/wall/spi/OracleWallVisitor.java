@@ -112,8 +112,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     public boolean visit(OracleSelectTableReference x) {
-        WallVisitorUtils.check(this, x);
-        return true;
+        return WallVisitorUtils.check(this, x);
     }
 
     public boolean visit(SQLExprTableSource x) {
