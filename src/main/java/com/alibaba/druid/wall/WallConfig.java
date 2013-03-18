@@ -50,6 +50,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             truncateAllow              = false;
 
     private boolean             commentAllow               = false;
+    private boolean             strictSyntaxCheck          = true;
 
     private boolean             describeAllow              = false;
 
@@ -355,6 +356,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setCommentAllow(boolean commentAllow) {
         this.commentAllow = commentAllow;
+    }
+
+    public boolean isStrictSyntaxCheck() {
+        return strictSyntaxCheck;
+    }
+
+    public void setStrictSyntaxCheck(boolean strictSyntaxCheck) {
+        this.strictSyntaxCheck = strictSyntaxCheck;
     }
 
     public Set<String> getDenyFunctions() {

@@ -260,6 +260,11 @@ public abstract class WallProvider {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
             incrementCommentDeniedCount();
             return result;
+        } catch (ParserException e) {
+            if (config.isStrictSyntaxCheck()) {
+                result.getViolations().add(new SyntaxErrorViolation(e, sql));                
+            }
+            return result;
         } catch (Exception e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
             return result;
