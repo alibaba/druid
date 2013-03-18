@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -42,7 +43,7 @@ public class SQLServerWallProvider extends WallProvider {
     }
 
     public SQLServerWallProvider(WallConfig config){
-        super(config);
+        super(config, JdbcConstants.SQL_SERVER);
     }
 
     @Override

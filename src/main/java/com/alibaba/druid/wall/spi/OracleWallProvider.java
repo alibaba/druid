@@ -19,6 +19,7 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
@@ -32,7 +33,7 @@ public class OracleWallProvider extends WallProvider {
     }
 
     public OracleWallProvider(WallConfig config){
-        super(config);
+        super(config, JdbcConstants.ORACLE);
     }
 
     @Override

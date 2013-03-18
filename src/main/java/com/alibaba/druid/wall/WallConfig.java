@@ -51,6 +51,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             commentAllow               = false;
     private boolean             strictSyntaxCheck          = true;
+    private boolean             constArithmeticAllow       = false;
 
     private boolean             describeAllow              = false;
 
@@ -364,6 +365,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setStrictSyntaxCheck(boolean strictSyntaxCheck) {
         this.strictSyntaxCheck = strictSyntaxCheck;
+    }
+
+    public boolean isConstArithmeticAllow() {
+        return constArithmeticAllow;
+    }
+
+    public void setConstArithmeticAllow(boolean constArithmeticAllow) {
+        this.constArithmeticAllow = constArithmeticAllow;
     }
 
     public Set<String> getDenyFunctions() {

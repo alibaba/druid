@@ -20,11 +20,16 @@ public class WallContext {
     private final static ThreadLocal<WallContext> contextLocal = new ThreadLocal<WallContext>();
 
     private WallSqlStat                           sqlState;
+    private final String                          dbType;
 
-    public static WallContext createIfNotExists() {
+    public WallContext(String dbType){
+        this.dbType = dbType;
+    }
+
+    public static WallContext createIfNotExists(String dbType) {
         WallContext context = contextLocal.get();
         if (context == null) {
-            context = new WallContext();
+            context = new WallContext(dbType);
             contextLocal.set(context);
         }
         return context;
@@ -44,6 +49,10 @@ public class WallContext {
 
     public void setSqlState(WallSqlStat sqlState) {
         this.sqlState = sqlState;
+    }
+
+    public String getDbType() {
+        return dbType;
     }
 
 }

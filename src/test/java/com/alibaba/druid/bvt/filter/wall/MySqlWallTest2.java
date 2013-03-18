@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
@@ -30,13 +31,27 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest2 extends TestCase {
 
-    public void test_stuff() throws Exception {
+    public void test_true() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setConstArithmeticAllow(true);
         Assert.assertTrue(WallUtils.isValidateMySql(//
         "select * from person_qingjia " + //
                 "where isxiao=1  " + //
                 "and ((starttime between 2013-01-15 and 2013-01-15)" + //
                 "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
                 ") " + //
-                "order by xiaojiatime desc"));
+                "order by xiaojiatime desc", config));
+    }
+
+    public void test_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setConstArithmeticAllow(true);
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "select * from person_qingjia " + //
+                "where isxiao=1  " + //
+                "and ((starttime between 2013-01-15 and 2013-01-15)" + //
+                "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
+                ") " + //
+                "order by xiaojiatime desc", config));
     }
 }
