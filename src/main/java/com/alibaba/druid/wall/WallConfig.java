@@ -51,7 +51,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             commentAllow               = false;
     private boolean             strictSyntaxCheck          = true;
-    private boolean             constArithmeticAllow       = false;
+    private boolean             constArithmeticAllow       = true;
 
     private boolean             describeAllow              = false;
 
@@ -83,8 +83,27 @@ public class WallConfig implements WallConfigMBean {
     private boolean             wrapAllow                  = true;
     private boolean             metadataAllow              = true;
 
+    private boolean             conditionOpXorAllow        = false;
+    private boolean             conditionOpBitwseAllow     = false;
+
     public WallConfig(){
 
+    }
+
+    public boolean isConditionOpXorAllow() {
+        return conditionOpXorAllow;
+    }
+
+    public void setConditionOpXorAllow(boolean conditionOpXorAllow) {
+        this.conditionOpXorAllow = conditionOpXorAllow;
+    }
+    
+    public boolean isConditionOpBitwseAllow() {
+        return conditionOpBitwseAllow;
+    }
+    
+    public void setConditionOpBitwseAllow(boolean conditionOpBitwseAllow) {
+        this.conditionOpBitwseAllow = conditionOpBitwseAllow;
     }
 
     public String getTenantTablePattern() {

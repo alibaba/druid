@@ -464,24 +464,26 @@ public class WallVisitorUtils {
         if (wallContext != null) {
             dbType = wallContext.getDbType();
         }
-        
+
         return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
     }
 
     public static class WallConditionContext {
 
-        private boolean partAllowTrue;
+        private boolean partAlwayrue;
         private boolean constArithmetic = false;
+        private boolean xor             = false;
+        private boolean bitwise         = false;
 
-        public boolean isPartAllowTrue() {
-            return partAllowTrue;
+        public boolean hasPartAlwayTrue() {
+            return partAlwayrue;
         }
 
         public void setPartAlwayTrue(boolean partAllowTrue) {
-            this.partAllowTrue = partAllowTrue;
+            this.partAlwayrue = partAllowTrue;
         }
 
-        public boolean isConstArithmetic() {
+        public boolean hasConstArithmetic() {
             return constArithmetic;
         }
 
@@ -489,6 +491,21 @@ public class WallVisitorUtils {
             this.constArithmetic = constArithmetic;
         }
 
+        public boolean hasXor() {
+            return xor;
+        }
+
+        public void setXor(boolean xor) {
+            this.xor = xor;
+        }
+        
+        public boolean hasBitwise() {
+            return bitwise;
+        }
+
+        public void setBitwise(boolean bitwise) {
+            this.bitwise = bitwise;
+        }
     }
 
     private static ThreadLocal<WallConditionContext> wallConditionContextLocal = new ThreadLocal<WallConditionContext>();
@@ -504,11 +521,19 @@ public class WallVisitorUtils {
             final Object value = getValue(x);
 
             final WallConditionContext current = wallConditionContextLocal.get();
-            if (current.isPartAllowTrue() && alwayTrueCheck) {
+            if (current.hasPartAlwayTrue() && alwayTrueCheck) {
                 addViolation(visitor, x);
             }
 
-            if (current.isConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
+            if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
+                addViolation(visitor, x);
+            }
+
+            if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
+                addViolation(visitor, x);
+            }
+            
+            if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
                 addViolation(visitor, x);
             }
 
