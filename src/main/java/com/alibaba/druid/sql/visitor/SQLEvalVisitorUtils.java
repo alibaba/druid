@@ -34,6 +34,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
@@ -50,6 +51,8 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 
 public class SQLEvalVisitorUtils {
 
@@ -782,12 +785,24 @@ public class SQLEvalVisitorUtils {
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
 
+        // final WallConditionContext old = wallConditionContextLocal.get();
+
         left.accept(visitor);
+        right.accept(visitor);
+
+        if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
+            final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+            if (wallContext != null) {
+                if (left.getAttribute(EVAL_VALUE) == Boolean.TRUE || right.getAttribute(EVAL_VALUE) == Boolean.TRUE) {
+                    wallContext.setPartAllowTrue(true);
+                }
+            }
+        }
+
         if (!left.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
 
-        right.accept(visitor);
         if (!right.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
@@ -850,7 +865,7 @@ public class SQLEvalVisitorUtils {
                 boolean matchResult = !Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
             }
-            break;
+                break;
             case Like: {
                 String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));

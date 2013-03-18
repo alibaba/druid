@@ -20,14 +20,15 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallConfig;
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
+import com.alibaba.druid.wall.spi.OracleWallProvider;
 
 /**
  * 这个场景，检测可疑的Having条件
  * @author wenshao
  *
  */
-public class WallReadOnlyTest extends TestCase {
+public class WallReadOnlyTest2 extends TestCase {
     private WallConfig config = new WallConfig();
     
     protected void setUp() throws Exception {
@@ -39,16 +40,30 @@ public class WallReadOnlyTest extends TestCase {
     private String delete_sql = "DELETE members WHERE FID = ?";
 
     public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateMySql(delete_sql, config));
+        MySqlWallProvider provider = new MySqlWallProvider(config);
+        Assert.assertTrue(provider.checkValid(sql));
+        
+        Assert.assertNull(provider.getDenniedTableStat("members"));
+        
+        Assert.assertFalse(provider.checkValid(insert_sql));
+        Assert.assertFalse(provider.checkValid(update_sql));
+        Assert.assertFalse(provider.checkValid(delete_sql));
+        
+        Assert.assertEquals(3, provider.getDenniedTableStat("members").getDenyCount());
+        Assert.assertEquals(3, provider.getDenniedTableStat("Members").getDenyCount());
     }
     
     public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(insert_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(update_sql, config));
-        Assert.assertFalse(WallUtils.isValidateOracle(delete_sql, config));
+        OracleWallProvider provider = new OracleWallProvider(config);
+        Assert.assertTrue(provider.checkValid(sql));
+        
+        Assert.assertNull(provider.getDenniedTableStat("members"));
+        
+        Assert.assertFalse(provider.checkValid(insert_sql));
+        Assert.assertFalse(provider.checkValid(update_sql));
+        Assert.assertFalse(provider.checkValid(delete_sql));
+        
+        Assert.assertEquals(3, provider.getDenniedTableStat("members").getDenyCount());
+        Assert.assertEquals(3, provider.getDenniedTableStat("Members").getDenyCount());
     }
 }

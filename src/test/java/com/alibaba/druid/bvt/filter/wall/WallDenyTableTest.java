@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid;
+package com.alibaba.druid.bvt.filter.wall;
 
-public final class VERSION {
+import junit.framework.TestCase;
 
-    public final static int MajorVersion    = 0;
-    public final static int MinorVersion    = 2;
-    public final static int RevisionVersion = 13;
-    
-    public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+import org.junit.Assert;
+
+import com.alibaba.druid.wall.spi.OracleWallProvider;
+
+/**
+ * @author wenshao
+ *
+ */
+public class WallDenyTableTest extends TestCase {
+
+    public void testORACLE() throws Exception {
+        String sql = "SELECT F1, F2 FROM SYS.ABC";
+                
+        OracleWallProvider provider = new OracleWallProvider();
+        Assert.assertFalse(provider.checkValid(sql));
+        
+        Assert.assertEquals(1, provider.getDenniedSchemaStat("SYS").getDenyCount());
     }
 }
