@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -498,7 +499,7 @@ public class WallVisitorUtils {
         public void setXor(boolean xor) {
             this.xor = xor;
         }
-        
+
         public boolean hasBitwise() {
             return bitwise;
         }
@@ -532,7 +533,7 @@ public class WallVisitorUtils {
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
                 addViolation(visitor, x);
             }
-            
+
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
                 addViolation(visitor, x);
             }
@@ -747,6 +748,11 @@ public class WallVisitorUtils {
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
+        if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
+            addViolation(visitor, x);
+            return;
+        }
+
         if (!visitor.getConfig().isSelectUnionCheck()) {
             return;
         }

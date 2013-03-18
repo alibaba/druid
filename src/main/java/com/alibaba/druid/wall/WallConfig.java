@@ -44,6 +44,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
+    private boolean             minusAllow                 = false;
 
     private boolean             multiStatementAllow        = false;
 
@@ -89,6 +90,14 @@ public class WallConfig implements WallConfigMBean {
     public WallConfig(){
 
     }
+    
+    public boolean isMinusAllow() {
+        return minusAllow;
+    }
+    
+    public void setMinusAllow(boolean minusAllow) {
+        this.minusAllow = minusAllow;
+    }
 
     public boolean isConditionOpXorAllow() {
         return conditionOpXorAllow;
@@ -97,11 +106,11 @@ public class WallConfig implements WallConfigMBean {
     public void setConditionOpXorAllow(boolean conditionOpXorAllow) {
         this.conditionOpXorAllow = conditionOpXorAllow;
     }
-    
+
     public boolean isConditionOpBitwseAllow() {
         return conditionOpBitwseAllow;
     }
-    
+
     public void setConditionOpBitwseAllow(boolean conditionOpBitwseAllow) {
         this.conditionOpBitwseAllow = conditionOpBitwseAllow;
     }
