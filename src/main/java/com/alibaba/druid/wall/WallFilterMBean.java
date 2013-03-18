@@ -39,4 +39,10 @@ public interface WallFilterMBean {
     String check(String sql) throws SQLException;
     
     long getViolationCount();
+    
+    void resetViolationCount();
+    
+    void clearWhiteList();
+    
+    boolean checkValid(String sql);
 }

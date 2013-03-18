@@ -1,6 +1,6 @@
 version
 load_file
-databse
+database
 schema
 user
 system_user

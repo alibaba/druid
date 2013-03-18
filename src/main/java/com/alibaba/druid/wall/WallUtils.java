@@ -17,7 +17,7 @@ package com.alibaba.druid.wall;
 
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
-import com.alibaba.druid.wall.spi.SQLServerProvider;
+import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallUtils {
 
@@ -42,12 +42,12 @@ public class WallUtils {
     }
     
     public static boolean isValidateSqlServer(String sql) {
-        SQLServerProvider provider = new SQLServerProvider();
+        SQLServerWallProvider provider = new SQLServerWallProvider();
         return provider.checkValid(sql);
     }
     
     public static boolean isValidateSqlServer(String sql, WallConfig config) {
-        SQLServerProvider provider = new SQLServerProvider(config);
+        SQLServerWallProvider provider = new SQLServerWallProvider(config);
         return provider.checkValid(sql);
     }
 }

@@ -69,7 +69,7 @@ import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class WallVisitorUtils {
 
-    private final static Log LOG = LogFactory.getLog(WallVisitorUtils.class);
+    private final static Log                          LOG          = LogFactory.getLog(WallVisitorUtils.class);
 
     public static void check(WallVisitor visitor, SQLInListExpr x) {
 
@@ -88,7 +88,7 @@ public class WallVisitorUtils {
             && x.getParent() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
             SQLTableSource from = queryBlock.getFrom();
-            
+
             if (from instanceof SQLExprTableSource) {
                 addViolation(visitor, x);
             }
@@ -131,7 +131,7 @@ public class WallVisitorUtils {
             x.getWhere().setParent(x);
             checkCondition(visitor, x.getWhere());
 
-            if (Boolean.TRUE == getValue(where)) {
+            if (Boolean.TRUE == getConditionValue(visitor, where)) {
                 boolean isSimpleConstExpr = false;
                 if (where instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
@@ -162,7 +162,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getValue(x)) {
+        if (Boolean.TRUE == getConditionValue(visitor, x)) {
             addViolation(visitor, x);
         }
     }
@@ -179,7 +179,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+        if (x.getWhere() == null || Boolean.TRUE == getConditionValue(visitor, x.getWhere())) {
             addViolation(visitor, x);
             return;
         }
@@ -348,11 +348,9 @@ public class WallVisitorUtils {
                 tableName = ((SQLName) tableNameExpr).getSimleName();
             }
 
-            if (tableName != null) {
-                tableName = form(tableName);
-                if (visitor.getConfig().getReadOnlyTables().contains(tableName)) {
-                    addViolation(visitor, tableSource);
-                }
+            boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
+            if (!readOnlyValid) {
+                addViolation(visitor, tableSource);
             }
         } else if (tableSource instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
@@ -374,7 +372,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+        if (x.getWhere() == null || Boolean.TRUE == getConditionValue(visitor, x.getWhere())) {
             addViolation(visitor, x);
             return;
         }
@@ -434,6 +432,10 @@ public class WallVisitorUtils {
             for (int i = groupList.size() - 1; i >= 0; --i) {
                 Object result = getValue(groupList.get(i));
                 if (Boolean.TRUE == result) {
+                    final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+                    if (wallContext != null) {
+                        wallContext.setPartAllowTrue(true);
+                    }
                     return true;
                 }
 
@@ -588,6 +590,42 @@ public class WallVisitorUtils {
         return a.longValue() + b.longValue();
     }
 
+    public static class WallConditionContext {
+
+        private boolean partAllowTrue;
+
+        public boolean isPartAllowTrue() {
+            return partAllowTrue;
+        }
+
+        public void setPartAllowTrue(boolean partAllowTrue) {
+            this.partAllowTrue = partAllowTrue;
+        }
+    }
+
+    private static ThreadLocal<WallConditionContext> wallConditionContextLocal = new ThreadLocal<WallConditionContext>();
+    
+    public static WallConditionContext getWallConditionContext() {
+        return wallConditionContextLocal.get();
+    }
+
+    public static Object getConditionValue(WallVisitor visitor, SQLExpr x) {
+        final WallConditionContext old = wallConditionContextLocal.get();
+        try {
+            wallConditionContextLocal.set(new WallConditionContext());
+            final Object value = getValue(x);
+            
+            final WallConditionContext current = wallConditionContextLocal.get();
+            if (current.isPartAllowTrue() && visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
+                addViolation(visitor, x);
+            }
+            
+            return value;
+        } finally {
+            wallConditionContextLocal.set(old);
+        }
+    }
+
     public static Object getValue(SQLExpr x) {
         if (x instanceof SQLBinaryOpExpr) {
             return getValue((SQLBinaryOpExpr) x);
@@ -737,44 +775,54 @@ public class WallVisitorUtils {
 
         String methodName = x.getMethodName();
 
-        if (visitor.getConfig().isPermitFunction(methodName.toLowerCase())) {
+        if (!visitor.getProvider().checkDenyFunction(methodName)) {
             addViolation(visitor, x);
         }
 
     }
 
-    private static void checkSchema(WallVisitor visitor, SQLExpr x) {
+    private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {
         if (x instanceof SQLName) {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
-            if (visitor.getConfig().isPermitSchema(owner)) {
+            if (!visitor.getProvider().checkDenySchema(owner)) {
                 addViolation(visitor, x);
+                return false;
             }
 
-            if (visitor.getConfig().isPermitObjects(owner)) {
+            if (visitor.getConfig().isDenyObjects(owner)) {
                 addViolation(visitor, x);
+                return false;
             }
         }
 
         // if (ownerExpr instanceof SQLPropertyExpr) {
         if (x instanceof SQLPropertyExpr) {
-            checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
+            return checkSchema(visitor, ((SQLPropertyExpr) x).getOwner());
         }
+        
+        return true;
     }
 
-    public static void check(WallVisitor visitor, SQLExprTableSource x) {
+    public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
         SQLExpr expr = x.getExpr();
 
         if (expr instanceof SQLPropertyExpr) {
-            checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
+            boolean checkResult = checkSchema(visitor, ((SQLPropertyExpr) expr).getOwner());
+            if (!checkResult) {
+                return false;
+            }
         }
 
         if (expr instanceof SQLName) {
             String tableName = ((SQLName) expr).getSimleName();
-            if (visitor.isPermitTable(tableName)) {
+            if (visitor.isDenyTable(tableName)) {
                 addViolation(visitor, x);
+                return false;
             }
         }
+        
+        return true;
     }
 
     private static void addViolation(WallVisitor visitor, SQLObject x) {
@@ -879,7 +927,7 @@ public class WallVisitorUtils {
                 }
             }
         } catch (IOException e) {
-            LOG.error("load oracle permit tables errror", e);
+            LOG.error("load oracle deny tables errror", e);
         }
     }
 }

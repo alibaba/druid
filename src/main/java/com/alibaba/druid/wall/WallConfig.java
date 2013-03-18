@@ -17,69 +17,69 @@ package com.alibaba.druid.wall;
 
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
 public class WallConfig implements WallConfigMBean {
 
-    private boolean             noneBaseStatementAllow     = false;
+    private boolean                           noneBaseStatementAllow     = false;
 
-    private boolean             callAllow                  = true;
-    private boolean             selelctAllow               = true;
-    private boolean             selectIntoAllow            = true;
-    private boolean             selectIntoOutfileAllow     = false;
-    private boolean             selectWhereAlwayTrueCheck  = true;
-    private boolean             selectHavingAlwayTrueCheck = true;
-    private boolean             selectUnionCheck           = true;
+    private boolean                           callAllow                  = true;
+    private boolean                           selelctAllow               = true;
+    private boolean                           selectIntoAllow            = true;
+    private boolean                           selectIntoOutfileAllow     = false;
+    private boolean                           selectWhereAlwayTrueCheck  = true;
+    private boolean                           selectHavingAlwayTrueCheck = true;
+    private boolean                           selectUnionCheck           = true;
 
-    private boolean             selectAllColumnAllow       = true;
+    private boolean                           selectAllColumnAllow       = true;
 
-    private boolean             deleteAllow                = true;
-    private boolean             deleteWhereAlwayTrueCheck  = true;
+    private boolean                           deleteAllow                = true;
+    private boolean                           deleteWhereAlwayTrueCheck  = true;
 
-    private boolean             updateAllow                = true;
-    private boolean             updateWhereAlayTrueCheck   = true;
+    private boolean                           updateAllow                = true;
+    private boolean                           updateWhereAlayTrueCheck   = true;
 
-    private boolean             insertAllow                = true;
-    private boolean             mergeAllow                 = true;
+    private boolean                           insertAllow                = true;
+    private boolean                           mergeAllow                 = true;
 
-    private boolean             multiStatementAllow        = false;
+    private boolean                           multiStatementAllow        = false;
 
-    private boolean             truncateAllow              = false;
+    private boolean                           truncateAllow              = false;
 
-    private boolean             commentAllow               = false;
+    private boolean                           commentAllow               = false;
 
-    private boolean             describeAllow              = false;
+    private boolean                           describeAllow              = false;
 
-    private boolean             schemaCheck                = true;
-    private boolean             tableCheck                 = true;
-    private boolean             functionCheck              = true;
-    private boolean             objectCheck                = true;
-    private boolean             variantCheck               = true;
+    private boolean                           schemaCheck                = true;
+    private boolean                           tableCheck                 = true;
+    private boolean                           functionCheck              = true;
+    private boolean                           objectCheck                = true;
+    private boolean                           variantCheck               = true;
 
-    private boolean             mustParameterized          = false;
+    private boolean                           mustParameterized          = false;
 
-    private boolean             doPrivilegedAllow          = false;
+    private boolean                           doPrivilegedAllow          = false;
 
-    protected final Set<String> permitFunctions            = new HashSet<String>();
-    protected final Set<String> permitTables               = new HashSet<String>();
-    protected final Set<String> permitSchemas              = new HashSet<String>();
-    protected final Set<String> permitVariants             = new HashSet<String>();
-    protected final Set<String> permitObjects              = new HashSet<String>();
+    protected final Set<String> denyFunctions              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyTables                 = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denySchemas                = new ConcurrentSkipListSet<String>();
+    protected final Set<String>               denyVariants               = new ConcurrentSkipListSet<String>();
+    protected final Set<String>               denyObjects                = new ConcurrentSkipListSet<String>();
 
-    protected final Set<String> readOnlyTables             = new HashSet<String>();
+    protected final Set<String>               readOnlyTables             = new ConcurrentSkipListSet<String>();
 
-    private String              dir;
+    private String                            dir;
 
-    private boolean             inited;
+    private boolean                           inited;
 
-    private String              tenantTablePattern;
-    private String              tenantColumn;
+    private String                            tenantTablePattern;
+    private String                            tenantColumn;
 
-    private boolean             wrapAllow                  = true;
-    private boolean             metadataAllow              = true;
+    private boolean                           wrapAllow                  = true;
+    private boolean                           metadataAllow              = true;
 
     public WallConfig(){
 
@@ -159,11 +159,11 @@ public class WallConfig implements WallConfigMBean {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(this.permitVariants, dir + "/permit-variant.txt");
-        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
-        loadResource(this.permitFunctions, dir + "/permit-function.txt");
-        loadResource(this.permitTables, dir + "/permit-table.txt");
-        loadResource(this.permitObjects, dir + "/permit-object.txt");
+        loadResource(this.denyVariants, dir + "/deny-variant.txt");
+        loadResource(this.denySchemas, dir + "/deny-schema.txt");
+        loadResource(this.denyFunctions, dir + "/deny-function.txt");
+        loadResource(this.denyTables, dir + "/deny-table.txt");
+        loadResource(this.denyObjects, dir + "/deny-object.txt");
         loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
     }
 
@@ -357,28 +357,36 @@ public class WallConfig implements WallConfigMBean {
         this.commentAllow = commentAllow;
     }
 
-    public Set<String> getPermitFunctions() {
-        return permitFunctions;
+    public Set<String> getDenyFunctions() {
+        return denyFunctions;
     }
 
-    public Set<String> getPermitTables() {
-        return permitTables;
+    public Set<String> getDenyTables() {
+        return denyTables;
     }
 
-    public Set<String> getPermitSchemas() {
-        return permitSchemas;
+    public Set<String> getDenySchemas() {
+        return denySchemas;
     }
 
-    public Set<String> getPermitVariants() {
-        return permitVariants;
+    public Set<String> getDenyVariants() {
+        return denyVariants;
     }
 
-    public Set<String> getPermitObjects() {
-        return permitObjects;
+    public Set<String> getDenyObjects() {
+        return denyObjects;
     }
 
     public Set<String> getReadOnlyTables() {
         return readOnlyTables;
+    }
+
+    public void addReadOnlyTable(String tableName) {
+        this.readOnlyTables.add(tableName);
+    }
+
+    public boolean isReadOnly(String tableName) {
+        return this.readOnlyTables.contains(tableName);
     }
 
     public boolean isMustParameterized() {
@@ -389,31 +397,31 @@ public class WallConfig implements WallConfigMBean {
         this.mustParameterized = mustParameterized;
     }
 
-    public boolean isPermitObjects(String name) {
+    public boolean isDenyObjects(String name) {
         if (!objectCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return permitObjects.contains(name);
+        return denyObjects.contains(name);
     }
 
-    public boolean isPermitSchema(String name) {
+    public boolean isDenySchema(String name) {
         if (!schemaCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitSchemas.contains(name);
+        return this.denySchemas.contains(name);
     }
 
-    public boolean isPermitFunction(String name) {
+    public boolean isDenyFunction(String name) {
         if (!functionCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitFunctions.contains(name);
+        return this.denyFunctions.contains(name);
     }
 
     public boolean isCallAllow() {

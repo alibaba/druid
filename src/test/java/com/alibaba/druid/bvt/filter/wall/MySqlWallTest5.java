@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid;
+package com.alibaba.druid.bvt.filter.wall;
 
-public final class VERSION {
+import junit.framework.TestCase;
 
-    public final static int MajorVersion    = 0;
-    public final static int MinorVersion    = 2;
-    public final static int RevisionVersion = 13;
-    
-    public static String getVersionNumber() {
-        return VERSION.MajorVersion + "." + VERSION.MinorVersion + "." + VERSION.RevisionVersion;
+import org.junit.Assert;
+
+import com.alibaba.druid.wall.WallUtils;
+
+/**
+ * SQLServerWallTest
+ * 
+ * @author RaymondXiu
+ * @version 1.0, 2012-3-18
+ * @see
+ */
+public class MySqlWallTest5 extends TestCase {
+
+    public void test_stuff() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "select * from tbl_product WHERE delFlag=0 AND cateId = 40 OR EXTRACTVALUE(1,CONCAT(0x7c,database(),0x7c)) order by sort desc, productId desc limit 20,20"));
     }
 }
