@@ -45,6 +45,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
     private boolean             minusAllow                 = false;
+    private boolean             intersectAllow                  = false;
 
     private boolean             multiStatementAllow        = false;
 
@@ -91,10 +92,18 @@ public class WallConfig implements WallConfigMBean {
 
     }
     
+    public boolean isIntersectAllow() {
+        return intersectAllow;
+    }
+    
+    public void setIntersectAllow(boolean intersectAllow) {
+        this.intersectAllow = intersectAllow;
+    }
+
     public boolean isMinusAllow() {
         return minusAllow;
     }
-    
+
     public void setMinusAllow(boolean minusAllow) {
         this.minusAllow = minusAllow;
     }

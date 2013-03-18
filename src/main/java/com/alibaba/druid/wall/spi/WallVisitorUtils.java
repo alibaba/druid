@@ -753,6 +753,11 @@ public class WallVisitorUtils {
             return;
         }
 
+        if (x.getOperator() == SQLUnionOperator.INTERSECT && !visitor.getConfig().isIntersectAllow()) {
+            addViolation(visitor, x);
+            return;
+        }
+
         if (!visitor.getConfig().isSelectUnionCheck()) {
             return;
         }
