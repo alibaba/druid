@@ -19,21 +19,16 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
-/**
- * 这个场景，检测可疑的Having条件
- * @author wenshao
- *
- */
-public class WallSelectWhereTest2 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 AND FID = ?";
+public class LikeTest extends TestCase {
 
-    public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
-    }
-    
-    public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+    public void test_isTrue() throws Exception {
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%'")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%%'")));
+        Assert.assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 AND f1 like '%%'")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
+
     }
 }

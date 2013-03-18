@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
@@ -113,12 +114,18 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGEvalVisitor();
         }
+        
+        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerEvalVisitor();
+        }
 
         return new SQLEvalVisitorImpl();
     }
-
+    
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if ("concat".equalsIgnoreCase(x.getMethodName())) {
+        String methodName = x.getMethodName().toLowerCase();
+        
+        if ("concat".equals(methodName)) {
             StringBuilder buf = new StringBuilder();
 
             for (SQLExpr item : x.getParameters()) {
@@ -132,9 +139,9 @@ public class SQLEvalVisitorUtils {
             }
 
             x.getAttributes().put(EVAL_VALUE, buf.toString());
-        } else if ("now".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("now".equals(methodName)) {
             x.getAttributes().put(EVAL_VALUE, new Date());
-        } else if ("ascii".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("ascii".equals(methodName)) {
             if (x.getParameters().size() == 0) {
                 return false;
             }
@@ -153,7 +160,7 @@ public class SQLEvalVisitorUtils {
 
             int ascii = strValue.charAt(0);
             x.getAttributes().put(EVAL_VALUE, ascii);
-        } else if ("instr".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("instr".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -175,7 +182,7 @@ public class SQLEvalVisitorUtils {
             int result = strValue0.indexOf(strValue1) + 1;
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("left".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("left".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -197,7 +204,7 @@ public class SQLEvalVisitorUtils {
             String result = strValue.substring(0, intValue);
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("right".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("right".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -219,7 +226,7 @@ public class SQLEvalVisitorUtils {
             String result = strValue.substring(strValue.length() - intValue, strValue.length());
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("reverse".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("reverse".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -241,7 +248,7 @@ public class SQLEvalVisitorUtils {
             String result = buf.toString();
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("trim".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("trim".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -258,7 +265,7 @@ public class SQLEvalVisitorUtils {
             String result = strValue.trim();
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("length".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("length".equals(methodName) || "len".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -276,7 +283,7 @@ public class SQLEvalVisitorUtils {
             int result = strValue.length();
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("ucase".equalsIgnoreCase(x.getMethodName()) || "upper".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("ucase".equals(methodName) || "upper".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -294,7 +301,7 @@ public class SQLEvalVisitorUtils {
             String result = strValue.toUpperCase();
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("lcase".equalsIgnoreCase(x.getMethodName()) || "lower".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("lcase".equals(methodName) || "lower".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -313,7 +320,7 @@ public class SQLEvalVisitorUtils {
 
             x.putAttribute(EVAL_VALUE, result);
 
-        } else if ("mod".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("mod".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -335,7 +342,7 @@ public class SQLEvalVisitorUtils {
             int result = intValue0 % intValue1;
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("abs".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("abs".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -358,7 +365,7 @@ public class SQLEvalVisitorUtils {
             }
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("acos".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("acos".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -379,7 +386,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("asin".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("asin".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -400,7 +407,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("atan".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("atan".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -421,7 +428,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("atan2".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("atan2".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -446,7 +453,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("ceil".equalsIgnoreCase(x.getMethodName()) || "ceiling".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("ceil".equals(methodName) || "ceiling".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -467,7 +474,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("cos".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("cos".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -488,7 +495,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("sin".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("sin".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -509,7 +516,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("log".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("log".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -530,7 +537,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("log10".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("log10".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -551,7 +558,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("tan".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("tan".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -572,7 +579,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("sqrt".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("sqrt".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -593,7 +600,7 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("power".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("power".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }
@@ -618,10 +625,18 @@ public class SQLEvalVisitorUtils {
             } else {
                 x.putAttribute(EVAL_VALUE, result);
             }
-        } else if ("pi".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("pi".equals(methodName)) {
             x.putAttribute(EVAL_VALUE, Math.PI);
-        } else if ("rand".equalsIgnoreCase(x.getMethodName())) {
+        } else if ("rand".equals(methodName)) {
             x.putAttribute(EVAL_VALUE, Math.random());
+        } else if ("chr".equals(methodName) && x.getParameters().size() == 1) {
+            SQLExpr first = x.getParameters().get(0);
+            Object firstResult = getValue(first);
+            if (firstResult instanceof Number) {
+                int intValue = ((Number) firstResult).intValue();
+                char ch = (char) intValue;
+                x.putAttribute(EVAL_VALUE, Character.toString(ch));
+            }
         }
         return false;
     }
@@ -743,6 +758,11 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
+        if (WallVisitorUtils.isSimpleCountTableSource(((SQLQueryExpr) x).getSubQuery())) {
+            x.putAttribute(EVAL_VALUE, 1);
+            return false;
+        }
+        
         if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
 
@@ -790,15 +810,32 @@ public class SQLEvalVisitorUtils {
         left.accept(visitor);
         right.accept(visitor);
 
+        final WallConditionContext wallConditionContext = WallVisitorUtils.getWallConditionContext();
         if (x.getOperator() == SQLBinaryOperator.BooleanOr) {
-            final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
-            if (wallContext != null) {
+            if (wallConditionContext != null) {
                 if (left.getAttribute(EVAL_VALUE) == Boolean.TRUE || right.getAttribute(EVAL_VALUE) == Boolean.TRUE) {
-                    wallContext.setPartAllowTrue(true);
+                    wallConditionContext.setPartAlwayTrue(true);
                 }
             }
         }
 
+        Object leftValue = left.getAttribute(EVAL_VALUE);
+        Object rightValue = right.getAttributes().get(EVAL_VALUE);
+        
+        if (x.getOperator() == SQLBinaryOperator.Like) {
+            if (isAlwayTrueLikePattern(x.getRight())) {
+                x.putAttribute(EVAL_VALUE, Boolean.TRUE);
+                return false;
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.NotLike) {
+            if (isAlwayTrueLikePattern(x)) {
+                x.putAttribute(EVAL_VALUE, Boolean.FALSE);
+                return false;
+            }
+        }
+        
         if (!left.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
@@ -807,52 +844,70 @@ public class SQLEvalVisitorUtils {
             return false;
         }
 
+        if (wallConditionContext != null) {
+            switch (x.getOperator()) {
+                case Add:
+                case Subtract:
+                case Multiply:
+                case Divide:
+                case Modulus:
+                    wallConditionContext.setConstArithmetic(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
         Object value = null;
         switch (x.getOperator()) {
             case Add:
-                value = add(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = add(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Subtract:
-                value = sub(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = sub(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Multiply:
-                value = multi(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = multi(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Divide:
-                value = div(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = div(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThan:
-                value = gt(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = gt(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case GreaterThanOrEqual:
-                value = gteq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = gteq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThan:
-                value = lt(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = lt(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case LessThanOrEqual:
-                value = lteq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = lteq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case Is:
             case Equality:
-                value = eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = eq(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case NotEqual:
+                value = !eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case IsNot:
-                value = !eq(left.getAttribute(EVAL_VALUE), right.getAttributes().get(EVAL_VALUE));
+                value = !eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case RegExp:
             case RLike: {
-                String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
+                String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
@@ -860,30 +915,51 @@ public class SQLEvalVisitorUtils {
                 break;
             case NotRegExp:
             case NotRLike: {
-                String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
+                String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = !Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
             }
                 break;
             case Like: {
-                String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
+                String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = like(input, pattern);
                 x.putAttribute(EVAL_VALUE, matchResult);
             }
                 break;
             case NotLike: {
-                String pattern = castToString(right.getAttributes().get(EVAL_VALUE));
+                String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = !like(input, pattern);
                 x.putAttribute(EVAL_VALUE, matchResult);
             }
                 break;
+            case Concat: {
+                String result = leftValue.toString() + rightValue.toString();
+                x.putAttribute(EVAL_VALUE, result);
+                break;
+            }
             default:
                 break;
         }
 
+        return false;
+    }
+
+    private static boolean isAlwayTrueLikePattern(SQLExpr x) {
+        if (x instanceof SQLCharExpr) {
+            String text = ((SQLCharExpr) x).getText();
+
+            if (text.length() >= 0) {
+                for (char ch : text.toCharArray()) {
+                    if (ch != '%') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1533,5 +1609,6 @@ public class SQLEvalVisitorUtils {
         String regexpr = regexprBuilder.toString();
         return Pattern.matches(regexpr, input);
     }
+    
 
 }

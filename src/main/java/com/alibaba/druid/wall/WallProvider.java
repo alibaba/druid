@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.LRUCache;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
@@ -54,8 +55,15 @@ public abstract class WallProvider {
 
     public final WallDenyStat                         commentDeniedStat = new WallDenyStat();
 
+    protected String                                  dbType            = null;
+
     public WallProvider(WallConfig config){
         this.config = config;
+    }
+
+    public WallProvider(WallConfig config, String dbType){
+        this.config = config;
+        this.dbType = dbType;
     }
 
     public WallConfig getConfig() {
@@ -128,8 +136,17 @@ public abstract class WallProvider {
     public abstract ExportParameterVisitor createExportParameterVisitor();
 
     public boolean checkValid(String sql) {
-        WallCheckResult result = check(sql);
-        return result.getViolations().isEmpty();
+        WallContext originalContext = WallContext.current();
+
+        try {
+            WallContext.createIfNotExists(dbType);
+            WallCheckResult result = check(sql);
+            return result.getViolations().isEmpty();
+        } finally {
+            if (originalContext == null) {
+                WallContext.clearContext();
+            }
+        }
     }
 
     public void incrementCommentDeniedCount() {
@@ -259,6 +276,11 @@ public abstract class WallProvider {
         } catch (NotAllowCommentException e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
             incrementCommentDeniedCount();
+            return result;
+        } catch (ParserException e) {
+            if (config.isStrictSyntaxCheck()) {
+                result.getViolations().add(new SyntaxErrorViolation(e, sql));
+            }
             return result;
         } catch (Exception e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
