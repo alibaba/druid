@@ -22,6 +22,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerTop;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.expr.SQLServerObjectReferenceExpr;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
+import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
 public class SQLServerExprParser extends SQLExprParser {
@@ -46,6 +47,10 @@ public class SQLServerExprParser extends SQLExprParser {
         }
         
         return super.primary();
+    }
+    
+    public SQLServerSelectParser createSelectParser() {
+        return new SQLServerSelectParser(this);
     }
 
     public SQLExpr primaryRest(SQLExpr expr) {
