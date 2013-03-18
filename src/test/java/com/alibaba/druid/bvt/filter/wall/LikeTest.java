@@ -19,24 +19,16 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
-/**
- * SQLServerWallTest
- * 
- * @author RaymondXiu
- * @version 1.0, 2012-3-18
- * @see
- */
-public class MySqlWallTest2 extends TestCase {
+public class LikeTest extends TestCase {
 
-    public void test_stuff() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select * from person_qingjia " + //
-                "where isxiao=1  " + //
-                "and ((starttime between 2013-01-15 and 2013-01-15)" + //
-                "        or (endtime between 2013-01- 15 and 2013-01-15)" + //
-                ") " + //
-                "order by xiaojiatime desc"));
+    public void test_isTrue() throws Exception {
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%'")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("f1 like '%%'")));
+        Assert.assertEquals(null, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 AND f1 like '%%'")));
+        Assert.assertEquals(Boolean.TRUE, WallVisitorUtils.getValue(SQLUtils.toSQLExpr("a1 = b1 OR f1 like '%%'")));
+
     }
 }

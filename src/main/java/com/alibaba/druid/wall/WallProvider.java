@@ -60,7 +60,7 @@ public abstract class WallProvider {
     public WallProvider(WallConfig config){
         this.config = config;
     }
-    
+
     public WallProvider(WallConfig config, String dbType){
         this.config = config;
         this.dbType = dbType;
@@ -136,9 +136,17 @@ public abstract class WallProvider {
     public abstract ExportParameterVisitor createExportParameterVisitor();
 
     public boolean checkValid(String sql) {
-        WallContext.createIfNotExists(dbType);
-        WallCheckResult result = check(sql);
-        return result.getViolations().isEmpty();
+        WallContext originalContext = WallContext.current();
+
+        try {
+            WallContext.createIfNotExists(dbType);
+            WallCheckResult result = check(sql);
+            return result.getViolations().isEmpty();
+        } finally {
+            if (originalContext == null) {
+                WallContext.clearContext();
+            }
+        }
     }
 
     public void incrementCommentDeniedCount() {

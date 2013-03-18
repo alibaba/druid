@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
+import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
@@ -113,10 +114,14 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGEvalVisitor();
         }
+        
+        if (JdbcUtils.SQL_SERVER.equals(dbType)) {
+            return new SQLServerEvalVisitor();
+        }
 
         return new SQLEvalVisitorImpl();
     }
-
+    
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         String methodName = x.getMethodName().toLowerCase();
         
@@ -260,7 +265,7 @@ public class SQLEvalVisitorUtils {
             String result = strValue.trim();
 
             x.putAttribute(EVAL_VALUE, result);
-        } else if ("length".equals(methodName)) {
+        } else if ("length".equals(methodName) || "len".equals(methodName)) {
             if (x.getParameters().size() != 1) {
                 return false;
             }
@@ -753,6 +758,11 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
+        if (WallVisitorUtils.isSimpleCountTableSource(((SQLQueryExpr) x).getSubQuery())) {
+            x.putAttribute(EVAL_VALUE, 1);
+            return false;
+        }
+        
         if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
 
@@ -809,6 +819,23 @@ public class SQLEvalVisitorUtils {
             }
         }
 
+        Object leftValue = left.getAttribute(EVAL_VALUE);
+        Object rightValue = right.getAttributes().get(EVAL_VALUE);
+        
+        if (x.getOperator() == SQLBinaryOperator.Like) {
+            if (isAlwayTrueLikePattern(x.getRight())) {
+                x.putAttribute(EVAL_VALUE, Boolean.TRUE);
+                return false;
+            }
+        }
+        
+        if (x.getOperator() == SQLBinaryOperator.NotLike) {
+            if (isAlwayTrueLikePattern(x)) {
+                x.putAttribute(EVAL_VALUE, Boolean.FALSE);
+                return false;
+            }
+        }
+        
         if (!left.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
@@ -832,8 +859,6 @@ public class SQLEvalVisitorUtils {
         }
 
         Object value = null;
-        Object leftValue = left.getAttribute(EVAL_VALUE);
-        Object rightValue = right.getAttributes().get(EVAL_VALUE);
         switch (x.getOperator()) {
             case Add:
                 value = add(leftValue, rightValue);
@@ -870,6 +895,10 @@ public class SQLEvalVisitorUtils {
             case Is:
             case Equality:
                 value = eq(leftValue, rightValue);
+                x.putAttribute(EVAL_VALUE, value);
+                break;
+            case NotEqual:
+                value = !eq(leftValue, rightValue);
                 x.putAttribute(EVAL_VALUE, value);
                 break;
             case IsNot:
@@ -915,6 +944,22 @@ public class SQLEvalVisitorUtils {
                 break;
         }
 
+        return false;
+    }
+
+    private static boolean isAlwayTrueLikePattern(SQLExpr x) {
+        if (x instanceof SQLCharExpr) {
+            String text = ((SQLCharExpr) x).getText();
+
+            if (text.length() >= 0) {
+                for (char ch : text.toCharArray()) {
+                    if (ch != '%') {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
         return false;
     }
 
@@ -1564,5 +1609,6 @@ public class SQLEvalVisitorUtils {
         String regexpr = regexprBuilder.toString();
         return Pattern.matches(regexpr, input);
     }
+    
 
 }
