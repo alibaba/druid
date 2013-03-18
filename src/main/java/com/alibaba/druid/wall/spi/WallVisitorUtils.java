@@ -88,7 +88,7 @@ public class WallVisitorUtils {
             && x.getParent() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getParent();
             SQLTableSource from = queryBlock.getFrom();
-            
+
             if (from instanceof SQLExprTableSource) {
                 addViolation(visitor, x);
             }
@@ -131,7 +131,7 @@ public class WallVisitorUtils {
             x.getWhere().setParent(x);
             checkCondition(visitor, x.getWhere());
 
-            if (Boolean.TRUE == getValue(where)) {
+            if (Boolean.TRUE == getConditionValue(visitor, where)) {
                 boolean isSimpleConstExpr = false;
                 if (where instanceof SQLBinaryOpExpr) {
                     SQLBinaryOpExpr binaryOpExpr = (SQLBinaryOpExpr) where;
@@ -162,7 +162,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (Boolean.TRUE == getValue(x)) {
+        if (Boolean.TRUE == getConditionValue(visitor, x)) {
             addViolation(visitor, x);
         }
     }
@@ -179,7 +179,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+        if (x.getWhere() == null || Boolean.TRUE == getConditionValue(visitor, x.getWhere())) {
             addViolation(visitor, x);
             return;
         }
@@ -374,7 +374,7 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null || Boolean.TRUE == getValue(x.getWhere())) {
+        if (x.getWhere() == null || Boolean.TRUE == getConditionValue(visitor, x.getWhere())) {
             addViolation(visitor, x);
             return;
         }
@@ -434,6 +434,10 @@ public class WallVisitorUtils {
             for (int i = groupList.size() - 1; i >= 0; --i) {
                 Object result = getValue(groupList.get(i));
                 if (Boolean.TRUE == result) {
+                    final WallConditionContext wallContext = WallVisitorUtils.getWallConditionContext();
+                    if (wallContext != null) {
+                        wallContext.setPartAllowTrue(true);
+                    }
                     return true;
                 }
 
@@ -586,6 +590,42 @@ public class WallVisitorUtils {
         }
 
         return a.longValue() + b.longValue();
+    }
+
+    public static class WallConditionContext {
+
+        private boolean partAllowTrue;
+
+        public boolean isPartAllowTrue() {
+            return partAllowTrue;
+        }
+
+        public void setPartAllowTrue(boolean partAllowTrue) {
+            this.partAllowTrue = partAllowTrue;
+        }
+    }
+
+    private static ThreadLocal<WallConditionContext> wallConditionContextLocal = new ThreadLocal<WallConditionContext>();
+    
+    public static WallConditionContext getWallConditionContext() {
+        return wallConditionContextLocal.get();
+    }
+
+    public static Object getConditionValue(WallVisitor visitor, SQLExpr x) {
+        final WallConditionContext old = wallConditionContextLocal.get();
+        try {
+            wallConditionContextLocal.set(new WallConditionContext());
+            final Object value = getValue(x);
+            
+            final WallConditionContext current = wallConditionContextLocal.get();
+            if (current.isPartAllowTrue() && visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
+                addViolation(visitor, x);
+            }
+            
+            return value;
+        } finally {
+            wallConditionContextLocal.set(old);
+        }
     }
 
     public static Object getValue(SQLExpr x) {
