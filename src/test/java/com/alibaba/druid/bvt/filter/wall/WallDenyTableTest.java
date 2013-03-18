@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.wall;
+package com.alibaba.druid.bvt.filter.wall;
 
-import java.util.List;
+import junit.framework.TestCase;
 
-import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.visitor.SQLASTVisitor;
+import org.junit.Assert;
 
-public interface WallVisitor extends SQLASTVisitor {
+import com.alibaba.druid.wall.spi.OracleWallProvider;
 
-    WallConfig getConfig();
-    
-    WallProvider getProvider();
+/**
+ * @author wenshao
+ *
+ */
+public class WallDenyTableTest extends TestCase {
 
-    List<Violation> getViolations();
-    
-    void addViolation(Violation violation);
-    
-    boolean isDenyTable(String name);
-
-    String toSQL(SQLObject obj);
+    public void testORACLE() throws Exception {
+        String sql = "SELECT F1, F2 FROM SYS.ABC";
+                
+        OracleWallProvider provider = new OracleWallProvider();
+        Assert.assertFalse(provider.checkValid(sql));
+        
+        Assert.assertEquals(1, provider.getDenniedSchemaStat("SYS").getDenyCount());
+    }
 }
