@@ -458,6 +458,13 @@ public class WallVisitorUtils {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
                 return false;
             }
+            
+            if (leftResult == Boolean.TRUE || rightResult == Boolean.TRUE) {
+                final WallConditionContext current = wallConditionContextLocal.get();
+                if (current != null) {
+                    current.setPartAllowTrue(true);
+                }
+            }
 
             if (Boolean.TRUE == leftResult && Boolean.TRUE == rightResult) {
                 return true;
