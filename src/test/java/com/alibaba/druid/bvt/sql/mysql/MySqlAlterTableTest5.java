@@ -42,12 +42,12 @@ public class MySqlAlterTableTest5 extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE test" + //
-                            "\n\tADD COLUMN dspcode char(200)", output);
-        
+        Assert.assertEquals("ALTER TABLE table_name" + //
+                            "\n\tALTER COLUMN column_name char(50)", output);
+
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "dspcode")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("table_name", "column_name")));
     }
 
 }

@@ -30,6 +30,7 @@ import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -2213,7 +2214,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                         stmt.getItems().add(item);
                     }
                 } else if (lexer.token() == Token.ALTER) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    if (identifierEquals("COLUMN")) {
+                        lexer.nextToken();
+                    }
+                    
+                    SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
+                    SQLColumnDefinition columnDef = this.exprParser.parseColumn();
+                    alterColumn.setColumn(columnDef);
+                    
+                    stmt.getItems().add(alterColumn);
                 } else if (identifierEquals("CHANGE")) {
                     lexer.nextToken();
                     if (identifierEquals("COLUMN")) {

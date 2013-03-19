@@ -67,6 +67,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
@@ -1351,6 +1352,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         println();
         print(")");
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAlterColumn x) {
+        print("ALTER COLUMN ");
+        x.getColumn().accept(this);
         return false;
     }
 }
