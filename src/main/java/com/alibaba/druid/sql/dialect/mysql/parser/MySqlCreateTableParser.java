@@ -164,6 +164,26 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 }
             }
+            
+            if (lexer.token() == Token.DEFAULT) {
+                lexer.nextToken();
+                if (identifierEquals("CHARACTER")) {
+                    lexer.nextToken();
+                    accept(Token.SET);
+                    if (lexer.token() == Token.EQ) {
+                        lexer.nextToken();
+                    }
+                    stmt.getTableOptions().put("CHARACTER SET", lexer.stringVal());
+                    lexer.nextToken();
+                } else if (identifierEquals("CHARSET")) {
+                    lexer.nextToken();
+                    if (lexer.token() == Token.EQ) {
+                        lexer.nextToken();
+                    }
+                    stmt.getTableOptions().put("CHARACTER SET", lexer.stringVal());
+                    lexer.nextToken();
+                }
+            }
 
             break;
         }

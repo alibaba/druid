@@ -17,10 +17,20 @@ package com.alibaba.druid.wall;
 
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallUtils {
+    public static boolean isValidatePostgres(String sql) {
+        PGWallProvider provider = new PGWallProvider();
+        return provider.checkValid(sql);
+    }
 
+    public static boolean isValidatePostgres(String sql, WallConfig config) {
+        PGWallProvider provider = new PGWallProvider(config);
+        return provider.checkValid(sql);
+    }
+    
     public static boolean isValidateMySql(String sql) {
         MySqlWallProvider provider = new MySqlWallProvider();
         return provider.checkValid(sql);
