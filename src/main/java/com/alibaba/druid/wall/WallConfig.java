@@ -45,7 +45,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
     private boolean             minusAllow                 = false;
-    private boolean             intersectAllow                  = false;
+    private boolean             intersectAllow             = false;
 
     private boolean             multiStatementAllow        = false;
 
@@ -73,6 +73,10 @@ public class WallConfig implements WallConfigMBean {
     protected final Set<String> denyVariants               = new ConcurrentSkipListSet<String>();
     protected final Set<String> denyObjects                = new ConcurrentSkipListSet<String>();
 
+    protected final Set<String> permitFunctions            = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitTables               = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitSchemas              = new ConcurrentSkipListSet<String>();
+
     protected final Set<String> readOnlyTables             = new ConcurrentSkipListSet<String>();
 
     private String              dir;
@@ -91,11 +95,11 @@ public class WallConfig implements WallConfigMBean {
     public WallConfig(){
 
     }
-    
+
     public boolean isIntersectAllow() {
         return intersectAllow;
     }
-    
+
     public void setIntersectAllow(boolean intersectAllow) {
         this.intersectAllow = intersectAllow;
     }
@@ -204,6 +208,10 @@ public class WallConfig implements WallConfigMBean {
         loadResource(this.denyTables, dir + "/deny-table.txt");
         loadResource(this.denyObjects, dir + "/deny-object.txt");
         loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
+
+        loadResource(this.permitFunctions, dir + "/permit-function.txt");
+        loadResource(this.permitTables, dir + "/permit-table.txt");
+        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
     }
 
     public boolean isNoneBaseStatementAllow() {
@@ -442,6 +450,18 @@ public class WallConfig implements WallConfigMBean {
 
     public boolean isReadOnly(String tableName) {
         return this.readOnlyTables.contains(tableName);
+    }
+
+    public Set<String> getPermitFunctions() {
+        return permitFunctions;
+    }
+
+    public Set<String> getPermitTables() {
+        return permitTables;
+    }
+
+    public Set<String> getPermitSchemas() {
+        return permitSchemas;
     }
 
     public boolean isMustParameterized() {
