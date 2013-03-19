@@ -2212,7 +2212,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         }
                         stmt.getItems().add(item);
                     }
-                } else if (identifierEquals("ALTER")) {
+                } else if (lexer.token() == Token.ALTER) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("CHANGE")) {
                     lexer.nextToken();

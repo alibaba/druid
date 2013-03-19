@@ -19,6 +19,8 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -245,8 +247,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlKey x) {
-
-        return true;
+        return false;
     }
 
     @Override
@@ -1012,6 +1013,17 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableStatement x) {
+        String tableName = x.getName().toString();
+        TableStat stat = getTableStat(tableName);
+        stat.incrementAlterCount();
+
+        setCurrentTable(x, tableName);
+
+        for (SQLAlterTableItem item : x.getItems()) {
+            item.setParent(x);
+            item.accept(this);
+        }
+
         return false;
     }
 
@@ -1022,7 +1034,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableAddColumn x) {
-        return false;
+        return visit((SQLAlterTableAddColumn) x);
     }
 
     @Override
@@ -1209,4 +1221,5 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlAlterTableAddUnique x) {
         
     }
+    
 }

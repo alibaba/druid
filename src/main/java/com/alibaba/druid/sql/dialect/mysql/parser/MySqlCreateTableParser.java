@@ -180,7 +180,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     if (lexer.token() == Token.EQ) {
                         lexer.nextToken();
                     }
-                    stmt.getTableOptions().put("CHARACTER SET", lexer.stringVal());
+                    stmt.getTableOptions().put("CHARSET", lexer.stringVal());
                     lexer.nextToken();
                 }
             }

@@ -47,7 +47,7 @@ public class MySqlCreateTableTest5 extends MysqlTest {
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
         
-        Assert.assertEquals("utf8", stmt.getTableOptions().get("CHARACTER SET"));
+        Assert.assertEquals("utf8", stmt.getTableOptions().get("CHARSET"));
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -55,7 +55,7 @@ public class MySqlCreateTableTest5 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(3, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));

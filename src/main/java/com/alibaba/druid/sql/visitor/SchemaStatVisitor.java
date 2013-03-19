@@ -994,7 +994,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
     }
-
+    
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
