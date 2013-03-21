@@ -40,7 +40,7 @@ public class MySqlAlterTableChangeColumn extends MySqlObjectImpl implements SQLA
         if (visitor.visit(this)) {
             acceptChild(visitor, columnName);
             acceptChild(visitor, newColumnDefinition);
-            
+
             acceptChild(visitor, firstColumn);
             acceptChild(visitor, afterColumn);
         }

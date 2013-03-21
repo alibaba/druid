@@ -307,6 +307,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         if (identifierEquals(USER)) {
             return parseCreateUser();
         }
+        
+        if (lexer.token() == Token.VIEW) {
+            return parseCreateView();
+        }
 
         throw new ParserException("TODO " + lexer.token());
     }

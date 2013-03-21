@@ -509,6 +509,8 @@ public class SQLStatementParser extends SQLParser {
         } else if (identifierEquals("PUBLIC") || identifierEquals("SHARE")) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateDbLink();
+        } else if (token == Token.VIEW) {
+            return parseCreateView();
         }
 
         throw new ParserException("TODO " + lexer.token());
@@ -639,7 +641,9 @@ public class SQLStatementParser extends SQLParser {
     public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement();
 
-        this.accept(Token.CREATE);
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+        }
 
         this.accept(Token.VIEW);
 

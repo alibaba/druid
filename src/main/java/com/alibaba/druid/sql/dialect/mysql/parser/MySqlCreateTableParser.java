@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
@@ -135,6 +136,13 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     accept(Token.RPAREN);
 
                     stmt.getTableElementList().add(fk);
+                } else if (lexer.token() == Token.CHECK) {
+                    lexer.nextToken();
+                    SQLCheck check = new SQLCheck();
+                    accept(Token.LPAREN);
+                    check.setExpr(this.exprParser.expr());
+                    accept(Token.RPAREN);
+                    stmt.getTableElementList().add(check);
                 }
 
                 if (!(lexer.token() == (Token.COMMA))) {

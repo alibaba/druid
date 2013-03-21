@@ -28,7 +28,7 @@ import com.alibaba.druid.stat.TableStat.Column;
 public class MySqlAlterTableTest5 extends TestCase {
 
     public void test_alter_first() throws Exception {
-        String sql = "ALTER TABLE table_name   change COLUMN column_name char(50)";
+        String sql = "ALTER TABLE table_name   change COLUMN column_name column_newname char(50)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -43,7 +43,7 @@ public class MySqlAlterTableTest5 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE table_name" + //
-                            "\n\tCHANGE COLUMN column_name char(50)", output);
+        		"\n\tCHANGE COLUMN column_name column_newname char(50)", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(1, visitor.getColumns().size());

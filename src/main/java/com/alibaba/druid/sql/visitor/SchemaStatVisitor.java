@@ -44,6 +44,7 @@ import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -1014,6 +1015,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLRollbackStatement x) {
+        return false;
+    }
+    
+    public boolean visit(SQLCreateViewStatement x) {
+        x.getSubQuery().accept(this);
         return false;
     }
 }
