@@ -165,7 +165,7 @@ public class Case4 extends TestCase {
         dataSource.setMaxPoolSize(maxPoolSize);
 
         dataSource.setDriverClass(driverClass);
-        dataSource.setJdbcUrl(jdbcUrl);        
+        dataSource.setJdbcUrl(jdbcUrl);
         dataSource.setMaxStatements(maxOpenPreparedStatements);
 
         dataSource.setUser(user);

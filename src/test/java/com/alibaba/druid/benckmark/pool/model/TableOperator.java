@@ -8,19 +8,21 @@ import java.sql.Statement;
 import javax.sql.DataSource;
 
 public class TableOperator {
+
     private DataSource dataSource;
+
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    private static final int COUNT = 2;    
+    private static final int COUNT = 2;
 
-    public TableOperator() {
-        
+    public TableOperator(){
+
     }
 
     public void insert() throws Exception {
-        
+
         StringBuffer ddl = new StringBuffer();
         ddl.append("INSERT INTO t_big (");
         for (int i = 0; i < COUNT; ++i) {
@@ -40,19 +42,18 @@ public class TableOperator {
 
         Connection conn = dataSource.getConnection();
 
-//        System.out.println(ddl.toString());
+        // System.out.println(ddl.toString());
         try {
             PreparedStatement stmt = conn.prepareStatement(ddl.toString());
-    
+
             for (int i = 0; i < COUNT; ++i) {
                 stmt.setInt(i + 1, i);
             }
-        
+
             stmt.execute();
             stmt.close();
         } finally {
-            
-    
+
             conn.close();
         }
     }
@@ -89,7 +90,6 @@ public class TableOperator {
         } finally {
             conn.close();
         }
-        
+
     }
 }
-
