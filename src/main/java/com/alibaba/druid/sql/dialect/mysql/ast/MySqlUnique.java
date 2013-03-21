@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.ast.statement;
+package com.alibaba.druid.sql.dialect.mysql.ast;
 
-import java.util.List;
+import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-import com.alibaba.druid.sql.ast.SQLName;
+@SuppressWarnings("serial")
+public class MySqlUnique extends MySqlKey implements SQLPrimaryKey {
 
-public interface SQLForeignKeyConstraint extends SQLConstaint, SQLTableElement {
+    public MySqlUnique(){
 
-    List<SQLName> getReferencingColumns();
+    }
 
-    SQLName getReferencedTableName();
-
-    void setReferencedTableName(SQLName value);
-
-    List<SQLName> getReferencedColumns();
+    protected void accept0(MySqlASTVisitor visitor) {
+        if (visitor.visit(this)) {
+            acceptChild(visitor, this.getName());
+            acceptChild(visitor, this.getColumns());
+        }
+        visitor.endVisit(this);
+    }
 }

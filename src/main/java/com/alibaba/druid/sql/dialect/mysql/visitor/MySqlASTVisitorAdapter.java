@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -1136,6 +1138,26 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
 
     @Override
     public void endVisit(MySqlAlterTableAddUnique x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlUnique x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlUnique x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForeignKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlForeignKey x) {
         
     }
 }
