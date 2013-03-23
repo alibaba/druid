@@ -129,6 +129,11 @@ public class SQLServerExprParser extends SQLExprParser {
                 accept(Token.RPAREN);
             }
             
+            if (lexer.token() == Token.PERCENT) {
+                lexer.nextToken();
+                top.setPercent(true);
+            }
+            
             return top;
         }
         

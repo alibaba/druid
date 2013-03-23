@@ -21,23 +21,20 @@ import junit.framework.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropViewStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlCreateTableTest9 extends MysqlTest {
+public class MySqlDropViewTest extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE VIEW v AS\n" + //
-                     "SELECT ProductID,ProductName\n" + //
-                     "FROM Products\n" + //
-                     "WHERE Discontinued=No";
+        String sql = "DROP VIEW view_name";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        SQLCreateViewStatement stmt = (SQLCreateViewStatement) statementList.get(0);
+        MySqlDropViewStatement stmt = (MySqlDropViewStatement) statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
@@ -51,14 +48,10 @@ public class MySqlCreateTableTest9 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("Products")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("view_name")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "ProductID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "ProductName")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "Discontinued")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "No")));
     }
 }

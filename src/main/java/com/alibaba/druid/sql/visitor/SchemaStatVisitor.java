@@ -808,6 +808,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 case Merge:
                     stat.incrementMergeCount();
                     break;
+                case Drop:
+                    stat.incrementDropCount();
+                    break;
                 default:
                     break;
             }

@@ -644,6 +644,12 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.CREATE) {
             lexer.nextToken();
         }
+        
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            acceptIdentifier("REPLACE");
+            createView.setOrReplace(true);
+        }
 
         this.accept(Token.VIEW);
 

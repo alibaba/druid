@@ -96,6 +96,10 @@ public class SQLServerOutputVisitor extends SQLASTOutputVisitor implements SQLSe
             print(")");
         }
         
+        if (x.isPercent()) {
+            print(" PERCENT");
+        }
+        
         return false;
     }
 

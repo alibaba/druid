@@ -27,13 +27,13 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlCreateTableTest9 extends MysqlTest {
+public class MySqlCreateViewTest extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE VIEW v AS\n" + //
-                     "SELECT ProductID,ProductName\n" + //
-                     "FROM Products\n" + //
-                     "WHERE Discontinued=No";
+        String sql = "CREATE OR REPLACE VIEW view_name AS\n" + //
+                     "SELECT fname\n" + //
+                     "FROM table_name\n" + //
+                     "WHERE fid = ?";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -51,14 +51,12 @@ public class MySqlCreateTableTest9 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(4, visitor.getColumns().size());
-        Assert.assertEquals(2, visitor.getConditions().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("Products")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("table_name")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "ProductID")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "ProductName")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "Discontinued")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("Products", "No")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("table_name", "fid")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("table_name", "fname")));
     }
 }

@@ -284,11 +284,24 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseCreate() {
+        char markChar = lexer.current();
+        int markBp = lexer.bp();
+
         accept(Token.CREATE);
+
+        boolean replace = false;
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            acceptIdentifier("REPLACE");
+            replace = true;
+        }
 
         List<SQLCommentHint> hints = this.exprParser.parseHints();
 
         if (lexer.token() == Token.TABLE || identifierEquals(TEMPORARY)) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
             MySqlCreateTableParser parser = new MySqlCreateTableParser(this.exprParser);
             MySqlCreateTableStatement stmt = parser.parseCrateTable(false);
             stmt.setHints(hints);
@@ -296,19 +309,32 @@ public class MySqlStatementParser extends SQLStatementParser {
         }
 
         if (lexer.token() == Token.DATABASE) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
             return parseCreateDatabase();
         }
 
         if (lexer.token() == Token.UNIQUE || lexer.token() == Token.INDEX || identifierEquals(FULLTEXT)
             || identifierEquals(SPATIAL)) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
             return parseCreateIndex();
         }
 
         if (identifierEquals(USER)) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
             return parseCreateUser();
         }
-        
+
         if (lexer.token() == Token.VIEW) {
+            if (replace) {
+                lexer.reset(markBp, markChar, Token.CREATE);
+            }
+
             return parseCreateView();
         }
 
@@ -1494,7 +1520,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.VALUES || identifierEquals("VALUE")) {
             lexer.nextToken();
-            
+
             parseValueClause(stmt.getValuesList(), 0);
         } else if (lexer.token() == Token.SELECT) {
             SQLQueryExpr queryExpr = (SQLQueryExpr) this.exprParser.expr();
@@ -1871,7 +1897,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         }
                     }
                 }
-                
+
                 SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause(valueExprList);
                 valueClauseList.add(values);
             } else {
@@ -2222,11 +2248,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     if (identifierEquals("COLUMN")) {
                         lexer.nextToken();
                     }
-                    
+
                     SQLAlterTableAlterColumn alterColumn = new SQLAlterTableAlterColumn();
                     SQLColumnDefinition columnDef = this.exprParser.parseColumn();
                     alterColumn.setColumn(columnDef);
-                    
+
                     stmt.getItems().add(alterColumn);
                 } else if (identifierEquals("CHANGE")) {
                     lexer.nextToken();

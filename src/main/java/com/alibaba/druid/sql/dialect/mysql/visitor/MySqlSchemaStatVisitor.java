@@ -1078,6 +1078,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDropViewStatement x) {
+        setMode(x, Mode.Drop);
         return true;
     }
 
