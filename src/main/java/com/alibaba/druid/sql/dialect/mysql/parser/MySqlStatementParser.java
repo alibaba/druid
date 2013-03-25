@@ -31,8 +31,12 @@ import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
@@ -2284,6 +2288,18 @@ public class MySqlStatementParser extends SQLStatementParser {
                         SQLAlterTableDropIndex item = new SQLAlterTableDropIndex();
                         item.setIndexName(indexName);
                         stmt.getItems().add(item);
+                    } else if (lexer.token() == Token.FOREIGN) {
+                        lexer.nextToken();
+                        accept(Token.KEY);
+                        SQLName indexName = this.exprParser.name();
+                        SQLAlterTableDropForeinKey item = new SQLAlterTableDropForeinKey();
+                        item.setIndexName(indexName);
+                        stmt.getItems().add(item);
+                    } else if (lexer.token() == Token.PRIMARY) {
+                        lexer.nextToken();
+                        accept(Token.KEY);
+                        SQLAlterTableDropPrimaryKey item = new SQLAlterTableDropPrimaryKey();
+                        stmt.getItems().add(item);
                     } else {
                         if (identifierEquals("COLUMN")) {
                             lexer.nextToken();
@@ -2293,9 +2309,15 @@ public class MySqlStatementParser extends SQLStatementParser {
                         stmt.getItems().add(item);
                     }
                 } else if (identifierEquals("DISABLE")) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    acceptIdentifier("KEYS");
+                    SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
+                    stmt.getItems().add(item);
                 } else if (identifierEquals("ENABLE")) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    acceptIdentifier("KEYS");
+                    SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
+                    stmt.getItems().add(item);
                 } else if (identifierEquals("RENAME")) {
                     lexer.nextToken();
                     MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();

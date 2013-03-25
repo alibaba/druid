@@ -68,8 +68,12 @@ import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
@@ -1373,6 +1377,31 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         print("CHECK (");
         x.getExpr().accept(this);
         print(')');
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropForeinKey x) {
+        print("DROP FOREIGN KEY ");
+        x.getIndexName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        print("DROP PRIMARY KEY");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableEnableKeys x) {
+        print("ENABLE KEYS");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDisableKeys x) {
+        print("DISABLE KEYS");
         return false;
     }
 }
