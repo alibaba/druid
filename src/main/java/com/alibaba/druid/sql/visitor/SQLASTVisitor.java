@@ -55,11 +55,17 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
@@ -251,7 +257,7 @@ public interface SQLASTVisitor {
     boolean visit(SQLDataType x);
 
     void endVisit(SQLDataType x);
-    
+
     boolean visit(SQLCharactorDataType x);
 
     void endVisit(SQLCharactorDataType x);
@@ -363,13 +369,13 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableDropColumnItem x);
 
     void endVisit(SQLAlterTableDropColumnItem x);
-    
+
     boolean visit(SQLAlterTableDropIndex x);
-    
+
     void endVisit(SQLAlterTableDropIndex x);
-    
+
     boolean visit(SQLAlterTableAddPrimaryKey x);
-    
+
     void endVisit(SQLAlterTableAddPrimaryKey x);
 
     boolean visit(SQLDropIndexStatement x);
@@ -399,24 +405,48 @@ public interface SQLASTVisitor {
     void endVisit(SQLCreateDatabaseStatement x);
 
     boolean visit(SQLCreateDatabaseStatement x);
-    
+
     void endVisit(SQLOver x);
-    
+
     boolean visit(SQLOver x);
-    
+
     void endVisit(SQLColumnPrimaryKey x);
-    
+
     boolean visit(SQLColumnPrimaryKey x);
-    
+
     void endVisit(SQLColumnUniqueIndex x);
-    
+
     boolean visit(SQLColumnUniqueIndex x);
-    
+
     void endVisit(SQLWithSubqueryClause x);
-    
+
     boolean visit(SQLWithSubqueryClause x);
-    
+
     void endVisit(SQLWithSubqueryClause.Entry x);
-    
+
     boolean visit(SQLWithSubqueryClause.Entry x);
+
+    void endVisit(SQLAlterTableAlterColumn x);
+
+    boolean visit(SQLAlterTableAlterColumn x);
+    
+    boolean visit(SQLCheck x);
+
+    void endVisit(SQLCheck x);
+    
+    boolean visit(SQLAlterTableDropForeinKey x);
+
+    void endVisit(SQLAlterTableDropForeinKey x);
+    
+    boolean visit(SQLAlterTableDropPrimaryKey x);
+    
+    void endVisit(SQLAlterTableDropPrimaryKey x);
+    
+    boolean visit(SQLAlterTableDisableKeys x);
+    
+    void endVisit(SQLAlterTableDisableKeys x);
+    
+    boolean visit(SQLAlterTableEnableKeys x);
+    
+    void endVisit(SQLAlterTableEnableKeys x);
 }

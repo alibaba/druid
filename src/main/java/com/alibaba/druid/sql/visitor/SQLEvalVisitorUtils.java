@@ -43,6 +43,8 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
@@ -114,17 +116,17 @@ public class SQLEvalVisitorUtils {
         if (JdbcUtils.POSTGRESQL.equals(dbType)) {
             return new PGEvalVisitor();
         }
-        
+
         if (JdbcUtils.SQL_SERVER.equals(dbType)) {
             return new SQLServerEvalVisitor();
         }
 
         return new SQLEvalVisitorImpl();
     }
-    
+
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         String methodName = x.getMethodName().toLowerCase();
-        
+
         if ("concat".equals(methodName)) {
             StringBuilder buf = new StringBuilder();
 
@@ -762,7 +764,7 @@ public class SQLEvalVisitorUtils {
             x.putAttribute(EVAL_VALUE, 1);
             return false;
         }
-        
+
         if (x.getSubQuery().getQuery() instanceof SQLSelectQueryBlock) {
             SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) x.getSubQuery().getQuery();
 
@@ -801,6 +803,15 @@ public class SQLEvalVisitorUtils {
         return false;
     }
 
+    public static boolean visit(SQLEvalVisitor visitor, SQLUnaryExpr x) {
+        final WallConditionContext wallConditionContext = WallVisitorUtils.getWallConditionContext();
+        if (x.getOperator() == SQLUnaryOperator.Compl && wallConditionContext != null) {
+            wallConditionContext.setBitwise(true);
+        }
+
+        return false;
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLBinaryOpExpr x) {
         SQLExpr left = x.getLeft();
         SQLExpr right = x.getRight();
@@ -817,25 +828,36 @@ public class SQLEvalVisitorUtils {
                     wallConditionContext.setPartAlwayTrue(true);
                 }
             }
+        } else if (x.getOperator() == SQLBinaryOperator.BooleanXor) {
+            if (wallConditionContext != null) {
+                wallConditionContext.setXor(true);
+            }
+        } else if (x.getOperator() == SQLBinaryOperator.BitwiseAnd //
+                   || x.getOperator() == SQLBinaryOperator.BitwiseNot //
+                   || x.getOperator() == SQLBinaryOperator.BitwiseOr //
+                   || x.getOperator() == SQLBinaryOperator.BitwiseXor) {
+            if (wallConditionContext != null) {
+                wallConditionContext.setBitwise(true);
+            }
         }
 
         Object leftValue = left.getAttribute(EVAL_VALUE);
         Object rightValue = right.getAttributes().get(EVAL_VALUE);
-        
+
         if (x.getOperator() == SQLBinaryOperator.Like) {
             if (isAlwayTrueLikePattern(x.getRight())) {
                 x.putAttribute(EVAL_VALUE, Boolean.TRUE);
                 return false;
             }
         }
-        
+
         if (x.getOperator() == SQLBinaryOperator.NotLike) {
             if (isAlwayTrueLikePattern(x)) {
                 x.putAttribute(EVAL_VALUE, Boolean.FALSE);
                 return false;
             }
         }
-        
+
         if (!left.getAttributes().containsKey(EVAL_VALUE)) {
             return false;
         }
@@ -845,17 +867,7 @@ public class SQLEvalVisitorUtils {
         }
 
         if (wallConditionContext != null) {
-            switch (x.getOperator()) {
-                case Add:
-                case Subtract:
-                case Multiply:
-                case Divide:
-                case Modulus:
-                    wallConditionContext.setConstArithmetic(true);
-                    break;
-                default:
-                    break;
-            }
+            wallConditionContext.setConstArithmetic(true);
         }
 
         Object value = null;
@@ -911,30 +923,30 @@ public class SQLEvalVisitorUtils {
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
-            }
                 break;
+            }
             case NotRegExp:
             case NotRLike: {
                 String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = !Pattern.matches(pattern, input);
                 x.putAttribute(EVAL_VALUE, matchResult);
-            }
                 break;
+            }
             case Like: {
                 String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = like(input, pattern);
                 x.putAttribute(EVAL_VALUE, matchResult);
-            }
                 break;
+            }
             case NotLike: {
                 String pattern = castToString(rightValue);
                 String input = castToString(left.getAttributes().get(EVAL_VALUE));
                 boolean matchResult = !like(input, pattern);
                 x.putAttribute(EVAL_VALUE, matchResult);
-            }
                 break;
+            }
             case Concat: {
                 String result = leftValue.toString() + rightValue.toString();
                 x.putAttribute(EVAL_VALUE, result);
@@ -1609,6 +1621,5 @@ public class SQLEvalVisitorUtils {
         String regexpr = regexprBuilder.toString();
         return Pattern.matches(regexpr, input);
     }
-    
 
 }

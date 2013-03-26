@@ -55,11 +55,17 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLColumnUniqueIndex;
@@ -763,6 +769,66 @@ public class SQLASTVisitorAdapter implements SQLASTVisitor {
 
     @Override
     public void endVisit(SQLCharactorDataType x) {
+        
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableAlterColumn x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableAlterColumn x) {
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLCheck x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLCheck x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropForeinKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableDropForeinKey x) {
+        
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        return true;
+    }
+    
+    @Override
+    public void endVisit(SQLAlterTableDropPrimaryKey x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDisableKeys x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableDisableKeys x) {
+        
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableEnableKeys x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(SQLAlterTableEnableKeys x) {
         
     }
 }

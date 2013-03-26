@@ -22,7 +22,6 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
- * 这个场景，检测可疑的Having条件
  * @author wenshao
  *
  */

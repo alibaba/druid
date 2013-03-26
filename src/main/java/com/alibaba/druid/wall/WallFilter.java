@@ -37,6 +37,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.MySqlWallProvider;
 import com.alibaba.druid.wall.spi.OracleWallProvider;
+import com.alibaba.druid.wall.spi.PGWallProvider;
 import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
@@ -90,6 +91,12 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             }
 
             provider = new SQLServerWallProvider(config);
+        } else if (JdbcUtils.POSTGRESQL.equals(dbType)) {
+            if (config == null) {
+                config = new WallConfig(PGWallProvider.DEFAULT_CONFIG_DIR);
+            }
+
+            provider = new PGWallProvider(config);
         } else {
             throw new IllegalStateException("dbType not support : " + dbType + ", url " + dataSource.getUrl());
         }

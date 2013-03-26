@@ -19,6 +19,9 @@ import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -27,9 +30,11 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -45,6 +50,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -245,8 +253,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlKey x) {
-
-        return true;
+        return false;
     }
 
     @Override
@@ -1012,6 +1019,17 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableStatement x) {
+        String tableName = x.getName().toString();
+        TableStat stat = getTableStat(tableName);
+        stat.incrementAlterCount();
+
+        setCurrentTable(x, tableName);
+
+        for (SQLAlterTableItem item : x.getItems()) {
+            item.setParent(x);
+            item.accept(this);
+        }
+
         return false;
     }
 
@@ -1022,7 +1040,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableAddColumn x) {
-        return false;
+        return visit((SQLAlterTableAddColumn) x);
     }
 
     @Override
@@ -1062,6 +1080,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlDropViewStatement x) {
+        setMode(x, Mode.Drop);
         return true;
     }
 
@@ -1132,11 +1151,31 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableChangeColumn x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String table = stmt.getName().toString();
+
+        String columnName = x.getColumnName().toString();
+        addColumn(table, columnName);
         return false;
     }
 
     @Override
     public void endVisit(MySqlAlterTableChangeColumn x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterTableModifyColumn x) {
+        SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
+        String table = stmt.getName().toString();
+
+        String columnName = x.getNewColumnDefinition().getName().toString();
+        addColumn(table, columnName);
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableModifyColumn x) {
         
     }
 
@@ -1209,4 +1248,45 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlAlterTableAddUnique x) {
         
     }
+
+    @Override
+    public boolean visit(MySqlUnique x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUnique x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForeignKey x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlForeignKey x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableDiscardTablespace x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableDiscardTablespace x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableImportTablespace x) {
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableImportTablespace x) {
+        
+    }
+    
 }
