@@ -25,10 +25,10 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlAlterTableTest8 extends TestCase {
+public class MySqlAlterTableTest9 extends TestCase {
 
     public void test_alter_first() throws Exception {
-        String sql = "ALTER TABLE t2 AUTO_INCREMENT = 3";
+        String sql = "ALTER TABLE t2 DROP COLUMN c, DROP COLUMN d;";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -43,10 +43,11 @@ public class MySqlAlterTableTest8 extends TestCase {
 
         String output = SQLUtils.toMySqlString(stmt);
         Assert.assertEquals("ALTER TABLE t2" + //
-                            "\n\tAUTO_INCREMENT = 3", output);
+                            "\n\tDROP COLUMN c," + //
+                            "\n\tDROP COLUMN d", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
+        Assert.assertEquals(2, visitor.getColumns().size());
     }
 
 }

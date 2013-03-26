@@ -58,6 +58,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -142,6 +145,7 @@ import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlStatementParser extends SQLStatementParser {
 
+    private static final String AUTO_INCREMENT = "AUTO_INCREMENT";
     private static final String COLLATE2     = "COLLATE";
     private static final String CASCADE      = "CASCADE";
     private static final String RESTRICT     = "RESTRICT";
@@ -2279,7 +2283,24 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                     stmt.getItems().add(item);
                 } else if (identifierEquals("MODIFY")) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    if (identifierEquals("COLUMN")) {
+                        lexer.nextToken();
+                    }
+                    MySqlAlterTableModifyColumn item = new MySqlAlterTableModifyColumn();
+                    item.setNewColumnDefinition(this.exprParser.parseColumn());
+                    if (identifierEquals("AFTER")) {
+                        lexer.nextToken();
+                        item.setAfterColumn(this.exprParser.name());
+                    } else if (identifierEquals("FIRST")) {
+                        lexer.nextToken();
+                        if (lexer.token() == Token.IDENTIFIER) {
+                            item.setFirstColumn(this.exprParser.name());
+                        } else {
+                            item.setFirst(true);
+                        }
+                    }
+                    stmt.getItems().add(item);
                 } else if (lexer.token() == Token.DROP) {
                     lexer.nextToken();
                     if (lexer.token() == Token.INDEX) {
@@ -2334,9 +2355,15 @@ public class MySqlStatementParser extends SQLStatementParser {
                 } else if (lexer.token() == Token.DEFAULT) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("DISCARD")) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    acceptIdentifier("TABLESPACE");
+                    MySqlAlterTableDiscardTablespace item = new MySqlAlterTableDiscardTablespace();
+                    stmt.getItems().add(item);
                 } else if (identifierEquals("IMPORT")) {
-                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                    lexer.nextToken();
+                    acceptIdentifier("TABLESPACE");
+                    MySqlAlterTableImportTablespace item = new MySqlAlterTableImportTablespace();
+                    stmt.getItems().add(item);
                 } else if (identifierEquals("FORCE")) {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 } else if (identifierEquals("TRUNCATE")) {
@@ -2364,6 +2391,11 @@ public class MySqlStatementParser extends SQLStatementParser {
                     lexer.nextToken();
                     accept(Token.EQ);
                     stmt.getItems().add(new MySqlAlterTableOption(ENGINE, lexer.stringVal()));
+                    lexer.nextToken();
+                } else if (identifierEquals(AUTO_INCREMENT)) {
+                    lexer.nextToken();
+                    accept(Token.EQ);
+                    stmt.getItems().add(new MySqlAlterTableOption(AUTO_INCREMENT, lexer.integerValue()));
                     lexer.nextToken();
                 } else if (identifierEquals(COLLATE2)) {
                     lexer.nextToken();

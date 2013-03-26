@@ -15,45 +15,28 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObject;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
+import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTableItem {
+public class MySqlAlterTableDiscardTablespace extends SQLAlterTableAddIndex implements SQLAlterTableItem, MySqlObject {
 
     private static final long serialVersionUID = 1L;
 
-    private String            name;
-    private Object            value;
-
-    public MySqlAlterTableOption(String name, Object value){
-        this.name = name;
-        this.value = value;
-    }
-
-    public MySqlAlterTableOption(){
-    }
-
     @Override
+    protected void accept0(SQLASTVisitor visitor) {
+        if (visitor instanceof MySqlASTVisitor) {
+            accept0((MySqlASTVisitor) visitor);
+        } else {
+            throw new IllegalArgumentException("not support visitor type : " + visitor.getClass().getName());
+        }
+    }
+
     public void accept0(MySqlASTVisitor visitor) {
         visitor.visit(this);
         visitor.endVisit(this);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
 }

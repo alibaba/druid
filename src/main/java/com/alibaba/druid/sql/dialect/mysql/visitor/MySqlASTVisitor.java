@@ -36,6 +36,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -526,4 +529,15 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
 
     void endVisit(MySqlForeignKey x);
 
-}
+    boolean visit(MySqlAlterTableModifyColumn x);
+
+    void endVisit(MySqlAlterTableModifyColumn x);
+
+    boolean visit(MySqlAlterTableDiscardTablespace x);
+
+    void endVisit(MySqlAlterTableDiscardTablespace x);
+
+    boolean visit(MySqlAlterTableImportTablespace x);
+
+    void endVisit(MySqlAlterTableImportTablespace x);
+} // 
