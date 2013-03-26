@@ -38,7 +38,6 @@ public enum SQLBinaryOperator {
 
     BitwiseAnd("&", 90), 
     BitwiseOr("|", 100),
-    InvertBits("~", 100),
     
     GreaterThan(">", 110), 
     GreaterThanOrEqual(">=", 110), 

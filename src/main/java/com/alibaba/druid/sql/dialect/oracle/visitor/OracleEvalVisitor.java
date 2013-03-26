@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
@@ -72,6 +73,10 @@ public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEva
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+    
+    public boolean visit(SQLUnaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 

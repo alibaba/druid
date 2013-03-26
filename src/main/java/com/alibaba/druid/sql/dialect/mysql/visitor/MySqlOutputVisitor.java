@@ -34,9 +34,11 @@ import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -52,6 +54,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -2589,6 +2594,28 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlAlterTableChangeColumn x) {
 
     }
+    
+    @Override
+    public boolean visit(MySqlAlterTableModifyColumn x) {
+        print("MODIFY COLUMN ");
+        x.getNewColumnDefinition().accept(this);
+        if (x.getFirstColumn() != null) {
+            print(" FIRST ");
+            x.getFirstColumn().accept(this);
+        } else if (x.getAfterColumn() != null) {
+            print(" AFTER ");
+            x.getAfterColumn().accept(this);
+        } else if (x.isFirst()) {
+            print(" FIRST");
+        }
+
+        return false;
+    }
+    
+    @Override
+    public void endVisit(MySqlAlterTableModifyColumn x) {
+
+    }
 
     @Override
     public boolean visit(MySqlAlterTableCharacter x) {
@@ -2672,7 +2699,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlAlterTableOption x) {
         print(x.getName());
         print(" = ");
-        print(x.getValue());
+        print(x.getValue().toString());
         return false;
     }
 
@@ -2708,4 +2735,81 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlCharExpr x) {
 
     }
-}
+
+    @Override
+    public boolean visit(MySqlUnique x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
+
+        print("UNIQUE");
+
+        if (x.getIndexType() != null) {
+            print(" USING ");
+            print(x.getIndexType());
+        }
+
+        print(" (");
+        printAndAccept(x.getColumns(), ", ");
+        print(")");
+
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlUnique x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForeignKey x) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlForeignKey x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
+
+        print("FOREIGN KEY ");
+        
+        print(" (");
+        printAndAccept(x.getReferencedColumns(), ", ");
+        print(")");
+        
+        print(" REFERENCES ");
+        x.getReferencedTableName().accept(this);
+        
+        print(" (");
+        printAndAccept(x.getReferencedColumns(), ", ");
+        print(")");
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableDiscardTablespace x) {
+        print("DISCARD TABLESPACE");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableDiscardTablespace x) {
+        
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterTableImportTablespace x) {
+        print("IMPORT TABLESPACE");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableImportTablespace x) {
+        
+    }
+} //

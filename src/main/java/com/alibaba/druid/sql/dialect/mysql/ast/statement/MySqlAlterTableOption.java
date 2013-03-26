@@ -24,9 +24,9 @@ public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTa
     private static final long serialVersionUID = 1L;
 
     private String            name;
-    private String            value;
+    private Object            value;
 
-    public MySqlAlterTableOption(String name, String value){
+    public MySqlAlterTableOption(String name, Object value){
         this.name = name;
         this.value = value;
     }
@@ -48,11 +48,11 @@ public class MySqlAlterTableOption extends MySqlObjectImpl implements SQLAlterTa
         this.name = name;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 

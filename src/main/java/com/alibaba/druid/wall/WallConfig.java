@@ -44,6 +44,8 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
+    private boolean             minusAllow                 = false;
+    private boolean             intersectAllow             = false;
 
     private boolean             multiStatementAllow        = false;
 
@@ -51,7 +53,7 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             commentAllow               = false;
     private boolean             strictSyntaxCheck          = true;
-    private boolean             constArithmeticAllow       = false;
+    private boolean             constArithmeticAllow       = true;
 
     private boolean             describeAllow              = false;
 
@@ -71,6 +73,10 @@ public class WallConfig implements WallConfigMBean {
     protected final Set<String> denyVariants               = new ConcurrentSkipListSet<String>();
     protected final Set<String> denyObjects                = new ConcurrentSkipListSet<String>();
 
+    protected final Set<String> permitFunctions            = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitTables               = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitSchemas              = new ConcurrentSkipListSet<String>();
+
     protected final Set<String> readOnlyTables             = new ConcurrentSkipListSet<String>();
 
     private String              dir;
@@ -83,8 +89,43 @@ public class WallConfig implements WallConfigMBean {
     private boolean             wrapAllow                  = true;
     private boolean             metadataAllow              = true;
 
+    private boolean             conditionOpXorAllow        = false;
+    private boolean             conditionOpBitwseAllow     = false;
+
     public WallConfig(){
 
+    }
+
+    public boolean isIntersectAllow() {
+        return intersectAllow;
+    }
+
+    public void setIntersectAllow(boolean intersectAllow) {
+        this.intersectAllow = intersectAllow;
+    }
+
+    public boolean isMinusAllow() {
+        return minusAllow;
+    }
+
+    public void setMinusAllow(boolean minusAllow) {
+        this.minusAllow = minusAllow;
+    }
+
+    public boolean isConditionOpXorAllow() {
+        return conditionOpXorAllow;
+    }
+
+    public void setConditionOpXorAllow(boolean conditionOpXorAllow) {
+        this.conditionOpXorAllow = conditionOpXorAllow;
+    }
+
+    public boolean isConditionOpBitwseAllow() {
+        return conditionOpBitwseAllow;
+    }
+
+    public void setConditionOpBitwseAllow(boolean conditionOpBitwseAllow) {
+        this.conditionOpBitwseAllow = conditionOpBitwseAllow;
     }
 
     public String getTenantTablePattern() {
@@ -167,6 +208,10 @@ public class WallConfig implements WallConfigMBean {
         loadResource(this.denyTables, dir + "/deny-table.txt");
         loadResource(this.denyObjects, dir + "/deny-object.txt");
         loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
+
+        loadResource(this.permitFunctions, dir + "/permit-function.txt");
+        loadResource(this.permitTables, dir + "/permit-table.txt");
+        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
     }
 
     public boolean isNoneBaseStatementAllow() {
@@ -405,6 +450,18 @@ public class WallConfig implements WallConfigMBean {
 
     public boolean isReadOnly(String tableName) {
         return this.readOnlyTables.contains(tableName);
+    }
+
+    public Set<String> getPermitFunctions() {
+        return permitFunctions;
+    }
+
+    public Set<String> getPermitTables() {
+        return permitTables;
+    }
+
+    public Set<String> getPermitSchemas() {
+        return permitSchemas;
     }
 
     public boolean isMustParameterized() {

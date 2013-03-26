@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -34,6 +36,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -1138,4 +1143,54 @@ public class MySqlASTVisitorAdapter extends SQLASTVisitorAdapter implements
     public void endVisit(MySqlAlterTableAddUnique x) {
         
     }
-}
+
+    @Override
+    public boolean visit(MySqlUnique x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlUnique x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlForeignKey x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlForeignKey x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableModifyColumn x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableModifyColumn x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableDiscardTablespace x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableDiscardTablespace x) {
+        
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableImportTablespace x) {
+        return true;
+    }
+
+    @Override
+    public void endVisit(MySqlAlterTableImportTablespace x) {
+        
+    }
+} //

@@ -39,11 +39,13 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -807,6 +809,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 case Merge:
                     stat.incrementMergeCount();
                     break;
+                case Drop:
+                    stat.incrementDropCount();
+                    break;
                 default:
                     break;
             }
@@ -994,7 +999,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
     }
-
+    
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
@@ -1014,6 +1019,16 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     @Override
     public boolean visit(SQLRollbackStatement x) {
+        return false;
+    }
+    
+    public boolean visit(SQLCreateViewStatement x) {
+        x.getSubQuery().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropForeinKey x) {
         return false;
     }
 }
