@@ -36,6 +36,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
@@ -43,9 +44,12 @@ import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -223,7 +227,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
         return true;
     }
-    
+
     @Override
     public boolean visit(MySqlUnionQuery x) {
         WallVisitorUtils.checkUnion(this, x);
@@ -269,10 +273,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             allow = config.isTruncateAllow();
         } else if (x instanceof MySqlDescribeStatement) {
             allow = config.isDescribeAllow();
+        } else if (x instanceof MySqlReplaceStatement) {
+            allow = config.isReplaceAllow();
+        } else if (x instanceof MySqlSetCharSetStatement //
+                   || x instanceof MySqlSetNamesStatement //
+                   || x instanceof SQLSetStatement) {
+            allow = config.isSetAllow();
         }
 
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation(x.getClass() + " not allow, " + toSQL(x)));
         }
     }
 

@@ -57,7 +57,7 @@ public class MySqlExprParser extends SQLExprParser {
         super(lexer);
     }
 
-    public MySqlExprParser(String sql) {
+    public MySqlExprParser(String sql){
         this(new MySqlLexer(sql));
         this.lexer.nextToken();
     }
@@ -71,7 +71,7 @@ public class MySqlExprParser extends SQLExprParser {
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.RegExp, rightExp);
         }
-        
+
         if (identifierEquals("RLIKE")) {
             lexer.nextToken();
             SQLExpr rightExp = equality();
@@ -106,7 +106,7 @@ public class MySqlExprParser extends SQLExprParser {
 
             return new SQLBinaryOpExpr(expr, SQLBinaryOperator.NotRegExp, rightExp);
         }
-        
+
         if (identifierEquals("RLIKE")) {
             lexer.nextToken();
             SQLExpr rightExp = primary();
@@ -121,14 +121,14 @@ public class MySqlExprParser extends SQLExprParser {
 
     public SQLExpr primary() {
         final Token tok = lexer.token();
-        
+
         if (identifierEquals("outfile")) {
             lexer.nextToken();
             SQLExpr file = primary();
             SQLExpr expr = new MySqlOutFileExpr(file);
-            
+
             return primaryRest(expr);
-            
+
         }
 
         switch (tok) {
@@ -155,7 +155,7 @@ public class MySqlExprParser extends SQLExprParser {
                 } else if (varRefExpr.getName().equals("@@") && lexer.token() == Token.LITERAL_CHARS) {
                     varRefExpr.setName("@@'" + lexer.stringVal() + "'");
                     lexer.nextToken();
-                } 
+                }
                 return primaryRest(varRefExpr);
             case VALUES:
                 lexer.nextToken();
@@ -400,6 +400,10 @@ public class MySqlExprParser extends SQLExprParser {
                         } else {
                             matchAgainstExpr.setSearchModifier(SearchModifier.IN_NATURAL_LANGUAGE_MODE);
                         }
+                    } else if (identifierEquals("BOOLEAN")) {
+                        lexer.nextToken();
+                        acceptIdentifier("MODE");
+                        matchAgainstExpr.setSearchModifier(SearchModifier.IN_BOOLEAN_MODE);
                     } else {
                         throw new ParserException("TODO");
                     }
@@ -437,16 +441,16 @@ public class MySqlExprParser extends SQLExprParser {
                 return primaryRest(expr);
             }
         }
-        
+
         if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
             lexer.nextToken();
             MySqlUserName userName = new MySqlUserName();
             if (expr instanceof SQLCharExpr) {
-                userName.setUserName(((SQLCharExpr)expr).toString());
+                userName.setUserName(((SQLCharExpr) expr).toString());
             } else {
-                userName.setUserName(((SQLIdentifierExpr)expr).getName());
+                userName.setUserName(((SQLIdentifierExpr) expr).getName());
             }
-            
+
             if (lexer.token() == Token.LITERAL_CHARS) {
                 userName.setHost("'" + lexer.stringVal() + "'");
             } else {
@@ -494,7 +498,7 @@ public class MySqlExprParser extends SQLExprParser {
             return intervalExpr;
         }
     }
-    
+
     public SQLColumnDefinition parseColumn() {
         MySqlSQLColumnDefinition column = new MySqlSQLColumnDefinition();
         column.setName(name());
@@ -511,7 +515,7 @@ public class MySqlExprParser extends SQLExprParser {
             }
             return parseColumnRest(column);
         }
-        
+
         if (identifierEquals("PARTITION")) {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
@@ -519,7 +523,7 @@ public class MySqlExprParser extends SQLExprParser {
 
         return column;
     }
-    
+
     public SQLExpr orRest(SQLExpr expr) {
 
         for (;;) {
@@ -540,23 +544,23 @@ public class MySqlExprParser extends SQLExprParser {
 
         return expr;
     }
-    
+
     public SQLAssignItem parseAssignItem() {
         SQLAssignItem item = new SQLAssignItem();
-        
+
         SQLExpr var = primary();
-        
+
         if (var instanceof SQLIdentifierExpr) {
             String ident = ((SQLIdentifierExpr) var).getName();
-            
+
             if ("GLOBAL".equalsIgnoreCase(ident)) {
                 ident = lexer.stringVal();
                 lexer.nextToken();
                 var = new SQLVariantRefExpr(ident, true);
             } else if ("SESSION".equalsIgnoreCase(ident)) {
-                    ident = lexer.stringVal();
-                    lexer.nextToken();
-                    var = new SQLVariantRefExpr(ident, false);
+                ident = lexer.stringVal();
+                lexer.nextToken();
+                var = new SQLVariantRefExpr(ident, false);
             } else {
                 var = new SQLVariantRefExpr(ident);
             }
@@ -567,17 +571,21 @@ public class MySqlExprParser extends SQLExprParser {
         } else {
             accept(Token.EQ);
         }
-        item.setValue(expr());
-
+        if (lexer.token() == Token.BINARY) {
+            lexer.nextToken();
+            item.setValue(new SQLIdentifierExpr("BINARY"));
+        } else {
+            item.setValue(expr());
+        }
         return item;
     }
-    
+
     public SQLName nameRest(SQLName name) {
         if (lexer.token() == Token.VARIANT && "@".equals(lexer.stringVal())) {
             lexer.nextToken();
             MySqlUserName userName = new MySqlUserName();
-            userName.setUserName(((SQLIdentifierExpr)name).getName());
-            
+            userName.setUserName(((SQLIdentifierExpr) name).getName());
+
             if (lexer.token() == Token.LITERAL_CHARS) {
                 userName.setHost("'" + lexer.stringVal() + "'");
             } else {
@@ -588,7 +596,7 @@ public class MySqlExprParser extends SQLExprParser {
         }
         return super.nameRest(name);
     }
-    
+
     public Limit parseLimit() {
         if (lexer.token() == Token.LIMIT) {
             lexer.nextToken();
@@ -639,7 +647,7 @@ public class MySqlExprParser extends SQLExprParser {
 
         return primaryKey;
     }
-    
+
     public MySqlUnique parseUnique() {
         accept(Token.UNIQUE);
 

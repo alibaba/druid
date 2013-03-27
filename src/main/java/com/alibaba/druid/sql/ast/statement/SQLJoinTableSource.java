@@ -15,17 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-    protected SQLTableSource  left;
-    protected JoinType        joinType;
-    protected SQLTableSource  right;
-    protected SQLExpr         condition;
+    protected SQLTableSource      left;
+    protected JoinType            joinType;
+    protected SQLTableSource      right;
+    protected SQLExpr             condition;
+    protected final List<SQLExpr> using            = new ArrayList<SQLExpr>();
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -40,6 +44,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
             acceptChild(visitor, this.left);
             acceptChild(visitor, this.right);
             acceptChild(visitor, this.condition);
+            acceptChild(visitor, this.using);
         }
 
         visitor.endVisit(this);
@@ -77,6 +82,10 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         this.condition = condition;
     }
 
+    public List<SQLExpr> getUsing() {
+        return this.using;
+    }
+
     public void output(StringBuffer buf) {
         this.left.output(buf);
         buf.append(' ');
@@ -91,15 +100,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public static enum JoinType {
-        COMMA(","), // 
+        COMMA(","), //
         JOIN("JOIN"), //
-        INNER_JOIN("INNER JOIN"), // 
-        CROSS_JOIN("CROSS JOIN"), // 
-        NATURAL_JOIN("NATURAL JOIN"), // 
-        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), // 
-        LEFT_OUTER_JOIN("LEFT JOIN"), 
-        RIGHT_OUTER_JOIN("RIGHT JOIN"),
-        FULL_OUTER_JOIN("FULL JOIN"), 
+        INNER_JOIN("INNER JOIN"), //
+        CROSS_JOIN("CROSS JOIN"), //
+        NATURAL_JOIN("NATURAL JOIN"), //
+        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
+        LEFT_OUTER_JOIN("LEFT JOIN"), RIGHT_OUTER_JOIN("RIGHT JOIN"), FULL_OUTER_JOIN("FULL JOIN"),
         STRAIGHT_JOIN("STRAIGHT_JOIN");
 
         public final String name;
@@ -107,6 +114,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         JoinType(String name){
             this.name = name;
         }
+
         public static String toString(JoinType joinType) {
             return joinType.name;
         }

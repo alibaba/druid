@@ -263,15 +263,20 @@ public abstract class WallProvider {
             sqlStat.incrementAndGetExecuteCount();
             return result;
         }
-
-        SQLStatementParser parser = createParser(sql);
-
-        if (!config.isCommentAllow()) {
-            parser.getLexer().setAllowComment(false); // deny comment
-        }
-
+        
         try {
+            SQLStatementParser parser = createParser(sql);
+
+            if (!config.isCommentAllow()) {
+                parser.getLexer().setAllowComment(false); // deny comment
+            }
+
             parser.parseStatementList(result.getStatementList());
+
+            if (parser.getLexer().token() != Token.EOF) {
+                result.getViolations().add(new IllegalSQLObjectViolation(sql));
+                return result;
+            }
         } catch (NotAllowCommentException e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
             incrementCommentDeniedCount();
@@ -283,11 +288,6 @@ public abstract class WallProvider {
             return result;
         } catch (Exception e) {
             result.getViolations().add(new SyntaxErrorViolation(e, sql));
-            return result;
-        }
-
-        if (parser.getLexer().token() != Token.EOF) {
-            result.getViolations().add(new IllegalSQLObjectViolation(sql));
             return result;
         }
 

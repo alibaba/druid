@@ -386,6 +386,11 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 join.setCondition(expr());
+            } else if (identifierEquals("USING")) {
+                lexer.nextToken();
+                accept(Token.LPAREN);
+                this.exprParser.exprList(join.getUsing());
+                accept(Token.RPAREN);
             }
 
             return parseTableSourceRest(join);
