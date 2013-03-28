@@ -28,25 +28,19 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest8 extends TestCase {
+public class MySqlWallTest15 extends TestCase {
 
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM vote_info a where 1=1 AND FID = ?")); // 前置永真
-    }
-    
-    public void test_false_1() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM vote_info a where FID = ? AND 1=1")); // 后置永真，拦截
-    }
-    
-    public void test_false_2() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM vote_info a where FID = ? OR (FID = ? AND 1=1)")); // 后置永真，拦截
-    }
-    
-    public void test_false_3() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-        "SELECT a.* FROM vote_info a where FID = ? OR (1=1 AND FID = ?)")); // 后置永真，拦截
+        "SELECT m.*, m.icon AS micon, md.uid as md.uid, md.lastmsg,md.postnum," + //
+                "md.rvrc,md.money,md.credit,md.currency,md.lastvisit,md.thisvisit," + //
+                "md.onlinetime,md.lastpost,md.todaypost, md.monthpost,md.onlineip," + //
+                "md.uploadtime,md.uploadnum,md.starttime,md.pwdctime,md.monoltime," + //
+                "md.digests,md.f_num,md.creditpop, md.jobnum,md.lastgrab,md.follows,md.fans," + //
+                "md.newfans,md.newreferto,md.newcomment,md.postcheck,md.punch, mi.customdata " + //
+                "FROM pw_members m " + //
+                "   LEFT JOIN pw_memberdata md ON m.uid=md.uid " + //
+                "   LEFT JOIN pw_memberinfo mi ON mi.uid=m.uid " + //
+                "WHERE m.uid IN (?)")); //
     }
 }

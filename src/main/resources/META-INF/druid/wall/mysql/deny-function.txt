@@ -8,3 +8,4 @@ session_user
 benchmark
 connection_id
 current_user
+sleep
