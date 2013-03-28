@@ -73,7 +73,7 @@ public class DeleteSyntaxTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("DELETE FROM a1, a2\nUSING t1 a1" + //
+        Assert.assertEquals("DELETE FROM a1, a2 USING (t1) AS a1" + //
                             "\n\tINNER JOIN t2 a2\nWHERE a1.id = a2.id;", text);
     }
 

@@ -46,6 +46,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             mergeAllow                 = true;
     private boolean             minusAllow                 = false;
     private boolean             intersectAllow             = false;
+    private boolean             replaceAllow               = true;
+    private boolean             setAllow            = true;
 
     private boolean             multiStatementAllow        = false;
 
@@ -90,7 +92,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             metadataAllow              = true;
 
     private boolean             conditionOpXorAllow        = false;
-    private boolean             conditionOpBitwseAllow     = false;
+    private boolean             conditionOpBitwseAllow     = true;
 
     public WallConfig(){
 
@@ -336,6 +338,22 @@ public class WallConfig implements WallConfigMBean {
 
     public void setInsertAllow(boolean insertAllow) {
         this.insertAllow = insertAllow;
+    }
+
+    public boolean isReplaceAllow() {
+        return replaceAllow;
+    }
+
+    public void setReplaceAllow(boolean replaceAllow) {
+        this.replaceAllow = replaceAllow;
+    }
+
+    public boolean isSetAllow() {
+        return setAllow;
+    }
+
+    public void setSetAllow(boolean value) {
+        this.setAllow = value;
     }
 
     public boolean isMergeAllow() {

@@ -45,7 +45,7 @@ public class SQLParser {
         }
     }
 
-    protected String as()  {
+    protected String as() {
         String alias = null;
 
         if (lexer.token() == Token.AS) {
@@ -54,36 +54,38 @@ public class SQLParser {
             if (lexer.token() == Token.LITERAL_ALIAS) {
                 alias = '"' + lexer.stringVal() + '"';
                 lexer.nextToken();
-                return alias;
-            }
-
-            if (lexer.token() == Token.IDENTIFIER) {
+            } else if (lexer.token() == Token.IDENTIFIER) {
                 alias = lexer.stringVal();
                 lexer.nextToken();
-                return alias;
-            }
-
-            if (lexer.token() == Token.LITERAL_CHARS) {
+            } else if (lexer.token() == Token.LITERAL_CHARS) {
                 alias = "'" + lexer.stringVal() + "'";
                 lexer.nextToken();
-                return alias;
+            } else {
+                switch (lexer.token()) {
+                    case KEY:
+                    case INDEX:
+                    case CASE:
+                        alias = lexer.token().name();
+                        lexer.nextToken();
+                        return alias;
+                    case QUES:
+                        alias = "?";
+                        lexer.nextToken();
+                    default:
+                        break;
+                }
             }
 
-            if (lexer.token() == Token.KEY || lexer.token() == Token.CASE) {
-                alias = lexer.token.name();
-                lexer.nextToken();
-                return alias;
-            }
-
-            switch (lexer.token()) {
-                case KEY:
-                    alias = lexer.token().name();
+            if (alias != null) {
+                while (lexer.token() == Token.DOT) {
                     lexer.nextToken();
-                    return alias;
-                default:
-                    break;
+                    alias += ('.' + lexer.token().name());
+                    lexer.nextToken();
+                }
+                
+                return alias;
             }
-            
+
             if (lexer.token() == Token.LPAREN) {
                 return null;
             }

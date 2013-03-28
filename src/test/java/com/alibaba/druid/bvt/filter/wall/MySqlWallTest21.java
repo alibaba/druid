@@ -22,18 +22,21 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
- * 这个场景，检测可疑的Having条件
- * @author wenshao
- *
+ * SQLServerWallTest
+ * 
+ * @author RaymondXiu
+ * @version 1.0, 2012-3-18
+ * @see
  */
-public class WallSelectWhereTest2 extends TestCase {
-    private String sql = "SELECT F1, F2 WHERE 1 = 1 AND FID = ?";
+public class MySqlWallTest21 extends TestCase {
 
-    public void testMySql() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(sql));
+    public void test_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "select * from t where 1=1 AND status = 1")); //
     }
     
-    public void testORACLE() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+    public void test_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "select * from t where status = 1 AND 1=1")); //
     }
 }

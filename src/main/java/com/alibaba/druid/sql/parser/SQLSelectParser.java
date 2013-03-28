@@ -169,14 +169,14 @@ public class SQLSelectParser extends SQLParser {
     protected void withSubquery(SQLSelect select) {
         if (lexer.token() == Token.WITH) {
             lexer.nextToken();
-            
+
             SQLWithSubqueryClause withQueryClause = new SQLWithSubqueryClause();
-            
+
             if (lexer.token == Token.RECURSIVE || identifierEquals("RECURSIVE")) {
                 lexer.nextToken();
                 withQueryClause.setRecursive(true);
             }
-            
+
             for (;;) {
                 SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
                 entry.setName((SQLIdentifierExpr) this.exprParser.name());
@@ -252,7 +252,7 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == Token.IDENTIFIER) {
                 expr = new SQLIdentifierExpr(lexer.stringVal());
                 lexer.nextTokenComma();
-                
+
                 if (lexer.token() != Token.COMMA) {
                     expr = this.exprParser.primaryRest(expr);
                     expr = this.exprParser.exprRest(expr);
@@ -261,13 +261,13 @@ public class SQLSelectParser extends SQLParser {
                 expr = expr();
             }
             final String alias = as();
-            
+
             final SQLSelectItem selectItem = new SQLSelectItem(expr, alias);
             selectList.add(selectItem);
             if (lexer.token() != Token.COMMA) {
                 break;
             }
-            
+
             lexer.nextToken();
         }
     }
@@ -386,6 +386,15 @@ public class SQLSelectParser extends SQLParser {
             if (lexer.token() == Token.ON) {
                 lexer.nextToken();
                 join.setCondition(expr());
+            } else if (identifierEquals("USING")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    this.exprParser.exprList(join.getUsing());
+                    accept(Token.RPAREN);
+                } else {
+                    join.getUsing().add(this.expr());
+                }
             }
 
             return parseTableSourceRest(join);

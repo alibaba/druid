@@ -1074,6 +1074,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getCondition().accept(this);
             decrementIndent();
         }
+        
+        if (x.getUsing().size() > 0) {
+            print(" USING (");
+            printAndAccept(x.getUsing(), ", ");
+            print(")");
+        }
+        
+        if (x.getAlias() != null) {
+            print(" AS ");
+            print(x.getAlias());
+        }
 
         decrementIndent();
 
