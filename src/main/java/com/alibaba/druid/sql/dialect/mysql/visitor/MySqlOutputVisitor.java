@@ -27,6 +27,7 @@ import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -2811,5 +2812,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
         
+    }
+    
+    @Override
+    public boolean visit(SQLAssignItem x) {
+        x.getTarget().accept(this);
+        if (!"NAMES".equalsIgnoreCase(x.getTarget().toString())) {
+            print(" = ");
+        }
+        x.getValue().accept(this);
+        return false;
     }
 } //

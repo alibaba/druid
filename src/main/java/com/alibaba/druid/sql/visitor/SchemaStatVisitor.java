@@ -624,7 +624,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLJoinTableSource x) {
-        return true;
+        x.getLeft().accept(this);
+        x.getRight().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
+        return false;
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -874,7 +879,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
     public boolean visit(SQLUpdateStatement x) {
         setAliasMap();
-        
+
         setMode(x, Mode.Update);
 
         SQLName identName = x.getTableName();
@@ -999,7 +1004,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLCurrentOfCursorExpr x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableAddColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
@@ -1021,12 +1026,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLRollbackStatement x) {
         return false;
     }
-    
+
     public boolean visit(SQLCreateViewStatement x) {
         x.getSubQuery().accept(this);
         return false;
     }
-    
+
     @Override
     public boolean visit(SQLAlterTableDropForeinKey x) {
         return false;

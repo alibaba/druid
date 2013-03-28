@@ -1080,6 +1080,11 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             printAndAccept(x.getUsing(), ", ");
             print(")");
         }
+        
+        if (x.getAlias() != null) {
+            print(" AS ");
+            print(x.getAlias());
+        }
 
         decrementIndent();
 

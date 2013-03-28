@@ -46,14 +46,15 @@ public class MySqlDeleteTest_1 extends MysqlTest {
         System.out.println("coditions : " + visitor.getConditions());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
         
-        Assert.assertEquals(2, visitor.getTables().size());
+        Assert.assertEquals(3, visitor.getTables().size());
         Assert.assertEquals(2, visitor.getColumns().size());
         Assert.assertEquals(2, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t1")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("a1")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("a2")));
         Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t2")));
         
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t1", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("t2", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("a1", "id")));
+        Assert.assertTrue(visitor.getColumns().contains(new Column("a2", "id")));
     }
 }

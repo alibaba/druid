@@ -131,7 +131,8 @@ public class OracleExprParser extends SQLExprParser {
                                                           "SUM", // 
                                                           "VAR_POP", // 
                                                           "VAR_SAMP", // 
-                                                          "VARIANCE" // 
+                                                          "VARIANCE", // 
+                                                          "WM_CONCAT"
                                                           };
 
     public OracleExprParser(Lexer lexer){

@@ -165,8 +165,12 @@ public class MySqlExprParser extends SQLExprParser {
                 return this.methodRest(new SQLIdentifierExpr("VALUES"), true);
             case BINARY:
                 lexer.nextToken();
-                SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
-                return primaryRest(binaryExpr);
+                if (lexer.token() == Token.COMMA || lexer.token() == Token.SEMI || lexer.token() == Token.EOF) {
+                    return new SQLIdentifierExpr("BINARY");
+                } else {
+                    SQLUnaryExpr binaryExpr = new SQLUnaryExpr(SQLUnaryOperator.BINARY, expr());
+                    return primaryRest(binaryExpr);
+                }
             default:
                 return super.primary();
         }
@@ -550,8 +554,9 @@ public class MySqlExprParser extends SQLExprParser {
 
         SQLExpr var = primary();
 
+        String ident = null;
         if (var instanceof SQLIdentifierExpr) {
-            String ident = ((SQLIdentifierExpr) var).getName();
+            ident = ((SQLIdentifierExpr) var).getName();
 
             if ("GLOBAL".equalsIgnoreCase(ident)) {
                 ident = lexer.stringVal();
@@ -565,18 +570,26 @@ public class MySqlExprParser extends SQLExprParser {
                 var = new SQLVariantRefExpr(ident);
             }
         }
+
+        if ("NAMES".equalsIgnoreCase(ident)) {
+            // skip
+        } else if ("CHARACTER".equalsIgnoreCase(ident)) {
+            var = new SQLIdentifierExpr("CHARACTER SET");
+            accept(Token.SET);
+            if (lexer.token() == Token.EQ) {
+                lexer.nextToken();
+            }
+        } else {
+            if (lexer.token() == Token.COLONEQ) {
+                lexer.nextToken();
+            } else {
+                accept(Token.EQ);
+            }
+        }
+        
+        item.setValue(this.expr());
+
         item.setTarget(var);
-        if (lexer.token() == Token.COLONEQ) {
-            lexer.nextToken();
-        } else {
-            accept(Token.EQ);
-        }
-        if (lexer.token() == Token.BINARY) {
-            lexer.nextToken();
-            item.setValue(new SQLIdentifierExpr("BINARY"));
-        } else {
-            item.setValue(expr());
-        }
         return item;
     }
 

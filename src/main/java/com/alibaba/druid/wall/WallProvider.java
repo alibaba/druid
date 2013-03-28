@@ -251,6 +251,13 @@ public abstract class WallProvider {
     }
 
     public WallCheckResult check(String sql) {
+        WallContext context = WallContext.current();
+        
+        if (context != null && !this.dbType.equals(context.getDbType())) {
+            WallContext.clearContext();
+        }
+        
+        WallContext.createIfNotExists(this.dbType);
         WallCheckResult result = new WallCheckResult();
 
         if (config.isDoPrivilegedAllow() && ispPivileged()) {

@@ -447,8 +447,15 @@ public class WallVisitorUtils {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
                 return false;
             }
-
-            if (leftResult == Boolean.TRUE || rightResult == Boolean.TRUE) {
+            
+            if (leftResult == Boolean.TRUE) {
+                if (x.getParent() instanceof SQLExpr) {
+                    final WallConditionContext current = wallConditionContextLocal.get();
+                    if (current != null) {
+                        current.setPartAlwayTrue(true);
+                    }
+                }
+            } else if (rightResult == Boolean.TRUE) {
                 final WallConditionContext current = wallConditionContextLocal.get();
                 if (current != null) {
                     current.setPartAlwayTrue(true);

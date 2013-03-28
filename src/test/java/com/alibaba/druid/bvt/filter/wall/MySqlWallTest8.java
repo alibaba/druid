@@ -30,8 +30,8 @@ import com.alibaba.druid.wall.WallUtils;
  */
 public class MySqlWallTest8 extends TestCase {
 
-    public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+    public void test_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
         "SELECT a.* FROM vote_info a where 1=1 AND FID = ?")); // 前置永真
     }
     
