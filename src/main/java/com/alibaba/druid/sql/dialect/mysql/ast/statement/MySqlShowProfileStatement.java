@@ -22,7 +22,7 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowProfileStatement extends MySqlStatementImpl {
+public class MySqlShowProfileStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private static final long serialVersionUID = 1L;
 

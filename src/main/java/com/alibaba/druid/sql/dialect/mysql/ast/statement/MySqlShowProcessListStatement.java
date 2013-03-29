@@ -17,7 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowProcessListStatement extends MySqlStatementImpl {
+public class MySqlShowProcessListStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private static final long serialVersionUID = 1L;
 

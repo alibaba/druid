@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -53,11 +54,29 @@ import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlEvalVisitorImpl;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
+import com.alibaba.druid.sql.visitor.functions.Ascii;
+import com.alibaba.druid.sql.visitor.functions.Concat;
+import com.alibaba.druid.sql.visitor.functions.Function;
+import com.alibaba.druid.sql.visitor.functions.Instr;
+import com.alibaba.druid.sql.visitor.functions.Lcase;
+import com.alibaba.druid.sql.visitor.functions.Left;
+import com.alibaba.druid.sql.visitor.functions.Length;
+import com.alibaba.druid.sql.visitor.functions.Now;
+import com.alibaba.druid.sql.visitor.functions.Reverse;
+import com.alibaba.druid.sql.visitor.functions.Right;
+import com.alibaba.druid.sql.visitor.functions.Trim;
+import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
 
 public class SQLEvalVisitorUtils {
+
+    private static Map<String, Function> functions = new HashMap<String, Function>();
+
+    static {
+        registerBaseFunctions();
+    }
 
     public static Object evalExpr(String dbType, String expr, Object... parameters) {
         SQLExpr sqlExpr = SQLUtils.toSQLExpr(expr, dbType);
@@ -124,205 +143,37 @@ public class SQLEvalVisitorUtils {
         return new SQLEvalVisitorImpl();
     }
 
+    static void registerBaseFunctions() {
+        functions.put("now", Now.instance);
+        functions.put("concat", Concat.instance);
+        functions.put("ascii", Ascii.instance);
+        functions.put("instr", Instr.instance);
+        functions.put("left", Left.instance);
+        functions.put("right", Right.instance);
+        functions.put("reverse", Reverse.instance);
+        functions.put("len", Length.instance);
+        functions.put("length", Length.instance);
+        functions.put("trim", Trim.instance);
+        functions.put("ucase", Ucase.instance);
+        functions.put("upper", Ucase.instance);
+        functions.put("ucase", Lcase.instance);
+        functions.put("lower", Lcase.instance);
+    }
+
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         String methodName = x.getMethodName().toLowerCase();
 
-        if ("concat".equals(methodName)) {
-            StringBuilder buf = new StringBuilder();
+        Function function = functions.get(methodName);
 
-            for (SQLExpr item : x.getParameters()) {
-                item.accept(visitor);
-
-                Object itemValue = item.getAttributes().get(EVAL_VALUE);
-                if (itemValue == null) {
-                    continue;
-                }
-                buf.append(itemValue.toString());
+        if (function != null) {
+            Object result = function.eval(visitor, x);
+            if (result != SQLEvalVisitor.EVAL_ERROR) {
+                x.getAttributes().put(EVAL_VALUE, result);
             }
+            return false;
+        }
 
-            x.getAttributes().put(EVAL_VALUE, buf.toString());
-        } else if ("now".equals(methodName)) {
-            x.getAttributes().put(EVAL_VALUE, new Date());
-        } else if ("ascii".equals(methodName)) {
-            if (x.getParameters().size() == 0) {
-                return false;
-            }
-            SQLExpr param = x.getParameters().get(0);
-            param.accept(visitor);
-
-            Object paramValue = param.getAttributes().get(EVAL_VALUE);
-            if (paramValue == null) {
-                return false;
-            }
-
-            String strValue = paramValue.toString();
-            if (strValue.length() == 0) {
-                return false;
-            }
-
-            int ascii = strValue.charAt(0);
-            x.getAttributes().put(EVAL_VALUE, ascii);
-        } else if ("instr".equals(methodName)) {
-            if (x.getParameters().size() != 2) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            SQLExpr param1 = x.getParameters().get(1);
-            param0.accept(visitor);
-            param1.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null || param1Value == null) {
-                return false;
-            }
-
-            String strValue0 = param0Value.toString();
-            String strValue1 = param1Value.toString();
-
-            int result = strValue0.indexOf(strValue1) + 1;
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("left".equals(methodName)) {
-            if (x.getParameters().size() != 2) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            SQLExpr param1 = x.getParameters().get(1);
-            param0.accept(visitor);
-            param1.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null || param1Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-            int intValue = castToInteger(param1Value);
-
-            String result = strValue.substring(0, intValue);
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("right".equals(methodName)) {
-            if (x.getParameters().size() != 2) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            SQLExpr param1 = x.getParameters().get(1);
-            param0.accept(visitor);
-            param1.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            Object param1Value = param1.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null || param1Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-            int intValue = castToInteger(param1Value);
-
-            String result = strValue.substring(strValue.length() - intValue, strValue.length());
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("reverse".equals(methodName)) {
-            if (x.getParameters().size() != 1) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            param0.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-
-            StringBuilder buf = new StringBuilder();
-            for (int i = strValue.length() - 1; i >= 0; --i) {
-                buf.append(strValue.charAt(i));
-            }
-            String result = buf.toString();
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("trim".equals(methodName)) {
-            if (x.getParameters().size() != 1) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            param0.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-            String result = strValue.trim();
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("length".equals(methodName) || "len".equals(methodName)) {
-            if (x.getParameters().size() != 1) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            param0.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-
-            int result = strValue.length();
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("ucase".equals(methodName) || "upper".equals(methodName)) {
-            if (x.getParameters().size() != 1) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            param0.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-
-            String result = strValue.toUpperCase();
-
-            x.putAttribute(EVAL_VALUE, result);
-        } else if ("lcase".equals(methodName) || "lower".equals(methodName)) {
-            if (x.getParameters().size() != 1) {
-                return false;
-            }
-
-            SQLExpr param0 = x.getParameters().get(0);
-            param0.accept(visitor);
-
-            Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-            if (param0Value == null) {
-                return false;
-            }
-
-            String strValue = param0Value.toString();
-
-            String result = strValue.toLowerCase();
-
-            x.putAttribute(EVAL_VALUE, result);
-
-        } else if ("mod".equals(methodName)) {
+        if ("mod".equals(methodName)) {
             if (x.getParameters().size() != 2) {
                 return false;
             }

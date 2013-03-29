@@ -2236,9 +2236,6 @@ public class MySqlStatementParser extends SQLStatementParser {
                     } else if (lexer.token() == Token.KEY) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     } else if (lexer.token() == Token.CONSTRAINT) {
-                        int mark = lexer.bp();
-                        char markChar = lexer.current();
-
                         lexer.nextToken();
                         SQLName constraintName = this.exprParser.name();
 

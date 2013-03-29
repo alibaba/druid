@@ -16,7 +16,9 @@
 package com.alibaba.druid.sql.dialect.postgresql.visitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
@@ -31,14 +33,16 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.sql.visitor.functions.Function;
 
 public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor {
 
-    private List<Object> parameters       = new ArrayList<Object>();
+    private Map<String, Function> functions        = new HashMap<String, Function>();
+    private List<Object>          parameters       = new ArrayList<Object>();
 
-    private int          variantIndex     = -1;
+    private int                   variantIndex     = -1;
 
-    private boolean      markVariantIndex = true;
+    private boolean               markVariantIndex = true;
 
     public PGEvalVisitor(){
         this(new ArrayList<Object>(1));
@@ -75,7 +79,7 @@ public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor
     public boolean visit(SQLBinaryOpExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
-    
+
     public boolean visit(SQLUnaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
@@ -121,4 +125,13 @@ public class PGEvalVisitor extends PGASTVisitorAdapter implements SQLEvalVisitor
         this.markVariantIndex = markVariantIndex;
     }
 
+    @Override
+    public Function getFunction(String funcName) {
+        return functions.get(funcName);
+    }
+
+    @Override
+    public void registerFunction(String funcName, Function function) {
+        functions.put(funcName, function);
+    }
 }

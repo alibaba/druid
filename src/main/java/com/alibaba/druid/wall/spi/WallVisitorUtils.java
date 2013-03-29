@@ -58,6 +58,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.logging.Log;
@@ -360,14 +361,29 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null
-            || Boolean.TRUE == getConditionValue(visitor, x.getWhere(),
-                                                 visitor.getConfig().isUpdateWhereAlayTrueCheck())) {
-            addViolation(visitor, x);
-            return;
+        if (visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
+            if (x.getWhere() == null) {
+                if (x instanceof MySqlUpdateStatement) {
+                    MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
+                    if (mysqlUpdate.getLimit() == null) {
+                        addViolation(visitor, x);
+                        return;
+                    }
+                } else {
+                    addViolation(visitor, x);
+                    return;
+                }
+            }
+
+            if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
+                addViolation(visitor, x);
+                return;
+            }
         }
 
-        x.getWhere().setParent(x);
+        if (x.getWhere() != null) {
+            x.getWhere().setParent(x);
+        }
         checkCondition(visitor, x.getWhere());
         checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
@@ -447,7 +463,7 @@ public class WallVisitorUtils {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
                 return false;
             }
-            
+
             if (leftResult == Boolean.TRUE) {
                 if (!isFirst(x.getLeft())) {
                     final WallConditionContext current = wallConditionContextLocal.get();
@@ -475,20 +491,24 @@ public class WallVisitorUtils {
 
         return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
     }
-    
+
     public static boolean isFirst(SQLObject x) {
+        if (x == null) {
+            return true;
+        }
+
         SQLObject parent = x.getParent();
         if (!(parent instanceof SQLExpr)) {
             return true;
         }
-        
+
         if (parent instanceof SQLBinaryOpExpr) {
             SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) parent;
-            if (isFirst(binaryExpr.getParent()) && x == binaryExpr.getLeft()) {
+            if (isFirst(binaryExpr) && x == binaryExpr.getLeft()) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
