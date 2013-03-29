@@ -449,7 +449,7 @@ public class WallVisitorUtils {
             }
             
             if (leftResult == Boolean.TRUE) {
-                if (x.getParent() instanceof SQLExpr) {
+                if (!isFirst(x.getLeft())) {
                     final WallConditionContext current = wallConditionContextLocal.get();
                     if (current != null) {
                         current.setPartAlwayTrue(true);
@@ -474,6 +474,22 @@ public class WallVisitorUtils {
         }
 
         return SQLEvalVisitorUtils.eval(dbType, x, Collections.emptyList(), false);
+    }
+    
+    public static boolean isFirst(SQLObject x) {
+        SQLObject parent = x.getParent();
+        if (!(parent instanceof SQLExpr)) {
+            return true;
+        }
+        
+        if (parent instanceof SQLBinaryOpExpr) {
+            SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) parent;
+            if (isFirst(binaryExpr.getParent()) && x == binaryExpr.getLeft()) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     public static class WallConditionContext {
