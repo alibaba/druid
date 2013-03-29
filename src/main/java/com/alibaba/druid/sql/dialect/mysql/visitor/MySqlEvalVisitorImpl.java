@@ -24,6 +24,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -146,5 +147,9 @@ public class MySqlEvalVisitorImpl extends MySqlASTVisitorAdapter implements SQLE
     @Override
     public void registerFunction(String funcName, Function function) {
         functions.put(funcName, function);
+    }
+
+    public boolean visit(SQLIdentifierExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
     }
 }

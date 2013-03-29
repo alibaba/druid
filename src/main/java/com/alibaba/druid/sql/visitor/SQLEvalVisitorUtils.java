@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.visitor;
 
+import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 import java.math.BigDecimal;
@@ -57,6 +58,7 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.Ascii;
 import com.alibaba.druid.sql.visitor.functions.Concat;
 import com.alibaba.druid.sql.visitor.functions.Function;
+import com.alibaba.druid.sql.visitor.functions.Hex;
 import com.alibaba.druid.sql.visitor.functions.Instr;
 import com.alibaba.druid.sql.visitor.functions.Lcase;
 import com.alibaba.druid.sql.visitor.functions.Left;
@@ -66,6 +68,7 @@ import com.alibaba.druid.sql.visitor.functions.Reverse;
 import com.alibaba.druid.sql.visitor.functions.Right;
 import com.alibaba.druid.sql.visitor.functions.Trim;
 import com.alibaba.druid.sql.visitor.functions.Ucase;
+import com.alibaba.druid.sql.visitor.functions.Unhex;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 import com.alibaba.druid.wall.spi.WallVisitorUtils.WallConditionContext;
@@ -158,6 +161,8 @@ public class SQLEvalVisitorUtils {
         functions.put("upper", Ucase.instance);
         functions.put("ucase", Lcase.instance);
         functions.put("lower", Lcase.instance);
+        functions.put("hex", Hex.instance);
+        functions.put("unhex", Unhex.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
@@ -709,11 +714,40 @@ public class SQLEvalVisitorUtils {
             }
         }
 
-        if (!left.getAttributes().containsKey(EVAL_VALUE)) {
+        boolean leftHasValue = left.getAttributes().containsKey(EVAL_VALUE);
+        boolean rightHasValue = right.getAttributes().containsKey(EVAL_VALUE);
+
+        if ((!leftHasValue) && !rightHasValue) {
+            SQLExpr leftEvalExpr = (SQLExpr) left.getAttribute(EVAL_EXPR);
+            SQLExpr rightEvalExpr = (SQLExpr) right.getAttribute(EVAL_EXPR);
+
+            if (leftEvalExpr.equals(rightEvalExpr)) {
+                switch (x.getOperator()) {
+                    case Like:
+                    case Equality:
+                    case GreaterThanOrEqual:
+                    case LessThanOrEqual:
+                    case NotLessThan:
+                    case NotGreaterThan:
+                        x.putAttribute(EVAL_VALUE, Boolean.TRUE);
+                        return false;
+                    case NotEqual:
+                    case NotLike:
+                    case GreaterThan:
+                    case LessThan:
+                        x.putAttribute(EVAL_VALUE, Boolean.FALSE);
+                        return false;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        if (!leftHasValue) {
             return false;
         }
 
-        if (!right.getAttributes().containsKey(EVAL_VALUE)) {
+        if (!rightHasValue) {
             return false;
         }
 
@@ -1473,4 +1507,8 @@ public class SQLEvalVisitorUtils {
         return Pattern.matches(regexpr, input);
     }
 
+    public static boolean visit(SQLEvalVisitor visitor, SQLIdentifierExpr x) {
+        x.putAttribute(EVAL_EXPR, x);
+        return false;
+    }
 }
