@@ -562,6 +562,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
+        if (x.getFrom() == null) {
+            return false;
+        }
+        
         setMode(x, Mode.Select);
 
         if (x.getFrom() instanceof SQLSubqueryTableSource) {

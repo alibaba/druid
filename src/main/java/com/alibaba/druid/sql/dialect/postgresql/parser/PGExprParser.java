@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -67,5 +70,17 @@ public class PGExprParser extends SQLExprParser {
         }
 
         return null;
+    }
+    
+    public SQLExpr primaryRest(SQLExpr expr) {
+        if (lexer.token() == Token.COLONCOLON) {
+            lexer.nextToken();
+            SQLExpr typeExpr = this.expr();
+            SQLBinaryOpExpr castExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PostgresStyleTypeCast, typeExpr);
+            
+            return primaryRest(castExpr);
+        }
+        
+        return super.primaryRest(expr);
     }
 }

@@ -35,9 +35,9 @@ public class MySqlHexTest extends TestCase {
     private DruidDataSource dataSource;
 
     protected void setUp() throws Exception {
-        jdbcUrl = "jdbc:mysql://10.20.149.16:3306/circe0_test";
-        user = "circe";
-        password = "circe";
+        jdbcUrl = "jdbc:mysql://hbase-01:3306/sonar";
+        user = "sonar";
+        password = "sonar";
         driverClass = "com.mysql.jdbc.Driver";
 
         dataSource = new DruidDataSource();
@@ -54,7 +54,7 @@ public class MySqlHexTest extends TestCase {
 
         Connection conn = dataSource.getConnection();
 
-        String sql = "select hex('123'),hex(123)";
+        String sql = "SELECT INSERT('Quadratic', 1, 4, 'What')";
 
         PreparedStatement stmt = conn.prepareStatement(sql);
 

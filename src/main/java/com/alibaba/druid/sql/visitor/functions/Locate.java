@@ -17,41 +17,52 @@ package com.alibaba.druid.sql.visitor.functions;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.util.HexBin;
 
-public class Hex implements Function {
+public class Locate implements Function {
 
-    public final static Hex instance = new Hex();
+    public final static Locate instance = new Locate();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 1) {
-            throw new ParserException("argument's != 1, " + x.getParameters().size());
-        }
-
-        SQLExpr param0 = x.getParameters().get(0);
-        param0.accept(visitor);
-
-        Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-        if (param0Value == null) {
+        List<SQLExpr> params = x.getParameters();
+        int paramSize = params.size();
+        if (paramSize != 2 && paramSize != 3) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        if (param0Value instanceof String) {
-            byte[] bytes = ((String) param0Value).getBytes();
-            String result = HexBin.encode(bytes);
-            return result;
+        SQLExpr param0 = params.get(0);
+        SQLExpr param1 = params.get(1);
+        SQLExpr param2 = null;
+
+        param0.accept(visitor);
+        param1.accept(visitor);
+        if (paramSize == 3) {
+            param2 = params.get(2);
+            param2.accept(visitor);
         }
 
-        if (param0Value instanceof Number) {
-            long value = ((Number) param0Value).longValue();
-            String result = Long.toHexString(value).toUpperCase();
-            return result;
+        Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+        Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+        if (param0Value == null || param1Value == null) {
+            return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        return SQLEvalVisitor.EVAL_ERROR;
+        String strValue0 = param0Value.toString();
+        String strValue1 = param1Value.toString();
+
+        if (paramSize == 2) {
+            int result = strValue1.indexOf(strValue0) + 1;
+            return result;
+        }
+        
+        Object param2Value = param2.getAttributes().get(EVAL_VALUE);
+        int start = ((Number) param2Value).intValue();
+        
+        int result = strValue1.indexOf(strValue0, start + 1) + 1;
+        return result;
     }
 }

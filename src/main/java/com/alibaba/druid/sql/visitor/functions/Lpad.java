@@ -17,41 +17,51 @@ package com.alibaba.druid.sql.visitor.functions;
 
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.util.HexBin;
 
-public class Hex implements Function {
+public class Lpad implements Function {
 
-    public final static Hex instance = new Hex();
+    public final static Lpad instance = new Lpad();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 1) {
-            throw new ParserException("argument's != 1, " + x.getParameters().size());
-        }
-
-        SQLExpr param0 = x.getParameters().get(0);
-        param0.accept(visitor);
-
-        Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-        if (param0Value == null) {
+        List<SQLExpr> params = x.getParameters();
+        int paramSize = params.size();
+        if (paramSize != 3) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        if (param0Value instanceof String) {
-            byte[] bytes = ((String) param0Value).getBytes();
-            String result = HexBin.encode(bytes);
-            return result;
+        SQLExpr param0 = params.get(0);
+        SQLExpr param1 = params.get(1);
+        SQLExpr param2 = params.get(2);
+
+        param0.accept(visitor);
+        param1.accept(visitor);
+        param2.accept(visitor);
+
+        Object param0Value = param0.getAttributes().get(EVAL_VALUE);
+        Object param1Value = param1.getAttributes().get(EVAL_VALUE);
+        Object param2Value = param2.getAttributes().get(EVAL_VALUE);
+        if (param0Value == null || param1Value == null || param2Value == null) {
+            return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        if (param0Value instanceof Number) {
-            long value = ((Number) param0Value).longValue();
-            String result = Long.toHexString(value).toUpperCase();
-            return result;
+        String strValue0 = param0Value.toString();
+        int len = ((Number) param1Value).intValue();
+        String strValue1 = param2Value.toString();
+        
+        String result = strValue0;
+        if (result.length() > len) {
+            return result.substring(0, len);
+        }
+        
+        while (result.length() < len) {
+            result = strValue1 + result;
         }
 
-        return SQLEvalVisitor.EVAL_ERROR;
+        return result;
     }
 }

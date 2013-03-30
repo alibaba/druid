@@ -15,19 +15,15 @@
  */
 package com.alibaba.druid.sql.visitor.functions;
 
-import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_EXPR;
 import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
-
-import java.io.UnsupportedEncodingException;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.util.HexBin;
 
-public class Unhex implements Function {
+public class Bin implements Function {
 
-    public final static Unhex instance = new Unhex();
+    public final static Bin instance = new Bin();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
         if (x.getParameters().size() != 1) {
@@ -35,23 +31,6 @@ public class Unhex implements Function {
         }
 
         SQLExpr param0 = x.getParameters().get(0);
-
-        if (param0 instanceof SQLMethodInvokeExpr) {
-            SQLMethodInvokeExpr paramMethodExpr = (SQLMethodInvokeExpr) param0;
-            if (paramMethodExpr.getMethodName().equalsIgnoreCase("hex")) {
-                SQLExpr subParamExpr = paramMethodExpr.getParameters().get(0);
-                subParamExpr.accept(visitor);
-
-                Object param0Value = subParamExpr.getAttributes().get(EVAL_VALUE);
-                if (param0Value == null) {
-                    x.putAttribute(EVAL_EXPR, subParamExpr);
-                    return SQLEvalVisitor.EVAL_ERROR;
-                }
-
-                return param0Value;
-            }
-        }
-
         param0.accept(visitor);
 
         Object param0Value = param0.getAttributes().get(EVAL_VALUE);
@@ -59,17 +38,11 @@ public class Unhex implements Function {
             return SQLEvalVisitor.EVAL_ERROR;
         }
 
-        if (param0Value instanceof String) {
-            byte[] bytes = HexBin.decode((String) param0Value);
-            String result;
-            try {
-                result = new String(bytes, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
+        if (param0Value instanceof Number) {
+            long longValue = ((Number) param0Value).longValue();
+            String result = Long.toString(longValue, 2);
             return result;
         }
-
         return SQLEvalVisitor.EVAL_ERROR;
     }
 }

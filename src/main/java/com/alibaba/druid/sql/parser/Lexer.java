@@ -20,6 +20,7 @@ import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 import static com.alibaba.druid.sql.parser.Token.COLONEQ;
+import static com.alibaba.druid.sql.parser.Token.COLONCOLON;
 import static com.alibaba.druid.sql.parser.Token.COMMA;
 import static com.alibaba.druid.sql.parser.Token.EOF;
 import static com.alibaba.druid.sql.parser.Token.ERROR;
@@ -41,31 +42,31 @@ import java.util.Arrays;
  */
 public class Lexer {
 
-    protected final String  text;
-    protected int         pos;
-    protected int         mark;
+    protected final String text;
+    protected int          pos;
+    protected int          mark;
 
-    protected char        ch;
+    protected char         ch;
 
-    protected char[]      buf;
-    protected int         bufPos;
+    protected char[]       buf;
+    protected int          bufPos;
 
-    protected Token       token;
+    protected Token        token;
 
-    protected Keywords    keywods      = Keywords.DEFAULT_KEYWORDS;
+    protected Keywords     keywods      = Keywords.DEFAULT_KEYWORDS;
 
-    protected String      stringVal;
+    protected String       stringVal;
 
-    protected boolean     skipComment  = true;
+    protected boolean      skipComment  = true;
 
-    private SavePoint     savePoint    = null;
+    private SavePoint      savePoint    = null;
 
     /*
      * anti sql injection
      */
-    private boolean       allowComment = true;
+    private boolean        allowComment = true;
 
-    private int           varIndex     = -1;
+    private int            varIndex     = -1;
 
     public Lexer(String input){
         this(input, true);
@@ -78,7 +79,7 @@ public class Lexer {
 
         return text.charAt(index);
     }
-    
+
     public final String addSymbol() {
         return subString(mark, bufPos);
     }
@@ -86,7 +87,7 @@ public class Lexer {
     public final String subString(int offset, int count) {
         return text.substring(offset, offset + count);
     }
-    
+
     protected void initBuff(int size) {
         if (buf == null) {
             if (size < 32) {
@@ -94,7 +95,7 @@ public class Lexer {
             } else {
                 buf = new char[size + 32];
             }
-        } else if(buf.length < size) {
+        } else if (buf.length < size) {
             buf = Arrays.copyOf(buf, size);
         }
     }
@@ -116,6 +117,7 @@ public class Lexer {
     }
 
     private static class SavePoint {
+
         int   bp;
         int   sp;
         int   np;
@@ -187,32 +189,32 @@ public class Lexer {
     public String info() {
         return this.token + " " + this.stringVal();
     }
-    
+
     public final void nextTokenComma() {
         if (ch == ' ') {
             scanChar();
         }
-        
+
         if (ch == ',') {
             scanChar();
             token = COMMA;
             return;
         }
-        
+
         if (ch == ')') {
             scanChar();
             token = RPAREN;
             return;
         }
-        
+
         nextToken();
     }
-    
+
     public final void nextTokenLParen() {
         if (ch == ' ') {
             scanChar();
         }
-        
+
         if (ch == '(') {
             scanChar();
             token = LPAREN;
@@ -220,38 +222,38 @@ public class Lexer {
         }
         nextToken();
     }
-    
+
     public final void nextTokenValue() {
         if (ch == ' ') {
             scanChar();
         }
-        
+
         if (ch == '\'') {
             bufPos = 0;
             scanString();
             return;
         }
-        
+
         if (ch >= '0' && ch <= '9') {
             bufPos = 0;
             scanNumber();
             return;
         }
-        
+
         if (ch == '?') {
             scanChar();
             token = Token.QUES;
             return;
         }
-        
+
         if (isFirstIdentifierChar(ch) && ch != 'N') {
             scanIdentifier();
             return;
         }
-        
+
         nextToken();
     }
-    
+
     public final void nextToken() {
         bufPos = 0;
 
@@ -334,6 +336,9 @@ public class Lexer {
                     if (ch == '=') {
                         scanChar();
                         token = COLONEQ;
+                    } else if (ch == ':') {
+                        scanChar();
+                        token = COLONCOLON;
                     } else {
                         if (isDigit(ch)) {
                             unscan();
@@ -761,7 +766,6 @@ public class Lexer {
             if (!isIdentifierChar(ch)) {
                 break;
             }
-
 
             bufPos++;
             continue;

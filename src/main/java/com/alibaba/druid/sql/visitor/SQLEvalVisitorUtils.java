@@ -56,16 +56,25 @@ import com.alibaba.druid.sql.dialect.oracle.visitor.OracleEvalVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGEvalVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerEvalVisitor;
 import com.alibaba.druid.sql.visitor.functions.Ascii;
+import com.alibaba.druid.sql.visitor.functions.Bin;
+import com.alibaba.druid.sql.visitor.functions.BitLength;
+import com.alibaba.druid.sql.visitor.functions.Char;
 import com.alibaba.druid.sql.visitor.functions.Concat;
+import com.alibaba.druid.sql.visitor.functions.Elt;
 import com.alibaba.druid.sql.visitor.functions.Function;
 import com.alibaba.druid.sql.visitor.functions.Hex;
+import com.alibaba.druid.sql.visitor.functions.Insert;
 import com.alibaba.druid.sql.visitor.functions.Instr;
 import com.alibaba.druid.sql.visitor.functions.Lcase;
 import com.alibaba.druid.sql.visitor.functions.Left;
 import com.alibaba.druid.sql.visitor.functions.Length;
+import com.alibaba.druid.sql.visitor.functions.Locate;
+import com.alibaba.druid.sql.visitor.functions.Lpad;
+import com.alibaba.druid.sql.visitor.functions.Ltrim;
 import com.alibaba.druid.sql.visitor.functions.Now;
 import com.alibaba.druid.sql.visitor.functions.Reverse;
 import com.alibaba.druid.sql.visitor.functions.Right;
+import com.alibaba.druid.sql.visitor.functions.Substring;
 import com.alibaba.druid.sql.visitor.functions.Trim;
 import com.alibaba.druid.sql.visitor.functions.Ucase;
 import com.alibaba.druid.sql.visitor.functions.Unhex;
@@ -149,13 +158,26 @@ public class SQLEvalVisitorUtils {
     static void registerBaseFunctions() {
         functions.put("now", Now.instance);
         functions.put("concat", Concat.instance);
+        functions.put("concat_ws", Concat.instance);
         functions.put("ascii", Ascii.instance);
+        functions.put("bin", Bin.instance);
+        functions.put("bit_length", BitLength.instance);
+        functions.put("insert", Insert.instance);
         functions.put("instr", Instr.instance);
+        functions.put("char", Char.instance);
+        functions.put("elt", Elt.instance);
         functions.put("left", Left.instance);
+        functions.put("locate", Locate.instance);
+        functions.put("lpad", Lpad.instance);
+        functions.put("ltrim", Ltrim.instance);
+        functions.put("mid", Substring.instance);
+        functions.put("substring", Substring.instance);
         functions.put("right", Right.instance);
         functions.put("reverse", Reverse.instance);
         functions.put("len", Length.instance);
         functions.put("length", Length.instance);
+        functions.put("char_length", Length.instance);
+        functions.put("character_length", Length.instance);
         functions.put("trim", Trim.instance);
         functions.put("ucase", Ucase.instance);
         functions.put("upper", Ucase.instance);
@@ -172,6 +194,7 @@ public class SQLEvalVisitorUtils {
 
         if (function != null) {
             Object result = function.eval(visitor, x);
+            
             if (result != SQLEvalVisitor.EVAL_ERROR) {
                 x.getAttributes().put(EVAL_VALUE, result);
             }
@@ -721,7 +744,7 @@ public class SQLEvalVisitorUtils {
             SQLExpr leftEvalExpr = (SQLExpr) left.getAttribute(EVAL_EXPR);
             SQLExpr rightEvalExpr = (SQLExpr) right.getAttribute(EVAL_EXPR);
 
-            if (leftEvalExpr.equals(rightEvalExpr)) {
+            if (leftEvalExpr != null && leftEvalExpr.equals(rightEvalExpr)) {
                 switch (x.getOperator()) {
                     case Like:
                     case Equality:

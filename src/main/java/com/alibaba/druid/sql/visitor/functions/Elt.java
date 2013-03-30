@@ -19,39 +19,35 @@ import static com.alibaba.druid.sql.visitor.SQLEvalVisitor.EVAL_VALUE;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
-import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
-import com.alibaba.druid.util.HexBin;
 
-public class Hex implements Function {
+public class Elt implements Function {
 
-    public final static Hex instance = new Hex();
+    public final static Elt instance = new Elt();
 
     public Object eval(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
-        if (x.getParameters().size() != 1) {
-            throw new ParserException("argument's != 1, " + x.getParameters().size());
+        if (x.getParameters().size() <= 1) {
+            return SQLEvalVisitor.EVAL_ERROR;
         }
 
         SQLExpr param0 = x.getParameters().get(0);
         param0.accept(visitor);
 
         Object param0Value = param0.getAttributes().get(EVAL_VALUE);
-        if (param0Value == null) {
+        int param0IntValue;
+        if (!(param0Value instanceof Number)) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
+        param0IntValue = ((Number) param0Value).intValue();
 
-        if (param0Value instanceof String) {
-            byte[] bytes = ((String) param0Value).getBytes();
-            String result = HexBin.encode(bytes);
-            return result;
+        if (param0IntValue >= x.getParameters().size()) {
+            return null;
         }
 
-        if (param0Value instanceof Number) {
-            long value = ((Number) param0Value).longValue();
-            String result = Long.toHexString(value).toUpperCase();
-            return result;
-        }
+        SQLExpr item = x.getParameters().get(param0IntValue);
+        item.accept(visitor);
 
-        return SQLEvalVisitor.EVAL_ERROR;
+        Object itemValue = item.getAttributes().get(EVAL_VALUE);
+        return itemValue;
     }
 }
