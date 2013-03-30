@@ -113,6 +113,7 @@ public class Keywords {
         
         map.put("OVER", Token.OVER);
         map.put("TO", Token.TO);
+        map.put("USE", Token.USE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }
