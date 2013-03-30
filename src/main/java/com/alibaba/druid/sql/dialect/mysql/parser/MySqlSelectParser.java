@@ -261,7 +261,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             return tableSource;
         }
 
-        if (identifierEquals("USE")) {
+        if (lexer.token() == Token.USE) {
             lexer.nextToken();
             MySqlUseIndexHint hint = new MySqlUseIndexHint();
             parseIndexHint(hint);
