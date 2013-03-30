@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowErrorsStatement extends MySqlStatementImpl {
+public class MySqlShowErrorsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private static final long serialVersionUID = 1L;
 

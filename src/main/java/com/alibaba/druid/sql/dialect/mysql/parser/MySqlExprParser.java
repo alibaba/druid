@@ -323,12 +323,12 @@ public class MySqlExprParser extends SQLExprParser {
                     } else if (lexer.token() == Token.FROM) {
                         lexer.nextToken();
                         SQLExpr from = expr();
-                        methodInvokeExpr.putAttribute("FROM", from);
+                        methodInvokeExpr.getParameters().add(from);
 
                         if (lexer.token() == Token.FOR) {
                             lexer.nextToken();
                             SQLExpr forExpr = expr();
-                            methodInvokeExpr.putAttribute("FOR", forExpr);
+                            methodInvokeExpr.getParameters().add(forExpr);
                         }
                         break;
                     } else if (lexer.token() == Token.RPAREN) {

@@ -335,8 +335,12 @@ public class SQLExprParser extends SQLParser {
                         sqlExpr = new SQLIdentifierExpr('-' + lexer.stringVal());
                         lexer.nextToken();
                         break;
+                    case QUES:
+                        sqlExpr = new SQLUnaryExpr(SQLUnaryOperator.Negative, new SQLVariantRefExpr("?"));
+                        lexer.nextToken();
+                        break;
                     default:
-                        throw new ParserException("TODO");
+                        throw new ParserException("TODO : " + lexer.token());
                 }
                 break;
             case PLUS:

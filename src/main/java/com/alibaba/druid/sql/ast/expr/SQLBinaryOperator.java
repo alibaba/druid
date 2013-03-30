@@ -70,11 +70,8 @@ public enum SQLBinaryOperator {
     BooleanOr("OR", 160), 
     Assignment(":=", 169),
     
+    PostgresStyleTypeCast("::", 20),
     ;
-
-   
-    
-    
 
     public static int getPriority(SQLBinaryOperator operator) {
         return 0;

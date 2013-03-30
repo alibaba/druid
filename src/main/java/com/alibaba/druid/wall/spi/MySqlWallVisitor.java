@@ -50,6 +50,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -254,10 +255,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return;
         }
 
-        if (config.isNoneBaseStatementAllow()) {
-            return;
-        }
-
         boolean allow = false;
         if (x instanceof SQLInsertStatement) {
             allow = true;
@@ -279,6 +276,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                    || x instanceof MySqlSetNamesStatement //
                    || x instanceof SQLSetStatement) {
             allow = config.isSetAllow();
+        } else if (x instanceof MySqlShowStatement) {
+            allow = config.isShowAllow();
+        } else {
+            if (config.isNoneBaseStatementAllow()) {
+                return;
+            }
         }
 
         if (!allow) {

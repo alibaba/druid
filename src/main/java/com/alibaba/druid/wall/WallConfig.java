@@ -47,7 +47,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             minusAllow                 = false;
     private boolean             intersectAllow             = false;
     private boolean             replaceAllow               = true;
-    private boolean             setAllow            = true;
+    private boolean             setAllow                   = true;
 
     private boolean             multiStatementAllow        = false;
 
@@ -58,6 +58,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             constArithmeticAllow       = true;
 
     private boolean             describeAllow              = false;
+    private boolean             showAllow                  = false;
 
     private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
@@ -242,6 +243,14 @@ public class WallConfig implements WallConfigMBean {
      */
     public void setDescribeAllow(boolean describeAllow) {
         this.describeAllow = describeAllow;
+    }
+
+    public boolean isShowAllow() {
+        return showAllow;
+    }
+
+    public void setShowAllow(boolean showAllow) {
+        this.showAllow = showAllow;
     }
 
     public boolean isTruncateAllow() {

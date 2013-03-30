@@ -4,7 +4,7 @@
 
 	<groupId>com.alibaba</groupId>
 	<artifactId>druid</artifactId>
-	<version>0.2.15</version>
+	<version>0.2.16-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 	<name>druid</name>
@@ -131,7 +131,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<skip>false</skip>
+					<skip>true</skip>
 					<show>public</show>
 					<charset>UTF-8</charset>
 					<encoding>UTF-8</encoding>
