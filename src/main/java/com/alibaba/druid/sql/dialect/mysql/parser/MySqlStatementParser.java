@@ -146,35 +146,35 @@ import com.alibaba.druid.sql.parser.Token;
 public class MySqlStatementParser extends SQLStatementParser {
 
     private static final String AUTO_INCREMENT = "AUTO_INCREMENT";
-    private static final String COLLATE2     = "COLLATE";
-    private static final String CASCADE      = "CASCADE";
-    private static final String RESTRICT     = "RESTRICT";
-    private static final String CHAIN        = "CHAIN";
-    private static final String ENGINES      = "ENGINES";
-    private static final String ENGINE       = "ENGINE";
-    private static final String BINLOG       = "BINLOG";
-    private static final String EVENTS       = "EVENTS";
-    private static final String CHARACTER    = "CHARACTER";
-    private static final String SESSION      = "SESSION";
-    private static final String GLOBAL       = "GLOBAL";
-    private static final String VARIABLES    = "VARIABLES";
-    private static final String ERRORS       = "ERRORS";
-    private static final String STATUS       = "STATUS";
-    private static final String IGNORE       = "IGNORE";
-    private static final String RESET        = "RESET";
-    private static final String DESCRIBE     = "DESCRIBE";
-    private static final String DESC         = "DESC";
-    private static final String WRITE        = "WRITE";
-    private static final String READ         = "READ";
-    private static final String LOCAL        = "LOCAL";
-    private static final String TABLES       = "TABLES";
-    private static final String TEMPORARY    = "TEMPORARY";
-    private static final String USER         = "USER";
-    private static final String SPATIAL      = "SPATIAL";
-    private static final String FULLTEXT     = "FULLTEXT";
-    private static final String REPLACE      = "REPLACE";
-    private static final String DELAYED      = "DELAYED";
-    private static final String LOW_PRIORITY = "LOW_PRIORITY";
+    private static final String COLLATE2       = "COLLATE";
+    private static final String CASCADE        = "CASCADE";
+    private static final String RESTRICT       = "RESTRICT";
+    private static final String CHAIN          = "CHAIN";
+    private static final String ENGINES        = "ENGINES";
+    private static final String ENGINE         = "ENGINE";
+    private static final String BINLOG         = "BINLOG";
+    private static final String EVENTS         = "EVENTS";
+    private static final String CHARACTER      = "CHARACTER";
+    private static final String SESSION        = "SESSION";
+    private static final String GLOBAL         = "GLOBAL";
+    private static final String VARIABLES      = "VARIABLES";
+    private static final String ERRORS         = "ERRORS";
+    private static final String STATUS         = "STATUS";
+    private static final String IGNORE         = "IGNORE";
+    private static final String RESET          = "RESET";
+    private static final String DESCRIBE       = "DESCRIBE";
+    private static final String DESC           = "DESC";
+    private static final String WRITE          = "WRITE";
+    private static final String READ           = "READ";
+    private static final String LOCAL          = "LOCAL";
+    private static final String TABLES         = "TABLES";
+    private static final String TEMPORARY      = "TEMPORARY";
+    private static final String USER           = "USER";
+    private static final String SPATIAL        = "SPATIAL";
+    private static final String FULLTEXT       = "FULLTEXT";
+    private static final String REPLACE        = "REPLACE";
+    private static final String DELAYED        = "DELAYED";
+    private static final String LOW_PRIORITY   = "LOW_PRIORITY";
 
     public MySqlStatementParser(String sql){
         super(new MySqlExprParser(sql));
@@ -2236,7 +2236,20 @@ public class MySqlStatementParser extends SQLStatementParser {
                     } else if (lexer.token() == Token.KEY) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     } else if (lexer.token() == Token.CONSTRAINT) {
-                        throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                        lexer.nextToken();
+                        SQLName constraintName = this.exprParser.name();
+
+                        if (lexer.token() == Token.PRIMARY) {
+                            SQLPrimaryKey primaryKey = ((MySqlExprParser) this.exprParser).parsePrimaryKey();
+                            
+                            primaryKey.setName(constraintName);
+                            
+                            SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
+                            item.setPrimaryKey(primaryKey);
+                            stmt.getItems().add(item);
+                        } else {
+                            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                        }
                     } else if (identifierEquals(FULLTEXT)) {
                         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                     } else if (identifierEquals(SPATIAL)) {

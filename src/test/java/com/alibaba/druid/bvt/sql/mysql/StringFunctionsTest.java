@@ -519,7 +519,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('Sakila' FROM -4 FOR 2);", text);
+        Assert.assertEquals("SELECT SUBSTRING('Sakila', -4, 2);", text);
     }
 
     public void test_45() throws Exception {
@@ -530,7 +530,7 @@ public class StringFunctionsTest extends TestCase {
 
         String text = output(stmtList);
 
-        Assert.assertEquals("SELECT SUBSTRING('foobarbar' FROM 4);", text);
+        Assert.assertEquals("SELECT SUBSTRING('foobarbar', 4);", text);
     }
 
     public void test_46() throws Exception {

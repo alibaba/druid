@@ -18,7 +18,7 @@ package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowOpenTablesStatement extends MySqlStatementImpl {
+public class MySqlShowOpenTablesStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private static final long serialVersionUID = 1L;
 

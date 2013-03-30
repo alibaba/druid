@@ -207,6 +207,7 @@ public enum Token {
     TILDE("~"), 
     QUES("?"), 
     COLON(":"), 
+    COLONCOLON(":"), 
     COLONEQ(":="), 
     EQEQ("=="), 
     LTEQ("<="), 

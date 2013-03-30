@@ -490,7 +490,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlPrimaryKey x) {
         if (x.getName() != null) {
             print("CONSTRAINT ");
-            x.accept(this);
+            x.getName().accept(this);
             print(' ');
         }
 

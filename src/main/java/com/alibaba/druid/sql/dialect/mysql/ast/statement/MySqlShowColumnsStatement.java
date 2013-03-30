@@ -21,7 +21,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlShowColumnsStatement extends MySqlStatementImpl {
+public class MySqlShowColumnsStatement extends MySqlStatementImpl implements MySqlShowStatement {
 
     private static final long serialVersionUID = 1L;
 
