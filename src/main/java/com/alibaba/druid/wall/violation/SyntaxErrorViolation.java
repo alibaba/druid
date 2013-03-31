@@ -41,4 +41,11 @@ public class SyntaxErrorViolation implements Violation {
         return sql;
     }
 
+    public String getMessage() {
+        if (exception == null) {
+            return null;
+        }
+
+        return exception.getMessage();
+    }
 }
