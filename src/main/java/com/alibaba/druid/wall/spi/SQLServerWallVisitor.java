@@ -73,7 +73,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
-    
+
     @Override
     public List<Violation> getViolations() {
         return violations;
@@ -97,7 +97,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         String name = x.getName();
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+            getViolations().add(new IllegalSQLObjectViolation("variable not allow : " + name, toSQL(x)));
         }
         return true;
     }
@@ -138,7 +138,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         WallVisitorUtils.checkHaving(this, x.getHaving());
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLServerSelectQueryBlock x) {
         WallVisitorUtils.checkSelelct(this, x);
@@ -185,14 +185,14 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         }
 
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("not allow statement", toSQL(x)));
         }
     }
 
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("selelct not allow", this.toSQL(x)));
             return false;
         }
 
@@ -202,7 +202,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLInsertStatement x) {
         if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("insert not allow", this.toSQL(x)));
             return false;
         }
 
@@ -229,7 +229,7 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("global variable not allow", toSQL(x)));
         }
 
         return false;
@@ -238,14 +238,15 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
     @Override
     public boolean visit(SQLServerObjectReferenceExpr x) {
         if (x.getSchema() != null && !provider.checkDenySchema(x.getSchema())) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("schema not allow : " + x.getSchema(), this.toSQL(x)));
         }
         if (x.getDatabase() != null && !provider.checkDenySchema(x.getDatabase())) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("schema not allow : " + x.getDatabase(),
+                                                                   this.toSQL(x)));
         }
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLServerInsertStatement x) {
         this.visit((SQLInsertStatement) x);
@@ -254,9 +255,9 @@ public class SQLServerWallVisitor extends SQLServerASTVisitorAdapter implements 
 
     @Override
     public void endVisit(SQLServerInsertStatement x) {
-        this.endVisit((SQLInsertStatement) x);        
+        this.endVisit((SQLInsertStatement) x);
     }
-    
+
     @Override
     public boolean visit(SQLSelectItem x) {
         WallVisitorUtils.check(this, x);

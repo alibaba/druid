@@ -75,7 +75,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     public void addViolation(Violation violation) {
         this.violations.add(violation);
     }
-    
+
     public List<Violation> getViolations() {
         return violations;
     }
@@ -84,7 +84,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         String name = x.getName();
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+            getViolations().add(new IllegalSQLObjectViolation("variable not allow : " + name, toSQL(x)));
         }
         return true;
     }
@@ -195,17 +195,17 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
             allow = true;
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
-        } 
-        
+        }
+
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("not allow statement", toSQL(x)));
         }
     }
 
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("select not allow", this.toSQL(x)));
             return false;
         }
 
@@ -234,7 +234,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
         if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("insert not allow", this.toSQL(x)));
             return false;
         }
 
@@ -263,7 +263,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLSelectItem x) {
         WallVisitorUtils.check(this, x);

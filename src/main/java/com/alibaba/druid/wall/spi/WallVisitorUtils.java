@@ -93,7 +93,7 @@ public class WallVisitorUtils {
             SQLTableSource from = queryBlock.getFrom();
 
             if (from instanceof SQLExprTableSource) {
-                addViolation(visitor, x);
+                addViolation(visitor, "'SELECT *' not allow", x);
             }
         }
     }
@@ -106,7 +106,7 @@ public class WallVisitorUtils {
         checkReadOnly(visitor, x.getTableSource());
 
         if (!visitor.getConfig().isInsertAllow()) {
-            addViolation(visitor, x);
+            addViolation(visitor, "insert not allow", x);
         }
     }
 
@@ -120,7 +120,7 @@ public class WallVisitorUtils {
         }
 
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
-            addViolation(visitor, x);
+            addViolation(visitor, "select into not allow", x);
             return;
         }
 
@@ -144,7 +144,7 @@ public class WallVisitorUtils {
                 }
 
                 if (!isSimpleConstExpr) {
-                    addViolation(visitor, x);
+                    addViolation(visitor, "select alway true condition not allow", x);
                 }
             }
 
@@ -158,7 +158,7 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
-            addViolation(visitor, x);
+            addViolation(visitor, "having alway true condition not allow", x);
         }
     }
 
@@ -166,14 +166,14 @@ public class WallVisitorUtils {
         checkReadOnly(visitor, x.getExprTableSource());
 
         if (!visitor.getConfig().isDeleteAllow()) {
-            addViolation(visitor, x);
+            addViolation(visitor, "delete not allow", x);
             return;
         }
 
         if (x.getWhere() == null
             || Boolean.TRUE == getConditionValue(visitor, x.getWhere(),
                                                  visitor.getConfig().isDeleteWhereAlwayTrueCheck())) {
-            addViolation(visitor, x);
+            addViolation(visitor, "delete alway true condition not allow", x);
             return;
         }
 
@@ -192,7 +192,7 @@ public class WallVisitorUtils {
             x.accept(exportParameterVisitor);
 
             if (exportParameterVisitor.getParameters().size() > 0) {
-                addViolation(visitor, x);
+                addViolation(visitor, "sql must parameterized", x);
                 return;
             }
         }
@@ -343,7 +343,7 @@ public class WallVisitorUtils {
 
             boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
             if (!readOnlyValid) {
-                addViolation(visitor, tableSource);
+                addViolation(visitor, "table readonly : " + tableName, tableSource);
             }
         } else if (tableSource instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
@@ -357,7 +357,7 @@ public class WallVisitorUtils {
         checkReadOnly(visitor, x.getTableSource());
 
         if (!visitor.getConfig().isUpdateAllow()) {
-            addViolation(visitor, x);
+            addViolation(visitor, "update not allow", x);
             return;
         }
 
@@ -366,17 +366,17 @@ public class WallVisitorUtils {
                 if (x instanceof MySqlUpdateStatement) {
                     MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
                     if (mysqlUpdate.getLimit() == null) {
-                        addViolation(visitor, x);
+                        addViolation(visitor, "update alway true condition not allow", x);
                         return;
                     }
                 } else {
-                    addViolation(visitor, x);
+                    addViolation(visitor, "update alway true condition not allow", x);
                     return;
                 }
             }
 
             if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
-                addViolation(visitor, x);
+                addViolation(visitor, "update alway true condition not allow", x);
                 return;
             }
         }
@@ -566,19 +566,19 @@ public class WallVisitorUtils {
 
             final WallConditionContext current = wallConditionContextLocal.get();
             if (current.hasPartAlwayTrue() && alwayTrueCheck) {
-                addViolation(visitor, x);
+                addViolation(visitor, "part alway true condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
-                addViolation(visitor, x);
+                addViolation(visitor, "const arithmetic not allow", x);
             }
 
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
-                addViolation(visitor, x);
+                addViolation(visitor, "xor not allow", x);
             }
 
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
-                addViolation(visitor, x);
+                addViolation(visitor, "bitwise operator not allow", x);
             }
 
             return value;
@@ -737,7 +737,7 @@ public class WallVisitorUtils {
         String methodName = x.getMethodName();
 
         if (!visitor.getProvider().checkDenyFunction(methodName)) {
-            addViolation(visitor, x);
+            addViolation(visitor, "deny function : " + methodName, x);
         }
 
     }
@@ -747,12 +747,12 @@ public class WallVisitorUtils {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
-                addViolation(visitor, x);
+                addViolation(visitor, "deny schema : " + owner, x);
                 return false;
             }
 
             if (visitor.getConfig().isDenyObjects(owner)) {
-                addViolation(visitor, x);
+                addViolation(visitor, "deny object : " + owner, x);
                 return false;
             }
         }
@@ -778,7 +778,7 @@ public class WallVisitorUtils {
         if (expr instanceof SQLName) {
             String tableName = ((SQLName) expr).getSimleName();
             if (visitor.isDenyTable(tableName)) {
-                addViolation(visitor, x);
+                addViolation(visitor, "deny table : " + tableName, x);
                 return false;
             }
         }
@@ -786,18 +786,18 @@ public class WallVisitorUtils {
         return true;
     }
 
-    private static void addViolation(WallVisitor visitor, SQLObject x) {
-        visitor.addViolation(new IllegalSQLObjectViolation(visitor.toSQL(x)));
+    private static void addViolation(WallVisitor visitor, String message, SQLObject x) {
+        visitor.addViolation(new IllegalSQLObjectViolation(message, visitor.toSQL(x)));
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
         if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
-            addViolation(visitor, x);
+            addViolation(visitor, "minus not allow", x);
             return;
         }
 
         if (x.getOperator() == SQLUnionOperator.INTERSECT && !visitor.getConfig().isIntersectAllow()) {
-            addViolation(visitor, x);
+            addViolation(visitor, "intersect not allow", x);
             return;
         }
 
@@ -806,7 +806,7 @@ public class WallVisitorUtils {
         }
 
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            addViolation(visitor, x);
+            addViolation(visitor, "union query not contains 'from clause'", x);
         }
     }
 

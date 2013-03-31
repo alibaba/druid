@@ -279,7 +279,8 @@ public class ConfigFilter extends FilterAdapter {
         }
     }
 
-	private InputStream getFileAsStream(String filePath) throws FileNotFoundException {
+	@SuppressWarnings("resource")
+    private InputStream getFileAsStream(String filePath) throws FileNotFoundException {
         InputStream inStream = null;
         File file = new File(filePath);
         if (file.exists()) {

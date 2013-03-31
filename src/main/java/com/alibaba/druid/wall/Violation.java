@@ -16,6 +16,7 @@
 package com.alibaba.druid.wall;
 
 public interface Violation {
+    String getMessage();
 
     String toString();
 }

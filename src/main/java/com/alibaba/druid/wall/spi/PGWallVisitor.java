@@ -79,7 +79,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         String name = x.getName();
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation(toSQL(x)));
+            getViolations().add(new IllegalSQLObjectViolation("variable not allow : " + name, toSQL(x)));
         }
         return true;
     }
@@ -186,14 +186,14 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
         }
 
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("not allow statement", toSQL(x)));
         }
     }
 
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("selelct not allow", this.toSQL(x)));
             return false;
         }
 

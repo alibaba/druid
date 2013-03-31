@@ -19,13 +19,14 @@ import com.alibaba.druid.wall.Violation;
 
 public class IllegalSQLObjectViolation implements Violation {
 
+    private String message;
     private String sqlPart;
 
     public IllegalSQLObjectViolation(){
 
     }
 
-    public IllegalSQLObjectViolation(String condition){
+    public IllegalSQLObjectViolation(String message, String condition){
         this.sqlPart = condition;
     }
 
@@ -41,4 +42,15 @@ public class IllegalSQLObjectViolation implements Violation {
         return this.sqlPart;
     }
 
+    
+    public String getMessage() {
+        return message;
+    }
+
+    
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    
 }

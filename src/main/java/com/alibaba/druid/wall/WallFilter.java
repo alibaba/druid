@@ -423,16 +423,18 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (violations.size() > 0) {
             violationCount.incrementAndGet();
 
+            Violation firstViolation = violations.get(0);
             if (isLogViolation()) {
-                LOG.error("sql injection violation : " + sql);
+                LOG.error("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
             }
 
             if (throwException) {
                 if (violations.get(0) instanceof SyntaxErrorViolation) {
                     SyntaxErrorViolation violation = (SyntaxErrorViolation) violations.get(0);
-                    throw new SQLException("sql injection violation : " + sql, violation.getException());
+                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql,
+                                           violation.getException());
                 } else {
-                    throw new SQLException("sql injection violation : " + sql);
+                    throw new SQLException("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
                 }
             }
         }
