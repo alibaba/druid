@@ -165,7 +165,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation("select not allow", this.toSQL(x)));
             return false;
         }
 
@@ -177,7 +177,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
             int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
             if (rowCount == 0) {
-                this.getViolations().add(new IllegalSQLObjectViolation(this.toSQL(x)));
+                this.getViolations().add(new IllegalSQLObjectViolation("limit row 0", this.toSQL(x)));
             }
         }
         return true;
@@ -190,7 +190,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("global variable", toSQL(x)));
         }
 
         return false;
@@ -216,7 +216,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(MySqlOutFileExpr x) {
         if (!config.isSelectIntoOutfileAllow()) {
-            violations.add(new IllegalSQLObjectViolation(toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation("into out file not allow", toSQL(x)));
         }
 
         return true;
@@ -285,7 +285,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(x.getClass() + " not allow, " + toSQL(x)));
+            violations.add(new IllegalSQLObjectViolation(x.getClass() + " not allow", toSQL(x)));
         }
     }
 

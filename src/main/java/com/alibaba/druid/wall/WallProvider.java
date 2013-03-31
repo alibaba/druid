@@ -252,11 +252,11 @@ public abstract class WallProvider {
 
     public WallCheckResult check(String sql) {
         WallContext context = WallContext.current();
-        
+
         if (context != null && !this.dbType.equals(context.getDbType())) {
             WallContext.clearContext();
         }
-        
+
         WallContext.createIfNotExists(this.dbType);
         WallCheckResult result = new WallCheckResult();
 
@@ -270,7 +270,7 @@ public abstract class WallProvider {
             sqlStat.incrementAndGetExecuteCount();
             return result;
         }
-        
+
         try {
             SQLStatementParser parser = createParser(sql);
 
@@ -280,8 +280,9 @@ public abstract class WallProvider {
 
             parser.parseStatementList(result.getStatementList());
 
-            if (parser.getLexer().token() != Token.EOF) {
-                result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            final Token lastToken = parser.getLexer().token();
+            if (lastToken != Token.EOF) {
+                result.getViolations().add(new IllegalSQLObjectViolation("not terminal sql, token " + lastToken, sql));
                 return result;
             }
         } catch (NotAllowCommentException e) {
@@ -303,7 +304,7 @@ public abstract class WallProvider {
         }
 
         if (result.getStatementList().size() > 1 && !config.isMultiStatementAllow()) {
-            result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            result.getViolations().add(new IllegalSQLObjectViolation("multi-statement not allow", sql));
             return result;
         }
 
@@ -314,7 +315,7 @@ public abstract class WallProvider {
         try {
             stmt.accept(visitor);
         } catch (ParserException e) {
-            result.getViolations().add(new IllegalSQLObjectViolation(sql));
+            result.getViolations().add(new SyntaxErrorViolation(e, sql));
             return result;
         }
 
