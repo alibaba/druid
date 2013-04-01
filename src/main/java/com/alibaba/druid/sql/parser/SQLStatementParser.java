@@ -617,6 +617,10 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == (Token.FROM)) {
                 lexer.nextToken();
             }
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             SQLName tableName = exprParser.name();
 

@@ -203,12 +203,12 @@ public class MySqlLexer extends Lexer {
             }
         }
     }
-    
+
     protected final void scanString() {
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
-            int endIndex = -1; //text.indexOf('\'', startIndex);
+            int endIndex = -1; // text.indexOf('\'', startIndex);
             for (int i = startIndex; i < text.length(); ++i) {
                 final char ch = text.charAt(i);
                 if (ch == '\\') {
@@ -219,13 +219,13 @@ public class MySqlLexer extends Lexer {
                     break;
                 }
             }
-            
+
             if (endIndex == -1) {
                 throw new ParserException("unclosed str");
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
-//            hasSpecial = stringVal.indexOf('\\') != -1;
+            // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
                 this.stringVal = stringVal;
@@ -328,6 +328,8 @@ public class MySqlLexer extends Lexer {
     }
 
     public void scanComment() {
+        Token lastToken = this.token;
+
         if (ch != '/' && ch != '-') {
             throw new IllegalStateException();
         }
@@ -374,8 +376,14 @@ public class MySqlLexer extends Lexer {
                 token = Token.MULTI_LINE_COMMENT;
             }
 
-            if (token != Token.HINT && !isAllowComment()) {
-                throw new NotAllowCommentException();
+            if (token != Token.HINT) {
+                if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+                    return;
+                }
+                
+                if (!isAllowComment()) {
+                    throw new NotAllowCommentException();
+                }
             }
 
             return;

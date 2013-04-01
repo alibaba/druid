@@ -141,6 +141,10 @@ public class SQLSelectParser extends SQLParser {
         }
 
         accept(Token.SELECT);
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+        }
 
         SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
 

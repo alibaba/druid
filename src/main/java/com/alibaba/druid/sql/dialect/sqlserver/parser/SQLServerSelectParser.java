@@ -66,6 +66,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             if (lexer.token() == Token.DISTINCT) {
                 queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);

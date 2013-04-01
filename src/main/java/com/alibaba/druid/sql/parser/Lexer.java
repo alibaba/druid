@@ -68,8 +68,18 @@ public class Lexer {
 
     private int            varIndex     = -1;
 
+    protected CommentHandler commentHandler;
+
     public Lexer(String input){
         this(input, true);
+    }
+
+    public CommentHandler getCommentHandler() {
+        return commentHandler;
+    }
+
+    public void setCommentHandler(CommentHandler commentHandler) {
+        this.commentHandler = commentHandler;
     }
 
     public final char charAt(int index) {
@@ -1007,5 +1017,10 @@ public class Lexer {
 
     public BigDecimal decimalValue() {
         return new BigDecimal(text.toCharArray(), mark, bufPos);
+    }
+
+    public static interface CommentHandler {
+
+        boolean handle(Token lastToken, String comment);
     }
 }

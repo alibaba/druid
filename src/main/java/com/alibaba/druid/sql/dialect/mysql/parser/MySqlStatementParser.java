@@ -235,6 +235,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             if (identifierEquals(LOW_PRIORITY)) {
                 deleteStatement.setLowPriority(true);

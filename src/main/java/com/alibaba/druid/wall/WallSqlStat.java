@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.wall;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class WallSqlStat {
@@ -23,6 +26,18 @@ public class WallSqlStat {
 
     final static AtomicLongFieldUpdater<WallSqlStat> executeCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
                                                                                                              "executeCount");
+    private final Map<String, WallSqlTableStat>      tableStats;
+
+    private final List<Violation>                    violations;
+
+    public WallSqlStat(Map<String, WallSqlTableStat> tableStats){
+        this(tableStats, Collections.<Violation> emptyList());
+    }
+
+    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, List<Violation> violations){
+        this.violations = violations;
+        this.tableStats = tableStats;
+    }
 
     public long incrementAndGetExecuteCount() {
         return executeCountUpdater.incrementAndGet(this);
@@ -31,5 +46,13 @@ public class WallSqlStat {
     public long getExecuteCount() {
         return executeCount;
     }
-    
+
+    public Map<String, WallSqlTableStat> getTableStats() {
+        return tableStats;
+    }
+
+    public List<Violation> getViolations() {
+        return violations;
+    }
+
 }

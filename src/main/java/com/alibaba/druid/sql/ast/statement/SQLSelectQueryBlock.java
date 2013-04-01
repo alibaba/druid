@@ -43,10 +43,13 @@ public class SQLSelectQueryBlock extends SQLSelectQuery {
     }
 
     public void setInto(SQLExpr into) {
-        this.into = new SQLExprTableSource(into);
+        this.setInto(new SQLExprTableSource(into));
     }
 
     public void setInto(SQLExprTableSource into) {
+        if (into != null) {
+            into.setParent(this);
+        }
         this.into = into;
     }
 

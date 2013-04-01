@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.sql.parser;
+package com.alibaba.druid.bvt.filter.wall;
 
-public class NotAllowCommentException extends ParserException {
+import junit.framework.TestCase;
 
-    private static final long serialVersionUID = 1L;
+import org.junit.Assert;
 
-    public NotAllowCommentException(){
-        this("comment not allow");
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallUtils;
+
+/**
+ * SQLServerWallTest
+ * 
+ * @author RaymondXiu
+ * @version 1.0, 2012-3-18
+ * @see
+ */
+public class MySqlWallTest_var_autoincrement extends TestCase {
+
+
+    public void test_true() throws Exception {
+        WallConfig config = new WallConfig();
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment", config)); //
     }
-
-    public NotAllowCommentException(String message, Throwable e){
-        super(message, e);
-    }
-
-    public NotAllowCommentException(String message){
-        super(message);
-    }
-
 }

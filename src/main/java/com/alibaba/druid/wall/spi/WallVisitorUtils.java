@@ -29,6 +29,7 @@ import java.util.Set;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLAggregateExpr;
 import com.alibaba.druid.sql.ast.expr.SQLAllColumnExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -44,29 +45,46 @@ import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
+import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
+import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.ServletPathMatcher;
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -80,6 +98,44 @@ public class WallVisitorUtils {
 
     public static void check(WallVisitor visitor, SQLBinaryOpExpr x) {
 
+    }
+
+    public static void check(WallVisitor visitor, SQLCreateTableStatement x) {
+        String tableName = ((SQLName) x.getName()).getSimleName();
+        WallContext context = WallContext.current();
+        if (context != null) {
+            WallSqlTableStat tableStat = context.getTableStat(tableName);
+            if (tableStat != null) {
+                tableStat.incrementCreateCount();
+            }
+        }
+    }
+
+    public static void check(WallVisitor visitor, SQLAlterTableStatement x) {
+        String tableName = ((SQLName) x.getName()).getSimleName();
+        WallContext context = WallContext.current();
+        if (context != null) {
+            WallSqlTableStat tableStat = context.getTableStat(tableName);
+            if (tableStat != null) {
+                tableStat.incrementAlterCount();
+            }
+        }
+    }
+
+    public static void check(WallVisitor visitor, SQLDropTableStatement x) {
+        for (SQLTableSource item : x.getTableSources()) {
+            if (item instanceof SQLExprTableSource) {
+                SQLExpr expr = ((SQLExprTableSource) item).getExpr();
+                String tableName = ((SQLName) expr).getSimleName();
+                WallContext context = WallContext.current();
+                if (context != null) {
+                    WallSqlTableStat tableStat = context.getTableStat(tableName);
+                    if (tableStat != null) {
+                        tableStat.incrementDropCount();
+                    }
+                }
+            }
+        }
     }
 
     public static void check(WallVisitor visitor, SQLSelectItem x) {
@@ -122,6 +178,10 @@ public class WallVisitorUtils {
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
             addViolation(visitor, "select into not allow", x);
             return;
+        }
+
+        if (x.getFrom() != null) {
+            x.getFrom().setParent(x);
         }
 
         SQLExpr where = x.getWhere();
@@ -777,6 +837,36 @@ public class WallVisitorUtils {
 
         if (expr instanceof SQLName) {
             String tableName = ((SQLName) expr).getSimleName();
+
+            WallContext context = WallContext.current();
+            if (context != null) {
+                WallSqlTableStat tableStat = context.getTableStat(tableName);
+                if (tableStat != null) {
+                    SQLObject parent = x.getParent();
+                    
+                    while (parent instanceof SQLTableSource) {
+                        parent = parent.getParent();
+                    }
+                    
+                    if (parent instanceof SQLSelectQueryBlock) {
+                        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
+                        if (x == queryBlock.getInto()) {
+                            tableStat.incrementSelectIntoCount();
+                        } else {
+                            tableStat.incrementSelectCount();
+                        }
+                    } else if (parent instanceof SQLTruncateStatement) {
+                        tableStat.incrementTruncateCount();
+                    } else if (parent instanceof SQLInsertStatement) {
+                        tableStat.incrementInsertCount();
+                    } else if (parent instanceof SQLDeleteStatement) {
+                        tableStat.incrementDeleteCount();
+                    } else if (parent instanceof SQLUpdateStatement) {
+                        tableStat.incrementUpdateCount();
+                    }
+                }
+            }
+
             if (visitor.isDenyTable(tableName)) {
                 addViolation(visitor, "deny table : " + tableName, x);
                 return false;
@@ -899,6 +989,74 @@ public class WallVisitorUtils {
             }
         } catch (IOException e) {
             LOG.error("load oracle deny tables errror", e);
+        }
+    }
+
+    public static void preVisitCheck(WallVisitor visitor, SQLObject x) {
+        WallConfig config = visitor.getProvider().getConfig();
+
+        if (!(x instanceof SQLStatement)) {
+            return;
+        }
+
+        boolean allow = false;
+        String denyMessage = null;
+        if (x instanceof SQLInsertStatement) {
+            allow = true;
+            denyMessage = "insert not allow";
+        } else if (x instanceof SQLSelectStatement) {
+            allow = true;
+            denyMessage = "select not allow";
+        } else if (x instanceof SQLDeleteStatement) {
+            allow = true;
+            denyMessage = "delete not allow";
+        } else if (x instanceof SQLUpdateStatement) {
+            allow = true;
+            denyMessage = "update not allow";
+        } else if (x instanceof OracleMultiInsertStatement) {
+            allow = true;
+            denyMessage = "multi-insert not allow";
+        } else if (x instanceof OracleMergeStatement) {
+            allow = true;
+            denyMessage = "merge not allow";
+        } else if (x instanceof SQLCallStatement) {
+            allow = true;
+            denyMessage = "call not allow";
+        } else if (x instanceof SQLTruncateStatement) {
+            allow = config.isTruncateAllow();
+            denyMessage = "truncate not allow";
+        } else if (x instanceof SQLCreateTableStatement) {
+            allow = config.isCreateTableAllow();
+            denyMessage = "create table not allow";
+        } else if (x instanceof SQLAlterTableStatement) {
+            allow = config.isAlterTableAllow();
+            denyMessage = "alter table not allow";
+        } else if (x instanceof SQLDropTableStatement) {
+            allow = config.isDropTableAllow();
+            denyMessage = "drop table not allow";
+        } else if (x instanceof MySqlSetCharSetStatement //
+                   || x instanceof MySqlSetNamesStatement //
+                   || x instanceof SQLSetStatement) {
+            allow = config.isSetAllow();
+            denyMessage = "set not allow";
+        } else if (x instanceof MySqlReplaceStatement) {
+            allow = config.isReplaceAllow();
+            denyMessage = "replace not allow";
+        } else if (x instanceof MySqlDescribeStatement) {
+            allow = config.isDescribeAllow();
+            denyMessage = "describe not allow";
+        } else if (x instanceof MySqlShowStatement) {
+            allow = config.isShowAllow();
+            denyMessage = "show not allow";
+        } else {
+            allow = config.isNoneBaseStatementAllow();
+        }
+
+        if (!allow) {
+            if (denyMessage == null) {
+                denyMessage = x.getClass() + " not allow";
+            }
+            addViolation(visitor, denyMessage, x);
         }
     }
 }

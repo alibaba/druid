@@ -21,26 +21,27 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMultiInsertStatement.InsertIntoClause;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
@@ -170,36 +171,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     public void preVisit(SQLObject x) {
-        if (!(x instanceof SQLStatement)) {
-            return;
-        }
-
-        if (config.isNoneBaseStatementAllow()) {
-            return;
-        }
-
-        boolean allow = false;
-        if (x instanceof SQLInsertStatement) {
-            allow = true;
-        } else if (x instanceof SQLSelectStatement) {
-            allow = true;
-        } else if (x instanceof SQLDeleteStatement) {
-            allow = true;
-        } else if (x instanceof SQLUpdateStatement) {
-            allow = true;
-        } else if (x instanceof OracleMultiInsertStatement) {
-            allow = true;
-        } else if (x instanceof OracleMergeStatement) {
-            allow = true;
-        } else if (x instanceof SQLCallStatement) {
-            allow = true;
-        } else if (x instanceof SQLTruncateStatement) {
-            allow = config.isTruncateAllow();
-        }
-
-        if (!allow) {
-            violations.add(new IllegalSQLObjectViolation("not allow statement", toSQL(x)));
-        }
+        WallVisitorUtils.preVisitCheck(this, x);
     }
 
     @Override
@@ -266,6 +238,36 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
 
     @Override
     public boolean visit(SQLSelectItem x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(OracleCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(OracleAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLDropTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }

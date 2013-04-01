@@ -36,7 +36,9 @@ public class SQLTruncateStatement extends SQLStatementImpl {
     }
     
     public void addTableSource(SQLName name) {
-        this.tableSources.add(new SQLExprTableSource(name));
+        SQLExprTableSource tableSource = new SQLExprTableSource(name);
+        tableSource.setParent(this);
+        this.tableSources.add(tableSource);
     }
 
     @Override

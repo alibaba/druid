@@ -33,6 +33,9 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
+    private boolean             createTableAllow           = false;
+    private boolean             dropTableAllow             = false;
+    private boolean             alterTableAllow            = false;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -283,6 +286,30 @@ public class WallConfig implements WallConfigMBean {
 
     public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
         this.selectIntoOutfileAllow = selectIntoOutfileAllow;
+    }
+
+    public boolean isCreateTableAllow() {
+        return createTableAllow;
+    }
+
+    public void setCreateTableAllow(boolean createTableAllow) {
+        this.createTableAllow = createTableAllow;
+    }
+
+    public boolean isDropTableAllow() {
+        return dropTableAllow;
+    }
+
+    public void setDropTableAllow(boolean dropTableAllow) {
+        this.dropTableAllow = dropTableAllow;
+    }
+
+    public boolean isAlterTableAllow() {
+        return alterTableAllow;
+    }
+
+    public void setAlterTableAllow(boolean alterTableAllow) {
+        this.alterTableAllow = alterTableAllow;
     }
 
     public boolean isSelectUnionCheck() {

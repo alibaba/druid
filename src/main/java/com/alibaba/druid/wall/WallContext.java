@@ -15,15 +15,38 @@
  */
 package com.alibaba.druid.wall;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WallContext {
 
     private final static ThreadLocal<WallContext> contextLocal = new ThreadLocal<WallContext>();
 
     private WallSqlStat                           sqlState;
+    private Map<String, WallSqlTableStat>         tableStats;
     private final String                          dbType;
 
     public WallContext(String dbType){
         this.dbType = dbType;
+    }
+
+    public WallSqlTableStat getTableStat(String tableName) {
+        if (tableStats == null) {
+            tableStats = new HashMap<String, WallSqlTableStat>(2);
+        }
+
+        String lowerCaseName = tableName.toLowerCase();
+
+        WallSqlTableStat stat = tableStats.get(lowerCaseName);
+        if (stat == null) {
+            if (tableStats.size() > 10000) {
+                return null;
+            }
+
+            stat = new WallSqlTableStat();
+            tableStats.put(tableName, stat);
+        }
+        return stat;
     }
 
     public static WallContext createIfNotExists(String dbType) {
@@ -32,6 +55,12 @@ public class WallContext {
             context = new WallContext(dbType);
             contextLocal.set(context);
         }
+        return context;
+    }
+
+    public static WallContext create(String dbType) {
+        WallContext context = new WallContext(dbType);
+        contextLocal.set(context);
         return context;
     }
 
@@ -49,6 +78,10 @@ public class WallContext {
 
     public void setSqlState(WallSqlStat sqlState) {
         this.sqlState = sqlState;
+    }
+
+    public Map<String, WallSqlTableStat> getTableStats() {
+        return tableStats;
     }
 
     public String getDbType() {

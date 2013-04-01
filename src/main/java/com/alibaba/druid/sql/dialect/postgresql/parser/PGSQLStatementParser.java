@@ -110,9 +110,10 @@ public class PGSQLStatementParser extends SQLStatementParser {
 
             for (;;) {
                 accept(Token.LPAREN);
-                SQLInsertStatement.ValuesClause values = new SQLInsertStatement.ValuesClause();
-                this.exprParser.exprList(values.getValues());
-                stmt.getValuesList().add(values);
+                SQLInsertStatement.ValuesClause valuesCaluse = new SQLInsertStatement.ValuesClause();
+                this.exprParser.exprList(valuesCaluse.getValues());
+                stmt.addValueCause(valuesCaluse);
+                
                 accept(Token.RPAREN);
                 if (lexer.token() == Token.COMMA) {
                     lexer.nextToken();

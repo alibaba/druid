@@ -21,36 +21,33 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -190,6 +187,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (config.isVariantCheck() && varName.startsWith("@@")) {
+            if ("@@session".equals(varName)) {
+                SQLObject parent = x.getParent();
+                if (parent instanceof SQLPropertyExpr) {
+                    String propName = ((SQLPropertyExpr) parent).getName();
+                    if (propName.equals("auto_increment_increment")) {
+                        return false;
+                    }
+                }
+            }
+            
             violations.add(new IllegalSQLObjectViolation("global variable", toSQL(x)));
         }
 
@@ -251,60 +258,45 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public void preVisit(SQLObject x) {
-        if (!(x instanceof SQLStatement)) {
-            return;
-        }
-
-        boolean allow = false;
-        String denyMessage = null;
-        if (x instanceof SQLInsertStatement) {
-            allow = true;
-            denyMessage = "insert not allow";
-        } else if (x instanceof SQLSelectStatement) {
-            allow = true;
-            denyMessage = "select not allow";
-        } else if (x instanceof SQLDeleteStatement) {
-            allow = true;
-            denyMessage = "delete not allow";
-        } else if (x instanceof SQLUpdateStatement) {
-            allow = true;
-            denyMessage = "update not allow";
-        } else if (x instanceof SQLCallStatement) {
-            allow = true;
-            denyMessage = "call not allow";
-        } else if (x instanceof SQLTruncateStatement) {
-            allow = config.isTruncateAllow();
-            denyMessage = "truncate not allow";
-        } else if (x instanceof MySqlDescribeStatement) {
-            allow = config.isDescribeAllow();
-            denyMessage = "describe not allow";
-        } else if (x instanceof MySqlReplaceStatement) {
-            allow = config.isReplaceAllow();
-            denyMessage = "replace not allow";
-        } else if (x instanceof MySqlSetCharSetStatement //
-                   || x instanceof MySqlSetNamesStatement //
-                   || x instanceof SQLSetStatement) {
-            allow = config.isSetAllow();
-            denyMessage = "set not allow";
-        } else if (x instanceof MySqlShowStatement) {
-            allow = config.isShowAllow();
-            denyMessage = "show not allow";
-        } else {
-            if (config.isNoneBaseStatementAllow()) {
-                return;
-            }
-        }
-
-        if (!allow) {
-            if (denyMessage == null) {
-                denyMessage = x.getClass() + " not allow";
-            }
-            violations.add(new IllegalSQLObjectViolation(denyMessage + " not allow", toSQL(x)));
-        }
+        WallVisitorUtils.preVisitCheck(this, x);
     }
 
     @Override
     public boolean visit(SQLSelectItem x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(MySqlCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    public boolean visit(SQLAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(MySqlAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    public boolean visit(SQLDropTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+    
+    @Override
+    public boolean visit(MySqlDropTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
     }
