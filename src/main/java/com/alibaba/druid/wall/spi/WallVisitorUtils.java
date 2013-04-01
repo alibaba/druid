@@ -366,11 +366,11 @@ public class WallVisitorUtils {
                 if (x instanceof MySqlUpdateStatement) {
                     MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
                     if (mysqlUpdate.getLimit() == null) {
-                        addViolation(visitor, "update alway true condition not allow", x);
+                        addViolation(visitor, "update none condition not allow", x);
                         return;
                     }
                 } else {
-                    addViolation(visitor, "update alway true condition not allow", x);
+                    addViolation(visitor, "update none condition not allow", x);
                     return;
                 }
             }

@@ -16,6 +16,7 @@
 package com.alibaba.druid.sql.dialect.oracle.parser;
 
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
+import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +24,8 @@ import java.util.Map;
 import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
-import com.alibaba.druid.sql.parser.SQLParseException;
+import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
-
-import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
 
 public class OracleLexer extends Lexer {
 
@@ -104,7 +103,7 @@ public class OracleLexer extends Lexer {
         }
 
         if (ch != ':' && ch != '#' && ch != '$') {
-            throw new SQLParseException("illegal variable");
+            throw new ParserException("illegal variable");
         }
 
         mark = pos;
@@ -136,13 +135,13 @@ public class OracleLexer extends Lexer {
         
         if (quoteFlag) {
             if (ch != '"') {
-                throw new SQLParseException("syntax error");
+                throw new ParserException("syntax error");
             }
             ++pos;
             bufPos++;
         } else if (mybatisFlag) {
             if (ch != '}') {
-                throw new SQLParseException("syntax error");
+                throw new ParserException("syntax error");
             }
             ++pos;
             bufPos++;

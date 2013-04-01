@@ -31,7 +31,6 @@ import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerOutputVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -150,9 +149,6 @@ public class SQLUtils {
             List<SQLStatement> statementList = toStatementList(sql, dbType);
 
             return toSQLString(statementList, dbType, parameters);
-        } catch (SQLParseException ex) {
-            LOG.warn("format error", ex);
-            return sql;
         } catch (ParserException ex) {
             LOG.warn("format error", ex);
             return sql;

@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlLexer extends Lexer {
@@ -64,7 +63,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new SQLParseException("illegal variable");
+            throw new ParserException("illegal variable");
         }
 
         mark = pos;
@@ -87,7 +86,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -110,7 +109,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -156,7 +155,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -176,7 +175,7 @@ public class MySqlLexer extends Lexer {
 
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {
-                throw new SQLParseException("illegal identifier");
+                throw new ParserException("illegal identifier");
             }
 
             mark = pos;

@@ -416,7 +416,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + ident + ", actual " + lexer.token());
+            throw new ParserException("syntax error, expect " + ident + ", actual " + lexer.token());
         }
     }
 

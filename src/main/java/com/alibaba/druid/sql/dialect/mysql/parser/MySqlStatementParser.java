@@ -138,7 +138,6 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnlockTablesStatem
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.parser.Token;
@@ -1860,7 +1859,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     private void parseValueClause(List<ValuesClause> valueClauseList, int columnSize) {
         for (;;) {
             if (lexer.token() != Token.LPAREN) {
-                throw new SQLParseException("syntax error, expect ')'");
+                throw new ParserException("syntax error, expect ')'");
             }
             lexer.nextTokenValue();
 
@@ -1914,7 +1913,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             }
 
             if (lexer.token() != Token.RPAREN) {
-                throw new SQLParseException("syntax error");
+                throw new ParserException("syntax error");
             }
 
             lexer.nextTokenComma();

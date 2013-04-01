@@ -256,28 +256,39 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         boolean allow = false;
+        String denyMessage = null;
         if (x instanceof SQLInsertStatement) {
             allow = true;
+            denyMessage = "insert not allow";
         } else if (x instanceof SQLSelectStatement) {
             allow = true;
+            denyMessage = "select not allow";
         } else if (x instanceof SQLDeleteStatement) {
             allow = true;
+            denyMessage = "delete not allow";
         } else if (x instanceof SQLUpdateStatement) {
             allow = true;
+            denyMessage = "update not allow";
         } else if (x instanceof SQLCallStatement) {
             allow = true;
+            denyMessage = "call not allow";
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
+            denyMessage = "truncate not allow";
         } else if (x instanceof MySqlDescribeStatement) {
             allow = config.isDescribeAllow();
+            denyMessage = "describe not allow";
         } else if (x instanceof MySqlReplaceStatement) {
             allow = config.isReplaceAllow();
+            denyMessage = "replace not allow";
         } else if (x instanceof MySqlSetCharSetStatement //
                    || x instanceof MySqlSetNamesStatement //
                    || x instanceof SQLSetStatement) {
             allow = config.isSetAllow();
+            denyMessage = "set not allow";
         } else if (x instanceof MySqlShowStatement) {
             allow = config.isShowAllow();
+            denyMessage = "show not allow";
         } else {
             if (config.isNoneBaseStatementAllow()) {
                 return;
@@ -285,7 +296,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(x.getClass() + " not allow", toSQL(x)));
+            if (denyMessage == null) {
+                denyMessage = x.getClass() + " not allow";
+            }
+            violations.add(new IllegalSQLObjectViolation(denyMessage + " not allow", toSQL(x)));
         }
     }
 

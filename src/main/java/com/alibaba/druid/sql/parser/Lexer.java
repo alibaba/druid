@@ -19,8 +19,8 @@ import static com.alibaba.druid.sql.parser.CharTypes.isFirstIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isIdentifierChar;
 import static com.alibaba.druid.sql.parser.CharTypes.isWhitespace;
 import static com.alibaba.druid.sql.parser.LayoutCharacters.EOI;
-import static com.alibaba.druid.sql.parser.Token.COLONEQ;
 import static com.alibaba.druid.sql.parser.Token.COLONCOLON;
+import static com.alibaba.druid.sql.parser.Token.COLONEQ;
 import static com.alibaba.druid.sql.parser.Token.COMMA;
 import static com.alibaba.druid.sql.parser.Token.EOF;
 import static com.alibaba.druid.sql.parser.Token.ERROR;
@@ -389,7 +389,7 @@ public class Lexer {
                     token = Token.SEMI;
                     return;
                 case '`':
-                    throw new SQLParseException("TODO"); // TODO
+                    throw new ParserException("TODO"); // TODO
                 case '@':
                     scanVariable();
                     return;
@@ -557,7 +557,7 @@ public class Lexer {
                 token = Token.TILDE;
                 break;
             default:
-                throw new SQLParseException("TODO");
+                throw new ParserException("TODO");
         }
     }
 
@@ -641,7 +641,7 @@ public class Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new SQLParseException("illegal variable");
+            throw new ParserException("illegal variable");
         }
 
         mark = pos;
@@ -672,7 +672,7 @@ public class Lexer {
 
         if (mybatisFlag) {
             if (ch != '}') {
-                throw new SQLParseException("syntax error");
+                throw new ParserException("syntax error");
             }
             ++pos;
             bufPos++;
@@ -754,7 +754,7 @@ public class Lexer {
 
         final boolean firstFlag = isFirstIdentifierChar(first);
         if (!firstFlag) {
-            throw new SQLParseException("illegal identifier");
+            throw new ParserException("illegal identifier");
         }
 
         mark = pos;
