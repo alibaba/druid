@@ -41,9 +41,11 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
+    private boolean             deleteWhereNoneCheck       = false;
 
     private boolean             updateAllow                = true;
     private boolean             updateWhereAlayTrueCheck   = true;
+    private boolean             updateWhereNoneCheck       = false;
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
@@ -351,6 +353,14 @@ public class WallConfig implements WallConfigMBean {
     public void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck) {
         this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
     }
+    
+    public boolean isDeleteWhereNoneCheck() {
+        return deleteWhereNoneCheck;
+    }
+
+    public void setDeleteWhereNoneCheck(boolean deleteWhereNoneCheck) {
+        this.deleteWhereNoneCheck = deleteWhereNoneCheck;
+    }
 
     public boolean isUpdateAllow() {
         return updateAllow;
@@ -366,6 +376,14 @@ public class WallConfig implements WallConfigMBean {
 
     public void setUpdateWhereAlayTrueCheck(boolean updateWhereAlayTrueCheck) {
         this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
+    }
+
+    public boolean isUpdateWhereNoneCheck() {
+        return updateWhereNoneCheck;
+    }
+
+    public void setUpdateWhereNoneCheck(boolean updateWhereNoneCheck) {
+        this.updateWhereNoneCheck = updateWhereNoneCheck;
     }
 
     public boolean isInsertAllow() {

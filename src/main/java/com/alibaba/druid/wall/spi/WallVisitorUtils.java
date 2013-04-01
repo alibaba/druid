@@ -225,14 +225,18 @@ public class WallVisitorUtils {
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
         checkReadOnly(visitor, x.getExprTableSource());
 
-        if (!visitor.getConfig().isDeleteAllow()) {
+        WallConfig config = visitor.getConfig();
+        if (!config.isDeleteAllow()) {
             addViolation(visitor, "delete not allow", x);
             return;
         }
 
-        if (x.getWhere() == null
-            || Boolean.TRUE == getConditionValue(visitor, x.getWhere(),
-                                                 visitor.getConfig().isDeleteWhereAlwayTrueCheck())) {
+        if (x.getWhere() == null && config.isDeleteWhereNoneCheck()) {
+            addViolation(visitor, "delete none condition not allow", x);
+            return;
+        }
+
+        if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), config.isDeleteWhereAlwayTrueCheck())) {
             addViolation(visitor, "delete alway true condition not allow", x);
             return;
         }
@@ -416,25 +420,26 @@ public class WallVisitorUtils {
     public static void checkUpdate(WallVisitor visitor, SQLUpdateStatement x) {
         checkReadOnly(visitor, x.getTableSource());
 
-        if (!visitor.getConfig().isUpdateAllow()) {
+        WallConfig config = visitor.getConfig();
+        if (!config.isUpdateAllow()) {
             addViolation(visitor, "update not allow", x);
             return;
         }
 
-        if (visitor.getConfig().isUpdateWhereAlayTrueCheck()) {
-            if (x.getWhere() == null) {
-                if (x instanceof MySqlUpdateStatement) {
-                    MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
-                    if (mysqlUpdate.getLimit() == null) {
-                        addViolation(visitor, "update none condition not allow", x);
-                        return;
-                    }
-                } else {
+        if (x.getWhere() == null && config.isUpdateWhereNoneCheck()) {
+            if (x instanceof MySqlUpdateStatement) {
+                MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
+                if (mysqlUpdate.getLimit() == null) {
                     addViolation(visitor, "update none condition not allow", x);
                     return;
                 }
+            } else {
+                addViolation(visitor, "update none condition not allow", x);
+                return;
             }
+        }
 
+        if (config.isUpdateWhereAlayTrueCheck()) {
             if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
                 addViolation(visitor, "update alway true condition not allow", x);
                 return;
@@ -843,11 +848,11 @@ public class WallVisitorUtils {
                 WallSqlTableStat tableStat = context.getTableStat(tableName);
                 if (tableStat != null) {
                     SQLObject parent = x.getParent();
-                    
+
                     while (parent instanceof SQLTableSource) {
                         parent = parent.getParent();
                     }
-                    
+
                     if (parent instanceof SQLSelectQueryBlock) {
                         SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) parent;
                         if (x == queryBlock.getInto()) {
