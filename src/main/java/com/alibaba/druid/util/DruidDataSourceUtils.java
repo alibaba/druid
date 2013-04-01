@@ -167,6 +167,22 @@ public class DruidDataSourceUtils {
         }
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Map<String, Object> getWallStatMap(Object druidDatasource) {
+        if (druidDatasource.getClass() == DruidDataSource.class) {
+            return ((DruidDataSource) druidDatasource).getWallStatMap();
+        }
+        
+        try {
+            Method method = druidDatasource.getClass().getMethod("getWallStatMap");
+            Object obj = method.invoke(druidDatasource);
+            return (Map) obj;
+        } catch (Exception e) {
+            LOG.error("getWallStatMap error", e);
+            return null;
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> getPoolingConnectionInfo(Object druidDatasource) {
         if (druidDatasource.getClass() == DruidDataSource.class) {

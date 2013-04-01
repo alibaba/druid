@@ -23,16 +23,14 @@ import com.alibaba.druid.wall.spi.OracleWallProvider;
 
 /**
  * @author wenshao
- *
  */
 public class WallDenySchemaTest extends TestCase {
 
     public void testORACLE() throws Exception {
         String sql = "SELECT F1, F2 FROM ALL_ALL_TABLES";
-                
+
         OracleWallProvider provider = new OracleWallProvider();
         Assert.assertFalse(provider.checkValid(sql));
-        
-        Assert.assertEquals(1, provider.getDenniedTableStat("ALL_ALL_TABLES").getDenyCount());
+
     }
 }

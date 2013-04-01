@@ -30,13 +30,17 @@ public class WallSqlStat {
 
     private final List<Violation>                    violations;
 
-    public WallSqlStat(Map<String, WallSqlTableStat> tableStats){
-        this(tableStats, Collections.<Violation> emptyList());
+    private final Map<String, WallSqlFunctionStat>   functionStats;
+
+    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats){
+        this(tableStats, functionStats, Collections.<Violation> emptyList());
     }
 
-    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, List<Violation> violations){
+    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats,
+                       List<Violation> violations){
         this.violations = violations;
         this.tableStats = tableStats;
+        this.functionStats = functionStats;
     }
 
     public long incrementAndGetExecuteCount() {
@@ -49,6 +53,10 @@ public class WallSqlStat {
 
     public Map<String, WallSqlTableStat> getTableStats() {
         return tableStats;
+    }
+    
+    public Map<String, WallSqlFunctionStat> getFunctionStats() {
+        return functionStats;
     }
 
     public List<Violation> getViolations() {

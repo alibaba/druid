@@ -1,6 +1,6 @@
 package com.alibaba.druid.wall;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
@@ -151,7 +151,17 @@ public class WallTableStat {
 
     public String toString() {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = toMap();
+
+        return JSONUtils.toJSONString(map);
+    }
+    
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        return toMap(map);
+    }
+
+    public Map<String, Object> toMap(Map<String, Object> map) {
         if (selectCount > 0) {
             map.put("selectCount", selectCount);
         }
@@ -176,7 +186,6 @@ public class WallTableStat {
         if (truncateCount > 0) {
             map.put("truncateCount", truncateCount);
         }
-
-        return JSONUtils.toJSONString(map);
+        return map;
     }
 }

@@ -36,6 +36,7 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
+import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 
@@ -255,6 +256,17 @@ public final class DruidStatService implements DruidStatServiceMBean {
         List<Map<String, Object>> array = statManagerFacade.getSqlStatDataList(dataSourceId);
         List<Map<String, Object>> sortedArray = comparatorOrderBy(array, parameters);
         return sortedArray;
+    }
+    
+    public Map<String, Object> getWallStatMap(Map<String, String> parameters) {
+        Integer dataSourceId = null;
+
+        String dataSourceIdParam = parameters.get("dataSourceId");
+        if (dataSourceIdParam != null && dataSourceIdParam.length() > 0) {
+            dataSourceId = Integer.parseInt(dataSourceIdParam);
+        }
+        
+        return statManagerFacade.getWallStatMap(dataSourceId);
     }
 
     private String getSqlStat(Integer id) {

@@ -799,6 +799,11 @@ public class WallVisitorUtils {
         }
 
         String methodName = x.getMethodName();
+        
+        WallContext context = WallContext.current();
+        if (context != null) {
+            context.incrementFunctionInvoke(methodName);
+        }
 
         if (!visitor.getProvider().checkDenyFunction(methodName)) {
             addViolation(visitor, "deny function : " + methodName, x);

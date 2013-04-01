@@ -24,10 +24,31 @@ public class WallContext {
 
     private WallSqlStat                           sqlState;
     private Map<String, WallSqlTableStat>         tableStats;
+    private Map<String, WallSqlFunctionStat>      functionStats;
     private final String                          dbType;
 
     public WallContext(String dbType){
         this.dbType = dbType;
+    }
+
+    public void incrementFunctionInvoke(String tableName) {
+        if (functionStats == null) {
+            functionStats = new HashMap<String, WallSqlFunctionStat>();
+        }
+
+        String lowerCaseName = tableName.toLowerCase();
+
+        WallSqlFunctionStat stat = functionStats.get(lowerCaseName);
+        if (stat == null) {
+            if (functionStats.size() > 100) {
+                return;
+            }
+
+            stat = new WallSqlFunctionStat();
+            functionStats.put(tableName, stat);
+        }
+
+        stat.incrementInvokeCount();
     }
 
     public WallSqlTableStat getTableStat(String tableName) {
@@ -39,7 +60,7 @@ public class WallContext {
 
         WallSqlTableStat stat = tableStats.get(lowerCaseName);
         if (stat == null) {
-            if (tableStats.size() > 10000) {
+            if (tableStats.size() > 100) {
                 return null;
             }
 
@@ -82,6 +103,10 @@ public class WallContext {
 
     public Map<String, WallSqlTableStat> getTableStats() {
         return tableStats;
+    }
+
+    public Map<String, WallSqlFunctionStat> getFunctionStats() {
+        return functionStats;
     }
 
     public String getDbType() {
