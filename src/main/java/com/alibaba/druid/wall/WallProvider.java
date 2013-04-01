@@ -94,7 +94,10 @@ public abstract class WallProvider {
 
     public WallTableStat getTableStat(String tableName) {
         String lowerCaseName = tableName.toLowerCase();
-
+        return getTableStatWithLowerName(lowerCaseName);
+    }
+    
+    public WallTableStat getTableStatWithLowerName(String lowerCaseName) {
         WallTableStat stat = tableStats.get(lowerCaseName);
         if (stat == null) {
             if (tableStats.size() > 10000) {
@@ -385,7 +388,7 @@ public abstract class WallProvider {
                     for (Map.Entry<String, WallSqlTableStat> entry : sqlStat.getTableStats().entrySet()) {
                         String tableName = entry.getKey();
                         WallSqlTableStat sqlTableStat = entry.getValue();
-                        WallTableStat tableStat = getTableStat(tableName);
+                        WallTableStat tableStat = getTableStatWithLowerName(tableName);
                         if (tableStat != null) {
                             tableStat.addSqlTableStat(sqlTableStat);
                         }

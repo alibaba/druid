@@ -357,6 +357,10 @@ public class MySqlLexer extends Lexer {
             }
 
             for (;;) {
+                if (ch == EOI) {
+                    this.token = Token.ERROR;
+                    return;
+                }
                 if (ch == '*' && charAt(pos + 1) == '/') {
                     bufPos += 2;
                     scanChar();

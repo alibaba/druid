@@ -14,7 +14,7 @@ import com.alibaba.druid.wall.spi.SQLServerWallProvider;
 
 public class WallStatTest_delete extends TestCase {
 
-    private String sql = "delete from t where fid = ?";
+    private String sql = "delete from T where fid = ?";
 
     protected void setUp() throws Exception {
         WallContext.clearContext();

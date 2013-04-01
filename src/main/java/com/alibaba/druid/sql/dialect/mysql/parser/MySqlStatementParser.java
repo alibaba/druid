@@ -189,7 +189,8 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLSelectStatement parseSelect() {
-        return new SQLSelectStatement(new MySqlSelectParser(this.exprParser).select());
+        MySqlSelectParser selectParser = new MySqlSelectParser(this.exprParser);
+        return new SQLSelectStatement(selectParser.select());
     }
 
     public SQLUpdateStatement parseUpdateStatement() {
