@@ -22,22 +22,29 @@ import org.junit.Assert;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
-
 public class WallUpdateTest2 extends TestCase {
+
     private String sql = "UPDATE T_USER SET FNAME = ?";
-    
-    private WallConfig config = new WallConfig();
-    
-    protected void setUp() throws Exception {
-        config.setUpdateAllow(true);
+
+    public void testMySql_true() throws Exception {
+        WallConfig config = new WallConfig();
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
 
-    public void testMySql() throws Exception {
+    public void testORACLE_true() throws Exception {
+        WallConfig config = new WallConfig();
+        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+    }
+    
+    public void testMySql_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setUpdateAllow(false);
         Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
     }
     
-    public void testORACLE() throws Exception {
-        
+    public void testORACLE_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setUpdateAllow(false);
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

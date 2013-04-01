@@ -67,6 +67,9 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     }
 
     public void setWhere(SQLExpr where) {
+        if (where != null) {
+            where.setParent(this);
+        }
         this.where = where;
     }
 

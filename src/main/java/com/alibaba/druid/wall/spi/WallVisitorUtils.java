@@ -241,7 +241,6 @@ public class WallVisitorUtils {
             return;
         }
 
-        x.getWhere().setParent(x);
         checkCondition(visitor, x.getWhere());
         checkConditionForMultiTenant(visitor, x.getWhere(), x);
     }
