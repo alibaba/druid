@@ -585,12 +585,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             oracleValidationQueryCheck();
-        } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
-            if (!this.isTestWhileIdle()) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
-                }
-            }
         } else if (JdbcUtils.DB2.equals(dbType)) {
             db2ValidationQueryCheck();
         }
