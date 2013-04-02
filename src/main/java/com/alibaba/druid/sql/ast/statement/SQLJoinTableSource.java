@@ -63,6 +63,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setLeft(SQLTableSource left) {
+        if (left != null) {
+            left.setParent(this);
+        }
         this.left = left;
     }
 
@@ -71,6 +74,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setRight(SQLTableSource right) {
+        if (right != null) {
+            right.setParent(this);
+        }
         this.right = right;
     }
 
@@ -79,6 +85,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setCondition(SQLExpr condition) {
+        if (condition != null) {
+            condition.setParent(this);
+        }
         this.condition = condition;
     }
 

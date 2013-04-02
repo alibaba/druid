@@ -29,7 +29,7 @@ public class WallDropTest1 extends TestCase {
     private WallConfig config = new WallConfig();
     
     protected void setUp() throws Exception {
-        config.setNoneBaseStatementAllow(true);
+        config.setDropTableAllow(true);
     }
 
     public void testMySql() throws Exception {

@@ -41,7 +41,7 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + text + ", actual " + lexer.token());
+            throw new ParserException("syntax error, expect " + text + ", actual " + lexer.token());
         }
     }
 
@@ -124,14 +124,14 @@ public class SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+            throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
                                         + lexer.stringVal() + ", pos " + this.lexer.pos());
         }
     }
 
     public void match(Token token) {
         if (lexer.token() != token) {
-            throw new SQLParseException("syntax error, expect " + token + ", actual " + lexer.token() + " "
+            throw new ParserException("syntax error, expect " + token + ", actual " + lexer.token() + " "
                                         + lexer.stringVal());
         }
     }

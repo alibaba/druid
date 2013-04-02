@@ -256,6 +256,17 @@ public final class DruidStatService implements DruidStatServiceMBean {
         List<Map<String, Object>> sortedArray = comparatorOrderBy(array, parameters);
         return sortedArray;
     }
+    
+    public Map<String, Object> getWallStatMap(Map<String, String> parameters) {
+        Integer dataSourceId = null;
+
+        String dataSourceIdParam = parameters.get("dataSourceId");
+        if (dataSourceIdParam != null && dataSourceIdParam.length() > 0) {
+            dataSourceId = Integer.parseInt(dataSourceIdParam);
+        }
+        
+        return statManagerFacade.getWallStatMap(dataSourceId);
+    }
 
     private String getSqlStat(Integer id) {
         Map<String, Object> map = statManagerFacade.getSqlStatData(id);

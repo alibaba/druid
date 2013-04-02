@@ -44,6 +44,9 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     }
 
     public void setTableSource(SQLTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 
@@ -64,6 +67,9 @@ public class SQLDeleteStatement extends SQLStatementImpl {
     }
 
     public void setWhere(SQLExpr where) {
+        if (where != null) {
+            where.setParent(this);
+        }
         this.where = where;
     }
 

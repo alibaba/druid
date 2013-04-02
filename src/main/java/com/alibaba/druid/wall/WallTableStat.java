@@ -1,0 +1,191 @@
+package com.alibaba.druid.wall;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLongFieldUpdater;
+
+import com.alibaba.druid.support.json.JSONUtils;
+
+/*
+ * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+public class WallTableStat {
+
+    private volatile long                              selectCount;
+    private volatile long                              selectIntoCount;
+    private volatile long                              insertCount;
+    private volatile long                              updateCount;
+    private volatile long                              deleteCount;
+    private volatile long                              truncateCount;
+    private volatile long                              createCount;
+    private volatile long                              alterCount;
+    private volatile long                              dropCount;
+
+    final static AtomicLongFieldUpdater<WallTableStat> selectCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "selectCount");
+    final static AtomicLongFieldUpdater<WallTableStat> selectIntoCountUpdater = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "selectIntoCount");
+    final static AtomicLongFieldUpdater<WallTableStat> insertCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "insertCount");
+    final static AtomicLongFieldUpdater<WallTableStat> updateCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "updateCount");
+    final static AtomicLongFieldUpdater<WallTableStat> deleteCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "deleteCount");
+    final static AtomicLongFieldUpdater<WallTableStat> truncateCountUpdater   = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "truncateCount");
+    final static AtomicLongFieldUpdater<WallTableStat> createCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "createCount");
+    final static AtomicLongFieldUpdater<WallTableStat> alterCountUpdater      = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "alterCount");
+    final static AtomicLongFieldUpdater<WallTableStat> dropCountUpdater       = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "dropCount");
+
+    public WallTableStat(){
+
+    }
+
+    public long getSelectCount() {
+        return selectCount;
+    }
+
+    public long getSelectIntoCount() {
+        return selectIntoCount;
+    }
+
+    public long getInsertCount() {
+        return insertCount;
+    }
+
+    public long getUpdateCount() {
+        return updateCount;
+    }
+
+    public long getDeleteCount() {
+        return deleteCount;
+    }
+
+    public long getTruncateCount() {
+        return truncateCount;
+    }
+
+    public long getCreateCount() {
+        return createCount;
+    }
+
+    public long getAlterCount() {
+        return alterCount;
+    }
+
+    public long getDropCount() {
+        return dropCount;
+    }
+
+    public void addSqlTableStat(WallSqlTableStat stat) {
+        {
+            long val = stat.getSelectCount();
+            if (val > 0) {
+                selectCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getSelectIntoCount();
+            if (val > 0) {
+                selectIntoCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getInsertCount();
+            if (val > 0) {
+                insertCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getUpdateCount();
+            if (val > 0) {
+                updateCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getDeleteCount();
+            if (val > 0) {
+                deleteCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getAlterCount();
+            if (val > 0) {
+                alterCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getTruncateCount();
+            if (val > 0) {
+                truncateCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getCreateCount();
+            if (val > 0) {
+                createCountUpdater.addAndGet(this, val);
+            }
+        }
+        {
+            long val = stat.getDropCount();
+            if (val > 0) {
+                dropCountUpdater.addAndGet(this, val);
+            }
+        }
+    }
+
+    public String toString() {
+
+        Map<String, Object> map = toMap();
+
+        return JSONUtils.toJSONString(map);
+    }
+    
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        return toMap(map);
+    }
+
+    public Map<String, Object> toMap(Map<String, Object> map) {
+        if (selectCount > 0) {
+            map.put("selectCount", selectCount);
+        }
+        if (deleteCount > 0) {
+            map.put("deleteCount", deleteCount);
+        }
+        if (insertCount > 0) {
+            map.put("insertCount", insertCount);
+        }
+        if (updateCount > 0) {
+            map.put("updateCount", updateCount);
+        }
+        if (alterCount > 0) {
+            map.put("alterCount", alterCount);
+        }
+        if (dropCount > 0) {
+            map.put("dropCount", dropCount);
+        }
+        if (createCount > 0) {
+            map.put("createCount", createCount);
+        }
+        if (truncateCount > 0) {
+            map.put("truncateCount", truncateCount);
+        }
+        return map;
+    }
+}

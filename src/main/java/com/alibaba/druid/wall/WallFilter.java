@@ -21,7 +21,6 @@ import java.sql.Wrapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.DruidRuntimeException;
 import com.alibaba.druid.filter.FilterAdapter;
@@ -55,9 +54,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
     private volatile boolean logViolation   = false;
     private volatile boolean throwException = true;
-
-    // stats
-    private final AtomicLong violationCount = new AtomicLong();
 
     @Override
     public void init(DataSourceProxy dataSource) {
@@ -421,8 +417,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         List<Violation> violations = checkResult.getViolations();
 
         if (violations.size() > 0) {
-            violationCount.incrementAndGet();
-
             Violation firstViolation = violations.get(0);
             if (isLogViolation()) {
                 LOG.error("sql injection violation, " + firstViolation.getMessage() + " : " + sql);
@@ -461,7 +455,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         }
 
         if (!this.provider.getConfig().isWrapAllow()) {
-            violationCount.incrementAndGet();
             return null;
         }
 
@@ -475,7 +468,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         }
 
         if (!this.provider.getConfig().isMetadataAllow()) {
-            violationCount.incrementAndGet();
             if (isLogViolation()) {
                 LOG.error("not support method : Connection.getMetdataData");
             }
@@ -491,11 +483,11 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     public long getViolationCount() {
-        return this.violationCount.get();
+        return this.provider.getViolationCount();
     }
 
     public void resetViolationCount() {
-        this.violationCount.set(0);
+        this.provider.reset();
     }
 
     public void clearWhiteList() {

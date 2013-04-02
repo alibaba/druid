@@ -223,7 +223,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal() + ", pos " + lexer.pos());
+            throw new ParserException("syntax error, " + lexer.token() + " " + lexer.stringVal() + ", pos " + lexer.pos());
         }
     }
 
@@ -615,6 +615,10 @@ public class SQLStatementParser extends SQLParser {
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
             if (lexer.token() == (Token.FROM)) {
+                lexer.nextToken();
+            }
+            
+            if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
 

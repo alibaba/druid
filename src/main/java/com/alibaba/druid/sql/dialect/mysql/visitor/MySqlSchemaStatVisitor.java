@@ -146,7 +146,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
         return true;
     }
-    
+
     @Override
     public String getDbType() {
         return JdbcUtils.MYSQL;
@@ -432,7 +432,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlShowTablesStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -442,7 +442,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlShowDatabasesStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -666,15 +666,15 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public void endVisit(MySqlShowCollationStatement x) {
 
     }
-    
+
     @Override
     public boolean visit(MySqlShowBinLogEventsStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowBinLogEventsStatement x) {
-        
+
     }
 
     @Override
@@ -684,27 +684,27 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCharacterSetStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowContributorsStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowContributorsStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowCreateDatabaseStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowCreateDatabaseStatement x) {
-        
+
     }
 
     @Override
@@ -714,7 +714,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateEventStatement x) {
-        
+
     }
 
     @Override
@@ -724,7 +724,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateFunctionStatement x) {
-        
+
     }
 
     @Override
@@ -734,7 +734,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateProcedureStatement x) {
-        
+
     }
 
     @Override
@@ -744,7 +744,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateTableStatement x) {
-        
+
     }
 
     @Override
@@ -754,7 +754,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateTriggerStatement x) {
-        
+
     }
 
     @Override
@@ -764,7 +764,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowCreateViewStatement x) {
-        
+
     }
 
     @Override
@@ -774,17 +774,17 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowEngineStatement x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlShowEnginesStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlShowEnginesStatement x) {
-        
+
     }
 
     @Override
@@ -794,7 +794,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowErrorsStatement x) {
-        
+
     }
 
     @Override
@@ -804,7 +804,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowEventsStatement x) {
-        
+
     }
 
     @Override
@@ -814,7 +814,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowFunctionCodeStatement x) {
-        
+
     }
 
     @Override
@@ -824,7 +824,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowFunctionStatusStatement x) {
-        
+
     }
 
     @Override
@@ -834,7 +834,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowGrantsStatement x) {
-        
+
     }
 
     @Override
@@ -844,7 +844,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUserName x) {
-        
+
     }
 
     @Override
@@ -854,7 +854,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowIndexesStatement x) {
-        
+
     }
 
     @Override
@@ -864,7 +864,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowKeysStatement x) {
-        
+
     }
 
     @Override
@@ -874,7 +874,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowMasterStatusStatement x) {
-        
+
     }
 
     @Override
@@ -884,7 +884,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowOpenTablesStatement x) {
-        
+
     }
 
     @Override
@@ -894,7 +894,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowPluginsStatement x) {
-        
+
     }
 
     @Override
@@ -904,7 +904,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowPrivilegesStatement x) {
-        
+
     }
 
     @Override
@@ -914,7 +914,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProcedureCodeStatement x) {
-        
+
     }
 
     @Override
@@ -924,7 +924,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProcedureStatusStatement x) {
-        
+
     }
 
     @Override
@@ -934,7 +934,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProcessListStatement x) {
-        
+
     }
 
     @Override
@@ -944,7 +944,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProfileStatement x) {
-        
+
     }
 
     @Override
@@ -954,7 +954,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowProfilesStatement x) {
-        
+
     }
 
     @Override
@@ -964,7 +964,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowRelayLogEventsStatement x) {
-        
+
     }
 
     @Override
@@ -974,7 +974,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowSlaveHostsStatement x) {
-        
+
     }
 
     @Override
@@ -984,7 +984,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowSlaveStatusStatement x) {
-        
+
     }
 
     @Override
@@ -994,7 +994,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowTableStatusStatement x) {
-        
+
     }
 
     @Override
@@ -1004,7 +1004,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowTriggersStatement x) {
-        
+
     }
 
     @Override
@@ -1014,7 +1014,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlShowVariantsStatement x) {
-        
+
     }
 
     @Override
@@ -1035,7 +1035,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableStatement x) {
-        
+
     }
 
     @Override
@@ -1045,17 +1045,17 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableAddColumn x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlCreateIndexStatement x) {
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlCreateIndexStatement x) {
-        
+
     }
 
     @Override
@@ -1065,7 +1065,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlRenameTableStatement.Item x) {
-        
+
     }
 
     @Override
@@ -1075,7 +1075,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlRenameTableStatement x) {
-        
+
     }
 
     @Override
@@ -1086,7 +1086,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlDropViewStatement x) {
-        
+
     }
 
     @Override
@@ -1096,7 +1096,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUnionQuery x) {
-        
+
     }
 
     @Override
@@ -1106,7 +1106,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUseIndexHint x) {
-        
+
     }
 
     @Override
@@ -1116,7 +1116,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlIgnoreIndexHint x) {
-        
+
     }
 
     @Override
@@ -1126,7 +1126,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlLockTableStatement x) {
-        
+
     }
 
     @Override
@@ -1136,7 +1136,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUnlockTablesStatement x) {
-        
+
     }
 
     @Override
@@ -1146,7 +1146,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlForceIndexHint x) {
-        
+
     }
 
     @Override
@@ -1161,9 +1161,9 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableChangeColumn x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlAlterTableModifyColumn x) {
         SQLAlterTableStatement stmt = (SQLAlterTableStatement) x.getParent();
@@ -1176,7 +1176,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableModifyColumn x) {
-        
+
     }
 
     @Override
@@ -1186,7 +1186,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableCharacter x) {
-        
+
     }
 
     @Override
@@ -1196,7 +1196,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableAddIndex x) {
-        
+
     }
 
     @Override
@@ -1206,7 +1206,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableOption x) {
-        
+
     }
 
     @Override
@@ -1216,7 +1216,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlCreateTableStatement x) {
-        
+
     }
 
     @Override
@@ -1226,7 +1226,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlHelpStatement x) {
-        
+
     }
 
     @Override
@@ -1236,7 +1236,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlCharExpr x) {
-        
+
     }
 
     @Override
@@ -1246,7 +1246,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableAddUnique x) {
-        
+
     }
 
     @Override
@@ -1256,7 +1256,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlUnique x) {
-        
+
     }
 
     @Override
@@ -1266,7 +1266,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlForeignKey x) {
-        
+
     }
 
     @Override
@@ -1276,7 +1276,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableDiscardTablespace x) {
-        
+
     }
 
     @Override
@@ -1286,7 +1286,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
-        
+
     }
-    
+
 }

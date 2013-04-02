@@ -1462,6 +1462,10 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             parseHints(deleteStatement.getHints());
 

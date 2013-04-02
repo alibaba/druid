@@ -20,11 +20,11 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.junit.Assert;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.alibaba.druid.spring.User;

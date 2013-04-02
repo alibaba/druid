@@ -20,6 +20,7 @@ import com.alibaba.druid.DruidRuntimeException;
 /**
  * @author wenshao<szujobs@hotmail.com>
  */
+@Deprecated
 public class SQLParseException extends DruidRuntimeException {
 
     private static final long serialVersionUID = 1L;
