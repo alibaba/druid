@@ -25,15 +25,16 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     private String            name;
 
+    private transient String  lowerName;
+
     public SQLIdentifierExpr(){
 
     }
 
     public SQLIdentifierExpr(String name){
-
         this.name = name;
     }
-    
+
     public String getSimleName() {
         return name;
     }
@@ -44,6 +45,18 @@ public class SQLIdentifierExpr extends SQLExprImpl implements SQLName {
 
     public void setName(String name) {
         this.name = name;
+        this.lowerName = null;
+    }
+
+    public String getLowerName() {
+        if (lowerName == null && name != null) {
+            lowerName = name.toLowerCase();
+        }
+        return lowerName;
+    }
+
+    public void setLowerName(String lowerName) {
+        this.lowerName = lowerName;
     }
 
     public void output(StringBuffer buf) {

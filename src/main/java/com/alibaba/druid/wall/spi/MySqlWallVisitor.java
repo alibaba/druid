@@ -21,15 +21,17 @@ import java.util.List;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
-import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
+import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
+import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
@@ -37,20 +39,17 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
-import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlOutFileExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDropTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlInsertStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
@@ -86,11 +85,6 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     public List<Violation> getViolations() {
         return violations;
-    }
-
-    public boolean visit(SQLPropertyExpr x) {
-        WallVisitorUtils.check(this, x);
-        return true;
     }
 
     public boolean visit(SQLInListExpr x) {
@@ -183,14 +177,64 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         return true;
     }
 
+    public boolean visit(SQLPropertyExpr x) {
+        if (x.getOwner() instanceof SQLVariantRefExpr) {
+            SQLVariantRefExpr varExpr = (SQLVariantRefExpr) x.getOwner();
+            SQLObject parent = x.getParent();
+            String varName = varExpr.getName();
+            if (varName.equalsIgnoreCase("@@session") || varName.equalsIgnoreCase("@@global")) {
+                if (!(parent instanceof SQLSelectItem) && !(parent instanceof SQLAssignItem)) {
+                    violations.add(new IllegalSQLObjectViolation("variable in condition not allow", toSQL(x)));
+                    return false;
+                }
+
+                if (!checkVar(x.getParent(), x.getName())) {
+                    violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
+                }
+                return false;
+            }
+        }
+
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    public boolean checkVar(SQLObject parent, String varName) {
+        if (varName == null) {
+            return false;
+        }
+
+        if (varName.equals("?")) {
+            return true;
+        }
+
+        if (!config.isVariantCheck()) {
+            return true;
+        }
+
+        if (varName.startsWith("@@")) {
+            if (!(parent instanceof SQLSelectItem) && !(parent instanceof SQLAssignItem)) {
+                return false;
+            }
+
+            varName = varName.substring(2);
+        }
+
+        if (config.getPermitVariants().contains(varName)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public boolean visit(SQLVariantRefExpr x) {
         String varName = x.getName();
         if (varName == null) {
             return false;
         }
 
-        if (config.isVariantCheck() && varName.startsWith("@@")) {
-            violations.add(new IllegalSQLObjectViolation("global variable", toSQL(x)));
+        if (!checkVar(x.getParent(), x.getName())) {
+            violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
         }
 
         return false;
@@ -251,47 +295,51 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     }
 
     public void preVisit(SQLObject x) {
-        if (!(x instanceof SQLStatement)) {
-            return;
-        }
-
-        boolean allow = false;
-        if (x instanceof SQLInsertStatement) {
-            allow = true;
-        } else if (x instanceof SQLSelectStatement) {
-            allow = true;
-        } else if (x instanceof SQLDeleteStatement) {
-            allow = true;
-        } else if (x instanceof SQLUpdateStatement) {
-            allow = true;
-        } else if (x instanceof SQLCallStatement) {
-            allow = true;
-        } else if (x instanceof SQLTruncateStatement) {
-            allow = config.isTruncateAllow();
-        } else if (x instanceof MySqlDescribeStatement) {
-            allow = config.isDescribeAllow();
-        } else if (x instanceof MySqlReplaceStatement) {
-            allow = config.isReplaceAllow();
-        } else if (x instanceof MySqlSetCharSetStatement //
-                   || x instanceof MySqlSetNamesStatement //
-                   || x instanceof SQLSetStatement) {
-            allow = config.isSetAllow();
-        } else if (x instanceof MySqlShowStatement) {
-            allow = config.isShowAllow();
-        } else {
-            if (config.isNoneBaseStatementAllow()) {
-                return;
-            }
-        }
-
-        if (!allow) {
-            violations.add(new IllegalSQLObjectViolation(x.getClass() + " not allow", toSQL(x)));
-        }
+        WallVisitorUtils.preVisitCheck(this, x);
     }
 
     @Override
     public boolean visit(SQLSelectItem x) {
         WallVisitorUtils.check(this, x);
         return true;
+    }
+
+    @Override
+    public boolean visit(SQLCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(MySqlCreateTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    public boolean visit(SQLAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(MySqlAlterTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    public boolean visit(SQLDropTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(MySqlDropTableStatement x) {
+        WallVisitorUtils.check(this, x);
+        return true;
+    }
+
+    @Override
+    public boolean visit(SQLSetStatement x) {
+        return false;
     }
 }

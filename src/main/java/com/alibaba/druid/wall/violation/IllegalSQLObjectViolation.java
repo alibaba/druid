@@ -22,11 +22,8 @@ public class IllegalSQLObjectViolation implements Violation {
     private String message;
     private String sqlPart;
 
-    public IllegalSQLObjectViolation(){
-
-    }
-
     public IllegalSQLObjectViolation(String message, String condition){
+        this.message = message;
         this.sqlPart = condition;
     }
 

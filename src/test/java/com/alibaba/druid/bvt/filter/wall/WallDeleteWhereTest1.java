@@ -19,21 +19,37 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
  * 这个场景，检测可疑的Having条件
+ * 
  * @author wenshao
- *
  */
 public class WallDeleteWhereTest1 extends TestCase {
+
     private String sql = "DELETE FROM T";
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql));
+        Assert.assertTrue(WallUtils.isValidateMySql(sql));
     }
-    
+
     public void testORACLE() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle(sql));
+        Assert.assertTrue(WallUtils.isValidateOracle(sql));
+    }
+
+    public void testMySql_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setDeleteWhereNoneCheck(true);
+
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+    }
+
+    public void testORACLE_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setDeleteWhereNoneCheck(true);
+
+        Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

@@ -77,6 +77,7 @@ import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
 import com.alibaba.druid.util.JdbcUtils;
+import com.alibaba.druid.wall.WallFilter;
 
 /**
  * @author ljw<ljw2083@alibaba-inc.com>
@@ -584,12 +585,6 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             }
 
             oracleValidationQueryCheck();
-        } else if (JdbcUtils.MYSQL.equals(this.dbType)) {
-            if (!this.isTestWhileIdle()) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("Your dbType is mysql, recommend set testWhileIdle is true");
-                }
-            }
         } else if (JdbcUtils.DB2.equals(dbType)) {
             db2ValidationQueryCheck();
         }
@@ -1440,8 +1435,8 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         ref.add(new StringRefAddr("instanceKey", instanceKey));
         ref.add(new StringRefAddr("url", this.getUrl()));
         ref.add(new StringRefAddr("username", this.getUsername()));
-        ref.add(new StringRefAddr("password",this.getPassword()));
-        //TODO ADD OTHER PROPERTIES
+        ref.add(new StringRefAddr("password", this.getPassword()));
+        // TODO ADD OTHER PROPERTIES
         return ref;
     }
 
@@ -1944,6 +1939,17 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public Map<String, JdbcSqlStat> getSqlStatMap() {
         return this.getDataSourceStat().getSqlStatMap();
+    }
+
+    public Map<String, Object> getWallStatMap() {
+        for (Filter filter : this.filters) {
+            if (filter instanceof WallFilter) {
+                WallFilter wallFilter = (WallFilter) filter;
+                return wallFilter.getProvider().getStatsMap();
+            }
+        }
+
+        return null;
     }
 
     public Lock getLock() {

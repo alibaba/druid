@@ -141,6 +141,10 @@ public class SQLSelectParser extends SQLParser {
         }
 
         accept(Token.SELECT);
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+        }
 
         SQLSelectQueryBlock queryBlock = new SQLSelectQueryBlock();
 
@@ -416,7 +420,7 @@ public class SQLSelectParser extends SQLParser {
             lexer.nextToken();
         } else {
             setErrorEndPos(lexer.pos());
-            throw new SQLParseException("syntax error, expect " + ident + ", actual " + lexer.token());
+            throw new ParserException("syntax error, expect " + ident + ", actual " + lexer.token());
         }
     }
 

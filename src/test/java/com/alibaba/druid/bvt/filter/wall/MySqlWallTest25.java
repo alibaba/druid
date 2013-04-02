@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
+import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallUtils;
 
 /**
@@ -35,8 +36,23 @@ public class MySqlWallTest25 extends TestCase {
         "update test.dml_health_check set id=? limit ?")); //
     }
 
-    public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
+    public void test_true_1() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
         "update test.dml_health_check set id=?")); //
+    }
+
+    public void test_true_2() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setUpdateWhereNoneCheck(true);
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "update test.dml_health_check set id=? limit ?", config)); //
+    }
+
+    public void test_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setUpdateWhereNoneCheck(true);
+
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "update test.dml_health_check set id=?", config)); //
     }
 }

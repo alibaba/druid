@@ -20,7 +20,7 @@ public class NotAllowCommentException extends ParserException {
     private static final long serialVersionUID = 1L;
 
     public NotAllowCommentException(){
-        super();
+        this("comment not allow");
     }
 
     public NotAllowCommentException(String message, Throwable e){
