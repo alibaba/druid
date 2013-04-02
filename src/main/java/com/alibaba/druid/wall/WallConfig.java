@@ -33,9 +33,9 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
-    private boolean             createTableAllow           = false;
-    private boolean             dropTableAllow             = false;
-    private boolean             alterTableAllow            = false;
+    private boolean             createTableAllow           = true;
+    private boolean             dropTableAllow             = true;
+    private boolean             alterTableAllow            = true;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -56,14 +56,14 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             multiStatementAllow        = false;
 
-    private boolean             truncateAllow              = false;
+    private boolean             truncateAllow              = true;
 
     private boolean             commentAllow               = false;
     private boolean             strictSyntaxCheck          = true;
     private boolean             constArithmeticAllow       = true;
 
-    private boolean             describeAllow              = false;
-    private boolean             showAllow                  = false;
+    private boolean             describeAllow              = true;
+    private boolean             showAllow                  = true;
 
     private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
@@ -84,6 +84,7 @@ public class WallConfig implements WallConfigMBean {
     protected final Set<String> permitFunctions            = new ConcurrentSkipListSet<String>();
     protected final Set<String> permitTables               = new ConcurrentSkipListSet<String>();
     protected final Set<String> permitSchemas              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitVariants             = new ConcurrentSkipListSet<String>();
 
     protected final Set<String> readOnlyTables             = new ConcurrentSkipListSet<String>();
 
@@ -220,6 +221,7 @@ public class WallConfig implements WallConfigMBean {
         loadResource(this.permitFunctions, dir + "/permit-function.txt");
         loadResource(this.permitTables, dir + "/permit-table.txt");
         loadResource(this.permitSchemas, dir + "/permit-schema.txt");
+        loadResource(this.permitVariants, dir + "/permit-variant.txt");
     }
 
     public boolean isNoneBaseStatementAllow() {
@@ -353,7 +355,7 @@ public class WallConfig implements WallConfigMBean {
     public void setDeleteWhereAlwayTrueCheck(boolean deleteWhereAlwayTrueCheck) {
         this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
     }
-    
+
     public boolean isDeleteWhereNoneCheck() {
         return deleteWhereNoneCheck;
     }
@@ -534,6 +536,10 @@ public class WallConfig implements WallConfigMBean {
 
     public Set<String> getPermitSchemas() {
         return permitSchemas;
+    }
+
+    public Set<String> getPermitVariants() {
+        return permitVariants;
     }
 
     public boolean isMustParameterized() {

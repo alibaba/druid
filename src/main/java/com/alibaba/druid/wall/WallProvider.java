@@ -47,7 +47,7 @@ public abstract class WallProvider {
 
     private int                                           MAX_SQL_LENGTH    = 2048;                                             // 1k
 
-    private int                                           whiteSqlMaxSize   = 1000;                                             // 1k
+    private int                                           whiteSqlMaxSize   = 10000;                                             // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
@@ -66,6 +66,7 @@ public abstract class WallProvider {
 
     protected String                                      dbType            = null;
     protected final AtomicLong                            checkCount        = new AtomicLong();
+    protected final AtomicLong                            hardCheckCount    = new AtomicLong();
     protected final AtomicLong                            whiteListHitCount = new AtomicLong();
     protected final AtomicLong                            blackListHitCount = new AtomicLong();
     protected final AtomicLong                            syntaxErrrorCount = new AtomicLong();
@@ -81,13 +82,23 @@ public abstract class WallProvider {
     }
 
     public void reset() {
+        this.checkCount.set(0);
+        this.hardCheckCount.set(0);
+        this.violationCount.set(0);
+        this.whiteListHitCount.set(0);
+        this.blackListHitCount.set(0);
         this.clearWhiteList();
+        this.clearBlackList();
         this.functionStats.clear();
         this.tableStats.clear();
     }
 
     public ConcurrentMap<String, WallTableStat> getTableStats() {
         return this.tableStats;
+    }
+
+    public ConcurrentMap<String, WallFunctionStat> getFunctionStats() {
+        return this.functionStats;
     }
 
     public WallTableStat getTableStat(String tableName) {
@@ -131,7 +142,7 @@ public abstract class WallProvider {
     }
 
     public WallSqlStat addWhiteSql(String sql, Map<String, WallSqlTableStat> tableStats,
-                                   Map<String, WallSqlFunctionStat> functionStats) {
+                                   Map<String, WallSqlFunctionStat> functionStats, boolean syntaxError) {
         lock.writeLock().lock();
         try {
             if (whiteList == null) {
@@ -140,7 +151,7 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = whiteList.get(sql);
             if (wallStat == null) {
-                wallStat = new WallSqlStat(tableStats, functionStats);
+                wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
                 whiteList.put(sql, wallStat);
             }
 
@@ -151,7 +162,8 @@ public abstract class WallProvider {
     }
 
     public WallSqlStat addBlackSql(String sql, Map<String, WallSqlTableStat> tableStats,
-                                   Map<String, WallSqlFunctionStat> functionStats, List<Violation> violations) {
+                                   Map<String, WallSqlFunctionStat> functionStats, List<Violation> violations,
+                                   boolean syntaxError) {
         lock.writeLock().lock();
         try {
             if (blackList == null) {
@@ -160,7 +172,7 @@ public abstract class WallProvider {
 
             WallSqlStat wallStat = blackList.get(sql);
             if (wallStat == null) {
-                wallStat = new WallSqlStat(tableStats, functionStats, violations);
+                wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
                 blackList.put(sql, wallStat);
             }
 
@@ -207,6 +219,17 @@ public abstract class WallProvider {
         try {
             if (whiteList != null) {
                 whiteList = null;
+            }
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+    
+    public void clearBlackList() {
+        lock.writeLock().lock();
+        try {
+            if (blackList != null) {
+                blackList = null;
             }
         } finally {
             lock.writeLock().unlock();
@@ -360,6 +383,10 @@ public abstract class WallProvider {
             if (sqlStat != null) {
                 whiteListHitCount.incrementAndGet();
                 sqlStat.incrementAndGetExecuteCount();
+                
+                if (sqlStat.isSyntaxError()) {
+                    syntaxErrrorCount.incrementAndGet();
+                }
 
                 recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
                 return result;
@@ -370,6 +397,12 @@ public abstract class WallProvider {
             WallSqlStat sqlStat = getBlackSql(sql);
             if (sqlStat != null) {
                 blackListHitCount.incrementAndGet();
+                violationCount.incrementAndGet();
+
+                if (sqlStat.isSyntaxError()) {
+                    syntaxErrrorCount.incrementAndGet();
+                }
+
                 sqlStat.incrementAndGetExecuteCount();
                 recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
                 List<Violation> blackViolations = sqlStat.getViolations();
@@ -379,6 +412,8 @@ public abstract class WallProvider {
             }
         }
 
+        hardCheckCount.incrementAndGet();
+        boolean syntaxError = false;
         try {
             SQLStatementParser parser = createParser(sql);
             parser.getLexer().setCommentHandler(WallCommentHandler.instance);
@@ -398,6 +433,7 @@ public abstract class WallProvider {
             incrementCommentDeniedCount();
         } catch (ParserException e) {
             syntaxErrrorCount.incrementAndGet();
+            syntaxError = true;
             if (config.isStrictSyntaxCheck()) {
                 result.getViolations().add(new SyntaxErrorViolation(e, sql));
             }
@@ -429,11 +465,12 @@ public abstract class WallProvider {
             violationCount.incrementAndGet();
 
             if (sql.length() < MAX_SQL_LENGTH) {
-                addBlackSql(sql, context.getTableStats(), context.getFunctionStats(), result.getViolations());
+                addBlackSql(sql, context.getTableStats(), context.getFunctionStats(), result.getViolations(),
+                            syntaxError);
             }
         } else {
             if (sql.length() < MAX_SQL_LENGTH) {
-                addWhiteSql(sql, context.getTableStats(), context.getFunctionStats());
+                addWhiteSql(sql, context.getTableStats(), context.getFunctionStats(), syntaxError);
             }
         }
 
@@ -513,6 +550,10 @@ public abstract class WallProvider {
 
     public long getViolationCount() {
         return violationCount.get();
+    }
+    
+    public long getHardCheckCount() {
+        return hardCheckCount.get();
     }
 
     public static class WallCommentHandler implements Lexer.CommentHandler {

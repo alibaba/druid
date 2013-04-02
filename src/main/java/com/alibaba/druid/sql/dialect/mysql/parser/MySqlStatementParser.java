@@ -236,7 +236,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
@@ -639,20 +639,23 @@ public class MySqlStatementParser extends SQLStatementParser {
     public SQLStatement parseShow() {
         acceptIdentifier("SHOW");
 
+        boolean full = false;
         if (lexer.token() == Token.FULL) {
             lexer.nextToken();
+        }
 
-            if (identifierEquals("PROCESSLIST")) {
-                lexer.nextToken();
-                MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
-                stmt.setFull(true);
-                return stmt;
-            }
+        if (identifierEquals("PROCESSLIST")) {
+            lexer.nextToken();
+            MySqlShowProcessListStatement stmt = new MySqlShowProcessListStatement();
+            stmt.setFull(full);
+            return stmt;
+        }
 
-            acceptIdentifier("COLUMNS");
+        if (identifierEquals("COLUMNS")) {
+            lexer.nextToken();
 
             MySqlShowColumnsStatement stmt = parseShowColumns();
-            stmt.setFull(true);
+            stmt.setFull(full);
 
             return stmt;
         }
@@ -669,6 +672,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
 
             MySqlShowTablesStatement stmt = parseShowTabless();
+            stmt.setFull(full);
 
             return stmt;
         }
@@ -2245,9 +2249,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 
                         if (lexer.token() == Token.PRIMARY) {
                             SQLPrimaryKey primaryKey = ((MySqlExprParser) this.exprParser).parsePrimaryKey();
-                            
+
                             primaryKey.setName(constraintName);
-                            
+
                             SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
                             item.setPrimaryKey(primaryKey);
                             stmt.getItems().add(item);

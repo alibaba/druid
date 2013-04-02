@@ -32,15 +32,19 @@ public class WallSqlStat {
 
     private final Map<String, WallSqlFunctionStat>   functionStats;
 
-    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats){
-        this(tableStats, functionStats, Collections.<Violation> emptyList());
+    private final boolean                            syntaxError;
+
+    public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats,
+                       boolean syntaxError){
+        this(tableStats, functionStats, Collections.<Violation> emptyList(), syntaxError);
     }
 
     public WallSqlStat(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats,
-                       List<Violation> violations){
+                       List<Violation> violations, boolean syntaxError){
         this.violations = violations;
         this.tableStats = tableStats;
         this.functionStats = functionStats;
+        this.syntaxError = syntaxError;
     }
 
     public long incrementAndGetExecuteCount() {
@@ -54,13 +58,17 @@ public class WallSqlStat {
     public Map<String, WallSqlTableStat> getTableStats() {
         return tableStats;
     }
-    
+
     public Map<String, WallSqlFunctionStat> getFunctionStats() {
         return functionStats;
     }
 
     public List<Violation> getViolations() {
         return violations;
+    }
+
+    public boolean isSyntaxError() {
+        return syntaxError;
     }
 
 }

@@ -457,8 +457,10 @@ public class SQLExprParser extends SQLParser {
                 sqlExpr = new SQLIdentifierExpr('"' + lexer.stringVal() + '"');
                 lexer.nextToken();
                 break;
+            case EOF:
+                throw new EOFParserException();
             default:
-                throw new ParserException("ERROR. token : " + tok + " " + lexer.stringVal());
+                throw new ParserException("ERROR. token : " + tok + ", pos : " + lexer.pos());
         }
 
         return primaryRest(sqlExpr);
@@ -814,8 +816,11 @@ public class SQLExprParser extends SQLParser {
         SQLExpr rightExp;
         if (lexer.token() == Token.EQ) {
             lexer.nextToken();
-            rightExp = bitOr();
-
+            try {
+                rightExp = bitOr();
+            } catch (EOFParserException e) {
+                throw new ParserException("EOF, " + expr + "=", e);
+            }
             rightExp = equalityRest(rightExp);
 
             expr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.Equality, rightExp);

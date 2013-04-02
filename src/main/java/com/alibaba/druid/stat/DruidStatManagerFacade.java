@@ -158,12 +158,11 @@ public final class DruidStatManagerFacade {
         return new ArrayList<Map<String, Object>>();
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getWallStatMap(Integer dataSourceId) {
         Set<Object> dataSources = getDruidDataSourceInstances();
 
         if (dataSourceId == null) {
-            List<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();
-
             Map<String, Object> map = new HashMap<String, Object>();
             
             for (Object datasource : dataSources) {
@@ -186,6 +185,7 @@ public final class DruidStatManagerFacade {
         // 
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     static Map mergWallStat(Map mapA, Map mapB) {
         if (mapA.size() == 0) {
             return mapB;

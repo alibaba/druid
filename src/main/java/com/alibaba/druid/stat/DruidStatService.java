@@ -36,7 +36,6 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
-import com.alibaba.druid.util.DruidDataSourceUtils;
 import com.alibaba.druid.util.MapComparator;
 import com.alibaba.druid.util.StringUtils;
 

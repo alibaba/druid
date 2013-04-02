@@ -28,10 +28,10 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_var_autoincrement extends TestCase {
+public class MySqlWallTest34 extends TestCase {
 
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment")); //
+        "SELECT @@sql_big_selects")); //
     }
 }

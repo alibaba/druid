@@ -28,10 +28,25 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_var_autoincrement extends TestCase {
+public class MySqlWallTest_var extends TestCase {
 
     public void test_true() throws Exception {
         Assert.assertTrue(WallUtils.isValidateMySql(//
-        "/* mysql-connector-java-5.? ( Revision: bzr.revision-id ) */SELECT @@session.auto_increment_increment")); //
+        "SELECT @@GLOBAL.sql_mode")); //
+    }
+
+    public void test_true_1() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateMySql(//
+        "SELECT @@SESSION.sql_mode;")); //
+    }
+
+    public void test_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "SELECT * FROM T WHERE @@SESSION.sql_mode = 'ANSI'")); //
+    }
+
+    public void test_false_1() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateMySql(//
+        "SELECT * FROM T WHERE @@sql_mode = 'ANSI'")); //
     }
 }
