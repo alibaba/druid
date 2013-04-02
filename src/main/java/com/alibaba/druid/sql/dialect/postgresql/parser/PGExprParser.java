@@ -15,6 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.postgresql.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
+import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.dialect.postgresql.ast.PGOrderBy;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.SQLExprParser;
@@ -29,6 +32,18 @@ public class PGExprParser extends SQLExprParser {
 
     public PGExprParser(Lexer lexer){
         super(lexer);
+    }
+    
+    public boolean isAggreateFunction(String word) {
+        String[] aggregateFunctions = { "AVG", "COUNT", "MAX", "MIN", "STDDEV", "SUM", "ROW_NUMBER" };
+
+        for (int i = 0; i < aggregateFunctions.length; ++i) {
+            if (aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -55,5 +70,17 @@ public class PGExprParser extends SQLExprParser {
         }
 
         return null;
+    }
+    
+    public SQLExpr primaryRest(SQLExpr expr) {
+        if (lexer.token() == Token.COLONCOLON) {
+            lexer.nextToken();
+            SQLExpr typeExpr = this.expr();
+            SQLBinaryOpExpr castExpr = new SQLBinaryOpExpr(expr, SQLBinaryOperator.PostgresStyleTypeCast, typeExpr);
+            
+            return primaryRest(castExpr);
+        }
+        
+        return super.primaryRest(expr);
     }
 }

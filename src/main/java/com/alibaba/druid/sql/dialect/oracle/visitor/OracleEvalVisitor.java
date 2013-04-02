@@ -16,28 +16,34 @@
 package com.alibaba.druid.sql.dialect.oracle.visitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitor;
 import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
+import com.alibaba.druid.sql.visitor.functions.Function;
 
 public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEvalVisitor {
 
-    private List<Object> parameters       = new ArrayList<Object>();
+    private Map<String, Function> functions        = new HashMap<String, Function>();
+    private List<Object>          parameters       = new ArrayList<Object>();
 
-    private int          variantIndex     = -1;
+    private int                   variantIndex     = -1;
 
-    private boolean      markVariantIndex = true;
+    private boolean               markVariantIndex = true;
 
     public OracleEvalVisitor(){
         this(new ArrayList<Object>(1));
@@ -72,6 +78,10 @@ public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEva
     }
 
     public boolean visit(SQLBinaryOpExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
+
+    public boolean visit(SQLUnaryExpr x) {
         return SQLEvalVisitorUtils.visit(this, x);
     }
 
@@ -116,4 +126,17 @@ public class OracleEvalVisitor extends OracleASTVisitorAdapter implements SQLEva
         this.markVariantIndex = markVariantIndex;
     }
 
+    @Override
+    public Function getFunction(String funcName) {
+        return functions.get(funcName);
+    }
+
+    @Override
+    public void registerFunction(String funcName, Function function) {
+        functions.put(funcName, function);
+    }
+    
+    public boolean visit(SQLIdentifierExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
 }

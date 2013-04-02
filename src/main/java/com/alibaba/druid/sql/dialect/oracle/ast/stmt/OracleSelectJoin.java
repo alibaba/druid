@@ -15,9 +15,6 @@
  */
 package com.alibaba.druid.sql.dialect.oracle.ast.stmt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.clause.FlashbackQueryClause;
@@ -28,7 +25,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
 
     private static final long       serialVersionUID = 1L;
 
-    private final List<SQLExpr>     using            = new ArrayList<SQLExpr>();
     protected OracleSelectPivotBase pivot;
     protected FlashbackQueryClause  flashback;
 
@@ -71,10 +67,6 @@ public class OracleSelectJoin extends SQLJoinTableSource implements OracleSelect
         }
 
         visitor.endVisit(this);
-    }
-
-    public List<SQLExpr> getUsing() {
-        return this.using;
     }
 
     public void output(StringBuffer buf) {

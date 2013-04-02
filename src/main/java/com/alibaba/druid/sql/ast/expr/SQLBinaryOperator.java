@@ -38,7 +38,6 @@ public enum SQLBinaryOperator {
 
     BitwiseAnd("&", 90), 
     BitwiseOr("|", 100),
-    InvertBits("~", 100),
     
     GreaterThan(">", 110), 
     GreaterThanOrEqual(">=", 110), 
@@ -71,11 +70,8 @@ public enum SQLBinaryOperator {
     BooleanOr("OR", 160), 
     Assignment(":=", 169),
     
+    PostgresStyleTypeCast("::", 20),
     ;
-
-   
-    
-    
 
     public static int getPriority(SQLBinaryOperator operator) {
         return 0;

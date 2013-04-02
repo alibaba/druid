@@ -17,6 +17,7 @@ package com.alibaba.druid.sql.dialect.mysql.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -44,7 +45,7 @@ public class MySqlSelectParser extends SQLSelectParser {
         super(exprParser);
     }
 
-    public MySqlSelectParser(String sql) {
+    public MySqlSelectParser(String sql){
         this(new MySqlExprParser(sql));
     }
 
@@ -64,8 +65,13 @@ public class MySqlSelectParser extends SQLSelectParser {
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
             
+
             if (lexer.token() == Token.HINT) {
                 this.exprParser.parseHints(queryBlock.getHints());
+            }
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
             }
 
             if (lexer.token() == (Token.DISTINCT)) {
@@ -260,7 +266,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             return tableSource;
         }
 
-        if (identifierEquals("USE")) {
+        if (lexer.token() == Token.USE) {
             lexer.nextToken();
             MySqlUseIndexHint hint = new MySqlUseIndexHint();
             parseIndexHint(hint);
@@ -273,7 +279,7 @@ public class MySqlSelectParser extends SQLSelectParser {
             parseIndexHint(hint);
             tableSource.getHints().add(hint);
         }
-        
+
         if (identifierEquals("FORCE")) {
             lexer.nextToken();
             MySqlForceIndexHint hint = new MySqlForceIndexHint();
@@ -290,10 +296,10 @@ public class MySqlSelectParser extends SQLSelectParser {
         } else {
             accept(Token.KEY);
         }
-        
+
         if (lexer.token() == Token.FOR) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.JOIN) {
                 lexer.nextToken();
                 hint.setOption(MySqlIndexHint.Option.JOIN);
@@ -307,9 +313,14 @@ public class MySqlSelectParser extends SQLSelectParser {
                 hint.setOption(MySqlIndexHint.Option.GROUP_BY);
             }
         }
-        
+
         accept(Token.LPAREN);
-        this.exprParser.names(hint.getIndexList());
+        if (lexer.token() == Token.PRIMARY) {
+            lexer.nextToken();
+            hint.getIndexList().add(new SQLIdentifierExpr("PRIMARY"));
+        } else {
+            this.exprParser.names(hint.getIndexList());
+        }
         accept(Token.RPAREN);
     }
 
@@ -326,6 +337,6 @@ public class MySqlSelectParser extends SQLSelectParser {
     }
 
     public Limit parseLimit() {
-        return ((MySqlExprParser)this.exprParser) .parseLimit();
+        return ((MySqlExprParser) this.exprParser).parseLimit();
     }
 }

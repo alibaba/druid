@@ -81,7 +81,6 @@ public class Keywords {
         map.put("LIKE", Token.LIKE);
         map.put("LOCK", Token.LOCK);
         map.put("MINUS", Token.MINUS);
-        map.put("NEW", Token.NEW);
         map.put("NOT", Token.NOT);
 
         map.put("NULL", Token.NULL);
@@ -114,6 +113,7 @@ public class Keywords {
         
         map.put("OVER", Token.OVER);
         map.put("TO", Token.TO);
+        map.put("USE", Token.USE);
 
         DEFAULT_KEYWORDS = new Keywords(map);
     }

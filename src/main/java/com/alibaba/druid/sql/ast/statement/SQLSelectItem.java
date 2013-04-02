@@ -35,9 +35,12 @@ public class SQLSelectItem extends SQLObjectImpl {
     }
 
     public SQLSelectItem(SQLExpr expr, String alias){
-
         this.expr = expr;
         this.alias = alias;
+        
+        if (expr != null) {
+            expr.setParent(this);
+        }
     }
 
     public SQLExpr getExpr() {
@@ -46,6 +49,9 @@ public class SQLSelectItem extends SQLObjectImpl {
 
     public void setExpr(SQLExpr expr) {
         this.expr = expr;
+        if (expr != null) {
+            expr.setParent(this);
+        }
     }
 
     public String getAlias() {

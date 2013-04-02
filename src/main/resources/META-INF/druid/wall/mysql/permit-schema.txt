@@ -1,2 +1,0 @@
-information_schema
-mysql

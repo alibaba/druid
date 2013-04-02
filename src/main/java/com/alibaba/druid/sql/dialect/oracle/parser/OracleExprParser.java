@@ -80,20 +80,59 @@ public class OracleExprParser extends SQLExprParser {
 
 
 
+
+
+
+
+
+
+
+
     public boolean                allowStringAdditive = false;
 
     /**
      * @formatter:off
      */
-    private static final String[] _aggregateFunctions = { //
-                                                          "AVG", "CORR", "COVAR_POP", "COVAR_SAMP", "COUNT", // 
-                                                          "CUME_DIST", "DENSE_RANK", "FIRST", "FIRST_VALUE", // 
-                                                          "LAG", "LAST", "LAST_VALUE", "LEAD", "MAX", "MIN", // 
-                                                          "NTILE", "PERCENT_RANK", "PERCENTILE_CONT", "PERCENTILE_DISC", "RANK", // 
-                                                          "RATIO_TO_REPORT", "REGR_SLOPE", "REGR_INTERCEPT", "REGR_COUNT", "REGR_R2", // 
-                                                          "REGR_AVGX", "REGR_AVGY", "REGR_SXX", "REGR_SYY", "REGR_SXY", // 
-                                                          "ROW_NUMBER", "STDDEV", "STDDEV_POP", "STDDEV_SAMP", "SUM", // 
-                                                          "VAR_POP", "VAR_SAMP", "VARIANCE" // 
+    private static final String[] AGGREGATE_FUNCTIONS = {
+                                                          "AVG", // 
+                                                          "CORR", // 
+                                                          "COVAR_POP", //
+                                                          "COVAR_SAMP", // 
+                                                          "COUNT", // 
+                                                          "CUME_DIST", // 
+                                                          "DENSE_RANK", // 
+                                                          "FIRST", // 
+                                                          "FIRST_VALUE", // 
+                                                          "LAG", // 
+                                                          "LAST", // 
+                                                          "LAST_VALUE", // 
+                                                          "LEAD", // 
+                                                          "MAX",  // 
+                                                          "MIN", // 
+                                                          "NTILE", // 
+                                                          "PERCENT_RANK",  // 
+                                                          "PERCENTILE_CONT",  // 
+                                                          "PERCENTILE_DISC",  // 
+                                                          "RANK", // 
+                                                          "RATIO_TO_REPORT", // 
+                                                          "REGR_SLOPE", // 
+                                                          "REGR_INTERCEPT",  // 
+                                                          "REGR_COUNT",  // 
+                                                          "REGR_R2", // 
+                                                          "REGR_AVGX",  // 
+                                                          "REGR_AVGY",  // 
+                                                          "REGR_SXX",  // 
+                                                          "REGR_SYY",  // 
+                                                          "REGR_SXY", // 
+                                                          "ROW_NUMBER",  // 
+                                                          "STDDEV",  // 
+                                                          "STDDEV_POP",  // 
+                                                          "STDDEV_SAMP", // 
+                                                          "SUM", // 
+                                                          "VAR_POP", // 
+                                                          "VAR_SAMP", // 
+                                                          "VARIANCE", // 
+                                                          "WM_CONCAT"
                                                           };
 
     public OracleExprParser(Lexer lexer){
@@ -229,8 +268,8 @@ public class OracleExprParser extends SQLExprParser {
     }
 
     public boolean isAggreateFunction(String word) {
-        for (int i = 0; i < _aggregateFunctions.length; ++i) {
-            if (_aggregateFunctions[i].compareToIgnoreCase(word) == 0) {
+        for (int i = 0; i < AGGREGATE_FUNCTIONS.length; ++i) {
+            if (AGGREGATE_FUNCTIONS[i].compareToIgnoreCase(word) == 0) {
                 return true;
             }
         }

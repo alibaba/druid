@@ -223,7 +223,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal() + ", pos " + lexer.pos());
+            throw new ParserException("syntax error, " + lexer.token() + " " + lexer.stringVal() + ", pos " + lexer.pos());
         }
     }
 
@@ -509,6 +509,8 @@ public class SQLStatementParser extends SQLParser {
         } else if (identifierEquals("PUBLIC") || identifierEquals("SHARE")) {
             lexer.reset(markBp, markChar, Token.CREATE);
             return parseCreateDbLink();
+        } else if (token == Token.VIEW) {
+            return parseCreateView();
         }
 
         throw new ParserException("TODO " + lexer.token());
@@ -615,6 +617,10 @@ public class SQLStatementParser extends SQLParser {
             if (lexer.token() == (Token.FROM)) {
                 lexer.nextToken();
             }
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             SQLName tableName = exprParser.name();
 
@@ -639,7 +645,15 @@ public class SQLStatementParser extends SQLParser {
     public SQLCreateViewStatement parseCreateView() {
         SQLCreateViewStatement createView = new SQLCreateViewStatement();
 
-        this.accept(Token.CREATE);
+        if (lexer.token() == Token.CREATE) {
+            lexer.nextToken();
+        }
+        
+        if (lexer.token() == Token.OR) {
+            lexer.nextToken();
+            acceptIdentifier("REPLACE");
+            createView.setOrReplace(true);
+        }
 
         this.accept(Token.VIEW);
 

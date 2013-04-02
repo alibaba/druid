@@ -21,6 +21,7 @@ import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,17 +136,17 @@ public final class DruidStatManagerFacade {
 
     public List<Map<String, Object>> getSqlStatDataList(Integer dataSourceId) {
         Set<Object> dataSources = getDruidDataSourceInstances();
-        
+
         if (dataSourceId == null) {
             List<Map<String, Object>> sqlList = new ArrayList<Map<String, Object>>();
-            
+
             for (Object datasource : dataSources) {
                 sqlList.addAll(getSqlStatDataList(datasource));
             }
-            
+
             return sqlList;
         }
-        
+
         for (Object datasource : dataSources) {
             if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
                 continue;
@@ -155,6 +156,62 @@ public final class DruidStatManagerFacade {
         }
 
         return new ArrayList<Map<String, Object>>();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getWallStatMap(Integer dataSourceId) {
+        Set<Object> dataSources = getDruidDataSourceInstances();
+
+        if (dataSourceId == null) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            
+            for (Object datasource : dataSources) {
+                Map<String, Object> wallStat = DruidDataSourceUtils.getWallStatMap(datasource);
+                map = mergWallStat(map, wallStat);
+            }
+
+            return map;
+        }
+
+        for (Object datasource : dataSources) {
+            if (dataSourceId != null && dataSourceId.intValue() != System.identityHashCode(datasource)) {
+                continue;
+            }
+
+            return DruidDataSourceUtils.getWallStatMap(datasource);
+        }
+
+        return new HashMap<String, Object>();
+        // 
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    static Map mergWallStat(Map mapA, Map mapB) {
+        if (mapA.size() == 0) {
+            return mapB;
+        }
+        
+        if (mapB.size() == 0) {
+            return mapA;
+        }
+        
+        for (Object item : mapB.entrySet()) {
+            Map.Entry entry = (Map.Entry) item; 
+            String key = (String) entry.getKey();
+            Object valueB = entry.getValue();
+            Object valueA = mapA.get(key);
+            
+            if (valueA == null) {
+                mapA.put(key, valueB);
+            } else {
+                if (valueA instanceof Map && valueB instanceof Map) {
+                    Object newValue = mergWallStat((Map)valueA, (Map)valueB);
+                    mapA.put(key, newValue);
+                }
+            }
+        }
+        
+        return null;
     }
 
     public List<Map<String, Object>> getSqlStatDataList(Object datasource) {

@@ -16,9 +16,11 @@
 package com.alibaba.druid.sql.dialect.mysql.visitor;
 
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForceIndexHint;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlIgnoreIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlPrimaryKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.MySqlUseIndexHint;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBinaryExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
@@ -34,6 +36,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddUnique;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableChangeColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableCharacter;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableDiscardTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableImportTablespace;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableModifyColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
@@ -135,6 +140,10 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlPrimaryKey x);
 
     void endVisit(MySqlPrimaryKey x);
+
+    boolean visit(MySqlUnique x);
+
+    void endVisit(MySqlUnique x);
 
     void endVisit(MySqlIntervalExpr x);
 
@@ -451,68 +460,84 @@ public interface MySqlASTVisitor extends SQLASTVisitor {
     boolean visit(MySqlRenameTableStatement.Item x);
 
     void endVisit(MySqlRenameTableStatement.Item x);
-    
+
     boolean visit(MySqlRenameTableStatement x);
-    
+
     void endVisit(MySqlRenameTableStatement x);
-    
+
     boolean visit(MySqlDropViewStatement x);
-    
+
     void endVisit(MySqlDropViewStatement x);
-    
+
     boolean visit(MySqlUnionQuery x);
-    
+
     void endVisit(MySqlUnionQuery x);
-    
+
     boolean visit(MySqlUseIndexHint x);
-    
+
     void endVisit(MySqlUseIndexHint x);
-    
+
     boolean visit(MySqlIgnoreIndexHint x);
-    
+
     void endVisit(MySqlIgnoreIndexHint x);
-    
+
     boolean visit(MySqlLockTableStatement x);
-    
+
     void endVisit(MySqlLockTableStatement x);
-    
+
     boolean visit(MySqlUnlockTablesStatement x);
-    
+
     void endVisit(MySqlUnlockTablesStatement x);
-    
+
     boolean visit(MySqlForceIndexHint x);
-    
+
     void endVisit(MySqlForceIndexHint x);
-    
+
     boolean visit(MySqlAlterTableChangeColumn x);
-    
+
     void endVisit(MySqlAlterTableChangeColumn x);
-    
+
     boolean visit(MySqlAlterTableCharacter x);
-    
+
     void endVisit(MySqlAlterTableCharacter x);
-    
+
     boolean visit(MySqlAlterTableAddIndex x);
-    
+
     void endVisit(MySqlAlterTableAddIndex x);
-    
+
     boolean visit(MySqlAlterTableOption x);
-    
+
     void endVisit(MySqlAlterTableOption x);
-    
+
     boolean visit(MySqlCreateTableStatement x);
-    
+
     void endVisit(MySqlCreateTableStatement x);
-    
+
     boolean visit(MySqlHelpStatement x);
-    
+
     void endVisit(MySqlHelpStatement x);
-    
+
     boolean visit(MySqlCharExpr x);
-    
+
     void endVisit(MySqlCharExpr x);
-    
+
     boolean visit(MySqlAlterTableAddUnique x);
-    
+
     void endVisit(MySqlAlterTableAddUnique x);
-}
+
+    boolean visit(MySqlForeignKey x);
+
+    void endVisit(MySqlForeignKey x);
+
+    boolean visit(MySqlAlterTableModifyColumn x);
+
+    void endVisit(MySqlAlterTableModifyColumn x);
+
+    boolean visit(MySqlAlterTableDiscardTablespace x);
+
+    void endVisit(MySqlAlterTableDiscardTablespace x);
+
+    boolean visit(MySqlAlterTableImportTablespace x);
+
+    void endVisit(MySqlAlterTableImportTablespace x);
+} // 

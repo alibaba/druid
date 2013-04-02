@@ -49,6 +49,9 @@ public abstract class SQLInsertInto extends SQLObjectImpl {
     }
 
     public void setTableSource(SQLExprTableSource tableSource) {
+        if (tableSource != null) {
+            tableSource.setParent(this);
+        }
         this.tableSource = tableSource;
     }
 

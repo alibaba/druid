@@ -26,6 +26,7 @@ import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLStatement {
 
     private static final long     serialVersionUID = 1L;
+    private boolean               orReplace        = false;
     protected SQLName             name;
     protected SQLSelect           subQuery;
 
@@ -35,6 +36,14 @@ public class SQLCreateViewStatement extends SQLStatementImpl implements SQLDDLSt
 
     public SQLCreateViewStatement(){
 
+    }
+
+    public boolean isOrReplace() {
+        return orReplace;
+    }
+
+    public void setOrReplace(boolean orReplace) {
+        this.orReplace = orReplace;
     }
 
     public SQLName getName() {

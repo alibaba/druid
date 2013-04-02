@@ -39,11 +39,13 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
 import com.alibaba.druid.sql.ast.expr.SQLPropertyExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
+import com.alibaba.druid.sql.ast.statement.SQLCreateViewStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
@@ -60,6 +62,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLTableElement;
 import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.stat.TableStat.Column;
 import com.alibaba.druid.stat.TableStat.Condition;
@@ -153,11 +156,11 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         if (flag0) {
             ident = ident.replaceAll("\"", "");
         }
-        
+
         if (flag1) {
             ident = ident.replaceAll("`", "");
         }
-        
+
         if (flag2) {
             ident = ident.replaceAll(" ", "");
         }
@@ -560,6 +563,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLSelectQueryBlock x) {
+        if (x.getFrom() == null) {
+            return false;
+        }
+        
         setMode(x, Mode.Select);
 
         if (x.getFrom() instanceof SQLSubqueryTableSource) {
@@ -622,7 +629,12 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     }
 
     public boolean visit(SQLJoinTableSource x) {
-        return true;
+        x.getLeft().accept(this);
+        x.getRight().accept(this);
+        if (x.getCondition() != null) {
+            x.getCondition().accept(this);
+        }
+        return false;
     }
 
     public boolean visit(SQLPropertyExpr x) {
@@ -807,6 +819,9 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 case Merge:
                     stat.incrementMergeCount();
                     break;
+                case Drop:
+                    stat.incrementDropCount();
+                    break;
                 default:
                     break;
             }
@@ -870,14 +885,21 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public boolean visit(SQLUpdateStatement x) {
         setAliasMap();
 
-        String ident = x.getTableName().toString();
-        setCurrentTable(ident);
+        setMode(x, Mode.Update);
 
-        TableStat stat = getTableStat(ident);
-        stat.incrementUpdateCount();
+        SQLName identName = x.getTableName();
+        if (identName != null) {
+            String ident = identName.toString();
+            setCurrentTable(ident);
 
-        Map<String, String> aliasMap = getAliasMap();
-        aliasMap.put(ident, ident);
+            TableStat stat = getTableStat(ident);
+            stat.incrementUpdateCount();
+
+            Map<String, String> aliasMap = getAliasMap();
+            aliasMap.put(ident, ident);
+        } else {
+            x.getTableSource().accept(this);
+        }
 
         accept(x.getItems());
         accept(x.getWhere());
@@ -1004,9 +1026,24 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     public void endVisit(SQLAlterTableAddColumn x) {
 
     }
-    
+
     @Override
     public boolean visit(SQLRollbackStatement x) {
+        return false;
+    }
+
+    public boolean visit(SQLCreateViewStatement x) {
+        x.getSubQuery().accept(this);
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLAlterTableDropForeinKey x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLUseStatement x) {
         return false;
     }
 }

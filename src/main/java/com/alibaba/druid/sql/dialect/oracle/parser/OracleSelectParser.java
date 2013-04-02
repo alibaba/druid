@@ -67,7 +67,6 @@ import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectTableSource;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectUnPivot;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.SQLSelectParser;
 import com.alibaba.druid.sql.parser.Token;
 
@@ -174,7 +173,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
                 accept(Token.AS);
                 accept(Token.LPAREN);
-                entry.setSubQuery(query());
+                entry.setSubQuery(select());
                 accept(Token.RPAREN);
 
                 if (identifierEquals("SEARCH")) {
@@ -182,7 +181,7 @@ public class OracleSelectParser extends SQLSelectParser {
                     SearchClause searchClause = new SearchClause();
 
                     if (lexer.token() != Token.IDENTIFIER) {
-                        throw new SQLParseException("syntax erorr : " + lexer.token());
+                        throw new ParserException("syntax erorr : " + lexer.token());
                     }
 
                     searchClause.setType(SearchClause.Type.valueOf(lexer.stringVal()));
@@ -245,6 +244,10 @@ public class OracleSelectParser extends SQLSelectParser {
         OracleSelectQueryBlock queryBlock = new OracleSelectQueryBlock();
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             parseHints(queryBlock);
 
@@ -823,7 +826,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
                 SQLBinaryOpExpr binaryExpr = (SQLBinaryOpExpr) exprParser.expr();
                 if (binaryExpr.getOperator() != SQLBinaryOperator.BooleanAnd) {
-                    throw new SQLParseException("syntax error : " + binaryExpr.getOperator());
+                    throw new ParserException("syntax error : " + binaryExpr.getOperator());
                 }
 
                 clause.setBegin(binaryExpr.getLeft());
@@ -831,7 +834,7 @@ public class OracleSelectParser extends SQLSelectParser {
 
                 tableReference.setFlashback(clause);
             } else {
-                throw new SQLParseException("TODO");
+                throw new ParserException("TODO");
             }
         }
 

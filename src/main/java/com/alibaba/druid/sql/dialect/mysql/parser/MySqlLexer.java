@@ -27,7 +27,6 @@ import com.alibaba.druid.sql.parser.Keywords;
 import com.alibaba.druid.sql.parser.Lexer;
 import com.alibaba.druid.sql.parser.NotAllowCommentException;
 import com.alibaba.druid.sql.parser.ParserException;
-import com.alibaba.druid.sql.parser.SQLParseException;
 import com.alibaba.druid.sql.parser.Token;
 
 public class MySqlLexer extends Lexer {
@@ -64,7 +63,7 @@ public class MySqlLexer extends Lexer {
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {
-            throw new SQLParseException("illegal variable");
+            throw new ParserException("illegal variable");
         }
 
         mark = pos;
@@ -87,7 +86,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -110,7 +109,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -156,7 +155,7 @@ public class MySqlLexer extends Lexer {
                     ch = charAt(++pos);
                     break;
                 } else if (ch == EOI) {
-                    throw new SQLParseException("illegal identifier");
+                    throw new ParserException("illegal identifier");
                 }
 
                 bufPos++;
@@ -176,7 +175,7 @@ public class MySqlLexer extends Lexer {
 
             final boolean firstFlag = isFirstIdentifierChar(first);
             if (!firstFlag) {
-                throw new SQLParseException("illegal identifier");
+                throw new ParserException("illegal identifier");
             }
 
             mark = pos;
@@ -204,12 +203,12 @@ public class MySqlLexer extends Lexer {
             }
         }
     }
-    
+
     protected final void scanString() {
         {
             boolean hasSpecial = false;
             int startIndex = pos + 1;
-            int endIndex = -1; //text.indexOf('\'', startIndex);
+            int endIndex = -1; // text.indexOf('\'', startIndex);
             for (int i = startIndex; i < text.length(); ++i) {
                 final char ch = text.charAt(i);
                 if (ch == '\\') {
@@ -220,13 +219,13 @@ public class MySqlLexer extends Lexer {
                     break;
                 }
             }
-            
+
             if (endIndex == -1) {
                 throw new ParserException("unclosed str");
             }
 
             String stringVal = subString(startIndex, endIndex - startIndex);
-//            hasSpecial = stringVal.indexOf('\\') != -1;
+            // hasSpecial = stringVal.indexOf('\\') != -1;
 
             if (!hasSpecial) {
                 this.stringVal = stringVal;
@@ -329,6 +328,8 @@ public class MySqlLexer extends Lexer {
     }
 
     public void scanComment() {
+        Token lastToken = this.token;
+
         if (ch != '/' && ch != '-') {
             throw new IllegalStateException();
         }
@@ -356,6 +357,10 @@ public class MySqlLexer extends Lexer {
             }
 
             for (;;) {
+                if (ch == EOI) {
+                    this.token = Token.ERROR;
+                    return;
+                }
                 if (ch == '*' && charAt(pos + 1) == '/') {
                     bufPos += 2;
                     scanChar();
@@ -375,8 +380,14 @@ public class MySqlLexer extends Lexer {
                 token = Token.MULTI_LINE_COMMENT;
             }
 
-            if (token != Token.HINT && !isAllowComment()) {
-                throw new NotAllowCommentException();
+            if (token != Token.HINT) {
+                if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+                    return;
+                }
+                
+                if (!isAllowComment()) {
+                    throw new NotAllowCommentException();
+                }
             }
 
             return;

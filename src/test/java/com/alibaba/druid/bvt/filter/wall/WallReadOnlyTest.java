@@ -31,7 +31,7 @@ public class WallReadOnlyTest extends TestCase {
     private WallConfig config = new WallConfig();
     
     protected void setUp() throws Exception {
-        config.getReadOnlyTables().add("members");
+        config.addReadOnlyTable("members");
     }
     private String sql = "SELECT F1, F2 members";
     private String insert_sql = "INSERT INTO members (FID, FNAME) VALUES (?, ?)";

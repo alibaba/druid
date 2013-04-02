@@ -17,8 +17,8 @@ package com.alibaba.druid.wall;
 
 import static com.alibaba.druid.wall.spi.WallVisitorUtils.loadResource;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
 
@@ -33,25 +33,37 @@ public class WallConfig implements WallConfigMBean {
     private boolean             selectWhereAlwayTrueCheck  = true;
     private boolean             selectHavingAlwayTrueCheck = true;
     private boolean             selectUnionCheck           = true;
+    private boolean             createTableAllow           = true;
+    private boolean             dropTableAllow             = true;
+    private boolean             alterTableAllow            = true;
 
     private boolean             selectAllColumnAllow       = true;
 
     private boolean             deleteAllow                = true;
     private boolean             deleteWhereAlwayTrueCheck  = true;
+    private boolean             deleteWhereNoneCheck       = false;
 
     private boolean             updateAllow                = true;
     private boolean             updateWhereAlayTrueCheck   = true;
+    private boolean             updateWhereNoneCheck       = false;
 
     private boolean             insertAllow                = true;
     private boolean             mergeAllow                 = true;
+    private boolean             minusAllow                 = false;
+    private boolean             intersectAllow             = false;
+    private boolean             replaceAllow               = true;
+    private boolean             setAllow                   = true;
 
     private boolean             multiStatementAllow        = false;
 
-    private boolean             truncateAllow              = false;
+    private boolean             truncateAllow              = true;
 
     private boolean             commentAllow               = false;
+    private boolean             strictSyntaxCheck          = true;
+    private boolean             constArithmeticAllow       = true;
 
-    private boolean             describeAllow              = false;
+    private boolean             describeAllow              = true;
+    private boolean             showAllow                  = true;
 
     private boolean             schemaCheck                = true;
     private boolean             tableCheck                 = true;
@@ -63,13 +75,18 @@ public class WallConfig implements WallConfigMBean {
 
     private boolean             doPrivilegedAllow          = false;
 
-    protected final Set<String> permitFunctions            = new HashSet<String>();
-    protected final Set<String> permitTables               = new HashSet<String>();
-    protected final Set<String> permitSchemas              = new HashSet<String>();
-    protected final Set<String> permitVariants             = new HashSet<String>();
-    protected final Set<String> permitObjects              = new HashSet<String>();
+    protected final Set<String> denyFunctions              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyTables                 = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denySchemas                = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyVariants               = new ConcurrentSkipListSet<String>();
+    protected final Set<String> denyObjects                = new ConcurrentSkipListSet<String>();
 
-    protected final Set<String> readOnlyTables             = new HashSet<String>();
+    protected final Set<String> permitFunctions            = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitTables               = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitSchemas              = new ConcurrentSkipListSet<String>();
+    protected final Set<String> permitVariants             = new ConcurrentSkipListSet<String>();
+
+    protected final Set<String> readOnlyTables             = new ConcurrentSkipListSet<String>();
 
     private String              dir;
 
@@ -81,8 +98,43 @@ public class WallConfig implements WallConfigMBean {
     private boolean             wrapAllow                  = true;
     private boolean             metadataAllow              = true;
 
+    private boolean             conditionOpXorAllow        = false;
+    private boolean             conditionOpBitwseAllow     = true;
+
     public WallConfig(){
 
+    }
+
+    public boolean isIntersectAllow() {
+        return intersectAllow;
+    }
+
+    public void setIntersectAllow(boolean intersectAllow) {
+        this.intersectAllow = intersectAllow;
+    }
+
+    public boolean isMinusAllow() {
+        return minusAllow;
+    }
+
+    public void setMinusAllow(boolean minusAllow) {
+        this.minusAllow = minusAllow;
+    }
+
+    public boolean isConditionOpXorAllow() {
+        return conditionOpXorAllow;
+    }
+
+    public void setConditionOpXorAllow(boolean conditionOpXorAllow) {
+        this.conditionOpXorAllow = conditionOpXorAllow;
+    }
+
+    public boolean isConditionOpBitwseAllow() {
+        return conditionOpBitwseAllow;
+    }
+
+    public void setConditionOpBitwseAllow(boolean conditionOpBitwseAllow) {
+        this.conditionOpBitwseAllow = conditionOpBitwseAllow;
     }
 
     public String getTenantTablePattern() {
@@ -159,12 +211,17 @@ public class WallConfig implements WallConfigMBean {
             dir = dir.substring(0, dir.length() - 1);
         }
 
-        loadResource(this.permitVariants, dir + "/permit-variant.txt");
-        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
+        loadResource(this.denyVariants, dir + "/deny-variant.txt");
+        loadResource(this.denySchemas, dir + "/deny-schema.txt");
+        loadResource(this.denyFunctions, dir + "/deny-function.txt");
+        loadResource(this.denyTables, dir + "/deny-table.txt");
+        loadResource(this.denyObjects, dir + "/deny-object.txt");
+        loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
+
         loadResource(this.permitFunctions, dir + "/permit-function.txt");
         loadResource(this.permitTables, dir + "/permit-table.txt");
-        loadResource(this.permitObjects, dir + "/permit-object.txt");
-        loadResource(this.readOnlyTables, dir + "/readonly-table.txt");
+        loadResource(this.permitSchemas, dir + "/permit-schema.txt");
+        loadResource(this.permitVariants, dir + "/permit-variant.txt");
     }
 
     public boolean isNoneBaseStatementAllow() {
@@ -193,6 +250,14 @@ public class WallConfig implements WallConfigMBean {
      */
     public void setDescribeAllow(boolean describeAllow) {
         this.describeAllow = describeAllow;
+    }
+
+    public boolean isShowAllow() {
+        return showAllow;
+    }
+
+    public void setShowAllow(boolean showAllow) {
+        this.showAllow = showAllow;
     }
 
     public boolean isTruncateAllow() {
@@ -225,6 +290,30 @@ public class WallConfig implements WallConfigMBean {
 
     public void setSelectIntoOutfileAllow(boolean selectIntoOutfileAllow) {
         this.selectIntoOutfileAllow = selectIntoOutfileAllow;
+    }
+
+    public boolean isCreateTableAllow() {
+        return createTableAllow;
+    }
+
+    public void setCreateTableAllow(boolean createTableAllow) {
+        this.createTableAllow = createTableAllow;
+    }
+
+    public boolean isDropTableAllow() {
+        return dropTableAllow;
+    }
+
+    public void setDropTableAllow(boolean dropTableAllow) {
+        this.dropTableAllow = dropTableAllow;
+    }
+
+    public boolean isAlterTableAllow() {
+        return alterTableAllow;
+    }
+
+    public void setAlterTableAllow(boolean alterTableAllow) {
+        this.alterTableAllow = alterTableAllow;
     }
 
     public boolean isSelectUnionCheck() {
@@ -267,6 +356,14 @@ public class WallConfig implements WallConfigMBean {
         this.deleteWhereAlwayTrueCheck = deleteWhereAlwayTrueCheck;
     }
 
+    public boolean isDeleteWhereNoneCheck() {
+        return deleteWhereNoneCheck;
+    }
+
+    public void setDeleteWhereNoneCheck(boolean deleteWhereNoneCheck) {
+        this.deleteWhereNoneCheck = deleteWhereNoneCheck;
+    }
+
     public boolean isUpdateAllow() {
         return updateAllow;
     }
@@ -283,12 +380,36 @@ public class WallConfig implements WallConfigMBean {
         this.updateWhereAlayTrueCheck = updateWhereAlayTrueCheck;
     }
 
+    public boolean isUpdateWhereNoneCheck() {
+        return updateWhereNoneCheck;
+    }
+
+    public void setUpdateWhereNoneCheck(boolean updateWhereNoneCheck) {
+        this.updateWhereNoneCheck = updateWhereNoneCheck;
+    }
+
     public boolean isInsertAllow() {
         return insertAllow;
     }
 
     public void setInsertAllow(boolean insertAllow) {
         this.insertAllow = insertAllow;
+    }
+
+    public boolean isReplaceAllow() {
+        return replaceAllow;
+    }
+
+    public void setReplaceAllow(boolean replaceAllow) {
+        this.replaceAllow = replaceAllow;
+    }
+
+    public boolean isSetAllow() {
+        return setAllow;
+    }
+
+    public void setSetAllow(boolean value) {
+        this.setAllow = value;
     }
 
     public boolean isMergeAllow() {
@@ -357,6 +478,54 @@ public class WallConfig implements WallConfigMBean {
         this.commentAllow = commentAllow;
     }
 
+    public boolean isStrictSyntaxCheck() {
+        return strictSyntaxCheck;
+    }
+
+    public void setStrictSyntaxCheck(boolean strictSyntaxCheck) {
+        this.strictSyntaxCheck = strictSyntaxCheck;
+    }
+
+    public boolean isConstArithmeticAllow() {
+        return constArithmeticAllow;
+    }
+
+    public void setConstArithmeticAllow(boolean constArithmeticAllow) {
+        this.constArithmeticAllow = constArithmeticAllow;
+    }
+
+    public Set<String> getDenyFunctions() {
+        return denyFunctions;
+    }
+
+    public Set<String> getDenyTables() {
+        return denyTables;
+    }
+
+    public Set<String> getDenySchemas() {
+        return denySchemas;
+    }
+
+    public Set<String> getDenyVariants() {
+        return denyVariants;
+    }
+
+    public Set<String> getDenyObjects() {
+        return denyObjects;
+    }
+
+    public Set<String> getReadOnlyTables() {
+        return readOnlyTables;
+    }
+
+    public void addReadOnlyTable(String tableName) {
+        this.readOnlyTables.add(tableName);
+    }
+
+    public boolean isReadOnly(String tableName) {
+        return this.readOnlyTables.contains(tableName);
+    }
+
     public Set<String> getPermitFunctions() {
         return permitFunctions;
     }
@@ -373,14 +542,6 @@ public class WallConfig implements WallConfigMBean {
         return permitVariants;
     }
 
-    public Set<String> getPermitObjects() {
-        return permitObjects;
-    }
-
-    public Set<String> getReadOnlyTables() {
-        return readOnlyTables;
-    }
-
     public boolean isMustParameterized() {
         return mustParameterized;
     }
@@ -389,31 +550,31 @@ public class WallConfig implements WallConfigMBean {
         this.mustParameterized = mustParameterized;
     }
 
-    public boolean isPermitObjects(String name) {
+    public boolean isDenyObjects(String name) {
         if (!objectCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return permitObjects.contains(name);
+        return denyObjects.contains(name);
     }
 
-    public boolean isPermitSchema(String name) {
+    public boolean isDenySchema(String name) {
         if (!schemaCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitSchemas.contains(name);
+        return this.denySchemas.contains(name);
     }
 
-    public boolean isPermitFunction(String name) {
+    public boolean isDenyFunction(String name) {
         if (!functionCheck) {
             return false;
         }
 
         name = WallVisitorUtils.form(name);
-        return this.permitFunctions.contains(name);
+        return this.denyFunctions.contains(name);
     }
 
     public boolean isCallAllow() {

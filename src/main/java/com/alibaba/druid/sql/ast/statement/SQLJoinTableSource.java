@@ -15,17 +15,21 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
 public class SQLJoinTableSource extends SQLTableSourceImpl {
 
-    private static final long serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-    protected SQLTableSource  left;
-    protected JoinType        joinType;
-    protected SQLTableSource  right;
-    protected SQLExpr         condition;
+    protected SQLTableSource      left;
+    protected JoinType            joinType;
+    protected SQLTableSource      right;
+    protected SQLExpr             condition;
+    protected final List<SQLExpr> using            = new ArrayList<SQLExpr>();
 
     public SQLJoinTableSource(String alias){
         super(alias);
@@ -40,6 +44,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
             acceptChild(visitor, this.left);
             acceptChild(visitor, this.right);
             acceptChild(visitor, this.condition);
+            acceptChild(visitor, this.using);
         }
 
         visitor.endVisit(this);
@@ -58,6 +63,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setLeft(SQLTableSource left) {
+        if (left != null) {
+            left.setParent(this);
+        }
         this.left = left;
     }
 
@@ -66,6 +74,9 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setRight(SQLTableSource right) {
+        if (right != null) {
+            right.setParent(this);
+        }
         this.right = right;
     }
 
@@ -74,7 +85,14 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public void setCondition(SQLExpr condition) {
+        if (condition != null) {
+            condition.setParent(this);
+        }
         this.condition = condition;
+    }
+
+    public List<SQLExpr> getUsing() {
+        return this.using;
     }
 
     public void output(StringBuffer buf) {
@@ -91,15 +109,13 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
     }
 
     public static enum JoinType {
-        COMMA(","), // 
+        COMMA(","), //
         JOIN("JOIN"), //
-        INNER_JOIN("INNER JOIN"), // 
-        CROSS_JOIN("CROSS JOIN"), // 
-        NATURAL_JOIN("NATURAL JOIN"), // 
-        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), // 
-        LEFT_OUTER_JOIN("LEFT JOIN"), 
-        RIGHT_OUTER_JOIN("RIGHT JOIN"),
-        FULL_OUTER_JOIN("FULL JOIN"), 
+        INNER_JOIN("INNER JOIN"), //
+        CROSS_JOIN("CROSS JOIN"), //
+        NATURAL_JOIN("NATURAL JOIN"), //
+        NATURAL_INNER_JOIN("NATURAL INNER JOIN"), //
+        LEFT_OUTER_JOIN("LEFT JOIN"), RIGHT_OUTER_JOIN("RIGHT JOIN"), FULL_OUTER_JOIN("FULL JOIN"),
         STRAIGHT_JOIN("STRAIGHT_JOIN");
 
         public final String name;
@@ -107,6 +123,7 @@ public class SQLJoinTableSource extends SQLTableSourceImpl {
         JoinType(String name){
             this.name = name;
         }
+
         public static String toString(JoinType joinType) {
             return joinType.name;
         }

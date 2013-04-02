@@ -67,11 +67,17 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
@@ -700,56 +706,59 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         }
 
         Object param = parameters.get(index);
+        printParameter(param);
+        return false;
+    }
 
+    public void printParameter(Object param) {
         if (param == null) {
             print("NULL");
-            return false;
+            return;
         }
 
         if (param instanceof Number //
             || param instanceof Boolean) {
             print(param.toString());
-            return false;
+            return;
         }
         
         if (param instanceof String) {
             SQLCharExpr charExpr = new SQLCharExpr((String) param);
             visit(charExpr);
-            return false;
+            return;
         }
 
         if (param instanceof Date) {
             print((Date) param);
-            return false;
+            return;
         }
 
         if (param instanceof InputStream) {
             print("'<InputStream>");
-            return false;
+            return;
         }
 
         if (param instanceof Reader) {
             print("'<Reader>");
-            return false;
+            return;
         }
 
         if (param instanceof Blob) {
             print("'<Blob>");
-            return false;
+            return;
         }
         
         if (param instanceof NClob) {
             print("'<NClob>");
-            return false;
+            return;
         }
 
         if (param instanceof Clob) {
             print("'<Clob>");
-            return false;
+            return;
         }
         
         print("'" + param.getClass().getName() + "'");
-        return false;
     }
 
     public boolean visit(SQLDropTableStatement x) {
@@ -1065,6 +1074,17 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             x.getCondition().accept(this);
             decrementIndent();
         }
+        
+        if (x.getUsing().size() > 0) {
+            print(" USING (");
+            printAndAccept(x.getUsing(), ", ");
+            print(")");
+        }
+        
+        if (x.getAlias() != null) {
+            print(" AS ");
+            print(x.getAlias());
+        }
 
         decrementIndent();
 
@@ -1348,6 +1368,51 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
         println();
         print(")");
 
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAlterColumn x) {
+        print("ALTER COLUMN ");
+        x.getColumn().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLCheck x) {
+        if (x.getName() != null) {
+            print("CONSTRAINT ");
+            x.getName().accept(this);
+            print(' ');
+        }
+        print("CHECK (");
+        x.getExpr().accept(this);
+        print(')');
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropForeinKey x) {
+        print("DROP FOREIGN KEY ");
+        x.getIndexName().accept(this);
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDropPrimaryKey x) {
+        print("DROP PRIMARY KEY");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableEnableKeys x) {
+        print("ENABLE KEYS");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableDisableKeys x) {
+        print("DISABLE KEYS");
         return false;
     }
 }

@@ -25,18 +25,30 @@ import com.alibaba.druid.wall.WallUtils;
 public class WallTruncateTest extends TestCase {
     private String sql = "TRUNCATE TABLE T1";
     
-    private WallConfig config = new WallConfig();
     
     protected void setUp() throws Exception {
         //config.setTruncateAllow(true);
     }
 
     public void testMySql() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+        WallConfig config = new WallConfig();
+        Assert.assertTrue(WallUtils.isValidateMySql(sql, config));
     }
     
     public void testORACLE() throws Exception {
-        
+        WallConfig config = new WallConfig();
+        Assert.assertTrue(WallUtils.isValidateOracle(sql, config));
+    }
+    
+    public void testMySql_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setTruncateAllow(false);
+        Assert.assertFalse(WallUtils.isValidateMySql(sql, config));
+    }
+    
+    public void testORACLE_false() throws Exception {
+        WallConfig config = new WallConfig();
+        config.setTruncateAllow(false);
         Assert.assertFalse(WallUtils.isValidateOracle(sql, config));
     }
 }

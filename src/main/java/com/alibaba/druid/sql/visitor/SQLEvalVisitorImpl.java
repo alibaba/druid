@@ -16,11 +16,14 @@
 package com.alibaba.druid.sql.visitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCaseExpr;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -28,14 +31,17 @@ import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNumberExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.visitor.functions.Function;
 
 public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalVisitor {
 
-    private List<Object> parameters       = new ArrayList<Object>();
+    private List<Object>        parameters       = new ArrayList<Object>();
 
-    private int          variantIndex     = -1;
+    private Map<String, Function> functions        = new HashMap<String, Function>();
 
-    private boolean      markVariantIndex = true;
+    private int                 variantIndex     = -1;
+
+    private boolean             markVariantIndex = true;
 
     public SQLEvalVisitorImpl(){
         this(new ArrayList<Object>(1));
@@ -114,4 +120,17 @@ public class SQLEvalVisitorImpl extends SQLASTVisitorAdapter implements SQLEvalV
         this.markVariantIndex = markVariantIndex;
     }
 
+    @Override
+    public Function getFunction(String funcName) {
+        return functions.get(funcName);
+    }
+
+    @Override
+    public void registerFunction(String funcName, Function function) {
+        functions.put(funcName, function);
+    }
+    
+    public boolean visit(SQLIdentifierExpr x) {
+        return SQLEvalVisitorUtils.visit(this, x);
+    }
 }

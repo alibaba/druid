@@ -66,6 +66,10 @@ public class SQLServerSelectParser extends SQLSelectParser {
 
         if (lexer.token() == Token.SELECT) {
             lexer.nextToken();
+            
+            if (lexer.token() == Token.COMMENT) {
+                lexer.nextToken();
+            }
 
             if (lexer.token() == Token.DISTINCT) {
                 queryBlock.setDistionOption(SQLSetQuantifier.DISTINCT);
@@ -76,9 +80,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
             }
 
             if (lexer.token() == Token.TOP) {
-                SQLServerTop top = new SQLServerTop();
-                lexer.nextToken();
-                top.setExpr(createExprParser().primary());
+                SQLServerTop top = this.createExprParser().parseTop();
                 queryBlock.setTop(top);
             }
 
@@ -101,7 +103,7 @@ public class SQLServerSelectParser extends SQLSelectParser {
         return queryRest(queryBlock);
     }
     
-    protected SQLExprParser createExprParser() {
+    protected SQLServerExprParser createExprParser() {
         return new SQLServerExprParser(lexer);
     }
 }

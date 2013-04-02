@@ -47,6 +47,10 @@ public class SQLServerExprParser extends SQLExprParser {
         
         return super.primary();
     }
+    
+    public SQLServerSelectParser createSelectParser() {
+        return new SQLServerSelectParser(this);
+    }
 
     public SQLExpr primaryRest(SQLExpr expr) {
         if (lexer.token() == Token.DOTDOT) {
@@ -123,6 +127,11 @@ public class SQLServerExprParser extends SQLExprParser {
             
             if (paren) {
                 accept(Token.RPAREN);
+            }
+            
+            if (lexer.token() == Token.PERCENT) {
+                lexer.nextToken();
+                top.setPercent(true);
             }
             
             return top;
