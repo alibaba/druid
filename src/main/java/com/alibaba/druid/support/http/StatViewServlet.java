@@ -348,10 +348,10 @@ public class StatViewServlet extends HttpServlet {
         if (isRequireAuth()
             && session.getAttribute(SESSION_USER_KEY) == null
             && !("/login.html".equals(path) || path.startsWith("/css") || path.startsWith("/js") || path.startsWith("/img"))) {
-            if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
-                response.sendRedirect("/login.html");
+        	if (contextPath == null || contextPath.equals("") || contextPath.equals("/")) {
+                response.sendRedirect("/druid/login.html");
             } else {
-                response.sendRedirect("login.html");
+                response.sendRedirect("druid/login.html");
             }
             return;
         }
