@@ -120,6 +120,17 @@ public final class DruidStatService implements DruidStatServiceMBean {
         if (url.startsWith("/sql.json")) {
             return returnJSONResult(RESULT_CODE_SUCCESS, getSqlStatDataList(parameters));
         }
+        
+        if (url.startsWith("/wall.json")) {
+        	Object result = statManagerFacade.getWallStatMap(null);
+            return returnJSONResult(RESULT_CODE_SUCCESS, result);
+        }
+        
+        if (url.startsWith("/wall-") && url.indexOf(".json") > 0) {
+            Integer dataSourceId = StringUtils.subStringToInteger(url, "wall-", ".json");
+            Object result = statManagerFacade.getWallStatMap(dataSourceId);
+            return returnJSONResult(result == null ? RESULT_CODE_ERROR : RESULT_CODE_SUCCESS, result);
+        }
 
         if (url.startsWith("/sql-") && url.indexOf(".json") > 0) {
             Integer id = StringUtils.subStringToInteger(url, "sql-", ".json");
