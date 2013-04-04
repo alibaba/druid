@@ -186,7 +186,7 @@ public final class DruidStatManagerFacade {
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static Map mergWallStat(Map mapA, Map mapB) {
+    public static Map mergWallStat(Map mapA, Map mapB) {
         if (mapA.size() == 0) {
             return mapB;
         }

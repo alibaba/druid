@@ -15,6 +15,8 @@
  */
 package com.alibaba.druid.wall;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
 public class WallFunctionStat {
@@ -37,6 +39,10 @@ public class WallFunctionStat {
 
     public String toString() {
         return "{\"invokeCount\":" + invokeCount + "}";
+    }
+
+    public Map<String, Object> toMap() {
+        return Collections.<String, Object>singletonMap("invokeCount", invokeCount);
     }
 
 }
