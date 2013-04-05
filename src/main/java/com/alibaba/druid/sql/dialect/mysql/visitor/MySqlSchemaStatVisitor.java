@@ -422,7 +422,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlShowColumnsStatement x) {
-        return true;
+        return false;
     }
 
     @Override
@@ -1283,7 +1283,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
     public boolean visit(MySqlAlterTableImportTablespace x) {
         return false;
     }
-
+    
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
 

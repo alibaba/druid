@@ -38,7 +38,7 @@ public class MySqlWallDescribteTest extends TestCase {
     
     public void test_not_allow() throws Exception {
         WallConfig config = new WallConfig();
-        config.setVariantCheck(true);
+        config.setDescribeAllow(false);
         
         Assert.assertFalse(WallUtils.isValidateMySql("describe t", config));
     }

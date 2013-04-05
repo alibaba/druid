@@ -642,6 +642,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         boolean full = false;
         if (lexer.token() == Token.FULL) {
             lexer.nextToken();
+            full = true;
         }
 
         if (identifierEquals("PROCESSLIST")) {
@@ -651,7 +652,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return stmt;
         }
 
-        if (identifierEquals("COLUMNS")) {
+        if (identifierEquals("COLUMNS") || identifierEquals("FIELDS")) {
             lexer.nextToken();
 
             MySqlShowColumnsStatement stmt = parseShowColumns();

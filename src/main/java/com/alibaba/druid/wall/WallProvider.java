@@ -47,11 +47,11 @@ public abstract class WallProvider {
 
     private int                                           MAX_SQL_LENGTH    = 2048;                                             // 1k
 
-    private int                                           whiteSqlMaxSize   = 10000;                                             // 1k
+    private int                                           whiteSqlMaxSize   = 500;                                             // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
-    private int                                           blackSqlMaxSize   = 1000;                                             // 1k
+    private int                                           blackSqlMaxSize   = 500;                                             // 1k
 
     protected final WallConfig                            config;
 
@@ -103,6 +103,10 @@ public abstract class WallProvider {
 
     public WallTableStat getTableStat(String tableName) {
         String lowerCaseName = tableName.toLowerCase();
+        if (lowerCaseName.startsWith("`") && lowerCaseName.endsWith("`")) {
+            lowerCaseName = lowerCaseName.substring(1, lowerCaseName.length() - 1);
+        }
+
         return getTableStatWithLowerName(lowerCaseName);
     }
 
@@ -224,7 +228,7 @@ public abstract class WallProvider {
             lock.writeLock().unlock();
         }
     }
-    
+
     public void clearBlackList() {
         lock.writeLock().lock();
         try {
@@ -371,25 +375,111 @@ public abstract class WallProvider {
         }
 
         WallContext.createIfNotExists(this.dbType);
-        WallCheckResult result = new WallCheckResult();
 
         if (config.isDoPrivilegedAllow() && ispPivileged()) {
-            return result;
+            return new WallCheckResult();
         }
 
         // first step, check whiteList
+        boolean mulltiTenant = config.getTenantTablePattern() != null && config.getTenantTablePattern().length() > 0;
+        if (!mulltiTenant) {
+            WallCheckResult checkResult = checkWhiteAndBlackList(sql);
+            if (checkResult != null) {
+                return checkResult;
+            }
+        }
+
+        hardCheckCount.incrementAndGet();
+        final List<Violation> violations = new ArrayList<Violation>();
+        List<SQLStatement> statementList = new ArrayList<SQLStatement>();
+        boolean syntaxError = false;
+        try {
+            SQLStatementParser parser = createParser(sql);
+            parser.getLexer().setCommentHandler(WallCommentHandler.instance);
+
+            if (!config.isCommentAllow()) {
+                parser.getLexer().setAllowComment(false); // deny comment
+            }
+
+            parser.parseStatementList(statementList);
+
+            final Token lastToken = parser.getLexer().token();
+            if (lastToken != Token.EOF) {
+                violations.add(new IllegalSQLObjectViolation("not terminal sql, token " + lastToken, sql));
+            }
+        } catch (NotAllowCommentException e) {
+            violations.add(new SyntaxErrorViolation(e, sql));
+            incrementCommentDeniedCount();
+        } catch (ParserException e) {
+            syntaxErrrorCount.incrementAndGet();
+            syntaxError = true;
+            if (config.isStrictSyntaxCheck()) {
+                violations.add(new SyntaxErrorViolation(e, sql));
+            }
+        } catch (Exception e) {
+            violations.add(new SyntaxErrorViolation(e, sql));
+        }
+
+        if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
+            violations.add(new IllegalSQLObjectViolation("multi-statement not allow", sql));
+        }
+
+        WallVisitor visitor = createWallVisitor();
+
+        if (statementList.size() > 0) {
+            SQLStatement stmt = statementList.get(0);
+            try {
+                stmt.accept(visitor);
+            } catch (ParserException e) {
+                violations.add(new SyntaxErrorViolation(e, sql));
+            }
+        }
+
+        if (visitor.getViolations().size() > 0) {
+            violations.addAll(visitor.getViolations());
+        }
+
+        WallSqlStat sqlStat = null;
+        if (violations.size() > 0) {
+            violationCount.incrementAndGet();
+
+            if (sql.length() < MAX_SQL_LENGTH) {
+                sqlStat = addBlackSql(sql, context.getTableStats(), context.getFunctionStats(), violations, syntaxError);
+            }
+        } else {
+            if (sql.length() < MAX_SQL_LENGTH) {
+                sqlStat = addWhiteSql(sql, context.getTableStats(), context.getFunctionStats(), syntaxError);
+            }
+        }
+
+        Map<String, WallSqlTableStat> tableStats = null;
+        Map<String, WallSqlFunctionStat> functionStats = null;
+        if (context != null) {
+            tableStats = context.getTableStats();
+            functionStats = context.getFunctionStats();
+            recordStats(tableStats, functionStats);
+        }
+
+        if (sqlStat != null) {
+            new WallCheckResult(sqlStat);
+        }
+
+        return new WallCheckResult(violations, tableStats, functionStats, statementList, syntaxError);
+    }
+
+    private WallCheckResult checkWhiteAndBlackList(String sql) {
         {
             WallSqlStat sqlStat = getWhiteSql(sql);
             if (sqlStat != null) {
                 whiteListHitCount.incrementAndGet();
                 sqlStat.incrementAndGetExecuteCount();
-                
+
                 if (sqlStat.isSyntaxError()) {
                     syntaxErrrorCount.incrementAndGet();
                 }
 
                 recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
-                return result;
+                return new WallCheckResult(sqlStat);
             }
         }
         // check black list
@@ -405,80 +495,12 @@ public abstract class WallProvider {
 
                 sqlStat.incrementAndGetExecuteCount();
                 recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
-                List<Violation> blackViolations = sqlStat.getViolations();
 
-                result.getViolations().addAll(blackViolations);
-                return result;
+                return new WallCheckResult(sqlStat);
             }
         }
 
-        hardCheckCount.incrementAndGet();
-        boolean syntaxError = false;
-        try {
-            SQLStatementParser parser = createParser(sql);
-            parser.getLexer().setCommentHandler(WallCommentHandler.instance);
-
-            if (!config.isCommentAllow()) {
-                parser.getLexer().setAllowComment(false); // deny comment
-            }
-
-            parser.parseStatementList(result.getStatementList());
-
-            final Token lastToken = parser.getLexer().token();
-            if (lastToken != Token.EOF) {
-                result.getViolations().add(new IllegalSQLObjectViolation("not terminal sql, token " + lastToken, sql));
-            }
-        } catch (NotAllowCommentException e) {
-            result.getViolations().add(new SyntaxErrorViolation(e, sql));
-            incrementCommentDeniedCount();
-        } catch (ParserException e) {
-            syntaxErrrorCount.incrementAndGet();
-            syntaxError = true;
-            if (config.isStrictSyntaxCheck()) {
-                result.getViolations().add(new SyntaxErrorViolation(e, sql));
-            }
-        } catch (Exception e) {
-            result.getViolations().add(new SyntaxErrorViolation(e, sql));
-        }
-
-        if (result.getViolations().size() == 0 && result.getStatementList().size() > 1
-            && !config.isMultiStatementAllow()) {
-            result.getViolations().add(new IllegalSQLObjectViolation("multi-statement not allow", sql));
-        }
-
-        WallVisitor visitor = createWallVisitor();
-
-        if (result.getStatementList().size() > 0) {
-            SQLStatement stmt = result.getStatementList().get(0);
-            try {
-                stmt.accept(visitor);
-            } catch (ParserException e) {
-                result.getViolations().add(new SyntaxErrorViolation(e, sql));
-            }
-        }
-
-        if (visitor.getViolations().size() > 0) {
-            result.getViolations().addAll(visitor.getViolations());
-        }
-
-        if (result.getViolations().size() > 0) {
-            violationCount.incrementAndGet();
-
-            if (sql.length() < MAX_SQL_LENGTH) {
-                addBlackSql(sql, context.getTableStats(), context.getFunctionStats(), result.getViolations(),
-                            syntaxError);
-            }
-        } else {
-            if (sql.length() < MAX_SQL_LENGTH) {
-                addWhiteSql(sql, context.getTableStats(), context.getFunctionStats(), syntaxError);
-            }
-        }
-
-        if (context != null) {
-            recordStats(context.getTableStats(), context.getFunctionStats());
-        }
-
-        return result;
+        return null;
     }
 
     void recordStats(Map<String, WallSqlTableStat> tableStats, Map<String, WallSqlFunctionStat> functionStats) {
@@ -551,7 +573,7 @@ public abstract class WallProvider {
     public long getViolationCount() {
         return violationCount.get();
     }
-    
+
     public long getHardCheckCount() {
         return hardCheckCount.get();
     }
@@ -589,6 +611,7 @@ public abstract class WallProvider {
         Map<String, Object> info = new LinkedHashMap<String, Object>();
 
         info.put("checkCount", this.getCheckCount());
+        info.put("hardCheckCount", this.getHardCheckCount());
         info.put("violationCount", this.getViolationCount());
         info.put("blackListHitCount", this.getBlackListHitCount());
         info.put("blackListSize", this.getBlackList().size());
@@ -597,25 +620,21 @@ public abstract class WallProvider {
         info.put("syntaxErrrorCount", this.getSyntaxErrorCount());
 
         {
-            List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>();
+            Map<String, Map<String, Object>> tables = new LinkedHashMap<String, Map<String, Object>>();
             for (Map.Entry<String, WallTableStat> entry : this.tableStats.entrySet()) {
-                Map<String, Object> stat = new LinkedHashMap<String, Object>();
-                stat.put("name", entry.getKey());
-                entry.getValue().toMap(stat);
-                tables.add(stat);
+                tables.put(entry.getKey(), entry.getValue().toMap());
             }
             info.put("tables", tables);
         }
         {
-            List<Map<String, Object>> functions = new ArrayList<Map<String, Object>>();
+            Map<String, Map<String, Object>> functions = new LinkedHashMap<String, Map<String, Object>>();
             for (Map.Entry<String, WallFunctionStat> entry : this.functionStats.entrySet()) {
-                Map<String, Object> stat = new HashMap<String, Object>();
-                stat.put("name", entry.getValue());
-                stat.put("invokeCount", entry.getValue().getInvokeCount());
-                functions.add(stat);
+                functions.put(entry.getKey(), entry.getValue().toMap());
             }
             info.put("functions", functions);
         }
+        info.put("whiteList", this.getWhiteList());
+        info.put("blackList", this.getBlackList());
         return info;
     }
 }

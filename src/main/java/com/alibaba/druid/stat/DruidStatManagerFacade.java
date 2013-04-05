@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.sql.visitor.SQLEvalVisitorUtils;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.druid.support.spring.stat.SpringStatManager;
 import com.alibaba.druid.util.DruidDataSourceUtils;
@@ -186,7 +188,7 @@ public final class DruidStatManagerFacade {
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static Map mergWallStat(Map mapA, Map mapB) {
+    public static Map mergWallStat(Map mapA, Map mapB) {
         if (mapA.size() == 0) {
             return mapB;
         }
@@ -195,6 +197,7 @@ public final class DruidStatManagerFacade {
             return mapA;
         }
         
+        Map<String, Object> newMap = new LinkedHashMap<String, Object>();
         for (Object item : mapB.entrySet()) {
             Map.Entry entry = (Map.Entry) item; 
             String key = (String) entry.getKey();
@@ -202,16 +205,26 @@ public final class DruidStatManagerFacade {
             Object valueA = mapA.get(key);
             
             if (valueA == null) {
-                mapA.put(key, valueB);
+                newMap.put(key, valueB);
+            } else if (valueB == null) {
+                newMap.put(key, valueA);
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
                     Object newValue = mergWallStat((Map)valueA, (Map)valueB);
-                    mapA.put(key, newValue);
+                    newMap.put(key, newValue);
+                } else if (valueA instanceof Set && valueB instanceof Set) {
+                    Set<Object> set = new HashSet<Object>();
+                    set.addAll((Set) valueA);
+                    set.addAll((Set) valueB);
+                    newMap.put(key, set);
+                } else {
+                    Object sum = SQLEvalVisitorUtils.add(valueA, valueB);
+                    newMap.put(key, sum);
                 }
             }
         }
         
-        return null;
+        return newMap;
     }
 
     public List<Map<String, Object>> getSqlStatDataList(Object datasource) {
