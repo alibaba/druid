@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Druid DataSourceStat</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+		<link href='css/bootstrap.min.css' rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet"/>
+    	<script type="text/javascript" src="js/jquery.min.js"></script>
+    	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script src="js/common.js" type="text/javascript" charset="utf8"></script>
+	</head>
+	<body>
+    	<div class="container-fluid">
+      		<div class="row-fluid">
+        		<div class="span12">
+          				<h3>
+          					Wall Stat
+          					<a href="wall.json" target="_blank">View JSON API</a>
+          				</h3>
+						<table id="dataTable" style="background-color: #fff" class="table table-bordered responsive-utilities">
+							<tr >
+								<td valign="top" width="100" class="td_lable">CheckCount</td>
+								<td id="CheckCount" width="100"></td>
+								<td></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> ViolationCount </td>
+								<td id="ViolationCount"> </td>
+								<td></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> BlackListHitCount </td>
+								<td id="BlackListHitCount"></td>
+								<td></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> BlackListSize </td>
+								<td id="BlackListSize"></td>
+								<td></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> WhiteListHitCount </td>
+								<td id="WhiteListHitCount"></td>
+								<td></td>
+							</tr>
+							<tr >
+								<td valign="top" class="td_lable"> WhiteListSize </td>
+								<td id="WhiteListSize"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td valign="top" class="td_lable"> SyntaxErrrorCount </td>
+								<td id="SyntaxErrrorCount"></td>
+								<td></td>
+							</tr>
+						</table>
+						<table id="dataTable1" style="background-color: #fff" class="table table-bordered responsive-utilities">
+							<thead>
+								<tr >
+									<td valign="top" width="100" class="td_lable">Table Name</td>
+									<td valign="top" width="100" class="td_lable">SelectCount</td>
+									<td valign="top" width="100" class="td_lable">SelectIntoCount</td>
+									<td valign="top" width="100" class="td_lable">InsertCount</td>
+									<td valign="top" width="100" class="td_lable">UpdateCount</td>
+									<td valign="top" width="100" class="td_lable">DeleteCount</td>
+									<td valign="top" width="100" class="td_lable">TruncateCount</td>
+									<td valign="top" width="100" class="td_lable">CreateCount</td>
+									<td valign="top" width="100" class="td_lable">AlterCount</td>
+									<td valign="top" width="100" class="td_lable">DropCount</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+						<table id="dataTable2" style="background-color: #fff" class="table table-bordered responsive-utilities">
+							<thead>
+								<tr >
+									<td valign="top" width="100" class="td_lable">Function Name</td>
+									<td valign="top" width="100" class="td_lable">InvokeCount</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+          			</div>
+        		</div>
+      		</div> 
+    	<script type="text/javascript">
+			$.namespace("druid.datasource");
+			druid.datasource = function () {  
+				return  {
+					init : function() {
+						druid.common.buildHead(3);
+						this.ajaxRequestForBasicInfo();
+					},
+					
+					ajaxRequestForBasicInfo : function() {
+						$.ajax({
+							type: 'POST',
+							url: "wall.json",
+							success: function(data) {
+								$("#CheckCount").text(data.Content.checkCount)
+								$("#ViolationCount").text(data.Content.violationCount)
+								$("#BlackListHitCount").text(data.Content.blackListHitCount)
+								$("#BlackListSize").text(data.Content.blackListSize)
+								$("#WhiteListHitCount").text(data.Content.whiteListHitCount)
+								$("#WhiteListSize").text(data.Content.whiteListSize)
+								$("#SyntaxErrrorCount").text(data.Content.syntaxErrrorCount)
+								
+								var html = "";
+								var tables = data.Content.tables;
+			    				for ( var i = 0; i < tables.length; i++) {
+			    					var table = tables[i];
+			    					html += "<tr>";
+			    					html += "<td>" + table.name + "</td>";
+			    					html += "<td>" + (table.selectCount ? table.selectCount : 0)+ "</td>";
+			    					html += "<td>" + (table.selectIntoCount ? table.selectIntoCount : 0) + "</td>";
+			    					html += "<td>" + (table.insertCount ? table.insertCount : 0) + "</td>";
+			    					html += "<td>" + (table.updateCount ? table.updateCount : 0) + "</td>";
+			    					html += "<td>" + (table.deleteCount ? table.deleteCount : 0) + "</td>";
+			    					html += "<td>" + (table.truncateCount ? table.truncateCount : 0) + "</td>";
+			    					html += "<td>" + (table.createCount ? table.createCount : 0) + "</td>";
+			    					html += "<td>" + (table.alterCount ? table.alterCount : 0) + "</td>";
+			    					html += "<td>" + (table.dropCount ? table.dropCount : 0) + "</td>";
+			    					html += "</tr>";
+			    				}
+			    				$("#dataTable1 tbody").html(html);
+			    				
+			    				html = "";
+								var functions = data.Content.functions;
+			    				for ( var i = 0; i < functions.length; i++) {
+			    					var fun = functions[i];
+			    					html += "<tr>";
+			    					html += "<td>" + fun.name + "</td>";
+			    					html += "<td>" + table.invokeCount + "</td>";
+			    					html += "</tr>";
+			    				}
+			    				$("#dataTable2 tbody").html(html);
+							},
+							dataType: "json"
+						});
+					}
+				}
+			}();
+	
+			$(document).ready(function() {
+				druid.datasource.init();
+			});
+		</script>
+	</body>
+</html>
