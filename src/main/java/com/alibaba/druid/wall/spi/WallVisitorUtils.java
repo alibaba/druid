@@ -872,6 +872,8 @@ public class WallVisitorUtils {
                         tableStat.incrementDeleteCount();
                     } else if (parent instanceof SQLUpdateStatement) {
                         tableStat.incrementUpdateCount();
+                    } else if (parent instanceof MySqlReplaceStatement) {
+                        tableStat.incrementReplaceCount();
                     }
                 }
             }
