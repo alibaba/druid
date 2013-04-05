@@ -18,7 +18,6 @@ package com.alibaba.druid.wall;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -620,21 +619,25 @@ public abstract class WallProvider {
         info.put("syntaxErrrorCount", this.getSyntaxErrorCount());
 
         {
-            Map<String, Map<String, Object>> tables = new LinkedHashMap<String, Map<String, Object>>();
+            List<Map<String, Object>> tables = new ArrayList<Map<String, Object>>();
             for (Map.Entry<String, WallTableStat> entry : this.tableStats.entrySet()) {
-                tables.put(entry.getKey(), entry.getValue().toMap());
+                Map<String, Object> statMap = entry.getValue().toMap();
+                statMap.put("name", entry.getKey());
+                tables.add(statMap);
             }
             info.put("tables", tables);
         }
         {
-            Map<String, Map<String, Object>> functions = new LinkedHashMap<String, Map<String, Object>>();
+            List<Map<String, Object>> functions = new ArrayList<Map<String, Object>>();
             for (Map.Entry<String, WallFunctionStat> entry : this.functionStats.entrySet()) {
-                functions.put(entry.getKey(), entry.getValue().toMap());
+                Map<String, Object> statMap = entry.getValue().toMap();
+                statMap.put("name", entry.getKey());
+                functions.add(statMap);
             }
             info.put("functions", functions);
         }
-        info.put("whiteList", this.getWhiteList());
-        info.put("blackList", this.getBlackList());
+        //info.put("whiteList", this.getWhiteList());
+        //info.put("blackList", this.getBlackList());
         return info;
     }
 }
