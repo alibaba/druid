@@ -23,7 +23,6 @@ druid.common = function () {
 				      	'					<li><a href="index.html">Index</a></li>'+
 				      	'					<li><a href="datasource.html">DataSource</a></li>'+
 				      	'					<li><a href="sql.html">SQL</a></li>'+
-				      	'					<li><a href="wall.html">Wall</a></li>'+
 				      	'					<li><a href="webapp.html">WebApp</a></li>'+
 				      	'					<li><a href="weburi.html">WebURI</a></li>'+
 				      	'					<li><a href="websession.html">Web Session</a></li>'+

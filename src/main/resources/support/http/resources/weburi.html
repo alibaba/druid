@@ -47,7 +47,7 @@
     				$("#dataTable th a").click(function(obj) {
     					druid.common.setOrderBy(obj.target.id.substring(3))
     				})
-    				druid.common.buildHead(5);
+    				druid.common.buildHead(4);
     				druid.common.ajaxuri = 'weburi.json?';
     				druid.common.handleAjaxResult = druid.weburi.handleAjaxResult;
     				druid.common.setOrderBy("URI");
