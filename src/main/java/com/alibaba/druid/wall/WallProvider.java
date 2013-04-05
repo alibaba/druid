@@ -47,11 +47,11 @@ public abstract class WallProvider {
 
     private int                                           MAX_SQL_LENGTH    = 2048;                                             // 1k
 
-    private int                                           whiteSqlMaxSize   = 2000;                                             // 1k
+    private int                                           whiteSqlMaxSize   = 500;                                             // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
-    private int                                           blackSqlMaxSize   = 1000;                                             // 1k
+    private int                                           blackSqlMaxSize   = 500;                                             // 1k
 
     protected final WallConfig                            config;
 
