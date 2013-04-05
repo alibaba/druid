@@ -523,6 +523,10 @@ public class MySqlExprParser extends SQLExprParser {
             return parseColumnRest(column);
         }
 
+        if (identifierEquals("precision") && column.getDataType().getName().equalsIgnoreCase("double")) {
+            lexer.nextToken();
+        }
+
         if (identifierEquals("PARTITION")) {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
@@ -589,7 +593,7 @@ public class MySqlExprParser extends SQLExprParser {
                 accept(Token.EQ);
             }
         }
-        
+
         item.setValue(this.expr());
 
         item.setTarget(var);

@@ -64,6 +64,6 @@ public class ConfigErrorTestMysql extends TestCase {
 
         Assert.assertEquals(0, LOG.getWarnCount());
         dataSource.init();
-        Assert.assertEquals(1, LOG.getWarnCount());
+        Assert.assertEquals(0, LOG.getWarnCount());
     }
 }

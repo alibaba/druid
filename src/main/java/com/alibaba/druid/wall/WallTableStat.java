@@ -32,6 +32,7 @@ public class WallTableStat {
     private volatile long                              createCount;
     private volatile long                              alterCount;
     private volatile long                              dropCount;
+    private volatile long                              replaceCount;
 
     final static AtomicLongFieldUpdater<WallTableStat> selectCountUpdater     = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
                                                                                                                   "selectCount");
@@ -51,6 +52,8 @@ public class WallTableStat {
                                                                                                                   "alterCount");
     final static AtomicLongFieldUpdater<WallTableStat> dropCountUpdater       = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
                                                                                                                   "dropCount");
+    final static AtomicLongFieldUpdater<WallTableStat> replaceCountUpdater    = AtomicLongFieldUpdater.newUpdater(WallTableStat.class,
+                                                                                                                  "replaceCount");
 
     public WallTableStat(){
 
@@ -90,6 +93,10 @@ public class WallTableStat {
 
     public long getDropCount() {
         return dropCount;
+    }
+    
+    public long getReplaceCount() {
+        return replaceCount;
     }
 
     public void addSqlTableStat(WallSqlTableStat stat) {
@@ -147,6 +154,12 @@ public class WallTableStat {
                 dropCountUpdater.addAndGet(this, val);
             }
         }
+        {
+            long val = stat.getReplaceCount();
+            if (val > 0) {
+                replaceCountUpdater.addAndGet(this, val);
+            }
+        }
     }
 
     public String toString() {
@@ -155,7 +168,7 @@ public class WallTableStat {
 
         return JSONUtils.toJSONString(map);
     }
-    
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         return toMap(map);
@@ -185,6 +198,9 @@ public class WallTableStat {
         }
         if (truncateCount > 0) {
             map.put("truncateCount", truncateCount);
+        }
+        if (replaceCount > 0) {
+            map.put("replaceCount", replaceCount);
         }
         return map;
     }
