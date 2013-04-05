@@ -15,22 +15,51 @@
  */
 package com.alibaba.druid.wall;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class WallCheckResult {
 
-    private final List<Violation>    violations    = new ArrayList<Violation>(2);
-    private final List<SQLStatement> statementList = new ArrayList<SQLStatement>(2);
+    private final List<SQLStatement>               statementList;
+    private final Map<String, WallSqlTableStat>    tableStats;
+
+    private final List<Violation>                  violations;
+
+    private final Map<String, WallSqlFunctionStat> functionStats;
+
+    private final boolean                          syntaxError;
 
     public WallCheckResult(){
-
+        this(null);
     }
 
-    public WallCheckResult(Violation violation){
-        this.violations.add(violation);
+    public WallCheckResult(WallSqlStat sqlStat){
+        if (sqlStat != null) {
+            tableStats = sqlStat.getTableStats();
+            violations = sqlStat.getViolations();
+            functionStats = sqlStat.getFunctionStats();
+            statementList = Collections.emptyList();
+            syntaxError = sqlStat.isSyntaxError();
+        } else {
+            tableStats = Collections.emptyMap();
+            violations = Collections.emptyList();
+            functionStats = Collections.emptyMap();
+            statementList = Collections.emptyList();
+            syntaxError = false;
+        }
+    }
+
+    public WallCheckResult(List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
+                           Map<String, WallSqlFunctionStat> functionStats, List<SQLStatement> statementList,
+                           boolean syntaxError){
+        this.tableStats = tableStats;
+        this.violations = violations;
+        this.functionStats = functionStats;
+        this.statementList = statementList;
+        this.syntaxError = syntaxError;
     }
 
     public List<Violation> getViolations() {
@@ -41,4 +70,16 @@ public class WallCheckResult {
         return statementList;
     }
 
+    
+    public Map<String, WallSqlTableStat> getTableStats() {
+        return tableStats;
+    }
+
+    public Map<String, WallSqlFunctionStat> getFunctionStats() {
+        return functionStats;
+    }
+
+    public boolean isSyntaxError() {
+        return syntaxError;
+    }
 }

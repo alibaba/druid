@@ -26,5 +26,8 @@ public class WallSqlFunctionStat {
     public void incrementInvokeCount() {
         this.invokeCount++;
     }
-
+    
+    public void addInvokeCount(int value) {
+        this.invokeCount += value;
+    }
 }

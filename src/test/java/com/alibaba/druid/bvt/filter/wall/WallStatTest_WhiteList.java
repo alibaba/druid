@@ -22,17 +22,17 @@ public class WallStatTest_WhiteList extends TestCase {
     public void testMySql() throws Exception {
         WallProvider provider = new MySqlWallProvider();
 
-        for (int i = 0; i < 1001; ++i) {
+        for (int i = 0; i < 3001; ++i) {
             String sql = "select * from t where id = " + i;
             Assert.assertTrue(provider.checkValid(sql));
         }
 
         WallTableStat tableStat = provider.getTableStat("t");
-        Assert.assertEquals(1001, tableStat.getSelectCount());
+        Assert.assertEquals(3001, tableStat.getSelectCount());
         Assert.assertEquals(0, provider.getBlackListHitCount());
         Assert.assertEquals(0, provider.getWhiteListHitCount());
-        Assert.assertEquals(1000, provider.getWhiteList().size());
-        Assert.assertEquals(1001, provider.getCheckCount());
+        Assert.assertEquals(500, provider.getWhiteList().size());
+        Assert.assertEquals(3001, provider.getCheckCount());
     }
 
 }
