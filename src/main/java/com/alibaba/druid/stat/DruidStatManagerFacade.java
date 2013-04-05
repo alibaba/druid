@@ -217,6 +217,11 @@ public final class DruidStatManagerFacade {
                     set.addAll((Set) valueA);
                     set.addAll((Set) valueB);
                     newMap.put(key, set);
+                } else if (valueA instanceof List && valueB instanceof List) {
+                    List<Map<String, Object>> mergedList = mergeNamedList((List) valueA, (List) valueB);
+                    newMap.put(key, mergedList);
+                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB) && "name".equals(key)) {
+                    newMap.put(key, valueA);
                 } else {
                     Object sum = SQLEvalVisitorUtils.add(valueA, valueB);
                     newMap.put(key, sum);
@@ -225,6 +230,27 @@ public final class DruidStatManagerFacade {
         }
         
         return newMap;
+    }
+
+    private static List<Map<String, Object>> mergeNamedList(List listA, List listB) {
+        Map<String, Map<String, Object>> mapped = new HashMap<String, Map<String, Object>>();
+        for (Object item : (List) listA) {
+            Map<String, Object> map = (Map<String, Object>) item;
+            String name = (String) map.get("name");
+            mapped.put(name, map);
+        }
+        
+        List<Map<String, Object>> mergedList = new ArrayList<Map<String, Object>>();
+        for (Object item : (List) listB) {
+            Map<String, Object> mapB = (Map<String, Object>) item;
+            String name = (String) mapB.get("name");
+            Map<String, Object> mapA = mapped.get(name);
+            
+            Map<String, Object> mergedMap = mergWallStat(mapA, mapB);
+            mergedList.add(mergedMap);
+        }
+        
+        return mergedList;
     }
 
     public List<Map<String, Object>> getSqlStatDataList(Object datasource) {

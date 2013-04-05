@@ -15,7 +15,7 @@
  */
 package com.alibaba.druid.wall;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 
@@ -42,7 +42,9 @@ public class WallFunctionStat {
     }
 
     public Map<String, Object> toMap() {
-        return Collections.<String, Object>singletonMap("invokeCount", invokeCount);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("invokeCount", invokeCount);
+        return map;
     }
 
 }
