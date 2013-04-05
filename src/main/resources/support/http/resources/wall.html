@@ -24,6 +24,11 @@
 								<td></td>
 							</tr>
 							<tr >
+								<td valign="top" width="100" class="td_lable">HardCheckCount</td>
+								<td id="HardCheckCount" width="100"></td>
+								<td></td>
+							</tr>
+							<tr >
 								<td valign="top" class="td_lable"> ViolationCount </td>
 								<td id="ViolationCount"> </td>
 								<td></td>
@@ -67,6 +72,7 @@
 									<td valign="top" width="100" class="td_lable">CreateCount</td>
 									<td valign="top" width="100" class="td_lable">AlterCount</td>
 									<td valign="top" width="100" class="td_lable">DropCount</td>
+									<td valign="top" width="100" class="td_lable">ReplaceCount</td>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -98,6 +104,7 @@
 							url: "wall.json",
 							success: function(data) {
 								$("#CheckCount").text(data.Content.checkCount)
+								$("#HardCheckCount").text(data.Content.hardCheckCount)
 								$("#ViolationCount").text(data.Content.violationCount)
 								$("#BlackListHitCount").text(data.Content.blackListHitCount)
 								$("#BlackListSize").text(data.Content.blackListSize)
@@ -120,6 +127,7 @@
 			    					html += "<td>" + (table.createCount ? table.createCount : 0) + "</td>";
 			    					html += "<td>" + (table.alterCount ? table.alterCount : 0) + "</td>";
 			    					html += "<td>" + (table.dropCount ? table.dropCount : 0) + "</td>";
+			    					html += "<td>" + (table.replaceCount ? table.replaceCount : 0) + "</td>";
 			    					html += "</tr>";
 			    				}
 			    				$("#dataTable1 tbody").html(html);
