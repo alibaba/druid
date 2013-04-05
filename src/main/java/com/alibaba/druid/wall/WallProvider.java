@@ -355,7 +355,7 @@ public abstract class WallProvider {
         WallContext originalContext = WallContext.current();
 
         try {
-            WallContext.create(dbType);
+            WallContext.createIfNotExists(dbType);
             return checkInternal(sql);
         } finally {
             if (originalContext == null) {
@@ -364,16 +364,10 @@ public abstract class WallProvider {
         }
     }
 
-    public WallCheckResult checkInternal(String sql) {
+    private WallCheckResult checkInternal(String sql) {
         checkCount.incrementAndGet();
 
         WallContext context = WallContext.current();
-
-        if (context != null && !this.dbType.equals(context.getDbType())) {
-            WallContext.clearContext();
-        }
-
-        WallContext.createIfNotExists(this.dbType);
 
         if (config.isDoPrivilegedAllow() && ispPivileged()) {
             return new WallCheckResult();

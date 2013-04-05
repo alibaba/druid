@@ -92,6 +92,10 @@ public class WallContext {
     public static void clearContext() {
         contextLocal.remove();
     }
+    
+    public static void setContext(WallContext context) {
+        contextLocal.set(context);
+    }
 
     public WallSqlStat getSqlState() {
         return sqlState;
