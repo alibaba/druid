@@ -59,20 +59,20 @@
 								<td></td>
 							</tr>
 						</table>
-						<table id="dataTable1" style="background-color: #fff" class="table table-bordered table-striped responsive-utilities">
+						<table id="dataTable1" style="background-color: #fff" class="table table-bordered responsive-utilities">
 							<thead>
 								<tr >
-									<th class="td_lable"><a id="th-name" href="javascript:void(0);">Table Name</a></th>
-									<th class="td_lable"><a id="th-selectCount" href="javascript:void(0);">SelectCount</a></th>
-									<th class="td_lable"><a id="th-selectIntoCount" href="javascript:void(0);">SelectIntoCount</a></th>
-									<th class="td_lable"><a id="th-insertCount" href="javascript:void(0);">InsertCount</a></th>
-									<th class="td_lable"><a id="th-updateCount" href="javascript:void(0);">UpdateCount</a></th>
-									<th class="td_lable"><a id="th-deleteCount" href="javascript:void(0);">DeleteCount</a></th>
-									<th class="td_lable"><a id="th-truncateCount" href="javascript:void(0);">TruncateCount</a></th>
-									<th class="td_lable"><a id="th-createCount" href="javascript:void(0);">CreateCount</a></th>
-									<th class="td_lable"><a id="th-alterCount" href="javascript:void(0);">AlterCount</a></th>
-									<th class="td_lable"><a id="th-dropCount" href="javascript:void(0);">DropCount</a></th>
-									<th class="td_lable"><a id="th-replaceCount" href="javascript:void(0);">ReplaceCount</a></th>
+									<td valign="top" width="100" class="td_lable">Table Name</td>
+									<td valign="top" width="100" class="td_lable">SelectCount</td>
+									<td valign="top" width="100" class="td_lable">SelectIntoCount</td>
+									<td valign="top" width="100" class="td_lable">InsertCount</td>
+									<td valign="top" width="100" class="td_lable">UpdateCount</td>
+									<td valign="top" width="100" class="td_lable">DeleteCount</td>
+									<td valign="top" width="100" class="td_lable">TruncateCount</td>
+									<td valign="top" width="100" class="td_lable">CreateCount</td>
+									<td valign="top" width="100" class="td_lable">AlterCount</td>
+									<td valign="top" width="100" class="td_lable">DropCount</td>
+									<td valign="top" width="100" class="td_lable">ReplaceCount</td>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -80,8 +80,8 @@
 						<table id="dataTable2" style="background-color: #fff" class="table table-bordered responsive-utilities">
 							<thead>
 								<tr >
-									<th class="td_lable">Function Name</th>
-									<th class="td_lable"><a id="th-invokeCount" href="javascript:void(0);">InvokeCount</a></th>
+									<td valign="top" width="100" class="td_lable">Function Name</td>
+									<td valign="top" width="100" class="td_lable">InvokeCount</td>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -91,69 +91,66 @@
       		</div> 
     	<script type="text/javascript">
 			$.namespace("druid.datasource");
-			druid.wall = function () {  
+			druid.datasource = function () {  
 				return  {
 					init : function() {
-						$("#dataTable1 th a").click(function(obj) {
-	    					druid.common.setOrderBy(obj.target.id.substring(3))
-	    				})
-	    				$("#dataTable2 th a").click(function(obj) {
-	    					druid.common.setOrderBy(obj.target.id.substring(3))
-	    				})
 						druid.common.buildHead(3);
-						
-						druid.common.ajaxuri = 'wall.json?';
-	    				druid.common.handleAjaxResult = druid.wall.handleAjaxResult;
-	    				druid.common.ajaxRequestForBasicInfo();
-	    				setInterval("druid.common.ajaxRequestForBasicInfo();",5000);
+						this.ajaxRequestForBasicInfo();
 					},
 					
-					handleAjaxResult : function(data) {
-						$("#CheckCount").text(data.Content.checkCount)
-						$("#HardCheckCount").text(data.Content.hardCheckCount)
-						$("#ViolationCount").text(data.Content.violationCount)
-						$("#BlackListHitCount").text(data.Content.blackListHitCount)
-						$("#BlackListSize").text(data.Content.blackListSize)
-						$("#WhiteListHitCount").text(data.Content.whiteListHitCount)
-						$("#WhiteListSize").text(data.Content.whiteListSize)
-						$("#SyntaxErrrorCount").text(data.Content.syntaxErrrorCount)
-						
-						var html = "";
-						var tables = data.Content.tables;
-	    				for ( var i = 0; i < tables.length; i++) {
-	    					var table = tables[i];
-	    					html += "<tr>";
-	    					html += "<td>" + table.name + "</td>";
-	    					html += "<td>" + (table.selectCount ? table.selectCount : 0)+ "</td>";
-	    					html += "<td>" + (table.selectIntoCount ? table.selectIntoCount : 0) + "</td>";
-	    					html += "<td>" + (table.insertCount ? table.insertCount : 0) + "</td>";
-	    					html += "<td>" + (table.updateCount ? table.updateCount : 0) + "</td>";
-	    					html += "<td>" + (table.deleteCount ? table.deleteCount : 0) + "</td>";
-	    					html += "<td>" + (table.truncateCount ? table.truncateCount : 0) + "</td>";
-	    					html += "<td>" + (table.createCount ? table.createCount : 0) + "</td>";
-	    					html += "<td>" + (table.alterCount ? table.alterCount : 0) + "</td>";
-	    					html += "<td>" + (table.dropCount ? table.dropCount : 0) + "</td>";
-	    					html += "<td>" + (table.replaceCount ? table.replaceCount : 0) + "</td>";
-	    					html += "</tr>";
-	    				}
-	    				$("#dataTable1 tbody").html(html);
-	    				
-	    				html = "";
-						var functions = data.Content.functions;
-	    				for ( var i = 0; i < functions.length; i++) {
-	    					var fun = functions[i];
-	    					html += "<tr>";
-	    					html += "<td>" + fun.name + "</td>";
-	    					html += "<td>" + table.invokeCount + "</td>";
-	    					html += "</tr>";
-	    				}
-	    				$("#dataTable2 tbody").html(html);
+					ajaxRequestForBasicInfo : function() {
+						$.ajax({
+							type: 'POST',
+							url: "wall.json",
+							success: function(data) {
+								$("#CheckCount").text(data.Content.checkCount)
+								$("#HardCheckCount").text(data.Content.hardCheckCount)
+								$("#ViolationCount").text(data.Content.violationCount)
+								$("#BlackListHitCount").text(data.Content.blackListHitCount)
+								$("#BlackListSize").text(data.Content.blackListSize)
+								$("#WhiteListHitCount").text(data.Content.whiteListHitCount)
+								$("#WhiteListSize").text(data.Content.whiteListSize)
+								$("#SyntaxErrrorCount").text(data.Content.syntaxErrrorCount)
+								
+								var html = "";
+								var tables = data.Content.tables;
+			    				for ( var i = 0; i < tables.length; i++) {
+			    					var table = tables[i];
+			    					html += "<tr>";
+			    					html += "<td>" + table.name + "</td>";
+			    					html += "<td>" + (table.selectCount ? table.selectCount : 0)+ "</td>";
+			    					html += "<td>" + (table.selectIntoCount ? table.selectIntoCount : 0) + "</td>";
+			    					html += "<td>" + (table.insertCount ? table.insertCount : 0) + "</td>";
+			    					html += "<td>" + (table.updateCount ? table.updateCount : 0) + "</td>";
+			    					html += "<td>" + (table.deleteCount ? table.deleteCount : 0) + "</td>";
+			    					html += "<td>" + (table.truncateCount ? table.truncateCount : 0) + "</td>";
+			    					html += "<td>" + (table.createCount ? table.createCount : 0) + "</td>";
+			    					html += "<td>" + (table.alterCount ? table.alterCount : 0) + "</td>";
+			    					html += "<td>" + (table.dropCount ? table.dropCount : 0) + "</td>";
+			    					html += "<td>" + (table.replaceCount ? table.replaceCount : 0) + "</td>";
+			    					html += "</tr>";
+			    				}
+			    				$("#dataTable1 tbody").html(html);
+			    				
+			    				html = "";
+								var functions = data.Content.functions;
+			    				for ( var i = 0; i < functions.length; i++) {
+			    					var fun = functions[i];
+			    					html += "<tr>";
+			    					html += "<td>" + fun.name + "</td>";
+			    					html += "<td>" + table.invokeCount + "</td>";
+			    					html += "</tr>";
+			    				}
+			    				$("#dataTable2 tbody").html(html);
+							},
+							dataType: "json"
+						});
 					}
 				}
 			}();
 	
 			$(document).ready(function() {
-				druid.wall.init();
+				druid.datasource.init();
 			});
 		</script>
 	</body>
