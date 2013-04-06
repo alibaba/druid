@@ -454,7 +454,8 @@ public abstract class WallProvider {
         }
 
         if (sqlStat != null) {
-            new WallCheckResult(sqlStat);
+            context.setSqlStat(sqlStat);
+            return new WallCheckResult(sqlStat, statementList);
         }
 
         return new WallCheckResult(violations, tableStats, functionStats, statementList, syntaxError);
