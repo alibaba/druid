@@ -122,8 +122,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
         }
         
         if (url.startsWith("/wall.json")) {
-        	Object result = statManagerFacade.getWallStatMap(null);
-            return returnJSONResult(RESULT_CODE_SUCCESS, result);
+            return returnJSONResult(RESULT_CODE_SUCCESS, getWallStatMap(parameters));
         }
         
         if (url.startsWith("/wall-") && url.indexOf(".json") > 0) {
@@ -276,7 +275,14 @@ public final class DruidStatService implements DruidStatServiceMBean {
             dataSourceId = Integer.parseInt(dataSourceIdParam);
         }
         
-        return statManagerFacade.getWallStatMap(dataSourceId);
+        Map<String, Object> result = statManagerFacade.getWallStatMap(dataSourceId);
+        List<Map<String, Object>> sortedArray = comparatorOrderBy((List<Map<String, Object>>)result.get("tables"), parameters);
+        result.put("tables", sortedArray);
+        
+        sortedArray = comparatorOrderBy((List<Map<String, Object>>)result.get("functions"), parameters);
+        result.put("functions", sortedArray);
+        
+        return result;
     }
 
     private String getSqlStat(Integer id) {
