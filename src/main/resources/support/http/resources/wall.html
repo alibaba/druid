@@ -73,6 +73,9 @@
 									<td valign="top" width="100" class="td_lable">AlterCount</td>
 									<td valign="top" width="100" class="td_lable">DropCount</td>
 									<td valign="top" width="100" class="td_lable">ReplaceCount</td>
+									<td valign="top" width="100" class="td_lable">DeleteDataCount</td>
+									<td valign="top" width="100" class="td_lable">UpdateDataCount</td>
+									<td valign="top" width="100" class="td_lable">FetchRowCount</td>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -128,6 +131,9 @@
 			    					html += "<td>" + (table.alterCount ? table.alterCount : 0) + "</td>";
 			    					html += "<td>" + (table.dropCount ? table.dropCount : 0) + "</td>";
 			    					html += "<td>" + (table.replaceCount ? table.replaceCount : 0) + "</td>";
+			    					html += "<td>" + (table.deleteDataCount ? table.deleteDataCount : 0) + "</td>";
+			    					html += "<td>" + (table.updateDataCount ? table.updateDataCount : 0) + "</td>";
+			    					html += "<td>" + (table.fetchRowCount ? table.fetchRowCount : 0) + "</td>";
 			    					html += "</tr>";
 			    				}
 			    				$("#dataTable1 tbody").html(html);
