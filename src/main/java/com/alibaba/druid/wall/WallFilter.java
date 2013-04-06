@@ -390,6 +390,21 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
     }
 
     @Override
+    public int[] statement_executeBatch(FilterChain chain, StatementProxy statement) throws SQLException {
+        WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
+        try {
+            int[] updateCounts = chain.statement_executeBatch(statement);
+            for (int i = 0; i < updateCounts.length; ++i) {
+                int updateCount = updateCounts[i];
+                statExecuteUpdate(sqlStat, updateCount);
+            }
+            return updateCounts;
+        } finally {
+            WallContext.clearContext();
+        }
+    }
+
+    @Override
     public ResultSetProxy statement_executeQuery(FilterChain chain, StatementProxy statement, String sql)
                                                                                                          throws SQLException {
         createWallContext(statement);
@@ -465,17 +480,17 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             WallContext.clearContext();
         }
     }
-    
+
     @Override
     public boolean preparedStatement_execute(FilterChain chain, PreparedStatementProxy statement) throws SQLException {
         boolean firstResult = chain.preparedStatement_execute(statement);
-        
+
         if (!firstResult) {
             WallSqlStat sqlStat = (WallSqlStat) statement.getAttributes().get(ATTR_SQL_STAT);
             int updateCount = statement.getUpdateCount();
             statExecuteUpdate(sqlStat, updateCount);
         }
-        
+
         return firstResult;
     }
 
@@ -491,7 +506,6 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         statExecuteUpdate(updateCount);
         return updateCount;
     }
-
 
     public void setSqlStatAttribute(PreparedStatementProxy stmt) {
         WallContext context = WallContext.current();
@@ -518,10 +532,16 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
             return;
         }
 
-        statExecuteUpdate(sqlStat, updateCount);
+        if (updateCount > 0) {
+            statExecuteUpdate(sqlStat, updateCount);
+        }
     }
 
     private void statExecuteUpdate(WallSqlStat sqlStat, int updateCount) {
+        if (sqlStat == null) {
+            return;
+        }
+        
         Map<String, WallSqlTableStat> sqlTableStats = sqlStat.getTableStats();
         if (sqlTableStats == null) {
             return;
@@ -538,7 +558,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
 
             if (sqlTableStat.getDeleteCount() > 0) {
                 tableStat.addDeleteDataCount(updateCount);
-            } else  if (sqlTableStat.getUpdateCount() > 0) {
+            } else if (sqlTableStat.getUpdateCount() > 0) {
                 tableStat.addUpdateDataCount(updateCount);
             }
         }
@@ -628,7 +648,7 @@ public class WallFilter extends FilterAdapter implements WallFilterMBean {
         if (sqlTableStats == null) {
             return;
         }
-        
+
         for (Map.Entry<String, WallSqlTableStat> entry : sqlTableStats.entrySet()) {
             String tableName = entry.getKey();
             WallTableStat tableStat = provider.getTableStat(tableName);
