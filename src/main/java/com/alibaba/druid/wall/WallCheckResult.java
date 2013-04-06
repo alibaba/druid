@@ -36,20 +36,24 @@ public class WallCheckResult {
         this(null);
     }
 
-    public WallCheckResult(WallSqlStat sqlStat){
+    public WallCheckResult(WallSqlStat sqlStat, List<SQLStatement> stmtList){
         if (sqlStat != null) {
             tableStats = sqlStat.getTableStats();
             violations = sqlStat.getViolations();
             functionStats = sqlStat.getFunctionStats();
-            statementList = Collections.emptyList();
+            statementList = stmtList;
             syntaxError = sqlStat.isSyntaxError();
         } else {
             tableStats = Collections.emptyMap();
             violations = Collections.emptyList();
             functionStats = Collections.emptyMap();
-            statementList = Collections.emptyList();
+            statementList = stmtList;
             syntaxError = false;
         }
+    }
+
+    public WallCheckResult(WallSqlStat sqlStat){
+        this(sqlStat, Collections.<SQLStatement> emptyList());
     }
 
     public WallCheckResult(List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
@@ -70,7 +74,6 @@ public class WallCheckResult {
         return statementList;
     }
 
-    
     public Map<String, WallSqlTableStat> getTableStats() {
         return tableStats;
     }

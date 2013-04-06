@@ -70,5 +70,4 @@ public class WallSqlStat {
     public boolean isSyntaxError() {
         return syntaxError;
     }
-
 }

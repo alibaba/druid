@@ -232,6 +232,7 @@ public final class DruidStatManagerFacade {
         return newMap;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static List<Map<String, Object>> mergeNamedList(List listA, List listB) {
         Map<String, Map<String, Object>> mapped = new HashMap<String, Map<String, Object>>();
         for (Object item : (List) listA) {

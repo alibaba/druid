@@ -22,7 +22,7 @@ public class WallContext {
 
     private final static ThreadLocal<WallContext> contextLocal = new ThreadLocal<WallContext>();
 
-    private WallSqlStat                           sqlState;
+    private WallSqlStat                           sqlStat;
     private Map<String, WallSqlTableStat>         tableStats;
     private Map<String, WallSqlFunctionStat>      functionStats;
     private final String                          dbType;
@@ -92,13 +92,17 @@ public class WallContext {
     public static void clearContext() {
         contextLocal.remove();
     }
-
-    public WallSqlStat getSqlState() {
-        return sqlState;
+    
+    public static void setContext(WallContext context) {
+        contextLocal.set(context);
     }
 
-    public void setSqlState(WallSqlStat sqlState) {
-        this.sqlState = sqlState;
+    public WallSqlStat getSqlStat() {
+        return sqlStat;
+    }
+
+    public void setSqlStat(WallSqlStat sqlStat) {
+        this.sqlStat = sqlStat;
     }
 
     public Map<String, WallSqlTableStat> getTableStats() {
