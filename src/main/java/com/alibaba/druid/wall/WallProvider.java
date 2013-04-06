@@ -473,6 +473,10 @@ public abstract class WallProvider {
                 }
 
                 recordStats(sqlStat.getTableStats(), sqlStat.getFunctionStats());
+                WallContext context = WallContext.current();
+                if (context != null) {
+                    context.setSqlStat(sqlStat);
+                }
                 return new WallCheckResult(sqlStat);
             }
         }

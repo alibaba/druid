@@ -80,7 +80,7 @@ public class WallFilterTest extends TestCase {
             conn.close();
         }
         Assert.assertEquals(3, wallFilter.getProvider().getTableStat("t").getDeleteDataCount());
-        
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
@@ -89,6 +89,29 @@ public class WallFilterTest extends TestCase {
             conn.close();
         }
         Assert.assertEquals(2, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+
+        {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("update t SET fname = 'xx' where FID = ? OR FID = ?");
+            stmt.setInt(1, 3);
+            stmt.setInt(2, 4);
+            stmt.execute();
+            stmt.close();
+            conn.close();
+        }
+        Assert.assertEquals(4, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+        
+        {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("update t SET fname = 'xx' where FID = ? OR FID = ?");
+            stmt.setInt(1, 3);
+            stmt.setInt(2, 4);
+            stmt.execute();
+            stmt.close();
+            conn.close();
+        }
+        Assert.assertEquals(6, wallFilter.getProvider().getTableStat("t").getUpdateDataCount());
+
         {
             Connection conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
