@@ -962,6 +962,7 @@ public class SQLEvalVisitorUtils {
         return ((Number) val).shortValue();
     }
 
+    @SuppressWarnings("rawtypes")
     public static Integer castToInteger(Object val) {
         if (val == null) {
             return null;
@@ -985,6 +986,7 @@ public class SQLEvalVisitorUtils {
         return ((Number) val).intValue();
     }
 
+    @SuppressWarnings("rawtypes")
     public static Long castToLong(Object val) {
         if (val == null) {
             return null;
