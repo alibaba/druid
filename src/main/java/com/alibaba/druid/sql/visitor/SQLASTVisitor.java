@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -454,4 +455,8 @@ public interface SQLASTVisitor {
     boolean visit(SQLAlterTableStatement x);
     
     void endVisit(SQLAlterTableStatement x);
+    
+    boolean visit(SQLAlterTableAddForeignKey x);
+    
+    void endVisit(SQLAlterTableAddForeignKey x);
 }

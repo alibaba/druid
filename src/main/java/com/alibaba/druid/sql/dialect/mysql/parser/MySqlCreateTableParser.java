@@ -118,23 +118,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 } else if (lexer.token() == (Token.PRIMARY)) {
                     stmt.getTableElementList().add(parseConstraint());
                 } else if (lexer.token() == (Token.FOREIGN)) {
-                    lexer.nextToken();
-                    accept(Token.KEY);
-                    
-                    MySqlForeignKey fk = new MySqlForeignKey();
-                    
-                    accept(Token.LPAREN);
-                    this.exprParser.names(fk.getReferencingColumns());
-                    accept(Token.RPAREN);
-                    
-                    accept(Token.REFERENCES);
-                    
-                    fk.setReferencedTableName(this.exprParser.name());
-                    
-                    accept(Token.LPAREN);
-                    this.exprParser.names(fk.getReferencedColumns());
-                    accept(Token.RPAREN);
-
+                    MySqlForeignKey fk = this.getExprParser().parseForeignKey();
                     stmt.getTableElementList().add(fk);
                 } else if (lexer.token() == Token.CHECK) {
                     lexer.nextToken();
