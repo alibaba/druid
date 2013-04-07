@@ -29,6 +29,7 @@ import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -52,6 +53,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.MySqlForeignKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.CobarShowStatus;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddColumn;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlAlterTableAddIndex;
@@ -2256,6 +2258,12 @@ public class MySqlStatementParser extends SQLStatementParser {
                             SQLAlterTableAddPrimaryKey item = new SQLAlterTableAddPrimaryKey();
                             item.setPrimaryKey(primaryKey);
                             stmt.getItems().add(item);
+                        } else if (lexer.token() == Token.FOREIGN) {
+                            MySqlForeignKey fk = this.getExprParser().parseForeignKey();
+                            fk.setName(constraintName);
+                            
+                            SQLAlterTableAddForeignKey item = new SQLAlterTableAddForeignKey(fk);
+                            stmt.getItems().add(item);
                         } else {
                             throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                         }
@@ -2537,5 +2545,9 @@ public class MySqlStatementParser extends SQLStatementParser {
 
             lexer.nextToken();
         }
+    }
+    
+    public MySqlExprParser getExprParser() {
+        return (MySqlExprParser) exprParser;
     }
 }

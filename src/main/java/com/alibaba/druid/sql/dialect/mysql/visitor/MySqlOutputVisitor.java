@@ -2766,21 +2766,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public boolean visit(MySqlForeignKey x) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void endVisit(MySqlForeignKey x) {
         if (x.getName() != null) {
             print("CONSTRAINT ");
             x.getName().accept(this);
             print(' ');
         }
 
-        print("FOREIGN KEY ");
-        
-        print(" (");
+        print("FOREIGN KEY (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
         
@@ -2790,6 +2782,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(" (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlForeignKey x) {
+       
     }
 
     @Override

@@ -223,7 +223,7 @@ public class WallVisitorUtils {
     }
 
     public static void checkDelete(WallVisitor visitor, SQLDeleteStatement x) {
-        checkReadOnly(visitor, x.getExprTableSource());
+        checkReadOnly(visitor, x.getTableSource());
 
         WallConfig config = visitor.getConfig();
         if (!config.isDeleteAllow()) {

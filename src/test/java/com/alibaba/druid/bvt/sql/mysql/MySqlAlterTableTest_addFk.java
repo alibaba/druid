@@ -25,10 +25,11 @@ import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.sql.parser.Token;
 
-public class MySqlAlterTableTest8 extends TestCase {
+public class MySqlAlterTableTest_addFk extends TestCase {
 
     public void test_alter_first() throws Exception {
-        String sql = "ALTER TABLE t2 AUTO_INCREMENT = 3";
+        String sql = "alter table Test2 add index FK4CF5DC0F5DD7C31 (test1_name), " + //
+                     "add constraint FK4CF5DC0F5DD7C31 foreign key (test1_name) references Test1 (name)";
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
@@ -42,11 +43,11 @@ public class MySqlAlterTableTest8 extends TestCase {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("ALTER TABLE t2" + //
-                            "\n\tAUTO_INCREMENT = 3", output);
+        Assert.assertEquals("ALTER TABLE Test2" + //
+                            "\n\tADD INDEX FK4CF5DC0F5DD7C31 (test1_name)," + //
+                            "\n\tADD CONSTRAINT FK4CF5DC0F5DD7C31 FOREIGN KEY (name) REFERENCES Test1 (name)", output);
 
         Assert.assertEquals(1, visitor.getTables().size());
         Assert.assertEquals(0, visitor.getColumns().size());
     }
-
 }
