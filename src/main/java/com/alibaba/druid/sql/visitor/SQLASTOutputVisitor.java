@@ -66,6 +66,7 @@ import com.alibaba.druid.sql.ast.expr.SQLUnaryExpr;
 import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
@@ -1413,6 +1414,13 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     @Override
     public boolean visit(SQLAlterTableDisableKeys x) {
         print("DISABLE KEYS");
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableAddForeignKey x) {
+        print("ADD ");
+        x.getForeignKey().accept(this);
         return false;
     }
 }
