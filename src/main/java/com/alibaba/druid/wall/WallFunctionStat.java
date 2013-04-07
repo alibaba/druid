@@ -30,7 +30,7 @@ public class WallFunctionStat {
     }
 
     public void incrementInvokeCount() {
-        this.invokeCount++;
+        invokeCountUpdater.incrementAndGet(this);
     }
 
     public void addSqlFunctionStat(WallSqlFunctionStat sqlFunctionStat) {

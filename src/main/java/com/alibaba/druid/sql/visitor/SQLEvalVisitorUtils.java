@@ -194,7 +194,7 @@ public class SQLEvalVisitorUtils {
 
         if (function != null) {
             Object result = function.eval(visitor, x);
-            
+
             if (result != SQLEvalVisitor.EVAL_ERROR) {
                 x.getAttributes().put(EVAL_VALUE, result);
             }
@@ -954,6 +954,10 @@ public class SQLEvalVisitorUtils {
         if (val instanceof Short) {
             return (Short) val;
         }
+        
+        if (val instanceof String) {
+            return Short.parseShort((String) val);
+        }
 
         return ((Number) val).shortValue();
     }
@@ -967,6 +971,17 @@ public class SQLEvalVisitorUtils {
             return (Integer) val;
         }
 
+        if (val instanceof String) {
+            return Integer.parseInt((String) val);
+        }
+        
+        if (val instanceof List) {
+            List list = (List) val;
+            if (list.size() == 1) {
+                return castToInteger(list.get(0));
+            }
+        }
+
         return ((Number) val).intValue();
     }
 
@@ -977,6 +992,18 @@ public class SQLEvalVisitorUtils {
 
         if (val instanceof Long) {
             return (Long) val;
+        }
+        
+        if (val instanceof String) {
+            return Long.parseLong((String) val);
+        }
+        
+        
+        if (val instanceof List) {
+            List list = (List) val;
+            if (list.size() == 1) {
+                return castToLong(list.get(0));
+            }
         }
 
         return ((Number) val).longValue();
@@ -1395,6 +1422,10 @@ public class SQLEvalVisitorUtils {
         if (b == null) {
             return a;
         }
+        
+        if (a instanceof Date || b instanceof Date) {
+            return SQLEvalVisitor.EVAL_ERROR;
+        }
 
         if (a instanceof BigDecimal || b instanceof BigDecimal) {
             return castToDecimal(a).subtract(castToDecimal(b));
@@ -1427,8 +1458,12 @@ public class SQLEvalVisitorUtils {
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) - castToByte(b);
         }
+        
+        if(a instanceof String && b instanceof String) {
+            return castToLong(a) - castToLong(b);
+        }
 
-        throw new IllegalArgumentException();
+        return SQLEvalVisitor.EVAL_ERROR;
     }
 
     public static Object multi(Object a, Object b) {
