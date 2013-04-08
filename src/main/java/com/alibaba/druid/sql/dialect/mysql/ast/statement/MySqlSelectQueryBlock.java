@@ -165,6 +165,9 @@ public class MySqlSelectQueryBlock extends SQLSelectQueryBlock implements MySqlO
     }
 
     public void setLimit(Limit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
         this.limit = limit;
     }
 

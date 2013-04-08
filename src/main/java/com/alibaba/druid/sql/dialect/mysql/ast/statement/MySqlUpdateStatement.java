@@ -35,6 +35,9 @@ public class MySqlUpdateStatement extends SQLUpdateStatement implements MySqlSta
     }
 
     public void setLimit(Limit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
         this.limit = limit;
     }
 

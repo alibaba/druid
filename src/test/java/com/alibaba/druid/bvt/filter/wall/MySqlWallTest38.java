@@ -19,7 +19,9 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
@@ -28,10 +30,15 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest30 extends TestCase {
+public class MySqlWallTest38 extends TestCase {
 
-    public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where FID = 1 OR UNHEX(HEX('MySQL')) = 'MySQL'")); //
+    public void test_true() throws Exception {
+        WallProvider provider = new MySqlWallProvider();
+
+        Assert.assertTrue(provider.checkValid(//
+        "/* mysql-connector-java-5.1.20 ( Revision: tonci.grgin@oracle.com-20111003110438-qfydx066wsbydkbw ) */SELECT @@session.auto_increment_increment")); //
+
+        Assert.assertEquals(0, provider.getTableStats().size());
+        System.out.println(JSONUtils.toJSONString(provider.getStatsMap()));
     }
 }

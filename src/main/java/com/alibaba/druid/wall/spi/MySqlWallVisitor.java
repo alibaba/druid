@@ -235,7 +235,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             return false;
         }
 
-        if (!checkVar(x.getParent(), x.getName())) {
+        if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
             violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
         }
 

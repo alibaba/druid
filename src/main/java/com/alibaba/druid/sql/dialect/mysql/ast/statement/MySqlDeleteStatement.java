@@ -89,6 +89,9 @@ public class MySqlDeleteStatement extends SQLDeleteStatement {
     }
 
     public void setLimit(Limit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
         this.limit = limit;
     }
 

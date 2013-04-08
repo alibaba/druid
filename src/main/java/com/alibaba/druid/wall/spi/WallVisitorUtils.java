@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -189,7 +190,7 @@ public class WallVisitorUtils {
         SQLExpr where = x.getWhere();
 
         if (where != null) {
-            x.getWhere().setParent(x);
+            where.setParent(x);
             checkCondition(visitor, x.getWhere());
 
             if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
@@ -205,7 +206,7 @@ public class WallVisitorUtils {
                     }
                 }
 
-                if (!isSimpleConstExpr) {
+                if ((!isFirst(where)) && !isSimpleConstExpr) {
                     addViolation(visitor, "select alway true condition not allow", x);
                 }
             }
@@ -522,8 +523,10 @@ public class WallVisitorUtils {
             return null;
         }
 
-        Object leftResult = getValue(x.getLeft());
-        Object rightResult = getValue(x.getRight());
+        SQLExpr left = x.getLeft();
+        SQLExpr right = x.getRight();
+        Object leftResult = getValue(left);
+        Object rightResult = getValue(right);
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
@@ -539,7 +542,14 @@ public class WallVisitorUtils {
                 }
             } else if (rightResult == Boolean.TRUE) {
                 final WallConditionContext current = wallConditionContextLocal.get();
-                if (current != null) {
+
+                boolean isLikeAlwayTrue = false;
+                if (right instanceof SQLBinaryOpExpr
+                    && ((SQLBinaryOpExpr) right).getOperator() == SQLBinaryOperator.Like) {
+                    isLikeAlwayTrue = true;
+                }
+
+                if (current != null && !isLikeAlwayTrue) {
                     current.setPartAlwayTrue(true);
                 }
             }
@@ -631,7 +641,7 @@ public class WallVisitorUtils {
             final Object value = getValue(x);
 
             final WallConditionContext current = wallConditionContextLocal.get();
-            if (current.hasPartAlwayTrue() && alwayTrueCheck) {
+            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, "part alway true condition not allow", x);
             }
 
@@ -801,7 +811,7 @@ public class WallVisitorUtils {
         }
 
         String methodName = x.getMethodName();
-        
+
         WallContext context = WallContext.current();
         if (context != null) {
             context.incrementFunctionInvoke(methodName);
@@ -974,34 +984,59 @@ public class WallVisitorUtils {
 
     public static void loadResource(Set<String> names, String resource) {
         try {
+            boolean hasResource = false;
             Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(resource);
             while (e.hasMoreElements()) {
                 URL url = e.nextElement();
                 InputStream in = null;
-                BufferedReader reader = null;
                 try {
                     in = url.openStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    for (;;) {
-                        String line = reader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-                        line = line.trim();
-                        if (line.length() > 0) {
-                            line = line.toLowerCase();
-                            names.add(line);
-                        }
-                    }
+                    readFromInputStream(names, in);
 
-                    url.openStream();
+                    hasResource = true;
                 } finally {
-                    JdbcUtils.close(reader);
+                    JdbcUtils.close(in);
+                }
+            }
+
+            // for aliyun odps
+            if (!hasResource) {
+                if (!resource.startsWith("/")) {
+                    resource = "/" + resource;
+                }
+
+                InputStream in = null;
+                try {
+                    in = WallVisitorUtils.class.getResourceAsStream(resource);
+                    if (in != null) {
+                        readFromInputStream(names, in);
+                    }
+                } finally {
                     JdbcUtils.close(in);
                 }
             }
         } catch (IOException e) {
             LOG.error("load oracle deny tables errror", e);
+        }
+    }
+
+    private static void readFromInputStream(Set<String> names, InputStream in) throws IOException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(in));
+            for (;;) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                line = line.trim();
+                if (line.length() > 0) {
+                    line = line.toLowerCase();
+                    names.add(line);
+                }
+            }
+        } finally {
+            JdbcUtils.close(reader);
         }
     }
 
@@ -1063,6 +1098,9 @@ public class WallVisitorUtils {
             denyMessage = "show not allow";
         } else if (x instanceof MySqlCommitStatement) {
             allow = config.isCommitAllow();
+            denyMessage = "show not allow";
+        } else if (x instanceof SQLRollbackStatement) {
+            allow = config.isRollbackAllow();
             denyMessage = "show not allow";
         } else if (x instanceof SQLUseStatement) {
             allow = config.isUseAllow();

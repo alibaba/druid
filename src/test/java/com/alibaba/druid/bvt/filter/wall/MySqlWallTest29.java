@@ -32,6 +32,6 @@ public class MySqlWallTest29 extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where UNHEX('4D7953514C') = 'MySQL'")); //
+        "select * from t where FID = 1 OR UNHEX('4D7953514C') = 'MySQL'")); //
     }
 }

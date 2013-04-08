@@ -640,6 +640,10 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLStatement parseShow() {
         acceptIdentifier("SHOW");
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+        }
 
         boolean full = false;
         if (lexer.token() == Token.FULL) {
@@ -1508,6 +1512,10 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlReplaceStatement stmt = new MySqlReplaceStatement();
 
         acceptIdentifier(REPLACE);
+        
+        if (lexer.token() == Token.COMMENT) {
+            lexer.nextToken();
+        }
 
         if (identifierEquals(LOW_PRIORITY)) {
             stmt.setLowPriority(true);

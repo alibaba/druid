@@ -36,6 +36,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             createTableAllow           = true;
     private boolean             dropTableAllow             = true;
     private boolean             alterTableAllow            = true;
+    private boolean             conditionAndAlwayTrueAllow = false;
 
     private boolean             selectAllColumnAllow       = true;
 
@@ -54,6 +55,7 @@ public class WallConfig implements WallConfigMBean {
     private boolean             replaceAllow               = true;
     private boolean             setAllow                   = true;
     private boolean             commitAllow                = true;
+    private boolean             rollbackAllow              = true;
     private boolean             useAllow                   = false;
 
     private boolean             multiStatementAllow        = false;
@@ -107,6 +109,14 @@ public class WallConfig implements WallConfigMBean {
 
     }
     
+    public boolean isConditionAndAlwayTrueAllow() {
+        return conditionAndAlwayTrueAllow;
+    }
+    
+    public void setConditionAndAlwayTrueAllow(boolean conditionAndAlwayTrueAllow) {
+        this.conditionAndAlwayTrueAllow = conditionAndAlwayTrueAllow;
+    }
+
     public boolean isUseAllow() {
         return useAllow;
     }
@@ -115,13 +125,20 @@ public class WallConfig implements WallConfigMBean {
         this.useAllow = useAllow;
     }
 
-
     public boolean isCommitAllow() {
         return commitAllow;
     }
 
     public void setCommitAllow(boolean commitAllow) {
         this.commitAllow = commitAllow;
+    }
+
+    public boolean isRollbackAllow() {
+        return rollbackAllow;
+    }
+
+    public void setRollbackAllow(boolean rollbackAllow) {
+        this.rollbackAllow = rollbackAllow;
     }
 
     public boolean isIntersectAllow() {
