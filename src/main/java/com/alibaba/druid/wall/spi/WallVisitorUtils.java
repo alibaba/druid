@@ -66,7 +66,9 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
@@ -1058,6 +1060,12 @@ public class WallVisitorUtils {
             denyMessage = "describe not allow";
         } else if (x instanceof MySqlShowStatement) {
             allow = config.isShowAllow();
+            denyMessage = "show not allow";
+        } else if (x instanceof MySqlCommitStatement) {
+            allow = config.isCommitAllow();
+            denyMessage = "show not allow";
+        } else if (x instanceof SQLUseStatement) {
+            allow = config.isUseAllow();
             denyMessage = "show not allow";
         } else {
             allow = config.isNoneBaseStatementAllow();

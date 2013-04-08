@@ -32,7 +32,7 @@ public class WallStatTest_blackList_1 extends TestCase {
         Assert.assertEquals(0, provider.getBlackListHitCount());
         Assert.assertEquals(0, provider.getWhiteListHitCount());
         Assert.assertEquals(0, provider.getWhiteList().size());
-        Assert.assertEquals(500, provider.getBlackList().size());
+        Assert.assertEquals(100, provider.getBlackList().size());
         Assert.assertEquals(1001, provider.getCheckCount());
     }
 

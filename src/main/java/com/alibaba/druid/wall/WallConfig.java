@@ -53,6 +53,8 @@ public class WallConfig implements WallConfigMBean {
     private boolean             intersectAllow             = false;
     private boolean             replaceAllow               = true;
     private boolean             setAllow                   = true;
+    private boolean             commitAllow                = true;
+    private boolean             useAllow                   = false;
 
     private boolean             multiStatementAllow        = false;
 
@@ -103,6 +105,23 @@ public class WallConfig implements WallConfigMBean {
 
     public WallConfig(){
 
+    }
+    
+    public boolean isUseAllow() {
+        return useAllow;
+    }
+
+    public void setUseAllow(boolean useAllow) {
+        this.useAllow = useAllow;
+    }
+
+
+    public boolean isCommitAllow() {
+        return commitAllow;
+    }
+
+    public void setCommitAllow(boolean commitAllow) {
+        this.commitAllow = commitAllow;
     }
 
     public boolean isIntersectAllow() {

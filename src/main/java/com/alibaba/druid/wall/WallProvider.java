@@ -46,11 +46,11 @@ public abstract class WallProvider {
 
     private int                                           MAX_SQL_LENGTH    = 2048;                                             // 1k
 
-    private int                                           whiteSqlMaxSize   = 500;                                             // 1k
+    private int                                           whiteSqlMaxSize   = 500;                                              // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
-    private int                                           blackSqlMaxSize   = 500;                                             // 1k
+    private int                                           blackSqlMaxSize   = 100;                                              // 1k
 
     protected final WallConfig                            config;
 
@@ -635,8 +635,8 @@ public abstract class WallProvider {
             }
             info.put("functions", functions);
         }
-        //info.put("whiteList", this.getWhiteList());
-        //info.put("blackList", this.getBlackList());
+        // info.put("whiteList", this.getWhiteList());
+        info.put("blackList", this.getBlackList());
         return info;
     }
 }

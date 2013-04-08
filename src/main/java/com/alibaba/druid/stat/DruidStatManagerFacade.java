@@ -19,6 +19,7 @@ import java.lang.management.ManagementFactory;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -208,6 +209,25 @@ public final class DruidStatManagerFacade {
                 newMap.put(key, valueB);
             } else if (valueB == null) {
                 newMap.put(key, valueA);
+            } else if ("blackList".equals(key)) {
+                Set<String> newSet = new HashSet<String>();
+                
+                Collection<String> collectionA = (Collection<String>) valueA;
+                for (String blackItem : collectionA) {
+                    if (newSet.size() >= 500) {
+                        break;
+                    }
+                    newSet.add(blackItem);
+                }
+                
+                Collection<String> collectionB = (Collection<String>) valueB;
+                for (String blackItem : collectionB) {
+                    if (newSet.size() >= 50) {
+                        break;
+                    }
+                    newSet.add(blackItem);
+                }
+                newMap.put(key, newSet);
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
                     Object newValue = mergWallStat((Map)valueA, (Map)valueB);
