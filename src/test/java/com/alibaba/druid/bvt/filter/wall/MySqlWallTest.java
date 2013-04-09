@@ -30,7 +30,7 @@ public class MySqlWallTest extends TestCase {
         Assert.assertFalse(WallUtils.isValidateMySql("select hex(load_file(0x633A2F77696E646F77732F7265706169722F73616D))"));
         Assert.assertTrue(WallUtils.isValidateMySql("select 'hex(load_file(0x633A2F77696E646F77732F7265706169722F73616D))'"));
         
-        Assert.assertFalse(WallUtils.isValidateMySql("select 15,version()"));
+        Assert.assertFalse(WallUtils.isValidateMySql("select 15,version() FROM X"));
         Assert.assertTrue(WallUtils.isValidateMySql("select 15,'version'"));
 
         Assert.assertFalse(WallUtils.isValidateMySql("select 1 from information_schema.columns"));

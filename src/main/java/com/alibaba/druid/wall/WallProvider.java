@@ -155,6 +155,7 @@ public abstract class WallProvider {
             WallSqlStat wallStat = whiteList.get(sql);
             if (wallStat == null) {
                 wallStat = new WallSqlStat(tableStats, functionStats, syntaxError);
+                wallStat.incrementAndGetExecuteCount();
                 whiteList.put(sql, wallStat);
             }
 
@@ -176,6 +177,7 @@ public abstract class WallProvider {
             WallSqlStat wallStat = blackList.get(sql);
             if (wallStat == null) {
                 wallStat = new WallSqlStat(tableStats, functionStats, violations, syntaxError);
+                wallStat.incrementAndGetExecuteCount();
                 blackList.put(sql, wallStat);
             }
 
@@ -211,6 +213,33 @@ public abstract class WallProvider {
         }
 
         return Collections.<String> unmodifiableSet(hashSet);
+    }
+    
+    public List<Map<String, Object>> getBlackListStat() {
+        List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
+        lock.readLock().lock();
+        try {
+            if (blackList != null) {
+                for (Map.Entry<String, WallSqlStat> entry : this.blackList.entrySet()) {
+                    WallSqlStat sqlStat = entry.getValue();
+                    
+                    Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
+                    sqlStatMap.put("sql", entry.getKey());
+                    sqlStatMap.put("executeCount", sqlStat.getExecuteCount());
+                    
+                    List<Violation> violations = sqlStat.getViolations();
+                    if (violations.size() > 0) {
+                        sqlStatMap.put("violationMessage", violations.get(0).getMessage());
+                    }
+                    
+                    map.add(sqlStatMap);
+                }
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        
+        return map;
     }
 
     public void clearCache() {
@@ -310,6 +339,10 @@ public abstract class WallProvider {
 
     public boolean checkDenySchema(String schemaName) {
         if (schemaName == null) {
+            return true;
+        }
+        
+        if (!this.config.isSchemaCheck()) {
             return true;
         }
 
@@ -638,7 +671,7 @@ public abstract class WallProvider {
             info.put("functions", functions);
         }
         // info.put("whiteList", this.getWhiteList());
-        info.put("blackList", this.getBlackList());
+        info.put("blackList", this.getBlackListStat());
         return info;
     }
 }

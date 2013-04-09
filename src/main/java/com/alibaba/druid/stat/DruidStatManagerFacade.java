@@ -210,24 +210,30 @@ public final class DruidStatManagerFacade {
             } else if (valueB == null) {
                 newMap.put(key, valueA);
             } else if ("blackList".equals(key)) {
-                Set<String> newSet = new HashSet<String>();
+                Map<String, Map<String, Object>> newSet = new HashMap<String, Map<String, Object>>();
                 
-                Collection<String> collectionA = (Collection<String>) valueA;
-                for (String blackItem : collectionA) {
+                Collection<Map<String, Object>> collectionA = (Collection<Map<String, Object>>) valueA;
+                for (Map<String, Object> blackItem : collectionA) {
                     if (newSet.size() >= 1000) {
                         break;
                     }
-                    newSet.add(blackItem);
+                    
+                    String sql = (String) blackItem.get("sql");
+                    Map<String, Object> oldItem = newSet.get(sql);
+                    newSet.put(sql, mergWallStat(oldItem, blackItem));
                 }
                 
-                Collection<String> collectionB = (Collection<String>) valueB;
-                for (String blackItem : collectionB) {
+                Collection<Map<String, Object>> collectionB = (Collection<Map<String, Object>>) valueB;
+                for (Map<String, Object> blackItem : collectionB) {
                     if (newSet.size() >= 1000) {
                         break;
                     }
-                    newSet.add(blackItem);
+                    
+                    String sql = (String) blackItem.get("sql");
+                    Map<String, Object> oldItem = newSet.get(sql);
+                    newSet.put(sql, mergWallStat(oldItem, blackItem));
                 }
-                newMap.put(key, newSet);
+                newMap.put(key, newSet.values());
             } else {
                 if (valueA instanceof Map && valueB instanceof Map) {
                     Object newValue = mergWallStat((Map)valueA, (Map)valueB);
@@ -240,7 +246,7 @@ public final class DruidStatManagerFacade {
                 } else if (valueA instanceof List && valueB instanceof List) {
                     List<Map<String, Object>> mergedList = mergeNamedList((List) valueA, (List) valueB);
                     newMap.put(key, mergedList);
-                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB) && "name".equals(key)) {
+                } else if (valueA instanceof String && valueB instanceof String && valueA.equals(valueB)) {
                     newMap.put(key, valueA);
                 } else {
                     Object sum = SQLEvalVisitorUtils.add(valueA, valueB);

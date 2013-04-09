@@ -191,7 +191,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 }
 
                 if (!checkVar(x.getParent(), x.getName())) {
-                    violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
+                    boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
+                    if (!isTop) {
+                        violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
+                    }
                 }
                 return false;
             }
@@ -236,7 +239,10 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-            violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
+            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
+            if (!isTop) {
+                violations.add(new IllegalSQLObjectViolation("variable not allow : " + x.getName(), toSQL(x)));
+            }
         }
 
         return false;
@@ -344,12 +350,12 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(SQLSetStatement x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(MySqlReplaceStatement x) {
         return true;
     }
-    
+
     @Override
     public boolean visit(SQLCallStatement x) {
         return false;

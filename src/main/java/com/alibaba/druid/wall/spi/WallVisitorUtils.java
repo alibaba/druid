@@ -74,6 +74,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
@@ -818,9 +819,86 @@ public class WallVisitorUtils {
         }
 
         if (!visitor.getProvider().checkDenyFunction(methodName)) {
+            boolean isTopNoneFrom = isTopNoneFromSelect(x);
+            if (isTopNoneFrom) {
+                return;
+            }
+
+            boolean isShow = x.getParent() instanceof MySqlShowGrantsStatement;
+            if (isShow) {
+                return;
+            }
+
+            if ("CONNECTION_ID".equalsIgnoreCase(methodName)) {
+                SQLSelectQueryBlock queryBlock = getQueryBlock(x);
+                if (queryBlock != null) {
+                    if (queryBlock.getFrom() instanceof SQLExprTableSource) {
+                        SQLExpr expr = ((SQLExprTableSource) queryBlock.getFrom()).getExpr();
+                        if ("information_schema.processlist".equalsIgnoreCase(expr.toString())) {
+                            return;
+                        }
+                    }
+                }
+            }
+
             addViolation(visitor, "deny function : " + methodName, x);
         }
+    }
 
+    public static SQLSelectQueryBlock getQueryBlock(SQLObject x) {
+        if (x == null) {
+            return null;
+        }
+        
+        if (x instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) x;
+        }
+        
+        SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLExpr) {
+            return getQueryBlock(parent);
+        }
+        
+        if (parent instanceof SQLSelectItem) {
+            return getQueryBlock(parent);
+        }
+        
+        if (parent instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) parent;
+        }
+
+        return null;
+    }
+
+    public static boolean isTopNoneFromSelect(SQLExpr x) {
+        if (!(x.getParent() instanceof SQLSelectItem)) {
+            return false;
+        }
+        SQLSelectItem item = (SQLSelectItem) x.getParent();
+
+        if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
+            return false;
+        }
+
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) item.getParent();
+        if (!queryBlockFromIsNull(queryBlock)) {
+            return false;
+        }
+
+        if (!(queryBlock.getParent() instanceof SQLSelect)) {
+            return false;
+        }
+
+        SQLSelect select = (SQLSelect) queryBlock.getParent();
+
+        if (!(select.getParent() instanceof SQLSelectStatement)) {
+            return false;
+        }
+
+        SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
+
+        return stmt.getParent() == null;
     }
 
     private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {
@@ -829,12 +907,12 @@ public class WallVisitorUtils {
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
                 addViolation(visitor, "deny schema : " + owner, x);
-                return false;
+                return true;
             }
 
             if (visitor.getConfig().isDenyObjects(owner)) {
                 addViolation(visitor, "deny object : " + owner, x);
-                return false;
+                return true;
             }
         }
 
