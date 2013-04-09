@@ -172,7 +172,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(Limit x) {
         if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
             int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
-            if (rowCount == 0) {
+            if (rowCount == 0 && !provider.getConfig().isLimitZeroAllow()) {
                 this.getViolations().add(new IllegalSQLObjectViolation("limit row 0", this.toSQL(x)));
             }
         }

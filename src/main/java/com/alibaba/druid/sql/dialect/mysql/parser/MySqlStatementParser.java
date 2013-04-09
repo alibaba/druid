@@ -173,7 +173,6 @@ public class MySqlStatementParser extends SQLStatementParser {
     private static final String USER           = "USER";
     private static final String SPATIAL        = "SPATIAL";
     private static final String FULLTEXT       = "FULLTEXT";
-    private static final String REPLACE        = "REPLACE";
     private static final String DELAYED        = "DELAYED";
     private static final String LOW_PRIORITY   = "LOW_PRIORITY";
 
@@ -306,7 +305,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         boolean replace = false;
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
-            acceptIdentifier("REPLACE");
+            accept(Token.REPLACE);
             replace = true;
         }
 
@@ -544,7 +543,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (identifierEquals(REPLACE)) {
+        if (lexer.token() == Token.REPLACE) {
             MySqlReplaceStatement stmt = parseReplicate();
             statementList.add(stmt);
             return true;
@@ -556,7 +555,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             return true;
         }
 
-        if (identifierEquals("SHOW")) {
+        if (lexer.token() == Token.SHOW) {
             SQLStatement stmt = parseShow();
             statementList.add(stmt);
             return true;
@@ -639,7 +638,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     }
 
     public SQLStatement parseShow() {
-        acceptIdentifier("SHOW");
+        accept(Token.SHOW);
         
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
@@ -1511,7 +1510,7 @@ public class MySqlStatementParser extends SQLStatementParser {
     public MySqlReplaceStatement parseReplicate() {
         MySqlReplaceStatement stmt = new MySqlReplaceStatement();
 
-        acceptIdentifier(REPLACE);
+        accept(Token.REPLACE);
         
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
@@ -1624,7 +1623,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLLiteralExpr fileName = (SQLLiteralExpr) exprParser.expr();
         stmt.setFileName(fileName);
 
-        if (identifierEquals(REPLACE)) {
+        if (lexer.token() == Token.REPLACE) {
             stmt.setReplicate(true);
             lexer.nextToken();
         }
@@ -1697,7 +1696,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         SQLLiteralExpr fileName = (SQLLiteralExpr) exprParser.expr();
         stmt.setFileName(fileName);
 
-        if (identifierEquals(REPLACE)) {
+        if (lexer.token() == Token.REPLACE) {
             stmt.setReplicate(true);
             lexer.nextToken();
         }

@@ -596,11 +596,13 @@ public abstract class WallProvider {
                 case CREATE:
                 case ALTER:
                 case DROP:
+                case SHOW:
+                case REPLACE:
                     return true;
                 default:
                     break;
             }
-
+            
             return false;
         }
     }

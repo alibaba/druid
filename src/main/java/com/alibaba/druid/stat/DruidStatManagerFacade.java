@@ -214,7 +214,7 @@ public final class DruidStatManagerFacade {
                 
                 Collection<String> collectionA = (Collection<String>) valueA;
                 for (String blackItem : collectionA) {
-                    if (newSet.size() >= 500) {
+                    if (newSet.size() >= 1000) {
                         break;
                     }
                     newSet.add(blackItem);
@@ -222,7 +222,7 @@ public final class DruidStatManagerFacade {
                 
                 Collection<String> collectionB = (Collection<String>) valueB;
                 for (String blackItem : collectionB) {
-                    if (newSet.size() >= 50) {
+                    if (newSet.size() >= 1000) {
                         break;
                     }
                     newSet.add(blackItem);
