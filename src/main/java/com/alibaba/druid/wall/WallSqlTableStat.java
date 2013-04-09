@@ -27,17 +27,18 @@ public class WallSqlTableStat {
     private int alterCount;
     private int dropCount;
     private int replaceCount;
+    private int showCount;
 
     public int getReplaceCount() {
         return replaceCount;
     }
-    
+
     public int incrementReplaceCount() {
         return replaceCount++;
     }
 
     public void addReplaceCount(int value) {
-        this.replaceCount+= value;
+        this.replaceCount += value;
     }
 
     public int getSelectCount() {
@@ -146,5 +147,14 @@ public class WallSqlTableStat {
 
     public void addDropCount(int value) {
         this.dropCount += value;
+    }
+
+    
+    public int getShowCount() {
+        return showCount;
+    }
+    
+    public void incrementShowCount() {
+        this.showCount++;
     }
 }

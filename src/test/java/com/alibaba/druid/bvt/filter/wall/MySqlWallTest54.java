@@ -36,17 +36,17 @@ public class MySqlWallTest54 extends TestCase {
         provider.getConfig().setSchemaCheck(false);
 
         Assert.assertTrue(provider.checkValid(//
-        "select `ENGINE`, `SUPPORT` from information_schema.Engines"));
+        "SELECT *FROM T UNION select `ENGINE`, `SUPPORT` from information_schema.Engines"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        Assert.assertEquals(2, provider.getTableStats().size());
     }
     
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         
         Assert.assertFalse(provider.checkValid(//
-                "select `ENGINE`, `SUPPORT` from information_schema.Engines"));
+                "SELECT *FROM T UNION select `ENGINE`, `SUPPORT` from information_schema.Engines"));
         
-        Assert.assertEquals(1, provider.getTableStats().size());
+        Assert.assertEquals(2, provider.getTableStats().size());
     }
 }

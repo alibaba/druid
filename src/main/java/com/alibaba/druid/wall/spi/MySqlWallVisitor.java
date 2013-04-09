@@ -52,13 +52,16 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectGroupBy;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUnionQuery;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitorAdapter;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
@@ -358,6 +361,19 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
 
     @Override
     public boolean visit(SQLCallStatement x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(MySqlShowCreateTableStatement x) {
+        String tableName = ((SQLName) x.getName()).getSimleName();
+        WallContext context = WallContext.current();
+        if (context != null) {
+            WallSqlTableStat tableStat = context.getTableStat(tableName);
+            if (tableStat != null) {
+                tableStat.incrementShowCount();
+            }
+        }
         return false;
     }
 }

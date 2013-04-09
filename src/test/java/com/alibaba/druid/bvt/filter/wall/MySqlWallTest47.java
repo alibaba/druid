@@ -42,6 +42,6 @@ public class MySqlWallTest47 extends TestCase {
                 "set Fans.score = Fans.score+temp.Score " + //
                 "where Fans.FansID = 382885 and Fans.UserID = temp.ToID"));
 
-        Assert.assertEquals(3, provider.getTableStats().size());
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
 }

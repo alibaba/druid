@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
@@ -28,15 +29,18 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest19 extends TestCase {
+public class MySqlWallTest59 extends TestCase {
 
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select @@basedir")); //
+        WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setSchemaCheck(true);
+
+        Assert.assertTrue(provider.checkValid(//
+        "SELECT * FROM mysql.proc " + //
+                "WHERE 1=1 AND db LIKE 'dsmessagedb001'" + //
+                " AND name LIKE 'Proc_getRemindinfoByRemindFlag'"));
+
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
-    public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select @@basedir FROM X")); //
-    }
+
 }

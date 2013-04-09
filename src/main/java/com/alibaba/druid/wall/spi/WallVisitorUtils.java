@@ -849,21 +849,21 @@ public class WallVisitorUtils {
         if (x == null) {
             return null;
         }
-        
+
         if (x instanceof SQLSelectQueryBlock) {
             return (SQLSelectQueryBlock) x;
         }
-        
+
         SQLObject parent = x.getParent();
 
         if (parent instanceof SQLExpr) {
             return getQueryBlock(parent);
         }
-        
+
         if (parent instanceof SQLSelectItem) {
             return getQueryBlock(parent);
         }
-        
+
         if (parent instanceof SQLSelectQueryBlock) {
             return (SQLSelectQueryBlock) parent;
         }
@@ -871,7 +871,7 @@ public class WallVisitorUtils {
         return null;
     }
 
-    public static boolean isTopNoneFromSelect(SQLExpr x) {
+    public static boolean isTopNoneFromSelect(SQLObject x) {
         if (!(x.getParent() instanceof SQLSelectItem)) {
             return false;
         }
@@ -906,7 +906,11 @@ public class WallVisitorUtils {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
-                addViolation(visitor, "deny schema : " + owner, x);
+                boolean topSelectStatement = isTopSelectStatement(x);
+
+                if (!topSelectStatement) {
+                    addViolation(visitor, "deny schema : " + owner, x);
+                }
                 return true;
             }
 
@@ -922,6 +926,30 @@ public class WallVisitorUtils {
         }
 
         return true;
+    }
+
+    private static boolean isTopSelectStatement(SQLObject x) {
+        boolean topSelectStatement = false;
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLPropertyExpr) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLExprTableSource) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelectQueryBlock) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelect) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelectStatement || parent instanceof MySqlShowStatement) {
+            parent = parent.getParent();
+            if (parent == null) {
+                topSelectStatement = true;
+            }
+        }
+        return topSelectStatement;
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
@@ -969,6 +997,11 @@ public class WallVisitorUtils {
             }
 
             if (visitor.isDenyTable(tableName)) {
+                boolean isTopNoneFrom = isTopSelectStatement(x);
+                if (isTopNoneFrom) {
+                    return false;
+                }
+                
                 addViolation(visitor, "deny table : " + tableName, x);
                 return false;
             }
@@ -997,6 +1030,23 @@ public class WallVisitorUtils {
         }
 
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
+            boolean isTopUpdateStatement = false;
+            SQLObject selectParent = x.getParent();
+            while (selectParent instanceof SQLUnionQuery //
+                   || selectParent instanceof SQLJoinTableSource //
+                   || selectParent instanceof SQLSubqueryTableSource //
+                   || selectParent instanceof SQLSelect) {
+                selectParent = selectParent.getParent();
+            }
+
+            if (selectParent instanceof SQLUpdateStatement) {
+                isTopUpdateStatement = true;
+            }
+
+            if (isTopUpdateStatement) {
+                return;
+            }
+
             addViolation(visitor, "union query not contains 'from clause'", x);
         }
     }

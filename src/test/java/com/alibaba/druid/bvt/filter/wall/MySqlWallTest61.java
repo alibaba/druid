@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.wall.WallUtils;
+import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.spi.MySqlWallProvider;
 
 /**
  * SQLServerWallTest
@@ -28,15 +29,28 @@ import com.alibaba.druid.wall.WallUtils;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest19 extends TestCase {
+public class MySqlWallTest61 extends TestCase {
 
     public void test_true() throws Exception {
-        Assert.assertTrue(WallUtils.isValidateMySql(//
-        "select @@basedir")); //
+        WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setSchemaCheck(true);
+
+        Assert.assertTrue(provider.checkValid(//
+        "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
+
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
-    
+
     public void test_false() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateMySql(//
-                "select @@basedir FROM X")); //
+        WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setSchemaCheck(true);
+
+        Assert.assertFalse(provider.checkValid(//
+        "SELECT * FROM T " + //
+                "UNION " + //
+                "SELECT * FROM `information_schema`.`columns` WHERE TABLE_NAME='aaaa' AND TABLE_SCHEMA='xxxx'"));
+
+        Assert.assertEquals(2, provider.getTableStats().size());
     }
+
 }
