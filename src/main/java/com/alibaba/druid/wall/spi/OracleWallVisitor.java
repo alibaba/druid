@@ -55,6 +55,7 @@ import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVisitor {
@@ -88,7 +89,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         String name = x.getName();
         name = WallVisitorUtils.form(name);
         if (config.isVariantCheck() && config.getDenyVariants().contains(name)) {
-            getViolations().add(new IllegalSQLObjectViolation("variable not allow : " + name, toSQL(x)));
+            getViolations().add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + name, toSQL(x)));
         }
         return true;
     }
@@ -180,7 +181,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation("select not allow", this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow", this.toSQL(x)));
             return false;
         }
 
@@ -209,7 +210,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public boolean visit(OracleMultiInsertStatement x) {
         if (!config.isInsertAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation("insert not allow", this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.INSERT_NOT_ALLOW, "insert not allow", this.toSQL(x)));
             return false;
         }
 

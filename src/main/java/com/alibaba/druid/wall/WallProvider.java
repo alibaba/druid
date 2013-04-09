@@ -37,6 +37,7 @@ import com.alibaba.druid.sql.parser.Token;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.util.LRUCache;
 import com.alibaba.druid.wall.spi.WallVisitorUtils;
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 import com.alibaba.druid.wall.violation.SyntaxErrorViolation;
 
@@ -431,7 +432,7 @@ public abstract class WallProvider {
 
             final Token lastToken = parser.getLexer().token();
             if (lastToken != Token.EOF) {
-                violations.add(new IllegalSQLObjectViolation("not terminal sql, token " + lastToken, sql));
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token " + lastToken, sql));
             }
         } catch (NotAllowCommentException e) {
             violations.add(new SyntaxErrorViolation(e, sql));
@@ -447,7 +448,7 @@ public abstract class WallProvider {
         }
 
         if (statementList.size() > 1 && !config.isMultiStatementAllow()) {
-            violations.add(new IllegalSQLObjectViolation("multi-statement not allow", sql));
+            violations.add(new IllegalSQLObjectViolation(ErrorCode.MULTI_STATEMENT, "multi-statement not allow", sql));
         }
 
         WallVisitor visitor = createWallVisitor();

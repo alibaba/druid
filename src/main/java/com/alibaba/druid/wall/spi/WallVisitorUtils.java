@@ -90,6 +90,7 @@ import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class WallVisitorUtils {
@@ -153,7 +154,7 @@ public class WallVisitorUtils {
             SQLTableSource from = queryBlock.getFrom();
 
             if (from instanceof SQLExprTableSource) {
-                addViolation(visitor, "'SELECT *' not allow", x);
+                addViolation(visitor, ErrorCode.SELECT_NOT_ALLOW, "'SELECT *' not allow", x);
             }
         }
     }
@@ -166,7 +167,7 @@ public class WallVisitorUtils {
         checkReadOnly(visitor, x.getTableSource());
 
         if (!visitor.getConfig().isInsertAllow()) {
-            addViolation(visitor, "insert not allow", x);
+            addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "insert not allow", x);
         }
     }
 
@@ -180,7 +181,7 @@ public class WallVisitorUtils {
         }
 
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
-            addViolation(visitor, "select into not allow", x);
+            addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
             return;
         }
 
@@ -208,7 +209,7 @@ public class WallVisitorUtils {
                 }
 
                 if ((!isFirst(where)) && !isSimpleConstExpr) {
-                    addViolation(visitor, "select alway true condition not allow", x);
+                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                 }
             }
 
@@ -222,7 +223,7 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
-            addViolation(visitor, "having alway true condition not allow", x);
+            addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);
         }
     }
 
@@ -231,17 +232,17 @@ public class WallVisitorUtils {
 
         WallConfig config = visitor.getConfig();
         if (!config.isDeleteAllow()) {
-            addViolation(visitor, "delete not allow", x);
+            addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "delete not allow", x);
             return;
         }
 
         if (x.getWhere() == null && config.isDeleteWhereNoneCheck()) {
-            addViolation(visitor, "delete none condition not allow", x);
+            addViolation(visitor, ErrorCode.NONE_CONDITION, "delete none condition not allow", x);
             return;
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), config.isDeleteWhereAlwayTrueCheck())) {
-            addViolation(visitor, "delete alway true condition not allow", x);
+            addViolation(visitor, ErrorCode.ALWAY_TRUE, "delete alway true condition not allow", x);
             return;
         }
 
@@ -259,7 +260,7 @@ public class WallVisitorUtils {
             x.accept(exportParameterVisitor);
 
             if (exportParameterVisitor.getParameters().size() > 0) {
-                addViolation(visitor, "sql must parameterized", x);
+                addViolation(visitor, ErrorCode.NOT_PARAMETERIZED, "sql must parameterized", x);
                 return;
             }
         }
@@ -410,7 +411,7 @@ public class WallVisitorUtils {
 
             boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
             if (!readOnlyValid) {
-                addViolation(visitor, "table readonly : " + tableName, tableSource);
+                addViolation(visitor, ErrorCode.READ_ONLY, "table readonly : " + tableName, tableSource);
             }
         } else if (tableSource instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
@@ -425,7 +426,7 @@ public class WallVisitorUtils {
 
         WallConfig config = visitor.getConfig();
         if (!config.isUpdateAllow()) {
-            addViolation(visitor, "update not allow", x);
+            addViolation(visitor, ErrorCode.UPDATE_NOT_ALLOW, "update not allow", x);
             return;
         }
 
@@ -433,18 +434,18 @@ public class WallVisitorUtils {
             if (x instanceof MySqlUpdateStatement) {
                 MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
                 if (mysqlUpdate.getLimit() == null) {
-                    addViolation(visitor, "update none condition not allow", x);
+                    addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
                     return;
                 }
             } else {
-                addViolation(visitor, "update none condition not allow", x);
+                addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
                 return;
             }
         }
 
         if (config.isUpdateWhereAlayTrueCheck()) {
             if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
-                addViolation(visitor, "update alway true condition not allow", x);
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "update alway true condition not allow", x);
                 return;
             }
         }
@@ -643,19 +644,19 @@ public class WallVisitorUtils {
 
             final WallConditionContext current = wallConditionContextLocal.get();
             if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
-                addViolation(visitor, "part alway true condition not allow", x);
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
-                addViolation(visitor, "const arithmetic not allow", x);
+                addViolation(visitor, ErrorCode.CONST_ARITHMETIC, "const arithmetic not allow", x);
             }
 
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
-                addViolation(visitor, "xor not allow", x);
+                addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
             }
 
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
-                addViolation(visitor, "bitwise operator not allow", x);
+                addViolation(visitor, ErrorCode.BITWISE, "bitwise operator not allow", x);
             }
 
             return value;
@@ -841,7 +842,7 @@ public class WallVisitorUtils {
                 }
             }
 
-            addViolation(visitor, "deny function : " + methodName, x);
+            addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
         }
     }
 
@@ -909,13 +910,13 @@ public class WallVisitorUtils {
                 boolean topSelectStatement = isTopSelectStatement(x);
 
                 if (!topSelectStatement) {
-                    addViolation(visitor, "deny schema : " + owner, x);
+                    addViolation(visitor, ErrorCode.SCHEMA_DENY, "deny schema : " + owner, x);
                 }
                 return true;
             }
 
             if (visitor.getConfig().isDenyObjects(owner)) {
-                addViolation(visitor, "deny object : " + owner, x);
+                addViolation(visitor, ErrorCode.OBJECT_DENY, "deny object : " + owner, x);
                 return true;
             }
         }
@@ -1001,8 +1002,8 @@ public class WallVisitorUtils {
                 if (isTopNoneFrom) {
                     return false;
                 }
-                
-                addViolation(visitor, "deny table : " + tableName, x);
+
+                addViolation(visitor, ErrorCode.TABLE_DENY, "deny table : " + tableName, x);
                 return false;
             }
         }
@@ -1010,18 +1011,18 @@ public class WallVisitorUtils {
         return true;
     }
 
-    private static void addViolation(WallVisitor visitor, String message, SQLObject x) {
-        visitor.addViolation(new IllegalSQLObjectViolation(message, visitor.toSQL(x)));
+    private static void addViolation(WallVisitor visitor, int errorCode, String message, SQLObject x) {
+        visitor.addViolation(new IllegalSQLObjectViolation(errorCode, message, visitor.toSQL(x)));
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
         if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
-            addViolation(visitor, "minus not allow", x);
+            addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "minus not allow", x);
             return;
         }
 
         if (x.getOperator() == SQLUnionOperator.INTERSECT && !visitor.getConfig().isIntersectAllow()) {
-            addViolation(visitor, "intersect not allow", x);
+            addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "intersect not allow", x);
             return;
         }
 
@@ -1047,7 +1048,7 @@ public class WallVisitorUtils {
                 return;
             }
 
-            addViolation(visitor, "union query not contains 'from clause'", x);
+            addViolation(visitor, ErrorCode.UNION, "union query not contains 'from clause'", x);
         }
     }
 
@@ -1176,72 +1177,90 @@ public class WallVisitorUtils {
         }
 
         boolean allow = false;
-        String denyMessage = null;
+        int errorCode;
+        String denyMessage;
         if (x instanceof SQLInsertStatement) {
-            allow = true;
+            allow = config.isInsertAllow();
             denyMessage = "insert not allow";
+            errorCode = ErrorCode.INSERT_NOT_ALLOW;
         } else if (x instanceof SQLSelectStatement) {
             allow = true;
             denyMessage = "select not allow";
+            errorCode = ErrorCode.SELECT_NOT_ALLOW;
         } else if (x instanceof SQLDeleteStatement) {
-            allow = true;
+            allow = config.isDeleteAllow();
             denyMessage = "delete not allow";
+            errorCode = ErrorCode.DELETE_NOT_ALLOW;
         } else if (x instanceof SQLUpdateStatement) {
-            allow = true;
+            allow = config.isUpdateAllow();
             denyMessage = "update not allow";
+            errorCode = ErrorCode.UPDATE_NOT_ALLOW;
         } else if (x instanceof OracleMultiInsertStatement) {
             allow = true;
             denyMessage = "multi-insert not allow";
+            errorCode = ErrorCode.INSERT_NOT_ALLOW;
         } else if (x instanceof OracleMergeStatement) {
-            allow = true;
+            allow = config.isMergeAllow();
             denyMessage = "merge not allow";
+            errorCode = ErrorCode.MERGE_NOT_ALLOW;
         } else if (x instanceof SQLCallStatement) {
-            allow = true;
+            allow = config.isCallAllow();
             denyMessage = "call not allow";
+            errorCode = ErrorCode.CALL_NOT_ALLOW;
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
             denyMessage = "truncate not allow";
+            errorCode = ErrorCode.TRUNCATE_NOT_ALLOW;
         } else if (x instanceof SQLCreateTableStatement) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
+            errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLAlterTableStatement) {
             allow = config.isAlterTableAllow();
             denyMessage = "alter table not allow";
+            errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLDropTableStatement) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
+            errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
         } else if (x instanceof MySqlSetCharSetStatement //
                    || x instanceof MySqlSetNamesStatement //
                    || x instanceof SQLSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
+            errorCode = ErrorCode.SET_NOT_ALLOW;
         } else if (x instanceof MySqlReplaceStatement) {
             allow = config.isReplaceAllow();
             denyMessage = "replace not allow";
+            errorCode = ErrorCode.REPLACE_NOT_ALLOW;
         } else if (x instanceof MySqlDescribeStatement) {
             allow = config.isDescribeAllow();
             denyMessage = "describe not allow";
+            errorCode = ErrorCode.DESC_NOT_ALLOW;
         } else if (x instanceof MySqlShowStatement) {
             allow = config.isShowAllow();
             denyMessage = "show not allow";
+            errorCode = ErrorCode.SHOW_NOT_ALLOW;
         } else if (x instanceof MySqlCommitStatement) {
             allow = config.isCommitAllow();
             denyMessage = "show not allow";
+            errorCode = ErrorCode.COMMIT_NOT_ALLOW;
         } else if (x instanceof SQLRollbackStatement) {
             allow = config.isRollbackAllow();
             denyMessage = "show not allow";
+            errorCode = ErrorCode.ROLLBACK_NOT_ALLOW;
         } else if (x instanceof SQLUseStatement) {
             allow = config.isUseAllow();
             denyMessage = "show not allow";
+            errorCode = ErrorCode.USE_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
+            errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;
+            denyMessage = x.getClass() + " not allow";
         }
 
         if (!allow) {
-            if (denyMessage == null) {
-                denyMessage = x.getClass() + " not allow";
-            }
-            addViolation(visitor, denyMessage, x);
+            addViolation(visitor, errorCode, denyMessage, x);
         }
     }
 }
