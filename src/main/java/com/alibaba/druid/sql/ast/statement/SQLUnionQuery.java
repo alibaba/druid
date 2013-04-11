@@ -44,6 +44,9 @@ public class SQLUnionQuery extends SQLSelectQuery {
     }
 
     public void setLeft(SQLSelectQuery left) {
+        if (left != null) {
+            left.setParent(this);
+        }
         this.left = left;
     }
 
@@ -52,6 +55,9 @@ public class SQLUnionQuery extends SQLSelectQuery {
     }
 
     public void setRight(SQLSelectQuery right) {
+        if (right != null) {
+            right.setParent(this);
+        }
         this.right = right;
     }
 
@@ -60,6 +66,9 @@ public class SQLUnionQuery extends SQLSelectQuery {
     }
 
     public void setOrderBy(SQLOrderBy orderBy) {
+        if (orderBy != null) {
+            orderBy.setParent(this);
+        }
         this.orderBy = orderBy;
     }
 

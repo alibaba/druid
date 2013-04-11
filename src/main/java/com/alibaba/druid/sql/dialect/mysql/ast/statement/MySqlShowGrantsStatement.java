@@ -36,6 +36,9 @@ public class MySqlShowGrantsStatement extends MySqlStatementImpl implements MySq
     }
 
     public void setUser(SQLExpr user) {
+        if (user != null) {
+            user.setParent(this);
+        }
         this.user = user;
     }
 

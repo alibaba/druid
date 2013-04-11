@@ -32,21 +32,21 @@ public class MySqlWallTest32 extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where NOT(UNHEX(HEX(FNAME)) != FNAME)")); //
+        "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) != FNAME)")); //
     }
     
     public void test_false_1() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where NOT(UNHEX(HEX(FNAME)) > FNAME)")); //
+        "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) > FNAME)")); //
     }
     
     public void test_false_2() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where NOT(UNHEX(HEX(FNAME)) < FNAME)")); //
+        "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) < FNAME)")); //
     }
     
     public void test_false_3() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where NOT(UNHEX(HEX(FNAME)) NOT LIKE FNAME)")); //
+        "select * from t where FID = 1 OR NOT(UNHEX(HEX(FNAME)) NOT LIKE FNAME)")); //
     }
 }

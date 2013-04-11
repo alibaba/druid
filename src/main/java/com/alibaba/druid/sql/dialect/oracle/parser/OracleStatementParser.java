@@ -1676,7 +1676,7 @@ public class OracleStatementParser extends SQLStatementParser {
         accept(Token.CREATE);
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
-            acceptIdentifier("REPLACE");
+            accept(Token.REPLACE);
             stmt.setOrReplace(true);
         }
 

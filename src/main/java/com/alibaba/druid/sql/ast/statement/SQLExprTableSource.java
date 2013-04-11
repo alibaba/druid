@@ -37,6 +37,9 @@ public class SQLExprTableSource extends SQLTableSourceImpl {
     }
 
     public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
         this.expr = expr;
     }
 

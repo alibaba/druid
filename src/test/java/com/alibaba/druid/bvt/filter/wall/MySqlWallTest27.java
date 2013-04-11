@@ -32,6 +32,6 @@ public class MySqlWallTest27 extends TestCase {
 
     public void test_false() throws Exception {
         Assert.assertFalse(WallUtils.isValidateMySql(//
-        "select * from t where hex('abc') = '616263'")); //
+        "select * from t where FID = 1 OR hex('abc') = '616263'")); //
     }
 }

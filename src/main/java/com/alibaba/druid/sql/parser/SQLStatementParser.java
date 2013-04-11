@@ -195,7 +195,7 @@ public class SQLStatementParser extends SQLParser {
                 continue;
             }
 
-            if (identifierEquals("SHOW")) {
+            if (lexer.token() == Token.SHOW) {
                 SQLStatement stmt = parseShow();
 
                 statementList.add(stmt);
@@ -489,7 +489,7 @@ public class SQLStatementParser extends SQLParser {
             return parseCreateSequence(false);
         } else if (token == Token.OR) {
             lexer.nextToken();
-            acceptIdentifier("REPLACE");
+            accept(Token.REPLACE);
             if (lexer.token() == Token.PROCEDURE) {
                 lexer.reset(markBp, markChar, Token.CREATE);
                 return parseCreateProcedure();
@@ -651,7 +651,7 @@ public class SQLStatementParser extends SQLParser {
         
         if (lexer.token() == Token.OR) {
             lexer.nextToken();
-            acceptIdentifier("REPLACE");
+            accept(Token.REPLACE);
             createView.setOrReplace(true);
         }
 

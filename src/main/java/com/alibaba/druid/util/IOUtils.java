@@ -45,6 +45,10 @@ public class IOUtils {
         try {
             in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
             if (in == null) {
+                in = IOUtils.class.getResourceAsStream(resource);
+            }
+            
+            if (in == null) {
                 return null;
             }
 

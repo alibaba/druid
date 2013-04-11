@@ -33,13 +33,13 @@ public class MySqlWallPermitVariantTest extends TestCase {
         WallConfig config = new WallConfig();
         config.setVariantCheck(false);
         
-        Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os", config));
+        Assert.assertTrue(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
     }
     
     public void test_not_allow() throws Exception {
         WallConfig config = new WallConfig();
         config.setVariantCheck(true);
         
-        Assert.assertFalse(WallUtils.isValidateMySql("select @@version_compile_os", config));
+        Assert.assertFalse(WallUtils.isValidateMySql("select @@version_compile_os FROM X", config));
     }
 }

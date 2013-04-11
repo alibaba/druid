@@ -54,6 +54,7 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertInto;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLRollbackStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -66,11 +67,15 @@ import com.alibaba.druid.sql.ast.statement.SQLTruncateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionOperator;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
+import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetNamesStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowGrantsStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlShowStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlUpdateStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleMergeStatement;
@@ -86,6 +91,7 @@ import com.alibaba.druid.wall.WallContext;
 import com.alibaba.druid.wall.WallProvider;
 import com.alibaba.druid.wall.WallSqlTableStat;
 import com.alibaba.druid.wall.WallVisitor;
+import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
 
 public class WallVisitorUtils {
@@ -149,7 +155,7 @@ public class WallVisitorUtils {
             SQLTableSource from = queryBlock.getFrom();
 
             if (from instanceof SQLExprTableSource) {
-                addViolation(visitor, "'SELECT *' not allow", x);
+                addViolation(visitor, ErrorCode.SELECT_NOT_ALLOW, "'SELECT *' not allow", x);
             }
         }
     }
@@ -162,7 +168,7 @@ public class WallVisitorUtils {
         checkReadOnly(visitor, x.getTableSource());
 
         if (!visitor.getConfig().isInsertAllow()) {
-            addViolation(visitor, "insert not allow", x);
+            addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "insert not allow", x);
         }
     }
 
@@ -176,7 +182,7 @@ public class WallVisitorUtils {
         }
 
         if (!visitor.getConfig().isSelectIntoAllow() && x.getInto() != null) {
-            addViolation(visitor, "select into not allow", x);
+            addViolation(visitor, ErrorCode.SELECT_INTO_NOT_ALLOW, "select into not allow", x);
             return;
         }
 
@@ -187,7 +193,7 @@ public class WallVisitorUtils {
         SQLExpr where = x.getWhere();
 
         if (where != null) {
-            x.getWhere().setParent(x);
+            where.setParent(x);
             checkCondition(visitor, x.getWhere());
 
             if (Boolean.TRUE == getConditionValue(visitor, where, visitor.getConfig().isSelectWhereAlwayTrueCheck())) {
@@ -203,8 +209,8 @@ public class WallVisitorUtils {
                     }
                 }
 
-                if (!isSimpleConstExpr) {
-                    addViolation(visitor, "select alway true condition not allow", x);
+                if ((!isFirst(where)) && !isSimpleConstExpr) {
+                    addViolation(visitor, ErrorCode.ALWAY_TRUE, "select alway true condition not allow", x);
                 }
             }
 
@@ -218,7 +224,7 @@ public class WallVisitorUtils {
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x, visitor.getConfig().isSelectHavingAlwayTrueCheck())) {
-            addViolation(visitor, "having alway true condition not allow", x);
+            addViolation(visitor, ErrorCode.ALWAY_TRUE, "having alway true condition not allow", x);
         }
     }
 
@@ -227,17 +233,31 @@ public class WallVisitorUtils {
 
         WallConfig config = visitor.getConfig();
         if (!config.isDeleteAllow()) {
-            addViolation(visitor, "delete not allow", x);
+            addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "delete not allow", x);
             return;
         }
+        
+        boolean hasUsing = false;
+        
+        if (x instanceof MySqlDeleteStatement) {
+            hasUsing = ((MySqlDeleteStatement) x).getUsing() != null;
+        }
 
-        if (x.getWhere() == null && config.isDeleteWhereNoneCheck()) {
-            addViolation(visitor, "delete none condition not allow", x);
-            return;
+        boolean isJoinTableSource = x.getTableSource() instanceof SQLJoinTableSource;
+        if (x.getWhere() == null && (!hasUsing) && !isJoinTableSource) {
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementDeleteNoneConditionWarnnings();
+            }
+
+            if (config.isDeleteWhereNoneCheck()) {
+                addViolation(visitor, ErrorCode.NONE_CONDITION, "delete none condition not allow", x);
+                return;
+            }
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), config.isDeleteWhereAlwayTrueCheck())) {
-            addViolation(visitor, "delete alway true condition not allow", x);
+            addViolation(visitor, ErrorCode.ALWAY_TRUE, "delete alway true condition not allow", x);
             return;
         }
 
@@ -255,7 +275,7 @@ public class WallVisitorUtils {
             x.accept(exportParameterVisitor);
 
             if (exportParameterVisitor.getParameters().size() > 0) {
-                addViolation(visitor, "sql must parameterized", x);
+                addViolation(visitor, ErrorCode.NOT_PARAMETERIZED, "sql must parameterized", x);
                 return;
             }
         }
@@ -406,7 +426,7 @@ public class WallVisitorUtils {
 
             boolean readOnlyValid = visitor.getProvider().checkReadOnlyTable(tableName);
             if (!readOnlyValid) {
-                addViolation(visitor, "table readonly : " + tableName, tableSource);
+                addViolation(visitor, ErrorCode.READ_ONLY, "table readonly : " + tableName, tableSource);
             }
         } else if (tableSource instanceof SQLJoinTableSource) {
             SQLJoinTableSource join = (SQLJoinTableSource) tableSource;
@@ -421,26 +441,33 @@ public class WallVisitorUtils {
 
         WallConfig config = visitor.getConfig();
         if (!config.isUpdateAllow()) {
-            addViolation(visitor, "update not allow", x);
+            addViolation(visitor, ErrorCode.UPDATE_NOT_ALLOW, "update not allow", x);
             return;
         }
 
-        if (x.getWhere() == null && config.isUpdateWhereNoneCheck()) {
-            if (x instanceof MySqlUpdateStatement) {
-                MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
-                if (mysqlUpdate.getLimit() == null) {
-                    addViolation(visitor, "update none condition not allow", x);
+        if (x.getWhere() == null) {
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementUpdateNoneConditionWarnnings();
+            }
+
+            if (config.isUpdateWhereNoneCheck()) {
+                if (x instanceof MySqlUpdateStatement) {
+                    MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
+                    if (mysqlUpdate.getLimit() == null) {
+                        addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
+                        return;
+                    }
+                } else {
+                    addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
                     return;
                 }
-            } else {
-                addViolation(visitor, "update none condition not allow", x);
-                return;
             }
         }
 
         if (config.isUpdateWhereAlayTrueCheck()) {
             if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), true)) {
-                addViolation(visitor, "update alway true condition not allow", x);
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "update alway true condition not allow", x);
                 return;
             }
         }
@@ -520,8 +547,10 @@ public class WallVisitorUtils {
             return null;
         }
 
-        Object leftResult = getValue(x.getLeft());
-        Object rightResult = getValue(x.getRight());
+        SQLExpr left = x.getLeft();
+        SQLExpr right = x.getRight();
+        Object leftResult = getValue(left);
+        Object rightResult = getValue(right);
 
         if (x.getOperator() == SQLBinaryOperator.BooleanAnd) {
             if (Boolean.FALSE == leftResult || Boolean.FALSE == rightResult) {
@@ -537,7 +566,14 @@ public class WallVisitorUtils {
                 }
             } else if (rightResult == Boolean.TRUE) {
                 final WallConditionContext current = wallConditionContextLocal.get();
-                if (current != null) {
+
+                boolean isLikeAlwayTrue = false;
+                if (right instanceof SQLBinaryOpExpr
+                    && ((SQLBinaryOpExpr) right).getOperator() == SQLBinaryOperator.Like) {
+                    isLikeAlwayTrue = true;
+                }
+
+                if (current != null && !isLikeAlwayTrue) {
                     current.setPartAlwayTrue(true);
                 }
             }
@@ -629,20 +665,27 @@ public class WallVisitorUtils {
             final Object value = getValue(x);
 
             final WallConditionContext current = wallConditionContextLocal.get();
-            if (current.hasPartAlwayTrue() && alwayTrueCheck) {
-                addViolation(visitor, "part alway true condition not allow", x);
+            WallContext context = WallContext.current();
+            if (context != null) {
+                if (current.hasPartAlwayTrue() || Boolean.TRUE == value) {
+                    context.incrementWarnnings();
+                }
+            }
+
+            if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
+                addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
             }
 
             if (current.hasConstArithmetic() && !visitor.getConfig().isConstArithmeticAllow()) {
-                addViolation(visitor, "const arithmetic not allow", x);
+                addViolation(visitor, ErrorCode.CONST_ARITHMETIC, "const arithmetic not allow", x);
             }
 
             if (current.hasXor() && !visitor.getConfig().isConditionOpXorAllow()) {
-                addViolation(visitor, "xor not allow", x);
+                addViolation(visitor, ErrorCode.XOR, "xor not allow", x);
             }
 
             if (current.hasBitwise() && !visitor.getConfig().isConditionOpBitwseAllow()) {
-                addViolation(visitor, "bitwise operator not allow", x);
+                addViolation(visitor, ErrorCode.BITWISE, "bitwise operator not allow", x);
             }
 
             return value;
@@ -799,16 +842,93 @@ public class WallVisitorUtils {
         }
 
         String methodName = x.getMethodName();
-        
+
         WallContext context = WallContext.current();
         if (context != null) {
             context.incrementFunctionInvoke(methodName);
         }
 
         if (!visitor.getProvider().checkDenyFunction(methodName)) {
-            addViolation(visitor, "deny function : " + methodName, x);
+            boolean isTopNoneFrom = isTopNoneFromSelect(x);
+            if (isTopNoneFrom) {
+                return;
+            }
+
+            boolean isShow = x.getParent() instanceof MySqlShowGrantsStatement;
+            if (isShow) {
+                return;
+            }
+
+            if ("CONNECTION_ID".equalsIgnoreCase(methodName)) {
+                SQLSelectQueryBlock queryBlock = getQueryBlock(x);
+                if (queryBlock != null) {
+                    if (queryBlock.getFrom() instanceof SQLExprTableSource) {
+                        SQLExpr expr = ((SQLExprTableSource) queryBlock.getFrom()).getExpr();
+                        if ("information_schema.processlist".equalsIgnoreCase(expr.toString())) {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            addViolation(visitor, ErrorCode.FUNCTION_DENY, "deny function : " + methodName, x);
+        }
+    }
+
+    public static SQLSelectQueryBlock getQueryBlock(SQLObject x) {
+        if (x == null) {
+            return null;
         }
 
+        if (x instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) x;
+        }
+
+        SQLObject parent = x.getParent();
+
+        if (parent instanceof SQLExpr) {
+            return getQueryBlock(parent);
+        }
+
+        if (parent instanceof SQLSelectItem) {
+            return getQueryBlock(parent);
+        }
+
+        if (parent instanceof SQLSelectQueryBlock) {
+            return (SQLSelectQueryBlock) parent;
+        }
+
+        return null;
+    }
+
+    public static boolean isTopNoneFromSelect(SQLObject x) {
+        if (!(x.getParent() instanceof SQLSelectItem)) {
+            return false;
+        }
+        SQLSelectItem item = (SQLSelectItem) x.getParent();
+
+        if (!(item.getParent() instanceof SQLSelectQueryBlock)) {
+            return false;
+        }
+
+        SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) item.getParent();
+        if (!queryBlockFromIsNull(queryBlock)) {
+            return false;
+        }
+
+        if (!(queryBlock.getParent() instanceof SQLSelect)) {
+            return false;
+        }
+
+        SQLSelect select = (SQLSelect) queryBlock.getParent();
+
+        if (!(select.getParent() instanceof SQLSelectStatement)) {
+            return false;
+        }
+
+        SQLSelectStatement stmt = (SQLSelectStatement) select.getParent();
+
+        return stmt.getParent() == null;
     }
 
     private static boolean checkSchema(WallVisitor visitor, SQLExpr x) {
@@ -816,13 +936,51 @@ public class WallVisitorUtils {
             String owner = ((SQLName) x).getSimleName();
             owner = WallVisitorUtils.form(owner);
             if (!visitor.getProvider().checkDenySchema(owner)) {
-                addViolation(visitor, "deny schema : " + owner, x);
-                return false;
+                boolean topSelectStatement = isTopSelectStatement(x);
+
+                if (!topSelectStatement) {
+                    SQLObject parent = x.getParent();
+                    while (parent != null && !(parent instanceof SQLStatement)) {
+                        parent = parent.getParent();
+                    }
+
+                    boolean sameToTopSelectSchema = false;
+                    if (parent instanceof SQLSelectStatement) {
+                        SQLSelectStatement selectStmt = (SQLSelectStatement) parent;
+                        SQLSelectQuery query = selectStmt.getSelect().getQuery();
+                        if (query instanceof SQLSelectQueryBlock) {
+                            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                            SQLTableSource from = queryBlock.getFrom();
+
+                            while (from instanceof SQLJoinTableSource) {
+                                from = ((SQLJoinTableSource) from).getLeft();
+                            }
+                            if (from instanceof SQLExprTableSource) {
+                                SQLExpr expr = ((SQLExprTableSource) from).getExpr();
+                                if (expr instanceof SQLPropertyExpr) {
+                                    SQLExpr schemaExpr = ((SQLPropertyExpr) expr).getOwner();
+                                    if (schemaExpr instanceof SQLIdentifierExpr) {
+                                        String schema = ((SQLIdentifierExpr) schemaExpr).getName();
+                                        schema = form(schema);
+                                        if (schema.equalsIgnoreCase(owner)) {
+                                            sameToTopSelectSchema = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!sameToTopSelectSchema) {
+                        addViolation(visitor, ErrorCode.SCHEMA_DENY, "deny schema : " + owner, x);
+                    }
+                }
+                return true;
             }
 
             if (visitor.getConfig().isDenyObjects(owner)) {
-                addViolation(visitor, "deny object : " + owner, x);
-                return false;
+                addViolation(visitor, ErrorCode.OBJECT_DENY, "deny object : " + owner, x);
+                return true;
             }
         }
 
@@ -832,6 +990,30 @@ public class WallVisitorUtils {
         }
 
         return true;
+    }
+
+    private static boolean isTopSelectStatement(SQLObject x) {
+        boolean topSelectStatement = false;
+        SQLObject parent = x.getParent();
+        if (parent instanceof SQLPropertyExpr) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLExprTableSource) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelectQueryBlock) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelect) {
+            parent = parent.getParent();
+        }
+        if (parent instanceof SQLSelectStatement || parent instanceof MySqlShowStatement) {
+            parent = parent.getParent();
+            if (parent == null) {
+                topSelectStatement = true;
+            }
+        }
+        return topSelectStatement;
     }
 
     public static boolean check(WallVisitor visitor, SQLExprTableSource x) {
@@ -879,7 +1061,12 @@ public class WallVisitorUtils {
             }
 
             if (visitor.isDenyTable(tableName)) {
-                addViolation(visitor, "deny table : " + tableName, x);
+                boolean isTopNoneFrom = isTopSelectStatement(x);
+                if (isTopNoneFrom) {
+                    return false;
+                }
+
+                addViolation(visitor, ErrorCode.TABLE_DENY, "deny table : " + tableName, x);
                 return false;
             }
         }
@@ -887,27 +1074,47 @@ public class WallVisitorUtils {
         return true;
     }
 
-    private static void addViolation(WallVisitor visitor, String message, SQLObject x) {
-        visitor.addViolation(new IllegalSQLObjectViolation(message, visitor.toSQL(x)));
+    private static void addViolation(WallVisitor visitor, int errorCode, String message, SQLObject x) {
+        visitor.addViolation(new IllegalSQLObjectViolation(errorCode, message, visitor.toSQL(x)));
     }
 
     public static void checkUnion(WallVisitor visitor, SQLUnionQuery x) {
         if (x.getOperator() == SQLUnionOperator.MINUS && !visitor.getConfig().isMinusAllow()) {
-            addViolation(visitor, "minus not allow", x);
+            addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "minus not allow", x);
             return;
         }
 
         if (x.getOperator() == SQLUnionOperator.INTERSECT && !visitor.getConfig().isIntersectAllow()) {
-            addViolation(visitor, "intersect not allow", x);
-            return;
-        }
-
-        if (!visitor.getConfig().isSelectUnionCheck()) {
+            addViolation(visitor, ErrorCode.INTERSET_NOT_ALLOW, "intersect not allow", x);
             return;
         }
 
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
-            addViolation(visitor, "union query not contains 'from clause'", x);
+            boolean isTopUpdateStatement = false;
+            SQLObject selectParent = x.getParent();
+            while (selectParent instanceof SQLUnionQuery //
+                   || selectParent instanceof SQLJoinTableSource //
+                   || selectParent instanceof SQLSubqueryTableSource //
+                   || selectParent instanceof SQLSelect) {
+                selectParent = selectParent.getParent();
+            }
+
+            if (selectParent instanceof SQLUpdateStatement) {
+                isTopUpdateStatement = true;
+            }
+
+            if (isTopUpdateStatement) {
+                return;
+            }
+            
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementUnionWarnnings();
+            }
+
+            if (visitor.getConfig().isSelectUnionCheck()) {
+                addViolation(visitor, ErrorCode.UNION, "union query not contains 'from clause'", x);
+            }
         }
     }
 
@@ -972,34 +1179,59 @@ public class WallVisitorUtils {
 
     public static void loadResource(Set<String> names, String resource) {
         try {
+            boolean hasResource = false;
             Enumeration<URL> e = Thread.currentThread().getContextClassLoader().getResources(resource);
             while (e.hasMoreElements()) {
                 URL url = e.nextElement();
                 InputStream in = null;
-                BufferedReader reader = null;
                 try {
                     in = url.openStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
-                    for (;;) {
-                        String line = reader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-                        line = line.trim();
-                        if (line.length() > 0) {
-                            line = line.toLowerCase();
-                            names.add(line);
-                        }
-                    }
+                    readFromInputStream(names, in);
 
-                    url.openStream();
+                    hasResource = true;
                 } finally {
-                    JdbcUtils.close(reader);
+                    JdbcUtils.close(in);
+                }
+            }
+
+            // for aliyun odps
+            if (!hasResource) {
+                if (!resource.startsWith("/")) {
+                    resource = "/" + resource;
+                }
+
+                InputStream in = null;
+                try {
+                    in = WallVisitorUtils.class.getResourceAsStream(resource);
+                    if (in != null) {
+                        readFromInputStream(names, in);
+                    }
+                } finally {
                     JdbcUtils.close(in);
                 }
             }
         } catch (IOException e) {
             LOG.error("load oracle deny tables errror", e);
+        }
+    }
+
+    private static void readFromInputStream(Set<String> names, InputStream in) throws IOException {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(in));
+            for (;;) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                line = line.trim();
+                if (line.length() > 0) {
+                    line = line.toLowerCase();
+                    names.add(line);
+                }
+            }
+        } finally {
+            JdbcUtils.close(reader);
         }
     }
 
@@ -1011,63 +1243,90 @@ public class WallVisitorUtils {
         }
 
         boolean allow = false;
-        String denyMessage = null;
+        int errorCode;
+        String denyMessage;
         if (x instanceof SQLInsertStatement) {
-            allow = true;
+            allow = config.isInsertAllow();
             denyMessage = "insert not allow";
+            errorCode = ErrorCode.INSERT_NOT_ALLOW;
         } else if (x instanceof SQLSelectStatement) {
             allow = true;
             denyMessage = "select not allow";
+            errorCode = ErrorCode.SELECT_NOT_ALLOW;
         } else if (x instanceof SQLDeleteStatement) {
-            allow = true;
+            allow = config.isDeleteAllow();
             denyMessage = "delete not allow";
+            errorCode = ErrorCode.DELETE_NOT_ALLOW;
         } else if (x instanceof SQLUpdateStatement) {
-            allow = true;
+            allow = config.isUpdateAllow();
             denyMessage = "update not allow";
+            errorCode = ErrorCode.UPDATE_NOT_ALLOW;
         } else if (x instanceof OracleMultiInsertStatement) {
             allow = true;
             denyMessage = "multi-insert not allow";
+            errorCode = ErrorCode.INSERT_NOT_ALLOW;
         } else if (x instanceof OracleMergeStatement) {
-            allow = true;
+            allow = config.isMergeAllow();
             denyMessage = "merge not allow";
+            errorCode = ErrorCode.MERGE_NOT_ALLOW;
         } else if (x instanceof SQLCallStatement) {
-            allow = true;
+            allow = config.isCallAllow();
             denyMessage = "call not allow";
+            errorCode = ErrorCode.CALL_NOT_ALLOW;
         } else if (x instanceof SQLTruncateStatement) {
             allow = config.isTruncateAllow();
             denyMessage = "truncate not allow";
+            errorCode = ErrorCode.TRUNCATE_NOT_ALLOW;
         } else if (x instanceof SQLCreateTableStatement) {
             allow = config.isCreateTableAllow();
             denyMessage = "create table not allow";
+            errorCode = ErrorCode.CREATE_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLAlterTableStatement) {
             allow = config.isAlterTableAllow();
             denyMessage = "alter table not allow";
+            errorCode = ErrorCode.ALTER_TABLE_NOT_ALLOW;
         } else if (x instanceof SQLDropTableStatement) {
             allow = config.isDropTableAllow();
             denyMessage = "drop table not allow";
+            errorCode = ErrorCode.DROP_TABLE_NOT_ALLOW;
         } else if (x instanceof MySqlSetCharSetStatement //
                    || x instanceof MySqlSetNamesStatement //
                    || x instanceof SQLSetStatement) {
             allow = config.isSetAllow();
             denyMessage = "set not allow";
+            errorCode = ErrorCode.SET_NOT_ALLOW;
         } else if (x instanceof MySqlReplaceStatement) {
             allow = config.isReplaceAllow();
             denyMessage = "replace not allow";
+            errorCode = ErrorCode.REPLACE_NOT_ALLOW;
         } else if (x instanceof MySqlDescribeStatement) {
             allow = config.isDescribeAllow();
             denyMessage = "describe not allow";
+            errorCode = ErrorCode.DESC_NOT_ALLOW;
         } else if (x instanceof MySqlShowStatement) {
             allow = config.isShowAllow();
             denyMessage = "show not allow";
+            errorCode = ErrorCode.SHOW_NOT_ALLOW;
+        } else if (x instanceof MySqlCommitStatement) {
+            allow = config.isCommitAllow();
+            denyMessage = "show not allow";
+            errorCode = ErrorCode.COMMIT_NOT_ALLOW;
+        } else if (x instanceof SQLRollbackStatement) {
+            allow = config.isRollbackAllow();
+            denyMessage = "show not allow";
+            errorCode = ErrorCode.ROLLBACK_NOT_ALLOW;
+        } else if (x instanceof SQLUseStatement) {
+            allow = config.isUseAllow();
+            denyMessage = "show not allow";
+            errorCode = ErrorCode.USE_NOT_ALLOW;
         } else {
             allow = config.isNoneBaseStatementAllow();
+            errorCode = ErrorCode.NONE_BASE_STATEMENT_NOT_ALLOW;
+            denyMessage = x.getClass() + " not allow";
         }
 
         if (!allow) {
-            if (denyMessage == null) {
-                denyMessage = x.getClass() + " not allow";
-            }
-            addViolation(visitor, denyMessage, x);
+            addViolation(visitor, errorCode, denyMessage, x);
         }
     }
 }

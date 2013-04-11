@@ -24,7 +24,7 @@ import com.alibaba.druid.wall.WallUtils;
 
 public class IdentEqualsTest1 extends TestCase {
 
-    private String     sql    = "select * from t where not (id != id)";
+    private String     sql    = "select * from t where FID = 1 OR not (id != id)";
 
     private WallConfig config = new WallConfig();
 

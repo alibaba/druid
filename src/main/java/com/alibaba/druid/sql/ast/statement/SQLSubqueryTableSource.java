@@ -33,12 +33,11 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
 
     public SQLSubqueryTableSource(SQLSelect select, String alias){
         super(alias);
-        this.select = select;
+        this.setSelect(select);
     }
 
     public SQLSubqueryTableSource(SQLSelect select){
-
-        this.select = select;
+        this.setSelect(select);
     }
 
     public SQLSelect getSelect() {
@@ -46,6 +45,9 @@ public class SQLSubqueryTableSource extends SQLTableSourceImpl {
     }
 
     public void setSelect(SQLSelect select) {
+        if (select != null) {
+            select.setParent(this);
+        }
         this.select = select;
     }
 
