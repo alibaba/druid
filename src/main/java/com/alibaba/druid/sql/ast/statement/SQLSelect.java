@@ -32,7 +32,7 @@ public class SQLSelect extends SQLObjectImpl {
     }
     
     public SQLSelect(SQLSelectQuery query) {
-        this.query = query;
+        this.setQuery(query);
     }
 
     public SQLWithSubqueryClause getWithSubQuery() {
@@ -48,6 +48,9 @@ public class SQLSelect extends SQLObjectImpl {
     }
 
     public void setQuery(SQLSelectQuery query) {
+        if (query != null) {
+            query.setParent(this);
+        }
         this.query = query;
     }
 

@@ -60,6 +60,9 @@ public class SQLInSubQueryExpr extends SQLExprImpl implements Serializable {
     }
 
     public void setSubQuery(SQLSelect subQuery) {
+        if (subQuery != null) {
+            subQuery.setParent(this);
+        }
         this.subQuery = subQuery;
     }
 

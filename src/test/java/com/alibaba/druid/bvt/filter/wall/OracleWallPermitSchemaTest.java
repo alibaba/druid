@@ -21,16 +21,16 @@ import org.junit.Assert;
 
 import com.alibaba.druid.wall.WallUtils;
 
-/**
- * 这个场景测试访问Oracle系统对象
- * 
- * @author admin
- */
 public class OracleWallPermitSchemaTest extends TestCase {
 
-    public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select banner from sys.v_$version where rownum=1"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select banner from sys.v where rownum=1"));
+    public void test_true() throws Exception {
+        Assert.assertTrue(WallUtils.isValidateOracle("select banner from sys.v_$version where rownum=1"));
+        Assert.assertTrue(WallUtils.isValidateOracle("select banner from sys.v where rownum=1"));
+    }
+    
+    public void test_false() throws Exception {
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v_$version where rownum=1"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select banner from sys.v where rownum=1"));
     }
     
 }

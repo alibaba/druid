@@ -299,7 +299,7 @@ public class MySqlExprParser extends SQLExprParser {
                 }
 
                 String unitVal = lexer.stringVal();
-                MySqlIntervalUnit unit = MySqlIntervalUnit.valueOf(unitVal);
+                MySqlIntervalUnit unit = MySqlIntervalUnit.valueOf(unitVal.toUpperCase());
                 lexer.nextToken();
 
                 accept(Token.FROM);

@@ -32,6 +32,9 @@ public class MySqlUnionQuery extends SQLUnionQuery implements MySqlObject {
     }
 
     public void setLimit(Limit limit) {
+        if (limit != null) {
+            limit.setParent(this);
+        }
         this.limit = limit;
     }
 

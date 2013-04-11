@@ -19,20 +19,18 @@ import com.alibaba.druid.wall.Violation;
 
 public class IllegalSQLObjectViolation implements Violation {
 
-    private String message;
-    private String sqlPart;
+    private final String message;
+    private final String sqlPart;
+    private final int errorCode;
 
-    public IllegalSQLObjectViolation(String message, String condition){
+    public IllegalSQLObjectViolation(int errorCode, String message, String condition){
+        this.errorCode = errorCode;
         this.message = message;
         this.sqlPart = condition;
     }
 
     public String getSqlPart() {
         return sqlPart;
-    }
-
-    public void setSqlPart(String sqlPart) {
-        this.sqlPart = sqlPart;
     }
 
     public String toString() {
@@ -44,9 +42,9 @@ public class IllegalSQLObjectViolation implements Violation {
         return message;
     }
 
-    
-    public void setMessage(String message) {
-        this.message = message;
+    @Override
+    public int getErrorCode() {
+        return errorCode;
     }
 
     

@@ -24,12 +24,12 @@ import com.alibaba.druid.wall.WallUtils;
 public class OracleWallPermitTableTest extends TestCase {
 
     public void test_permitTable() throws Exception {
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from tab"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from SYS.TAB"));
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from SYS.\"TAB\""));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from TAB"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from tab"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.TAB"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from SYS.\"TAB\""));
         
-        Assert.assertFalse(WallUtils.isValidateOracle("select * from all_users"));
+        Assert.assertFalse(WallUtils.isValidateOracle("SELECT * FROM T UNION select * from all_users"));
     }
     
     public void test_permitTable_subquery() throws Exception {

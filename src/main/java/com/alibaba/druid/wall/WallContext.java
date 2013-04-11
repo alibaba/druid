@@ -20,12 +20,17 @@ import java.util.Map;
 
 public class WallContext {
 
-    private final static ThreadLocal<WallContext> contextLocal = new ThreadLocal<WallContext>();
+    private final static ThreadLocal<WallContext> contextLocal                 = new ThreadLocal<WallContext>();
 
     private WallSqlStat                           sqlStat;
     private Map<String, WallSqlTableStat>         tableStats;
     private Map<String, WallSqlFunctionStat>      functionStats;
     private final String                          dbType;
+    private int                                   commentCount;
+    private int                                   warnnings                    = 0;
+    private int                                   unionWarnnings               = 0;
+    private int                                   updateNoneConditionWarnnings = 0;
+    private int                                   deleteNoneConditionWarnnings = 0;
 
     public WallContext(String dbType){
         this.dbType = dbType;
@@ -92,7 +97,7 @@ public class WallContext {
     public static void clearContext() {
         contextLocal.remove();
     }
-    
+
     public static void setContext(WallContext context) {
         contextLocal.set(context);
     }
@@ -115,6 +120,58 @@ public class WallContext {
 
     public String getDbType() {
         return dbType;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void incrementCommentCount() {
+        if (this.commentCount == 0) {
+            this.warnnings++;
+        }
+        this.commentCount++;
+    }
+
+    public int getWarnnings() {
+        return warnnings;
+    }
+
+    public void incrementWarnnings() {
+        this.warnnings++;
+    }
+
+    public int getUnionWarnnings() {
+        return unionWarnnings;
+    }
+
+    public void incrementUnionWarnnings() {
+        if (this.unionWarnnings == 0) {
+            this.incrementWarnnings();
+        }
+        this.unionWarnnings++;
+    }
+
+    public int getUpdateNoneConditionWarnnings() {
+        return updateNoneConditionWarnnings;
+    }
+
+    public void incrementUpdateNoneConditionWarnnings() {
+        if (this.updateNoneConditionWarnnings == 0) {
+            this.incrementWarnnings();
+        }
+        this.updateNoneConditionWarnnings++;
+    }
+
+    public int getDeleteNoneConditionWarnnings() {
+        return deleteNoneConditionWarnnings;
+    }
+
+    public void incrementDeleteNoneConditionWarnnings() {
+        if (this.deleteNoneConditionWarnnings == 0) {
+            this.incrementWarnnings();
+        }
+        this.deleteNoneConditionWarnnings++;
     }
 
 }

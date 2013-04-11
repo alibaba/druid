@@ -32,6 +32,8 @@ public class WallCheckResult {
 
     private final boolean                          syntaxError;
 
+    private final WallSqlStat                      sqlStat;
+
     public WallCheckResult(){
         this(null);
     }
@@ -50,15 +52,17 @@ public class WallCheckResult {
             statementList = stmtList;
             syntaxError = false;
         }
+        this.sqlStat = sqlStat;
     }
 
     public WallCheckResult(WallSqlStat sqlStat){
         this(sqlStat, Collections.<SQLStatement> emptyList());
     }
 
-    public WallCheckResult(List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
+    public WallCheckResult(WallSqlStat sqlStat, List<Violation> violations, Map<String, WallSqlTableStat> tableStats,
                            Map<String, WallSqlFunctionStat> functionStats, List<SQLStatement> statementList,
                            boolean syntaxError){
+        this.sqlStat = sqlStat;
         this.tableStats = tableStats;
         this.violations = violations;
         this.functionStats = functionStats;
@@ -84,5 +88,10 @@ public class WallCheckResult {
 
     public boolean isSyntaxError() {
         return syntaxError;
+    }
+
+    
+    public WallSqlStat getSqlStat() {
+        return sqlStat;
     }
 }

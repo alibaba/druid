@@ -29,8 +29,7 @@ public class SQLSelectStatement extends SQLStatementImpl {
     }
 
     public SQLSelectStatement(SQLSelect select){
-
-        this.select = select;
+        this.setSelect(select);
     }
 
     public SQLSelect getSelect() {
@@ -38,6 +37,9 @@ public class SQLSelectStatement extends SQLStatementImpl {
     }
 
     public void setSelect(SQLSelect select) {
+        if (select != null) {
+            select.setParent(this);
+        }
         this.select = select;
     }
 

@@ -267,6 +267,7 @@ public final class DruidStatService implements DruidStatServiceMBean {
         return sortedArray;
     }
     
+    @SuppressWarnings("unchecked")
     public Map<String, Object> getWallStatMap(Map<String, String> parameters) {
         Integer dataSourceId = null;
 

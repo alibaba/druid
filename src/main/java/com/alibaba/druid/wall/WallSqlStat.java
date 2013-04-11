@@ -23,9 +23,13 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 public class WallSqlStat {
 
     private volatile long                            executeCount;
+    private volatile long                            effectRowCount;
 
-    final static AtomicLongFieldUpdater<WallSqlStat> executeCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
-                                                                                                             "executeCount");
+    final static AtomicLongFieldUpdater<WallSqlStat> executeCountUpdater   = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
+                                                                                                               "executeCount");
+    final static AtomicLongFieldUpdater<WallSqlStat> effectRowCountUpdater = AtomicLongFieldUpdater.newUpdater(WallSqlStat.class,
+                                                                                                               "effectRowCount");
+    
     private final Map<String, WallSqlTableStat>      tableStats;
 
     private final List<Violation>                    violations;
@@ -53,6 +57,18 @@ public class WallSqlStat {
 
     public long getExecuteCount() {
         return executeCount;
+    }
+    
+    public long incrementAndGetEffectRowCount() {
+        return effectRowCountUpdater.incrementAndGet(this);
+    }
+    
+    public long addAndGetEffectRowCount(long delta) {
+        return effectRowCountUpdater.addAndGet(this, delta);
+    }
+    
+    public long getEffectRowCount() {
+        return effectRowCount;
     }
 
     public Map<String, WallSqlTableStat> getTableStats() {

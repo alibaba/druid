@@ -35,8 +35,11 @@ public class MySqlShowCreateTableStatement extends MySqlStatementImpl implements
         return name;
     }
 
-    public void setName(SQLExpr functionName) {
-        this.name = functionName;
+    public void setName(SQLExpr name) {
+        if (name != null) {
+            name.setParent(this);
+        }
+        this.name = name;
     }
 
 }

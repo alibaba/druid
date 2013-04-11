@@ -107,6 +107,8 @@ public enum Token {
     PASSWORD("PASSWORD"),
     DUAL("DUAL"),
     BINARY("BINARY"),
+    SHOW("SHOW"),
+    REPLACE("REPLACE"),
     
     //postgresql
     WINDOW("WINDOW"),

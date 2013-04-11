@@ -48,4 +48,9 @@ public class SyntaxErrorViolation implements Violation {
 
         return exception.getMessage();
     }
+
+    @Override
+    public int getErrorCode() {
+        return ErrorCode.SYNTAX_ERROR;
+    }
 }
