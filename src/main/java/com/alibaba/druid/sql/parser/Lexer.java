@@ -360,7 +360,11 @@ public class Lexer {
                     }
                     return;
                 case '#':
-                    scanVariable();
+                    scanSharp();
+                    if ((token() == Token.LINE_COMMENT || token() == Token.MULTI_LINE_COMMENT) && skipComment) {
+                        bufPos = 0;
+                        continue;
+                    }
                     return;
                 case '.':
                     scanChar();
@@ -647,6 +651,10 @@ public class Lexer {
         }
 
         stringVal = subString(mark + 1, bufPos);
+    }
+    
+    public void scanSharp() {
+        scanVariable();
     }
 
     public void scanVariable() {

@@ -62,10 +62,14 @@ import com.alibaba.druid.sql.visitor.functions.Char;
 import com.alibaba.druid.sql.visitor.functions.Concat;
 import com.alibaba.druid.sql.visitor.functions.Elt;
 import com.alibaba.druid.sql.visitor.functions.Function;
+import com.alibaba.druid.sql.visitor.functions.Greatest;
 import com.alibaba.druid.sql.visitor.functions.Hex;
+import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.druid.sql.visitor.functions.Insert;
 import com.alibaba.druid.sql.visitor.functions.Instr;
+import com.alibaba.druid.sql.visitor.functions.Isnull;
 import com.alibaba.druid.sql.visitor.functions.Lcase;
+import com.alibaba.druid.sql.visitor.functions.Least;
 import com.alibaba.druid.sql.visitor.functions.Left;
 import com.alibaba.druid.sql.visitor.functions.Length;
 import com.alibaba.druid.sql.visitor.functions.Locate;
@@ -185,6 +189,10 @@ public class SQLEvalVisitorUtils {
         functions.put("lower", Lcase.instance);
         functions.put("hex", Hex.instance);
         functions.put("unhex", Unhex.instance);
+        functions.put("greatest", Greatest.instance);
+        functions.put("least", Least.instance);
+        functions.put("isnull", Isnull.instance);
+        functions.put("if", If.instance);
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLMethodInvokeExpr x) {
@@ -518,6 +526,8 @@ public class SQLEvalVisitorUtils {
                 char ch = (char) intValue;
                 x.putAttribute(EVAL_VALUE, Character.toString(ch));
             }
+        } else if ("CURRENT_USER".equals(methodName)) {
+            x.putAttribute(EVAL_VALUE, "CURRENT_USER");
         }
         return false;
     }
@@ -954,7 +964,7 @@ public class SQLEvalVisitorUtils {
         if (val instanceof Short) {
             return (Short) val;
         }
-        
+
         if (val instanceof String) {
             return Short.parseShort((String) val);
         }
@@ -975,11 +985,19 @@ public class SQLEvalVisitorUtils {
         if (val instanceof String) {
             return Integer.parseInt((String) val);
         }
-        
+
         if (val instanceof List) {
             List list = (List) val;
             if (list.size() == 1) {
                 return castToInteger(list.get(0));
+            }
+        }
+
+        if (val instanceof Boolean) {
+            if (((Boolean) val).booleanValue()) {
+                return 1;
+            } else {
+                return 0;
             }
         }
 
@@ -995,12 +1013,11 @@ public class SQLEvalVisitorUtils {
         if (val instanceof Long) {
             return (Long) val;
         }
-        
+
         if (val instanceof String) {
             return Long.parseLong((String) val);
         }
-        
-        
+
         if (val instanceof List) {
             List list = (List) val;
             if (list.size() == 1) {
@@ -1424,7 +1441,7 @@ public class SQLEvalVisitorUtils {
         if (b == null) {
             return a;
         }
-        
+
         if (a instanceof Date || b instanceof Date) {
             return SQLEvalVisitor.EVAL_ERROR;
         }
@@ -1460,8 +1477,8 @@ public class SQLEvalVisitorUtils {
         if (a instanceof Byte || b instanceof Byte) {
             return castToByte(a) - castToByte(b);
         }
-        
-        if(a instanceof String && b instanceof String) {
+
+        if (a instanceof String && b instanceof String) {
             return castToLong(a) - castToLong(b);
         }
 

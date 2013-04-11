@@ -61,6 +61,51 @@ public class MySqlLexer extends Lexer {
         super(input);
         super.keywods = DEFAULT_MYSQL_KEYWORDS;
     }
+    
+    public void scanSharp() {
+        if (ch != '#') {
+            throw new ParserException("illegal stat");
+        }
+        
+        Token lastToken = this.token;
+        
+        scanChar();
+        mark = pos;
+        bufPos = 0;
+        for (;;) {
+            if (ch == '\r') {
+                if (charAt(pos + 1) == '\n') {
+                    bufPos += 2;
+                    scanChar();
+                    break;
+                }
+                bufPos++;
+                break;
+            } else if (ch == EOI) {
+                break;
+            }
+
+            if (ch == '\n') {
+                scanChar();
+                bufPos++;
+                break;
+            }
+
+            scanChar();
+            bufPos++;
+        }
+        
+        stringVal = subString(mark, bufPos);
+        token = Token.LINE_COMMENT;
+        
+        if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+            return;
+        }
+
+        if (!isAllowComment()) {
+            throw new NotAllowCommentException();
+        }
+    }
 
     public void scanVariable() {
         if (ch != '@' && ch != ':' && ch != '#' && ch != '$') {

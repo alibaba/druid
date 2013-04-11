@@ -480,9 +480,6 @@ public class WallVisitorUtils {
     }
 
     public static Object getValue(SQLBinaryOpExpr x) {
-        x.getLeft().setParent(x);
-        x.getRight().setParent(x);
-
         if (x.getLeft() instanceof SQLName && x.getRight() instanceof SQLName) {
             if (x.getLeft().toString().equalsIgnoreCase(x.getRight().toString())) {
                 if (x.getOperator() == SQLBinaryOperator.Equality) {
