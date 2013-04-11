@@ -70,6 +70,7 @@ import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUseStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.expr.MySqlBooleanExpr;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDescribeStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlReplaceStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSetCharSetStatement;
@@ -235,10 +236,24 @@ public class WallVisitorUtils {
             addViolation(visitor, ErrorCode.INSERT_NOT_ALLOW, "delete not allow", x);
             return;
         }
+        
+        boolean hasUsing = false;
+        
+        if (x instanceof MySqlDeleteStatement) {
+            hasUsing = ((MySqlDeleteStatement) x).getUsing() != null;
+        }
 
-        if (x.getWhere() == null && config.isDeleteWhereNoneCheck()) {
-            addViolation(visitor, ErrorCode.NONE_CONDITION, "delete none condition not allow", x);
-            return;
+        boolean isJoinTableSource = x.getTableSource() instanceof SQLJoinTableSource;
+        if (x.getWhere() == null && (!hasUsing) && !isJoinTableSource) {
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementDeleteNoneConditionWarnnings();
+            }
+
+            if (config.isDeleteWhereNoneCheck()) {
+                addViolation(visitor, ErrorCode.NONE_CONDITION, "delete none condition not allow", x);
+                return;
+            }
         }
 
         if (Boolean.TRUE == getConditionValue(visitor, x.getWhere(), config.isDeleteWhereAlwayTrueCheck())) {
@@ -430,16 +445,23 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (x.getWhere() == null && config.isUpdateWhereNoneCheck()) {
-            if (x instanceof MySqlUpdateStatement) {
-                MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
-                if (mysqlUpdate.getLimit() == null) {
+        if (x.getWhere() == null) {
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementUpdateNoneConditionWarnnings();
+            }
+
+            if (config.isUpdateWhereNoneCheck()) {
+                if (x instanceof MySqlUpdateStatement) {
+                    MySqlUpdateStatement mysqlUpdate = (MySqlUpdateStatement) x;
+                    if (mysqlUpdate.getLimit() == null) {
+                        addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
+                        return;
+                    }
+                } else {
                     addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
                     return;
                 }
-            } else {
-                addViolation(visitor, ErrorCode.NONE_CONDITION, "update none condition not allow", x);
-                return;
             }
         }
 
@@ -643,6 +665,13 @@ public class WallVisitorUtils {
             final Object value = getValue(x);
 
             final WallConditionContext current = wallConditionContextLocal.get();
+            WallContext context = WallContext.current();
+            if (context != null) {
+                if (current.hasPartAlwayTrue() || Boolean.TRUE == value) {
+                    context.incrementWarnnings();
+                }
+            }
+
             if (current.hasPartAlwayTrue() && alwayTrueCheck && !visitor.getConfig().isConditionAndAlwayTrueAllow()) {
                 addViolation(visitor, ErrorCode.ALWAY_TRUE, "part alway true condition not allow", x);
             }
@@ -910,7 +939,41 @@ public class WallVisitorUtils {
                 boolean topSelectStatement = isTopSelectStatement(x);
 
                 if (!topSelectStatement) {
-                    addViolation(visitor, ErrorCode.SCHEMA_DENY, "deny schema : " + owner, x);
+                    SQLObject parent = x.getParent();
+                    while (parent != null && !(parent instanceof SQLStatement)) {
+                        parent = parent.getParent();
+                    }
+
+                    boolean sameToTopSelectSchema = false;
+                    if (parent instanceof SQLSelectStatement) {
+                        SQLSelectStatement selectStmt = (SQLSelectStatement) parent;
+                        SQLSelectQuery query = selectStmt.getSelect().getQuery();
+                        if (query instanceof SQLSelectQueryBlock) {
+                            SQLSelectQueryBlock queryBlock = (SQLSelectQueryBlock) query;
+                            SQLTableSource from = queryBlock.getFrom();
+
+                            while (from instanceof SQLJoinTableSource) {
+                                from = ((SQLJoinTableSource) from).getLeft();
+                            }
+                            if (from instanceof SQLExprTableSource) {
+                                SQLExpr expr = ((SQLExprTableSource) from).getExpr();
+                                if (expr instanceof SQLPropertyExpr) {
+                                    SQLExpr schemaExpr = ((SQLPropertyExpr) expr).getOwner();
+                                    if (schemaExpr instanceof SQLIdentifierExpr) {
+                                        String schema = ((SQLIdentifierExpr) schemaExpr).getName();
+                                        schema = form(schema);
+                                        if (schema.equalsIgnoreCase(owner)) {
+                                            sameToTopSelectSchema = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!sameToTopSelectSchema) {
+                        addViolation(visitor, ErrorCode.SCHEMA_DENY, "deny schema : " + owner, x);
+                    }
                 }
                 return true;
             }
@@ -1026,10 +1089,6 @@ public class WallVisitorUtils {
             return;
         }
 
-        if (!visitor.getConfig().isSelectUnionCheck()) {
-            return;
-        }
-
         if (WallVisitorUtils.queryBlockFromIsNull(x.getLeft()) || WallVisitorUtils.queryBlockFromIsNull(x.getRight())) {
             boolean isTopUpdateStatement = false;
             SQLObject selectParent = x.getParent();
@@ -1047,8 +1106,15 @@ public class WallVisitorUtils {
             if (isTopUpdateStatement) {
                 return;
             }
+            
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementUnionWarnnings();
+            }
 
-            addViolation(visitor, ErrorCode.UNION, "union query not contains 'from clause'", x);
+            if (visitor.getConfig().isSelectUnionCheck()) {
+                addViolation(visitor, ErrorCode.UNION, "union query not contains 'from clause'", x);
+            }
         }
     }
 

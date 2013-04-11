@@ -118,8 +118,6 @@ public class WallConfig implements WallConfigMBean {
         this.limitZeroAllow = limitZero;
     }
 
-
-
     public boolean isConditionAndAlwayTrueAllow() {
         return conditionAndAlwayTrueAllow;
     }

@@ -68,5 +68,7 @@ public interface ErrorCode {
     public final static int READ_ONLY                     = 4000;
     public final static int UNION                         = 5000;
 
+    public final static int COMPOUND                      = 8000;
+
     public final static int OTHER                         = 9999;
 }

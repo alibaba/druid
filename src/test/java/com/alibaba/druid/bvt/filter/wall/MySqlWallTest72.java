@@ -29,19 +29,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest65 extends TestCase {
+public class MySqlWallTest72 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setSchemaCheck(true);
+        
+        provider.getConfig().setCommentAllow(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT email, passwd, login_id, full_name" +
-        " FROM members" +
-        " WHERE member_id = 3 AND 0<(SELECT COUNT(*) FROM tabname);"));
+        "select * from t /**/ where 1=1"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
-
 
 }

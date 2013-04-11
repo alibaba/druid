@@ -29,19 +29,26 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest65 extends TestCase {
+public class MySqlWallTest66 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
-        "SELECT email, passwd, login_id, full_name" +
-        " FROM members" +
-        " WHERE member_id = 3 AND 0<(SELECT COUNT(*) FROM tabname);"));
+        Assert.assertTrue(provider.checkValid(//
+        "SELECT LOGFILE_GROUP_NAME, FILE_NAME, TOTAL_EXTENTS, INITIAL_SIZE, ENGINE, EXTRA " + //
+                "FROM INFORMATION_SCHEMA.FILES WHERE FILE_TYPE = 'UNDO LOG' AND FILE_NAME IS NOT NULL " + //
+                "AND LOGFILE_GROUP_NAME IN (" + //
+                "   SELECT DISTINCT LOGFILE_GROUP_NAME FROM INFORMATION_SCHEMA.FILES " + //
+                "       WHERE FILE_TYPE = 'DATAFILE' " + //
+                "           AND TABLESPACE_NAME IN (" + //
+                "               SELECT DISTINCT TABLESPACE_NAME FROM INFORMATION_SCHEMA.PARTITIONS " + //
+                "               WHERE TABLE_SCHEMA IN ('stat'))" + //
+                ") " + //
+                "GROUP BY LOGFILE_GROUP_NAME, FILE_NAME, ENGINE " + //
+                "ORDER BY LOGFILE_GROUP_NAME"));
 
         Assert.assertEquals(2, provider.getTableStats().size());
     }
-
 
 }

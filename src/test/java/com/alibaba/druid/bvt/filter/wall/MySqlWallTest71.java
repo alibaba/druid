@@ -29,19 +29,17 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest65 extends TestCase {
+public class MySqlWallTest71 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
-        provider.getConfig().setSchemaCheck(true);
+        
+        provider.getConfig().setCommentAllow(true);
 
         Assert.assertFalse(provider.checkValid(//
-        "SELECT email, passwd, login_id, full_name" +
-        " FROM members" +
-        " WHERE member_id = 3 AND 0<(SELECT COUNT(*) FROM tabname);"));
+        "update order_return set return_goods_money =0.00 ,return_other_money = 8--149.00, return_total_fee = ifnull(return_shipping,0)+ifnull(return_other_discount,0)+0.00--149.00-0.00,return_goods_amount=1,return_real_money=0.00 where id=1319"));
 
-        Assert.assertEquals(2, provider.getTableStats().size());
+        Assert.assertEquals(1, provider.getTableStats().size());
     }
-
 
 }

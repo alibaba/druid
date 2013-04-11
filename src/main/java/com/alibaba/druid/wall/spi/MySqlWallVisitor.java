@@ -165,7 +165,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(SQLSelectStatement x) {
         if (!config.isSelelctAllow()) {
-            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow", this.toSQL(x)));
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "select not allow",
+                                                                   this.toSQL(x)));
             return false;
         }
 
@@ -175,9 +176,18 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     @Override
     public boolean visit(Limit x) {
         if (x.getRowCount() instanceof SQLNumericLiteralExpr) {
+            WallContext context = WallContext.current();
+            
             int rowCount = ((SQLNumericLiteralExpr) x.getRowCount()).getNumber().intValue();
-            if (rowCount == 0 && !provider.getConfig().isLimitZeroAllow()) {
-                this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.LIMIT_ZERO, "limit row 0", this.toSQL(x)));
+            if (rowCount == 0) {
+                if (context != null) {
+                    context.incrementWarnnings();
+                }
+                
+                if (!provider.getConfig().isLimitZeroAllow()) {
+                    this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.LIMIT_ZERO, "limit row 0",
+                                                                           this.toSQL(x)));
+                }
             }
         }
         return true;
@@ -190,14 +200,16 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
             String varName = varExpr.getName();
             if (varName.equalsIgnoreCase("@@session") || varName.equalsIgnoreCase("@@global")) {
                 if (!(parent instanceof SQLSelectItem) && !(parent instanceof SQLAssignItem)) {
-                    violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable in condition not allow", toSQL(x)));
+                    violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY,
+                                                                 "variable in condition not allow", toSQL(x)));
                     return false;
                 }
 
                 if (!checkVar(x.getParent(), x.getName())) {
                     boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
                     if (!isTop) {
-                        violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + x.getName(), toSQL(x)));
+                        violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                             + x.getName(), toSQL(x)));
                     }
                 }
                 return false;
@@ -245,7 +257,8 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
             boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
             if (!isTop) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : " + x.getName(), toSQL(x)));
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
+                                                                                     + x.getName(), toSQL(x)));
             }
         }
 
@@ -364,7 +377,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
     public boolean visit(SQLCallStatement x) {
         return false;
     }
-    
+
     @Override
     public boolean visit(MySqlShowCreateTableStatement x) {
         String tableName = ((SQLName) x.getName()).getSimleName();

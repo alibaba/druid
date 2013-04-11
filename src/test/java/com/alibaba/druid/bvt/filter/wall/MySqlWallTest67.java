@@ -29,19 +29,26 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest65 extends TestCase {
+public class MySqlWallTest67 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertFalse(provider.checkValid(//
-        "SELECT email, passwd, login_id, full_name" +
-        " FROM members" +
-        " WHERE member_id = 3 AND 0<(SELECT COUNT(*) FROM tabname);"));
+        Assert.assertTrue(provider.checkValid(//
+        "SELECT c.table_name, column_name, column_type, is_nullable, column_key" + //
+                "   , column_default, extra, collation_name, character_set_name, column_comment " + //
+                "FROM information_schema.columns c " + //
+                "INNER JOIN (" + //
+                "   SELECT table_schema, table_name " + //
+                "   FROM information_schema.tables " + //
+                "   WHERE LOWER(table_schema) = LOWER('sp5035d3d0b2d4a')" + //
+                ") t ON t.table_name COLLATE utf8_bin = c.table_name COLLATE utf8_bin " + //
+                "WHERE LOWER(c.table_schema) = LOWER('sp5035d3d0b2d4a') " + //
+                "   AND ('Y' = '' OR LOWER(c.table_name) IN ('leader01_weibo')) " + //
+                "ORDER BY t.table_name"));
 
         Assert.assertEquals(2, provider.getTableStats().size());
     }
-
 
 }

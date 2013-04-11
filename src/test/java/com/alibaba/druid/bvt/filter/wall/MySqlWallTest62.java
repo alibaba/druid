@@ -35,7 +35,7 @@ public class MySqlWallTest62 extends TestCase {
         WallProvider provider = new MySqlWallProvider();
         provider.getConfig().setSchemaCheck(true);
 
-        Assert.assertTrue(provider.checkValid(//
+        Assert.assertFalse(provider.checkValid(//
         "select temp.*, u.CanComment, u.CanBeShared, u.CanForward, COALESCE(b.UserID,0) as isBlocked" + //
                 "   , COALESCE(f.UserID,0) as Followed, COALESCE(ff.UserID,0) as IsFollowed" + //
                 "   , COALESCE(ul.UserID,0) as liked, COALESCE(fff.UserID,0) as RIsFollowed " + //
@@ -48,7 +48,7 @@ public class MySqlWallTest62 extends TestCase {
                 "left join Fans as fff ON fff.FansID = 294765 and fff.UserID = temp.RUserID   " + //
                 "left join UserLikes as ul on ul.PicID = temp.PicID and ul.UserID = 294765"));
 
-        Assert.assertEquals(1, provider.getTableStats().size());
+        Assert.assertEquals(4, provider.getTableStats().size());
     }
 
 

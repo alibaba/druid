@@ -45,32 +45,33 @@ public abstract class WallProvider {
 
     private LRUCache<String, WallSqlStat>                 whiteList;
 
-    private int                                           MAX_SQL_LENGTH    = 2048;                                             // 1k
+    private int                                           MAX_SQL_LENGTH          = 2048;                                             // 1k
 
-    private int                                           whiteSqlMaxSize   = 500;                                              // 1k
+    private int                                           whiteSqlMaxSize         = 500;                                              // 1k
 
     private LRUCache<String, WallSqlStat>                 blackList;
 
-    private int                                           blackSqlMaxSize   = 100;                                              // 1k
+    private int                                           blackSqlMaxSize         = 100;                                              // 1k
 
     protected final WallConfig                            config;
 
-    private final ReentrantReadWriteLock                  lock              = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock                  lock                    = new ReentrantReadWriteLock();
 
-    private static final ThreadLocal<Boolean>             privileged        = new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean>             privileged              = new ThreadLocal<Boolean>();
 
-    private final ConcurrentMap<String, WallFunctionStat> functionStats     = new ConcurrentHashMap<String, WallFunctionStat>();
-    private final ConcurrentMap<String, WallTableStat>    tableStats        = new ConcurrentHashMap<String, WallTableStat>();
+    private final ConcurrentMap<String, WallFunctionStat> functionStats           = new ConcurrentHashMap<String, WallFunctionStat>();
+    private final ConcurrentMap<String, WallTableStat>    tableStats              = new ConcurrentHashMap<String, WallTableStat>();
 
-    public final WallDenyStat                             commentDeniedStat = new WallDenyStat();
+    public final WallDenyStat                             commentDeniedStat       = new WallDenyStat();
 
-    protected String                                      dbType            = null;
-    protected final AtomicLong                            checkCount        = new AtomicLong();
-    protected final AtomicLong                            hardCheckCount    = new AtomicLong();
-    protected final AtomicLong                            whiteListHitCount = new AtomicLong();
-    protected final AtomicLong                            blackListHitCount = new AtomicLong();
-    protected final AtomicLong                            syntaxErrrorCount = new AtomicLong();
-    protected final AtomicLong                            violationCount    = new AtomicLong();
+    protected String                                      dbType                  = null;
+    protected final AtomicLong                            checkCount              = new AtomicLong();
+    protected final AtomicLong                            hardCheckCount          = new AtomicLong();
+    protected final AtomicLong                            whiteListHitCount       = new AtomicLong();
+    protected final AtomicLong                            blackListHitCount       = new AtomicLong();
+    protected final AtomicLong                            syntaxErrrorCount       = new AtomicLong();
+    protected final AtomicLong                            violationCount          = new AtomicLong();
+    protected final AtomicLong                            violationEffectRowCount = new AtomicLong();
 
     public WallProvider(WallConfig config){
         this.config = config;
@@ -215,7 +216,7 @@ public abstract class WallProvider {
 
         return Collections.<String> unmodifiableSet(hashSet);
     }
-    
+
     public List<Map<String, Object>> getBlackListStat() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         lock.readLock().lock();
@@ -223,23 +224,24 @@ public abstract class WallProvider {
             if (blackList != null) {
                 for (Map.Entry<String, WallSqlStat> entry : this.blackList.entrySet()) {
                     WallSqlStat sqlStat = entry.getValue();
-                    
+
                     Map<String, Object> sqlStatMap = new LinkedHashMap<String, Object>();
                     sqlStatMap.put("sql", entry.getKey());
                     sqlStatMap.put("executeCount", sqlStat.getExecuteCount());
-                    
+                    sqlStatMap.put("effectRowCount", sqlStat.getEffectRowCount());
+
                     List<Violation> violations = sqlStat.getViolations();
                     if (violations.size() > 0) {
                         sqlStatMap.put("violationMessage", violations.get(0).getMessage());
                     }
-                    
+
                     map.add(sqlStatMap);
                 }
             }
         } finally {
             lock.readLock().unlock();
         }
-        
+
         return map;
     }
 
@@ -342,7 +344,7 @@ public abstract class WallProvider {
         if (schemaName == null) {
             return true;
         }
-        
+
         if (!this.config.isSchemaCheck()) {
             return true;
         }
@@ -432,7 +434,8 @@ public abstract class WallProvider {
 
             final Token lastToken = parser.getLexer().token();
             if (lastToken != Token.EOF) {
-                violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token " + lastToken, sql));
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.SYNTAX_ERROR, "not terminal sql, token "
+                                                                                     + lastToken, sql));
             }
         } catch (NotAllowCommentException e) {
             violations.add(new SyntaxErrorViolation(e, sql));
@@ -466,6 +469,18 @@ public abstract class WallProvider {
             violations.addAll(visitor.getViolations());
         }
 
+        if (context != null && context.getWarnnings() >= 2) {
+            if (context.getDeleteNoneConditionWarnnings() > 0) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "delete none condition", sql));
+            } else if (context.getUpdateNoneConditionWarnnings() > 0) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "update none condition", sql));
+            } else if (context.getCommentCount() > 0) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
+            } else {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMPOUND, "multi-warnnings", sql));
+            }
+        }
+
         WallSqlStat sqlStat = null;
         if (violations.size() > 0) {
             violationCount.incrementAndGet();
@@ -492,7 +507,7 @@ public abstract class WallProvider {
             return new WallCheckResult(sqlStat, statementList);
         }
 
-        return new WallCheckResult(violations, tableStats, functionStats, statementList, syntaxError);
+        return new WallCheckResult(sqlStat, violations, tableStats, functionStats, statementList, syntaxError);
     }
 
     private WallCheckResult checkWhiteAndBlackList(String sql) {
@@ -609,6 +624,14 @@ public abstract class WallProvider {
     public long getHardCheckCount() {
         return hardCheckCount.get();
     }
+    
+    public long getViolationEffectRowCount() {
+        return violationEffectRowCount.get();
+    }
+    
+    public void addViolationEffectRowCount(long rowCount) {
+        violationEffectRowCount.addAndGet(rowCount);
+    }
 
     public static class WallCommentHandler implements Lexer.CommentHandler {
 
@@ -636,7 +659,12 @@ public abstract class WallProvider {
                 default:
                     break;
             }
-            
+
+            WallContext context = WallContext.current();
+            if (context != null) {
+                context.incrementCommentCount();
+            }
+
             return false;
         }
     }
@@ -647,6 +675,7 @@ public abstract class WallProvider {
         info.put("checkCount", this.getCheckCount());
         info.put("hardCheckCount", this.getHardCheckCount());
         info.put("violationCount", this.getViolationCount());
+        info.put("violationEffectRowCount", this.getViolationEffectRowCount());
         info.put("blackListHitCount", this.getBlackListHitCount());
         info.put("blackListSize", this.getBlackList().size());
         info.put("whiteListHitCount", this.getWhiteListHitCount());

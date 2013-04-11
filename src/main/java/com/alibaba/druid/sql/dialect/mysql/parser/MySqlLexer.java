@@ -363,7 +363,7 @@ public class MySqlLexer extends Lexer {
                     return;
                 }
                 if (ch == '*' && charAt(pos + 1) == '/') {
-                    bufPos += 2;
+                    bufPos += 3;
                     scanChar();
                     scanChar();
                     break;
@@ -393,11 +393,6 @@ public class MySqlLexer extends Lexer {
 
             return;
         }
-
-        if (!isAllowComment()) {
-            throw new NotAllowCommentException();
-        }
-
         if (ch == '/' || ch == '-') {
             scanChar();
             bufPos++;
@@ -425,8 +420,17 @@ public class MySqlLexer extends Lexer {
                 bufPos++;
             }
 
-            stringVal = subString(mark + 1, bufPos);
+            stringVal = subString(mark, bufPos + 1);
             token = Token.LINE_COMMENT;
+            
+            if (commentHandler != null && commentHandler.handle(lastToken, stringVal)) {
+                return;
+            }
+
+            if (!isAllowComment()) {
+                throw new NotAllowCommentException();
+            }
+            
             return;
         }
     }
