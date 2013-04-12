@@ -259,6 +259,7 @@ public class MySqlLexer extends Lexer {
                 final char ch = text.charAt(i);
                 if (ch == '\\') {
                     hasSpecial = true;
+                    continue;
                 }
                 if (ch == '\'') {
                     endIndex = i;

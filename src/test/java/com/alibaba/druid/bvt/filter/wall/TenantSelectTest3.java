@@ -52,6 +52,6 @@ public class TenantSelectTest3 extends TestCase {
                             "\n\t\tAND o.userid = u.id" + //
                             "\nWHERE o.tenant = 123" + //
                             "\n\tAND (FID = ?" + //
-                            "\n\t\t\tOR FID = ?)", resultSql);
+                            "\n\t\tOR FID = ?)", resultSql);
     }
 }

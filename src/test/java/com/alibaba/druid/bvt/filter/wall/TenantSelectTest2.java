@@ -48,6 +48,6 @@ public class TenantSelectTest2 extends TestCase {
                             "\nFROM orders" + //
                             "\nWHERE tenant = 123" + //
                             "\n\tAND (FID = ?" +
-                            "\n\t\t\tOR FID = ?)", resultSql);
+                            "\n\t\tOR FID = ?)", resultSql);
     }
 }

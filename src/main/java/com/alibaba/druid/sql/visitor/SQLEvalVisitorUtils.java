@@ -649,7 +649,7 @@ public class SQLEvalVisitorUtils {
     }
 
     public static boolean visit(SQLEvalVisitor visitor, SQLQueryExpr x) {
-        if (WallVisitorUtils.isSimpleCountTableSource(((SQLQueryExpr) x).getSubQuery())) {
+        if (WallVisitorUtils.isSimpleCountTableSource(null, ((SQLQueryExpr) x).getSubQuery())) {
             x.putAttribute(EVAL_VALUE, 1);
             return false;
         }
