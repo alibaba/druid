@@ -67,6 +67,11 @@ public class MySqlLexer extends Lexer {
             throw new ParserException("illegal stat");
         }
         
+        if (charAt(pos + 1) == '{') {
+            scanVariable();
+            return;
+        }
+        
         Token lastToken = this.token;
         
         scanChar();
@@ -420,7 +425,7 @@ public class MySqlLexer extends Lexer {
             }
 
             if (isHint) {
-                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 1);
+                stringVal = subString(mark + startHintSp, (bufPos - startHintSp) - 2);
                 token = Token.HINT;
             } else {
                 stringVal = subString(mark, bufPos);
