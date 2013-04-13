@@ -31,6 +31,7 @@ public class WallContext {
     private int                                   unionWarnnings               = 0;
     private int                                   updateNoneConditionWarnnings = 0;
     private int                                   deleteNoneConditionWarnnings = 0;
+    private int                                   likeNumberWarnnings          = 0;
 
     public WallContext(String dbType){
         this.dbType = dbType;
@@ -139,6 +140,17 @@ public class WallContext {
 
     public void incrementWarnnings() {
         this.warnnings++;
+    }
+
+    public int getLikeNumberWarnnings() {
+        return likeNumberWarnnings;
+    }
+
+    public void incrementLikeNumberWarnnings() {
+        if (likeNumberWarnnings == 0) {
+            this.warnnings++;
+        }
+        likeNumberWarnnings++;
     }
 
     public int getUnionWarnnings() {

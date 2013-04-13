@@ -29,13 +29,14 @@ import com.alibaba.druid.wall.spi.MySqlWallProvider;
  * @version 1.0, 2012-3-18
  * @see
  */
-public class MySqlWallTest_like_1 extends TestCase {
+public class MySqlWallTest82 extends TestCase {
 
     public void test_false() throws Exception {
         WallProvider provider = new MySqlWallProvider();
+        provider.getConfig().setStrictSyntaxCheck(false);
         
-        Assert.assertTrue(provider.checkValid(//
-        "SELECT * FROM T WHERE FID = ? OR FID LIKE 1"));
+        Assert.assertFalse(provider.checkValid(//
+        "SELECT * FROM T WHERE FID = '\0a' OR LEAST(2,1,9,8) = 1"));
 
         Assert.assertEquals(1, provider.getTableStats().size());
     }

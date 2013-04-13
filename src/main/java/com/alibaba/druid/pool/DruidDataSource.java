@@ -891,7 +891,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         }
 
         if (pooledConnection.getOwnerThread() != Thread.currentThread()) {
-            throw new SQLException("closed error, get/close not same thread");
+            LOG.warn("get/close not same thread");
         }
 
         final Connection physicalConnection = holder.getConnection();

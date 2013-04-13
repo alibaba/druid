@@ -476,6 +476,8 @@ public abstract class WallProvider {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "update none condition", sql));
             } else if (context.getCommentCount() > 0) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "comment not allow", sql));
+            } else if (context.getLikeNumberWarnnings() > 0) {
+                violations.add(new IllegalSQLObjectViolation(ErrorCode.COMMIT_NOT_ALLOW, "like number", sql));
             } else {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.COMPOUND, "multi-warnnings", sql));
             }
