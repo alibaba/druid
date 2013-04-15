@@ -231,12 +231,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private Boolean                                    useUnfairLock                             = null;
 
+    private boolean                                    useLocalSessionState                       = true;
+
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
 
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
     }
+    
+    public boolean isUseLocalSessionState() {
+        return useLocalSessionState;
+    }
+    
+    public void setUseLocalSessionState(boolean useLocalSessionState) {
+        this.useLocalSessionState = useLocalSessionState;
+    }
+
+
 
     public boolean isOracle() {
         return isOracle;

@@ -195,18 +195,22 @@ public final class DruidConnectionHolder {
         // reset default settings
         if (underlyingReadOnly != defaultReadOnly) {
             conn.setReadOnly(defaultReadOnly);
+            underlyingReadOnly = defaultReadOnly;
         }
 
         if (underlyingHoldability != defaultHoldability) {
             conn.setHoldability(defaultHoldability);
+            underlyingHoldability = defaultHoldability;
         }
 
         if (underlyingTransactionIsolation != defaultTransactionIsolation) {
             conn.setTransactionIsolation(defaultTransactionIsolation);
+            underlyingTransactionIsolation = defaultTransactionIsolation;
         }
 
         if (underlyingAutoCommit != defaultAutoCommit) {
             conn.setAutoCommit(defaultAutoCommit);
+            underlyingAutoCommit = defaultAutoCommit;
         }
 
         connectionEventListeners.clear();

@@ -671,6 +671,14 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
     @Override
     public void setAutoCommit(boolean autoCommit) throws SQLException {
         checkState();
+        
+        boolean useLocalSessionState = holder.getDataSource().isUseLocalSessionState();
+        
+        if (useLocalSessionState) {
+            if (autoCommit == holder.isUnderlyingAutoCommit()) {
+                return;
+            }
+        }
 
         try {
             conn.setAutoCommit(autoCommit);
