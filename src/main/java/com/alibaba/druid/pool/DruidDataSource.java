@@ -76,6 +76,7 @@ import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.druid.util.IOUtils;
 import com.alibaba.druid.util.JMXUtils;
+import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.wall.WallFilter;
 
@@ -350,6 +351,18 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
             for (Filter filter : filters) {
                 filter.init(this);
+            }
+            
+            if (this.dbType == JdbcConstants.MYSQL) {
+                boolean cacheServerConfigurationSet = false;
+                if (this.connectProperties.containsKey("cacheServerConfiguration")) {
+                    cacheServerConfigurationSet = true;
+                } else if (this.jdbcUrl.indexOf("cacheServerConfiguration") != -1) {
+                    cacheServerConfigurationSet = true;
+                }
+                if (cacheServerConfigurationSet) {
+                    this.connectProperties.put("cacheServerConfiguration", "true");
+                }
             }
 
             if (maxActive <= 0) {
