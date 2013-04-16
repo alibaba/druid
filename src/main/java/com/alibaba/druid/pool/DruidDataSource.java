@@ -1117,7 +1117,11 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
                 empty.signal(); // send signal to CreateThread create connection
 
                 if (estimate <= 0) {
-                    throw new GetConnectionTimeoutException();
+                    if (this.createError == null) {
+                        throw new GetConnectionTimeoutException(createError);
+                    } else {
+                        throw new GetConnectionTimeoutException();
+                    }
                 }
 
                 notEmptyWaitThreadCount++;
