@@ -38,6 +38,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateDatabaseStatement;
@@ -2382,9 +2383,16 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                 } else if (identifierEquals("ENABLE")) {
                     lexer.nextToken();
-                    acceptIdentifier("KEYS");
-                    SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
-                    stmt.getItems().add(item);
+                    if (lexer.token() == Token.CONSTRAINT) {
+                        lexer.nextToken();
+                        SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
+                        item.setConstraintName(this.exprParser.name());
+                        stmt.getItems().add(item);
+                    } else {
+                        acceptIdentifier("KEYS");
+                        SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
+                        stmt.getItems().add(item);
+                    }
                 } else if (identifierEquals("RENAME")) {
                     lexer.nextToken();
                     MySqlRenameTableStatement renameStmt = new MySqlRenameTableStatement();

@@ -75,6 +75,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropIndex;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropPrimaryKey;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
@@ -1427,6 +1428,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
     
     public boolean visit(SQLAlterTableDisableConstraint x) {
         print("DISABLE CONSTRAINT ");
+        x.getConstraintName().accept(this);
+        return false;
+    }
+    
+    public boolean visit(SQLAlterTableEnableConstraint x) {
+        print("ENABLE CONSTRAINT ");
         x.getConstraintName().accept(this);
         return false;
     }
