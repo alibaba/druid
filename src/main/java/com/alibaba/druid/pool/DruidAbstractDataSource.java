@@ -231,12 +231,24 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
 
     private Boolean                                    useUnfairLock                             = null;
 
+    private boolean                                    useLocalSessionState                       = true;
+
     public DruidAbstractDataSource(boolean lockFair){
         lock = new ReentrantLock(lockFair);
 
         notEmpty = lock.newCondition();
         empty = lock.newCondition();
     }
+    
+    public boolean isUseLocalSessionState() {
+        return useLocalSessionState;
+    }
+    
+    public void setUseLocalSessionState(boolean useLocalSessionState) {
+        this.useLocalSessionState = useLocalSessionState;
+    }
+
+
 
     public boolean isOracle() {
         return isOracle;
@@ -1164,9 +1176,13 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     protected boolean testConnectionInternal(Connection conn) {
         String sqlFile = JdbcSqlStat.getContextSqlFile();
         String sqlName = JdbcSqlStat.getContextSqlName();
-        
-        JdbcSqlStat.setContextSqlFile(null);
-        JdbcSqlStat.setContextSqlName(null);
+
+        if (sqlFile != null) {
+            JdbcSqlStat.setContextSqlFile(null);
+        }
+        if (sqlName != null) {
+            JdbcSqlStat.setContextSqlName(null);
+        }
         try {
             if (validConnectionChecker != null) {
                 return validConnectionChecker.isValidConnection(conn, validationQuery, validationQueryTimeout);
@@ -1201,8 +1217,12 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
             // skip
             return false;
         } finally {
-            JdbcSqlStat.setContextSqlFile(sqlFile);
-            JdbcSqlStat.setContextSqlName(sqlName);
+            if (sqlFile != null) {
+                JdbcSqlStat.setContextSqlFile(sqlFile);
+            }
+            if (sqlName != null) {
+                JdbcSqlStat.setContextSqlName(sqlName);
+            }
         }
     }
 
