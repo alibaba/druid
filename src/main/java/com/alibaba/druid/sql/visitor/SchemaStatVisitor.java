@@ -42,6 +42,7 @@ import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
@@ -1056,6 +1057,22 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
     
     @Override
     public boolean visit(SQLAlterTableEnableConstraint x) {
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLAlterTableStatement x) {
+        String tableName = x.getName().toString();
+        TableStat stat = getTableStat(tableName);
+        stat.incrementAlterCount();
+
+        setCurrentTable(x, tableName);
+
+        for (SQLAlterTableItem item : x.getItems()) {
+            item.setParent(x);
+            item.accept(this);
+        }
+
         return false;
     }
 }

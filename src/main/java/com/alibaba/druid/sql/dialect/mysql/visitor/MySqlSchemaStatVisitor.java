@@ -1019,18 +1019,7 @@ public class MySqlSchemaStatVisitor extends SchemaStatVisitor implements MySqlAS
 
     @Override
     public boolean visit(MySqlAlterTableStatement x) {
-        String tableName = x.getName().toString();
-        TableStat stat = getTableStat(tableName);
-        stat.incrementAlterCount();
-
-        setCurrentTable(x, tableName);
-
-        for (SQLAlterTableItem item : x.getItems()) {
-            item.setParent(x);
-            item.accept(this);
-        }
-
-        return false;
+        return visit((SQLAlterTableStatement) x);
     }
 
     @Override
