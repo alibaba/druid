@@ -206,7 +206,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
                 }
 
                 if (!checkVar(x.getParent(), x.getName())) {
-                    boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
+                    boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
                     if (!isTop) {
                         violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
                                                                                              + x.getName(), toSQL(x)));
@@ -255,7 +255,7 @@ public class MySqlWallVisitor extends MySqlASTVisitorAdapter implements WallVisi
         }
 
         if (varName.startsWith("@@") && !checkVar(x.getParent(), x.getName())) {
-            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(x);
+            boolean isTop = WallVisitorUtils.isTopNoneFromSelect(this, x);
             if (!isTop) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.VARIANT_DENY, "variable not allow : "
                                                                                      + x.getName(), toSQL(x)));

@@ -32,6 +32,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddForeignKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAlterColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropColumnItem;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableDropForeinKey;
@@ -639,7 +640,7 @@ public class MySqlStatementParser extends SQLStatementParser {
 
     public SQLStatement parseShow() {
         accept(Token.SHOW);
-        
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }
@@ -1511,7 +1512,7 @@ public class MySqlStatementParser extends SQLStatementParser {
         MySqlReplaceStatement stmt = new MySqlReplaceStatement();
 
         accept(Token.REPLACE);
-        
+
         if (lexer.token() == Token.COMMENT) {
             lexer.nextToken();
         }
@@ -2268,7 +2269,7 @@ public class MySqlStatementParser extends SQLStatementParser {
                         } else if (lexer.token() == Token.FOREIGN) {
                             MySqlForeignKey fk = this.getExprParser().parseForeignKey();
                             fk.setName(constraintName);
-                            
+
                             SQLAlterTableAddForeignKey item = new SQLAlterTableAddForeignKey(fk);
                             stmt.getItems().add(item);
                         } else {
@@ -2368,9 +2369,17 @@ public class MySqlStatementParser extends SQLStatementParser {
                     }
                 } else if (identifierEquals("DISABLE")) {
                     lexer.nextToken();
-                    acceptIdentifier("KEYS");
-                    SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
-                    stmt.getItems().add(item);
+
+                    if (lexer.token() == Token.CONSTRAINT) {
+                        lexer.nextToken();
+                        SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
+                        item.setConstraintName(this.exprParser.name());
+                        stmt.getItems().add(item);
+                    } else {
+                        acceptIdentifier("KEYS");
+                        SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
+                        stmt.getItems().add(item);
+                    }
                 } else if (identifierEquals("ENABLE")) {
                     lexer.nextToken();
                     acceptIdentifier("KEYS");
@@ -2553,7 +2562,7 @@ public class MySqlStatementParser extends SQLStatementParser {
             lexer.nextToken();
         }
     }
-    
+
     public MySqlExprParser getExprParser() {
         return (MySqlExprParser) exprParser;
     }

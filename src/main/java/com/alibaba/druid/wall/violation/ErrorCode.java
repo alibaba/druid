@@ -58,7 +58,8 @@ public interface ErrorCode {
     public final static int CONST_ARITHMETIC              = 2101;
     public final static int XOR                           = 2102;
     public final static int BITWISE                       = 2103;
-    public final static int NONE_CONDITION                = 1200;
+    public final static int NONE_CONDITION                = 2104;
+    public final static int LIKE_NUMBER                   = 2105;
 
     public final static int NOT_PARAMETERIZED             = 2200;
     public final static int MULTI_TENANT                  = 2201;
