@@ -61,6 +61,7 @@ import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
 import com.alibaba.druid.sql.ast.statement.NotNullConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCharactorDataType;
+import com.alibaba.druid.sql.ast.statement.SQLColumnCheck;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLColumnPrimaryKey;
 import com.alibaba.druid.sql.ast.statement.SQLPrimaryKey;
@@ -1253,6 +1254,13 @@ public class SQLExprParser extends SQLParser {
             lexer.nextToken();
             accept(Token.KEY);
             column.getConstaints().add(new SQLColumnPrimaryKey());
+            return parseColumnRest(column);
+        }
+        
+        if (lexer.token == Token.CHECK) {
+            lexer.nextToken();
+            SQLExpr expr = this.expr();
+            column.getConstaints().add(new SQLColumnCheck(expr));
             return parseColumnRest(column);
         }
 
