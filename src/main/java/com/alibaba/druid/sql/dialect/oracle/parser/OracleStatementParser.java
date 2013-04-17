@@ -29,6 +29,8 @@ import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLNullExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
 import com.alibaba.druid.sql.ast.statement.SQLAlterTableAddColumn;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLConstaint;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
@@ -283,7 +285,7 @@ public class OracleStatementParser extends SQLStatementParser {
                 statementList.add(stmt);
                 continue;
             }
-            
+
             if (identifierEquals("ROLLBACK")) {
                 SQLRollbackStatement stmt = parseRollback();
 
@@ -421,39 +423,39 @@ public class OracleStatementParser extends SQLStatementParser {
                     statementList.add(stmt);
                     continue;
                 }
-                
+
                 boolean isPublic = false;
                 if (identifierEquals("PUBLIC")) {
                     lexer.nextToken();
                     isPublic = true;
                 }
-                
+
                 if (lexer.token() == Token.DATABASE) {
                     lexer.nextToken();
-                    
+
                     if (identifierEquals("LINK")) {
                         lexer.nextToken();
-                        
+
                         OracleDropDatabaseLinkStatement stmt = new OracleDropDatabaseLinkStatement();
                         if (isPublic) {
                             stmt.setPublic(isPublic);
                         }
-                        
+
                         stmt.setName(this.exprParser.name());
-                        
+
                         statementList.add(stmt);
                         continue;
                     }
                 }
-                
+
                 if (identifierEquals("SEQUENCE")) {
                     lexer.nextToken();
-                    
+
                     SQLName name = this.exprParser.name();
-                    
+
                     OracleDropSequenceStatement stmt = new OracleDropSequenceStatement();
                     stmt.setName(name);
-                    
+
                     statementList.add(stmt);
                     continue;
                 }
@@ -921,6 +923,26 @@ public class OracleStatementParser extends SQLStatementParser {
             } else if (lexer.token() == Token.DROP) {
                 parseAlterTableDrop(stmt);
                 continue;
+            } else if (identifierEquals("DISABLE")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.CONSTRAINT) {
+                    lexer.nextToken();
+                    SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
+                    item.setConstraintName(this.exprParser.name());
+                    stmt.getItems().add(item);
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
+            } else if (identifierEquals("ENABLE")) {
+                lexer.nextToken();
+                if (lexer.token() == Token.CONSTRAINT) {
+                    lexer.nextToken();
+                    SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
+                    item.setConstraintName(this.exprParser.name());
+                    stmt.getItems().add(item);
+                } else {
+                    throw new ParserException("TODO : " + lexer.token() + " " + lexer.stringVal());
+                }
             }
 
             break;
@@ -1462,7 +1484,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         if (lexer.token() == Token.DELETE) {
             lexer.nextToken();
-            
+
             if (lexer.token() == Token.COMMENT) {
                 lexer.nextToken();
             }
@@ -1526,7 +1548,7 @@ public class OracleStatementParser extends SQLStatementParser {
 
         accept(Token.DATABASE);
         acceptIdentifier("LINK");
-        
+
         dbLink.setName(this.exprParser.name());
 
         if (lexer.token() == Token.CONNECT) {
@@ -1553,7 +1575,7 @@ public class OracleStatementParser extends SQLStatementParser {
             dbLink.setPassword(lexer.stringVal());
             accept(Token.IDENTIFIER);
         }
-        
+
         if (lexer.token() == Token.USING) {
             lexer.nextToken();
             dbLink.setUsing(this.exprParser.expr());
