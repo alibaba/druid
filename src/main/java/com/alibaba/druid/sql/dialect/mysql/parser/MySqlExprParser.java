@@ -531,6 +531,13 @@ public class MySqlExprParser extends SQLExprParser {
         if (identifierEquals("PARTITION")) {
             throw new ParserException("syntax error " + lexer.token() + " " + lexer.stringVal());
         }
+        
+        if (identifierEquals("COMMENT")) {
+            lexer.nextToken();
+            column.setComment(lexer.stringVal());
+            accept(Token.LITERAL_CHARS);
+        }
+        
         super.parseColumnRest(column);
 
         return column;
