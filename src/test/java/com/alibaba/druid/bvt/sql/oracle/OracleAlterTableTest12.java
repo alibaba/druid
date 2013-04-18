@@ -13,43 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.oracle;
 
 import java.util.List;
 
-import org.junit.Assert;
+import junit.framework.Assert;
 
-import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.OracleTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 
-public class MySqlShowFieldsTest extends MysqlTest {
+public class OracleAlterTableTest12 extends OracleTest {
 
     public void test_0() throws Exception {
-        String sql = "SHOW FIELDS FROM `schema_migrations`";
+        String sql = //
+        "alter table st_jklsxxb enable constraint FK_ST_xxx_REFERENCE_ST_xxx";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        OracleStatementParser parser = new OracleStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        OracleSchemaStatVisitor visitor = new OracleSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
         System.out.println("coditions : " + visitor.getConditions());
+        System.out.println("relationships : " + visitor.getRelationships());
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
+        Assert.assertEquals(1, visitor.getTables().size());
+
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("st_jklsxxb")));
+
         Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_price")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
-
+//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("PRODUCT_IDS_ZZJ_TBD0209", "discount_amount")));
+//         Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("ws_affiliate_tran_product", "commission_amount")));
+        // Assert.assertTrue(visitor.getColumns().contains(new TableStat.Column("pivot_table", "order_mode")));
     }
 }

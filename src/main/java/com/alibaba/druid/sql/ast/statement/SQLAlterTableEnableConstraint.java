@@ -15,42 +15,33 @@
  */
 package com.alibaba.druid.sql.ast.statement;
 
-import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLName;
+import com.alibaba.druid.sql.ast.SQLObjectImpl;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 
-public class SQLCheck extends SQLConstaintImpl implements SQLTableElement {
+public class SQLAlterTableEnableConstraint extends SQLObjectImpl implements SQLAlterTableItem {
 
     private static final long serialVersionUID = 1L;
 
-    private SQLExpr           expr;
-    
-    public SQLCheck() {
-        
-    }
-    
-    public SQLCheck(SQLExpr expr) {
-        this.setExpr(expr);
-    }
-
-    public SQLExpr getExpr() {
-        return expr;
-    }
-
-    public void setExpr(SQLExpr expr) {
-        if (expr != null) {
-            expr.setParent(this);
-        }
-        this.expr = expr;
-    }
+    private SQLName           constraintName;
 
     @Override
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
-            acceptChild(visitor, this.getName());
-            acceptChild(visitor, this.getExpr());
+            acceptChild(visitor, this.constraintName);
         }
         visitor.endVisit(this);
     }
 
+    
+    public SQLName getConstraintName() {
+        return constraintName;
+    }
 
+    
+    public void setConstraintName(SQLName constraintName) {
+        this.constraintName = constraintName;
+    }
+
+    
 }

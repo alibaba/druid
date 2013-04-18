@@ -24,17 +24,17 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class MySqlShowFieldsTest extends MysqlTest {
+public class MySqlSetTest_0 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SHOW FIELDS FROM `schema_migrations`";
+        String sql = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
-        List<SQLStatement> statementList = parser.parseStatementList();
-        SQLStatement statemen = statementList.get(0);
-        print(statementList);
+        List<SQLStatement> stmt = parser.parseStatementList();
+        SQLStatement statemen = stmt.get(0);
+        print(stmt);
 
-        Assert.assertEquals(1, statementList.size());
+        Assert.assertEquals(1, stmt.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         statemen.accept(visitor);
@@ -48,8 +48,8 @@ public class MySqlShowFieldsTest extends MysqlTest {
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_price")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        String text = output(stmt);
 
+        Assert.assertEquals("SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ", text);
     }
 }

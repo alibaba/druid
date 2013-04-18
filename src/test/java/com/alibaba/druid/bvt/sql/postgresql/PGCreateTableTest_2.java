@@ -13,43 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.druid.bvt.sql.mysql;
+package com.alibaba.druid.bvt.sql.postgresql;
 
 import java.util.List;
 
 import org.junit.Assert;
 
-import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.PGTest;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.postgresql.parser.PGSQLStatementParser;
+import com.alibaba.druid.sql.dialect.postgresql.visitor.PGSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 
-public class MySqlShowFieldsTest extends MysqlTest {
+public class PGCreateTableTest_2 extends PGTest {
 
     public void test_0() throws Exception {
-        String sql = "SHOW FIELDS FROM `schema_migrations`";
+        String sql = "CREATE TABLE products (" + //
+                     "    product_no integer," + //
+                     "    name text," + //
+                     "    price numeric DEFAULT 9.99" + //
+                     ");";
 
-        MySqlStatementParser parser = new MySqlStatementParser(sql);
+        PGSQLStatementParser parser = new PGSQLStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
         SQLStatement statemen = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
-        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        PGSchemaStatVisitor visitor = new PGSchemaStatVisitor();
         statemen.accept(visitor);
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
-        System.out.println("coditions : " + visitor.getConditions());
-        System.out.println("orderBy : " + visitor.getOrderByColumns());
 
-        Assert.assertEquals(0, visitor.getTables().size());
-        Assert.assertEquals(0, visitor.getColumns().size());
-        Assert.assertEquals(0, visitor.getConditions().size());
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("products")));
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_price")));
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
+        Assert.assertTrue(visitor.getTables().get(new TableStat.Name("products")).getCreateCount() == 1);
 
+        Assert.assertTrue(visitor.getColumns().size() == 3);
     }
+
 }

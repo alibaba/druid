@@ -24,10 +24,10 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 
-public class MySqlShowFieldsTest extends MysqlTest {
+public class MySqlShowTest_2 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "SHOW FIELDS FROM `schema_migrations`";
+        String sql = "SHOW CREATE TABLE `sonar`.`action_plans`";
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
@@ -48,7 +48,6 @@ public class MySqlShowFieldsTest extends MysqlTest {
         Assert.assertEquals(0, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-//        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_price")));
 //        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("t_basic_store")));
 
     }

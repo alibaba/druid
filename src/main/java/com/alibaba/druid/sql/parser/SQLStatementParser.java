@@ -23,6 +23,11 @@ import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.expr.SQLListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLQueryExpr;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableDisableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableConstraint;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableEnableKeys;
+import com.alibaba.druid.sql.ast.statement.SQLAlterTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLAssignItem;
 import com.alibaba.druid.sql.ast.statement.SQLCallStatement;
 import com.alibaba.druid.sql.ast.statement.SQLCommentStatement;
@@ -280,6 +285,50 @@ public class SQLStatementParser extends SQLParser {
 
     public SQLStatement parseAlter() {
         accept(Token.ALTER);
+        
+        if (lexer.token() == Token.TABLE) {
+            lexer.nextToken();
+            
+            SQLAlterTableStatement stmt = new SQLAlterTableStatement();
+            stmt.setName(this.exprParser.name());
+            
+            for (;;) {
+                if (identifierEquals("ADD")) {
+                    lexer.nextToken();
+                    
+                    throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                } else if (identifierEquals("DISABLE")) {
+                    lexer.nextToken();
+
+                    if (lexer.token() == Token.CONSTRAINT) {
+                        lexer.nextToken();
+                        SQLAlterTableDisableConstraint item = new SQLAlterTableDisableConstraint();
+                        item.setConstraintName(this.exprParser.name());
+                        stmt.getItems().add(item);
+                    } else {
+                        acceptIdentifier("KEYS");
+                        SQLAlterTableDisableKeys item = new SQLAlterTableDisableKeys();
+                        stmt.getItems().add(item);
+                    }
+                } else if (identifierEquals("ENABLE")) {
+                    lexer.nextToken();
+                    if (lexer.token() == Token.CONSTRAINT) {
+                        lexer.nextToken();
+                        SQLAlterTableEnableConstraint item = new SQLAlterTableEnableConstraint();
+                        item.setConstraintName(this.exprParser.name());
+                        stmt.getItems().add(item);
+                    } else {
+                        acceptIdentifier("KEYS");
+                        SQLAlterTableEnableKeys item = new SQLAlterTableEnableKeys();
+                        stmt.getItems().add(item);
+                    }
+                } else {
+                    break;
+                }
+            }
+            
+            return stmt;
+        }
         throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
     }
 
