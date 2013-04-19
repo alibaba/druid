@@ -136,6 +136,19 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
 
     public DruidDataSource(boolean fairLock){
         super(fairLock);
+
+        {
+            String property = System.getProperty("druid.testWhileIdle");
+            if ("true".equals(property)) {
+                this.setTestWhileIdle(true);
+            }
+        }
+        {
+            String property = System.getProperty("druid.validationQuery");
+            if (property != null && property.length() > 0) {
+                this.setValidationQuery(property);
+            }
+        }
     }
 
     public String getInitStackTrace() {
@@ -352,7 +365,7 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
             for (Filter filter : filters) {
                 filter.init(this);
             }
-            
+
             if (this.dbType == JdbcConstants.MYSQL) {
                 boolean cacheServerConfigurationSet = false;
                 if (this.connectProperties.containsKey("cacheServerConfiguration")) {
