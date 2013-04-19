@@ -76,7 +76,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
 
             for (;;) {
-                if (lexer.token() == Token.IDENTIFIER) {
+                if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_CHARS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
                 } else if (lexer.token() == Token.CONSTRAINT //
