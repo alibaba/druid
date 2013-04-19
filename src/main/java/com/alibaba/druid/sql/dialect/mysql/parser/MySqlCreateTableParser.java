@@ -76,7 +76,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
             lexer.nextToken();
 
             for (;;) {
-                if (lexer.token() == Token.IDENTIFIER) {
+                if (lexer.token() == Token.IDENTIFIER || lexer.token() == Token.LITERAL_CHARS) {
                     SQLColumnDefinition column = this.exprParser.parseColumn();
                     stmt.getTableElementList().add(column);
                 } else if (lexer.token() == Token.CONSTRAINT //
@@ -147,6 +147,14 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 continue;
             }
+            
+            if (identifierEquals("AUTO_INCREMENT")) {
+                lexer.nextToken();
+                accept(Token.EQ);
+                stmt.getTableOptions().put("AUTO_INCREMENT", lexer.numberString());
+                lexer.nextToken();
+                continue;
+            }
 
             if (identifierEquals("TYPE")) {
                 lexer.nextToken();
@@ -183,7 +191,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 }
             }
-
+            
             if (lexer.token() == Token.DEFAULT) {
                 lexer.nextToken();
                 if (identifierEquals("CHARACTER")) {

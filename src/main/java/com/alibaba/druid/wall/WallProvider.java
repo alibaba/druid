@@ -469,7 +469,7 @@ public abstract class WallProvider {
             violations.addAll(visitor.getViolations());
         }
 
-        if (context != null && context.getWarnnings() >= 2) {
+        if (visitor.getViolations().size() == 0 && context != null && context.getWarnnings() >= 2) {
             if (context.getDeleteNoneConditionWarnnings() > 0) {
                 violations.add(new IllegalSQLObjectViolation(ErrorCode.NONE_CONDITION, "delete none condition", sql));
             } else if (context.getUpdateNoneConditionWarnnings() > 0) {

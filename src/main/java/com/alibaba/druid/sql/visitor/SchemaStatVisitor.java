@@ -146,6 +146,7 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
         boolean flag0 = false;
         boolean flag1 = false;
         boolean flag2 = false;
+        boolean flag3 = false;
         for (int i = 0; i < ident.length(); ++i) {
             final char ch = ident.charAt(i);
             if (ch == '\"') {
@@ -154,6 +155,8 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
                 flag1 = true;
             } else if (ch == ' ') {
                 flag2 = true;
+            } else if (ch == '\'') {
+                flag3 = true;
             }
         }
         if (flag0) {
@@ -166,6 +169,10 @@ public class SchemaStatVisitor extends SQLASTVisitorAdapter {
 
         if (flag2) {
             ident = ident.replaceAll(" ", "");
+        }
+        
+        if (flag3) {
+            ident = ident.replaceAll("'", "");
         }
 
         ident = aliasWrap(ident);
