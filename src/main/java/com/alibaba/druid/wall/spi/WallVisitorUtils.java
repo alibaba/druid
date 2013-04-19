@@ -1180,6 +1180,11 @@ public class WallVisitorUtils {
         if (name.startsWith("\"") && name.endsWith("\"")) {
             name = name.substring(1, name.length() - 1);
         }
+        
+        if (name.startsWith("'") && name.endsWith("'")) {
+            name = name.substring(1, name.length() - 1);
+        }
+        
         if (name.startsWith("`") && name.endsWith("`")) {
             name = name.substring(1, name.length() - 1);
         }
