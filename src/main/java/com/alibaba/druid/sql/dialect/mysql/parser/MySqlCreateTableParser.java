@@ -147,6 +147,14 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 continue;
             }
+            
+            if (identifierEquals("AUTO_INCREMENT")) {
+                lexer.nextToken();
+                accept(Token.EQ);
+                stmt.getTableOptions().put("AUTO_INCREMENT", lexer.numberString());
+                lexer.nextToken();
+                continue;
+            }
 
             if (identifierEquals("TYPE")) {
                 lexer.nextToken();
@@ -183,7 +191,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 }
             }
-
+            
             if (lexer.token() == Token.DEFAULT) {
                 lexer.nextToken();
                 if (identifierEquals("CHARACTER")) {
