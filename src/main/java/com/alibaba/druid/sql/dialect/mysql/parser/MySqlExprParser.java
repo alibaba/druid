@@ -447,6 +447,19 @@ public class MySqlExprParser extends SQLExprParser {
                 expr = methodInvokeExpr;
 
                 return primaryRest(expr);
+            } else if ("POSITION".equalsIgnoreCase(ident)) {
+                accept(Token.LPAREN);
+                SQLExpr subStr = this.primary();
+                accept(Token.IN);
+                SQLExpr str = this.expr();
+                accept(Token.RPAREN);
+                
+                SQLMethodInvokeExpr locate = new SQLMethodInvokeExpr("LOCATE");
+                locate.getParameters().add(subStr);
+                locate.getParameters().add(str);
+                
+                expr = locate;
+                return primaryRest(expr);
             }
         }
 
