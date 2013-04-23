@@ -326,6 +326,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printAndAccept(x.getArguments(), ", ");
             print(")");
         }
+        
+        if (Boolean.TRUE == x.getAttribute("unsigned")) {
+            print(" unsigned");
+        }
 
         if (x instanceof SQLCharactorDataType) {
             SQLCharactorDataType charType = (SQLCharactorDataType) x;
