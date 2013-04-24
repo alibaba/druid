@@ -295,7 +295,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getDefaultExpr().accept(this);
             }
         }
-
+        
+        if (mysqlColumn != null && mysqlColumn.getOnUpdate() != null) {
+            print(" ON UPDATE ");
+            
+            mysqlColumn.getOnUpdate().accept(this);
+        }
+        
         if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
             print(" AUTO_INCREMENT");
         }

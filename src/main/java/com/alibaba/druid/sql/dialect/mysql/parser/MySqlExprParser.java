@@ -530,6 +530,13 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            accept(Token.UPDATE);
+            SQLExpr expr = this.expr();
+            ((MySqlSQLColumnDefinition) column).setOnUpdate(expr);
+        }
+        
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
             if (column instanceof MySqlSQLColumnDefinition) {
