@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 
 public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
@@ -22,6 +23,8 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
     private static final long serialVersionUID = 1L;
 
     private boolean           autoIncrement    = false;
+
+    private SQLExpr           onUpdate;
 
     public MySqlSQLColumnDefinition(){
 
@@ -35,4 +38,12 @@ public class MySqlSQLColumnDefinition extends SQLColumnDefinition {
         this.autoIncrement = autoIncrement;
     }
 
+    
+    public SQLExpr getOnUpdate() {
+        return onUpdate;
+    }
+    
+    public void setOnUpdate(SQLExpr onUpdate) {
+        this.onUpdate = onUpdate;
+    }
 }

@@ -295,7 +295,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getDefaultExpr().accept(this);
             }
         }
-
+        
+        if (mysqlColumn != null && mysqlColumn.getOnUpdate() != null) {
+            print(" ON UPDATE ");
+            
+            mysqlColumn.getOnUpdate().accept(this);
+        }
+        
         if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
             print(" AUTO_INCREMENT");
         }
@@ -325,6 +331,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print("(");
             printAndAccept(x.getArguments(), ", ");
             print(")");
+        }
+        
+        if (Boolean.TRUE == x.getAttribute("unsigned")) {
+            print(" unsigned");
         }
 
         if (x instanceof SQLCharactorDataType) {
@@ -431,10 +441,19 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print(")");
 
         for (Map.Entry<String, String> option : x.getTableOptions().entrySet()) {
+            String key = option.getKey();
+
             print(" ");
-            print(option.getKey());
+            print(key);
             print(" = ");
-            print(option.getValue());
+
+            if ("COMMENT".equals(key)) {
+                print('\'');
+                print(option.getValue());
+                print('\'');
+            } else {
+                print(option.getValue());
+            }
         }
 
         if (x.getQuery() != null) {
@@ -2595,7 +2614,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public void endVisit(MySqlAlterTableChangeColumn x) {
 
     }
-    
+
     @Override
     public boolean visit(MySqlAlterTableModifyColumn x) {
         print("MODIFY COLUMN ");
@@ -2612,7 +2631,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
         return false;
     }
-    
+
     @Override
     public void endVisit(MySqlAlterTableModifyColumn x) {
 
@@ -2761,7 +2780,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlUnique x) {
-        
+
     }
 
     @Override
@@ -2775,10 +2794,10 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         print("FOREIGN KEY (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
-        
+
         print(" REFERENCES ");
         x.getReferencedTableName().accept(this);
-        
+
         print(" (");
         printAndAccept(x.getReferencedColumns(), ", ");
         print(")");
@@ -2787,7 +2806,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlForeignKey x) {
-       
+
     }
 
     @Override
@@ -2798,9 +2817,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTableDiscardTablespace x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(MySqlAlterTableImportTablespace x) {
         print("IMPORT TABLESPACE");
@@ -2809,9 +2828,9 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
 
     @Override
     public void endVisit(MySqlAlterTableImportTablespace x) {
-        
+
     }
-    
+
     @Override
     public boolean visit(SQLAssignItem x) {
         x.getTarget().accept(this);

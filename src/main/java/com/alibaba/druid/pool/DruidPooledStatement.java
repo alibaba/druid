@@ -71,7 +71,16 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     protected void checkOpen() throws SQLException {
         if (closed) {
-            throw new SQLException("statement is closed");
+            Throwable disableError = null;
+            if (this.conn != null) {
+                disableError = this.conn.getDisableError();
+            }
+
+            if (disableError != null) {
+                throw new SQLException("statement is closed", disableError);
+            } else {
+                throw new SQLException("statement is closed");
+            }
         }
     }
 
@@ -90,20 +99,20 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     public void incrementExecuteCount() {
         DruidPooledConnection conn = this.getPoolableConnection();
-        
+
         if (conn == null) {
             return;
         }
-        
+
         DruidConnectionHolder holder = conn.getConnectionHolder();
         if (holder == null) {
             return;
         }
-        
+
         if (holder.getDataSource() == null) {
             return;
         }
-        
+
         holder.getDataSource().incrementExecuteCount();
     }
 
@@ -121,7 +130,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
         conn.beforeExecute();
         try {
             ResultSet rs = stmt.executeQuery(sql);
-            
+
             if (rs == null) {
                 return rs;
             }
@@ -266,14 +275,14 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             throw checkException(t);
         }
     }
-    
+
     @Override
     public void close() throws SQLException {
         if (!this.closed) {
             clearResultSet();
             stmt.close();
             this.closed = true;
-            
+
             if (conn.getConnectionHolder() != null) {
                 conn.getConnectionHolder().removeTrace(this);
             }
@@ -526,7 +535,9 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
 
     @Override
     public final void clearBatch() throws SQLException {
-        checkOpen();
+        if (closed) {
+            return;
+        }
 
         try {
             stmt.clearBatch();
