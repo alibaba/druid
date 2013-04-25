@@ -69,26 +69,6 @@ public class SQLInListExpr extends SQLExprImpl implements Serializable {
         this.targetList = targetList;
     }
 
-    public void output(StringBuffer buf) {
-        this.expr.output(buf);
-
-        if (this.not) {
-            buf.append("NOT IN ");
-        } else {
-            buf.append("IN ");
-        }
-
-        buf.append("(");
-        int i = 0;
-        for (int size = this.targetList.size(); i < size; ++i) {
-            if (i != 0) {
-                buf.append(", ");
-            }
-            ((SQLExpr) this.targetList.get(i)).output(buf);
-        }
-        buf.append(")");
-    }
-
     protected void accept0(SQLASTVisitor visitor) {
         if (visitor.visit(this)) {
             acceptChild(visitor, this.expr);

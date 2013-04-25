@@ -15,7 +15,9 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.parser;
 
+import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQuery;
@@ -105,5 +107,29 @@ public class SQLServerSelectParser extends SQLSelectParser {
     
     protected SQLServerExprParser createExprParser() {
         return new SQLServerExprParser(lexer);
+    }
+    
+    protected SQLTableSource parseTableSourceRest(SQLTableSource tableSource) {
+        if (lexer.token() == Token.WITH) {
+            lexer.nextToken();
+            accept(Token.LPAREN);
+            
+            for (;;) {
+                SQLExpr expr = this.expr();
+                SQLExprHint hint = new SQLExprHint(expr);
+                hint.setParent(tableSource);
+                tableSource.getHints().add(hint);
+                if (lexer.token() == Token.COMMA) {
+                    lexer.nextToken();
+                    continue;
+                } else {
+                    break;
+                }
+            }
+            
+            accept(Token.RPAREN);
+        }
+        
+        return super.parseTableSourceRest(tableSource);
     }
 }

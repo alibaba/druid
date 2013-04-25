@@ -163,6 +163,14 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 continue;
             }
+            
+            if (identifierEquals("COMMENT")) {
+                lexer.nextToken();
+                accept(Token.EQ);
+                stmt.getTableOptions().put("COMMENT", lexer.stringVal());
+                lexer.nextToken();
+                continue;
+            }
 
             if (identifierEquals("PARTITION")) {
                 lexer.nextToken();
@@ -202,6 +210,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     stmt.getTableOptions().put("CHARACTER SET", lexer.stringVal());
                     lexer.nextToken();
+                    continue;
                 } else if (identifierEquals("CHARSET")) {
                     lexer.nextToken();
                     if (lexer.token() == Token.EQ) {
@@ -209,6 +218,7 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                     }
                     stmt.getTableOptions().put("CHARSET", lexer.stringVal());
                     lexer.nextToken();
+                    continue;
                 }
             }
 
@@ -265,6 +275,12 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
 
             if (name != null) {
                 key.setName(name);
+            }
+            
+            if (identifierEquals("USING")) {
+                lexer.nextToken();
+                key.setIndexType(lexer.stringVal());
+                lexer.nextToken();
             }
 
             return key;

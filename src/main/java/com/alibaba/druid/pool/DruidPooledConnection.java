@@ -1051,6 +1051,10 @@ public class DruidPooledConnection extends PoolableWrapper implements javax.sql.
 
         holder.getStatementEventListeners().remove(listener);
     }
+    
+    public Throwable getDisableError() {
+        return disableError;
+    }
 
     public void checkState() throws SQLException {
         if (holder == null) {

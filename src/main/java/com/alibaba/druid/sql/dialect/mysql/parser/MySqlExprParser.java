@@ -15,6 +15,7 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.parser;
 
+import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
@@ -447,6 +448,19 @@ public class MySqlExprParser extends SQLExprParser {
                 expr = methodInvokeExpr;
 
                 return primaryRest(expr);
+            } else if ("POSITION".equalsIgnoreCase(ident)) {
+                accept(Token.LPAREN);
+                SQLExpr subStr = this.primary();
+                accept(Token.IN);
+                SQLExpr str = this.expr();
+                accept(Token.RPAREN);
+                
+                SQLMethodInvokeExpr locate = new SQLMethodInvokeExpr("LOCATE");
+                locate.getParameters().add(subStr);
+                locate.getParameters().add(str);
+                
+                expr = locate;
+                return primaryRest(expr);
             }
         }
 
@@ -516,6 +530,13 @@ public class MySqlExprParser extends SQLExprParser {
     }
 
     public SQLColumnDefinition parseColumnRest(SQLColumnDefinition column) {
+        if (lexer.token() == Token.ON) {
+            lexer.nextToken();
+            accept(Token.UPDATE);
+            SQLExpr expr = this.expr();
+            ((MySqlSQLColumnDefinition) column).setOnUpdate(expr);
+        }
+        
         if (identifierEquals("AUTO_INCREMENT")) {
             lexer.nextToken();
             if (column instanceof MySqlSQLColumnDefinition) {
@@ -541,6 +562,17 @@ public class MySqlExprParser extends SQLExprParser {
         super.parseColumnRest(column);
 
         return column;
+    }
+    
+    protected SQLDataType parseDataTypeRest(SQLDataType dataType) {
+        super.parseDataTypeRest(dataType);
+        
+        if (identifierEquals("UNSIGNED")) {
+            lexer.nextToken();
+            dataType.getAttributes().put("unsigned", true);
+        }
+
+        return dataType;
     }
 
     public SQLExpr orRest(SQLExpr expr) {
