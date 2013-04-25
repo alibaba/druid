@@ -82,6 +82,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
@@ -434,44 +435,48 @@ public interface SQLASTVisitor {
     void endVisit(SQLAlterTableAlterColumn x);
 
     boolean visit(SQLAlterTableAlterColumn x);
-    
+
     boolean visit(SQLCheck x);
 
     void endVisit(SQLCheck x);
-    
+
     boolean visit(SQLAlterTableDropForeinKey x);
 
     void endVisit(SQLAlterTableDropForeinKey x);
-    
+
     boolean visit(SQLAlterTableDropPrimaryKey x);
-    
+
     void endVisit(SQLAlterTableDropPrimaryKey x);
-    
+
     boolean visit(SQLAlterTableDisableKeys x);
-    
+
     void endVisit(SQLAlterTableDisableKeys x);
-    
+
     boolean visit(SQLAlterTableEnableKeys x);
-    
+
     void endVisit(SQLAlterTableEnableKeys x);
-    
+
     boolean visit(SQLAlterTableStatement x);
-    
+
     void endVisit(SQLAlterTableStatement x);
-    
+
     boolean visit(SQLAlterTableAddForeignKey x);
-    
+
     void endVisit(SQLAlterTableAddForeignKey x);
 
     boolean visit(SQLAlterTableDisableConstraint x);
-    
+
     void endVisit(SQLAlterTableDisableConstraint x);
-    
+
     boolean visit(SQLAlterTableEnableConstraint x);
-    
+
     void endVisit(SQLAlterTableEnableConstraint x);
 
     boolean visit(SQLColumnCheck x);
-    
+
     void endVisit(SQLColumnCheck x);
+
+    boolean visit(SQLExprHint x);
+
+    void endVisit(SQLExprHint x);
 }

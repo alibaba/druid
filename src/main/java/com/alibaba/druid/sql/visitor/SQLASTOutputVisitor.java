@@ -95,6 +95,7 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropIndexStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropViewStatement;
+import com.alibaba.druid.sql.ast.statement.SQLExprHint;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement.ValuesClause;
@@ -1462,6 +1463,12 @@ public class SQLASTOutputVisitor extends SQLASTVisitorAdapter {
             item.accept(this);
         }
         decrementIndent();
+        return false;
+    }
+    
+    @Override
+    public boolean visit(SQLExprHint x) {
+        x.getExpr().accept(this);
         return false;
     }
 }
