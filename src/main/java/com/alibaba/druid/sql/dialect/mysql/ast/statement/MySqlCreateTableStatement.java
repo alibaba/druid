@@ -43,7 +43,7 @@ public class MySqlCreateTableStatement extends SQLCreateTableStatement implement
     private List<SQLCommentHint>  hints        = new ArrayList<SQLCommentHint>();
 
     private SQLExprTableSource    like;
-
+    
     public MySqlCreateTableStatement(){
 
     }

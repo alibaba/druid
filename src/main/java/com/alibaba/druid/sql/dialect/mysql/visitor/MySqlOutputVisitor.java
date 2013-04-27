@@ -295,6 +295,11 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getDefaultExpr().accept(this);
             }
         }
+        
+        if (mysqlColumn != null && mysqlColumn.getStorage() != null) {
+            print(" STORAGE ");
+            mysqlColumn.getStorage().accept(this);
+        }
 
         if (mysqlColumn != null && mysqlColumn.getOnUpdate() != null) {
             print(" ON UPDATE ");
@@ -452,8 +457,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         for (Map.Entry<String, String> option : x.getTableOptions().entrySet()) {
             String key = option.getKey();
 
-            print(" ");
+            print(' ');
             print(key);
+            
+            if ("TABLESPACE".equals(key)) {
+                print(' ');
+                print(option.getValue());
+                continue;
+            }
+            
             print(" = ");
 
             if ("COMMENT".equals(key)) {

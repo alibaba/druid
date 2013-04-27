@@ -559,6 +559,14 @@ public class MySqlExprParser extends SQLExprParser {
             accept(Token.LITERAL_CHARS);
         }
         
+        if (identifierEquals("STORAGE")) {
+            lexer.nextToken();
+            SQLExpr expr = expr();
+            if (column instanceof MySqlSQLColumnDefinition) {
+                ((MySqlSQLColumnDefinition) column).setStorage(expr);
+            }
+        }
+        
         super.parseColumnRest(column);
 
         return column;
