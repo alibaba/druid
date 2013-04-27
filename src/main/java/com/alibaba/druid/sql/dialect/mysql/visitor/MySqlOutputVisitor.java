@@ -295,13 +295,13 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getDefaultExpr().accept(this);
             }
         }
-        
+
         if (mysqlColumn != null && mysqlColumn.getOnUpdate() != null) {
             print(" ON UPDATE ");
-            
+
             mysqlColumn.getOnUpdate().accept(this);
         }
-        
+
         if (mysqlColumn != null && mysqlColumn.isAutoIncrement()) {
             print(" AUTO_INCREMENT");
         }
@@ -332,7 +332,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             printAndAccept(x.getArguments(), ", ");
             print(")");
         }
-        
+
         if (Boolean.TRUE == x.getAttribute("unsigned")) {
             print(" unsigned");
         }
@@ -426,19 +426,28 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         x.getName().accept(this);
-        print(" (");
-        incrementIndent();
-        println();
-        for (int i = 0, size = x.getTableElementList().size(); i < size; ++i) {
-            if (i != 0) {
-                print(", ");
-                println();
-            }
-            x.getTableElementList().get(i).accept(this);
+        
+        if (x.getLike() != null) {
+            print(" LIKE ");
+            x.getLike().accept(this);
         }
-        decrementIndent();
-        println();
-        print(")");
+        
+        int size = x.getTableElementList().size();
+        if (size > 0) {
+            print(" (");
+            incrementIndent();
+            println();
+            for (int i = 0; i < size; ++i) {
+                if (i != 0) {
+                    print(", ");
+                    println();
+                }
+                x.getTableElementList().get(i).accept(this);
+            }
+            decrementIndent();
+            println();
+            print(")");
+        }
 
         for (Map.Entry<String, String> option : x.getTableOptions().entrySet()) {
             String key = option.getKey();
@@ -448,9 +457,15 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(" = ");
 
             if ("COMMENT".equals(key)) {
-                print('\'');
-                print(option.getValue());
-                print('\'');
+                new SQLCharExpr(option.getValue()).accept(this);
+            } else if ("CONNECTION".equals(key)) {
+                new SQLCharExpr(option.getValue()).accept(this);
+            } else if ("DATA DIRECTORY".equals(key)) {
+                new SQLCharExpr(option.getValue()).accept(this);
+            } else if ("INDEX DIRECTORY".equals(key)) {
+                new SQLCharExpr(option.getValue()).accept(this);
+            } else if ("PASSWORD".equals(key)) {
+                new SQLCharExpr(option.getValue()).accept(this);
             } else {
                 print(option.getValue());
             }
