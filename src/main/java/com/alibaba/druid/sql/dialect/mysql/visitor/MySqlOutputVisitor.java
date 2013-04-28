@@ -21,6 +21,7 @@ import java.util.Map;
 import com.alibaba.druid.sql.ast.SQLCommentHint;
 import com.alibaba.druid.sql.ast.SQLDataType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLSetQuantifier;
 import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
 import com.alibaba.druid.sql.ast.expr.SQLMethodInvokeExpr;
@@ -64,6 +65,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlBinlogStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCommitStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateIndexStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateUserStatement.UserSpecification;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlDeleteStatement;
@@ -78,6 +80,7 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlKillStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadDataInFileStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLoadXmlStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlLockTableStatement;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPrepareStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlRenameTableStatement;
@@ -295,7 +298,7 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
                 x.getDefaultExpr().accept(this);
             }
         }
-        
+
         if (mysqlColumn != null && mysqlColumn.getStorage() != null) {
             print(" STORAGE ");
             mysqlColumn.getStorage().accept(this);
@@ -431,12 +434,12 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
 
         x.getName().accept(this);
-        
+
         if (x.getLike() != null) {
             print(" LIKE ");
             x.getLike().accept(this);
         }
-        
+
         int size = x.getTableElementList().size();
         if (size > 0) {
             print(" (");
@@ -454,37 +457,29 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
             print(")");
         }
 
-        for (Map.Entry<String, String> option : x.getTableOptions().entrySet()) {
+        for (Map.Entry<String, SQLObject> option : x.getTableOptions().entrySet()) {
             String key = option.getKey();
 
             print(' ');
             print(key);
-            
+
             if ("TABLESPACE".equals(key)) {
                 print(' ');
-                print(option.getValue());
+                option.getValue().accept(this);
                 continue;
             }
-            
+
             print(" = ");
 
-            if ("COMMENT".equals(key)) {
-                new SQLCharExpr(option.getValue()).accept(this);
-            } else if ("CONNECTION".equals(key)) {
-                new SQLCharExpr(option.getValue()).accept(this);
-            } else if ("DATA DIRECTORY".equals(key)) {
-                new SQLCharExpr(option.getValue()).accept(this);
-            } else if ("INDEX DIRECTORY".equals(key)) {
-                new SQLCharExpr(option.getValue()).accept(this);
-            } else if ("PASSWORD".equals(key)) {
-                new SQLCharExpr(option.getValue()).accept(this);
-            } else {
-                print(option.getValue());
-            }
+            option.getValue().accept(this);
+        }
+
+        if (x.getPartitioning() != null) {
+            print(' ');
+            x.getPartitioning().accept(this);
         }
 
         if (x.getQuery() != null) {
-            print(" ");
             incrementIndent();
             println();
             x.getQuery().accept(this);
@@ -1503,6 +1498,24 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
     public boolean visit(MySqlPartitionByKey x) {
         print("PARTITION BY KEY (");
         printAndAccept(x.getColumns(), ", ");
+        print(")");
+
+        if (x.getPartitionCount() != null) {
+            print(" PARTITIONS ");
+            x.getPartitionCount().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(MySqlPartitionByHash x) {
+
+    }
+
+    @Override
+    public boolean visit(MySqlPartitionByHash x) {
+        print("PARTITION BY HASH (");
+        x.getExpr().accept(this);
         print(")");
 
         if (x.getPartitionCount() != null) {
@@ -2866,5 +2879,21 @@ public class MySqlOutputVisitor extends SQLASTOutputVisitor implements MySqlASTV
         }
         x.getValue().accept(this);
         return false;
+    }
+
+    @Override
+    public boolean visit(TableSpaceOption x) {
+        x.getName().accept(this);
+
+        if (x.getStorage() != null) {
+            print(' ');
+            x.getStorage().accept(this);
+        }
+        return false;
+    }
+
+    @Override
+    public void endVisit(TableSpaceOption x) {
+
     }
 } //

@@ -17,37 +17,31 @@ package com.alibaba.druid.bvt.sql.mysql;
 
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.alibaba.druid.sql.MysqlTest;
+import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.alibaba.druid.stat.TableStat.Column;
 
-public class MySqlCreateTableTest5 extends MysqlTest {
+public class MySqlCreateTableTest38 extends MysqlTest {
 
     public void test_0() throws Exception {
-        String sql = "CREATE TABLE `test` (" + //
-                     "  `id` bigint(20) NOT NULL AUTO_INCREMENT," + //
-                     "  `dspcode` char(200) DEFAULT NULL," + //
-                     "  PRIMARY KEY (`id`)," + //
-                     "  KEY `index_name` (`dspcode`)" + //
-                     ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        String sql = "CREATE TABLE lookup" + //
+                     "  (id INT, INDEX USING BTREE (id))" + //
+                     "  STATS_PERSISTENT DEFAULT;"; //
 
         MySqlStatementParser parser = new MySqlStatementParser(sql);
         List<SQLStatement> statementList = parser.parseStatementList();
-        MySqlCreateTableStatement stmt = (MySqlCreateTableStatement) statementList.get(0);
+        SQLStatement stmt = statementList.get(0);
         print(statementList);
 
         Assert.assertEquals(1, statementList.size());
 
         MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
         stmt.accept(visitor);
-        
-        Assert.assertEquals("utf8", stmt.getTableOptions().get("CHARSET").toString());
 
         System.out.println("Tables : " + visitor.getTables());
         System.out.println("fields : " + visitor.getColumns());
@@ -55,12 +49,16 @@ public class MySqlCreateTableTest5 extends MysqlTest {
         System.out.println("orderBy : " + visitor.getOrderByColumns());
 
         Assert.assertEquals(1, visitor.getTables().size());
-        Assert.assertEquals(2, visitor.getColumns().size());
+        Assert.assertEquals(1, visitor.getColumns().size());
         Assert.assertEquals(0, visitor.getConditions().size());
 
-        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("test")));
+        Assert.assertTrue(visitor.getTables().containsKey(new TableStat.Name("lookup")));
 
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "id")));
-        Assert.assertTrue(visitor.getColumns().contains(new Column("test", "dspcode")));
+        String output = SQLUtils.toMySqlString(stmt);
+        Assert.assertEquals("CREATE TABLE lookup (" + //
+                            "\n\tid INT, " + //
+                            "\n\tINDEX USING BTREE(id)" + //
+                            "\n) STATS_PERSISTENT = DEFAULT", output);
+
     }
 }
