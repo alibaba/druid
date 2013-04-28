@@ -61,10 +61,6 @@ public class MySqlValidConnectionChecker implements ValidConnectionChecker, Seri
             return false;
         }
 
-        if (valiateQuery == null) {
-            return true;
-        }
-
         if (driverHasPingMethod) {
             if (conn instanceof DruidPooledConnection) {
                 conn = ((DruidPooledConnection) conn).getConnection();

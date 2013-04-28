@@ -82,9 +82,9 @@ public abstract class DruidAbstractDataSource extends WrapperAdapter implements 
     public final static int                            DEFAULT_MIN_IDLE                          = 0;
     public final static int                            DEFAULT_MAX_WAIT                          = -1;
     public final static String                         DEFAULT_VALIDATION_QUERY                  = null;                                                //
-    public final static boolean                        DEFAULT_TEST_ON_BORROW                    = true;
+    public final static boolean                        DEFAULT_TEST_ON_BORROW                    = false;
     public final static boolean                        DEFAULT_TEST_ON_RETURN                    = false;
-    public final static boolean                        DEFAULT_WHILE_IDLE                        = false;
+    public final static boolean                        DEFAULT_WHILE_IDLE                        = true;
     public static final long                           DEFAULT_TIME_BETWEEN_EVICTION_RUNS_MILLIS = -1L;
     public static final long                           DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS = 30 * 1000;
     public static final int                            DEFAULT_NUM_TESTS_PER_EVICTION_RUN        = 3;

@@ -575,6 +575,10 @@ public class DruidDataSource extends DruidAbstractDataSource implements DruidDat
         if (!(isTestOnBorrow() || isTestOnReturn() || isTestWhileIdle())) {
             return;
         }
+        
+        if (this.validConnectionChecker != null) {
+            return;
+        }
 
         if (this.getValidationQuery() != null && this.getValidationQuery().length() > 0) {
             return;
