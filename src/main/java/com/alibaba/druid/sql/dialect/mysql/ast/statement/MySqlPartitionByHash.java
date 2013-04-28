@@ -15,15 +15,10 @@
  */
 package com.alibaba.druid.sql.dialect.mysql.ast.statement;
 
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.SQLPartitioningClause;
-import com.alibaba.druid.sql.dialect.mysql.ast.MySqlObjectImpl;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByHash extends MySqlObjectImpl implements SQLPartitioningClause {
+public class MySqlPartitionByHash extends MySqlPartitioningClause {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,6 +33,7 @@ public class MySqlPartitionByHash extends MySqlObjectImpl implements SQLPartitio
         if (visitor.visit(this)) {
             acceptChild(visitor, expr);
             acceptChild(visitor, partitionCount);
+            acceptChild(visitor, getPartitions());
         }
         visitor.endVisit(this);
     }

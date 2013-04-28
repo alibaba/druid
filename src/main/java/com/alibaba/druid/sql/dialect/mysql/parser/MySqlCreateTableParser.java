@@ -27,6 +27,9 @@ import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStateme
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlCreateTableStatement.TableSpaceOption;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByHash;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByKey;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitionByRange;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningClause;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlPartitioningDef;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlTableIndex;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.SQLCreateTableParser;
@@ -314,17 +317,17 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                
+
                 stmt.getTableOptions().put("STATS_AUTO_RECALC", this.exprParser.expr());
                 continue;
             }
-            
+
             if (identifierEquals("STATS_PERSISTENT")) {
                 lexer.nextToken();
                 if (lexer.token() == Token.EQ) {
                     lexer.nextToken();
                 }
-                
+
                 stmt.getTableOptions().put("STATS_PERSISTENT", this.exprParser.expr());
                 continue;
             }
@@ -356,6 +359,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 lexer.nextToken();
                 accept(Token.BY);
                 
+                MySqlPartitioningClause partitionClause;
+
                 boolean linera = false;
                 if (identifierEquals("LINEAR")) {
                     lexer.nextToken();
@@ -365,11 +370,11 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 if (lexer.token() == Token.KEY) {
                     MySqlPartitionByKey clause = new MySqlPartitionByKey();
                     lexer.nextToken();
-                    
+
                     if (linera) {
                         clause.setLinear(true);
                     }
-                    
+
                     accept(Token.LPAREN);
                     for (;;) {
                         clause.getColumns().add(this.exprParser.name());
@@ -380,7 +385,8 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                         break;
                     }
                     accept(Token.RPAREN);
-                    stmt.setPartitioning(clause);
+                    
+                    partitionClause = clause;
 
                     if (identifierEquals("PARTITIONS")) {
                         lexer.nextToken();
@@ -389,23 +395,92 @@ public class MySqlCreateTableParser extends SQLCreateTableParser {
                 } else if (identifierEquals("HASH")) {
                     lexer.nextToken();
                     MySqlPartitionByHash clause = new MySqlPartitionByHash();
-                    
+
                     if (linera) {
                         clause.setLinear(true);
                     }
-                    
+
                     accept(Token.LPAREN);
                     clause.setExpr(this.exprParser.expr());
                     accept(Token.RPAREN);
-                    stmt.setPartitioning(clause);
+                    partitionClause = clause;
 
                     if (identifierEquals("PARTITIONS")) {
                         lexer.nextToken();
                         clause.setPartitionCount(this.exprParser.expr());
                     }
+
+                } else if (identifierEquals("RANGE")) {
+                    lexer.nextToken();
+                    MySqlPartitionByRange clause = new MySqlPartitionByRange();
+
+                    if (lexer.token() == Token.LPAREN) {
+                        lexer.nextToken();
+                        clause.setExpr(this.exprParser.expr());
+                        accept(Token.RPAREN);
+                    } else {
+                        acceptIdentifier("COLUMNS");
+                        accept(Token.LPAREN);
+                        for (;;) {
+                            clause.getColumns().add(this.exprParser.name());
+                            if (lexer.token() == Token.COMMA) {
+                                lexer.nextToken();
+                                continue;
+                            }
+                            break;
+                        }
+                        accept(Token.RPAREN);
+                    }
+                    partitionClause = clause;
+
+                    if (identifierEquals("PARTITIONS")) {
+                        lexer.nextToken();
+                        clause.setPartitionCount(this.exprParser.expr());
+                    }
+                    //
                 } else {
                     throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
                 }
+                
+                if (lexer.token() == Token.LPAREN) {
+                    lexer.nextToken();
+                    for (;;) {
+                        acceptIdentifier("PARTITION");
+                        
+                        MySqlPartitioningDef partitionDef = new MySqlPartitioningDef();
+                        
+                        partitionDef.setName(this.exprParser.name());
+                        
+                        if (lexer.token() == Token.VALUES) {
+                            lexer.nextToken();
+                            if (lexer.token() == Token.IN) {
+                                throw new ParserException("TODO " + lexer.token() + " " + lexer.stringVal());
+                            } else {
+                                acceptIdentifier("LESS");
+                                acceptIdentifier("THAN");
+                                
+                                MySqlPartitioningDef.LessThanValues values = new MySqlPartitioningDef.LessThanValues();
+                                
+                                accept(Token.LPAREN);
+                                this.exprParser.exprList(values.getItems());
+                                accept(Token.RPAREN);
+                                partitionDef.setValues(values);
+                            }
+                        }
+                        
+                        partitionClause.getPartitions().add(partitionDef);
+                        
+                        if (lexer.token() == Token.COMMA) {
+                            lexer.nextToken();
+                            continue;
+                        } else {
+                            break;
+                        }
+                    }
+                    accept(Token.RPAREN);
+                }
+                
+                stmt.setPartitioning(partitionClause);
             }
 
             break;

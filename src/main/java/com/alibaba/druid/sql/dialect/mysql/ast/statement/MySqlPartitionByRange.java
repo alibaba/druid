@@ -22,24 +22,36 @@ import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlASTVisitor;
 
-public class MySqlPartitionByKey extends MySqlPartitioningClause {
+public class MySqlPartitionByRange extends MySqlPartitioningClause {
 
     private static final long serialVersionUID = 1L;
+
+    private SQLExpr           expr;
 
     private List<SQLName>     columns          = new ArrayList<SQLName>();
 
     private SQLExpr           partitionCount;
 
-    private boolean           linear;
-
     @Override
     public void accept0(MySqlASTVisitor visitor) {
         if (visitor.visit(this)) {
+            acceptChild(visitor, expr);
             acceptChild(visitor, columns);
             acceptChild(visitor, partitionCount);
             acceptChild(visitor, getPartitions());
         }
         visitor.endVisit(this);
+    }
+
+    public SQLExpr getExpr() {
+        return expr;
+    }
+
+    public void setExpr(SQLExpr expr) {
+        if (expr != null) {
+            expr.setParent(this);
+        }
+        this.expr = expr;
     }
 
     public SQLExpr getPartitionCount() {
@@ -56,14 +68,6 @@ public class MySqlPartitionByKey extends MySqlPartitioningClause {
 
     public void setColumns(List<SQLName> columns) {
         this.columns = columns;
-    }
-
-    public boolean isLinear() {
-        return linear;
-    }
-
-    public void setLinear(boolean linear) {
-        this.linear = linear;
     }
 
 }
